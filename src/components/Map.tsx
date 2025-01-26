@@ -22,14 +22,8 @@ export const Map = ({ className }: { className?: string }) => {
         if (!map) return;
 
         const refresh = async () => {
-            map.eachLayer(function (layer) {
-                // Sorry for this
-                if (
-                    // @ts-ignore
-                    layer.initialize &&
-                    // @ts-ignore
-                    layer.initialize.toString().startsWith("function(geojson")
-                ) {
+            map.eachLayer((layer: any) => {
+                if (!!layer.addData) { // Hopefully only geoJSON layers
                     map.removeLayer(layer);
                 }
             });
