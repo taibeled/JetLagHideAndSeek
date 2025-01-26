@@ -1,0 +1,34 @@
+{
+  "name": "jlhs",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/react": "4.1.6",
+    "@astrojs/tailwind": "^5.1.5",
+    "@nanostores/persistent": "^0.10.2",
+    "@nanostores/react": "^0.8.4",
+    "@turf/turf": "^7.2.0",
+    "@types/leaflet": "^1.9.16",
+    "@types/react": "19.0.8",
+    "@types/react-dom": "19.0.3",
+    "astro": "^5.1.9",
+    "clsx": "^2.1.1",
+    "leaflet": "^1.9.4",
+    "nanostores": "^0.11.3",
+    "osmtogeojson": "3.0.0-beta.5",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "react-icons": "^5.4.0",
+    "react-leaflet": "5.0.0",
+    "react-toastify": "^11.0.3",
+    "tailwind-merge": "^2.6.0",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.3"
+  }
+}
