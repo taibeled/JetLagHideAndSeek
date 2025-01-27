@@ -8,6 +8,7 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
   - [x] All
 - [ ] Matching
 - [ ] Measuring
+- [x] Tentacles
 
 More documentation to come.
 
