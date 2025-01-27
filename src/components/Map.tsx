@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import * as turf from "@turf/turf";
 import { determineGeoJSON } from "../maps/api";
 import { adjustPerRadius } from "../maps/radius";
-import { DraggableMarkers } from "./QuestionList";
+import { DraggableMarkers } from "./DraggableMarkers";
 import { adjustPerThermometer } from "../maps/thermometer";
 import { adjustPerTentacle } from "../maps/tentacles";
 
@@ -99,7 +99,6 @@ export const Map = ({ className }: { className?: string }) => {
                             break;
                     }
 
-                    
                     if (mapGeoData.type !== "FeatureCollection") {
                         mapGeoData = {
                             type: "FeatureCollection",
@@ -239,6 +238,25 @@ export const Map = ({ className }: { className?: string }) => {
 
         refreshQuestions(true);
     }, [$questions, map, reset]);
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            if (!map) return;
+            let layerCount = 0;
+            map.eachLayer((layer: any) => {
+                if (!!layer.addData) {
+                    // Hopefully only geoJSON layers
+                    layerCount++;
+                }
+            });
+            if (layerCount > 1) {
+                console.log("Too many layers, refreshing...");
+                refreshQuestions(false);
+            }
+        }, 1000);
+
+        return () => clearInterval(intervalId);
+    }, [map]);
 
     return displayMap;
 };
