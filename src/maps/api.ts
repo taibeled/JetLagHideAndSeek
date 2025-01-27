@@ -123,6 +123,25 @@ out center;
     return response;
 };
 
+export const findAdminBoundary = async (
+    latitude: number,
+    longitude: number,
+    adminLevel: 3 | 4 | 5 | 6
+) => {
+    const query = `
+[out:json];
+is_in(${latitude}, ${longitude})->.a;
+rel(pivot.a)["admin_level"="${adminLevel}"];
+out geom;
+    `;
+
+    const data = await getOverpassData(query);
+
+    const geo = osmtogeojson(data);
+
+    return geo.features?.[0];
+};
+
 export const geocode = async (address: string, language: string) => {
     const features = (
         await (

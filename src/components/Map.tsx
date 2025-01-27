@@ -12,6 +12,7 @@ import { adjustPerRadius } from "../maps/radius";
 import { DraggableMarkers } from "./DraggableMarkers";
 import { adjustPerThermometer } from "../maps/thermometer";
 import { adjustPerTentacle } from "../maps/tentacles";
+import { adjustPerMatching } from "../maps/matching";
 
 export const Map = ({ className }: { className?: string }) => {
     const $mapGeoLocation = useStore(mapGeoLocation);
@@ -97,6 +98,14 @@ export const Map = ({ className }: { className?: string }) => {
                                 false
                             );
                             break;
+                        case "matching":
+                            if (!question.data.same) break;
+                            mapGeoData = await adjustPerMatching(
+                                question.data,
+                                mapGeoData,
+                                false
+                            );
+                            break;
                     }
 
                     if (mapGeoData.type !== "FeatureCollection") {
@@ -148,6 +157,18 @@ export const Map = ({ className }: { className?: string }) => {
                                     ...question.data,
                                     within: false,
                                 },
+                                mapGeoData,
+                                true
+                            );
+                            break;
+                        case "matching":
+                            if (question.data.same) {
+                                interior = false;
+                                break;
+                            }
+
+                            mapGeoData = await adjustPerMatching(
+                                question.data,
                                 mapGeoData,
                                 true
                             );
@@ -240,7 +261,7 @@ export const Map = ({ className }: { className?: string }) => {
     }, [$questions, map, reset]);
 
     useEffect(() => {
-        const intervalId = setInterval(() => {
+        const intervalId = setInterval(async () => {
             if (!map) return;
             let layerCount = 0;
             map.eachLayer((layer: any) => {

@@ -1,9 +1,14 @@
 import { useStore } from "@nanostores/react";
 import { cn } from "../utils/cn";
-import { mapGeoLocation, questions} from "../utils/context";
+import { mapGeoLocation, questions } from "../utils/context";
 import { iconColors } from "../maps/api";
 import * as turf from "@turf/turf";
-import { RadiusQuestionComponent, TentacleQuestionComponent, ThermometerQuestionComponent } from "./QuestionCards";
+import {
+    MatchingQuestionComponent,
+    RadiusQuestionComponent,
+    TentacleQuestionComponent,
+    ThermometerQuestionComponent,
+} from "./QuestionCards";
 
 export const QuestionList = ({ className }: { className?: string }) => {
     const $questions = useStore(questions);
@@ -35,6 +40,15 @@ export const QuestionList = ({ className }: { className?: string }) => {
                         case "tentacles":
                             return (
                                 <TentacleQuestionComponent
+                                    data={question.data}
+                                    key={question.key}
+                                    questionKey={question.key}
+                                    index={index}
+                                />
+                            );
+                        case "matching":
+                            return (
+                                <MatchingQuestionComponent
                                     data={question.data}
                                     key={question.key}
                                     questionKey={question.key}
@@ -152,6 +166,41 @@ export const QuestionList = ({ className }: { className?: string }) => {
                     }}
                 >
                     Add Tentacles
+                </button>
+                <button
+                    className="bg-slate-900 text-white px-4 py-2 rounded-md shadow-lg shadow-slate-500"
+                    onClick={() => {
+                        const center = turf.point([
+                            mapGeoLocation.get().geometry.coordinates[1],
+                            mapGeoLocation.get().geometry.coordinates[0],
+                        ]);
+
+                        questions.set([
+                            ...$questions,
+                            {
+                                id: "matching",
+                                key: Math.random() * 1e9,
+                                data: {
+                                    color: Object.keys(iconColors)[
+                                        Math.floor(
+                                            Math.random() *
+                                                Object.keys(iconColors).length
+                                        )
+                                    ] as keyof typeof iconColors,
+                                    lat: center.geometry.coordinates[1],
+                                    lng: center.geometry.coordinates[0],
+                                    drag: true,
+                                    same: true,
+                                    type: "zone",
+                                    cat: {
+                                        adminLevel: 3,
+                                    },
+                                },
+                            },
+                        ]);
+                    }}
+                >
+                    Add Matching
                 </button>
             </div>
         </div>

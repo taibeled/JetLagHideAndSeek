@@ -8,6 +8,7 @@ import { useStore } from "@nanostores/react";
 import { cn } from "../utils/cn";
 import { questions } from "../utils/context";
 import { findTentacleLocations, iconColors } from "../maps/api";
+import type { MatchingQuestion } from "../maps/matching";
 
 const QuestionCard = ({
     children,
@@ -139,6 +140,105 @@ export const RadiusQuestionComponent = ({
                     }
                     if (lng !== null) {
                         (newQuestions[index].data as RadiusQuestion).lng = lng;
+                    }
+                    questions.set(newQuestions);
+                }}
+            />
+        </QuestionCard>
+    );
+};
+
+export const MatchingQuestionComponent = ({
+    data,
+    questionKey,
+    index,
+}: {
+    data: MatchingQuestion;
+    questionKey: number;
+    index: number;
+}) => {
+    type QuestionData = MatchingQuestion;
+
+    const $questions = useStore(questions);
+
+    return (
+        <QuestionCard questionKey={questionKey}>
+            <div className="flex flex-col items-center gap-2 md:items-start md:flex-row mb-2">
+                <div className="flex flex-col gap-2 ml-4">
+                    <label className="text-white text-3xl italic font-semibold font-poppins">
+                        Matching{" "}
+                        {$questions
+                            .filter((q) => q.id === "matching")
+                            .map((q) => q.key)
+                            .indexOf(questionKey) + 1}
+                    </label>
+                    <div className="gap-2 flex flex-row">
+                        <select
+                            className="rounded-md p-2 text-slate-900"
+                            value={data.cat.adminLevel}
+                            onChange={(e) => {
+                                const newQuestions = [...$questions];
+                                (
+                                    newQuestions[index].data as QuestionData
+                                ).cat.adminLevel = parseInt(e.target.value) as any;
+                                questions.set(newQuestions);
+                            }}
+                        >
+                            <option value="3">Zone 1</option>
+                            <option value="4">Zone 2</option>
+                            <option value="5">Zone 3</option>
+                            <option value="6">Zone 4</option>
+                        </select>
+                    </div>
+                </div>
+                <div className="flex flex-grow flex-col mt-2 gap-2 md:mt-0">
+                    <div className="flex items-center flex-1 justify-center gap-2 ml-4">
+                        <label className="text-white text-3xl italic font-semibold font-poppins">
+                            Same
+                        </label>
+                        <input
+                            type="checkbox"
+                            className="rounded-md p-2 text-slate-900 scale-150"
+                            checked={data.same}
+                            onChange={(e) => {
+                                const newQuestions = [...$questions];
+                                (
+                                    newQuestions[index].data as QuestionData
+                                ).same = e.target.checked;
+                                questions.set(newQuestions);
+                            }}
+                        />
+                    </div>
+                    <span
+                        className="text-3xl italic font-semibold font-poppins text-center ml-4"
+                        style={{ color: iconColors[data.color ?? "gold"] }}
+                    >
+                        Color (drag{" "}
+                        <input
+                            type="checkbox"
+                            className="scale-150 mr-2"
+                            checked={data.drag ?? false}
+                            onChange={(e) => {
+                                const newQuestions = [...$questions];
+                                newQuestions[index].data.drag =
+                                    e.target.checked;
+                                questions.set(newQuestions);
+                            }}
+                        />
+                        )
+                    </span>
+                </div>
+            </div>
+            <LatitudeLongitude
+                latitude={data.lat}
+                longitude={data.lng}
+                onChange={(lat, lng) => {
+                    const newQuestions = [...$questions];
+                    if (lat !== null) {
+                        (newQuestions[index].data as QuestionData).lat = lat;
+                    }
+                    if (lng !== null) {
+                        (newQuestions[index].data as QuestionData).lng = lng;
                     }
                     questions.set(newQuestions);
                 }}

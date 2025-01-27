@@ -7,6 +7,7 @@ import { questions } from "../utils/context";
 import type { RadiusQuestion } from "../maps/radius";
 import type { TentacleQuestion } from "../maps/tentacles";
 import type { ThermometerQuestion } from "../maps/thermometer";
+import type { MatchingQuestion } from "../maps/matching";
 
 const ColoredMarker = ({
     latitude,
@@ -74,6 +75,7 @@ export const DraggableMarkers = () => {
                 switch (question.id) {
                     case "radius":
                     case "tentacles":
+                    case "matching":
                         return (
                             <ColoredMarker
                                 color={
@@ -81,6 +83,7 @@ export const DraggableMarkers = () => {
                                         question.data as
                                             | RadiusQuestion
                                             | TentacleQuestion
+                                            | MatchingQuestion
                                     ).color ?? "gold"
                                 }
                                 key={question.key}
@@ -91,6 +94,7 @@ export const DraggableMarkers = () => {
                                         question.data as
                                             | RadiusQuestion
                                             | TentacleQuestion
+                                            | MatchingQuestion
                                     ).lat
                                 }
                                 longitude={
@@ -98,6 +102,7 @@ export const DraggableMarkers = () => {
                                         question.data as
                                             | RadiusQuestion
                                             | TentacleQuestion
+                                            | MatchingQuestion
                                     ).lng
                                 }
                                 onChange={(e) => {
@@ -106,11 +111,13 @@ export const DraggableMarkers = () => {
                                         newQuestions[index].data as
                                             | RadiusQuestion
                                             | TentacleQuestion
+                                            | MatchingQuestion
                                     ).lat = e.target.getLatLng().lat;
                                     (
                                         newQuestions[index].data as
                                             | RadiusQuestion
                                             | TentacleQuestion
+                                            | MatchingQuestion
                                     ).lng = e.target.getLatLng().lng;
                                     questions.set(newQuestions);
                                 }}
