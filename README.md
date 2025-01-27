@@ -7,6 +7,7 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
 - [x] Thermometer
   - [x] All
 - [ ] Matching
+  - [x] Same zone (i.e., same region or prefecture)
 - [ ] Measuring
 - [x] Tentacles
   - [x] Museum (inferred)
