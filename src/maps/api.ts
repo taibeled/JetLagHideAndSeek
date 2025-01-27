@@ -83,12 +83,14 @@ export const determineGeoJSON = async (
     };
 };
 
-export const findTentacleLocations = async (
-    question: TentacleQuestion
-) => {
+export const findTentacleLocations = async (question: TentacleQuestion) => {
     const query = `
 [out:json][timeout:25];
-nw["tourism"="${question.locationType}"](around:${turf.convertLength(question.radius, "miles", "meters")}, ${question.lat}, ${question.lng});
+nw["${question.locationType === "hospital" ? "amenity" : "tourism"}"="${
+        question.locationType
+    }"](around:${turf.convertLength(question.radius, "miles", "meters")}, ${
+        question.lat
+    }, ${question.lng});
 out center;
     `;
     const data = await getOverpassData(query);
@@ -99,11 +101,17 @@ out center;
 
     elements.forEach((element: any) => {
         if (!element.tags["name"] && !element.tags["name:en"]) return;
-        if (!element.center || !element.center.lon || !element.center.lat) return;
+        if (!element.center || !element.center.lon || !element.center.lat)
+            return;
 
         const name = element.tags["name:en"] ?? element.tags["name"];
 
-        if (response.features.find((feature: any) => feature.properties.name === name)) return;
+        if (
+            response.features.find(
+                (feature: any) => feature.properties.name === name
+            )
+        )
+            return;
 
         response.features.push(
             turf.point([element.center.lon, element.center.lat], {
@@ -114,7 +122,6 @@ out center;
 
     return response;
 };
-
 
 export const geocode = async (address: string, language: string) => {
     const features = (

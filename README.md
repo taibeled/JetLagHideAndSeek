@@ -9,10 +9,12 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
 - [ ] Matching
 - [ ] Measuring
 - [x] Tentacles
-  - [x] Museum
+  - [x] Museum (inferred)
   - [x] Zoo
   - [x] Aquarium
   - [x] Amusement Park
+  - [x] Hospital
+  - [ ] Metro line (is this stations or line itself?)
   - [ ] More (I only went off the obvious ones from the show, if you have the complete list, please leave an issue)
 
 More documentation to come.

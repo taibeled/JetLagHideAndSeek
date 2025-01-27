@@ -333,6 +333,7 @@ const TentacleQuestionComponent = ({
                         <option value="zoo">Zoos</option>
                         <option value="museum">Museums</option>
                         <option value="aquarium">Aquariums</option>
+                        <option value="hospital">Hospitals</option>
                     </select>
                     <span
                         className="text-3xl italic font-semibold font-poppins text-center ml-4"

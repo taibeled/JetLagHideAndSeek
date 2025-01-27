@@ -1,7 +1,7 @@
 import { findTentacleLocations, type iconColors } from "./api";
 import * as turf from "@turf/turf";
 
-type TentacleLocations = "aquarium" | "zoo" | "theme_park" | "museum";
+type TentacleLocations = "aquarium" | "zoo" | "theme_park" | "museum" | "hospital";
 
 export interface TentacleQuestion {
     radius: 1 | 15;
