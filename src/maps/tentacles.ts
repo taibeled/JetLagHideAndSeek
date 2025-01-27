@@ -37,7 +37,7 @@ export const adjustPerTentacle = async (
         return feature.properties.name === question.location.properties.name;
     });
     if (!correctPolygon) {
-        throw new Error("No correct polygon found");
+        return mapData;
     }
 
     const circle = turf.circle(
