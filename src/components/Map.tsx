@@ -11,6 +11,7 @@ import { determineGeoJSON } from "../maps/api";
 import { adjustPerRadius } from "../maps/radius";
 import { DraggableMarkers } from "./QuestionList";
 import { adjustPerThermometer } from "../maps/thermometer";
+import { adjustPerTentacle } from "../maps/tentacles";
 
 export const Map = ({ className }: { className?: string }) => {
     const $mapGeoLocation = useStore(mapGeoLocation);
@@ -23,7 +24,8 @@ export const Map = ({ className }: { className?: string }) => {
 
         const refresh = async () => {
             map.eachLayer((layer: any) => {
-                if (!!layer.addData) { // Hopefully only geoJSON layers
+                if (!!layer.addData) {
+                    // Hopefully only geoJSON layers
                     map.removeLayer(layer);
                 }
             });
@@ -70,19 +72,15 @@ export const Map = ({ className }: { className?: string }) => {
             .then(async (mapGeoData) => {
                 for (let index = 0; index < $questions.length; index++) {
                     const question = $questions[index];
-                    let interior = false;
 
                     switch (question?.id) {
                         case "radius":
-                            if (!question.data.within) {
-                                interior = true;
-                            } else {
-                                mapGeoData = adjustPerRadius(
-                                    question.data,
-                                    mapGeoData,
-                                    false
-                                );
-                            }
+                            if (!question.data.within) break;
+                            mapGeoData = adjustPerRadius(
+                                question.data,
+                                mapGeoData,
+                                false
+                            );
                             break;
                         case "thermometer":
                             mapGeoData = adjustPerThermometer(
@@ -91,16 +89,23 @@ export const Map = ({ className }: { className?: string }) => {
                                 false
                             );
                             break;
-                        default:
-                            interior = true; // All other cases
+                        case "tentacles":
+                            if (question.data.location === false) break;
+                            mapGeoData = await adjustPerTentacle(
+                                question.data,
+                                mapGeoData,
+                                false
+                            );
+                            break;
                     }
 
-                    if (interior) continue;
-
-                    mapGeoData = {
-                        type: "FeatureCollection",
-                        features: [mapGeoData],
-                    };
+                    
+                    if (mapGeoData.type !== "FeatureCollection") {
+                        mapGeoData = {
+                            type: "FeatureCollection",
+                            features: [mapGeoData],
+                        };
+                    }
                 }
 
                 if (focus) {
@@ -132,6 +137,21 @@ export const Map = ({ className }: { className?: string }) => {
                                     true
                                 );
                             }
+                            break;
+                        case "tentacles":
+                            if (question.data.location !== false) {
+                                interior = false;
+                                break;
+                            }
+
+                            mapGeoData = adjustPerRadius(
+                                {
+                                    ...question.data,
+                                    within: false,
+                                },
+                                mapGeoData,
+                                true
+                            );
                             break;
                         default:
                             interior = false; // All other cases

@@ -3,6 +3,7 @@ import { persistentAtom } from "@nanostores/persistent";
 import { type OpenStreetMap } from "../maps/api";
 import type { RadiusQuestion } from "../maps/radius";
 import type { ThermometerQuestion } from "../maps/thermometer";
+import type { TentacleQuestion } from "../maps/tentacles";
 
 export const mapGeoLocation = persistentAtom<OpenStreetMap>(
     "mapGeoLocation",
@@ -33,8 +34,9 @@ export const mapGeoLocation = persistentAtom<OpenStreetMap>(
 export const mapGeoJSON = atom<any>(null);
 
 export type Question =
-    { id: "radius"; key: number; data: RadiusQuestion }
-    | { id: "thermometer"; key: number; data: ThermometerQuestion };
+    | { id: "radius"; key: number; data: RadiusQuestion }
+    | { id: "thermometer"; key: number; data: ThermometerQuestion }
+    | { id: "tentacles"; key: number; data: TentacleQuestion };
 
 export const questions = persistentAtom<Question[]>("questions", [], {
     encode: JSON.stringify,

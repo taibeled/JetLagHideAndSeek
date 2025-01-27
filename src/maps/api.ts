@@ -1,5 +1,7 @@
 import type { LatLngTuple } from "leaflet";
 import osmtogeojson from "osmtogeojson";
+import type { TentacleQuestion } from "./tentacles";
+import * as turf from "@turf/turf";
 
 export interface OpenStreetMap {
     type: string;
@@ -80,6 +82,39 @@ export const determineGeoJSON = async (
         }),
     };
 };
+
+export const findTentacleLocations = async (
+    question: TentacleQuestion
+) => {
+    const query = `
+[out:json][timeout:25];
+nw["tourism"="${question.locationType}"](around:${turf.convertLength(question.radius, "miles", "meters")}, ${question.lat}, ${question.lng});
+out center;
+    `;
+    const data = await getOverpassData(query);
+
+    const elements = data.elements;
+
+    const response = turf.points([]);
+
+    elements.forEach((element: any) => {
+        if (!element.tags["name"] && !element.tags["name:en"]) return;
+        if (!element.center || !element.center.lon || !element.center.lat) return;
+
+        const name = element.tags["name:en"] ?? element.tags["name"];
+
+        if (response.features.find((feature: any) => feature.properties.name === name)) return;
+
+        response.features.push(
+            turf.point([element.center.lon, element.center.lat], {
+                name,
+            })
+        );
+    });
+
+    return response;
+};
+
 
 export const geocode = async (address: string, language: string) => {
     const features = (

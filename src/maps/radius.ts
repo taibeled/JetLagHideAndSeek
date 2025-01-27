@@ -1,5 +1,4 @@
 import type { iconColors } from "./api";
-import { mapGeoJSON } from "../utils/context";
 import * as turf from "@turf/turf";
 
 export interface RadiusQuestion {

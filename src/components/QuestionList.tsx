@@ -5,11 +5,13 @@ import type { RadiusQuestion } from "../maps/radius";
 import { Marker, Popup } from "react-leaflet";
 import { VscChromeClose } from "react-icons/vsc";
 import { Icon, type DragEndEvent } from "leaflet";
-import { iconColors } from "../maps/api";
+import { findTentacleLocations, iconColors } from "../maps/api";
 import { toast } from "react-toastify";
 import * as turf from "@turf/turf";
 import type { ThermometerQuestion } from "../maps/thermometer";
 import { Fragment } from "react/jsx-runtime";
+import type { TentacleQuestion } from "../maps/tentacles";
+import { Suspense, use } from "react";
 
 export const DraggableMarkers = () => {
     const $questions = useStore(questions);
@@ -22,28 +24,44 @@ export const DraggableMarkers = () => {
 
                 switch (question.id) {
                     case "radius":
+                    case "tentacles":
                         return (
                             <ColoredMarker
                                 color={
-                                    (question.data as RadiusQuestion).color ??
-                                    "gold"
+                                    (
+                                        question.data as
+                                            | RadiusQuestion
+                                            | TentacleQuestion
+                                    ).color ?? "gold"
                                 }
                                 key={question.key}
-                                id="radius"
+                                id={question.id}
                                 questionKey={question.key}
-                                latitude={(question.data as RadiusQuestion).lat}
+                                latitude={
+                                    (
+                                        question.data as
+                                            | RadiusQuestion
+                                            | TentacleQuestion
+                                    ).lat
+                                }
                                 longitude={
-                                    (question.data as RadiusQuestion).lng
+                                    (
+                                        question.data as
+                                            | RadiusQuestion
+                                            | TentacleQuestion
+                                    ).lng
                                 }
                                 onChange={(e) => {
                                     const newQuestions = [...$questions];
                                     (
-                                        newQuestions[index]
-                                            .data as RadiusQuestion
+                                        newQuestions[index].data as
+                                            | RadiusQuestion
+                                            | TentacleQuestion
                                     ).lat = e.target.getLatLng().lat;
                                     (
-                                        newQuestions[index]
-                                            .data as RadiusQuestion
+                                        newQuestions[index].data as
+                                            | RadiusQuestion
+                                            | TentacleQuestion
                                     ).lng = e.target.getLatLng().lng;
                                     questions.set(newQuestions);
                                 }}
@@ -192,8 +210,9 @@ const RadiusQuestionComponent = ({
                             value={data.unit ?? "miles"}
                             onChange={(e) => {
                                 const newQuestions = [...$questions];
-                                newQuestions[index].data.unit = e.target
-                                    .value as any;
+                                (
+                                    newQuestions[index].data as RadiusQuestion
+                                ).unit = e.target.value as any;
                                 questions.set(newQuestions);
                             }}
                         >
@@ -256,6 +275,156 @@ const RadiusQuestionComponent = ({
                 }}
             />
         </QuestionCard>
+    );
+};
+
+const TentacleQuestionComponent = ({
+    data,
+    questionKey,
+    index,
+}: {
+    data: TentacleQuestion;
+    questionKey: number;
+    index: number;
+}) => {
+    const $questions = useStore(questions);
+
+    return (
+        <QuestionCard questionKey={questionKey}>
+            <div className="flex flex-col items-center gap-2 md:items-start md:flex-row mb-2">
+                <div className="flex flex-col gap-2 ml-4 items-center">
+                    <label className="text-white text-3xl italic font-semibold font-poppins">
+                        Tentacles{" "}
+                        {$questions
+                            .filter((q) => q.id === "tentacles")
+                            .map((q) => q.key)
+                            .indexOf(questionKey) + 1}
+                    </label>
+                    <div className="gap-2 flex flex-row">
+                        <select
+                            className="rounded-md p-2 text-slate-900"
+                            value={data.radius}
+                            onChange={(e) => {
+                                const newQuestions = [...$questions];
+                                (
+                                    newQuestions[index].data as TentacleQuestion
+                                ).radius = parseInt(e.target.value) as 1 | 15;
+                                questions.set(newQuestions);
+                            }}
+                        >
+                            <option value="15">15 Miles</option>
+                            <option value="1">1 Mile</option>
+                        </select>
+                    </div>
+                </div>
+                <div className="flex flex-grow flex-col mt-2 gap-2 md:mt-0 items-center">
+                    <select
+                        className="rounded-md p-2 text-slate-900 w-[90%] md:w-[50%]"
+                        value={data.locationType}
+                        onChange={(e) => {
+                            const newQuestions = [...$questions];
+                            (
+                                newQuestions[index].data as TentacleQuestion
+                            ).locationType = e.target.value as any;
+                            questions.set(newQuestions);
+                        }}
+                    >
+                        <option value="theme_park">Theme Parks</option>
+                        <option value="zoo">Zoos</option>
+                        <option value="museum">Museums</option>
+                        <option value="aquarium">Aquariums</option>
+                    </select>
+                    <span
+                        className="text-3xl italic font-semibold font-poppins text-center ml-4"
+                        style={{ color: iconColors[data.color ?? "gold"] }}
+                    >
+                        Color (drag{" "}
+                        <input
+                            type="checkbox"
+                            className="scale-150 mr-2"
+                            checked={data.drag ?? false}
+                            onChange={(e) => {
+                                const newQuestions = [...$questions];
+                                newQuestions[index].data.drag =
+                                    e.target.checked;
+                                questions.set(newQuestions);
+                            }}
+                        />
+                        )
+                    </span>
+                </div>
+            </div>
+            <LatitudeLongitude
+                latitude={data.lat}
+                longitude={data.lng}
+                onChange={(lat, lng) => {
+                    const newQuestions = [...$questions];
+                    if (lat !== null) {
+                        (newQuestions[index].data as TentacleQuestion).lat =
+                            lat;
+                    }
+                    if (lng !== null) {
+                        (newQuestions[index].data as TentacleQuestion).lng =
+                            lng;
+                    }
+                    questions.set(newQuestions);
+                }}
+            />
+            <div className="flex mt-4 justify-center">
+                <Suspense fallback={<div>Loading...</div>}>
+                    <TentacleLocationSelector
+                        data={data}
+                        index={index}
+                        promise={findTentacleLocations(data)}
+                    />
+                </Suspense>
+            </div>
+        </QuestionCard>
+    );
+};
+
+const TentacleLocationSelector = ({
+    data,
+    index,
+    promise,
+}: {
+    data: TentacleQuestion;
+    index: number;
+    promise: Promise<any>;
+}) => {
+    const $questions = useStore(questions);
+    const locations = use(promise);
+
+    return (
+        <select
+            className="rounded-md p-2 text-slate-900 w-[90%] md:w-[50%]"
+            value={data.location ? data.location.properties.name : "false"}
+            onChange={(e) => {
+                const newQuestions = [...$questions];
+                if (e.target.value === "false") {
+                    (
+                        newQuestions[index].data as TentacleQuestion
+                    ).location = false;
+                } else {
+                    (
+                        newQuestions[index].data as TentacleQuestion
+                    ).location = locations.features.find(
+                        (feature: any) => feature.properties.name === e.target.value
+                    );
+                }
+                questions.set(newQuestions);
+            }}
+        >
+            <option value="false">Not Within</option>
+            {locations.features.map((feature: any) => (
+                <option
+                    key={feature.properties.name}
+                    value={feature.properties.name}
+                >
+                    {feature.properties.name}
+                </option>
+            ))}
+        </select>
     );
 };
 
@@ -412,12 +581,21 @@ export const QuestionList = ({ className }: { className?: string }) => {
                                     index={index}
                                 />
                             );
+                        case "tentacles":
+                            return (
+                                <TentacleQuestionComponent
+                                    data={question.data}
+                                    key={question.key}
+                                    questionKey={question.key}
+                                    index={index}
+                                />
+                            );
                         default:
                             return null;
                     }
                 })}
             </div>
-            <div className="mt-4 flex flex-row gap-4">
+            <div className="mt-4 flex flex-col md:flex-row gap-4">
                 <button
                     className="bg-slate-900 text-white px-4 py-2 rounded-md shadow-lg shadow-slate-500"
                     onClick={() => {
@@ -490,6 +668,39 @@ export const QuestionList = ({ className }: { className?: string }) => {
                     }}
                 >
                     Add Thermometer
+                </button>
+                <button
+                    className="bg-slate-900 text-white px-4 py-2 rounded-md shadow-lg shadow-slate-500"
+                    onClick={() => {
+                        const center = turf.point([
+                            mapGeoLocation.get().geometry.coordinates[1],
+                            mapGeoLocation.get().geometry.coordinates[0],
+                        ]);
+
+                        questions.set([
+                            ...$questions,
+                            {
+                                id: "tentacles",
+                                key: Math.random() * 1e9,
+                                data: {
+                                    color: Object.keys(iconColors)[
+                                        Math.floor(
+                                            Math.random() *
+                                                Object.keys(iconColors).length
+                                        )
+                                    ] as keyof typeof iconColors,
+                                    lat: center.geometry.coordinates[1],
+                                    lng: center.geometry.coordinates[0],
+                                    drag: true,
+                                    location: false,
+                                    locationType: "theme_park",
+                                    radius: 15,
+                                },
+                            },
+                        ]);
+                    }}
+                >
+                    Add Tentacles
                 </button>
             </div>
         </div>
