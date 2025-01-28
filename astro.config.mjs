@@ -10,7 +10,9 @@ import AstroPWA from "@vite-pwa/astro";
 export default defineConfig({
     integrations: [
         react(),
-        tailwind(),
+        tailwind({
+            applyBaseStyles: false,
+        }),
         partytown({
             config: {
                 forward: ["dataLayer.push"],

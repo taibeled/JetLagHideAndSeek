@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/react";
-import { cn } from "../utils/cn";
+import { cn } from "../lib/utils";
 import { mapGeoLocation, questions } from "../utils/context";
 import { iconColors } from "../maps/api";
 import * as turf from "@turf/turf";

@@ -1,4 +1,5 @@
 ---
+import "@/styles/globals.css";
 import { ToastContainer } from "react-toastify";
 // @ts-ignore
 import { pwaInfo } from "virtual:pwa-info";
@@ -52,25 +53,8 @@ const { className } = Astro.props;
         <title>Jet Lag The Game: Hide and Seek</title>
         {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
     </head>
-    <body class={className}>
+    <body class:list={[className, "dark"]}>
         <slot />
         <ToastContainer client:only />
     </body>
 </html>
-
-<style>
-    @tailwind base;
-
-    html,
-    body {
-        margin: 0;
-        width: 100%;
-        height: 100%;
-    }
-
-    @layer base {
-        html {
-            @apply text-slate-50;
-        }
-    }
-</style>

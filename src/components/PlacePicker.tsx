@@ -10,7 +10,7 @@ import {
     type KeyboardEvent,
 } from "react";
 import { useDebounce } from "../hooks/useDebounce";
-import { cn } from "../utils/cn";
+import { cn } from "../lib/utils";
 import {
     GEOCODER_API,
     geocode,

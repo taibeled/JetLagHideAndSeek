@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { cn } from "../utils/cn";
+import { cn } from "../lib/utils";
 
 export const LatitudeLongitude = ({
     latitude,

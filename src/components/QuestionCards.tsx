@@ -5,7 +5,7 @@ import { VscChromeClose } from "react-icons/vsc";
 import { Suspense, use } from "react";
 import { LatitudeLongitude } from "./LatLngPicker";
 import { useStore } from "@nanostores/react";
-import { cn } from "../utils/cn";
+import { cn } from "../lib/utils";
 import { questions } from "../utils/context";
 import { findTentacleLocations, iconColors } from "../maps/api";
 import type { MatchingQuestion } from "../maps/matching";
