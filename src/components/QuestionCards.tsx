@@ -9,6 +9,25 @@ import { cn } from "../lib/utils";
 import { questions } from "../utils/context";
 import { findTentacleLocations, iconColors } from "../maps/api";
 import type { MatchingQuestion } from "../maps/matching";
+import {
+    MENU_ITEM_CLASSNAME,
+    SidebarGroup,
+    SidebarGroupContent,
+    SidebarGroupLabel,
+    SidebarMenu,
+    SidebarMenuItem,
+} from "./ui/sidebar";
+import { Input } from "./ui/input";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "./ui/select";
+import { Checkbox } from "./ui/checkbox";
 
 const QuestionCard = ({
     children,
@@ -22,8 +41,8 @@ const QuestionCard = ({
     const $questions = useStore(questions);
 
     return (
-        <div className={cn("flex flex-shrink-0", className)}>
-            <div className="bg-slate-900 rounded-md shadow-lg shadow-slate-500 relative p-4">
+        <SidebarGroup className={className}>
+            <div className="relative">
                 <button
                     className="absolute top-2 right-2 text-white"
                     onClick={() => {
@@ -36,7 +55,7 @@ const QuestionCard = ({
                 </button>
                 {children}
             </div>
-        </div>
+        </SidebarGroup>
     );
 };
 
@@ -55,97 +74,113 @@ export const RadiusQuestionComponent = ({
 
     return (
         <QuestionCard questionKey={questionKey}>
-            <div className="flex flex-col items-center gap-2 md:items-start md:flex-row mb-2">
-                <div className="flex flex-col gap-2 ml-4">
-                    <label className="text-white text-3xl italic font-semibold font-poppins">
-                        Radius{" "}
-                        {$questions
-                            .filter((q) => q.id === "radius")
-                            .map((q) => q.key)
-                            .indexOf(questionKey) + 1}
-                    </label>
-                    <div className="gap-2 flex flex-row">
-                        <input
-                            type="number"
-                            className="rounded-md p-2 text-slate-900 w-16"
-                            value={data.radius}
-                            onChange={(e) => {
-                                const newQuestions = [...$questions];
-                                (
-                                    newQuestions[index].data as QuestionData
-                                ).radius = parseInt(e.target.value);
-                                questions.set(newQuestions);
-                            }}
-                        />
-                        <select
-                            className="rounded-md p-2 text-slate-900"
-                            value={data.unit ?? "miles"}
-                            onChange={(e) => {
-                                const newQuestions = [...$questions];
-                                (
-                                    newQuestions[index].data as QuestionData
-                                ).unit = e.target.value as any;
-                                questions.set(newQuestions);
-                            }}
+            <SidebarGroupLabel>
+                Radius{" "}
+                {$questions
+                    .filter((q) => q.id === "radius")
+                    .map((q) => q.key)
+                    .indexOf(questionKey) + 1}
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <div
+                            className={cn(
+                                MENU_ITEM_CLASSNAME,
+                                "gap-2 flex flex-row"
+                            )}
                         >
-                            <option value="miles">Miles</option>
-                            <option value="kilometers">Kilometers</option>
-                            <option value="meters">Meters</option>
-                        </select>
-                    </div>
-                </div>
-                <div className="flex flex-grow flex-col mt-2 gap-2 md:mt-0">
-                    <div className="flex items-center flex-1 justify-center gap-2 ml-4">
-                        <label className="text-white text-3xl italic font-semibold font-poppins">
+                            <Input
+                                type="number"
+                                className="rounded-md p-2 w-16"
+                                value={data.radius}
+                                onChange={(e) => {
+                                    const newQuestions = [...$questions];
+                                    (
+                                        newQuestions[index].data as QuestionData
+                                    ).radius = parseInt(e.target.value);
+                                    questions.set(newQuestions);
+                                }}
+                            />
+                            <Select
+                                value={data.unit ?? "miles"}
+                                onValueChange={(value) => {
+                                    const newQuestions = [...$questions];
+                                    (
+                                        newQuestions[index].data as QuestionData
+                                    ).unit = value as any;
+                                    questions.set(newQuestions);
+                                }}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Theme" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="miles">Miles</SelectItem>
+                                    <SelectItem value="kilometers">
+                                        Kilometers
+                                    </SelectItem>
+                                    <SelectItem value="meters">
+                                        Meters
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                        <label className="text-2xl font-semibold font-poppins">
                             Within
                         </label>
-                        <input
-                            type="checkbox"
-                            className="rounded-md p-2 text-slate-900 scale-150"
+                        <Checkbox
                             checked={data.within}
-                            onChange={(e) => {
+                            onCheckedChange={(checked) => {
                                 const newQuestions = [...$questions];
                                 (
                                     newQuestions[index].data as QuestionData
-                                ).within = e.target.checked;
+                                ).within = (checked ?? false) as boolean;
                                 questions.set(newQuestions);
                             }}
                         />
-                    </div>
-                    <span
-                        className="text-3xl italic font-semibold font-poppins text-center ml-4"
-                        style={{ color: iconColors[data.color ?? "gold"] }}
+                    </SidebarMenuItem>
+                    <SidebarMenuItem
+                        className={cn(
+                            MENU_ITEM_CLASSNAME,
+                            "text-2xl font-semibold font-poppins"
+                        )}
+                        style={{
+                            color: iconColors[data.color ?? "gold"],
+                        }}
                     >
                         Color (drag{" "}
-                        <input
-                            type="checkbox"
-                            className="scale-150 mr-2"
+                        <Checkbox
                             checked={data.drag ?? false}
-                            onChange={(e) => {
+                            onCheckedChange={(checked) => {
                                 const newQuestions = [...$questions];
-                                newQuestions[index].data.drag =
-                                    e.target.checked;
+                                newQuestions[index].data.drag = (checked ??
+                                    false) as boolean;
                                 questions.set(newQuestions);
                             }}
                         />
                         )
-                    </span>
-                </div>
-            </div>
-            <LatitudeLongitude
-                latitude={data.lat}
-                longitude={data.lng}
-                onChange={(lat, lng) => {
-                    const newQuestions = [...$questions];
-                    if (lat !== null) {
-                        (newQuestions[index].data as QuestionData).lat = lat;
-                    }
-                    if (lng !== null) {
-                        (newQuestions[index].data as QuestionData).lng = lng;
-                    }
-                    questions.set(newQuestions);
-                }}
-            />
+                    </SidebarMenuItem>
+                    <LatitudeLongitude
+                        latitude={data.lat}
+                        longitude={data.lng}
+                        onChange={(lat, lng) => {
+                            const newQuestions = [...$questions];
+                            if (lat !== null) {
+                                (newQuestions[index].data as QuestionData).lat =
+                                    lat;
+                            }
+                            if (lng !== null) {
+                                (newQuestions[index].data as QuestionData).lng =
+                                    lng;
+                            }
+                            questions.set(newQuestions);
+                        }}
+                    />
+                </SidebarMenu>
+            </SidebarGroupContent>
         </QuestionCard>
     );
 };
@@ -182,7 +217,9 @@ export const MatchingQuestionComponent = ({
                                 const newQuestions = [...$questions];
                                 (
                                     newQuestions[index].data as QuestionData
-                                ).cat.adminLevel = parseInt(e.target.value) as any;
+                                ).cat.adminLevel = parseInt(
+                                    e.target.value
+                                ) as any;
                                 questions.set(newQuestions);
                             }}
                         >
@@ -351,12 +388,10 @@ export const TentacleQuestionComponent = ({
                 onChange={(lat, lng) => {
                     const newQuestions = [...$questions];
                     if (lat !== null) {
-                        (newQuestions[index].data as QuestionData).lat =
-                            lat;
+                        (newQuestions[index].data as QuestionData).lat = lat;
                     }
                     if (lng !== null) {
-                        (newQuestions[index].data as QuestionData).lng =
-                            lng;
+                        (newQuestions[index].data as QuestionData).lng = lng;
                     }
                     questions.set(newQuestions);
                 }}
@@ -453,8 +488,7 @@ export const ThermometerQuestionComponent = ({
                             onChange={(e) => {
                                 const newQuestions = [...$questions];
                                 (
-                                    newQuestions[index]
-                                        .data as QuestionData
+                                    newQuestions[index].data as QuestionData
                                 ).warmer = e.target.checked;
                                 questions.set(newQuestions);
                             }}
@@ -471,14 +505,12 @@ export const ThermometerQuestionComponent = ({
                     onChange={(lat, lng) => {
                         const newQuestions = [...$questions];
                         if (lat !== null) {
-                            (
-                                newQuestions[index].data as QuestionData
-                            ).latA = lat;
+                            (newQuestions[index].data as QuestionData).latA =
+                                lat;
                         }
                         if (lng !== null) {
-                            (
-                                newQuestions[index].data as QuestionData
-                            ).lngA = lng;
+                            (newQuestions[index].data as QuestionData).lngA =
+                                lng;
                         }
                         questions.set(newQuestions);
                     }}
@@ -510,14 +542,12 @@ export const ThermometerQuestionComponent = ({
                     onChange={(lat, lng) => {
                         const newQuestions = [...$questions];
                         if (lat !== null) {
-                            (
-                                newQuestions[index].data as QuestionData
-                            ).latB = lat;
+                            (newQuestions[index].data as QuestionData).latB =
+                                lat;
                         }
                         if (lng !== null) {
-                            (
-                                newQuestions[index].data as QuestionData
-                            ).lngB = lng;
+                            (newQuestions[index].data as QuestionData).lngB =
+                                lng;
                         }
                         questions.set(newQuestions);
                     }}

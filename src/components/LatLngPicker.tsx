@@ -1,5 +1,7 @@
 import { toast } from "react-toastify";
-import { cn } from "../lib/utils";
+import { MENU_ITEM_CLASSNAME, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 export const LatitudeLongitude = ({
     latitude,
@@ -8,7 +10,6 @@ export const LatitudeLongitude = ({
     latLabel = "Latitude",
     lngLabel = "Longitude",
     children,
-    className = "",
 }: {
     latitude: number;
     longitude: number;
@@ -19,41 +20,34 @@ export const LatitudeLongitude = ({
     children?: React.ReactNode;
 }) => {
     return (
-        <div
-            className={cn(
-                "flex flex-col items-center gap-3 md:items-end md:flex-row",
-                className
-            )}
-        >
-            <div className="flex flex-col gap-2 ml-4">
-                <label className="text-white text-3xl italic font-semibold font-poppins">
+        <>
+            <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                <Label>
                     {latLabel}
-                </label>
-                <input
+                </Label>
+                <Input
                     type="number"
-                    className="rounded-md p-2 text-slate-900"
                     value={latitude}
                     onChange={(e) => {
                         onChange(parseFloat(e.target.value), null);
                     }}
                 />
-            </div>
-            <div className="flex flex-col gap-2 ml-4">
-                <label className="text-white text-3xl italic font-semibold font-poppins">
+            </SidebarMenuItem>
+            <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                <Label>
                     {lngLabel}
-                </label>
-                <input
+                </Label>
+                <Input
                     type="number"
-                    className="rounded-md p-2 text-slate-900"
                     value={longitude}
                     onChange={(e) => {
                         onChange(null, parseFloat(e.target.value));
                     }}
                 />
-            </div>
-            <div className="flex items-end flex-grow ml-3">
-                <button
-                    className="bg-blue-600 p-2 rounded-md hover:shadow-blue-300 hover:shadow-md focus:shadow-blue-400 focus:shadow-inner font-semibold font-poppins transition-shadow duration-500"
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+                <SidebarMenuButton
+                    className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-shadow duration-500"
                     onClick={() => {
                         if (!navigator || !navigator.geolocation)
                             return alert("Geolocation not supported");
@@ -86,9 +80,9 @@ export const LatitudeLongitude = ({
                     }}
                 >
                     Current
-                </button>
-            </div>
+                </SidebarMenuButton>
+            </SidebarMenuItem>
             {children}
-        </div>
+        </>
     );
 };
