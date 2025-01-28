@@ -17,7 +17,7 @@ import {
     type OpenStreetMap,
     determineName,
 } from "../maps/api";
-import { mapGeoLocation } from "../utils/context";
+import { mapGeoLocation, questions } from "../utils/context";
 import { useStore } from "@nanostores/react";
 
 export const PlacePicker = ({
@@ -121,6 +121,7 @@ export const PlacePicker = ({
         }
 
         mapGeoLocation.set(option);
+        questions.set([]);
 
         hideOptionsList();
     };

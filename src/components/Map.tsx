@@ -251,12 +251,6 @@ export const Map = ({ className }: { className?: string }) => {
     useEffect(() => {
         if (!map) return;
 
-        questions.set([]);
-    }, [$mapGeoLocation]);
-
-    useEffect(() => {
-        if (!map) return;
-
         refreshQuestions(true);
     }, [$questions, map, reset]);
 
