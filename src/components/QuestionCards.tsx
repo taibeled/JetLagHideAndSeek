@@ -186,10 +186,14 @@ export const MatchingQuestionComponent = ({
                                 questions.set(newQuestions);
                             }}
                         >
-                            <option value="3">Zone 1</option>
-                            <option value="4">Zone 2</option>
-                            <option value="5">Zone 3</option>
-                            <option value="6">Zone 4</option>
+                            <option value="3">OSM Zone 3</option>
+                            <option value="4">OSM Zone 4</option>
+                            <option value="5">OSM Zone 5</option>
+                            <option value="6">OSM Zone 6</option>
+                            <option value="7">OSM Zone 7</option>
+                            <option value="8">OSM Zone 8</option>
+                            <option value="9">OSM Zone 9</option>
+                            <option value="10">OSM Zone 10</option>
                         </select>
                     </div>
                 </div>
