@@ -132,25 +132,20 @@ export const Map = ({ className }: { className?: string }) => {
 
                 for (let index = 0; index < $questions.length; index++) {
                     const question = $questions[index];
-                    let interior = true;
 
                     switch (question?.id) {
                         case "radius":
-                            if (question.data.within) {
-                                interior = false;
-                            } else {
-                                mapGeoData = adjustPerRadius(
-                                    question.data,
-                                    mapGeoData,
-                                    true
-                                );
-                            }
+                            if (question.data.within) break;
+                            
+                            mapGeoData = adjustPerRadius(
+                                question.data,
+                                mapGeoData,
+                                true
+                            );
+
                             break;
                         case "tentacles":
-                            if (question.data.location !== false) {
-                                interior = false;
-                                break;
-                            }
+                            if (question.data.location !== false) break;
 
                             mapGeoData = adjustPerRadius(
                                 {
@@ -162,10 +157,7 @@ export const Map = ({ className }: { className?: string }) => {
                             );
                             break;
                         case "matching":
-                            if (question.data.same) {
-                                interior = false;
-                                break;
-                            }
+                            if (question.data.same) break;
 
                             mapGeoData = await adjustPerMatching(
                                 question.data,
@@ -173,16 +165,14 @@ export const Map = ({ className }: { className?: string }) => {
                                 true
                             );
                             break;
-                        default:
-                            interior = false; // All other cases
                     }
 
-                    if (!interior) continue;
-
-                    mapGeoData = {
-                        type: "FeatureCollection",
-                        features: [mapGeoData],
-                    };
+                    if (mapGeoData.type !== "FeatureCollection") {
+                        mapGeoData = {
+                            type: "FeatureCollection",
+                            features: [mapGeoData],
+                        };
+                    }
                 }
 
                 mapGeoJSON.set(mapGeoData);
