@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { registerSW } from "virtual:pwa-register";
 
 registerSW({

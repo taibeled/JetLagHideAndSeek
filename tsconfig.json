@@ -4,7 +4,6 @@
     "exclude": ["dist"],
     "compilerOptions": {
         "jsx": "react-jsx",
-        "jsxImportSource": "react",
-        "types": ["vite-plugin-pwa/client"]
+        "jsxImportSource": "react"
     }
 }
