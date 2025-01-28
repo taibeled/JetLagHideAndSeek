@@ -25,7 +25,8 @@ If anyone wants to help, please focus on one of the following or leave an issue 
 - [ ] Adding questions
 - [ ] Refactoring code
 - [ ] Train station fetching (use Overpass to fetch train stations in the zone and automatically show them)
-- [ ] Progressive web app (https://github.com/taibeled/JetLagHideAndSeek/issues/1)
+- [x] Progressive web app (https://github.com/taibeled/JetLagHideAndSeek/issues/1)
+  - [ ] Icon for the app
 
 More documentation to come.
 
