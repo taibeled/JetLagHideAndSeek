@@ -49,6 +49,8 @@ export const RadiusQuestionComponent = ({
     questionKey: number;
     index: number;
 }) => {
+    type QuestionData = RadiusQuestion;
+
     const $questions = useStore(questions);
 
     return (
@@ -70,7 +72,7 @@ export const RadiusQuestionComponent = ({
                             onChange={(e) => {
                                 const newQuestions = [...$questions];
                                 (
-                                    newQuestions[index].data as RadiusQuestion
+                                    newQuestions[index].data as QuestionData
                                 ).radius = parseInt(e.target.value);
                                 questions.set(newQuestions);
                             }}
@@ -81,7 +83,7 @@ export const RadiusQuestionComponent = ({
                             onChange={(e) => {
                                 const newQuestions = [...$questions];
                                 (
-                                    newQuestions[index].data as RadiusQuestion
+                                    newQuestions[index].data as QuestionData
                                 ).unit = e.target.value as any;
                                 questions.set(newQuestions);
                             }}
@@ -104,7 +106,7 @@ export const RadiusQuestionComponent = ({
                             onChange={(e) => {
                                 const newQuestions = [...$questions];
                                 (
-                                    newQuestions[index].data as RadiusQuestion
+                                    newQuestions[index].data as QuestionData
                                 ).within = e.target.checked;
                                 questions.set(newQuestions);
                             }}
@@ -136,10 +138,10 @@ export const RadiusQuestionComponent = ({
                 onChange={(lat, lng) => {
                     const newQuestions = [...$questions];
                     if (lat !== null) {
-                        (newQuestions[index].data as RadiusQuestion).lat = lat;
+                        (newQuestions[index].data as QuestionData).lat = lat;
                     }
                     if (lng !== null) {
-                        (newQuestions[index].data as RadiusQuestion).lng = lng;
+                        (newQuestions[index].data as QuestionData).lng = lng;
                     }
                     questions.set(newQuestions);
                 }}
@@ -256,6 +258,8 @@ export const TentacleQuestionComponent = ({
     questionKey: number;
     index: number;
 }) => {
+    type QuestionData = TentacleQuestion;
+
     const $questions = useStore(questions);
 
     return (
@@ -276,7 +280,7 @@ export const TentacleQuestionComponent = ({
                             onChange={(e) => {
                                 const newQuestions = [...$questions];
                                 (
-                                    newQuestions[index].data as TentacleQuestion
+                                    newQuestions[index].data as QuestionData
                                 ).radius = parseInt(e.target.value) as 1 | 15;
                                 questions.set(newQuestions);
                             }}
@@ -293,7 +297,7 @@ export const TentacleQuestionComponent = ({
                         onChange={(e) => {
                             const newQuestions = [...$questions];
                             (
-                                newQuestions[index].data as TentacleQuestion
+                                newQuestions[index].data as QuestionData
                             ).locationType = e.target.value as any;
                             questions.set(newQuestions);
                         }}
@@ -330,11 +334,11 @@ export const TentacleQuestionComponent = ({
                 onChange={(lat, lng) => {
                     const newQuestions = [...$questions];
                     if (lat !== null) {
-                        (newQuestions[index].data as TentacleQuestion).lat =
+                        (newQuestions[index].data as QuestionData).lat =
                             lat;
                     }
                     if (lng !== null) {
-                        (newQuestions[index].data as TentacleQuestion).lng =
+                        (newQuestions[index].data as QuestionData).lng =
                             lng;
                     }
                     questions.set(newQuestions);
@@ -406,6 +410,8 @@ export const ThermometerQuestionComponent = ({
     questionKey: number;
     index: number;
 }) => {
+    type QuestionData = ThermometerQuestion;
+
     const $questions = useStore(questions);
 
     return (
@@ -431,7 +437,7 @@ export const ThermometerQuestionComponent = ({
                                 const newQuestions = [...$questions];
                                 (
                                     newQuestions[index]
-                                        .data as ThermometerQuestion
+                                        .data as QuestionData
                                 ).warmer = e.target.checked;
                                 questions.set(newQuestions);
                             }}
@@ -449,12 +455,12 @@ export const ThermometerQuestionComponent = ({
                         const newQuestions = [...$questions];
                         if (lat !== null) {
                             (
-                                newQuestions[index].data as ThermometerQuestion
+                                newQuestions[index].data as QuestionData
                             ).latA = lat;
                         }
                         if (lng !== null) {
                             (
-                                newQuestions[index].data as ThermometerQuestion
+                                newQuestions[index].data as QuestionData
                             ).lngA = lng;
                         }
                         questions.set(newQuestions);
@@ -488,12 +494,12 @@ export const ThermometerQuestionComponent = ({
                         const newQuestions = [...$questions];
                         if (lat !== null) {
                             (
-                                newQuestions[index].data as ThermometerQuestion
+                                newQuestions[index].data as QuestionData
                             ).latB = lat;
                         }
                         if (lng !== null) {
                             (
-                                newQuestions[index].data as ThermometerQuestion
+                                newQuestions[index].data as QuestionData
                             ).lngB = lng;
                         }
                         questions.set(newQuestions);
