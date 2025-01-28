@@ -4,7 +4,8 @@ import * as turf from "@turf/turf";
 type TentacleLocations = "aquarium" | "zoo" | "theme_park" | "museum" | "hospital";
 
 export interface TentacleQuestion {
-    radius: 1 | 15;
+    radius: number;
+    unit?: turf.Units;
     lat: number;
     lng: number;
     color?: keyof typeof iconColors;
@@ -44,7 +45,7 @@ export const adjustPerTentacle = async (
         turf.point([question.lng, question.lat]),
         question.radius,
         {
-            units: "miles",
+            units: question.unit ?? "miles",
         }
     );
 

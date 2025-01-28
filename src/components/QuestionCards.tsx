@@ -278,19 +278,32 @@ export const TentacleQuestionComponent = ({
                             .indexOf(questionKey) + 1}
                     </label>
                     <div className="gap-2 flex flex-row">
-                        <select
-                            className="rounded-md p-2 text-slate-900"
+                        <input
+                            type="number"
+                            className="rounded-md p-2 text-slate-900 w-16"
                             value={data.radius}
                             onChange={(e) => {
                                 const newQuestions = [...$questions];
                                 (
                                     newQuestions[index].data as QuestionData
-                                ).radius = parseInt(e.target.value) as 1 | 15;
+                                ).radius = parseInt(e.target.value);
+                                questions.set(newQuestions);
+                            }}
+                        />
+                        <select
+                            className="rounded-md p-2 text-slate-900"
+                            value={data.unit ?? "miles"}
+                            onChange={(e) => {
+                                const newQuestions = [...$questions];
+                                (
+                                    newQuestions[index].data as QuestionData
+                                ).unit = e.target.value as any;
                                 questions.set(newQuestions);
                             }}
                         >
-                            <option value="15">15 Miles</option>
-                            <option value="1">1 Mile</option>
+                            <option value="miles">Miles</option>
+                            <option value="kilometers">Kilometers</option>
+                            <option value="meters">Meters</option>
                         </select>
                     </div>
                 </div>
