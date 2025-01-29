@@ -5,6 +5,7 @@ import type { RadiusQuestion } from "../maps/radius";
 import type { ThermometerQuestion } from "../maps/thermometer";
 import type { TentacleQuestion } from "../maps/tentacles";
 import type { MatchingQuestion } from "../maps/matching";
+import type { Map } from "leaflet";
 
 export const mapGeoLocation = persistentAtom<OpenStreetMap>(
     "mapGeoLocation",
@@ -48,3 +49,5 @@ export const questions = persistentAtom<Question[]>("questions", [], {
     encode: JSON.stringify,
     decode: JSON.parse,
 });
+
+export const leafletMapContext = atom<Map | null>(null);

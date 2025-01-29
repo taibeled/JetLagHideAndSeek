@@ -3,6 +3,7 @@ import { MapContainer, TileLayer } from "react-leaflet";
 import { geoJSON, type Map as LeafletMap } from "leaflet";
 import { cn } from "../lib/utils";
 import {
+    leafletMapContext,
     mapGeoJSON,
     mapGeoLocation,
     polyGeoJSON,
@@ -53,10 +54,10 @@ export const refreshMapData = (
 export const Map = ({ className }: { className?: string }) => {
     const $mapGeoLocation = useStore(mapGeoLocation);
     const $questions = useStore(questions);
-    const [map, setMap] = useState<LeafletMap | null>(null);
+    const map = useStore(leafletMapContext);
     const [reset, setReset] = useState(0);
 
-    const refreshQuestions = async (focus: boolean = false) => {
+    const refreshQuestionsBase = async (focus: boolean = false) => {
         if (!map) return;
 
         let mapGeoData = mapGeoJSON.get();
@@ -189,13 +190,22 @@ export const Map = ({ className }: { className?: string }) => {
         }
     };
 
+    const refreshQuestions = async (focus: boolean = false) => {
+        await toast.promise(
+            refreshQuestionsBase(focus),
+            {
+                pending: "Refreshing questions...",
+            }
+        )
+    };
+
     const displayMap = useMemo(
         () => (
             <MapContainer
                 center={$mapGeoLocation.geometry.coordinates}
                 zoom={5}
                 className={cn("w-[500px] h-[500px]", className)}
-                ref={setMap}
+                ref={leafletMapContext.set}
             >
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
