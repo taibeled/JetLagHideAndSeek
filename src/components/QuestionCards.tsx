@@ -27,6 +27,7 @@ import {
 } from "./ui/select";
 import { Checkbox } from "./ui/checkbox";
 import { Separator } from "./ui/separator";
+import type { MeasuringQuestion } from "@/maps/measuring";
 
 const QuestionCard = ({
     children,
@@ -276,6 +277,113 @@ export const MatchingQuestionComponent = ({
                                 (
                                     newQuestions[index].data as typeof data
                                 ).same = (checked ?? false) as boolean;
+                                questions.set(newQuestions);
+                            }}
+                        />
+                    </SidebarMenuItem>
+                    <SidebarMenuItem
+                        className={cn(
+                            MENU_ITEM_CLASSNAME,
+                            "text-2xl font-semibold font-poppins"
+                        )}
+                        style={{
+                            backgroundColor: iconColors[data.color ?? "gold"],
+                            color:
+                                (data.color ?? "gold") === "gold"
+                                    ? "black"
+                                    : undefined,
+                        }}
+                    >
+                        Color (drag{" "}
+                        <Checkbox
+                            checked={data.drag ?? false}
+                            onCheckedChange={(checked) => {
+                                const newQuestions = [...$questions];
+                                newQuestions[index].data.drag = (checked ??
+                                    false) as boolean;
+                                questions.set(newQuestions);
+                            }}
+                        />
+                        )
+                    </SidebarMenuItem>
+                    <LatitudeLongitude
+                        latitude={data.lat}
+                        longitude={data.lng}
+                        onChange={(lat, lng) => {
+                            const newQuestions = [...$questions];
+                            if (lat !== null) {
+                                (newQuestions[index].data as typeof data).lat =
+                                    lat;
+                            }
+                            if (lng !== null) {
+                                (newQuestions[index].data as typeof data).lng =
+                                    lng;
+                            }
+                            questions.set(newQuestions);
+                        }}
+                    />
+                </SidebarMenu>
+            </SidebarGroupContent>
+        </QuestionCard>
+    );
+};
+export const MeasuringQuestionComponent = ({
+    data,
+    questionKey,
+    index,
+}: {
+    data: MeasuringQuestion;
+    questionKey: number;
+    index: number;
+}) => {
+    const $questions = useStore(questions);
+
+    let questionSpecific = <></>;
+
+    switch (data.type) {}
+
+    return (
+        <QuestionCard questionKey={questionKey}>
+            <SidebarGroupLabel>
+                Measuring{" "}
+                {$questions
+                    .filter((q) => q.id === "measuring")
+                    .map((q) => q.key)
+                    .indexOf(questionKey) + 1}
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+                <SidebarMenu>
+                    <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                        <Select
+                            value={data.type}
+                            onValueChange={(value) => {
+                                const newQuestions = [...$questions];
+                                (
+                                    newQuestions[index].data as typeof data
+                                ).type = value as any;
+                                questions.set(newQuestions);
+                            }}
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Measuring Type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="coastline">Coastline Question</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </SidebarMenuItem>
+                    {questionSpecific}
+                    <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                        <label className="text-2xl font-semibold font-poppins">
+                            Hider Closer
+                        </label>
+                        <Checkbox
+                            checked={data.hiderCloser}
+                            onCheckedChange={(checked) => {
+                                const newQuestions = [...$questions];
+                                (
+                                    newQuestions[index].data as typeof data
+                                ).hiderCloser = (checked ?? false) as boolean;
                                 questions.set(newQuestions);
                             }}
                         />

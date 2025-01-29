@@ -76,6 +76,7 @@ export const DraggableMarkers = () => {
                     case "radius":
                     case "tentacles":
                     case "matching":
+                    case "measuring":
                         return (
                             <ColoredMarker
                                 color={

@@ -7,6 +7,7 @@ import type { TentacleQuestion } from "../maps/tentacles";
 import type { MatchingQuestion } from "../maps/matching";
 import type { Map } from "leaflet";
 import type { Units } from "@turf/turf";
+import type { MeasuringQuestion } from "@/maps/measuring";
 
 export const mapGeoLocation = persistentAtom<OpenStreetMap>(
     "mapGeoLocation",
@@ -44,6 +45,7 @@ export type Question =
     | { id: "radius"; key: number; data: RadiusQuestion }
     | { id: "thermometer"; key: number; data: ThermometerQuestion }
     | { id: "tentacles"; key: number; data: TentacleQuestion }
+    | { id: "measuring"; key: number; data: MeasuringQuestion }
     | { id: "matching"; key: number; data: MatchingQuestion };
 
 export const questions = persistentAtom<Question[]>("questions", [], {

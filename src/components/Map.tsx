@@ -20,6 +20,7 @@ import { adjustPerThermometer } from "../maps/thermometer";
 import { adjustPerTentacle } from "../maps/tentacles";
 import { adjustPerMatching } from "../maps/matching";
 import { PolygonDraw } from "./PolygonDraw";
+import { adjustPerMeasuring } from "@/maps/measuring";
 
 export const refreshMapData = (
     $mapGeoLocation: OpenStreetMap,
@@ -107,6 +108,14 @@ export const Map = ({ className }: { className?: string }) => {
                             false
                         );
                         break;
+                    case "measuring":
+                        if (question.data.hiderCloser) break;
+                        mapGeoData = await adjustPerMeasuring(
+                            question.data,
+                            mapGeoData,
+                            false
+                        );
+                        break;
                 }
 
                 if (mapGeoData.type !== "FeatureCollection") {
@@ -166,6 +175,15 @@ export const Map = ({ className }: { className?: string }) => {
                             true
                         );
                         break;
+                    case "measuring":
+                        if (!question.data.hiderCloser) break;
+
+                        mapGeoData = await adjustPerMeasuring(
+                            question.data,
+                            mapGeoData,
+                            true
+                        );
+                        break;
                 }
 
                 if (mapGeoData.type !== "FeatureCollection") {
@@ -191,12 +209,9 @@ export const Map = ({ className }: { className?: string }) => {
     };
 
     const refreshQuestions = async (focus: boolean = false) => {
-        await toast.promise(
-            refreshQuestionsBase(focus),
-            {
-                pending: "Refreshing questions...",
-            }
-        )
+        await toast.promise(refreshQuestionsBase(focus), {
+            pending: "Refreshing questions...",
+        });
     };
 
     const displayMap = useMemo(

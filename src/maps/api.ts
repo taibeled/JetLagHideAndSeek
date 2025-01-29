@@ -97,9 +97,13 @@ const tentacleFirstTag: { [key in TentacleLocations]: "amenity" | "tourism" } =
 export const findTentacleLocations = async (question: TentacleQuestion) => {
     const query = `
 [out:json][timeout:25];
-nw["${tentacleFirstTag[question.locationType]}"="${question.locationType}"](around:${turf.convertLength(question.radius, question.unit, "meters")}, ${
-        question.lat
-    }, ${question.lng});
+nw["${tentacleFirstTag[question.locationType]}"="${
+        question.locationType
+    }"](around:${turf.convertLength(
+        question.radius,
+        question.unit,
+        "meters"
+    )}, ${question.lat}, ${question.lng});
 out center;
     `;
     const data = await getOverpassData(query);
@@ -192,4 +196,18 @@ export const convertToLongLat = (coordinates: LatLngTuple): number[] => {
 
 export const convertToLatLong = (coordinates: number[]): LatLngTuple => {
     return [coordinates[1], coordinates[0]];
+};
+
+export const fetchCoastline = async () => {
+    const response = await fetch(
+        import.meta.env.BASE_URL + "/coastline50.geojson",
+        {
+            cache: "force-cache",
+            headers: {
+                "Cache-Control": "max-age=604800", // 7 days in seconds,
+            },
+        }
+    );
+    const data = await response.json();
+    return data;
 };

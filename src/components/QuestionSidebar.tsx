@@ -19,6 +19,7 @@ import * as turf from "@turf/turf";
 import { useStore } from "@nanostores/react";
 import {
     MatchingQuestionComponent,
+    MeasuringQuestionComponent,
     RadiusQuestionComponent,
     TentacleQuestionComponent,
     ThermometerQuestionComponent,
@@ -63,6 +64,15 @@ export function QuestionSidebar() {
                         case "matching":
                             return (
                                 <MatchingQuestionComponent
+                                    data={question.data}
+                                    key={question.key}
+                                    questionKey={question.key}
+                                    index={index}
+                                />
+                            );
+                        case "measuring":
+                            return (
+                                <MeasuringQuestionComponent
                                     data={question.data}
                                     key={question.key}
                                     questionKey={question.key}
@@ -243,6 +253,41 @@ export function QuestionSidebar() {
                                 }}
                             >
                                 Add Matching
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton
+                                onClick={() => {
+                                    const map = leafletMapContext.get();
+                                    if (!map) return;
+
+                                    const center = map.getCenter();
+
+                                    questions.set([
+                                        ...$questions,
+                                        {
+                                            id: "measuring",
+                                            key: Math.random() * 1e9,
+                                            data: {
+                                                color: Object.keys(iconColors)[
+                                                    Math.floor(
+                                                        Math.random() *
+                                                            Object.keys(
+                                                                iconColors
+                                                            ).length
+                                                    )
+                                                ] as keyof typeof iconColors,
+                                                lat: center.lat,
+                                                lng: center.lng,
+                                                drag: true,
+                                                hiderCloser: true,
+                                                type: "coastline",
+                                            },
+                                        },
+                                    ]);
+                                }}
+                            >
+                                Add Measuring
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                     </SidebarMenu>
