@@ -27,6 +27,24 @@ export interface TentacleQuestion {
     locationType: TentacleLocations;
 }
 
+const createGeodesicPolygon = (polygon: any, steps = 20) => {
+    const coordinates = polygon.geometry.coordinates[0];
+    let geodesicLines = [];
+
+    for (let i = 0; i < coordinates.length - 1; i++) {
+        const start = coordinates[i];
+        const end = coordinates[i + 1];
+
+        const geodesicLine = turf.greatCircle(start, end, { npoints: steps });
+        geodesicLines.push(...geodesicLine.geometry.coordinates);
+    }
+
+    geodesicLines.push(geodesicLines[0]);
+
+    // @ts-ignore
+    return turf.polygon([geodesicLines]);
+}
+
 export const adjustPerTentacle = async (
     question: TentacleQuestion,
     mapData: any,
@@ -40,14 +58,14 @@ export const adjustPerTentacle = async (
     const points = await findTentacleLocations(question);
     const voronoi = turf.voronoi(points);
 
-    const correctPolygon = voronoi.features.find((feature: any) => {
+    const correctPolygonPre = voronoi.features.find((feature: any) => {
         if (!question.location) return false;
         return feature.properties.name === question.location.properties.name;
     });
-    if (!correctPolygon) {
+    if (!correctPolygonPre) {
         return mapData;
     }
-    console.log(correctPolygon);
+    const correctPolygon = createGeodesicPolygon(correctPolygonPre);
 
     const circle = turf.circle(
         turf.point([question.lng, question.lat]),
@@ -56,9 +74,6 @@ export const adjustPerTentacle = async (
             units: question.unit ?? "miles",
         }
     );
-
-    console.log(circle);
-    console.log(turf.featureCollection([correctPolygon, circle]));
 
     return turf.intersect(
         turf.featureCollection(
