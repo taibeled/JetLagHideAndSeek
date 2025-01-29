@@ -21,13 +21,12 @@ import { Input } from "./ui/input";
 import {
     Select,
     SelectContent,
-    SelectGroup,
     SelectItem,
-    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "./ui/select";
 import { Checkbox } from "./ui/checkbox";
+import { Separator } from "./ui/separator";
 
 const QuestionCard = ({
     children,
@@ -41,21 +40,24 @@ const QuestionCard = ({
     const $questions = useStore(questions);
 
     return (
-        <SidebarGroup className={className}>
-            <div className="relative">
-                <button
-                    className="absolute top-2 right-2 text-white"
-                    onClick={() => {
-                        questions.set(
-                            $questions.filter((q) => q.key !== questionKey)
-                        );
-                    }}
-                >
-                    <VscChromeClose />
-                </button>
-                {children}
-            </div>
-        </SidebarGroup>
+        <>
+            <SidebarGroup className={className}>
+                <div className="relative">
+                    <button
+                        className="absolute top-2 right-2 text-white"
+                        onClick={() => {
+                            questions.set(
+                                $questions.filter((q) => q.key !== questionKey)
+                            );
+                        }}
+                    >
+                        <VscChromeClose />
+                    </button>
+                    {children}
+                </div>
+            </SidebarGroup>
+            <Separator className="h-1" />
+        </>
     );
 };
 
@@ -113,7 +115,7 @@ export const RadiusQuestionComponent = ({
                                 }}
                             >
                                 <SelectTrigger>
-                                    <SelectValue placeholder="Theme" />
+                                    <SelectValue placeholder="Unit" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="miles">Miles</SelectItem>
@@ -148,7 +150,11 @@ export const RadiusQuestionComponent = ({
                             "text-2xl font-semibold font-poppins"
                         )}
                         style={{
-                            color: iconColors[data.color ?? "gold"],
+                            backgroundColor: iconColors[data.color ?? "gold"],
+                            color:
+                                (data.color ?? "gold") === "gold"
+                                    ? "black"
+                                    : undefined,
                         }}
                     >
                         Color (drag{" "}
@@ -305,106 +311,159 @@ export const TentacleQuestionComponent = ({
 
     return (
         <QuestionCard questionKey={questionKey}>
-            <div className="flex flex-col items-center gap-2 md:items-start md:flex-row mb-2">
-                <div className="flex flex-col gap-2 ml-4 items-center">
-                    <label className="text-white text-3xl italic font-semibold font-poppins">
-                        Tentacles{" "}
-                        {$questions
-                            .filter((q) => q.id === "tentacles")
-                            .map((q) => q.key)
-                            .indexOf(questionKey) + 1}
-                    </label>
-                    <div className="gap-2 flex flex-row">
-                        <input
-                            type="number"
-                            className="rounded-md p-2 text-slate-900 w-16"
-                            value={data.radius}
-                            onChange={(e) => {
+            <SidebarGroupLabel>
+                Tentacles{" "}
+                {$questions
+                    .filter((q) => q.id === "tentacles")
+                    .map((q) => q.key)
+                    .indexOf(questionKey) + 1}
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <div
+                            className={cn(
+                                MENU_ITEM_CLASSNAME,
+                                "gap-2 flex flex-row"
+                            )}
+                        >
+                            <Input
+                                type="number"
+                                className="rounded-md p-2 w-16"
+                                value={data.radius}
+                                onChange={(e) => {
+                                    const newQuestions = [...$questions];
+                                    (
+                                        newQuestions[index].data as QuestionData
+                                    ).radius = parseInt(e.target.value);
+                                    questions.set(newQuestions);
+                                }}
+                            />
+                            <Select
+                                value={data.unit ?? "miles"}
+                                onValueChange={(value) => {
+                                    const newQuestions = [...$questions];
+                                    (
+                                        newQuestions[index].data as QuestionData
+                                    ).unit = value as any;
+                                    questions.set(newQuestions);
+                                }}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Unit" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="miles">Miles</SelectItem>
+                                    <SelectItem value="kilometers">
+                                        Kilometers
+                                    </SelectItem>
+                                    <SelectItem value="meters">
+                                        Meters
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                        <Select
+                            value={data.locationType}
+                            onValueChange={(value) => {
                                 const newQuestions = [...$questions];
                                 (
                                     newQuestions[index].data as QuestionData
-                                ).radius = parseInt(e.target.value);
-                                questions.set(newQuestions);
-                            }}
-                        />
-                        <select
-                            className="rounded-md p-2 text-slate-900"
-                            value={data.unit ?? "miles"}
-                            onChange={(e) => {
-                                const newQuestions = [...$questions];
-                                (
-                                    newQuestions[index].data as QuestionData
-                                ).unit = e.target.value as any;
+                                ).locationType = value as any;
                                 questions.set(newQuestions);
                             }}
                         >
-                            <option value="miles">Miles</option>
-                            <option value="kilometers">Kilometers</option>
-                            <option value="meters">Meters</option>
-                        </select>
-                    </div>
-                </div>
-                <div className="flex flex-grow flex-col mt-2 gap-2 md:mt-0 items-center">
-                    <select
-                        className="rounded-md p-2 text-slate-900 w-[90%] md:w-[50%]"
-                        value={data.locationType}
-                        onChange={(e) => {
-                            const newQuestions = [...$questions];
-                            (
-                                newQuestions[index].data as QuestionData
-                            ).locationType = e.target.value as any;
-                            questions.set(newQuestions);
+                            <SelectTrigger>
+                                <SelectValue placeholder="Location Type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="theme_park">
+                                    Theme Parks
+                                </SelectItem>
+                                <SelectItem value="zoo">Zoos</SelectItem>
+                                <SelectItem value="museum">Museums</SelectItem>
+                                <SelectItem value="aquarium">
+                                    Aquariums
+                                </SelectItem>
+                                <SelectItem value="hospital">
+                                    Hospitals
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem
+                        className={cn(
+                            MENU_ITEM_CLASSNAME,
+                            "text-2xl font-semibold font-poppins"
+                        )}
+                        style={{
+                            backgroundColor: iconColors[data.color ?? "gold"],
+                            color:
+                                (data.color ?? "gold") === "gold"
+                                    ? "black"
+                                    : undefined,
                         }}
                     >
-                        <option value="theme_park">Theme Parks</option>
-                        <option value="zoo">Zoos</option>
-                        <option value="museum">Museums</option>
-                        <option value="aquarium">Aquariums</option>
-                        <option value="hospital">Hospitals</option>
-                    </select>
-                    <span
-                        className="text-3xl italic font-semibold font-poppins text-center ml-4"
-                        style={{ color: iconColors[data.color ?? "gold"] }}
-                    >
                         Color (drag{" "}
-                        <input
-                            type="checkbox"
-                            className="scale-150 mr-2"
+                        <Checkbox
                             checked={data.drag ?? false}
-                            onChange={(e) => {
+                            onCheckedChange={(checked) => {
                                 const newQuestions = [...$questions];
-                                newQuestions[index].data.drag =
-                                    e.target.checked;
+                                newQuestions[index].data.drag = (checked ??
+                                    false) as boolean;
                                 questions.set(newQuestions);
                             }}
                         />
                         )
-                    </span>
-                </div>
-            </div>
-            <LatitudeLongitude
-                latitude={data.lat}
-                longitude={data.lng}
-                onChange={(lat, lng) => {
-                    const newQuestions = [...$questions];
-                    if (lat !== null) {
-                        (newQuestions[index].data as QuestionData).lat = lat;
-                    }
-                    if (lng !== null) {
-                        (newQuestions[index].data as QuestionData).lng = lng;
-                    }
-                    questions.set(newQuestions);
-                }}
-            />
-            <div className="flex mt-4 justify-center">
-                <Suspense fallback={<div>Loading...</div>}>
-                    <TentacleLocationSelector
-                        data={data}
-                        index={index}
-                        promise={findTentacleLocations(data)}
+                    </SidebarMenuItem>
+                    <LatitudeLongitude
+                        latitude={data.lat}
+                        longitude={data.lng}
+                        onChange={(lat, lng) => {
+                            const newQuestions = [...$questions];
+                            if (lat !== null) {
+                                (newQuestions[index].data as QuestionData).lat =
+                                    lat;
+                            }
+                            if (lng !== null) {
+                                (newQuestions[index].data as QuestionData).lng =
+                                    lng;
+                            }
+                            questions.set(newQuestions);
+                        }}
                     />
-                </Suspense>
-            </div>
+                    <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                        <Suspense
+                            fallback={
+                                <div className="flex items-center justify-center w-full h-8">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        className="animate-spin"
+                                    >
+                                        <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                                    </svg>
+                                </div>
+                            }
+                        >
+                            <TentacleLocationSelector
+                                data={data}
+                                index={index}
+                                promise={findTentacleLocations(data)}
+                            />
+                        </Suspense>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarGroupContent>
         </QuestionCard>
     );
 };
@@ -422,34 +481,37 @@ const TentacleLocationSelector = ({
     const locations = use(promise);
 
     return (
-        <select
-            className="rounded-md p-2 text-slate-900 w-[90%] md:w-[50%]"
+        <Select
             value={data.location ? data.location.properties.name : "false"}
-            onChange={(e) => {
+            onValueChange={(value) => {
                 const newQuestions = [...$questions];
-                if (e.target.value === "false") {
+                if (value === "false") {
                     (newQuestions[index].data as TentacleQuestion).location =
                         false;
                 } else {
                     (newQuestions[index].data as TentacleQuestion).location =
                         locations.features.find(
-                            (feature: any) =>
-                                feature.properties.name === e.target.value
+                            (feature: any) => feature.properties.name === value
                         );
                 }
                 questions.set(newQuestions);
             }}
         >
-            <option value="false">Not Within</option>
-            {locations.features.map((feature: any) => (
-                <option
-                    key={feature.properties.name}
-                    value={feature.properties.name}
-                >
-                    {feature.properties.name}
-                </option>
-            ))}
-        </select>
+            <SelectTrigger>
+                <SelectValue placeholder="Location" />
+            </SelectTrigger>
+            <SelectContent>
+                <SelectItem value="false">Not Within</SelectItem>
+                {locations.features.map((feature: any) => (
+                    <SelectItem
+                        key={feature.properties.name}
+                        value={feature.properties.name}
+                    >
+                        {feature.properties.name}
+                    </SelectItem>
+                ))}
+            </SelectContent>
+        </Select>
     );
 };
 
@@ -468,110 +530,123 @@ export const ThermometerQuestionComponent = ({
 
     return (
         <QuestionCard questionKey={questionKey}>
-            <div className="flex flex-col gap-3 md:gap-1 md:flex-row justify-between pr-8">
-                <label className="text-white text-3xl italic font-semibold font-poppins">
-                    Thermometer{" "}
-                    {$questions
-                        .filter((q) => q.id === "thermometer")
-                        .map((q) => q.key)
-                        .indexOf(questionKey) + 1}
-                </label>
-                <div className="flex flex-col gap-2">
-                    <div className="flex items-center flex-1 justify-center gap-2 ml-4">
-                        <label className="text-white text-3xl italic font-semibold font-poppins mr-1">
+            <SidebarGroupLabel>
+                Thermometer{" "}
+                {$questions
+                    .filter((q) => q.id === "thermometer")
+                    .map((q) => q.key)
+                    .indexOf(questionKey) + 1}
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+                <SidebarMenu>
+                    <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                        <label className="text-2xl font-semibold font-poppins">
                             Warmer
                         </label>
-                        <input
-                            type="checkbox"
-                            className="rounded-md p-2 text-slate-900 scale-150"
+                        <Checkbox
                             checked={data.warmer}
-                            onChange={(e) => {
+                            onCheckedChange={(checked) => {
                                 const newQuestions = [...$questions];
                                 (
                                     newQuestions[index].data as QuestionData
-                                ).warmer = e.target.checked;
+                                ).warmer = (checked ?? false) as boolean;
                                 questions.set(newQuestions);
                             }}
                         />
-                    </div>
-                </div>
-            </div>
-            <div className="flex flex-col gap-6 mt-4">
-                <LatitudeLongitude
-                    latitude={data.latA}
-                    longitude={data.lngA}
-                    latLabel="Latitude A"
-                    lngLabel="Longitude A"
-                    onChange={(lat, lng) => {
-                        const newQuestions = [...$questions];
-                        if (lat !== null) {
-                            (newQuestions[index].data as QuestionData).latA =
-                                lat;
-                        }
-                        if (lng !== null) {
-                            (newQuestions[index].data as QuestionData).lngA =
-                                lng;
-                        }
-                        questions.set(newQuestions);
-                    }}
-                >
-                    <span
-                        className="text-3xl italic font-semibold font-poppins text-center ml-4"
-                        style={{ color: iconColors[data.colorA ?? "gold"] }}
+                    </SidebarMenuItem>
+                    <SidebarMenuItem
+                        className={cn(
+                            MENU_ITEM_CLASSNAME,
+                            "text-xl font-semibold font-poppins"
+                        )}
+                        style={{
+                            backgroundColor: iconColors[data.colorA ?? "gold"],
+                            color:
+                                (data.colorA ?? "gold") === "gold"
+                                    ? "black"
+                                    : undefined,
+                        }}
                     >
-                        Color A (drag{" "}
-                        <input
-                            type="checkbox"
-                            className="scale-150 mr-2"
+                        Color start (drag{" "}
+                        <Checkbox
                             checked={data.drag ?? false}
-                            onChange={(e) => {
+                            onCheckedChange={(checked) => {
                                 const newQuestions = [...$questions];
-                                newQuestions[index].data.drag =
-                                    e.target.checked;
+                                newQuestions[index].data.drag = (checked ??
+                                    false) as boolean;
                                 questions.set(newQuestions);
                             }}
                         />
                         )
-                    </span>
-                </LatitudeLongitude>
-                <LatitudeLongitude
-                    latitude={data.latB}
-                    longitude={data.lngB}
-                    latLabel="Latitude B"
-                    lngLabel="Longitude B"
-                    onChange={(lat, lng) => {
-                        const newQuestions = [...$questions];
-                        if (lat !== null) {
-                            (newQuestions[index].data as QuestionData).latB =
-                                lat;
-                        }
-                        if (lng !== null) {
-                            (newQuestions[index].data as QuestionData).lngB =
-                                lng;
-                        }
-                        questions.set(newQuestions);
-                    }}
-                >
-                    <span
-                        className="text-3xl italic font-semibold font-poppins text-center ml-4"
-                        style={{ color: iconColors[data.colorB ?? "gold"] }}
+                    </SidebarMenuItem>
+                    <LatitudeLongitude
+                        latitude={data.latA}
+                        longitude={data.lngA}
+                        latLabel="Latitude Start"
+                        lngLabel="Longitude Start"
+                        onChange={(lat, lng) => {
+                            const newQuestions = [...$questions];
+                            if (lat !== null) {
+                                (
+                                    newQuestions[index].data as QuestionData
+                                ).latA = lat;
+                            }
+                            if (lng !== null) {
+                                (
+                                    newQuestions[index].data as QuestionData
+                                ).lngA = lng;
+                            }
+                            questions.set(newQuestions);
+                        }}
+                    />
+                    <Separator className="my-2" />
+                    <SidebarMenuItem
+                        className={cn(
+                            MENU_ITEM_CLASSNAME,
+                            "text-xl font-semibold font-poppins"
+                        )}
+                        style={{
+                            backgroundColor: iconColors[data.colorB ?? "gold"],
+                            color:
+                                (data.colorB ?? "gold") === "gold"
+                                    ? "black"
+                                    : undefined,
+                        }}
                     >
-                        Color B (drag{" "}
-                        <input
-                            type="checkbox"
-                            className="scale-150 mr-2"
+                        Color end (drag{" "}
+                        <Checkbox
                             checked={data.drag ?? false}
-                            onChange={(e) => {
+                            onCheckedChange={(checked) => {
                                 const newQuestions = [...$questions];
-                                newQuestions[index].data.drag =
-                                    e.target.checked;
+                                newQuestions[index].data.drag = (checked ??
+                                    false) as boolean;
                                 questions.set(newQuestions);
                             }}
                         />
                         )
-                    </span>
-                </LatitudeLongitude>
-            </div>
+                    </SidebarMenuItem>
+                    <LatitudeLongitude
+                        latitude={data.latB}
+                        longitude={data.lngB}
+                        latLabel="Latitude End"
+                        lngLabel="Longitude End"
+                        onChange={(lat, lng) => {
+                            const newQuestions = [...$questions];
+                            if (lat !== null) {
+                                (
+                                    newQuestions[index].data as QuestionData
+                                ).latB = lat;
+                            }
+                            if (lng !== null) {
+                                (
+                                    newQuestions[index].data as QuestionData
+                                ).lngB = lng;
+                            }
+                            questions.set(newQuestions);
+                        }}
+                    />
+                </SidebarMenu>
+            </SidebarGroupContent>
         </QuestionCard>
     );
 };

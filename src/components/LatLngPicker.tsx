@@ -22,7 +22,7 @@ export const LatitudeLongitude = ({
     return (
         <>
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
-                <Label>
+                <Label className="leading-5">
                     {latLabel}
                 </Label>
                 <Input
@@ -34,7 +34,7 @@ export const LatitudeLongitude = ({
                 />
             </SidebarMenuItem>
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
-                <Label>
+                <Label className="leading-5">
                     {lngLabel}
                 </Label>
                 <Input
