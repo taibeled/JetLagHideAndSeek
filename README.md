@@ -20,7 +20,7 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
 
 If anyone wants to help, please focus on one of the following or leave an issue with your request:
 
-- [ ] User interface
+- [x] User interface
 - [ ] Custom map bounds (i.e. draw geoJSON which should be used for the bounds)
 - [ ] Adding questions
 - [ ] Refactoring code
