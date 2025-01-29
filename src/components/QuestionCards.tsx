@@ -387,15 +387,15 @@ export const TentacleQuestionComponent = ({
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="theme_park">
-                                    Theme Parks
+                                    Theme Parks (15 miles)
                                 </SelectItem>
-                                <SelectItem value="zoo">Zoos</SelectItem>
-                                <SelectItem value="museum">Museums</SelectItem>
+                                <SelectItem value="zoo">Zoos (15 miles)</SelectItem>
                                 <SelectItem value="aquarium">
-                                    Aquariums
+                                    Aquariums (15 miles)
                                 </SelectItem>
+                                <SelectItem value="museum">Museums (1 mile)</SelectItem>
                                 <SelectItem value="hospital">
-                                    Hospitals
+                                    Hospitals (1 mile)
                                 </SelectItem>
                             </SelectContent>
                         </Select>
