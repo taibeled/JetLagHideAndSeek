@@ -33,6 +33,10 @@ export const mapGeoLocation = persistentAtom<OpenStreetMap>(
 );
 
 export const mapGeoJSON = atom<any>(null);
+export const polyGeoJSON = persistentAtom<any>("polyGeoJSON", null, {
+    encode: JSON.stringify,
+    decode: JSON.parse,
+});
 
 export type Question =
     | { id: "radius"; key: number; data: RadiusQuestion }

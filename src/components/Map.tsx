@@ -1,20 +1,54 @@
 import "leaflet/dist/leaflet.css";
-import "leaflet-draw/dist/leaflet.draw.css";
-import { FeatureGroup, MapContainer, TileLayer } from "react-leaflet";
-import { EditControl } from "react-leaflet-draw"
+import { MapContainer, TileLayer } from "react-leaflet";
 import { geoJSON, type Map as LeafletMap } from "leaflet";
 import { cn } from "../lib/utils";
-import { mapGeoJSON, mapGeoLocation, questions } from "../utils/context";
+import {
+    mapGeoJSON,
+    mapGeoLocation,
+    polyGeoJSON,
+    questions,
+} from "../utils/context";
 import { useStore } from "@nanostores/react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import * as turf from "@turf/turf";
-import { determineGeoJSON } from "../maps/api";
+import { determineGeoJSON, type OpenStreetMap } from "../maps/api";
 import { adjustPerRadius } from "../maps/radius";
 import { DraggableMarkers } from "./DraggableMarkers";
 import { adjustPerThermometer } from "../maps/thermometer";
 import { adjustPerTentacle } from "../maps/tentacles";
 import { adjustPerMatching } from "../maps/matching";
+import { PolygonDraw } from "./PolygonDraw";
+
+export const refreshMapData = (
+    $mapGeoLocation: OpenStreetMap,
+    screen: boolean = true,
+    map?: LeafletMap
+) => {
+    const refresh = async () => {
+        const mapGeoData = await determineGeoJSON(
+            $mapGeoLocation.properties.osm_id.toString(),
+            $mapGeoLocation.properties.osm_type
+        );
+
+        mapGeoJSON.set(mapGeoData);
+
+        if (screen) {
+            if (!map) return;
+            focusMap(map, mapGeoData);
+        }
+
+        return mapGeoData;
+    };
+
+    return toast.promise(
+        refresh().catch((error) => console.log(error)),
+        {
+            pending: "Refreshing map data...",
+            error: "Error refreshing map data",
+        }
+    );
+};
 
 export const Map = ({ className }: { className?: string }) => {
     const $mapGeoLocation = useStore(mapGeoLocation);
@@ -22,27 +56,68 @@ export const Map = ({ className }: { className?: string }) => {
     const [map, setMap] = useState<LeafletMap | null>(null);
     const [reset, setReset] = useState(0);
 
-    const refreshMapData = (screen: boolean = true) => {
+    const refreshQuestions = async (focus: boolean = false) => {
         if (!map) return;
 
-        const refresh = async () => {
-            map.eachLayer((layer: any) => {
-                if (!!layer.addData) {
-                    // Hopefully only geoJSON layers
-                    map.removeLayer(layer);
+        let mapGeoData = mapGeoJSON.get();
+
+        if (!mapGeoData) {
+            const polyGeoData = polyGeoJSON.get();
+            if (polyGeoData) {
+                mapGeoData = polyGeoData;
+            } else {
+                mapGeoData = await refreshMapData($mapGeoLocation, false, map);
+            }
+        }
+
+        try {
+            for (let index = 0; index < $questions.length; index++) {
+                const question = $questions[index];
+
+                switch (question?.id) {
+                    case "radius":
+                        if (!question.data.within) break;
+                        mapGeoData = adjustPerRadius(
+                            question.data,
+                            mapGeoData,
+                            false
+                        );
+                        break;
+                    case "thermometer":
+                        mapGeoData = adjustPerThermometer(
+                            question.data,
+                            mapGeoData,
+                            false
+                        );
+                        break;
+                    case "tentacles":
+                        if (question.data.location === false) break;
+                        mapGeoData = await adjustPerTentacle(
+                            question.data,
+                            mapGeoData,
+                            false
+                        );
+                        break;
+                    case "matching":
+                        if (!question.data.same) break;
+                        mapGeoData = await adjustPerMatching(
+                            question.data,
+                            mapGeoData,
+                            false
+                        );
+                        break;
                 }
-            });
 
-            const mapGeoData = await determineGeoJSON(
-                $mapGeoLocation.properties.osm_id.toString(),
-                $mapGeoLocation.properties.osm_type
-            );
+                if (mapGeoData.type !== "FeatureCollection") {
+                    mapGeoData = {
+                        type: "FeatureCollection",
+                        features: [mapGeoData],
+                    };
+                }
+            }
 
-            mapGeoJSON.set(mapGeoData);
-
-            if (screen) {
-                geoJSON(turf.mask(mapGeoData)).addTo(map);
-
+            if (focus) {
+                console.log(mapGeoData);
                 const bbox = turf.bbox(mapGeoData as any);
                 const bounds: [[number, number], [number, number]] = [
                     [bbox[1], bbox[0]],
@@ -51,139 +126,68 @@ export const Map = ({ className }: { className?: string }) => {
                 map.fitBounds(bounds);
             }
 
-            return mapGeoData;
-        };
+            mapGeoData = {
+                type: "FeatureCollection",
+                features: [turf.mask(mapGeoData)],
+            };
 
-        return toast.promise(
-            refresh().catch((error) => console.log(error)),
-            {
-                pending: "Refreshing map data...",
-                error: "Error refreshing map data",
+            for (let index = 0; index < $questions.length; index++) {
+                const question = $questions[index];
+
+                switch (question?.id) {
+                    case "radius":
+                        if (question.data.within) break;
+
+                        mapGeoData = adjustPerRadius(
+                            question.data,
+                            mapGeoData,
+                            true
+                        );
+
+                        break;
+                    case "tentacles":
+                        if (question.data.location !== false) break;
+
+                        mapGeoData = adjustPerRadius(
+                            {
+                                ...question.data,
+                                within: false,
+                            },
+                            mapGeoData,
+                            true
+                        );
+                        break;
+                    case "matching":
+                        if (question.data.same) break;
+
+                        mapGeoData = await adjustPerMatching(
+                            question.data,
+                            mapGeoData,
+                            true
+                        );
+                        break;
+                }
+
+                if (mapGeoData.type !== "FeatureCollection") {
+                    mapGeoData = {
+                        type: "FeatureCollection",
+                        features: [mapGeoData],
+                    };
+                }
             }
-        );
-    };
 
-    const refreshQuestions = (focus: boolean = false) => {
-        if (!map) return;
-
-        if ($questions.length === 0) {
-            refreshMapData();
-            return;
-        }
-
-        return refreshMapData(false)!
-            .then(async (mapGeoData) => {
-                for (let index = 0; index < $questions.length; index++) {
-                    const question = $questions[index];
-
-                    switch (question?.id) {
-                        case "radius":
-                            if (!question.data.within) break;
-                            mapGeoData = adjustPerRadius(
-                                question.data,
-                                mapGeoData,
-                                false
-                            );
-                            break;
-                        case "thermometer":
-                            mapGeoData = adjustPerThermometer(
-                                question.data,
-                                mapGeoData,
-                                false
-                            );
-                            break;
-                        case "tentacles":
-                            if (question.data.location === false) break;
-                            mapGeoData = await adjustPerTentacle(
-                                question.data,
-                                mapGeoData,
-                                false
-                            );
-                            break;
-                        case "matching":
-                            if (!question.data.same) break;
-                            mapGeoData = await adjustPerMatching(
-                                question.data,
-                                mapGeoData,
-                                false
-                            );
-                            break;
-                    }
-
-                    if (mapGeoData.type !== "FeatureCollection") {
-                        mapGeoData = {
-                            type: "FeatureCollection",
-                            features: [mapGeoData],
-                        };
-                    }
+            map.eachLayer((layer: any) => {
+                if (!!layer.addData) {
+                    // Hopefully only geoJSON layers
+                    map.removeLayer(layer);
                 }
-
-                if (focus) {
-                    const bbox = turf.bbox(mapGeoData as any);
-                    const bounds: [[number, number], [number, number]] = [
-                        [bbox[1], bbox[0]],
-                        [bbox[3], bbox[2]],
-                    ];
-                    map.fitBounds(bounds);
-                }
-
-                mapGeoData = {
-                    type: "FeatureCollection",
-                    features: [turf.mask(mapGeoData)],
-                };
-
-                for (let index = 0; index < $questions.length; index++) {
-                    const question = $questions[index];
-
-                    switch (question?.id) {
-                        case "radius":
-                            if (question.data.within) break;
-
-                            mapGeoData = adjustPerRadius(
-                                question.data,
-                                mapGeoData,
-                                true
-                            );
-
-                            break;
-                        case "tentacles":
-                            if (question.data.location !== false) break;
-
-                            mapGeoData = adjustPerRadius(
-                                {
-                                    ...question.data,
-                                    within: false,
-                                },
-                                mapGeoData,
-                                true
-                            );
-                            break;
-                        case "matching":
-                            if (question.data.same) break;
-
-                            mapGeoData = await adjustPerMatching(
-                                question.data,
-                                mapGeoData,
-                                true
-                            );
-                            break;
-                    }
-
-                    if (mapGeoData.type !== "FeatureCollection") {
-                        mapGeoData = {
-                            type: "FeatureCollection",
-                            features: [mapGeoData],
-                        };
-                    }
-                }
-
-                mapGeoJSON.set(mapGeoData);
-                geoJSON(mapGeoData).addTo(map);
-            })
-            .catch((error) => {
-                console.log(error);
-                return toast.error("No solutions found / error occurred");
             });
+
+            geoJSON(mapGeoData).addTo(map);
+        } catch (error) {
+            console.log(error);
+            return toast.error("No solutions found / error occurred");
+        }
     };
 
     const displayMap = useMemo(
@@ -235,19 +239,7 @@ export const Map = ({ className }: { className?: string }) => {
                         </button>
                     </div>
                 </div>
-                <FeatureGroup>
-                    <EditControl
-                        position="bottomleft"
-                        draw={{
-                            rectangle: false,
-                            circle: false,
-                            circlemarker: false,
-                            marker: false,
-                            polyline: false,
-                            polygon: true,
-                        }}
-                    />
-                </FeatureGroup>
+                <PolygonDraw />
             </MapContainer>
         ),
         [map]
@@ -279,4 +271,22 @@ export const Map = ({ className }: { className?: string }) => {
     }, [map]);
 
     return displayMap;
+};
+
+export const focusMap = (map: LeafletMap, mapGeoData: any) => {
+    map.eachLayer((layer: any) => {
+        if (!!layer.addData) {
+            // Hopefully only geoJSON layers
+            map.removeLayer(layer);
+        }
+    });
+
+    geoJSON(turf.mask(mapGeoData)).addTo(map);
+
+    const bbox = turf.bbox(mapGeoData as any);
+    const bounds: [[number, number], [number, number]] = [
+        [bbox[1], bbox[0]],
+        [bbox[3], bbox[2]],
+    ];
+    map.fitBounds(bounds);
 };
