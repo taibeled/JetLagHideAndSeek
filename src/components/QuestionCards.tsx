@@ -402,7 +402,7 @@ export const TentacleQuestionComponent = ({
                                     Hospitals (typically 1 mile)
                                 </SelectItem>
                                 <SelectItem value="cinema">
-                                    Movie Theater (typically 1 miles)
+                                    Movie Theater (typically 1 mile)
                                 </SelectItem>
                                 <SelectItem value="library">
                                     Library (typically 1 mile)
