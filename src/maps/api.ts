@@ -90,6 +90,8 @@ const tentacleFirstTag: { [key in TentacleLocations]: "amenity" | "tourism" } =
         museum: "tourism",
         theme_park: "tourism",
         zoo: "tourism",
+        cinema: "amenity",
+        library: "amenity",
     };
 
 export const findTentacleLocations = async (question: TentacleQuestion) => {
