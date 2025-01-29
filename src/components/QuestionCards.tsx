@@ -206,92 +206,99 @@ export const MatchingQuestionComponent = ({
 
     return (
         <QuestionCard questionKey={questionKey}>
-            <div className="flex flex-col items-center gap-2 md:items-start md:flex-row mb-2">
-                <div className="flex flex-col gap-2 ml-4">
-                    <label className="text-white text-3xl italic font-semibold font-poppins">
-                        Matching{" "}
-                        {$questions
-                            .filter((q) => q.id === "matching")
-                            .map((q) => q.key)
-                            .indexOf(questionKey) + 1}
-                    </label>
-                    <div className="gap-2 flex flex-row">
-                        <select
-                            className="rounded-md p-2 text-slate-900"
-                            value={data.cat.adminLevel}
-                            onChange={(e) => {
+            <SidebarGroupLabel>
+                Matching{" "}
+                {$questions
+                    .filter((q) => q.id === "matching")
+                    .map((q) => q.key)
+                    .indexOf(questionKey) + 1}
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+                <SidebarMenu>
+                    <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                        <Select
+                            value={data.cat.adminLevel.toString()}
+                            onValueChange={(value) => {
                                 const newQuestions = [...$questions];
                                 (
                                     newQuestions[index].data as QuestionData
-                                ).cat.adminLevel = parseInt(
-                                    e.target.value
-                                ) as any;
+                                ).cat.adminLevel = parseInt(value) as any;
                                 questions.set(newQuestions);
                             }}
                         >
-                            <option value="3">OSM Zone 3</option>
-                            <option value="4">OSM Zone 4</option>
-                            <option value="5">OSM Zone 5</option>
-                            <option value="6">OSM Zone 6</option>
-                            <option value="7">OSM Zone 7</option>
-                            <option value="8">OSM Zone 8</option>
-                            <option value="9">OSM Zone 9</option>
-                            <option value="10">OSM Zone 10</option>
-                        </select>
-                    </div>
-                </div>
-                <div className="flex flex-grow flex-col mt-2 gap-2 md:mt-0">
-                    <div className="flex items-center flex-1 justify-center gap-2 ml-4">
-                        <label className="text-white text-3xl italic font-semibold font-poppins">
+                            <SelectTrigger>
+                                <SelectValue placeholder="OSM Zone" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="3">OSM Zone 3</SelectItem>
+                                <SelectItem value="4">OSM Zone 4</SelectItem>
+                                <SelectItem value="5">OSM Zone 5</SelectItem>
+                                <SelectItem value="6">OSM Zone 6</SelectItem>
+                                <SelectItem value="7">OSM Zone 7</SelectItem>
+                                <SelectItem value="8">OSM Zone 8</SelectItem>
+                                <SelectItem value="9">OSM Zone 9</SelectItem>
+                                <SelectItem value="10">OSM Zone 10</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                        <label className="text-2xl font-semibold font-poppins">
                             Same
                         </label>
-                        <input
-                            type="checkbox"
-                            className="rounded-md p-2 text-slate-900 scale-150"
+                        <Checkbox
                             checked={data.same}
-                            onChange={(e) => {
+                            onCheckedChange={(checked) => {
                                 const newQuestions = [...$questions];
                                 (
                                     newQuestions[index].data as QuestionData
-                                ).same = e.target.checked;
+                                ).same = (checked ?? false) as boolean;
                                 questions.set(newQuestions);
                             }}
                         />
-                    </div>
-                    <span
-                        className="text-3xl italic font-semibold font-poppins text-center ml-4"
-                        style={{ color: iconColors[data.color ?? "gold"] }}
+                    </SidebarMenuItem>
+                    <SidebarMenuItem
+                        className={cn(
+                            MENU_ITEM_CLASSNAME,
+                            "text-2xl font-semibold font-poppins"
+                        )}
+                        style={{
+                            backgroundColor: iconColors[data.color ?? "gold"],
+                            color:
+                                (data.color ?? "gold") === "gold"
+                                    ? "black"
+                                    : undefined,
+                        }}
                     >
                         Color (drag{" "}
-                        <input
-                            type="checkbox"
-                            className="scale-150 mr-2"
+                        <Checkbox
                             checked={data.drag ?? false}
-                            onChange={(e) => {
+                            onCheckedChange={(checked) => {
                                 const newQuestions = [...$questions];
-                                newQuestions[index].data.drag =
-                                    e.target.checked;
+                                newQuestions[index].data.drag = (checked ??
+                                    false) as boolean;
                                 questions.set(newQuestions);
                             }}
                         />
                         )
-                    </span>
-                </div>
-            </div>
-            <LatitudeLongitude
-                latitude={data.lat}
-                longitude={data.lng}
-                onChange={(lat, lng) => {
-                    const newQuestions = [...$questions];
-                    if (lat !== null) {
-                        (newQuestions[index].data as QuestionData).lat = lat;
-                    }
-                    if (lng !== null) {
-                        (newQuestions[index].data as QuestionData).lng = lng;
-                    }
-                    questions.set(newQuestions);
-                }}
-            />
+                    </SidebarMenuItem>
+                    <LatitudeLongitude
+                        latitude={data.lat}
+                        longitude={data.lng}
+                        onChange={(lat, lng) => {
+                            const newQuestions = [...$questions];
+                            if (lat !== null) {
+                                (newQuestions[index].data as QuestionData).lat =
+                                    lat;
+                            }
+                            if (lng !== null) {
+                                (newQuestions[index].data as QuestionData).lng =
+                                    lng;
+                            }
+                            questions.set(newQuestions);
+                        }}
+                    />
+                </SidebarMenu>
+            </SidebarGroupContent>
         </QuestionCard>
     );
 };
