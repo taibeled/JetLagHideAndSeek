@@ -132,7 +132,7 @@ export const DraggableMarkers = () => {
                                             .colorA ?? "gold"
                                     }
                                     key={"a" + question.key.toString()}
-                                    sub=" A"
+                                    sub=" Start"
                                     id="thermometer"
                                     questionKey={question.key}
                                     latitude={
@@ -162,7 +162,7 @@ export const DraggableMarkers = () => {
                                             .colorB ?? "gold"
                                     }
                                     key={"b" + question.key.toString()}
-                                    sub=" B"
+                                    sub=" End"
                                     id="thermometer"
                                     questionKey={question.key}
                                     latitude={

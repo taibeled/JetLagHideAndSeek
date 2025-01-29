@@ -1,7 +1,7 @@
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer } from "react-leaflet";
 import { geoJSON, type Map as LeafletMap } from "leaflet";
-import { cn } from "../utils/cn";
+import { cn } from "../lib/utils";
 import { mapGeoJSON, mapGeoLocation, questions } from "../utils/context";
 import { useStore } from "@nanostores/react";
 import { useEffect, useMemo, useState } from "react";

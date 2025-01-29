@@ -2,26 +2,34 @@
 import Layout from "../layouts/Layout.astro";
 import { Map } from "../components/Map";
 import { PlacePicker } from "../components/PlacePicker";
-import { QuestionList } from "../components/QuestionList";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { QuestionSidebar } from "@/components/QuestionSidebar";
 ---
 
-<Layout className="bg-jetlag p-2">
-    <h1
-        class="text-5xl text-center font-semibold font-poppins leading-snug"
-    >
-        Jet Lag The Game:
-        <br />
-        <span class="font-rounded font-extrabold">HIDE+SEEK</span> Map
-        Generator
-    </h1>
-    <div class="flex justify-center items-center flex-col md:flex-row">
-        <span class="text-lg font-semibold italic"
-            >Choose the hiding zone:
-        </span>
-        <PlacePicker client:load className="m-4" />
-    </div>
-    <div class="flex justify-center">
-        <Map className="w-full md:w-[90%] lg:w-[80%] rounded-2xl" client:only />
-    </div>
-    <QuestionList client:only className="mt-4"/>
+<Layout className="bg-jetlag !p-2">
+    <SidebarProvider client:load>
+        <QuestionSidebar client:only />
+        <main class="flex flex-col flex-grow">
+            <SidebarTrigger client:load />
+            <h1
+                class="text-5xl text-center font-semibold font-poppins leading-snug"
+            >
+                Jet Lag The Game:
+                <br />
+                <span class="font-rounded font-extrabold">HIDE+SEEK</span> Map Generator
+            </h1>
+            <div class="flex justify-center items-center flex-col md:flex-row">
+                <span class="text-lg font-semibold italic">
+                    Choose the hiding zone:
+                </span>
+                <PlacePicker client:load className="m-4" />
+            </div>
+            <div class="flex justify-center">
+                <Map
+                    className="w-full md:w-[90%] lg:w-[80%] rounded-2xl"
+                    client:only
+                />
+            </div>
+        </main>
+    </SidebarProvider>
 </Layout>
