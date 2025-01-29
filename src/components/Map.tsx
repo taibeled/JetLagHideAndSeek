@@ -1,5 +1,7 @@
 import "leaflet/dist/leaflet.css";
-import { MapContainer, TileLayer } from "react-leaflet";
+import "leaflet-draw/dist/leaflet.draw.css";
+import { FeatureGroup, MapContainer, TileLayer } from "react-leaflet";
+import { EditControl } from "react-leaflet-draw"
 import { geoJSON, type Map as LeafletMap } from "leaflet";
 import { cn } from "../lib/utils";
 import { mapGeoJSON, mapGeoLocation, questions } from "../utils/context";
@@ -136,7 +138,7 @@ export const Map = ({ className }: { className?: string }) => {
                     switch (question?.id) {
                         case "radius":
                             if (question.data.within) break;
-                            
+
                             mapGeoData = adjustPerRadius(
                                 question.data,
                                 mapGeoData,
@@ -233,6 +235,19 @@ export const Map = ({ className }: { className?: string }) => {
                         </button>
                     </div>
                 </div>
+                <FeatureGroup>
+                    <EditControl
+                        position="bottomleft"
+                        draw={{
+                            rectangle: false,
+                            circle: false,
+                            circlemarker: false,
+                            marker: false,
+                            polyline: false,
+                            polygon: true,
+                        }}
+                    />
+                </FeatureGroup>
             </MapContainer>
         ),
         [map]
