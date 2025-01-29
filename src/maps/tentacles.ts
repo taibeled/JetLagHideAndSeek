@@ -1,7 +1,7 @@
 import { findTentacleLocations, type iconColors } from "./api";
 import * as turf from "@turf/turf";
 
-type TentacleLocations =
+export type TentacleLocations =
     | "aquarium"
     | "zoo"
     | "theme_park"
@@ -45,6 +45,7 @@ export const adjustPerTentacle = async (
     if (!correctPolygon) {
         return mapData;
     }
+    console.log(correctPolygon);
 
     const circle = turf.circle(
         turf.point([question.lng, question.lat]),
@@ -53,6 +54,9 @@ export const adjustPerTentacle = async (
             units: question.unit ?? "miles",
         }
     );
+
+    console.log(circle);
+    console.log(turf.featureCollection([correctPolygon, circle]));
 
     return turf.intersect(
         turf.featureCollection(

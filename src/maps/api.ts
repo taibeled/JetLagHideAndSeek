@@ -1,6 +1,6 @@
 import type { LatLngTuple } from "leaflet";
 import osmtogeojson from "osmtogeojson";
-import type { TentacleQuestion } from "./tentacles";
+import type { TentacleQuestion, TentacleLocations } from "./tentacles";
 import * as turf from "@turf/turf";
 
 export interface OpenStreetMap {
@@ -83,12 +83,19 @@ export const determineGeoJSON = async (
     };
 };
 
+const tentacleFirstTag: { [key in TentacleLocations]: "amenity" | "tourism" } =
+    {
+        aquarium: "tourism",
+        hospital: "amenity",
+        museum: "tourism",
+        theme_park: "tourism",
+        zoo: "tourism",
+    };
+
 export const findTentacleLocations = async (question: TentacleQuestion) => {
     const query = `
 [out:json][timeout:25];
-nw["${question.locationType === "hospital" ? "amenity" : "tourism"}"="${
-        question.locationType
-    }"](around:${turf.convertLength(question.radius, "miles", "meters")}, ${
+nw["${tentacleFirstTag[question.locationType]}"="${question.locationType}"](around:${turf.convertLength(question.radius, question.unit, "meters")}, ${
         question.lat
     }, ${question.lng});
 out center;
