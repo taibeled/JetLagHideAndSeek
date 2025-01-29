@@ -8,7 +8,12 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { leafletMapContext, mapGeoLocation, questions } from "../utils/context";
+import {
+    defaultUnit,
+    leafletMapContext,
+    mapGeoLocation,
+    questions,
+} from "../utils/context";
 import { iconColors } from "../maps/api";
 import * as turf from "@turf/turf";
 import { useStore } from "@nanostores/react";
@@ -88,6 +93,7 @@ export function QuestionSidebar() {
                                             key: Math.random() * 1e9,
                                             data: {
                                                 radius: 50,
+                                                unit: defaultUnit.get(),
                                                 lat: center.lat,
                                                 lng: center.lng,
                                                 within: false,
@@ -117,10 +123,7 @@ export function QuestionSidebar() {
                                     const center = map.getCenter();
 
                                     const destination = turf.destination(
-                                        [
-                                            center.lng,
-                                            center.lat,
-                                        ],
+                                        [center.lng, center.lat],
                                         5,
                                         90,
                                         {
@@ -190,6 +193,7 @@ export function QuestionSidebar() {
                                                     )
                                                 ] as keyof typeof iconColors,
                                                 lat: center.lat,
+                                                unit: defaultUnit.get(),
                                                 lng: center.lng,
                                                 drag: true,
                                                 location: false,

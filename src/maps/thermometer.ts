@@ -3,7 +3,6 @@ import * as turf from "@turf/turf";
 
 export interface ThermometerQuestion {
     distance?: number;
-    unit?: turf.Units;
     latA: number;
     lngA: number;
     latB: number;

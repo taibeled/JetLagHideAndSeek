@@ -6,6 +6,7 @@ import type { ThermometerQuestion } from "../maps/thermometer";
 import type { TentacleQuestion } from "../maps/tentacles";
 import type { MatchingQuestion } from "../maps/matching";
 import type { Map } from "leaflet";
+import type { Units } from "@turf/turf";
 
 export const mapGeoLocation = persistentAtom<OpenStreetMap>(
     "mapGeoLocation",
@@ -51,3 +52,5 @@ export const questions = persistentAtom<Question[]>("questions", [], {
 });
 
 export const leafletMapContext = atom<Map | null>(null);
+
+export const defaultUnit = persistentAtom<Units>("defaultUnit", "miles");
