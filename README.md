@@ -10,11 +10,13 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
   - [x] Same zone (i.e., same region or prefecture)
 - [ ] Measuring
 - [x] Tentacles
-  - [x] Museum
   - [x] Zoo
   - [x] Aquarium
   - [x] Amusement Park
+  - [x] Museum
   - [x] Hospital
+  - [x] Movie theater
+  - [x] Library
 
 ## Contributing
 
