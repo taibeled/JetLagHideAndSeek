@@ -8,7 +8,12 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { mapGeoLocation, questions } from "../utils/context";
+import {
+    defaultUnit,
+    leafletMapContext,
+    mapGeoLocation,
+    questions,
+} from "../utils/context";
 import { iconColors } from "../maps/api";
 import * as turf from "@turf/turf";
 import { useStore } from "@nanostores/react";
@@ -76,6 +81,11 @@ export function QuestionSidebar() {
                         <SidebarMenuItem>
                             <SidebarMenuButton
                                 onClick={() => {
+                                    const map = leafletMapContext.get();
+                                    if (!map) return;
+
+                                    const center = map.getCenter();
+
                                     questions.set([
                                         ...$questions,
                                         {
@@ -83,10 +93,9 @@ export function QuestionSidebar() {
                                             key: Math.random() * 1e9,
                                             data: {
                                                 radius: 50,
-                                                lat: mapGeoLocation.get()
-                                                    .geometry.coordinates[0],
-                                                lng: mapGeoLocation.get()
-                                                    .geometry.coordinates[1],
+                                                unit: defaultUnit.get(),
+                                                lat: center.lat,
+                                                lng: center.lng,
                                                 within: false,
                                                 color: Object.keys(iconColors)[
                                                     Math.floor(
@@ -108,15 +117,13 @@ export function QuestionSidebar() {
                         <SidebarMenuItem>
                             <SidebarMenuButton
                                 onClick={() => {
-                                    const center = turf.point([
-                                        mapGeoLocation.get().geometry
-                                            .coordinates[1],
-                                        mapGeoLocation.get().geometry
-                                            .coordinates[0],
-                                    ]);
+                                    const map = leafletMapContext.get();
+                                    if (!map) return;
+
+                                    const center = map.getCenter();
 
                                     const destination = turf.destination(
-                                        center,
+                                        [center.lng, center.lat],
                                         5,
                                         90,
                                         {
@@ -146,10 +153,8 @@ export function QuestionSidebar() {
                                                             ).length
                                                     )
                                                 ] as keyof typeof iconColors,
-                                                latA: center.geometry
-                                                    .coordinates[1],
-                                                lngA: center.geometry
-                                                    .coordinates[0],
+                                                latA: center.lat,
+                                                lngA: center.lng,
                                                 latB: destination.geometry
                                                     .coordinates[1],
                                                 lngB: destination.geometry
@@ -168,12 +173,10 @@ export function QuestionSidebar() {
                         <SidebarMenuItem>
                             <SidebarMenuButton
                                 onClick={() => {
-                                    const center = turf.point([
-                                        mapGeoLocation.get().geometry
-                                            .coordinates[1],
-                                        mapGeoLocation.get().geometry
-                                            .coordinates[0],
-                                    ]);
+                                    const map = leafletMapContext.get();
+                                    if (!map) return;
+
+                                    const center = map.getCenter();
 
                                     questions.set([
                                         ...$questions,
@@ -189,10 +192,9 @@ export function QuestionSidebar() {
                                                             ).length
                                                     )
                                                 ] as keyof typeof iconColors,
-                                                lat: center.geometry
-                                                    .coordinates[1],
-                                                lng: center.geometry
-                                                    .coordinates[0],
+                                                lat: center.lat,
+                                                unit: defaultUnit.get(),
+                                                lng: center.lng,
                                                 drag: true,
                                                 location: false,
                                                 locationType: "theme_park",
@@ -208,12 +210,10 @@ export function QuestionSidebar() {
                         <SidebarMenuItem>
                             <SidebarMenuButton
                                 onClick={() => {
-                                    const center = turf.point([
-                                        mapGeoLocation.get().geometry
-                                            .coordinates[1],
-                                        mapGeoLocation.get().geometry
-                                            .coordinates[0],
-                                    ]);
+                                    const map = leafletMapContext.get();
+                                    if (!map) return;
+
+                                    const center = map.getCenter();
 
                                     questions.set([
                                         ...$questions,
@@ -229,10 +229,8 @@ export function QuestionSidebar() {
                                                             ).length
                                                     )
                                                 ] as keyof typeof iconColors,
-                                                lat: center.geometry
-                                                    .coordinates[1],
-                                                lng: center.geometry
-                                                    .coordinates[0],
+                                                lat: center.lat,
+                                                lng: center.lng,
                                                 drag: true,
                                                 same: true,
                                                 type: "zone",

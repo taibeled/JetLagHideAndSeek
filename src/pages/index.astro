@@ -4,6 +4,7 @@ import { Map } from "../components/Map";
 import { PlacePicker } from "../components/PlacePicker";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { QuestionSidebar } from "@/components/QuestionSidebar";
+import { Options } from "@/components/Options";
 ---
 
 <Layout className="bg-jetlag !p-2">
@@ -30,6 +31,7 @@ import { QuestionSidebar } from "@/components/QuestionSidebar";
                     client:only
                 />
             </div>
+            <Options client:load />
         </main>
     </SidebarProvider>
 </Layout>

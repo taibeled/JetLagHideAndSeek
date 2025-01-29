@@ -1,7 +1,12 @@
 import { findTentacleLocations, type iconColors } from "./api";
 import * as turf from "@turf/turf";
 
-type TentacleLocations = "aquarium" | "zoo" | "theme_park" | "museum" | "hospital";
+type TentacleLocations =
+    | "aquarium"
+    | "zoo"
+    | "theme_park"
+    | "museum"
+    | "hospital";
 
 export interface TentacleQuestion {
     radius: number;
@@ -50,6 +55,10 @@ export const adjustPerTentacle = async (
     );
 
     return turf.intersect(
-        turf.featureCollection([...mapData.features, correctPolygon, circle])
+        turf.featureCollection(
+            mapData.features.length > 1
+                ? [turf.union(mapData)!, correctPolygon, circle]
+                : [...mapData.features, correctPolygon, circle]
+        )
     );
 };
