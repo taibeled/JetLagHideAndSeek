@@ -26,7 +26,7 @@
     "@types/react": "19.0.8",
     "@types/react-dom": "19.0.3",
     "@vite-pwa/astro": "^0.5.0",
-    "astro": "^5.1.9",
+    "astro": "^5.1.10",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "leaflet": "^1.9.4",
