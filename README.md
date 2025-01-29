@@ -1,6 +1,6 @@
 # Jet Lag The Game: Hide and Seek Map Generator
 
-A tool to trivially generate interactive maps for viewing hiding possibilities in Jet Lag The Game's Hide and Seek. So far, the following questions have been implemented:
+A tool to trivially generate interactive maps for viewing hiding possibilities in Jet Lag The Game's Hide and Seek. So far, the following questions have been implemented (see https://github.com/taibeled/JetLagHideAndSeek/issues/9 for more):
 
 - [x] Radius
   - [x] All
@@ -10,13 +10,11 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
   - [x] Same zone (i.e., same region or prefecture)
 - [ ] Measuring
 - [x] Tentacles
-  - [x] Museum (inferred)
+  - [x] Museum
   - [x] Zoo
   - [x] Aquarium
   - [x] Amusement Park
   - [x] Hospital
-  - [ ] Metro line (is this stations or line itself?)
-  - [ ] More (I only went off the obvious ones from the show, if you have the complete list, please leave an issue)
 
 ## Contributing
 
