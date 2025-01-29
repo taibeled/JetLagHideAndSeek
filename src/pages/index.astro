@@ -9,7 +9,7 @@ import { Options } from "@/components/Options";
 
 <Layout className="bg-jetlag !p-2">
     <SidebarProvider client:load>
-        <QuestionSidebar client:only />
+        <QuestionSidebar client:load />
         <main class="flex flex-col flex-grow">
             <SidebarTrigger client:load />
             <h1
