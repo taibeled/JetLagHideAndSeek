@@ -33,7 +33,11 @@ export const adjustPerMatching = async (
             throw new Error("Cannot be masked");
         }
         return turf.intersect(
-            turf.featureCollection([...mapData.features, boundary])
+            turf.featureCollection(
+                mapData.features.length > 1
+                    ? [turf.union(mapData)!, boundary]
+                    : [...mapData.features, boundary]
+            )
         );
     } else {
         if (!masked) {

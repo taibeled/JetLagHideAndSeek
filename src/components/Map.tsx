@@ -117,7 +117,6 @@ export const Map = ({ className }: { className?: string }) => {
             }
 
             if (focus) {
-                console.log(mapGeoData);
                 const bbox = turf.bbox(mapGeoData as any);
                 const bounds: [[number, number], [number, number]] = [
                     [bbox[1], bbox[0]],

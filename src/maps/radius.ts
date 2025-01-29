@@ -11,7 +11,11 @@ export interface RadiusQuestion {
     drag?: boolean;
 }
 
-export const adjustPerRadius = (question: RadiusQuestion, mapData: any, masked: boolean) => {
+export const adjustPerRadius = (
+    question: RadiusQuestion,
+    mapData: any,
+    masked: boolean
+) => {
     if (mapData === null) return;
 
     const point = turf.point([question.lng, question.lat]);
@@ -23,8 +27,9 @@ export const adjustPerRadius = (question: RadiusQuestion, mapData: any, masked: 
         if (masked) {
             throw new Error("Cannot be masked");
         }
+
         return turf.intersect(
-            turf.featureCollection([...mapData.features, circle])
+            turf.featureCollection(mapData.features.length > 1 ? [turf.union(mapData)!, circle] : [...mapData.features, circle])
         );
     } else {
         if (!masked) {

@@ -33,7 +33,8 @@ export const adjustPerThermometer = (
 
     const coordinates = [];
 
-    for (let i = -5000; i <= 5000; i+= 10) { // 5,000 is arbitrary
+    for (let i = -5000; i <= 5000; i += 10) {
+        // 5,000 is arbitrary
         const destination = turf.destination(midpoint, i, bearing + 90, {
             units: "kilometers",
         });
@@ -62,11 +63,19 @@ export const adjustPerThermometer = (
     ) {
         polygon.geometry.coordinates[0].pop();
         return turf.intersect(
-            turf.featureCollection([...mapData.features, polygon])
+            turf.featureCollection(
+                mapData.features.length > 1
+                    ? [turf.union(mapData)!, polygon]
+                    : [...mapData.features, polygon]
+            )
         );
     } else {
         return turf.difference(
-            turf.featureCollection([...mapData.features, polygon])
+            turf.featureCollection(
+                mapData.features.length > 1
+                    ? [turf.union(mapData)!, polygon]
+                    : [...mapData.features, polygon]
+            )
         );
     }
 };
