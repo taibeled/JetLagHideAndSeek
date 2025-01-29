@@ -1,13 +1,20 @@
 import {
     defaultUnit,
     mapGeoJSON,
+    mapGeoLocation,
     polyGeoJSON,
     questions,
 } from "@/utils/context";
 import { Button } from "./ui/button";
 import { toast } from "react-toastify";
 import { Label } from "./ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "./ui/select";
 import { Separator } from "./ui/separator";
 
 export const Options = () => {
@@ -20,9 +27,19 @@ export const Options = () => {
                         if (!navigator || !navigator.clipboard)
                             return toast.error("Clipboard not supported");
 
-                        navigator.clipboard.writeText(
-                            JSON.stringify(mapGeoJSON.get())
-                        );
+                        let $polyGeoJSON = polyGeoJSON.get();
+                        if ($polyGeoJSON !== null) {
+                            navigator.clipboard.writeText(
+                                JSON.stringify($polyGeoJSON)
+                            );
+                        } else {
+                            const location = mapGeoLocation.get();
+                            location.properties.isHidingZone = true;
+
+                            navigator.clipboard.writeText(
+                                JSON.stringify(location)
+                            );
+                        }
                         toast.success("Hiding zone copied successfully", {
                             autoClose: 2000,
                         });
@@ -38,9 +55,21 @@ export const Options = () => {
                         navigator.clipboard.readText().then((text) => {
                             try {
                                 const geojson = JSON.parse(text);
-                                mapGeoJSON.set(geojson);
-                                polyGeoJSON.set(geojson);
-                                questions.set([]);
+
+                                if (
+                                    geojson.properties &&
+                                    geojson.properties.isHidingZone === true
+                                ) {
+                                    mapGeoLocation.set(geojson);
+                                    mapGeoJSON.set(null);
+                                    polyGeoJSON.set(null);
+                                    questions.set([]);
+                                } else {
+                                    mapGeoJSON.set(geojson);
+                                    polyGeoJSON.set(geojson);
+                                    questions.set([]);
+                                }
+
                                 toast.success(
                                     "Hiding zone pasted successfully",
                                     {
@@ -58,7 +87,10 @@ export const Options = () => {
             </div>
             <Separator className="bg-slate-300 w-[280px]" />
             <Label>Default Unit</Label>
-            <Select defaultValue={defaultUnit.get()} onValueChange={defaultUnit.set}>
+            <Select
+                defaultValue={defaultUnit.get()}
+                onValueChange={defaultUnit.set}
+            >
                 <SelectTrigger className="w-[250px]">
                     <SelectValue placeholder="Select a unit" />
                 </SelectTrigger>

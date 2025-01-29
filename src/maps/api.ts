@@ -25,6 +25,7 @@ interface OpenStreetMapProperties {
     osm_value: string;
     name: string;
     type: string;
+    isHidingZone?: boolean;
 }
 
 export const OVERPASS_API = "https://overpass-api.de/api/interpreter";
