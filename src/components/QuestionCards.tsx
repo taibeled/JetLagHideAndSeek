@@ -67,7 +67,7 @@ const QuestionCard = ({
                     >
                         {isCollapsed ? <VscChevronRight/> : <VscChevronDown/>}
                     </button>
-                    <SidebarGroupLabel  className="relative ml-8">
+                    <SidebarGroupLabel  className="ml-8 mr-8">
                         {label}
                     </SidebarGroupLabel>
 
