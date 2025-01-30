@@ -47,6 +47,9 @@ importers:
       '@turf/turf':
         specifier: ^7.2.0
         version: 7.2.0
+      '@types/geojson':
+        specifier: ^7946.0.16
+        version: 7946.0.16
       '@types/leaflet':
         specifier: ^1.9.16
         version: 1.9.16

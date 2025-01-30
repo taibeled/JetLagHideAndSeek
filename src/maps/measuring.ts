@@ -1,5 +1,6 @@
 import { fetchCoastline, type iconColors } from "./api";
 import * as turf from "@turf/turf";
+import type { BBox, Feature, MultiPolygon } from "geojson";
 
 export interface BaseMeasuringQuestion {
     lat: number;
@@ -18,13 +19,16 @@ export type MeasuringQuestion = CoastlineMeasuringQuestion;
 export const adjustPerMeasuring = async (
     question: MeasuringQuestion,
     mapData: any,
-    masked: boolean
+    masked: boolean,
+    bBox?: BBox
 ) => {
     if (mapData === null) return;
 
     switch (question.type) {
         case "coastline":
-            const coastline = turf.lineToPolygon(await fetchCoastline());
+            const coastline = turf.lineToPolygon(
+                await fetchCoastline()
+            ) as Feature<MultiPolygon>;
 
             const distanceToCoastline = turf.pointToPolygonDistance(
                 turf.point([question.lng, question.lat]),
@@ -35,14 +39,19 @@ export const adjustPerMeasuring = async (
                 }
             );
 
-            const buffed = turf.buffer(coastline, distanceToCoastline, {
-                units: "miles",
-            }); // This is SLOW as it accounts for the entire coastline of the entire world. TODO: Only buffer reasonably close coastline
+            const buffed = turf.buffer(
+                turf.bboxClip(coastline, bBox ? bBox : [-180, -90, 180, 90]),
+                distanceToCoastline,
+                {
+                    units: "miles",
+                    steps: 64,
+                }
+            );
 
             if (question.hiderCloser) {
                 if (!masked) throw new Error("Must be masked");
                 return turf.union(
-                    turf.featureCollection([...mapData.features, buffed]),
+                    turf.featureCollection([...mapData.features, buffed])
                 );
             } else {
                 if (masked) throw new Error("Cannot be masked");
@@ -50,8 +59,8 @@ export const adjustPerMeasuring = async (
                     turf.featureCollection(
                         mapData.features.length > 1
                             ? [turf.union(mapData)!, buffed]
-                            : [...mapData.features, buffed],
-                    ),
+                            : [...mapData.features, buffed]
+                    )
                 );
             }
     }

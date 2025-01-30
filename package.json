@@ -22,6 +22,7 @@
     "@radix-ui/react-slot": "^1.1.1",
     "@radix-ui/react-tooltip": "^1.1.7",
     "@turf/turf": "^7.2.0",
+    "@types/geojson": "^7946.0.16",
     "@types/leaflet": "^1.9.16",
     "@types/react": "19.0.8",
     "@types/react-dom": "19.0.3",

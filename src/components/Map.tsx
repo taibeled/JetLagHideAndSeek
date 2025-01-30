@@ -113,7 +113,8 @@ export const Map = ({ className }: { className?: string }) => {
                         mapGeoData = await adjustPerMeasuring(
                             question.data,
                             mapGeoData,
-                            false
+                            false,
+                            turf.bbox(mapGeoData as any)
                         );
                         break;
                 }
@@ -125,6 +126,8 @@ export const Map = ({ className }: { className?: string }) => {
                     };
                 }
             }
+
+            const bbox = turf.bbox(mapGeoData as any);
 
             if (focus) {
                 const bbox = turf.bbox(mapGeoData as any);
@@ -181,7 +184,8 @@ export const Map = ({ className }: { className?: string }) => {
                         mapGeoData = await adjustPerMeasuring(
                             question.data,
                             mapGeoData,
-                            true
+                            true,
+                            bbox
                         );
                         break;
                 }
