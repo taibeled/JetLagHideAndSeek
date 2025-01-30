@@ -215,14 +215,13 @@ export const MatchingQuestionComponent = ({
     index: number;
 }) => {
     const $questions = useStore(questions);
-
-    let questionSpecific = <></>;
-
     const label = `Matching
     ${$questions
         .filter((q) => q.id === "matching")
         .map((q) => q.key)
         .indexOf(questionKey) + 1}`
+
+    let questionSpecific = <></>;
 
     switch (data.type) {
         case "zone":
@@ -351,14 +350,13 @@ export const MeasuringQuestionComponent = ({
     index: number;
 }) => {
     const $questions = useStore(questions);
-
-    let questionSpecific = <></>;
-
     const label = `Measuring
     ${$questions
         .filter((q) => q.id === "measuring")
         .map((q) => q.key)
         .indexOf(questionKey) + 1}`
+
+    let questionSpecific = <></>;
 
     switch (data.type) {}
 
@@ -458,7 +456,6 @@ export const TentacleQuestionComponent = ({
     index: number;
 }) => {
     const $questions = useStore(questions);
-
     const label = `Tentacles
     ${$questions
         .filter((q) => q.id === "tentacles")
@@ -684,7 +681,6 @@ export const ThermometerQuestionComponent = ({
     index: number;
 }) => {
     const $questions = useStore(questions);
-
     const label = `Thermometer
     ${$questions
         .filter((q) => q.id === "thermometer")
