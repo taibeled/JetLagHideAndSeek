@@ -1,8 +1,8 @@
 import type { RadiusQuestion } from "../maps/radius";
 import type { ThermometerQuestion } from "../maps/thermometer";
 import type { TentacleQuestion } from "../maps/tentacles";
-import { VscChromeClose } from "react-icons/vsc";
-import { Suspense, use } from "react";
+import { VscChromeClose, VscChevronRight, VscChevronDown } from "react-icons/vsc";
+import { Suspense, use, useState } from "react";
 import { LatitudeLongitude } from "./LatLngPicker";
 import { useStore } from "@nanostores/react";
 import { cn } from "../lib/utils";
@@ -33,12 +33,19 @@ const QuestionCard = ({
     children,
     questionKey,
     className,
+    label,
 }: {
     children: React.ReactNode;
     questionKey: number;
     className?: string;
+    label?: string;
 }) => {
+    const [isCollapsed, setIsCollapsed] = useState(false);
     const $questions = useStore(questions);
+
+    const toggleCollapse = () => {
+        setIsCollapsed((prevState) => !prevState);
+    };
 
     return (
         <>
@@ -54,7 +61,17 @@ const QuestionCard = ({
                     >
                         <VscChromeClose />
                     </button>
-                    {children}
+                    <button 
+                        onClick={toggleCollapse} 
+                        className="absolute top-2 left-2 text-white border rounded-md"
+                    >
+                        {isCollapsed ? <VscChevronRight/> : <VscChevronDown/>}
+                    </button>
+                    <SidebarGroupLabel  className="relative ml-8">
+                        {label}
+                    </SidebarGroupLabel>
+
+                    {!isCollapsed && children}
                 </div>
             </SidebarGroup>
             <Separator className="h-1" />
@@ -72,16 +89,14 @@ export const RadiusQuestionComponent = ({
     index: number;
 }) => {
     const $questions = useStore(questions);
+    const label = `Radius
+    ${$questions
+        .filter((q) => q.id === "radius")
+        .map((q) => q.key)
+        .indexOf(questionKey) + 1}`
 
     return (
-        <QuestionCard questionKey={questionKey}>
-            <SidebarGroupLabel>
-                Radius{" "}
-                {$questions
-                    .filter((q) => q.id === "radius")
-                    .map((q) => q.key)
-                    .indexOf(questionKey) + 1}
-            </SidebarGroupLabel>
+        <QuestionCard questionKey={questionKey} label={label}>
             <SidebarGroupContent>
                 <SidebarMenu>
                     <SidebarMenuItem>
@@ -203,6 +218,12 @@ export const MatchingQuestionComponent = ({
 
     let questionSpecific = <></>;
 
+    const label = `Matching
+    ${$questions
+        .filter((q) => q.id === "matching")
+        .map((q) => q.key)
+        .indexOf(questionKey) + 1}`
+
     switch (data.type) {
         case "zone":
             questionSpecific = (
@@ -236,14 +257,7 @@ export const MatchingQuestionComponent = ({
     }
 
     return (
-        <QuestionCard questionKey={questionKey}>
-            <SidebarGroupLabel>
-                Matching{" "}
-                {$questions
-                    .filter((q) => q.id === "matching")
-                    .map((q) => q.key)
-                    .indexOf(questionKey) + 1}
-            </SidebarGroupLabel>
+        <QuestionCard questionKey={questionKey} label={label}>
             <SidebarGroupContent>
                 <SidebarMenu>
                     <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
@@ -340,17 +354,16 @@ export const MeasuringQuestionComponent = ({
 
     let questionSpecific = <></>;
 
+    const label = `Measuring
+    ${$questions
+        .filter((q) => q.id === "measuring")
+        .map((q) => q.key)
+        .indexOf(questionKey) + 1}`
+
     switch (data.type) {}
 
     return (
-        <QuestionCard questionKey={questionKey}>
-            <SidebarGroupLabel>
-                Measuring{" "}
-                {$questions
-                    .filter((q) => q.id === "measuring")
-                    .map((q) => q.key)
-                    .indexOf(questionKey) + 1}
-            </SidebarGroupLabel>
+        <QuestionCard questionKey={questionKey} label={label}>
             <SidebarGroupContent>
                 <SidebarMenu>
                     <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
@@ -446,15 +459,14 @@ export const TentacleQuestionComponent = ({
 }) => {
     const $questions = useStore(questions);
 
+    const label = `Tentacles
+    ${$questions
+        .filter((q) => q.id === "tentacles")
+        .map((q) => q.key)
+        .indexOf(questionKey) + 1}`
+
     return (
-        <QuestionCard questionKey={questionKey}>
-            <SidebarGroupLabel>
-                Tentacles{" "}
-                {$questions
-                    .filter((q) => q.id === "tentacles")
-                    .map((q) => q.key)
-                    .indexOf(questionKey) + 1}
-            </SidebarGroupLabel>
+        <QuestionCard questionKey={questionKey} label={label}>
             <SidebarGroupContent>
                 <SidebarMenu>
                     <SidebarMenuItem>
@@ -673,15 +685,14 @@ export const ThermometerQuestionComponent = ({
 }) => {
     const $questions = useStore(questions);
 
+    const label = `Thermometer
+    ${$questions
+        .filter((q) => q.id === "thermometer")
+        .map((q) => q.key)
+        .indexOf(questionKey) + 1}`
+
     return (
-        <QuestionCard questionKey={questionKey}>
-            <SidebarGroupLabel>
-                Thermometer{" "}
-                {$questions
-                    .filter((q) => q.id === "thermometer")
-                    .map((q) => q.key)
-                    .indexOf(questionKey) + 1}
-            </SidebarGroupLabel>
+        <QuestionCard questionKey={questionKey} label={label}>
             <SidebarGroupContent>
                 <SidebarMenu>
                     <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
