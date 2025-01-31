@@ -428,6 +428,10 @@ export const Map = ({ className }: { className?: string }) => {
                         text: 'Add Matching',
                         callback: (e: any) => addMatching(e),
                     },
+                    {
+                        text: 'Add Measuring',
+                        callback: (e: any) => addMeasuring(e),
+                    },
                 ]}>
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
