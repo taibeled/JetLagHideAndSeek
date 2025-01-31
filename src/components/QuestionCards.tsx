@@ -371,6 +371,9 @@ export const MeasuringQuestionComponent = ({
                         <SelectItem value="coastline">
                             Coastline Question
                         </SelectItem>
+                        <SelectItem value="airport">
+                            Commercial Airport Question
+                        </SelectItem>
                     </SelectContent>
                 </Select>
             </SidebarMenuItem>

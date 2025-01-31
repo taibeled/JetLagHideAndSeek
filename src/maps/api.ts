@@ -2,6 +2,7 @@ import type { LatLngTuple } from "leaflet";
 import osmtogeojson from "osmtogeojson";
 import type { TentacleQuestion, TentacleLocations } from "./tentacles";
 import * as turf from "@turf/turf";
+import { mapGeoLocation, polyGeoJSON } from "@/utils/context";
 
 export interface OpenStreetMap {
     type: string;
@@ -211,4 +212,37 @@ export const fetchCoastline = async () => {
     );
     const data = await response.json();
     return data;
+};
+
+export const findPlacesInZone = async (
+    filter: string,
+    searchType:
+        | "node"
+        | "way"
+        | "relation"
+        | "nwr"
+        | "nw"
+        | "wr"
+        | "nr"
+        | "area" = "nwr",
+    outType: "center" | "geom" = "center"
+) => {
+    let query = "";
+
+    const $polyGeoJSON = polyGeoJSON.get();
+
+    if ($polyGeoJSON) {
+        throw new Error("Not implemented");
+    } else {
+        const geoLocation = mapGeoLocation.get();
+
+        query = `
+[out:json];
+relation(${geoLocation.properties.osm_id});map_to_area->.region;
+${searchType}${filter}(area.region);
+out ${outType};
+`;
+    }
+
+    return await getOverpassData(query);
 };

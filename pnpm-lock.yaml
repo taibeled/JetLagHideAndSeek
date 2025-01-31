@@ -53,6 +53,9 @@ importers:
       '@types/leaflet':
         specifier: ^1.9.16
         version: 1.9.16
+      '@types/lodash':
+        specifier: ^4.17.15
+        version: 4.17.15
       '@types/react':
         specifier: 19.0.8
         version: 19.0.8
@@ -77,6 +80,9 @@ importers:
       leaflet-draw:
         specifier: ^1.0.4
         version: 1.0.4
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       lucide-react:
         specifier: ^0.474.0
         version: 0.474.0(react@19.0.0)
@@ -1880,6 +1886,9 @@ packages:
 
   '@types/leaflet@1.9.16':
     resolution: {integrity: sha512-wzZoyySUxkgMZ0ihJ7IaUIblG8Rdc8AbbZKLneyn+QjYsj5q1QU7TEKYqwTr10BGSzY5LI7tJk9Ifo+mEjdFRw==}
+
+  '@types/lodash@4.17.15':
+    resolution: {integrity: sha512-w/P33JFeySuhN6JLkysYUK2gEmy9kHHFN7E8ro0tkfmlDOgxBDzWEZ/J8cWA+fHqFevpswDTFZnDx+R9lbL6xw==}
 
   '@types/mdast@4.0.4':
     resolution: {integrity: sha512-kGaNbPh1k7AFzgpud/gMdvIm5xuECykRR+JnWKQno9TAXVa6WIVCGTPvYGekIDL4uwCZQSYbUxNBSb1aUo79oA==}
@@ -6880,6 +6889,8 @@ snapshots:
   '@types/leaflet@1.9.16':
     dependencies:
       '@types/geojson': 7946.0.16
+
+  '@types/lodash@4.17.15': {}
 
   '@types/mdast@4.0.4':
     dependencies:

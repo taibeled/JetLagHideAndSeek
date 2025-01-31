@@ -29,7 +29,11 @@ export const adjustPerRadius = (
         }
 
         return turf.intersect(
-            turf.featureCollection(mapData.features.length > 1 ? [turf.union(mapData)!, circle] : [...mapData.features, circle])
+            turf.featureCollection(
+                mapData.features.length > 1
+                    ? [turf.union(mapData)!, circle]
+                    : [...mapData.features, circle]
+            )
         );
     } else {
         if (!masked) {

@@ -109,13 +109,19 @@ export const Map = ({ className }: { className?: string }) => {
                         );
                         break;
                     case "measuring":
-                        if (question.data.hiderCloser) break;
-                        mapGeoData = await adjustPerMeasuring(
-                            question.data,
-                            mapGeoData,
-                            false,
-                            turf.bbox(mapGeoData as any)
-                        );
+                        try {
+                            mapGeoData = await adjustPerMeasuring(
+                                question.data,
+                                mapGeoData,
+                                false,
+                                turf.bbox(mapGeoData as any)
+                            );
+                        } catch (error: any) {
+                            if (error && error.message === "Must be masked") {
+                            } else {
+                                console.log(error);
+                            }
+                        }
                         break;
                 }
 
@@ -179,14 +185,19 @@ export const Map = ({ className }: { className?: string }) => {
                         );
                         break;
                     case "measuring":
-                        if (!question.data.hiderCloser) break;
-
-                        mapGeoData = await adjustPerMeasuring(
-                            question.data,
-                            mapGeoData,
-                            true,
-                            bbox
-                        );
+                        try {
+                            mapGeoData = await adjustPerMeasuring(
+                                question.data,
+                                mapGeoData,
+                                true,
+                                bbox
+                            );
+                        } catch (error: any) {
+                            if (error && error.message === "Cannot be masked") {
+                            } else {
+                                console.log(error);
+                            }
+                        }
                         break;
                 }
 

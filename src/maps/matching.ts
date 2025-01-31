@@ -20,7 +20,6 @@ export interface ZoneMatchingQuestion extends BaseMatchingQuestion {
 
 export type MatchingQuestion = ZoneMatchingQuestion;
 
-
 export const adjustPerMatching = async (
     question: MatchingQuestion,
     mapData: any,

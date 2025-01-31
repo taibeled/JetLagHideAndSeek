@@ -43,7 +43,7 @@ const createGeodesicPolygon = (polygon: any, steps = 20) => {
 
     // @ts-ignore
     return turf.polygon([geodesicLines]);
-}
+};
 
 export const adjustPerTentacle = async (
     question: TentacleQuestion,
@@ -53,6 +53,9 @@ export const adjustPerTentacle = async (
     if (mapData === null) return;
     if (masked) {
         throw new Error("Cannot be masked");
+    }
+    if (question.location === false) {
+        throw new Error("Must have a location");
     }
 
     const points = await findTentacleLocations(question);
