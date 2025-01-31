@@ -65,9 +65,10 @@ export const Map = ({ className }: { className?: string }) => {
     const addRadius = (e: { latlng: any }) => {
         const center = e.latlng
         console.log(`Current coordinates: ${center.lat}, ${center.lng}`);
+        const currentQuestions = questions.get();
 
         questions.set([
-            ...$questions,
+            ...currentQuestions,
             {
                 id: "radius",
                 key: Math.random() * 1e9,
@@ -94,6 +95,7 @@ export const Map = ({ className }: { className?: string }) => {
     const addThermometer = (e: { latlng: any }) => {
         const center = e.latlng
         console.log(`Current coordinates: ${center.lat}, ${center.lng}`);
+        const currentQuestions = questions.get();
 
         const destination = turf.destination(
             [center.lng, center.lat],
@@ -105,7 +107,7 @@ export const Map = ({ className }: { className?: string }) => {
         );
 
         questions.set([
-            ...$questions,
+            ...currentQuestions,
             {
                 id: "thermometer",
                 key: Math.random() * 1e9,
@@ -143,9 +145,10 @@ export const Map = ({ className }: { className?: string }) => {
     const addTentacles = (e: { latlng: any }) => {
         const center = e.latlng
         console.log(`Current coordinates: ${center.lat}, ${center.lng}`);
+        const currentQuestions = questions.get();
 
         questions.set([
-            ...$questions,
+            ...currentQuestions,
             {
                 id: "tentacles",
                 key: Math.random() * 1e9,
@@ -173,9 +176,10 @@ export const Map = ({ className }: { className?: string }) => {
     const addMatching = (e: { latlng: any }) => {
         const center = e.latlng
         console.log(`Current coordinates: ${center.lat}, ${center.lng}`);
+        const currentQuestions = questions.get();
 
         questions.set([
-            ...$questions,
+            ...currentQuestions,
             {
                 id: "matching",
                 key: Math.random() * 1e9,
@@ -196,6 +200,35 @@ export const Map = ({ className }: { className?: string }) => {
                     cat: {
                         adminLevel: 3,
                     },
+                },
+            },
+        ]);
+    }
+
+    const addMeasuring = (e: { latlng: any }) => {
+        const center = e.latlng
+        console.log(`Current coordinates: ${center.lat}, ${center.lng}`);
+        const currentQuestions = questions.get();
+
+        questions.set([
+            ...currentQuestions,
+            {
+                id: "measuring",
+                key: Math.random() * 1e9,
+                data: {
+                    color: Object.keys(iconColors)[
+                        Math.floor(
+                            Math.random() *
+                                Object.keys(
+                                    iconColors
+                                ).length
+                        )
+                    ] as keyof typeof iconColors,
+                    lat: center.lat,
+                    lng: center.lng,
+                    drag: true,
+                    hiderCloser: true,
+                    type: "coastline",
                 },
             },
         ]);
