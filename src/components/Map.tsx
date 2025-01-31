@@ -113,8 +113,7 @@ export const Map = ({ className }: { className?: string }) => {
                             mapGeoData = await adjustPerMeasuring(
                                 question.data,
                                 mapGeoData,
-                                false,
-                                turf.bbox(mapGeoData as any)
+                                false
                             );
                         } catch (error: any) {
                             if (error && error.message === "Must be masked") {
@@ -132,8 +131,6 @@ export const Map = ({ className }: { className?: string }) => {
                     };
                 }
             }
-
-            const bbox = turf.bbox(mapGeoData as any);
 
             if (focus) {
                 const bbox = turf.bbox(mapGeoData as any);
@@ -189,8 +186,7 @@ export const Map = ({ className }: { className?: string }) => {
                             mapGeoData = await adjustPerMeasuring(
                                 question.data,
                                 mapGeoData,
-                                true,
-                                bbox
+                                true
                             );
                         } catch (error: any) {
                             if (error && error.message === "Cannot be masked") {

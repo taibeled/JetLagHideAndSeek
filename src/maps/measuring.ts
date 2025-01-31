@@ -33,10 +33,11 @@ export type MeasuringQuestion =
 export const adjustPerMeasuring = async (
     question: MeasuringQuestion,
     mapData: any,
-    masked: boolean,
-    bBox?: BBox
+    masked: boolean
 ) => {
     if (mapData === null) return;
+
+    const bBox = turf.bbox(mapGeoJSON.get());
 
     switch (question.type) {
         case "coastline":
