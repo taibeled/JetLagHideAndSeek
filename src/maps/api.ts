@@ -232,7 +232,16 @@ export const findPlacesInZone = async (
     const $polyGeoJSON = polyGeoJSON.get();
 
     if ($polyGeoJSON) {
-        throw new Error("Not implemented");
+        query = `
+[out:json];
+${searchType}${filter}(poly:"${turf
+            .getCoords($polyGeoJSON.features)
+            .flatMap((polygon) => polygon.geometry.coordinates)
+            .flat()
+            .map((coord) => coord.reverse().join(" "))
+            .join(" ")}");
+out ${outType};
+`;
     } else {
         const geoLocation = mapGeoLocation.get();
 
