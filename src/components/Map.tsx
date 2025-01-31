@@ -63,7 +63,7 @@ export const Map = ({ className }: { className?: string }) => {
     const [reset, setReset] = useState(0);
 
     const addRadius = (e: { latlng: any }) => {
-        const center = e.latlng
+        const center = e.latlng;
         console.log(`Current coordinates: ${center.lat}, ${center.lng}`);
         const currentQuestions = questions.get();
 
@@ -80,10 +80,7 @@ export const Map = ({ className }: { className?: string }) => {
                     within: false,
                     color: Object.keys(iconColors)[
                         Math.floor(
-                            Math.random() *
-                            Object.keys(
-                                iconColors
-                            ).length
+                            Math.random() * Object.keys(iconColors).length
                         )
                     ] as keyof typeof iconColors,
                     drag: true,
@@ -93,18 +90,13 @@ export const Map = ({ className }: { className?: string }) => {
     };
 
     const addThermometer = (e: { latlng: any }) => {
-        const center = e.latlng
+        const center = e.latlng;
         console.log(`Current coordinates: ${center.lat}, ${center.lng}`);
         const currentQuestions = questions.get();
 
-        const destination = turf.destination(
-            [center.lng, center.lat],
-            5,
-            90,
-            {
-                units: "miles",
-            }
-        );
+        const destination = turf.destination([center.lng, center.lat], 5, 90, {
+            units: "miles",
+        });
 
         questions.set([
             ...currentQuestions,
@@ -114,26 +106,18 @@ export const Map = ({ className }: { className?: string }) => {
                 data: {
                     colorA: Object.keys(iconColors)[
                         Math.floor(
-                            Math.random() *
-                            Object.keys(
-                                iconColors
-                            ).length
+                            Math.random() * Object.keys(iconColors).length
                         )
                     ] as keyof typeof iconColors,
                     colorB: Object.keys(iconColors)[
                         Math.floor(
-                            Math.random() *
-                            Object.keys(
-                                iconColors
-                            ).length
+                            Math.random() * Object.keys(iconColors).length
                         )
                     ] as keyof typeof iconColors,
                     latA: center.lat,
                     lngA: center.lng,
-                    latB: destination.geometry
-                        .coordinates[1],
-                    lngB: destination.geometry
-                        .coordinates[0],
+                    latB: destination.geometry.coordinates[1],
+                    lngB: destination.geometry.coordinates[0],
                     distance: 5,
                     warmer: true,
                     drag: true,
@@ -143,7 +127,7 @@ export const Map = ({ className }: { className?: string }) => {
     };
 
     const addTentacles = (e: { latlng: any }) => {
-        const center = e.latlng
+        const center = e.latlng;
         console.log(`Current coordinates: ${center.lat}, ${center.lng}`);
         const currentQuestions = questions.get();
 
@@ -155,10 +139,7 @@ export const Map = ({ className }: { className?: string }) => {
                 data: {
                     color: Object.keys(iconColors)[
                         Math.floor(
-                            Math.random() *
-                                Object.keys(
-                                    iconColors
-                                ).length
+                            Math.random() * Object.keys(iconColors).length
                         )
                     ] as keyof typeof iconColors,
                     lat: center.lat,
@@ -171,10 +152,10 @@ export const Map = ({ className }: { className?: string }) => {
                 },
             },
         ]);
-    }
+    };
 
     const addMatching = (e: { latlng: any }) => {
-        const center = e.latlng
+        const center = e.latlng;
         console.log(`Current coordinates: ${center.lat}, ${center.lng}`);
         const currentQuestions = questions.get();
 
@@ -186,10 +167,7 @@ export const Map = ({ className }: { className?: string }) => {
                 data: {
                     color: Object.keys(iconColors)[
                         Math.floor(
-                            Math.random() *
-                                Object.keys(
-                                    iconColors
-                                ).length
+                            Math.random() * Object.keys(iconColors).length
                         )
                     ] as keyof typeof iconColors,
                     lat: center.lat,
@@ -203,10 +181,10 @@ export const Map = ({ className }: { className?: string }) => {
                 },
             },
         ]);
-    }
+    };
 
     const addMeasuring = (e: { latlng: any }) => {
-        const center = e.latlng
+        const center = e.latlng;
         console.log(`Current coordinates: ${center.lat}, ${center.lng}`);
         const currentQuestions = questions.get();
 
@@ -218,10 +196,7 @@ export const Map = ({ className }: { className?: string }) => {
                 data: {
                     color: Object.keys(iconColors)[
                         Math.floor(
-                            Math.random() *
-                                Object.keys(
-                                    iconColors
-                                ).length
+                            Math.random() * Object.keys(iconColors).length
                         )
                     ] as keyof typeof iconColors,
                     lat: center.lat,
@@ -232,7 +207,7 @@ export const Map = ({ className }: { className?: string }) => {
                 },
             },
         ]);
-    }
+    };
 
     const refreshQuestionsBase = async (focus: boolean = false) => {
         if (!map) return;
@@ -409,30 +384,32 @@ export const Map = ({ className }: { className?: string }) => {
                 zoom={5}
                 className={cn("w-[500px] h-[500px]", className)}
                 ref={leafletMapContext.set}
+                // @ts-ignore
                 contextmenu={true}
                 contextmenuWidth={140}
                 contextmenuItems={[
                     {
-                        text: 'Add Radius',
+                        text: "Add Radius",
                         callback: (e: any) => addRadius(e),
                     },
                     {
-                        text: 'Add Thermometer',
+                        text: "Add Thermometer",
                         callback: (e: any) => addThermometer(e),
                     },
                     {
-                        text: 'Add Tentacles',
+                        text: "Add Tentacles",
                         callback: (e: any) => addTentacles(e),
                     },
                     {
-                        text: 'Add Matching',
+                        text: "Add Matching",
                         callback: (e: any) => addMatching(e),
                     },
                     {
-                        text: 'Add Measuring',
+                        text: "Add Measuring",
                         callback: (e: any) => addMeasuring(e),
                     },
-                ]}>
+                ]}
+            >
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
                     url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
