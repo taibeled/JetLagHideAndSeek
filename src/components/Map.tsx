@@ -17,13 +17,16 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import * as turf from "@turf/turf";
 import { determineGeoJSON, type OpenStreetMap } from "../maps/api";
-import { adjustPerRadius } from "../maps/radius";
+import { addDefaultRadius, adjustPerRadius } from "../maps/radius";
 import { DraggableMarkers } from "./DraggableMarkers";
-import { adjustPerThermometer } from "../maps/thermometer";
-import { adjustPerTentacle } from "../maps/tentacles";
-import { adjustPerMatching } from "../maps/matching";
+import {
+    addDefaultThermometer,
+    adjustPerThermometer,
+} from "../maps/thermometer";
+import { addDefaultTentacles, adjustPerTentacle } from "../maps/tentacles";
+import { addDefaultMatching, adjustPerMatching } from "../maps/matching";
 import { PolygonDraw } from "./PolygonDraw";
-import { adjustPerMeasuring } from "@/maps/measuring";
+import { addDefaultMeasuring, adjustPerMeasuring } from "@/maps/measuring";
 import { iconColors } from "../maps/api";
 
 export const refreshMapData = (
@@ -63,150 +66,23 @@ export const Map = ({ className }: { className?: string }) => {
     const [reset, setReset] = useState(0);
 
     const addRadius = (e: { latlng: any }) => {
-        const center = e.latlng;
-        console.log(`Current coordinates: ${center.lat}, ${center.lng}`);
-        const currentQuestions = questions.get();
-
-        questions.set([
-            ...currentQuestions,
-            {
-                id: "radius",
-                key: Math.random() * 1e9,
-                data: {
-                    radius: 50,
-                    unit: defaultUnit.get(),
-                    lat: center.lat,
-                    lng: center.lng,
-                    within: false,
-                    color: Object.keys(iconColors)[
-                        Math.floor(
-                            Math.random() * Object.keys(iconColors).length
-                        )
-                    ] as keyof typeof iconColors,
-                    drag: true,
-                },
-            },
-        ]);
+        addDefaultRadius(e.latlng);
     };
 
     const addThermometer = (e: { latlng: any }) => {
-        const center = e.latlng;
-        console.log(`Current coordinates: ${center.lat}, ${center.lng}`);
-        const currentQuestions = questions.get();
-
-        const destination = turf.destination([center.lng, center.lat], 5, 90, {
-            units: "miles",
-        });
-
-        questions.set([
-            ...currentQuestions,
-            {
-                id: "thermometer",
-                key: Math.random() * 1e9,
-                data: {
-                    colorA: Object.keys(iconColors)[
-                        Math.floor(
-                            Math.random() * Object.keys(iconColors).length
-                        )
-                    ] as keyof typeof iconColors,
-                    colorB: Object.keys(iconColors)[
-                        Math.floor(
-                            Math.random() * Object.keys(iconColors).length
-                        )
-                    ] as keyof typeof iconColors,
-                    latA: center.lat,
-                    lngA: center.lng,
-                    latB: destination.geometry.coordinates[1],
-                    lngB: destination.geometry.coordinates[0],
-                    distance: 5,
-                    warmer: true,
-                    drag: true,
-                },
-            },
-        ]);
+        addDefaultThermometer(e.latlng);
     };
 
     const addTentacles = (e: { latlng: any }) => {
-        const center = e.latlng;
-        console.log(`Current coordinates: ${center.lat}, ${center.lng}`);
-        const currentQuestions = questions.get();
-
-        questions.set([
-            ...currentQuestions,
-            {
-                id: "tentacles",
-                key: Math.random() * 1e9,
-                data: {
-                    color: Object.keys(iconColors)[
-                        Math.floor(
-                            Math.random() * Object.keys(iconColors).length
-                        )
-                    ] as keyof typeof iconColors,
-                    lat: center.lat,
-                    unit: defaultUnit.get(),
-                    lng: center.lng,
-                    drag: true,
-                    location: false,
-                    locationType: "theme_park",
-                    radius: 15,
-                },
-            },
-        ]);
+        addDefaultTentacles(e.latlng);
     };
 
     const addMatching = (e: { latlng: any }) => {
-        const center = e.latlng;
-        console.log(`Current coordinates: ${center.lat}, ${center.lng}`);
-        const currentQuestions = questions.get();
-
-        questions.set([
-            ...currentQuestions,
-            {
-                id: "matching",
-                key: Math.random() * 1e9,
-                data: {
-                    color: Object.keys(iconColors)[
-                        Math.floor(
-                            Math.random() * Object.keys(iconColors).length
-                        )
-                    ] as keyof typeof iconColors,
-                    lat: center.lat,
-                    lng: center.lng,
-                    drag: true,
-                    same: true,
-                    type: "zone",
-                    cat: {
-                        adminLevel: 3,
-                    },
-                },
-            },
-        ]);
+        addDefaultMatching(e.latlng);
     };
 
     const addMeasuring = (e: { latlng: any }) => {
-        const center = e.latlng;
-        console.log(`Current coordinates: ${center.lat}, ${center.lng}`);
-        const currentQuestions = questions.get();
-
-        questions.set([
-            ...currentQuestions,
-            {
-                id: "measuring",
-                key: Math.random() * 1e9,
-                data: {
-                    color: Object.keys(iconColors)[
-                        Math.floor(
-                            Math.random() * Object.keys(iconColors).length
-                        )
-                    ] as keyof typeof iconColors,
-                    lat: center.lat,
-                    lng: center.lng,
-                    drag: true,
-                    hiderCloser: true,
-                    type: "coastline",
-                },
-            },
-        ]);
+        addDefaultMeasuring(e.latlng);
     };
 
     const refreshQuestionsBase = async (focus: boolean = false) => {

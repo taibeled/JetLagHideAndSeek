@@ -1,4 +1,4 @@
-import { fetchCoastline, findPlacesInZone, type iconColors } from "./api";
+import { fetchCoastline, findPlacesInZone, iconColors } from "./api";
 import * as turf from "@turf/turf";
 import _ from "lodash";
 import type {
@@ -7,7 +7,8 @@ import type {
     MultiPolygon,
     Polygon,
 } from "geojson";
-import { mapGeoJSON } from "@/utils/context";
+import { mapGeoJSON, questions } from "@/utils/context";
+import type { LatLng } from "leaflet";
 
 export interface BaseMeasuringQuestion {
     lat: number;
@@ -141,4 +142,29 @@ export const adjustPerMeasuring = async (
                 );
             }
     }
+};
+
+export const addDefaultMeasuring = (center: LatLng) => {
+    questions.set([
+        ...questions.get(),
+        {
+            id: "measuring",
+            key: Math.random() * 1e9,
+            data: {
+                color: Object.keys(iconColors)[
+                    Math.floor(
+                        Math.random() *
+                            Object.keys(
+                                iconColors
+                            ).length
+                    )
+                ] as keyof typeof iconColors,
+                lat: center.lat,
+                lng: center.lng,
+                drag: true,
+                hiderCloser: true,
+                type: "coastline",
+            },
+        },
+    ]);
 };
