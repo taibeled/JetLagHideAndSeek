@@ -1,5 +1,7 @@
-import { findTentacleLocations, type iconColors } from "./api";
+import type { LatLng } from "leaflet";
+import { findTentacleLocations, iconColors } from "./api";
 import * as turf from "@turf/turf";
+import { defaultUnit, questions } from "@/utils/context";
 
 export type TentacleLocations =
     | "aquarium"
@@ -85,4 +87,26 @@ export const adjustPerTentacle = async (
                 : [...mapData.features, correctPolygon, circle]
         )
     );
+};
+
+export const addDefaultTentacles = (center: LatLng) => {
+    questions.set([
+        ...questions.get(),
+        {
+            id: "tentacles",
+            key: Math.random() * 1e9,
+            data: {
+                color: Object.keys(iconColors)[
+                    Math.floor(Math.random() * Object.keys(iconColors).length)
+                ] as keyof typeof iconColors,
+                lat: center.lat,
+                unit: defaultUnit.get(),
+                lng: center.lng,
+                drag: true,
+                location: false,
+                locationType: "theme_park",
+                radius: 15,
+            },
+        },
+    ]);
 };

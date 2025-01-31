@@ -1,5 +1,7 @@
-import type { iconColors } from "./api";
+import { questions } from "@/utils/context";
+import { iconColors } from "./api";
 import * as turf from "@turf/turf";
+import type { LatLng } from "leaflet";
 
 export interface ThermometerQuestion {
     distance?: number;
@@ -77,4 +79,33 @@ export const adjustPerThermometer = (
             )
         );
     }
+};
+
+export const addDefaultThermometer = (center: LatLng) => {
+    const destination = turf.destination([center.lng, center.lat], 5, 90, {
+        units: "miles",
+    });
+
+    questions.set([
+        ...questions.get(),
+        {
+            id: "thermometer",
+            key: Math.random() * 1e9,
+            data: {
+                colorA: Object.keys(iconColors)[
+                    Math.floor(Math.random() * Object.keys(iconColors).length)
+                ] as keyof typeof iconColors,
+                colorB: Object.keys(iconColors)[
+                    Math.floor(Math.random() * Object.keys(iconColors).length)
+                ] as keyof typeof iconColors,
+                latA: center.lat,
+                lngA: center.lng,
+                latB: destination.geometry.coordinates[1],
+                lngB: destination.geometry.coordinates[0],
+                distance: 5,
+                warmer: true,
+                drag: true,
+            },
+        },
+    ]);
 };

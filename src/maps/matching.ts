@@ -1,5 +1,7 @@
-import { findAdminBoundary, type iconColors } from "./api";
+import { questions } from "@/utils/context";
+import { findAdminBoundary, iconColors } from "./api";
 import * as turf from "@turf/turf";
+import type { LatLng } from "leaflet";
 
 export interface MatchingZoneQuestion {
     adminLevel: 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
@@ -55,4 +57,27 @@ export const adjustPerMatching = async (
                 );
             }
     }
+};
+
+export const addDefaultMatching = (center: LatLng) => {
+    questions.set([
+        ...questions.get(),
+        {
+            id: "matching",
+            key: Math.random() * 1e9,
+            data: {
+                color: Object.keys(iconColors)[
+                    Math.floor(Math.random() * Object.keys(iconColors).length)
+                ] as keyof typeof iconColors,
+                lat: center.lat,
+                lng: center.lng,
+                drag: true,
+                same: true,
+                type: "zone",
+                cat: {
+                    adminLevel: 3,
+                },
+            },
+        },
+    ]);
 };

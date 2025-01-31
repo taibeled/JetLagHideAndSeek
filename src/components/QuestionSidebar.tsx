@@ -24,6 +24,11 @@ import {
     TentacleQuestionComponent,
     ThermometerQuestionComponent,
 } from "./QuestionCards";
+import { addDefaultRadius } from "@/maps/radius";
+import { addDefaultThermometer } from "@/maps/thermometer";
+import { addDefaultTentacles } from "@/maps/tentacles";
+import { addDefaultMatching } from "@/maps/matching";
+import { addDefaultMeasuring } from "@/maps/measuring";
 
 export function QuestionSidebar() {
     const $questions = useStore(questions);
@@ -96,29 +101,7 @@ export function QuestionSidebar() {
 
                                     const center = map.getCenter();
 
-                                    questions.set([
-                                        ...$questions,
-                                        {
-                                            id: "radius",
-                                            key: Math.random() * 1e9,
-                                            data: {
-                                                radius: 50,
-                                                unit: defaultUnit.get(),
-                                                lat: center.lat,
-                                                lng: center.lng,
-                                                within: false,
-                                                color: Object.keys(iconColors)[
-                                                    Math.floor(
-                                                        Math.random() *
-                                                            Object.keys(
-                                                                iconColors
-                                                            ).length
-                                                    )
-                                                ] as keyof typeof iconColors,
-                                                drag: true,
-                                            },
-                                        },
-                                    ]);
+                                    addDefaultRadius(center);
                                 }}
                             >
                                 Add Radius
@@ -132,49 +115,7 @@ export function QuestionSidebar() {
 
                                     const center = map.getCenter();
 
-                                    const destination = turf.destination(
-                                        [center.lng, center.lat],
-                                        5,
-                                        90,
-                                        {
-                                            units: "miles",
-                                        }
-                                    );
-
-                                    questions.set([
-                                        ...$questions,
-                                        {
-                                            id: "thermometer",
-                                            key: Math.random() * 1e9,
-                                            data: {
-                                                colorA: Object.keys(iconColors)[
-                                                    Math.floor(
-                                                        Math.random() *
-                                                            Object.keys(
-                                                                iconColors
-                                                            ).length
-                                                    )
-                                                ] as keyof typeof iconColors,
-                                                colorB: Object.keys(iconColors)[
-                                                    Math.floor(
-                                                        Math.random() *
-                                                            Object.keys(
-                                                                iconColors
-                                                            ).length
-                                                    )
-                                                ] as keyof typeof iconColors,
-                                                latA: center.lat,
-                                                lngA: center.lng,
-                                                latB: destination.geometry
-                                                    .coordinates[1],
-                                                lngB: destination.geometry
-                                                    .coordinates[0],
-                                                distance: 5,
-                                                warmer: true,
-                                                drag: true,
-                                            },
-                                        },
-                                    ]);
+                                    addDefaultThermometer(center);
                                 }}
                             >
                                 Add Thermometer
@@ -188,30 +129,7 @@ export function QuestionSidebar() {
 
                                     const center = map.getCenter();
 
-                                    questions.set([
-                                        ...$questions,
-                                        {
-                                            id: "tentacles",
-                                            key: Math.random() * 1e9,
-                                            data: {
-                                                color: Object.keys(iconColors)[
-                                                    Math.floor(
-                                                        Math.random() *
-                                                            Object.keys(
-                                                                iconColors
-                                                            ).length
-                                                    )
-                                                ] as keyof typeof iconColors,
-                                                lat: center.lat,
-                                                unit: defaultUnit.get(),
-                                                lng: center.lng,
-                                                drag: true,
-                                                location: false,
-                                                locationType: "theme_park",
-                                                radius: 15,
-                                            },
-                                        },
-                                    ]);
+                                    addDefaultTentacles(center);
                                 }}
                             >
                                 Add Tentacles
@@ -225,31 +143,7 @@ export function QuestionSidebar() {
 
                                     const center = map.getCenter();
 
-                                    questions.set([
-                                        ...$questions,
-                                        {
-                                            id: "matching",
-                                            key: Math.random() * 1e9,
-                                            data: {
-                                                color: Object.keys(iconColors)[
-                                                    Math.floor(
-                                                        Math.random() *
-                                                            Object.keys(
-                                                                iconColors
-                                                            ).length
-                                                    )
-                                                ] as keyof typeof iconColors,
-                                                lat: center.lat,
-                                                lng: center.lng,
-                                                drag: true,
-                                                same: true,
-                                                type: "zone",
-                                                cat: {
-                                                    adminLevel: 3,
-                                                },
-                                            },
-                                        },
-                                    ]);
+                                    addDefaultMatching(center);
                                 }}
                             >
                                 Add Matching
@@ -263,28 +157,7 @@ export function QuestionSidebar() {
 
                                     const center = map.getCenter();
 
-                                    questions.set([
-                                        ...$questions,
-                                        {
-                                            id: "measuring",
-                                            key: Math.random() * 1e9,
-                                            data: {
-                                                color: Object.keys(iconColors)[
-                                                    Math.floor(
-                                                        Math.random() *
-                                                            Object.keys(
-                                                                iconColors
-                                                            ).length
-                                                    )
-                                                ] as keyof typeof iconColors,
-                                                lat: center.lat,
-                                                lng: center.lng,
-                                                drag: true,
-                                                hiderCloser: true,
-                                                type: "coastline",
-                                            },
-                                        },
-                                    ]);
+                                    addDefaultMeasuring(center);
                                 }}
                             >
                                 Add Measuring

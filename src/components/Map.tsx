@@ -1,8 +1,11 @@
 import "leaflet/dist/leaflet.css";
+import "leaflet-contextmenu/dist/leaflet.contextmenu.css";
 import { MapContainer, TileLayer } from "react-leaflet";
 import { geoJSON, type Map as LeafletMap } from "leaflet";
+import "leaflet-contextmenu";
 import { cn } from "../lib/utils";
 import {
+    defaultUnit,
     leafletMapContext,
     mapGeoJSON,
     mapGeoLocation,
@@ -14,13 +17,17 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import * as turf from "@turf/turf";
 import { determineGeoJSON, type OpenStreetMap } from "../maps/api";
-import { adjustPerRadius } from "../maps/radius";
+import { addDefaultRadius, adjustPerRadius } from "../maps/radius";
 import { DraggableMarkers } from "./DraggableMarkers";
-import { adjustPerThermometer } from "../maps/thermometer";
-import { adjustPerTentacle } from "../maps/tentacles";
-import { adjustPerMatching } from "../maps/matching";
+import {
+    addDefaultThermometer,
+    adjustPerThermometer,
+} from "../maps/thermometer";
+import { addDefaultTentacles, adjustPerTentacle } from "../maps/tentacles";
+import { addDefaultMatching, adjustPerMatching } from "../maps/matching";
 import { PolygonDraw } from "./PolygonDraw";
-import { adjustPerMeasuring } from "@/maps/measuring";
+import { addDefaultMeasuring, adjustPerMeasuring } from "@/maps/measuring";
+import { iconColors } from "../maps/api";
 
 export const refreshMapData = (
     $mapGeoLocation: OpenStreetMap,
@@ -57,6 +64,26 @@ export const Map = ({ className }: { className?: string }) => {
     const $questions = useStore(questions);
     const map = useStore(leafletMapContext);
     const [reset, setReset] = useState(0);
+
+    const addRadius = (e: { latlng: any }) => {
+        addDefaultRadius(e.latlng);
+    };
+
+    const addThermometer = (e: { latlng: any }) => {
+        addDefaultThermometer(e.latlng);
+    };
+
+    const addTentacles = (e: { latlng: any }) => {
+        addDefaultTentacles(e.latlng);
+    };
+
+    const addMatching = (e: { latlng: any }) => {
+        addDefaultMatching(e.latlng);
+    };
+
+    const addMeasuring = (e: { latlng: any }) => {
+        addDefaultMeasuring(e.latlng);
+    };
 
     const refreshQuestionsBase = async (focus: boolean = false) => {
         if (!map) return;
@@ -233,6 +260,31 @@ export const Map = ({ className }: { className?: string }) => {
                 zoom={5}
                 className={cn("w-[500px] h-[500px]", className)}
                 ref={leafletMapContext.set}
+                // @ts-ignore
+                contextmenu={true}
+                contextmenuWidth={140}
+                contextmenuItems={[
+                    {
+                        text: "Add Radius",
+                        callback: (e: any) => addRadius(e),
+                    },
+                    {
+                        text: "Add Thermometer",
+                        callback: (e: any) => addThermometer(e),
+                    },
+                    {
+                        text: "Add Tentacles",
+                        callback: (e: any) => addTentacles(e),
+                    },
+                    {
+                        text: "Add Matching",
+                        callback: (e: any) => addMatching(e),
+                    },
+                    {
+                        text: "Add Measuring",
+                        callback: (e: any) => addMeasuring(e),
+                    },
+                ]}
             >
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'

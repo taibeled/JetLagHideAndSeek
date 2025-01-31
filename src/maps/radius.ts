@@ -1,5 +1,7 @@
-import type { iconColors } from "./api";
+import { defaultUnit, questions } from "@/utils/context";
+import { iconColors } from "./api";
 import * as turf from "@turf/turf";
+import type { LatLng } from "leaflet";
 
 export interface RadiusQuestion {
     radius: number;
@@ -43,4 +45,25 @@ export const adjustPerRadius = (
             turf.featureCollection([...mapData.features, circle])
         );
     }
+};
+
+export const addDefaultRadius = (center: LatLng) => {
+    questions.set([
+        ...questions.get(),
+        {
+            id: "radius",
+            key: Math.random() * 1e9,
+            data: {
+                radius: 50,
+                unit: defaultUnit.get(),
+                lat: center.lat,
+                lng: center.lng,
+                within: false,
+                color: Object.keys(iconColors)[
+                    Math.floor(Math.random() * Object.keys(iconColors).length)
+                ] as keyof typeof iconColors,
+                drag: true,
+            },
+        },
+    ]);
 };
