@@ -5,7 +5,6 @@ import { geoJSON, type Map as LeafletMap } from "leaflet";
 import "leaflet-contextmenu";
 import { cn } from "../lib/utils";
 import {
-    defaultUnit,
     leafletMapContext,
     mapGeoJSON,
     mapGeoLocation,
@@ -24,7 +23,6 @@ import { adjustPerTentacle } from "../maps/tentacles";
 import { adjustPerMatching } from "../maps/matching";
 import { PolygonDraw } from "./PolygonDraw";
 import { adjustPerMeasuring } from "@/maps/measuring";
-import { iconColors } from "../maps/api";
 
 export const refreshMapData = (
     $mapGeoLocation: OpenStreetMap,
@@ -65,6 +63,9 @@ const centerMap = (map: LeafletMap, e: { latlng: any }) => {
     map.panTo(e.latlng);
 };
 
+const zoomIn = (map: LeafletMap) => {
+    map.zoomIn();
+};
 
 const zoomOut = (map: LeafletMap) => {
     map.zoomOut();
@@ -75,36 +76,7 @@ export const Map = ({ className }: { className?: string }) => {
     const $questions = useStore(questions);
     const map = useStore(leafletMapContext);
     const [reset, setReset] = useState(0);
-    
-    const zoomIn = (e: { latlng: any }) => {
-        const center = e.latlng
-        console.log(`Current coordinates: ${center.lat}, ${center.lng}`);
-    
-        questions.set([
-            ...$questions,
-            {
-                id: "radius",
-                key: Math.random() * 1e9,
-                data: {
-                    radius: 50,
-                    unit: defaultUnit.get(),
-                    lat: center.lat,
-                    lng: center.lng,
-                    within: false,
-                    color: Object.keys(iconColors)[
-                        Math.floor(
-                            Math.random() *
-                            Object.keys(
-                                iconColors
-                            ).length
-                        )
-                    ] as keyof typeof iconColors,
-                    drag: true,
-                },
-            },
-        ]);
-    };
-    
+
     const refreshQuestionsBase = async (focus: boolean = false) => {
         if (!map) return;
 
