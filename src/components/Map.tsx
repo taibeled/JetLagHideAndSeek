@@ -56,30 +56,16 @@ export const refreshMapData = (
     );
 };
 
-const showCoordinates = (e: { latlng: any }) => {
-    alert(`Coordinates: ${e.latlng}`);
-};
-
-const centerMap = (map: LeafletMap, e: { latlng: any }) => {
-    console.log(e.latlng);
-    map.panTo(e.latlng);
-};
-
-
-const zoomOut = (map: LeafletMap) => {
-    map.zoomOut();
-};
-
 export const Map = ({ className }: { className?: string }) => {
     const $mapGeoLocation = useStore(mapGeoLocation);
     const $questions = useStore(questions);
     const map = useStore(leafletMapContext);
     const [reset, setReset] = useState(0);
-    
-    const zoomIn = (e: { latlng: any }) => {
+
+    const addRadius = (e: { latlng: any }) => {
         const center = e.latlng
         console.log(`Current coordinates: ${center.lat}, ${center.lng}`);
-    
+
         questions.set([
             ...$questions,
             {
@@ -104,7 +90,117 @@ export const Map = ({ className }: { className?: string }) => {
             },
         ]);
     };
-    
+
+    const addThermometer = (e: { latlng: any }) => {
+        const center = e.latlng
+        console.log(`Current coordinates: ${center.lat}, ${center.lng}`);
+
+        const destination = turf.destination(
+            [center.lng, center.lat],
+            5,
+            90,
+            {
+                units: "miles",
+            }
+        );
+
+        questions.set([
+            ...$questions,
+            {
+                id: "thermometer",
+                key: Math.random() * 1e9,
+                data: {
+                    colorA: Object.keys(iconColors)[
+                        Math.floor(
+                            Math.random() *
+                            Object.keys(
+                                iconColors
+                            ).length
+                        )
+                    ] as keyof typeof iconColors,
+                    colorB: Object.keys(iconColors)[
+                        Math.floor(
+                            Math.random() *
+                            Object.keys(
+                                iconColors
+                            ).length
+                        )
+                    ] as keyof typeof iconColors,
+                    latA: center.lat,
+                    lngA: center.lng,
+                    latB: destination.geometry
+                        .coordinates[1],
+                    lngB: destination.geometry
+                        .coordinates[0],
+                    distance: 5,
+                    warmer: true,
+                    drag: true,
+                },
+            },
+        ]);
+    };
+
+    const addTentacles = (e: { latlng: any }) => {
+        const center = e.latlng
+        console.log(`Current coordinates: ${center.lat}, ${center.lng}`);
+
+        questions.set([
+            ...$questions,
+            {
+                id: "tentacles",
+                key: Math.random() * 1e9,
+                data: {
+                    color: Object.keys(iconColors)[
+                        Math.floor(
+                            Math.random() *
+                                Object.keys(
+                                    iconColors
+                                ).length
+                        )
+                    ] as keyof typeof iconColors,
+                    lat: center.lat,
+                    unit: defaultUnit.get(),
+                    lng: center.lng,
+                    drag: true,
+                    location: false,
+                    locationType: "theme_park",
+                    radius: 15,
+                },
+            },
+        ]);
+    }
+
+    const addMatching = (e: { latlng: any }) => {
+        const center = e.latlng
+        console.log(`Current coordinates: ${center.lat}, ${center.lng}`);
+
+        questions.set([
+            ...$questions,
+            {
+                id: "matching",
+                key: Math.random() * 1e9,
+                data: {
+                    color: Object.keys(iconColors)[
+                        Math.floor(
+                            Math.random() *
+                                Object.keys(
+                                    iconColors
+                                ).length
+                        )
+                    ] as keyof typeof iconColors,
+                    lat: center.lat,
+                    lng: center.lng,
+                    drag: true,
+                    same: true,
+                    type: "zone",
+                    cat: {
+                        adminLevel: 3,
+                    },
+                },
+            },
+        ]);
+    }
+
     const refreshQuestionsBase = async (focus: boolean = false) => {
         if (!map) return;
 
@@ -284,21 +380,20 @@ export const Map = ({ className }: { className?: string }) => {
                 contextmenuWidth={140}
                 contextmenuItems={[
                     {
-                        text: 'Show coordinates',
-                        callback: showCoordinates,
+                        text: 'Add Radius',
+                        callback: (e: any) => addRadius(e),
                     },
                     {
-                        text: 'Center map here',
-                        callback: (e: any) => centerMap(map!, e),
-                    },
-                    '-',
-                    {
-                        text: 'Zoom in',
-                        callback: () => zoomIn(map!),
+                        text: 'Add Thermometer',
+                        callback: (e: any) => addThermometer(e),
                     },
                     {
-                        text: 'Zoom out',
-                        callback: () => zoomOut(map!),
+                        text: 'Add Tentacles',
+                        callback: (e: any) => addTentacles(e),
+                    },
+                    {
+                        text: 'Add Matching',
+                        callback: (e: any) => addMatching(e),
                     },
                 ]}>
                 <TileLayer
