@@ -33,14 +33,14 @@ export type MeasuringQuestion =
 export const adjustPerMeasuring = async (
     question: MeasuringQuestion,
     mapData: any,
-    masked: boolean
+    masked: boolean,
 ) => {
     if (mapData === null) return;
 
     const bBox = turf.bbox(mapGeoJSON.get());
 
     switch (question.type) {
-        case "coastline":
+        case "coastline": {
             if (question.hiderCloser && !masked)
                 throw new Error("Must be masked");
 
@@ -48,7 +48,7 @@ export const adjustPerMeasuring = async (
                 throw new Error("Cannot be masked");
 
             const coastline = turf.lineToPolygon(
-                await fetchCoastline()
+                await fetchCoastline(),
             ) as Feature<MultiPolygon>;
 
             const distanceToCoastline = turf.pointToPolygonDistance(
@@ -57,7 +57,7 @@ export const adjustPerMeasuring = async (
                 {
                     units: "miles",
                     method: "geodesic",
-                }
+                },
             );
 
             const buffed = turf.buffer(
@@ -66,23 +66,24 @@ export const adjustPerMeasuring = async (
                 {
                     units: "miles",
                     steps: 64,
-                }
+                },
             );
 
             if (question.hiderCloser) {
                 return turf.union(
-                    turf.featureCollection([...mapData.features, buffed])
+                    turf.featureCollection([...mapData.features, buffed]),
                 );
             } else {
                 return turf.intersect(
                     turf.featureCollection(
                         mapData.features.length > 1
                             ? [turf.union(mapData)!, buffed]
-                            : [...mapData.features, buffed]
-                    )
+                            : [...mapData.features, buffed],
+                    ),
                 );
             }
-        case "airport":
+        }
+        case "airport": {
             if (question.hiderCloser && masked)
                 throw new Error("Cannot be masked");
 
@@ -90,19 +91,19 @@ export const adjustPerMeasuring = async (
                 throw new Error("Must be masked");
 
             const airportDataFull = await findPlacesInZone(
-                '["aeroway"="aerodrome"]["iata"]' // Only commercial airports have IATA codes
+                '["aeroway"="aerodrome"]["iata"]', // Only commercial airports have IATA codes
             );
             const airportDataUnique = _.uniqBy(
                 airportDataFull.elements,
-                (feature: any) => feature.tags.iata
+                (feature: any) => feature.tags.iata,
             );
             const airportData = turf.featureCollection(
                 airportDataUnique.map((x) =>
                     turf.point([
                         x.center ? x.center.lon : x.lon,
                         x.center ? x.center.lat : x.lat,
-                    ])
-                )
+                    ]),
+                ),
             );
 
             const point = turf.point([question.lng, question.lat]);
@@ -133,14 +134,15 @@ export const adjustPerMeasuring = async (
                     turf.featureCollection(
                         mapData.features.length > 1
                             ? [turf.union(mapData)!, unionCircles]
-                            : [...mapData.features, unionCircles]
-                    )
+                            : [...mapData.features, unionCircles],
+                    ),
                 );
             } else {
                 return turf.union(
-                    turf.featureCollection([...mapData.features, unionCircles])
+                    turf.featureCollection([...mapData.features, unionCircles]),
                 );
             }
+        }
     }
 };
 
@@ -152,12 +154,7 @@ export const addDefaultMeasuring = (center: LatLng) => {
             key: Math.random() * 1e9,
             data: {
                 color: Object.keys(iconColors)[
-                    Math.floor(
-                        Math.random() *
-                            Object.keys(
-                                iconColors
-                            ).length
-                    )
+                    Math.floor(Math.random() * Object.keys(iconColors).length)
                 ] as keyof typeof iconColors,
                 lat: center.lat,
                 lng: center.lng,

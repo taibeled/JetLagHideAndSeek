@@ -31,7 +31,7 @@ export interface TentacleQuestion {
 
 const createGeodesicPolygon = (polygon: any, steps = 20) => {
     const coordinates = polygon.geometry.coordinates[0];
-    let geodesicLines = [];
+    const geodesicLines = [];
 
     for (let i = 0; i < coordinates.length - 1; i++) {
         const start = coordinates[i];
@@ -43,14 +43,14 @@ const createGeodesicPolygon = (polygon: any, steps = 20) => {
 
     geodesicLines.push(geodesicLines[0]);
 
-    // @ts-ignore
+    // @ts-expect-error Typing is wrong
     return turf.polygon([geodesicLines]);
 };
 
 export const adjustPerTentacle = async (
     question: TentacleQuestion,
     mapData: any,
-    masked: boolean
+    masked: boolean,
 ) => {
     if (mapData === null) return;
     if (masked) {
@@ -77,15 +77,15 @@ export const adjustPerTentacle = async (
         question.radius,
         {
             units: question.unit ?? "miles",
-        }
+        },
     );
 
     return turf.intersect(
         turf.featureCollection(
             mapData.features.length > 1
                 ? [turf.union(mapData)!, correctPolygon, circle]
-                : [...mapData.features, correctPolygon, circle]
-        )
+                : [...mapData.features, correctPolygon, circle],
+        ),
     );
 };
 

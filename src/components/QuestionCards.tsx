@@ -55,7 +55,7 @@ const QuestionCard = ({
                         className="absolute top-2 right-2 text-white"
                         onClick={() => {
                             questions.set(
-                                $questions.filter((q) => q.key !== questionKey)
+                                $questions.filter((q) => q.key !== questionKey),
                             );
                         }}
                     >
@@ -65,7 +65,7 @@ const QuestionCard = ({
                         onClick={toggleCollapse}
                         className={cn(
                             "absolute top-2 left-2 text-white border rounded-md transition-all duration-500",
-                            isCollapsed && "-rotate-90"
+                            isCollapsed && "-rotate-90",
                         )}
                     >
                         <VscChevronDown />
@@ -76,7 +76,7 @@ const QuestionCard = ({
                     <SidebarGroupContent
                         className={cn(
                             "overflow-hidden transition-all duration-1000 max-h-[100rem]", // 100rem is arbitrary
-                            isCollapsed && "max-h-0"
+                            isCollapsed && "max-h-0",
                         )}
                     >
                         <SidebarMenu>{children}</SidebarMenu>
@@ -160,7 +160,7 @@ export const RadiusQuestionComponent = ({
             <SidebarMenuItem
                 className={cn(
                     MENU_ITEM_CLASSNAME,
-                    "text-2xl font-semibold font-poppins"
+                    "text-2xl font-semibold font-poppins",
                 )}
                 style={{
                     backgroundColor: iconColors[data.color ?? "gold"],
@@ -292,7 +292,7 @@ export const MatchingQuestionComponent = ({
             <SidebarMenuItem
                 className={cn(
                     MENU_ITEM_CLASSNAME,
-                    "text-2xl font-semibold font-poppins"
+                    "text-2xl font-semibold font-poppins",
                 )}
                 style={{
                     backgroundColor: iconColors[data.color ?? "gold"],
@@ -347,10 +347,11 @@ export const MeasuringQuestionComponent = ({
             .indexOf(questionKey) + 1
     }`;
 
-    let questionSpecific = <></>;
+    const questionSpecific = <></>;
 
-    switch (data.type) {
-    }
+    // Implement this if a question category within measuring has specific fields (also change questionSpecific above to a let statement)
+    // switch (data.type) {
+    // }
 
     return (
         <QuestionCard questionKey={questionKey} label={label}>
@@ -395,7 +396,7 @@ export const MeasuringQuestionComponent = ({
             <SidebarMenuItem
                 className={cn(
                     MENU_ITEM_CLASSNAME,
-                    "text-2xl font-semibold font-poppins"
+                    "text-2xl font-semibold font-poppins",
                 )}
                 style={{
                     backgroundColor: iconColors[data.color ?? "gold"],
@@ -529,7 +530,7 @@ export const TentacleQuestionComponent = ({
             <SidebarMenuItem
                 className={cn(
                     MENU_ITEM_CLASSNAME,
-                    "text-2xl font-semibold font-poppins"
+                    "text-2xl font-semibold font-poppins",
                 )}
                 style={{
                     backgroundColor: iconColors[data.color ?? "gold"],
@@ -618,7 +619,7 @@ const TentacleLocationSelector = ({
                 } else {
                     (newQuestions[index].data as TentacleQuestion).location =
                         locations.features.find(
-                            (feature: any) => feature.properties.name === value
+                            (feature: any) => feature.properties.name === value,
                         );
                 }
                 questions.set(newQuestions);
@@ -679,7 +680,7 @@ export const ThermometerQuestionComponent = ({
             <SidebarMenuItem
                 className={cn(
                     MENU_ITEM_CLASSNAME,
-                    "text-xl font-semibold font-poppins"
+                    "text-xl font-semibold font-poppins",
                 )}
                 style={{
                     backgroundColor: iconColors[data.colorA ?? "gold"],
@@ -721,7 +722,7 @@ export const ThermometerQuestionComponent = ({
             <SidebarMenuItem
                 className={cn(
                     MENU_ITEM_CLASSNAME,
-                    "text-xl font-semibold font-poppins"
+                    "text-xl font-semibold font-poppins",
                 )}
                 style={{
                     backgroundColor: iconColors[data.colorB ?? "gold"],

@@ -16,7 +16,7 @@ export interface RadiusQuestion {
 export const adjustPerRadius = (
     question: RadiusQuestion,
     mapData: any,
-    masked: boolean
+    masked: boolean,
 ) => {
     if (mapData === null) return;
 
@@ -34,15 +34,15 @@ export const adjustPerRadius = (
             turf.featureCollection(
                 mapData.features.length > 1
                     ? [turf.union(mapData)!, circle]
-                    : [...mapData.features, circle]
-            )
+                    : [...mapData.features, circle],
+            ),
         );
     } else {
         if (!masked) {
             throw new Error("Must be masked");
         }
         return turf.union(
-            turf.featureCollection([...mapData.features, circle])
+            turf.featureCollection([...mapData.features, circle]),
         );
     }
 };

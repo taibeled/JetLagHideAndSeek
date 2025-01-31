@@ -27,17 +27,17 @@ export const Options = () => {
                         if (!navigator || !navigator.clipboard)
                             return toast.error("Clipboard not supported");
 
-                        let $polyGeoJSON = polyGeoJSON.get();
+                        const $polyGeoJSON = polyGeoJSON.get();
                         if ($polyGeoJSON !== null) {
                             navigator.clipboard.writeText(
-                                JSON.stringify($polyGeoJSON)
+                                JSON.stringify($polyGeoJSON),
                             );
                         } else {
                             const location = mapGeoLocation.get();
                             location.properties.isHidingZone = true;
 
                             navigator.clipboard.writeText(
-                                JSON.stringify(location)
+                                JSON.stringify(location),
                             );
                         }
                         toast.success("Hiding zone copied successfully", {
@@ -74,9 +74,9 @@ export const Options = () => {
                                     "Hiding zone pasted successfully",
                                     {
                                         autoClose: 2000,
-                                    }
+                                    },
                                 );
-                            } catch (e) {
+                            } catch {
                                 toast.error("Invalid GeoJSON");
                             }
                         });

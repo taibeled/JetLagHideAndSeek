@@ -51,7 +51,7 @@ export const getOverpassData = async (query: string) => {
             headers: {
                 "Cache-Control": "max-age=604800", // 7 days in seconds
             },
-        }
+        },
     );
     const data = await response.json();
     return data;
@@ -59,7 +59,7 @@ export const getOverpassData = async (query: string) => {
 
 export const determineGeoJSON = async (
     osmId: string,
-    osmTypeLetter: "W" | "R" | "N"
+    osmTypeLetter: "W" | "R" | "N",
 ): Promise<any> => {
     const osmTypeMap: { [key: string]: string } = {
         W: "way",
@@ -104,7 +104,7 @@ nw["${tentacleFirstTag[question.locationType]}"="${
     }"](around:${turf.convertLength(
         question.radius,
         question.unit,
-        "meters"
+        "meters",
     )}, ${question.lat}, ${question.lng});
 out center;
     `;
@@ -123,7 +123,7 @@ out center;
 
         if (
             response.features.find(
-                (feature: any) => feature.properties.name === name
+                (feature: any) => feature.properties.name === name,
             )
         )
             return;
@@ -131,7 +131,7 @@ out center;
         response.features.push(
             turf.point([element.center.lon, element.center.lat], {
                 name,
-            })
+            }),
         );
     });
 
@@ -141,7 +141,7 @@ out center;
 export const findAdminBoundary = async (
     latitude: number,
     longitude: number,
-    adminLevel: 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
+    adminLevel: 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10,
 ) => {
     const query = `
 [out:json];
@@ -166,7 +166,7 @@ export const geocode = async (address: string, language: string) => {
 
     features.forEach((feature) => {
         feature.geometry.coordinates = convertToLatLong(
-            feature.geometry.coordinates as number[]
+            feature.geometry.coordinates as number[],
         );
         if (!feature.properties.extent) return;
         feature.properties.extent = [
@@ -208,7 +208,7 @@ export const fetchCoastline = async () => {
             headers: {
                 "Cache-Control": "max-age=604800", // 7 days in seconds,
             },
-        }
+        },
     );
     const data = await response.json();
     return data;
@@ -225,7 +225,7 @@ export const findPlacesInZone = async (
         | "wr"
         | "nr"
         | "area" = "nwr",
-    outType: "center" | "geom" = "center"
+    outType: "center" | "geom" = "center",
 ) => {
     let query = "";
 

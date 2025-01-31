@@ -10,6 +10,7 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
   - [x] Same zone (i.e., same region or prefecture)
 - [ ] Measuring
   - [x] Coastline
+  - [x] Commercial airports
 - [x] Tentacles
   - [x] Zoo
   - [x] Aquarium
@@ -31,6 +32,8 @@ If anyone wants to help, please focus on one of the following or leave an issue 
 - [ ] Train station fetching (use Overpass to fetch train stations in the zone and automatically show them)
 - [x] Progressive web app (https://github.com/taibeled/JetLagHideAndSeek/issues/1)
   - [ ] Icon for the app
+
+This project uses ESLint and Prettier for formatting/style. Before submitting a pull request/committing, please run `pnpm lint` for your code to be automatically fixed.
 
 More documentation to come.
 

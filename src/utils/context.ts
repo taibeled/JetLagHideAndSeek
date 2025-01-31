@@ -32,7 +32,7 @@ export const mapGeoLocation = persistentAtom<OpenStreetMap>(
     {
         encode: JSON.stringify,
         decode: JSON.parse,
-    }
+    },
 );
 
 export const mapGeoJSON = atom<any>(null);

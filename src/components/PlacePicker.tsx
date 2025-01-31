@@ -17,7 +17,12 @@ import {
     type OpenStreetMap,
     determineName,
 } from "../maps/api";
-import { mapGeoJSON, mapGeoLocation, polyGeoJSON, questions } from "../utils/context";
+import {
+    mapGeoJSON,
+    mapGeoLocation,
+    polyGeoJSON,
+    questions,
+} from "../utils/context";
 import { useStore } from "@nanostores/react";
 
 export const PlacePicker = ({
@@ -42,7 +47,7 @@ export const PlacePicker = ({
     const debouncedValue = useDebounce<string>(inputValue, debounce);
     const [options, setOptions] = useState<OpenStreetMap[]>([]);
     const [selectedOption, setSelectedOption] = useState<OpenStreetMap | null>(
-        null
+        null,
     );
 
     const displayOptionsList = () => {
@@ -68,7 +73,7 @@ export const PlacePicker = ({
             document.removeEventListener(
                 "click",
                 handleOnClickOutsideWrapper,
-                true
+                true,
             );
         };
     }, [wrapperRef]);
@@ -93,7 +98,7 @@ export const PlacePicker = ({
                 .then((data) => setOptions(data))
                 .catch(() => setOptions([]));
         },
-        [GEOCODER_API, language]
+        [GEOCODER_API, language],
     );
 
     useEffect(() => {
@@ -136,7 +141,7 @@ export const PlacePicker = ({
             <div
                 className={cn(
                     "flex rounded-t-md rounded-b-md items-center bg-white px-1 py-2 transition-all shadow-md",
-                    isActive === true && "rounded-b-none"
+                    isActive === true && "rounded-b-none",
                 )}
             >
                 <div className="flex-1 cursor-text text-sm font-normal ml-2">
@@ -163,7 +168,7 @@ export const PlacePicker = ({
             <div
                 className={cn(
                     "max-h-0 rounded-b-md bg-white shadow-md transition-all",
-                    isActive === true && "max-h-[16em]"
+                    isActive === true && "max-h-[16em]",
                 )}
             >
                 <ul
@@ -181,7 +186,7 @@ export const PlacePicker = ({
                                 option.properties.osm_id ===
                                     selectedOption?.properties.osm_id &&
                                     "bg-slate-300 hover:bg-slate-400",
-                                isActive === true && "block"
+                                isActive === true && "block",
                             )}
                         >
                             {determineName(option)}

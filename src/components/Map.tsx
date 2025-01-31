@@ -5,7 +5,6 @@ import { geoJSON, type Map as LeafletMap } from "leaflet";
 import "leaflet-contextmenu";
 import { cn } from "../lib/utils";
 import {
-    defaultUnit,
     leafletMapContext,
     mapGeoJSON,
     mapGeoLocation,
@@ -27,17 +26,16 @@ import { addDefaultTentacles, adjustPerTentacle } from "../maps/tentacles";
 import { addDefaultMatching, adjustPerMatching } from "../maps/matching";
 import { PolygonDraw } from "./PolygonDraw";
 import { addDefaultMeasuring, adjustPerMeasuring } from "@/maps/measuring";
-import { iconColors } from "../maps/api";
 
 export const refreshMapData = (
     $mapGeoLocation: OpenStreetMap,
     screen: boolean = true,
-    map?: LeafletMap
+    map?: LeafletMap,
 ) => {
     const refresh = async () => {
         const mapGeoData = await determineGeoJSON(
             $mapGeoLocation.properties.osm_id.toString(),
-            $mapGeoLocation.properties.osm_type
+            $mapGeoLocation.properties.osm_type,
         );
 
         mapGeoJSON.set(mapGeoData);
@@ -55,7 +53,7 @@ export const refreshMapData = (
         {
             pending: "Refreshing map data...",
             error: "Error refreshing map data",
-        }
+        },
     );
 };
 
@@ -110,14 +108,14 @@ export const Map = ({ className }: { className?: string }) => {
                         mapGeoData = adjustPerRadius(
                             question.data,
                             mapGeoData,
-                            false
+                            false,
                         );
                         break;
                     case "thermometer":
                         mapGeoData = adjustPerThermometer(
                             question.data,
                             mapGeoData,
-                            false
+                            false,
                         );
                         break;
                     case "tentacles":
@@ -125,7 +123,7 @@ export const Map = ({ className }: { className?: string }) => {
                         mapGeoData = await adjustPerTentacle(
                             question.data,
                             mapGeoData,
-                            false
+                            false,
                         );
                         break;
                     case "matching":
@@ -133,7 +131,7 @@ export const Map = ({ className }: { className?: string }) => {
                         mapGeoData = await adjustPerMatching(
                             question.data,
                             mapGeoData,
-                            false
+                            false,
                         );
                         break;
                     case "measuring":
@@ -141,10 +139,11 @@ export const Map = ({ className }: { className?: string }) => {
                             mapGeoData = await adjustPerMeasuring(
                                 question.data,
                                 mapGeoData,
-                                false
+                                false,
                             );
                         } catch (error: any) {
                             if (error && error.message === "Must be masked") {
+                                /* empty */
                             } else {
                                 console.log(error);
                             }
@@ -184,7 +183,7 @@ export const Map = ({ className }: { className?: string }) => {
                         mapGeoData = adjustPerRadius(
                             question.data,
                             mapGeoData,
-                            true
+                            true,
                         );
 
                         break;
@@ -197,7 +196,7 @@ export const Map = ({ className }: { className?: string }) => {
                                 within: false,
                             },
                             mapGeoData,
-                            true
+                            true,
                         );
                         break;
                     case "matching":
@@ -206,7 +205,7 @@ export const Map = ({ className }: { className?: string }) => {
                         mapGeoData = await adjustPerMatching(
                             question.data,
                             mapGeoData,
-                            true
+                            true,
                         );
                         break;
                     case "measuring":
@@ -214,10 +213,11 @@ export const Map = ({ className }: { className?: string }) => {
                             mapGeoData = await adjustPerMeasuring(
                                 question.data,
                                 mapGeoData,
-                                true
+                                true,
                             );
                         } catch (error: any) {
                             if (error && error.message === "Cannot be masked") {
+                                /* empty */
                             } else {
                                 console.log(error);
                             }
@@ -234,7 +234,7 @@ export const Map = ({ className }: { className?: string }) => {
             }
 
             map.eachLayer((layer: any) => {
-                if (!!layer.addData) {
+                if (layer.addData) {
                     // Hopefully only geoJSON layers
                     map.removeLayer(layer);
                 }
@@ -260,7 +260,7 @@ export const Map = ({ className }: { className?: string }) => {
                 zoom={5}
                 className={cn("w-[500px] h-[500px]", className)}
                 ref={leafletMapContext.set}
-                // @ts-ignore
+                // @ts-expect-error Typing doesn't update from react-contextmenu
                 contextmenu={true}
                 contextmenuWidth={140}
                 contextmenuItems={[
@@ -311,7 +311,7 @@ export const Map = ({ className }: { className?: string }) => {
                             onClick={() => {
                                 const element =
                                     document.querySelector(
-                                        ".leaflet-container"
+                                        ".leaflet-container",
                                     );
                                 if (!element)
                                     return toast.error("Map not loaded");
@@ -330,7 +330,7 @@ export const Map = ({ className }: { className?: string }) => {
                 <PolygonDraw />
             </MapContainer>
         ),
-        [map]
+        [map],
     );
 
     useEffect(() => {
@@ -344,7 +344,7 @@ export const Map = ({ className }: { className?: string }) => {
             if (!map) return;
             let layerCount = 0;
             map.eachLayer((layer: any) => {
-                if (!!layer.addData) {
+                if (layer.addData) {
                     // Hopefully only geoJSON layers
                     layerCount++;
                 }
@@ -363,7 +363,7 @@ export const Map = ({ className }: { className?: string }) => {
 
 export const focusMap = (map: LeafletMap, mapGeoData: any) => {
     map.eachLayer((layer: any) => {
-        if (!!layer.addData) {
+        if (layer.addData) {
             // Hopefully only geoJSON layers
             map.removeLayer(layer);
         }

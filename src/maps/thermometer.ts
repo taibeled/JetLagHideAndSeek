@@ -18,7 +18,7 @@ export interface ThermometerQuestion {
 export const adjustPerThermometer = (
     question: ThermometerQuestion,
     mapData: any,
-    masked: boolean
+    masked: boolean,
 ) => {
     if (mapData === null) return;
     if (masked) {
@@ -55,7 +55,7 @@ export const adjustPerThermometer = (
 
     const wouldRemoveA = turf.booleanPointInPolygon(
         pointB, // Should be A, but there must be an error in my logic somewhere else so this is fine
-        polygon
+        polygon,
     );
 
     if (
@@ -67,16 +67,16 @@ export const adjustPerThermometer = (
             turf.featureCollection(
                 mapData.features.length > 1
                     ? [turf.union(mapData)!, polygon]
-                    : [...mapData.features, polygon]
-            )
+                    : [...mapData.features, polygon],
+            ),
         );
     } else {
         return turf.difference(
             turf.featureCollection(
                 mapData.features.length > 1
                     ? [turf.union(mapData)!, polygon]
-                    : [...mapData.features, polygon]
-            )
+                    : [...mapData.features, polygon],
+            ),
         );
     }
 };

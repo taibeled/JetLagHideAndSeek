@@ -1,7 +1,11 @@
 import { toast } from "react-toastify";
-import { MENU_ITEM_CLASSNAME, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import {
+    MENU_ITEM_CLASSNAME,
+    SidebarMenuButton,
+    SidebarMenuItem,
+} from "./ui/sidebar";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export const LatitudeLongitude = ({
     latitude,
@@ -22,9 +26,7 @@ export const LatitudeLongitude = ({
     return (
         <>
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
-                <Label className="leading-5">
-                    {latLabel}
-                </Label>
+                <Label className="leading-5">{latLabel}</Label>
                 <Input
                     type="number"
                     value={latitude}
@@ -34,9 +36,7 @@ export const LatitudeLongitude = ({
                 />
             </SidebarMenuItem>
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
-                <Label className="leading-5">
-                    {lngLabel}
-                </Label>
+                <Label className="leading-5">{lngLabel}</Label>
                 <Input
                     type="number"
                     value={longitude}
@@ -61,13 +61,13 @@ export const LatitudeLongitude = ({
                                         {
                                             maximumAge: 0,
                                             enableHighAccuracy: true,
-                                        }
+                                        },
                                     );
-                                }
+                                },
                             ).then((position) => {
                                 onChange(
                                     position.coords.latitude,
-                                    position.coords.longitude
+                                    position.coords.longitude,
                                 );
                             }),
                             {
@@ -75,7 +75,7 @@ export const LatitudeLongitude = ({
                                 success: "Location fetched",
                                 error: "Could not fetch location",
                             },
-                            { autoClose: 500 }
+                            { autoClose: 500 },
                         );
                     }}
                 >

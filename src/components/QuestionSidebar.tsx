@@ -8,14 +8,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import {
-    defaultUnit,
-    leafletMapContext,
-    mapGeoLocation,
-    questions,
-} from "../utils/context";
-import { iconColors } from "../maps/api";
-import * as turf from "@turf/turf";
+import { leafletMapContext, questions } from "../utils/context";
 import { useStore } from "@nanostores/react";
 import {
     MatchingQuestionComponent,

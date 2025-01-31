@@ -9,7 +9,7 @@ import { mapGeoJSON, polyGeoJSON, questions } from "@/utils/context";
 export const PolygonDraw = () => {
     const featureRef = useRef<any | null>(null);
 
-    // @ts-ignore
+    // @ts-expect-error The typings are wrong
     L.drawLocal.draw.toolbar.buttons.polygon = "Draw the hiding zone!";
 
     const onChange = () => {
@@ -17,7 +17,7 @@ export const PolygonDraw = () => {
 
         const layers = featureRef.current._layers;
         const geoJSONs = Object.values(layers).map((layer: any) =>
-            layer.toGeoJSON()
+            layer.toGeoJSON(),
         );
         const geoJSON = turf.featureCollection(geoJSONs);
 
@@ -37,7 +37,7 @@ export const PolygonDraw = () => {
                     marker: false,
                     polyline: false,
                     polygon: {
-                        shapeOptions: {fillOpacity: 0}
+                        shapeOptions: { fillOpacity: 0 },
                     },
                 }}
                 onCreated={onChange}

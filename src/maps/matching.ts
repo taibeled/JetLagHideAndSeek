@@ -25,16 +25,16 @@ export type MatchingQuestion = ZoneMatchingQuestion;
 export const adjustPerMatching = async (
     question: MatchingQuestion,
     mapData: any,
-    masked: boolean
+    masked: boolean,
 ) => {
     if (mapData === null) return;
 
     switch (question.type) {
-        case "zone":
+        case "zone": {
             const boundary = await findAdminBoundary(
                 question.lat,
                 question.lng,
-                question.cat.adminLevel
+                question.cat.adminLevel,
             );
 
             if (question.same) {
@@ -45,17 +45,18 @@ export const adjustPerMatching = async (
                     turf.featureCollection(
                         mapData.features.length > 1
                             ? [turf.union(mapData)!, boundary]
-                            : [...mapData.features, boundary]
-                    )
+                            : [...mapData.features, boundary],
+                    ),
                 );
             } else {
                 if (!masked) {
                     throw new Error("Must be masked");
                 }
                 return turf.union(
-                    turf.featureCollection([...mapData.features, boundary])
+                    turf.featureCollection([...mapData.features, boundary]),
                 );
             }
+        }
     }
 };
 
