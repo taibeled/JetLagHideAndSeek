@@ -238,7 +238,7 @@ ${searchType}${filter}(poly:"${turf
             .getCoords($polyGeoJSON.features)
             .flatMap((polygon) => polygon.geometry.coordinates)
             .flat()
-            .map((coord) => coord.reverse().join(" "))
+            .map((coord) => [coord[1], coord[0]].join(" "))
             .join(" ")}");
 out ${outType};
 `;

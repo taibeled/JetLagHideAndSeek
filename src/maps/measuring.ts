@@ -2,7 +2,6 @@ import { fetchCoastline, findPlacesInZone, type iconColors } from "./api";
 import * as turf from "@turf/turf";
 import _ from "lodash";
 import type {
-    BBox,
     Feature,
     GeoJsonProperties,
     MultiPolygon,

@@ -67,6 +67,7 @@ export const Map = ({ className }: { className?: string }) => {
             const polyGeoData = polyGeoJSON.get();
             if (polyGeoData) {
                 mapGeoData = polyGeoData;
+                mapGeoJSON.set(polyGeoData);
             } else {
                 mapGeoData = await refreshMapData($mapGeoLocation, false, map);
             }
