@@ -25,9 +25,9 @@ import { Options } from "@/components/Options";
                 </span>
                 <PlacePicker client:load className="m-4" />
             </div>
-            <div class="flex justify-center">
+            <div class="flex justify-center " id="map-modal-dialog-container-leaflet">
                 <Map
-                    className="w-full md:w-[90%] lg:w-[80%] rounded-2xl"
+                    className="w-full md:w-[90%] lg:w-[80%] rounded-2xl [&.fullscreen]:w-full [&.fullscreen]:h-full"
                     client:only
                 />
             </div>

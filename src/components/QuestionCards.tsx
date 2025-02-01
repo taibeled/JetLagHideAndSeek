@@ -35,12 +35,14 @@ const QuestionCard = ({
     className,
     label,
     sub,
+    showDeleteButton,
 }: {
     children: React.ReactNode;
     questionKey: number;
     className?: string;
     label?: string;
     sub?: string;
+    showDeleteButton?: boolean;
 }) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const $questions = useStore(questions);
@@ -53,16 +55,20 @@ const QuestionCard = ({
         <>
             <SidebarGroup className={className}>
                 <div className="relative">
-                    <button
-                        className="absolute top-2 right-2 text-white"
-                        onClick={() => {
-                            questions.set(
-                                $questions.filter((q) => q.key !== questionKey),
-                            );
-                        }}
-                    >
-                        <VscChromeClose />
-                    </button>
+                    {showDeleteButton && (
+                        <button
+                            className="absolute top-2 right-2 text-white"
+                            onClick={() => {
+                                questions.set(
+                                    $questions.filter(
+                                        (q) => q.key !== questionKey,
+                                    ),
+                                );
+                            }}
+                        >
+                            <VscChromeClose />
+                        </button>
+                    )}
                     <button
                         onClick={toggleCollapse}
                         className={cn(
@@ -96,12 +102,14 @@ export const RadiusQuestionComponent = ({
     index,
     sub,
     className,
+    showDeleteButton = true,
 }: {
     data: RadiusQuestion;
     questionKey: number;
     index: number;
     sub?: string;
     className?: string;
+    showDeleteButton?: boolean;
 }) => {
     const $questions = useStore(questions);
     const label = `Radius
@@ -118,6 +126,7 @@ export const RadiusQuestionComponent = ({
             label={label}
             sub={sub}
             className={className}
+            showDeleteButton={showDeleteButton}
         >
             <SidebarMenuItem>
                 <div className={cn(MENU_ITEM_CLASSNAME, "gap-2 flex flex-row")}>
@@ -215,12 +224,14 @@ export const MatchingQuestionComponent = ({
     index,
     sub,
     className,
+    showDeleteButton = true,
 }: {
     data: MatchingQuestion;
     questionKey: number;
     index: number;
     sub?: string;
     className?: string;
+    showDeleteButton?: boolean;
 }) => {
     const $questions = useStore(questions);
     const label = `Matching
@@ -275,6 +286,7 @@ export const MatchingQuestionComponent = ({
             label={label}
             sub={sub}
             className={className}
+            showDeleteButton={showDeleteButton}
         >
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
@@ -355,12 +367,14 @@ export const MeasuringQuestionComponent = ({
     index,
     sub,
     className,
+    showDeleteButton = true,
 }: {
     data: MeasuringQuestion;
     questionKey: number;
     index: number;
     sub?: string;
     className?: string;
+    showDeleteButton?: boolean;
 }) => {
     const $questions = useStore(questions);
     const label = `Measuring
@@ -383,6 +397,7 @@ export const MeasuringQuestionComponent = ({
             label={label}
             sub={sub}
             className={className}
+            showDeleteButton={showDeleteButton}
         >
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
@@ -469,12 +484,14 @@ export const TentacleQuestionComponent = ({
     index,
     sub,
     className,
+    showDeleteButton = true,
 }: {
     data: TentacleQuestion;
     questionKey: number;
     index: number;
     sub?: string;
     className?: string;
+    showDeleteButton?: boolean;
 }) => {
     const $questions = useStore(questions);
     const label = `Tentacles
@@ -491,6 +508,7 @@ export const TentacleQuestionComponent = ({
             label={label}
             sub={sub}
             className={className}
+            showDeleteButton={showDeleteButton}
         >
             <SidebarMenuItem>
                 <div className={cn(MENU_ITEM_CLASSNAME, "gap-2 flex flex-row")}>
@@ -687,12 +705,14 @@ export const ThermometerQuestionComponent = ({
     index,
     sub,
     className,
+    showDeleteButton = true,
 }: {
     data: ThermometerQuestion;
     questionKey: number;
     index: number;
     sub?: string;
     className?: string;
+    showDeleteButton?: boolean;
 }) => {
     const $questions = useStore(questions);
     const label = `Thermometer
@@ -709,6 +729,7 @@ export const ThermometerQuestionComponent = ({
             label={label}
             sub={sub}
             className={className}
+            showDeleteButton={showDeleteButton}
         >
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <label className="text-2xl font-semibold font-poppins">

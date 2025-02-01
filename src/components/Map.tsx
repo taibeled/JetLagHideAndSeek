@@ -309,17 +309,39 @@ export const Map = ({ className }: { className?: string }) => {
                         <button
                             className="text-white bg-black/50 p-2 rounded-md"
                             onClick={() => {
-                                const element =
+                                const dialogContainer: HTMLDivElement | null =
                                     document.querySelector(
-                                        ".leaflet-container",
+                                        "#map-modal-dialog-container-leaflet",
                                     );
-                                if (!element)
-                                    return toast.error("Map not loaded");
 
                                 if (!document.fullscreenElement) {
-                                    element.requestFullscreen();
+                                    if (dialogContainer) {
+                                        dialogContainer.requestFullscreen();
+
+                                        const leafletMap: HTMLDivElement | null =
+                                            document.querySelector(
+                                                ".leaflet-container",
+                                            );
+
+                                        if (leafletMap) {
+                                            leafletMap.classList.add(
+                                                "fullscreen",
+                                            );
+                                        }
+                                    }
                                 } else {
                                     document.exitFullscreen();
+
+                                    const leafletMap: HTMLDivElement | null =
+                                        document.querySelector(
+                                            ".leaflet-container",
+                                        );
+
+                                    if (leafletMap) {
+                                        leafletMap.classList.remove(
+                                            "fullscreen",
+                                        );
+                                    }
                                 }
                             }}
                         >

@@ -1,5 +1,5 @@
 import { Icon, type DragEndEvent } from "leaflet";
-import { Marker, Popup } from "react-leaflet";
+import { Marker } from "react-leaflet";
 import { Fragment } from "react/jsx-runtime";
 import type { iconColors } from "../maps/api";
 import { useStore } from "@nanostores/react";
@@ -11,6 +11,9 @@ import {
     MatchingQuestionComponent,
     MeasuringQuestionComponent,
 } from "./QuestionCards";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useState } from "react";
+import { Button } from "./ui/button";
 
 const ColoredMarker = ({
     latitude,
@@ -28,29 +31,32 @@ const ColoredMarker = ({
     sub?: string;
 }) => {
     const $questions = useStore(questions);
+    const [open, setOpen] = useState(false);
 
     return (
-        <Marker
-            position={[latitude, longitude]}
-            icon={
-                color
-                    ? new Icon({
-                          iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`,
-                          shadowUrl:
-                              "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-                          iconSize: [25, 41],
-                          iconAnchor: [12, 41],
-                          popupAnchor: [1, -34],
-                          shadowSize: [41, 41],
-                      })
-                    : undefined
-            }
-            draggable={true}
-            eventHandlers={{
-                dragend: onChange,
-            }}
-        >
-            <Popup className="[&_.leaflet-popup-content-wrapper]:!bg-[hsl(var(--sidebar-background))] [&_.leaflet-popup-content]:!text-white">
+        <Dialog open={open} onOpenChange={setOpen}>
+            <Marker
+                position={[latitude, longitude]}
+                icon={
+                    color
+                        ? new Icon({
+                              iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`,
+                              shadowUrl:
+                                  "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+                              iconSize: [25, 41],
+                              iconAnchor: [12, 41],
+                              popupAnchor: [1, -34],
+                              shadowSize: [41, 41],
+                          })
+                        : undefined
+                }
+                draggable={true}
+                eventHandlers={{
+                    dragend: onChange,
+                    click: () => setOpen(true),
+                }}
+            />
+            <DialogContent className="!bg-[hsl(var(--sidebar-background))] !text-white">
                 {$questions
                     .filter((q) => q.key === questionKey)
                     .map((q) => {
@@ -66,7 +72,7 @@ const ColoredMarker = ({
                                                 question.key === q.key,
                                         )}
                                         sub={sub}
-                                        className="overflow-scroll max-h-[396px]"
+                                        showDeleteButton={false}
                                     />
                                 );
                             case "tentacles":
@@ -80,7 +86,7 @@ const ColoredMarker = ({
                                                 question.key === q.key,
                                         )}
                                         sub={sub}
-                                        className="overflow-scroll max-h-[396px]"
+                                        showDeleteButton={false}
                                     />
                                 );
                             case "thermometer":
@@ -94,7 +100,7 @@ const ColoredMarker = ({
                                                 question.key === q.key,
                                         )}
                                         sub={sub}
-                                        className="overflow-scroll max-h-[396px]"
+                                        showDeleteButton={false}
                                     />
                                 );
                             case "matching":
@@ -108,7 +114,7 @@ const ColoredMarker = ({
                                                 question.key === q.key,
                                         )}
                                         sub={sub}
-                                        className="overflow-scroll max-h-[396px]"
+                                        showDeleteButton={false}
                                     />
                                 );
                             case "measuring":
@@ -122,15 +128,25 @@ const ColoredMarker = ({
                                                 question.key === q.key,
                                         )}
                                         sub={sub}
-                                        className="overflow-scroll max-h-[396px]"
+                                        showDeleteButton={false}
                                     />
                                 );
                             default:
                                 return null;
                         }
                     })}
-            </Popup>
-        </Marker>
+                <Button
+                    onClick={() => {
+                        questions.set(
+                            $questions.filter((q) => q.key !== questionKey),
+                        );
+                    }}
+                    variant="destructive"
+                >
+                    Delete
+                </Button>
+            </DialogContent>
+        </Dialog>
     );
 };
 
