@@ -8,6 +8,8 @@ import type { RadiusQuestion } from "../maps/radius";
 import type { TentacleQuestion } from "../maps/tentacles";
 import type { ThermometerQuestion } from "../maps/thermometer";
 import type { MatchingQuestion } from "../maps/matching";
+import { RadiusQuestionComponent, ThermometerQuestionComponent, TentacleQuestionComponent, MatchingQuestionComponent, MeasuringQuestionComponent } from "./QuestionCards";
+import type { MeasuringQuestion } from "@/maps/measuring";
 
 const ColoredMarker = ({
     latitude,
@@ -49,15 +51,23 @@ const ColoredMarker = ({
                 dragend: onChange,
             }}
         >
-            <Popup>
-                <span className="capitalize">
-                    {id}{" "}
-                    {$questions
-                        .filter((q) => q.id === id)
-                        .map((q) => q.key)
-                        .indexOf(questionKey) + 1}{" "}
-                    {sub}
-                </span>
+            <Popup className="bg-sidebar">
+                {$questions.filter((q) => q.id === id).map((q) => {
+                    switch (q.id) {
+                        case "radius":
+                            return <RadiusQuestionComponent key={q.key} data={q.data as RadiusQuestion} questionKey={q.key} index={$questions.findIndex(question => question.key === q.key)} />;
+                        case "tentacles":
+                            return <TentacleQuestionComponent key={q.key} data={q.data as TentacleQuestion} questionKey={q.key} index={$questions.findIndex(question => question.key === q.key)} />;
+                        case "thermometer":
+                            return <ThermometerQuestionComponent key={q.key} data={q.data as ThermometerQuestion} questionKey={q.key} index={$questions.findIndex(question => question.key === q.key)} />;
+                        case "matching":
+                            return <MatchingQuestionComponent key={q.key} data={q.data as MatchingQuestion} questionKey={q.key} index={$questions.findIndex(question => question.key === q.key)} />;
+                        case "measuring":
+                            return <MeasuringQuestionComponent key={q.key} data={q.data as MeasuringQuestion} questionKey={q.key} index={$questions.findIndex(question => question.key === q.key)} />;
+                        default:
+                            return null;
+                    }
+                })}
             </Popup>
         </Marker>
     );
