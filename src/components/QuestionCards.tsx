@@ -34,11 +34,13 @@ const QuestionCard = ({
     questionKey,
     className,
     label,
+    sub,
 }: {
     children: React.ReactNode;
     questionKey: number;
     className?: string;
     label?: string;
+    sub?: string;
 }) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const $questions = useStore(questions);
@@ -71,7 +73,7 @@ const QuestionCard = ({
                         <VscChevronDown />
                     </button>
                     <SidebarGroupLabel className="ml-8 mr-8">
-                        {label}
+                        {label} {sub && `(${sub})`}
                     </SidebarGroupLabel>
                     <SidebarGroupContent
                         className={cn(
@@ -92,10 +94,14 @@ export const RadiusQuestionComponent = ({
     data,
     questionKey,
     index,
+    sub,
+    className,
 }: {
     data: RadiusQuestion;
     questionKey: number;
     index: number;
+    sub?: string;
+    className?: string;
 }) => {
     const $questions = useStore(questions);
     const label = `Radius
@@ -107,7 +113,12 @@ export const RadiusQuestionComponent = ({
     }`;
 
     return (
-        <QuestionCard questionKey={questionKey} label={label}>
+        <QuestionCard
+            questionKey={questionKey}
+            label={label}
+            sub={sub}
+            className={className}
+        >
             <SidebarMenuItem>
                 <div className={cn(MENU_ITEM_CLASSNAME, "gap-2 flex flex-row")}>
                     <Input
@@ -202,10 +213,14 @@ export const MatchingQuestionComponent = ({
     data,
     questionKey,
     index,
+    sub,
+    className,
 }: {
     data: MatchingQuestion;
     questionKey: number;
     index: number;
+    sub?: string;
+    className?: string;
 }) => {
     const $questions = useStore(questions);
     const label = `Matching
@@ -255,7 +270,12 @@ export const MatchingQuestionComponent = ({
     }
 
     return (
-        <QuestionCard questionKey={questionKey} label={label}>
+        <QuestionCard
+            questionKey={questionKey}
+            label={label}
+            sub={sub}
+            className={className}
+        >
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
                     value={data.type}
@@ -333,10 +353,14 @@ export const MeasuringQuestionComponent = ({
     data,
     questionKey,
     index,
+    sub,
+    className,
 }: {
     data: MeasuringQuestion;
     questionKey: number;
     index: number;
+    sub?: string;
+    className?: string;
 }) => {
     const $questions = useStore(questions);
     const label = `Measuring
@@ -354,7 +378,12 @@ export const MeasuringQuestionComponent = ({
     // }
 
     return (
-        <QuestionCard questionKey={questionKey} label={label}>
+        <QuestionCard
+            questionKey={questionKey}
+            label={label}
+            sub={sub}
+            className={className}
+        >
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
                     value={data.type}
@@ -438,10 +467,14 @@ export const TentacleQuestionComponent = ({
     data,
     questionKey,
     index,
+    sub,
+    className,
 }: {
     data: TentacleQuestion;
     questionKey: number;
     index: number;
+    sub?: string;
+    className?: string;
 }) => {
     const $questions = useStore(questions);
     const label = `Tentacles
@@ -453,7 +486,12 @@ export const TentacleQuestionComponent = ({
     }`;
 
     return (
-        <QuestionCard questionKey={questionKey} label={label}>
+        <QuestionCard
+            questionKey={questionKey}
+            label={label}
+            sub={sub}
+            className={className}
+        >
             <SidebarMenuItem>
                 <div className={cn(MENU_ITEM_CLASSNAME, "gap-2 flex flex-row")}>
                     <Input
@@ -647,10 +685,14 @@ export const ThermometerQuestionComponent = ({
     data,
     questionKey,
     index,
+    sub,
+    className,
 }: {
     data: ThermometerQuestion;
     questionKey: number;
     index: number;
+    sub?: string;
+    className?: string;
 }) => {
     const $questions = useStore(questions);
     const label = `Thermometer
@@ -662,7 +704,12 @@ export const ThermometerQuestionComponent = ({
     }`;
 
     return (
-        <QuestionCard questionKey={questionKey} label={label}>
+        <QuestionCard
+            questionKey={questionKey}
+            label={label}
+            sub={sub}
+            className={className}
+        >
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <label className="text-2xl font-semibold font-poppins">
                     Warmer

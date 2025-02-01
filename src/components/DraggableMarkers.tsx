@@ -4,12 +4,13 @@ import { Fragment } from "react/jsx-runtime";
 import type { iconColors } from "../maps/api";
 import { useStore } from "@nanostores/react";
 import { questions } from "../utils/context";
-import type { RadiusQuestion } from "../maps/radius";
-import type { TentacleQuestion } from "../maps/tentacles";
-import type { ThermometerQuestion } from "../maps/thermometer";
-import type { MatchingQuestion } from "../maps/matching";
-import { RadiusQuestionComponent, ThermometerQuestionComponent, TentacleQuestionComponent, MatchingQuestionComponent, MeasuringQuestionComponent } from "./QuestionCards";
-import type { MeasuringQuestion } from "@/maps/measuring";
+import {
+    RadiusQuestionComponent,
+    ThermometerQuestionComponent,
+    TentacleQuestionComponent,
+    MatchingQuestionComponent,
+    MeasuringQuestionComponent,
+} from "./QuestionCards";
 
 const ColoredMarker = ({
     latitude,
@@ -17,15 +18,13 @@ const ColoredMarker = ({
     color,
     onChange,
     questionKey,
-    id,
     sub = "",
 }: {
-    questionKey: number;
     onChange: (event: DragEndEvent) => void;
     latitude: number;
     longitude: number;
-    id: string;
     color: keyof typeof iconColors;
+    questionKey: number;
     sub?: string;
 }) => {
     const $questions = useStore(questions);
@@ -52,22 +51,84 @@ const ColoredMarker = ({
             }}
         >
             <Popup className="[&_.leaflet-popup-content-wrapper]:!bg-[hsl(var(--sidebar-background))] [&_.leaflet-popup-content]:!text-white">
-                {$questions.filter((q) => q.id === id).map((q) => {
-                    switch (q.id) {
-                        case "radius":
-                            return <RadiusQuestionComponent key={q.key} data={q.data as RadiusQuestion} questionKey={q.key} index={$questions.findIndex(question => question.key === q.key)} />;
-                        case "tentacles":
-                            return <TentacleQuestionComponent key={q.key} data={q.data as TentacleQuestion} questionKey={q.key} index={$questions.findIndex(question => question.key === q.key)} />;
-                        case "thermometer":
-                            return <ThermometerQuestionComponent key={q.key} data={q.data as ThermometerQuestion} questionKey={q.key} index={$questions.findIndex(question => question.key === q.key)} />;
-                        case "matching":
-                            return <MatchingQuestionComponent key={q.key} data={q.data as MatchingQuestion} questionKey={q.key} index={$questions.findIndex(question => question.key === q.key)} />;
-                        case "measuring":
-                            return <MeasuringQuestionComponent key={q.key} data={q.data as MeasuringQuestion} questionKey={q.key} index={$questions.findIndex(question => question.key === q.key)} />;
-                        default:
-                            return null;
-                    }
-                })}
+                {$questions
+                    .filter((q) => q.key === questionKey)
+                    .map((q) => {
+                        switch (q.id) {
+                            case "radius":
+                                return (
+                                    <RadiusQuestionComponent
+                                        key={q.key}
+                                        data={q.data}
+                                        questionKey={q.key}
+                                        index={$questions.findIndex(
+                                            (question) =>
+                                                question.key === q.key,
+                                        )}
+                                        sub={sub}
+                                        className="overflow-scroll max-h-[396px]"
+                                    />
+                                );
+                            case "tentacles":
+                                return (
+                                    <TentacleQuestionComponent
+                                        key={q.key}
+                                        data={q.data}
+                                        questionKey={q.key}
+                                        index={$questions.findIndex(
+                                            (question) =>
+                                                question.key === q.key,
+                                        )}
+                                        sub={sub}
+                                        className="overflow-scroll max-h-[396px]"
+                                    />
+                                );
+                            case "thermometer":
+                                return (
+                                    <ThermometerQuestionComponent
+                                        key={q.key}
+                                        data={q.data}
+                                        questionKey={q.key}
+                                        index={$questions.findIndex(
+                                            (question) =>
+                                                question.key === q.key,
+                                        )}
+                                        sub={sub}
+                                        className="overflow-scroll max-h-[396px]"
+                                    />
+                                );
+                            case "matching":
+                                return (
+                                    <MatchingQuestionComponent
+                                        key={q.key}
+                                        data={q.data}
+                                        questionKey={q.key}
+                                        index={$questions.findIndex(
+                                            (question) =>
+                                                question.key === q.key,
+                                        )}
+                                        sub={sub}
+                                        className="overflow-scroll max-h-[396px]"
+                                    />
+                                );
+                            case "measuring":
+                                return (
+                                    <MeasuringQuestionComponent
+                                        key={q.key}
+                                        data={q.data}
+                                        questionKey={q.key}
+                                        index={$questions.findIndex(
+                                            (question) =>
+                                                question.key === q.key,
+                                        )}
+                                        sub={sub}
+                                        className="overflow-scroll max-h-[396px]"
+                                    />
+                                );
+                            default:
+                                return null;
+                        }
+                    })}
             </Popup>
         </Marker>
     );
@@ -89,47 +150,19 @@ export const DraggableMarkers = () => {
                     case "measuring":
                         return (
                             <ColoredMarker
-                                color={
-                                    (
-                                        question.data as
-                                            | RadiusQuestion
-                                            | TentacleQuestion
-                                            | MatchingQuestion
-                                    ).color ?? "gold"
-                                }
+                                color={question.data.color ?? "gold"}
                                 key={question.key}
-                                id={question.id}
                                 questionKey={question.key}
-                                latitude={
-                                    (
-                                        question.data as
-                                            | RadiusQuestion
-                                            | TentacleQuestion
-                                            | MatchingQuestion
-                                    ).lat
-                                }
-                                longitude={
-                                    (
-                                        question.data as
-                                            | RadiusQuestion
-                                            | TentacleQuestion
-                                            | MatchingQuestion
-                                    ).lng
-                                }
+                                latitude={question.data.lat}
+                                longitude={question.data.lng}
                                 onChange={(e) => {
                                     const newQuestions = [...$questions];
                                     (
-                                        newQuestions[index].data as
-                                            | RadiusQuestion
-                                            | TentacleQuestion
-                                            | MatchingQuestion
-                                    ).lat = e.target.getLatLng().lat;
+                                        newQuestions[index] as typeof question
+                                    ).data.lat = e.target.getLatLng().lat;
                                     (
-                                        newQuestions[index].data as
-                                            | RadiusQuestion
-                                            | TentacleQuestion
-                                            | MatchingQuestion
-                                    ).lng = e.target.getLatLng().lng;
+                                        newQuestions[index] as typeof question
+                                    ).data.lng = e.target.getLatLng().lng;
                                     questions.set(newQuestions);
                                 }}
                             />
@@ -138,62 +171,46 @@ export const DraggableMarkers = () => {
                         return (
                             <Fragment key={question.key}>
                                 <ColoredMarker
-                                    color={
-                                        (question.data as ThermometerQuestion)
-                                            .colorA ?? "gold"
-                                    }
+                                    color={question.data.colorA ?? "gold"}
                                     key={"a" + question.key.toString()}
-                                    sub=" Start"
-                                    id="thermometer"
                                     questionKey={question.key}
-                                    latitude={
-                                        (question.data as ThermometerQuestion)
-                                            .latA
-                                    }
-                                    longitude={
-                                        (question.data as ThermometerQuestion)
-                                            .lngA
-                                    }
+                                    sub="Start"
+                                    latitude={question.data.latA}
+                                    longitude={question.data.lngA}
                                     onChange={(e) => {
                                         const newQuestions = [...$questions];
                                         (
-                                            newQuestions[index]
-                                                .data as ThermometerQuestion
-                                        ).latA = e.target.getLatLng().lat;
+                                            newQuestions[
+                                                index
+                                            ] as typeof question
+                                        ).data.latA = e.target.getLatLng().lat;
                                         (
-                                            newQuestions[index]
-                                                .data as ThermometerQuestion
-                                        ).lngA = e.target.getLatLng().lng;
+                                            newQuestions[
+                                                index
+                                            ] as typeof question
+                                        ).data.lngA = e.target.getLatLng().lng;
                                         questions.set(newQuestions);
                                     }}
                                 />
                                 <ColoredMarker
-                                    color={
-                                        (question.data as ThermometerQuestion)
-                                            .colorB ?? "gold"
-                                    }
+                                    color={question.data.colorB ?? "gold"}
                                     key={"b" + question.key.toString()}
-                                    sub=" End"
-                                    id="thermometer"
                                     questionKey={question.key}
-                                    latitude={
-                                        (question.data as ThermometerQuestion)
-                                            .latB
-                                    }
-                                    longitude={
-                                        (question.data as ThermometerQuestion)
-                                            .lngB
-                                    }
+                                    sub="End"
+                                    latitude={question.data.latB}
+                                    longitude={question.data.lngB}
                                     onChange={(e) => {
                                         const newQuestions = [...$questions];
                                         (
-                                            newQuestions[index]
-                                                .data as ThermometerQuestion
-                                        ).latB = e.target.getLatLng().lat;
+                                            newQuestions[
+                                                index
+                                            ] as typeof question
+                                        ).data.latB = e.target.getLatLng().lat;
                                         (
-                                            newQuestions[index]
-                                                .data as ThermometerQuestion
-                                        ).lngB = e.target.getLatLng().lng;
+                                            newQuestions[
+                                                index
+                                            ] as typeof question
+                                        ).data.lngB = e.target.getLatLng().lng;
                                         questions.set(newQuestions);
                                     }}
                                 />
