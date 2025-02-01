@@ -15,6 +15,8 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useState } from "react";
 import { Button } from "./ui/button";
 
+let isDragging = false;
+
 const ColoredMarker = ({
     latitude,
     longitude,
@@ -52,8 +54,20 @@ const ColoredMarker = ({
                 }
                 draggable={true}
                 eventHandlers={{
-                    dragend: onChange,
-                    click: () => setOpen(true),
+                    dragstart: () => {
+                        isDragging = true;
+                    },
+                    dragend: (x) => {
+                        onChange(x);
+                        setTimeout(() => {
+                            isDragging = false;
+                        }, 100);
+                    },
+                    click: () => {
+                        if (!isDragging) {
+                            setOpen(true);
+                        }
+                    },
                 }}
             />
             <DialogContent className="!bg-[hsl(var(--sidebar-background))] !text-white">
