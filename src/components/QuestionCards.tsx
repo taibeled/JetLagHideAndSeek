@@ -144,7 +144,7 @@ export const RadiusQuestionComponent = ({
                         <SelectTrigger>
                             <SelectValue placeholder="Unit" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent portal={false}>
                             <SelectItem value="miles">Miles</SelectItem>
                             <SelectItem value="kilometers">
                                 Kilometers
@@ -250,7 +250,7 @@ export const MatchingQuestionComponent = ({
                         <SelectTrigger>
                             <SelectValue placeholder="OSM Zone" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent portal={false}>
                             <SelectItem value="3">
                                 OSM Zone 3 (region in Japan)
                             </SelectItem>
@@ -289,7 +289,7 @@ export const MatchingQuestionComponent = ({
                     <SelectTrigger>
                         <SelectValue placeholder="Matching Type" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent portal={false}>
                         <SelectItem value="zone">Zone Question</SelectItem>
                     </SelectContent>
                 </Select>
@@ -397,7 +397,7 @@ export const MeasuringQuestionComponent = ({
                     <SelectTrigger>
                         <SelectValue placeholder="Measuring Type" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent portal={false}>
                         <SelectItem value="coastline">
                             Coastline Question
                         </SelectItem>
@@ -517,7 +517,7 @@ export const TentacleQuestionComponent = ({
                         <SelectTrigger>
                             <SelectValue placeholder="Unit" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent portal={false}>
                             <SelectItem value="miles">Miles</SelectItem>
                             <SelectItem value="kilometers">
                                 Kilometers
@@ -540,7 +540,7 @@ export const TentacleQuestionComponent = ({
                     <SelectTrigger>
                         <SelectValue placeholder="Location Type" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent portal={false}>
                         <SelectItem value="theme_park">
                             Theme Parks (typically 15 miles)
                         </SelectItem>
@@ -666,7 +666,7 @@ const TentacleLocationSelector = ({
             <SelectTrigger>
                 <SelectValue placeholder="Location" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent portal={false}>
                 <SelectItem value="false">Not Within</SelectItem>
                 {locations.features.map((feature: any) => (
                     <SelectItem
