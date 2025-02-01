@@ -51,7 +51,7 @@ const ColoredMarker = ({
                 dragend: onChange,
             }}
         >
-            <Popup className="bg-sidebar">
+            <Popup className="[&_.leaflet-popup-content-wrapper]:!bg-[hsl(var(--sidebar-background))] [&_.leaflet-popup-content]:!text-white">
                 {$questions.filter((q) => q.id === id).map((q) => {
                     switch (q.id) {
                         case "radius":
