@@ -7,31 +7,34 @@ import { QuestionSidebar } from "@/components/QuestionSidebar";
 import { Options } from "@/components/Options";
 ---
 
-<Layout className="bg-jetlag !p-2">
+<Layout className="bg-jetlag">
     <SidebarProvider client:load>
         <QuestionSidebar client:load />
         <main class="flex flex-col flex-grow">
-            <SidebarTrigger client:load />
-            <h1
-                class="text-5xl text-center font-semibold font-poppins leading-snug"
+            <div
+                class="flex justify-center"
+                id="map-modal-dialog-container-leaflet"
             >
-                Jet Lag The Game:
-                <br />
-                <span class="font-rounded font-extrabold">HIDE+SEEK</span> Map Generator
-            </h1>
-            <div class="flex justify-center items-center flex-col md:flex-row">
-                <span class="text-lg font-semibold italic">
-                    Choose the hiding zone:
-                </span>
-                <PlacePicker client:load className="m-4" />
+                <div class="w-full h-full relative">
+                    <div
+                        class="absolute top-[72px] md:top-2 left-2 z-[1030] bg-jetlag bg-opacity-50 rounded-lg"
+                    >
+                        <SidebarTrigger client:load />
+                    </div>
+                    <div
+                        class="flex flex-shrink max-w-fit z-[1030] absolute left-4 right-0 m-auto"
+                    >
+                        <PlacePicker client:load className="m-4" />
+                    </div>
+                    <div class="bottom-5 right-2 mx-auto mb-2 w-fit absolute z-[1030]">
+                        <Options client:load />
+                    </div>
+                    <Map
+                        className="w-full [&.fullscreen]:w-full [&.fullscreen]:h-full"
+                        client:only
+                    />
+                </div>
             </div>
-            <div class="flex justify-center " id="map-modal-dialog-container-leaflet">
-                <Map
-                    className="w-full md:w-[90%] lg:w-[80%] rounded-2xl [&.fullscreen]:w-full [&.fullscreen]:h-full"
-                    client:only
-                />
-            </div>
-            <Options client:load className="mb-6" />
         </main>
     </SidebarProvider>
 </Layout>

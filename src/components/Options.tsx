@@ -33,7 +33,7 @@ export const Options = ({ className }: { className?: string }) => {
         <Drawer>
             <div className={cn("flex justify-center", className)}>
                 <DrawerTrigger className="w-24">
-                    <Button className="mt-4 w-24">Options</Button>
+                    <Button className="w-24">Options</Button>
                 </DrawerTrigger>
             </div>
             <DrawerContent>

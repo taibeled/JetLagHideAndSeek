@@ -20,6 +20,9 @@ export default defineConfig({
         }),
         AstroPWA(),
     ],
+    devToolbar: {
+        enabled: false,
+    },
     site: "https://taibeled.github.io",
     base: "JetLagHideAndSeek",
 });
