@@ -317,31 +317,9 @@ export const Map = ({ className }: { className?: string }) => {
                                 if (!document.fullscreenElement) {
                                     if (dialogContainer) {
                                         dialogContainer.requestFullscreen();
-
-                                        const leafletMap: HTMLDivElement | null =
-                                            document.querySelector(
-                                                ".leaflet-container",
-                                            );
-
-                                        if (leafletMap) {
-                                            leafletMap.classList.add(
-                                                "fullscreen",
-                                            );
-                                        }
                                     }
                                 } else {
                                     document.exitFullscreen();
-
-                                    const leafletMap: HTMLDivElement | null =
-                                        document.querySelector(
-                                            ".leaflet-container",
-                                        );
-
-                                    if (leafletMap) {
-                                        leafletMap.classList.remove(
-                                            "fullscreen",
-                                        );
-                                    }
                                 }
                             }}
                         >
@@ -379,6 +357,30 @@ export const Map = ({ className }: { className?: string }) => {
 
         return () => clearInterval(intervalId);
     }, [map]);
+
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            const leafletMap: HTMLDivElement | null =
+                document.querySelector(".leaflet-container");
+
+            if (leafletMap) {
+                if (document.fullscreenElement) {
+                    leafletMap.classList.add("fullscreen");
+                } else {
+                    leafletMap.classList.remove("fullscreen");
+                }
+            }
+        };
+
+        document.addEventListener("fullscreenchange", handleFullscreenChange);
+
+        return () => {
+            document.removeEventListener(
+                "fullscreenchange",
+                handleFullscreenChange,
+            );
+        };
+    }, []);
 
     return displayMap;
 };
