@@ -2,6 +2,7 @@ import type { LatLng } from "leaflet";
 import { findTentacleLocations, iconColors } from "./api";
 import * as turf from "@turf/turf";
 import { defaultUnit, questions } from "@/utils/context";
+import { geoSpatialVoronoi } from "./voronoi";
 
 export type TentacleLocations =
     | "aquarium"
@@ -29,24 +30,6 @@ export interface TentacleQuestion {
     locationType: TentacleLocations;
 }
 
-const createGeodesicPolygon = (polygon: any, steps = 20) => {
-    const coordinates = polygon.geometry.coordinates[0];
-    const geodesicLines = [];
-
-    for (let i = 0; i < coordinates.length - 1; i++) {
-        const start = coordinates[i];
-        const end = coordinates[i + 1];
-
-        const geodesicLine = turf.greatCircle(start, end, { npoints: steps });
-        geodesicLines.push(...geodesicLine.geometry.coordinates);
-    }
-
-    geodesicLines.push(geodesicLines[0]);
-
-    // @ts-expect-error Typing is wrong
-    return turf.polygon([geodesicLines]);
-};
-
 export const adjustPerTentacle = async (
     question: TentacleQuestion,
     mapData: any,
@@ -61,16 +44,19 @@ export const adjustPerTentacle = async (
     }
 
     const points = await findTentacleLocations(question);
-    const voronoi = turf.voronoi(points);
 
-    const correctPolygonPre = voronoi.features.find((feature: any) => {
+    const voronoi = geoSpatialVoronoi(points);
+
+    const correctPolygon = voronoi.features.find((feature: any) => {
         if (!question.location) return false;
-        return feature.properties.name === question.location.properties.name;
+        return (
+            feature.properties.site.properties.name ===
+            question.location.properties.name
+        );
     });
-    if (!correctPolygonPre) {
+    if (!correctPolygon) {
         return mapData;
     }
-    const correctPolygon = createGeodesicPolygon(correctPolygonPre);
 
     const circle = turf.circle(
         turf.point([question.lng, question.lat]),

@@ -103,7 +103,7 @@ nw["${tentacleFirstTag[question.locationType]}"="${
         question.locationType
     }"](around:${turf.convertLength(
         question.radius,
-        question.unit,
+        question.unit ?? "miles",
         "meters",
     )}, ${question.lat}, ${question.lng});
 out center;
