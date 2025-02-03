@@ -18,6 +18,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { TbMessage2Question } from "react-icons/tb"; 
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -296,6 +297,7 @@ const SidebarTrigger = React.forwardRef<
             {...props}
         >
             {!isMobile && (state === "collapsed" ? <PanelLeftOpen /> : <PanelLeftClose />)}
+            {isMobile && <TbMessage2Question />}
             Questions
         </button>
     );
