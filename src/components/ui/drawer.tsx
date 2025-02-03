@@ -36,7 +36,13 @@ const DrawerContent = React.forwardRef<
     React.ElementRef<typeof DrawerPrimitive.Content>,
     React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content>
 >(({ className, children, ...props }, ref) => (
-    <DrawerPortal>
+    <DrawerPortal
+        container={
+            typeof document !== "undefined"
+                ? document.querySelector("#map-modal-dialog-container-leaflet")
+                : null
+        }
+    >
         <DrawerOverlay />
         <DrawerPrimitive.Content
             ref={ref}

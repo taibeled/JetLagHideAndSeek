@@ -9,6 +9,11 @@ body {
     height: 100%;
 }
 
+.leaflet-container {
+    height: 100vh; /* Fallback for old browsers */
+    height: 100svh;
+}
+
 @layer base {
     html {
         @apply text-slate-50;
@@ -81,6 +86,14 @@ body {
         --sidebar-accent-foreground: 240 4.8% 95.9%;
         --sidebar-border: 240 3.7% 15.9%;
         --sidebar-ring: 217.2 91.2% 59.8%;
+    }
+
+    .leaflet-control-container .leaflet-top.leaflet-left .leaflet-control {
+        @apply !mt-[112px] md:!mt-[48px];
+    }
+
+    .leaflet-top .leaflet-control {
+        @apply !mt-[72px] md:!mt-[10px];
     }
 }
 

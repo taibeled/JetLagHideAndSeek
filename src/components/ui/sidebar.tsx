@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { type VariantProps, cva } from "class-variance-authority";
-import { PanelLeft } from "lucide-react";
 import { atom } from "nanostores";
 import { useStore } from "@nanostores/react";
 
@@ -18,6 +17,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { TbMessage2Question } from "react-icons/tb";
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -210,7 +210,7 @@ const Sidebar = React.forwardRef<
                     <SheetContent
                         data-sidebar="sidebar"
                         data-mobile="true"
-                        className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden z-[1000]"
+                        className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden z-[1035]"
                         style={
                             {
                                 "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
@@ -280,21 +280,24 @@ const SidebarTrigger = React.forwardRef<
     const { toggleSidebar } = useStore(SidebarContext);
 
     return (
-        <Button
+        <button
             ref={ref}
             data-sidebar="trigger"
-            variant="ghost"
             size="icon"
-            className={cn("h-7 w-24", className)}
+            className={cn(
+                "bg-white hover:bg-[#f4f4f4] text-black rounded-sm border-2 border-black border-opacity-30 cursor-pointer py-1 px-2",
+                "flex items-center gap-1",
+                className,
+            )}
             onClick={(event) => {
                 onClick?.(event);
                 toggleSidebar();
             }}
             {...props}
         >
-            <PanelLeft />
+            <TbMessage2Question />
             Questions
-        </Button>
+        </button>
     );
 });
 SidebarTrigger.displayName = "SidebarTrigger";
