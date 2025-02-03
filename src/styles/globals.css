@@ -14,6 +14,14 @@ body {
     height: 100svh;
 }
 
+.leaflet-bottom.leaflet-right { /* Hypothetically this could cause an issue with other bottom right elements */
+    z-index: 752;
+}
+
+div.leaflet-control-attribution.leaflet-control {
+    z-index: 751;
+}
+
 @layer base {
     html {
         @apply text-slate-50;

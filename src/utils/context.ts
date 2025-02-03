@@ -56,3 +56,11 @@ export const questions = persistentAtom<Question[]>("questions", [], {
 export const leafletMapContext = atom<Map | null>(null);
 
 export const defaultUnit = persistentAtom<Units>("defaultUnit", "miles");
+export const highlightTrainLines = persistentAtom<boolean>(
+    "highlightTrainLines",
+    false,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);

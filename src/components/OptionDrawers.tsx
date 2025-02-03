@@ -1,5 +1,6 @@
 import {
     defaultUnit,
+    highlightTrainLines,
     mapGeoJSON,
     mapGeoLocation,
     polyGeoJSON,
@@ -27,9 +28,11 @@ import { Separator } from "./ui/separator";
 import { useStore } from "@nanostores/react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { Checkbox } from "./ui/checkbox";
 
 export const OptionDrawers = ({ className }: { className?: string }) => {
     const $defaultUnit = useStore(defaultUnit);
+    const $highlightTrainLines = useStore(highlightTrainLines);
     const [isInstructionsOpen, setInstructionsOpen] = useState(false);
     const [isOptionsOpen, setOptionsOpen] = useState(false);
 
@@ -74,7 +77,8 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 </a>{" "}
                                 at the bottom right of the screen. You may want
                                 to change the default unit from miles in that
-                                menu.
+                                menu. You can also choose to highlight train
+                                lines on the map in that menu.
                             </p>
                             <p className="mb-3">
                                 Whenever a question is asked, you should add it
@@ -201,6 +205,20 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 <SelectItem value="miles">Miles</SelectItem>
                             </SelectContent>
                         </Select>
+                        <Separator className="bg-slate-300 w-[280px]" />
+                        <div className="flex flex-row items-center gap-2">
+                            <label className="text-2xl font-semibold font-poppins">
+                                Highlight train lines?
+                            </label>
+                            <Checkbox
+                                checked={$highlightTrainLines}
+                                onCheckedChange={() => {
+                                    highlightTrainLines.set(
+                                        !$highlightTrainLines,
+                                    );
+                                }}
+                            />
+                        </div>
                     </div>
                 </DrawerContent>
             </Drawer>

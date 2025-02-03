@@ -10,6 +10,7 @@ import {
     mapGeoLocation,
     polyGeoJSON,
     questions,
+    highlightTrainLines,
 } from "../utils/context";
 import { useStore } from "@nanostores/react";
 import { useEffect, useMemo } from "react";
@@ -61,6 +62,7 @@ export const refreshMapData = (
 export const Map = ({ className }: { className?: string }) => {
     const $mapGeoLocation = useStore(mapGeoLocation);
     const $questions = useStore(questions);
+    const $highlightTrainLines = useStore(highlightTrainLines);
     const map = useStore(leafletMapContext);
 
     const addRadius = (e: { latlng: any }) => {
@@ -287,13 +289,22 @@ export const Map = ({ className }: { className?: string }) => {
                 ]}
             >
                 <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a> and <a href="http://www.openrailwaymap.org/">OpenRailwayMap</a>'
                     url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
                     subdomains="abcd"
                     maxZoom={20}
                     minZoom={2}
                     noWrap
                 />
+                {$highlightTrainLines && (
+                    <TileLayer
+                        url="https://c.tiles.openrailwaymap.org/maxspeed/{z}/{x}/{y}.png"
+                        maxZoom={19}
+                        tileSize={256}
+                        minZoom={2}
+                        noWrap
+                    />
+                )}
                 <DraggableMarkers />
                 <div className="leaflet-top leaflet-right">
                     <div className="leaflet-control flex-col flex gap-2">
@@ -303,7 +314,7 @@ export const Map = ({ className }: { className?: string }) => {
                 <PolygonDraw />
             </MapContainer>
         ),
-        [map],
+        [map, $highlightTrainLines],
     );
 
     useEffect(() => {
