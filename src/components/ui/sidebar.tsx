@@ -17,6 +17,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { TbMessage2Question } from "react-icons/tb";
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -284,7 +285,8 @@ const SidebarTrigger = React.forwardRef<
             data-sidebar="trigger"
             size="icon"
             className={cn(
-                "bg-white hover:bg-[#f4f4f4] text-black rounded-sm border-2 border-black border-opacity-20 cursor-pointer py-1 px-2",
+                "bg-white hover:bg-[#f4f4f4] text-black rounded-sm border-2 border-black border-opacity-30 cursor-pointer py-1 px-2",
+                "flex items-center gap-1",
                 className,
             )}
             onClick={(event) => {
@@ -293,6 +295,7 @@ const SidebarTrigger = React.forwardRef<
             }}
             {...props}
         >
+            <TbMessage2Question />
             Questions
         </button>
     );
