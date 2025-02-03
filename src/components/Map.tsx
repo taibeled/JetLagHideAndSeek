@@ -26,7 +26,6 @@ import { addDefaultTentacles, adjustPerTentacle } from "../maps/tentacles";
 import { addDefaultMatching, adjustPerMatching } from "../maps/matching";
 import { PolygonDraw } from "./PolygonDraw";
 import { addDefaultMeasuring, adjustPerMeasuring } from "@/maps/measuring";
-import { LeafletFullScreenButton } from "./LeafletFullScreenButton";
 
 export const refreshMapData = (
     $mapGeoLocation: OpenStreetMap,
@@ -295,11 +294,6 @@ export const Map = ({ className }: { className?: string }) => {
                     noWrap
                 />
                 <DraggableMarkers />
-                <div className="leaflet-top leaflet-right">
-                    <div className="leaflet-control flex-col flex gap-2">
-                        <LeafletFullScreenButton />
-                    </div>
-                </div>
                 <PolygonDraw />
             </MapContainer>
         ),
