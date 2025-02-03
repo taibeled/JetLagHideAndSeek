@@ -17,8 +17,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
-import { TbMessage2Question } from "react-icons/tb"; 
+import { TbMessage2Question } from "react-icons/tb";
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -42,11 +41,11 @@ type SidebarContextType = {
 const SidebarContext = atom<SidebarContextType>({
     state: "expanded",
     open: true,
-    setOpen: () => { },
+    setOpen: () => {},
     openMobile: false,
-    setOpenMobile: () => { },
+    setOpenMobile: () => {},
     isMobile: false,
-    toggleSidebar: () => { },
+    toggleSidebar: () => {},
 });
 
 const SidebarProvider = React.forwardRef<
@@ -278,7 +277,7 @@ const SidebarTrigger = React.forwardRef<
     React.ElementRef<typeof Button>,
     React.ComponentProps<typeof Button>
 >(({ className, onClick, ...props }, ref) => {
-    const { toggleSidebar, state, isMobile } = useStore(SidebarContext);
+    const { toggleSidebar } = useStore(SidebarContext);
 
     return (
         <button
@@ -286,7 +285,7 @@ const SidebarTrigger = React.forwardRef<
             data-sidebar="trigger"
             size="icon"
             className={cn(
-                "bg-white hover:bg-[#f4f4f4] text-black rounded-sm border-2 border-black border-opacity-20 cursor-pointer py-1 px-2",
+                "bg-white hover:bg-[#f4f4f4] text-black rounded-sm border-2 border-black border-opacity-30 cursor-pointer py-1 px-2",
                 "flex items-center gap-1",
                 className,
             )}
@@ -296,8 +295,7 @@ const SidebarTrigger = React.forwardRef<
             }}
             {...props}
         >
-            {!isMobile && (state === "collapsed" ? <PanelLeftOpen /> : <PanelLeftClose />)}
-            {isMobile && <TbMessage2Question />}
+            <TbMessage2Question />
             Questions
         </button>
     );
@@ -640,7 +638,7 @@ const SidebarMenuAction = React.forwardRef<
                 "peer-data-[size=lg]/menu-button:top-2.5",
                 "group-data-[collapsible=icon]:hidden",
                 showOnHover &&
-                "group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground md:opacity-0",
+                    "group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground md:opacity-0",
                 className,
             )}
             {...props}
