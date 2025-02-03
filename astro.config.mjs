@@ -23,6 +23,6 @@ export default defineConfig({
     devToolbar: {
         enabled: false,
     },
-    site: "https://mryawnie.github.io",
+    site: "https://taibeled.github.io",
     base: "JetLagHideAndSeek",
 });
