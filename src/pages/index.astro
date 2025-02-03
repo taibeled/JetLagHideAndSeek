@@ -4,7 +4,7 @@ import { Map } from "../components/Map";
 import { PlacePicker } from "../components/PlacePicker";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { QuestionSidebar } from "@/components/QuestionSidebar";
-import { Options } from "@/components/Options";
+import { OptionDrawers } from "@/components/OptionDrawers";
 ---
 
 <Layout className="bg-jetlag">
@@ -27,7 +27,7 @@ import { Options } from "@/components/Options";
                         <PlacePicker client:load className="m-4" />
                     </div>
                     <div class="bottom-5 right-2 mx-auto mb-2 w-fit absolute z-[1030]">
-                        <Options client:load />
+                        <OptionDrawers client:load />
                     </div>
                     <Map
                         className="w-full [&.fullscreen]:w-full [&.fullscreen]:h-full"

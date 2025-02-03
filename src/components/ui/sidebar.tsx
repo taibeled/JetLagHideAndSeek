@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { type VariantProps, cva } from "class-variance-authority";
-import { PanelLeft } from "lucide-react";
 import { atom } from "nanostores";
 import { useStore } from "@nanostores/react";
 
@@ -280,21 +279,22 @@ const SidebarTrigger = React.forwardRef<
     const { toggleSidebar } = useStore(SidebarContext);
 
     return (
-        <Button
+        <button
             ref={ref}
             data-sidebar="trigger"
-            variant="ghost"
             size="icon"
-            className={cn("h-7 w-24", className)}
+            className={cn(
+                "bg-white hover:bg-[#f4f4f4] text-black rounded-sm border-2 border-black border-opacity-20 cursor-pointer py-1 px-2",
+                className,
+            )}
             onClick={(event) => {
                 onClick?.(event);
                 toggleSidebar();
             }}
             {...props}
         >
-            <PanelLeft />
             Questions
-        </Button>
+        </button>
     );
 });
 SidebarTrigger.displayName = "SidebarTrigger";

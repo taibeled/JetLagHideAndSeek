@@ -12,7 +12,7 @@ import {
     questions,
 } from "../utils/context";
 import { useStore } from "@nanostores/react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { toast } from "react-toastify";
 import * as turf from "@turf/turf";
 import { determineGeoJSON, type OpenStreetMap } from "../maps/api";
@@ -26,6 +26,7 @@ import { addDefaultTentacles, adjustPerTentacle } from "../maps/tentacles";
 import { addDefaultMatching, adjustPerMatching } from "../maps/matching";
 import { PolygonDraw } from "./PolygonDraw";
 import { addDefaultMeasuring, adjustPerMeasuring } from "@/maps/measuring";
+import { LeafletFullScreenButton } from "./LeafletFullScreenButton";
 
 export const refreshMapData = (
     $mapGeoLocation: OpenStreetMap,
@@ -61,7 +62,6 @@ export const Map = ({ className }: { className?: string }) => {
     const $mapGeoLocation = useStore(mapGeoLocation);
     const $questions = useStore(questions);
     const map = useStore(leafletMapContext);
-    const [reset, setReset] = useState(0);
 
     const addRadius = (e: { latlng: any }) => {
         addDefaultRadius(e.latlng);
@@ -297,34 +297,7 @@ export const Map = ({ className }: { className?: string }) => {
                 <DraggableMarkers />
                 <div className="leaflet-top leaflet-right">
                     <div className="leaflet-control flex-col flex gap-2">
-                        <button
-                            className="text-white bg-black/50 p-2 rounded-md"
-                            onClick={() => {
-                                if (!map) return toast.error("Map not loaded");
-                                setReset(Math.random());
-                            }}
-                        >
-                            Focus Map
-                        </button>
-                        <button
-                            className="text-white bg-black/50 p-2 rounded-md"
-                            onClick={() => {
-                                const dialogContainer: HTMLDivElement | null =
-                                    document.querySelector(
-                                        "#map-modal-dialog-container-leaflet",
-                                    );
-
-                                if (!document.fullscreenElement) {
-                                    if (dialogContainer) {
-                                        dialogContainer.requestFullscreen();
-                                    }
-                                } else {
-                                    document.exitFullscreen();
-                                }
-                            }}
-                        >
-                            Full Screen
-                        </button>
+                        <LeafletFullScreenButton />
                     </div>
                 </div>
                 <PolygonDraw />
@@ -337,7 +310,7 @@ export const Map = ({ className }: { className?: string }) => {
         if (!map) return;
 
         refreshQuestions(true);
-    }, [$questions, map, reset]);
+    }, [$questions, map]);
 
     useEffect(() => {
         const intervalId = setInterval(async () => {

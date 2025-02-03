@@ -58,12 +58,12 @@ export default {
     			}
     		},
     		fontFamily: {
-    			rounded: [
-    				"'M PLUS Rounded 1c'"
-    			],
     			poppins: [
     				"'Poppins'"
-    			]
+    			],
+				oxygen: [
+					"'Oxygen'"
+				]
     		},
     		borderRadius: {
     			lg: 'var(--radius)',

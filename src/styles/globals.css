@@ -89,7 +89,7 @@ body {
     }
 
     .leaflet-control-container .leaflet-top.leaflet-left .leaflet-control {
-        @apply !mt-[104px] md:!mt-[40px];
+        @apply !mt-[112px] md:!mt-[48px];
     }
 
     .leaflet-top .leaflet-control {
