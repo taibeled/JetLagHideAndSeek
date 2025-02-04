@@ -37,7 +37,12 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const [isOptionsOpen, setOptionsOpen] = useState(false);
 
     return (
-        <div className={cn("flex justify-end gap-2", className)}>
+        <div
+            className={cn(
+                "flex justify-end gap-2 max-[412px]:!mb-4",
+                className,
+            )}
+        >
             <Drawer
                 open={isInstructionsOpen}
                 onOpenChange={setInstructionsOpen}
