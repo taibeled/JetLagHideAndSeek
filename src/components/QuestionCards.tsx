@@ -6,7 +6,7 @@ import { Suspense, use, useState } from "react";
 import { LatitudeLongitude } from "./LatLngPicker";
 import { useStore } from "@nanostores/react";
 import { cn } from "../lib/utils";
-import { questions } from "../utils/context";
+import { hiderMode, questions, triggerLocalRefresh } from "../utils/context";
 import { findTentacleLocations, iconColors } from "../maps/api";
 import type { MatchingQuestion, ZoneMatchingQuestion } from "../maps/matching";
 import {
@@ -111,6 +111,8 @@ export const RadiusQuestionComponent = ({
     className?: string;
     showDeleteButton?: boolean;
 }) => {
+    useStore(triggerLocalRefresh);
+    const $hiderMode = useStore(hiderMode);
     const $questions = useStore(questions);
     const label = `Radius
     ${
@@ -169,6 +171,7 @@ export const RadiusQuestionComponent = ({
                 </label>
                 <Checkbox
                     checked={data.within}
+                    disabled={!!$hiderMode}
                     onCheckedChange={(checked) => {
                         const newQuestions = [...$questions];
                         (newQuestions[index].data as typeof data).within =
@@ -233,6 +236,8 @@ export const MatchingQuestionComponent = ({
     className?: string;
     showDeleteButton?: boolean;
 }) => {
+    useStore(triggerLocalRefresh);
+    const $hiderMode = useStore(hiderMode);
     const $questions = useStore(questions);
     const label = `Matching
     ${
@@ -312,6 +317,7 @@ export const MatchingQuestionComponent = ({
                     Same
                 </label>
                 <Checkbox
+                    disabled={!!$hiderMode}
                     checked={data.same}
                     onCheckedChange={(checked) => {
                         const newQuestions = [...$questions];
@@ -376,6 +382,8 @@ export const MeasuringQuestionComponent = ({
     className?: string;
     showDeleteButton?: boolean;
 }) => {
+    useStore(triggerLocalRefresh);
+    const $hiderMode = useStore(hiderMode);
     const $questions = useStore(questions);
     const label = `Measuring
     ${
@@ -428,6 +436,7 @@ export const MeasuringQuestionComponent = ({
                     Hider Closer
                 </label>
                 <Checkbox
+                    disabled={!!$hiderMode}
                     checked={data.hiderCloser}
                     onCheckedChange={(checked) => {
                         const newQuestions = [...$questions];
@@ -661,6 +670,8 @@ const TentacleLocationSelector = ({
     index: number;
     promise: Promise<any>;
 }) => {
+    useStore(triggerLocalRefresh);
+    const $hiderMode = useStore(hiderMode);
     const $questions = useStore(questions);
     const locations = use(promise);
 
@@ -680,6 +691,7 @@ const TentacleLocationSelector = ({
                 }
                 questions.set(newQuestions);
             }}
+            disabled={!!$hiderMode}
         >
             <SelectTrigger>
                 <SelectValue placeholder="Location" />
@@ -714,6 +726,8 @@ export const ThermometerQuestionComponent = ({
     className?: string;
     showDeleteButton?: boolean;
 }) => {
+    useStore(triggerLocalRefresh);
+    const $hiderMode = useStore(hiderMode);
     const $questions = useStore(questions);
     const label = `Thermometer
     ${
@@ -736,6 +750,7 @@ export const ThermometerQuestionComponent = ({
                     Warmer
                 </label>
                 <Checkbox
+                    disabled={!!$hiderMode}
                     checked={data.warmer}
                     onCheckedChange={(checked) => {
                         const newQuestions = [...$questions];

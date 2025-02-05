@@ -64,3 +64,14 @@ export const highlightTrainLines = persistentAtom<boolean>(
         decode: JSON.parse,
     },
 );
+export const hiderMode = persistentAtom<
+    | false
+    | {
+          latitude: number;
+          longitude: number;
+      }
+>("isHiderMode", false, {
+    encode: JSON.stringify,
+    decode: JSON.parse,
+});
+export const triggerLocalRefresh = atom<number>(0);

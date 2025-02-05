@@ -1,5 +1,6 @@
 import {
     defaultUnit,
+    hiderMode,
     highlightTrainLines,
     mapGeoJSON,
     mapGeoLocation,
@@ -29,10 +30,13 @@ import { useStore } from "@nanostores/react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Checkbox } from "./ui/checkbox";
+import { LatitudeLongitude } from "./LatLngPicker";
+import { SidebarMenu } from "./ui/sidebar";
 
 export const OptionDrawers = ({ className }: { className?: string }) => {
     const $defaultUnit = useStore(defaultUnit);
     const $highlightTrainLines = useStore(highlightTrainLines);
+    const $hiderMode = useStore(hiderMode);
     const [isInstructionsOpen, setInstructionsOpen] = useState(false);
     const [isOptionsOpen, setOptionsOpen] = useState(false);
 
@@ -48,7 +52,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 onOpenChange={setInstructionsOpen}
             >
                 <DrawerTrigger className="w-24">
-                    <Button className="w-24">Instructions</Button>
+                    <Button className="w-24 shadow-md">Instructions</Button>
                 </DrawerTrigger>
                 <DrawerContent>
                     <div className="flex flex-col items-center gap-4 mb-1">
@@ -66,7 +70,8 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                             </DrawerDescription>
                             <p className="mb-3">
                                 At the beginning of the game, all players should
-                                coordinate the hiding zone. You can choose a
+                                coordinate the bounds of the game (Japan for the
+                                original Hide and Seek). You can choose a
                                 location at the top of the map (e.g. city,
                                 county, state, country...) or draw it on the map
                                 (look at the bottom left of the map). This can
@@ -84,6 +89,16 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 to change the default unit from miles in that
                                 menu. You can also choose to highlight train
                                 lines on the map in that menu.
+                            </p>
+                            <p className="mb-3">
+                                Hiders should enable &ldquo;Hider Mode&rdquo; in
+                                that menu. This will allow the hider to set
+                                their location and have all questions be
+                                automatically answered according to that
+                                location. Not only will this make filling the
+                                maps for hiders incredibly easy, but it will
+                                also prevent any conflicting information between
+                                the hider and the seekers.
                             </p>
                             <p className="mb-3">
                                 Whenever a question is asked, you should add it
@@ -109,7 +124,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
             </Drawer>
             <Drawer open={isOptionsOpen} onOpenChange={setOptionsOpen}>
                 <DrawerTrigger className="w-24">
-                    <Button className="w-24">Options</Button>
+                    <Button className="w-24 shadow-md">Options</Button>
                 </DrawerTrigger>
                 <DrawerContent>
                     <div className="flex flex-col items-center gap-4 mb-4">
@@ -118,111 +133,162 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 Options
                             </DrawerTitle>
                         </DrawerHeader>
-                        <div className="flex flex-row max-[330px]:flex-col gap-4">
-                            <Button
-                                onClick={() => {
-                                    if (!navigator || !navigator.clipboard)
-                                        return toast.error(
-                                            "Clipboard not supported",
-                                        );
+                        <div className="overflow-y-scroll max-h-[40vh] flex flex-col items-center gap-4 max-w-[1000px] px-12">
+                            <div className="flex flex-row max-[330px]:flex-col gap-4">
+                                <Button
+                                    onClick={() => {
+                                        if (!navigator || !navigator.clipboard)
+                                            return toast.error(
+                                                "Clipboard not supported",
+                                            );
 
-                                    const $polyGeoJSON = polyGeoJSON.get();
-                                    if ($polyGeoJSON !== null) {
-                                        navigator.clipboard.writeText(
-                                            JSON.stringify($polyGeoJSON),
-                                        );
-                                    } else {
-                                        const location = mapGeoLocation.get();
-                                        location.properties.isHidingZone = true;
+                                        const $polyGeoJSON = polyGeoJSON.get();
+                                        if ($polyGeoJSON !== null) {
+                                            navigator.clipboard.writeText(
+                                                JSON.stringify($polyGeoJSON),
+                                            );
+                                        } else {
+                                            const location =
+                                                mapGeoLocation.get();
+                                            location.properties.isHidingZone =
+                                                true;
 
-                                        navigator.clipboard.writeText(
-                                            JSON.stringify(location),
+                                            navigator.clipboard.writeText(
+                                                JSON.stringify(location),
+                                            );
+                                        }
+                                        toast.success(
+                                            "Hiding zone copied successfully",
+                                            {
+                                                autoClose: 2000,
+                                            },
                                         );
-                                    }
-                                    toast.success(
-                                        "Hiding zone copied successfully",
-                                        {
-                                            autoClose: 2000,
-                                        },
-                                    );
-                                }}
-                            >
-                                Copy Hiding Zone
-                            </Button>
-                            <Button
-                                onClick={() => {
-                                    if (!navigator || !navigator.clipboard)
-                                        return toast.error(
-                                            "Clipboard not supported",
-                                        );
+                                    }}
+                                >
+                                    Copy Hiding Zone
+                                </Button>
+                                <Button
+                                    onClick={() => {
+                                        if (!navigator || !navigator.clipboard)
+                                            return toast.error(
+                                                "Clipboard not supported",
+                                            );
 
-                                    navigator.clipboard
-                                        .readText()
-                                        .then((text) => {
-                                            try {
-                                                const geojson =
-                                                    JSON.parse(text);
+                                        navigator.clipboard
+                                            .readText()
+                                            .then((text) => {
+                                                try {
+                                                    const geojson =
+                                                        JSON.parse(text);
 
-                                                if (
-                                                    geojson.properties &&
-                                                    geojson.properties
-                                                        .isHidingZone === true
-                                                ) {
-                                                    mapGeoLocation.set(geojson);
-                                                    mapGeoJSON.set(null);
-                                                    polyGeoJSON.set(null);
-                                                    questions.set([]);
-                                                } else {
-                                                    mapGeoJSON.set(geojson);
-                                                    polyGeoJSON.set(geojson);
-                                                    questions.set([]);
+                                                    if (
+                                                        geojson.properties &&
+                                                        geojson.properties
+                                                            .isHidingZone ===
+                                                            true
+                                                    ) {
+                                                        mapGeoLocation.set(
+                                                            geojson,
+                                                        );
+                                                        mapGeoJSON.set(null);
+                                                        polyGeoJSON.set(null);
+                                                        questions.set([]);
+                                                    } else {
+                                                        mapGeoJSON.set(geojson);
+                                                        polyGeoJSON.set(
+                                                            geojson,
+                                                        );
+                                                        questions.set([]);
+                                                    }
+
+                                                    toast.success(
+                                                        "Hiding zone pasted successfully",
+                                                        {
+                                                            autoClose: 2000,
+                                                        },
+                                                    );
+                                                } catch {
+                                                    toast.error(
+                                                        "Invalid GeoJSON",
+                                                    );
                                                 }
-
-                                                toast.success(
-                                                    "Hiding zone pasted successfully",
-                                                    {
-                                                        autoClose: 2000,
-                                                    },
-                                                );
-                                            } catch {
-                                                toast.error("Invalid GeoJSON");
-                                            }
-                                        });
-                                }}
+                                            });
+                                    }}
+                                >
+                                    Paste Hiding Zone
+                                </Button>
+                            </div>
+                            <Separator className="bg-slate-300 w-[280px]" />
+                            <Label>Default Unit</Label>
+                            <Select
+                                value={$defaultUnit}
+                                onValueChange={defaultUnit.set}
                             >
-                                Paste Hiding Zone
-                            </Button>
-                        </div>
-                        <Separator className="bg-slate-300 w-[280px]" />
-                        <Label>Default Unit</Label>
-                        <Select
-                            value={$defaultUnit}
-                            onValueChange={defaultUnit.set}
-                        >
-                            <SelectTrigger className="w-[250px]">
-                                <SelectValue placeholder="Select a unit" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="meters">Meters</SelectItem>
-                                <SelectItem value="kilometers">
-                                    Kilometers
-                                </SelectItem>
-                                <SelectItem value="miles">Miles</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <Separator className="bg-slate-300 w-[280px]" />
-                        <div className="flex flex-row items-center gap-2">
-                            <label className="text-2xl font-semibold font-poppins">
-                                Highlight train lines?
-                            </label>
-                            <Checkbox
-                                checked={$highlightTrainLines}
-                                onCheckedChange={() => {
-                                    highlightTrainLines.set(
-                                        !$highlightTrainLines,
-                                    );
-                                }}
-                            />
+                                <SelectTrigger className="w-[250px]">
+                                    <SelectValue placeholder="Select a unit" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="meters">
+                                        Meters
+                                    </SelectItem>
+                                    <SelectItem value="kilometers">
+                                        Kilometers
+                                    </SelectItem>
+                                    <SelectItem value="miles">Miles</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <Separator className="bg-slate-300 w-[280px]" />
+                            <div className="flex flex-row items-center gap-2">
+                                <label className="text-2xl font-semibold font-poppins">
+                                    Highlight train lines?
+                                </label>
+                                <Checkbox
+                                    checked={$highlightTrainLines}
+                                    onCheckedChange={() => {
+                                        highlightTrainLines.set(
+                                            !$highlightTrainLines,
+                                        );
+                                    }}
+                                />
+                            </div>
+                            <div className="flex flex-row items-center gap-2">
+                                <label className="text-2xl font-semibold font-poppins">
+                                    Hider mode?
+                                </label>
+                                <Checkbox
+                                    checked={!!$hiderMode}
+                                    onCheckedChange={() => {
+                                        if ($hiderMode === false) {
+                                            hiderMode.set({
+                                                latitude: 0,
+                                                longitude: 0,
+                                            });
+                                        } else {
+                                            hiderMode.set(false);
+                                        }
+                                    }}
+                                />
+                            </div>
+                            {$hiderMode !== false && (
+                                <SidebarMenu>
+                                    <LatitudeLongitude
+                                        latitude={$hiderMode.latitude}
+                                        longitude={$hiderMode.longitude}
+                                        onChange={(latitude, longitude) => {
+                                            hiderMode.set({
+                                                latitude:
+                                                    latitude ??
+                                                    $hiderMode.latitude,
+                                                longitude:
+                                                    longitude ??
+                                                    $hiderMode.longitude,
+                                            });
+                                        }}
+                                        latLabel="Hider Latitude"
+                                        lngLabel="Hider Longitude"
+                                    />
+                                </SidebarMenu>
+                            )}
                         </div>
                     </div>
                 </DrawerContent>
