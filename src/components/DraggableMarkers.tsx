@@ -14,6 +14,8 @@ import {
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useState } from "react";
 import { Button } from "./ui/button";
+import { SidebarMenu } from "./ui/sidebar";
+import { LatitudeLongitude } from "./LatLngPicker";
 
 let isDragging = false;
 
@@ -33,6 +35,7 @@ const ColoredMarker = ({
     sub?: string;
 }) => {
     const $questions = useStore(questions);
+    const $hiderMode = useStore(hiderMode);
     const [open, setOpen] = useState(false);
 
     return (
@@ -71,10 +74,28 @@ const ColoredMarker = ({
                 }}
             />
             <DialogContent className="!bg-[hsl(var(--sidebar-background))] !text-white">
-                {questionKey === -1 && (
-                    <h2 className="text-center text-2xl font-bold font-poppins">
-                        {sub}
-                    </h2>
+                {questionKey === -1 && $hiderMode !== false && (
+                    <>
+                        <h2 className="text-center text-2xl font-bold font-poppins">
+                            {sub}
+                        </h2>
+                        <SidebarMenu>
+                            <LatitudeLongitude
+                                latitude={$hiderMode.latitude}
+                                longitude={$hiderMode.longitude}
+                                onChange={(latitude, longitude) => {
+                                    hiderMode.set({
+                                        latitude:
+                                            latitude ?? $hiderMode.latitude,
+                                        longitude:
+                                            longitude ?? $hiderMode.longitude,
+                                    });
+                                }}
+                                latLabel="Hider Latitude"
+                                lngLabel="Hider Longitude"
+                            />
+                        </SidebarMenu>
+                    </>
                 )}
                 {$questions
                     .filter((q) => q.key === questionKey)
