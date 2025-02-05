@@ -1,4 +1,4 @@
-import { questions } from "@/utils/context";
+import { hiderMode, questions } from "@/utils/context";
 import { findAdminBoundary, iconColors } from "./api";
 import * as turf from "@turf/turf";
 import type { LatLng } from "leaflet";
@@ -81,4 +81,22 @@ export const addDefaultMatching = (center: LatLng) => {
             },
         },
     ]);
+};
+
+export const hiderifyMatching = async (question: MatchingQuestion) => {
+    const $hiderMode = hiderMode.get();
+    if ($hiderMode === false) {
+        return question;
+    }
+
+    const boundary = await findAdminBoundary(
+        question.lat,
+        question.lng,
+        question.cat.adminLevel,
+    );
+    const hider = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
+
+    question.same = turf.booleanWithin(hider, boundary);
+
+    return question;
 };

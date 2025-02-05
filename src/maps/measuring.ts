@@ -7,7 +7,7 @@ import type {
     MultiPolygon,
     Polygon,
 } from "geojson";
-import { mapGeoJSON, questions } from "@/utils/context";
+import { hiderMode, mapGeoJSON, questions } from "@/utils/context";
 import type { LatLng } from "leaflet";
 
 export interface BaseMeasuringQuestion {
@@ -164,4 +164,32 @@ export const addDefaultMeasuring = (center: LatLng) => {
             },
         },
     ]);
+};
+
+export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
+    const $hiderMode = hiderMode.get();
+    if ($hiderMode === false) {
+        return question;
+    }
+
+    const $mapGeoJSON = mapGeoJSON.get();
+    if ($mapGeoJSON === null) return question;
+
+    let feature = null;
+
+    try {
+        feature = await adjustPerMeasuring(question, $mapGeoJSON, false);
+    } catch {
+        feature = await adjustPerMeasuring(question, $mapGeoJSON, true);
+    }
+
+    if (feature === null || feature === undefined) return question;
+
+    const hiderPoint = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
+
+    if (!turf.booleanPointInPolygon(hiderPoint, feature)) {
+        question.hiderCloser = !question.hiderCloser;
+    }
+
+    return question;
 };

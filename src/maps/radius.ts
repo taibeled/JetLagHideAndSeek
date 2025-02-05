@@ -1,4 +1,4 @@
-import { defaultUnit, questions } from "@/utils/context";
+import { defaultUnit, hiderMode, questions } from "@/utils/context";
 import { iconColors } from "./api";
 import * as turf from "@turf/turf";
 import type { LatLng } from "leaflet";
@@ -66,4 +66,25 @@ export const addDefaultRadius = (center: LatLng) => {
             },
         },
     ]);
+};
+
+export const hiderifyRadius = (question: RadiusQuestion) => {
+    const $hiderMode = hiderMode.get();
+    if ($hiderMode === false) {
+        return question;
+    }
+
+    const distance = turf.distance(
+        turf.point([question.lng, question.lat]),
+        turf.point([$hiderMode.longitude, $hiderMode.latitude]),
+        { units: "miles" },
+    );
+
+    if (distance <= question.radius) {
+        question.within = true;
+    } else {
+        question.within = false;
+    }
+
+    return question;
 };

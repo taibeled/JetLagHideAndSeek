@@ -1,4 +1,4 @@
-import { questions } from "@/utils/context";
+import { hiderMode, questions } from "@/utils/context";
 import { iconColors } from "./api";
 import * as turf from "@turf/turf";
 import type { LatLng } from "leaflet";
@@ -77,4 +77,32 @@ export const addDefaultThermometer = (center: LatLng) => {
             },
         },
     ]);
+};
+
+export const hiderifyThermometer = (question: ThermometerQuestion) => {
+    const $hiderMode = hiderMode.get();
+    if ($hiderMode === false) {
+        return question;
+    }
+
+    const pointA = turf.point([question.lngA, question.latA]);
+    const pointB = turf.point([question.lngB, question.latB]);
+
+    const voronoi = geoSpatialVoronoi(turf.featureCollection([pointA, pointB]));
+
+    const hiderPoint = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
+    const hiderRegion = turf.booleanPointInPolygon(
+        hiderPoint,
+        voronoi.features[1],
+    )
+        ? 1
+        : 0;
+
+    if (hiderRegion === 1) {
+        question.warmer = true;
+    } else {
+        question.warmer = false;
+    }
+
+    return question;
 };

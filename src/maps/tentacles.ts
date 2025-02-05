@@ -1,7 +1,7 @@
 import type { LatLng } from "leaflet";
 import { findTentacleLocations, iconColors } from "./api";
 import * as turf from "@turf/turf";
-import { defaultUnit, questions } from "@/utils/context";
+import { defaultUnit, hiderMode, questions } from "@/utils/context";
 import { geoSpatialVoronoi } from "./voronoi";
 
 export type TentacleLocations =
@@ -95,4 +95,47 @@ export const addDefaultTentacles = (center: LatLng) => {
             },
         },
     ]);
+};
+
+export const hiderifyTentacles = async (question: TentacleQuestion) => {
+    const $hiderMode = hiderMode.get();
+    if ($hiderMode === false) {
+        return question;
+    }
+
+    const points = await findTentacleLocations(question);
+
+    const voronoi = geoSpatialVoronoi(points);
+
+    const hider = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
+    const location = turf.point([question.lng, question.lat]);
+
+    if (
+        turf.distance(hider, location, { units: question.unit }) >
+        question.radius
+    ) {
+        question.location = false;
+        return question;
+    }
+
+    let correctLocation = null;
+
+    const correctPolygon = voronoi.features.find(
+        (feature: any, index: number) => {
+            const pointIn =
+                turf.booleanPointInPolygon(hider, feature.geometry) || false;
+
+            if (pointIn) {
+                correctLocation = points.features[index];
+            }
+            return pointIn;
+        },
+    );
+
+    if (!correctPolygon) {
+        return question;
+    }
+
+    question.location = correctLocation!;
+    return question;
 };

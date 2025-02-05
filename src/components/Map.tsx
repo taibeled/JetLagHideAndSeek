@@ -11,6 +11,8 @@ import {
     polyGeoJSON,
     questions,
     highlightTrainLines,
+    hiderMode,
+    triggerLocalRefresh,
 } from "../utils/context";
 import { useStore } from "@nanostores/react";
 import { useEffect, useMemo } from "react";
@@ -28,6 +30,7 @@ import { addDefaultMatching, adjustPerMatching } from "../maps/matching";
 import { PolygonDraw } from "./PolygonDraw";
 import { addDefaultMeasuring, adjustPerMeasuring } from "@/maps/measuring";
 import { LeafletFullScreenButton } from "./LeafletFullScreenButton";
+import { hiderifyQuestion } from "@/maps";
 
 export const refreshMapData = (
     $mapGeoLocation: OpenStreetMap,
@@ -63,6 +66,7 @@ export const Map = ({ className }: { className?: string }) => {
     const $mapGeoLocation = useStore(mapGeoLocation);
     const $questions = useStore(questions);
     const $highlightTrainLines = useStore(highlightTrainLines);
+    const $hiderMode = useStore(hiderMode);
     const map = useStore(leafletMapContext);
 
     const addRadius = (e: { latlng: any }) => {
@@ -86,6 +90,14 @@ export const Map = ({ className }: { className?: string }) => {
     };
 
     const refreshQuestionsBase = async (focus: boolean = false) => {
+        if ($hiderMode !== false) {
+            for (const question of $questions) {
+                await hiderifyQuestion(question);
+            }
+
+            triggerLocalRefresh.set(Math.random()); // Refresh the question sidebar with new information but not this map
+        }
+
         if (!map) return;
 
         let mapGeoData = mapGeoJSON.get();
@@ -321,7 +333,7 @@ export const Map = ({ className }: { className?: string }) => {
         if (!map) return;
 
         refreshQuestions(true);
-    }, [$questions, map]);
+    }, [$questions, map, $hiderMode]);
 
     useEffect(() => {
         const intervalId = setInterval(async () => {

@@ -3,7 +3,7 @@ import { Marker } from "react-leaflet";
 import { Fragment } from "react/jsx-runtime";
 import type { iconColors } from "../maps/api";
 import { useStore } from "@nanostores/react";
-import { questions } from "../utils/context";
+import { hiderMode, questions } from "../utils/context";
 import {
     RadiusQuestionComponent,
     ThermometerQuestionComponent,
@@ -71,6 +71,11 @@ const ColoredMarker = ({
                 }}
             />
             <DialogContent className="!bg-[hsl(var(--sidebar-background))] !text-white">
+                {questionKey === -1 && (
+                    <h2 className="text-center text-2xl font-bold font-poppins">
+                        {sub}
+                    </h2>
+                )}
                 {$questions
                     .filter((q) => q.key === questionKey)
                     .map((q) => {
@@ -149,16 +154,18 @@ const ColoredMarker = ({
                                 return null;
                         }
                     })}
-                <Button
-                    onClick={() => {
-                        questions.set(
-                            $questions.filter((q) => q.key !== questionKey),
-                        );
-                    }}
-                    variant="destructive"
-                >
-                    Delete
-                </Button>
+                {questionKey !== -1 && (
+                    <Button
+                        onClick={() => {
+                            questions.set(
+                                $questions.filter((q) => q.key !== questionKey),
+                            );
+                        }}
+                        variant="destructive"
+                    >
+                        Delete
+                    </Button>
+                )}
             </DialogContent>
         </Dialog>
     );
@@ -166,9 +173,26 @@ const ColoredMarker = ({
 
 export const DraggableMarkers = () => {
     const $questions = useStore(questions);
+    const $hiderMode = useStore(hiderMode);
 
     return (
         <Fragment>
+            {$hiderMode !== false && (
+                <ColoredMarker
+                    color="green"
+                    key="hider"
+                    sub="Hider Location"
+                    questionKey={-1}
+                    latitude={$hiderMode.latitude}
+                    longitude={$hiderMode.longitude}
+                    onChange={(e) => {
+                        hiderMode.set({
+                            latitude: e.target.getLatLng().lat,
+                            longitude: e.target.getLatLng().lng,
+                        });
+                    }}
+                />
+            )}
             {$questions.map((question, index) => {
                 if (!question.data) return null;
                 if (!question.data.drag) return null;
