@@ -178,16 +178,25 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
     let feature = null;
 
     try {
-        feature = await adjustPerMeasuring(question, $mapGeoJSON, false);
+        feature = turf.mask(
+            (await adjustPerMeasuring(question, $mapGeoJSON, false))!,
+        );
     } catch {
-        feature = await adjustPerMeasuring(question, $mapGeoJSON, true);
+        feature = await adjustPerMeasuring(
+            question,
+            {
+                type: "FeatureCollection",
+                features: [turf.mask($mapGeoJSON)],
+            },
+            true,
+        );
     }
 
     if (feature === null || feature === undefined) return question;
 
     const hiderPoint = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
 
-    if (!turf.booleanPointInPolygon(hiderPoint, feature)) {
+    if (turf.booleanPointInPolygon(hiderPoint, feature)) {
         question.hiderCloser = !question.hiderCloser;
     }
 

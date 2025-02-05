@@ -90,14 +90,6 @@ export const Map = ({ className }: { className?: string }) => {
     };
 
     const refreshQuestionsBase = async (focus: boolean = false) => {
-        if ($hiderMode !== false) {
-            for (const question of $questions) {
-                await hiderifyQuestion(question);
-            }
-
-            triggerLocalRefresh.set(Math.random()); // Refresh the question sidebar with new information but not this map
-        }
-
         if (!map) return;
 
         let mapGeoData = mapGeoJSON.get();
@@ -110,6 +102,14 @@ export const Map = ({ className }: { className?: string }) => {
             } else {
                 mapGeoData = await refreshMapData($mapGeoLocation, false, map);
             }
+        }
+
+        if ($hiderMode !== false) {
+            for (const question of $questions) {
+                await hiderifyQuestion(question);
+            }
+
+            triggerLocalRefresh.set(Math.random()); // Refresh the question sidebar with new information but not this map
         }
 
         try {
