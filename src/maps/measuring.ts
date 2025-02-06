@@ -84,11 +84,7 @@ export const adjustPerMeasuring = async (
             }
         }
         case "airport": {
-            if (question.hiderCloser && masked)
-                throw new Error("Cannot be masked");
-
-            if (!question.hiderCloser && !masked)
-                throw new Error("Must be masked");
+            if (!masked) throw new Error("Must be masked");
 
             const airportDataFull = await findPlacesInZone(
                 '["aeroway"="aerodrome"]["iata"]', // Only commercial airports have IATA codes
@@ -130,12 +126,29 @@ export const adjustPerMeasuring = async (
             }
 
             if (question.hiderCloser) {
-                return turf.intersect(
-                    turf.featureCollection(
-                        mapData.features.length > 1
-                            ? [turf.union(mapData)!, unionCircles]
-                            : [...mapData.features, unionCircles],
-                    ),
+                if (!unionCircles) return null;
+
+                const maskedCircles = turf.mask(unionCircles);
+
+                const holes = [];
+                for (const feature of unionCircles.geometry.coordinates) {
+                    if (feature.length > 1) {
+                        holes.push(...feature.slice(1));
+                    }
+                }
+
+                return turf.union(
+                    turf.featureCollection([
+                        turf.difference(
+                            turf.featureCollection([
+                                maskedCircles,
+                                ...mapData.features,
+                            ]),
+                        )!,
+                        // @ts-expect-error This made sense when I wrote it
+                        turf.multiPolygon(holes.map((x) => [x])),
+                        ...mapData.features,
+                    ]),
                 );
             } else {
                 return turf.union(
