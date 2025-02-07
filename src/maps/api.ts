@@ -44,14 +44,8 @@ export const iconColors = {
 };
 
 export const getOverpassData = async (query: string) => {
-    const response = await fetch(
+    const response = await cacheFetch(
         `${OVERPASS_API}?data=${encodeURIComponent(query)}`,
-        {
-            cache: "force-cache",
-            headers: {
-                "Cache-Control": "max-age=604800", // 7 days in seconds
-            },
-        },
     );
     const data = await response.json();
     return data;
@@ -201,14 +195,8 @@ export const convertToLatLong = (coordinates: number[]): LatLngTuple => {
 };
 
 export const fetchCoastline = async () => {
-    const response = await fetch(
+    const response = await cacheFetch(
         import.meta.env.BASE_URL + "/coastline50.geojson",
-        {
-            cache: "force-cache",
-            headers: {
-                "Cache-Control": "max-age=604800", // 7 days in seconds,
-            },
-        },
     );
     const data = await response.json();
     return data;
@@ -254,4 +242,17 @@ out ${outType};
     }
 
     return await getOverpassData(query);
+};
+
+const CACHE_NAME = "jlhs-map-generator-cache";
+
+const cacheFetch = async (url: string) => {
+    const cache = await caches.open(CACHE_NAME);
+
+    const cachedResponse = await cache.match(url);
+    if (cachedResponse) return cachedResponse;
+
+    const response = await fetch(url);
+    await cache.put(url, response.clone());
+    return response;
 };
