@@ -56,7 +56,6 @@ export const refreshMapData = (
     return toast.promise(
         refresh().catch((error) => console.log(error)),
         {
-            pending: "Refreshing map data...",
             error: "Error refreshing map data",
         },
     );
@@ -89,7 +88,7 @@ export const Map = ({ className }: { className?: string }) => {
         addDefaultMeasuring(e.latlng);
     };
 
-    const refreshQuestionsBase = async (focus: boolean = false) => {
+    const refreshQuestions = async (focus: boolean = false) => {
         if (!map) return;
 
         let mapGeoData = mapGeoJSON.get();
@@ -259,12 +258,6 @@ export const Map = ({ className }: { className?: string }) => {
             console.log(error);
             return toast.error("No solutions found / error occurred");
         }
-    };
-
-    const refreshQuestions = async (focus: boolean = false) => {
-        await toast.promise(refreshQuestionsBase(focus), {
-            pending: "Refreshing questions...",
-        });
     };
 
     const displayMap = useMemo(

@@ -4,6 +4,7 @@ import type { TentacleQuestion, TentacleLocations } from "./tentacles";
 import * as turf from "@turf/turf";
 import { mapGeoLocation, polyGeoJSON } from "@/utils/context";
 import _ from "lodash";
+import { toast } from "react-toastify";
 
 export interface OpenStreetMap {
     type: string;
@@ -44,9 +45,10 @@ export const iconColors = {
     violet: "#9C2BCB",
 };
 
-export const getOverpassData = async (query: string) => {
+export const getOverpassData = async (query: string, loadingText?: string) => {
     const response = await cacheFetch(
         `${OVERPASS_API}?data=${encodeURIComponent(query)}`,
+        loadingText,
     );
     const data = await response.json();
     return data;
@@ -65,7 +67,7 @@ export const determineGeoJSON = async (
     const osmType = osmTypeMap[osmTypeLetter];
 
     const query = `[out:json];${osmType}(${osmId});out geom;`;
-    const data = await getOverpassData(query);
+    const data = await getOverpassData(query, "Loading map data...");
 
     const geo = osmtogeojson(data);
 
@@ -103,7 +105,10 @@ nw["${tentacleFirstTag[question.locationType]}"="${
     )}, ${question.lat}, ${question.lng});
 out center;
     `;
-    const data = await getOverpassData(query);
+    const data = await getOverpassData(
+        query,
+        "Determining tentacle locations...",
+    );
 
     const elements = data.elements;
 
@@ -145,7 +150,7 @@ rel(pivot.a)["admin_level"="${adminLevel}"];
 out geom;
     `;
 
-    const data = await getOverpassData(query);
+    const data = await getOverpassData(query, "Determining matching zone...");
 
     const geo = osmtogeojson(data);
 
@@ -201,6 +206,7 @@ export const convertToLatLong = (coordinates: number[]): LatLngTuple => {
 export const fetchCoastline = async () => {
     const response = await cacheFetch(
         import.meta.env.BASE_URL + "/coastline50.geojson",
+        "Fetching coastline data...",
     );
     const data = await response.json();
     return data;
@@ -208,6 +214,7 @@ export const fetchCoastline = async () => {
 
 export const findPlacesInZone = async (
     filter: string,
+    loadingText?: string,
     searchType:
         | "node"
         | "way"
@@ -245,17 +252,32 @@ out ${outType};
 `;
     }
 
-    return await getOverpassData(query);
+    return await getOverpassData(query, loadingText);
 };
 
 const CACHE_NAME = "jlhs-map-generator-cache";
 
-const cacheFetch = async (url: string) => {
+const determineCache = _.memoize(() => caches.open(CACHE_NAME));
+
+const cacheFetch = async (url: string, loadingText?: string) => {
     try {
-        const cache = await caches.open(CACHE_NAME);
+        const cache = await determineCache();
 
         const cachedResponse = await cache.match(url);
         if (cachedResponse) return cachedResponse;
+
+        if (loadingText) {
+            return toast.promise(
+                async () => {
+                    const response = await fetch(url);
+                    await cache.put(url, response.clone());
+                    return response;
+                },
+                {
+                    pending: loadingText,
+                },
+            );
+        }
 
         const response = await fetch(url);
         await cache.put(url, response.clone());

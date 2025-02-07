@@ -87,7 +87,8 @@ export const adjustPerMeasuring = async (
             if (!masked) throw new Error("Must be masked");
 
             const airportDataFull = await findPlacesInZone(
-                '["aeroway"="aerodrome"]["iata"]', // Only commercial airports have IATA codes
+                '["aeroway"="aerodrome"]["iata"]', // Only commercial airports have IATA codes,
+                "Finding airports...",
             );
             const airportDataUnique = _.uniqBy(
                 airportDataFull.elements,
