@@ -3,6 +3,7 @@ import osmtogeojson from "osmtogeojson";
 import type { TentacleQuestion, TentacleLocations } from "./tentacles";
 import * as turf from "@turf/turf";
 import { mapGeoLocation, polyGeoJSON } from "@/utils/context";
+import _ from "lodash";
 
 export interface OpenStreetMap {
     type: string;
@@ -171,9 +172,12 @@ export const geocode = async (address: string, language: string) => {
         ];
     });
 
-    return features.filter((feature) => {
-        return feature.properties.osm_type === "R";
-    });
+    return _.uniqBy(
+        features.filter((feature) => {
+            return feature.properties.osm_type === "R";
+        }),
+        (feature) => feature.properties.osm_id,
+    );
 };
 
 export const determineName = (feature: OpenStreetMap) => {
@@ -247,12 +251,18 @@ out ${outType};
 const CACHE_NAME = "jlhs-map-generator-cache";
 
 const cacheFetch = async (url: string) => {
-    const cache = await caches.open(CACHE_NAME);
+    try {
+        const cache = await caches.open(CACHE_NAME);
 
-    const cachedResponse = await cache.match(url);
-    if (cachedResponse) return cachedResponse;
+        const cachedResponse = await cache.match(url);
+        if (cachedResponse) return cachedResponse;
 
-    const response = await fetch(url);
-    await cache.put(url, response.clone());
-    return response;
+        const response = await fetch(url);
+        await cache.put(url, response.clone());
+        return response;
+    } catch (e) {
+        console.log(e); // Probably a caches not supported error
+
+        return fetch(url);
+    }
 };
