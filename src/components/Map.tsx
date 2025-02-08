@@ -140,12 +140,19 @@ export const Map = ({ className }: { className?: string }) => {
                         );
                         break;
                     case "matching":
-                        if (!question.data.same) break;
-                        mapGeoData = await adjustPerMatching(
-                            question.data,
-                            mapGeoData,
-                            false,
-                        );
+                        try {
+                            mapGeoData = await adjustPerMatching(
+                                question.data,
+                                mapGeoData,
+                                false,
+                            );
+                        } catch (error: any) {
+                            if (error && error.message === "Must be masked") {
+                                /* empty */
+                            } else {
+                                console.log(error);
+                            }
+                        }
                         break;
                     case "measuring":
                         try {
@@ -213,13 +220,19 @@ export const Map = ({ className }: { className?: string }) => {
                         );
                         break;
                     case "matching":
-                        if (question.data.same) break;
-
-                        mapGeoData = await adjustPerMatching(
-                            question.data,
-                            mapGeoData,
-                            true,
-                        );
+                        try {
+                            mapGeoData = await adjustPerMatching(
+                                question.data,
+                                mapGeoData,
+                                true,
+                            );
+                        } catch (error: any) {
+                            if (error && error.message === "Cannot be masked") {
+                                /* empty */
+                            } else {
+                                console.log(error);
+                            }
+                        }
                         break;
                     case "measuring":
                         try {

@@ -308,6 +308,9 @@ export const MatchingQuestionComponent = ({
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="zone">Zone Question</SelectItem>
+                        <SelectItem value="airport">
+                            Commercial Airport In Zone Question
+                        </SelectItem>
                     </SelectContent>
                 </Select>
             </SidebarMenuItem>

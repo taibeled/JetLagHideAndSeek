@@ -8,6 +8,7 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
   - [x] All
 - [ ] Matching
   - [x] Same zone (i.e., same region or prefecture)
+  - [x] Commercial airports
 - [ ] Measuring
   - [x] Coastline
   - [x] Commercial airports

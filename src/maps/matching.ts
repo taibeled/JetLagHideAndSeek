@@ -1,7 +1,9 @@
-import { hiderMode, questions } from "@/utils/context";
-import { findAdminBoundary, iconColors } from "./api";
+import { hiderMode, mapGeoJSON, questions } from "@/utils/context";
+import { findAdminBoundary, findPlacesInZone, iconColors } from "./api";
 import * as turf from "@turf/turf";
 import type { LatLng } from "leaflet";
+import _ from "lodash";
+import { geoSpatialVoronoi } from "./voronoi";
 
 export interface MatchingZoneQuestion {
     adminLevel: 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
@@ -20,7 +22,11 @@ export interface ZoneMatchingQuestion extends BaseMatchingQuestion {
     cat: MatchingZoneQuestion;
 }
 
-export type MatchingQuestion = ZoneMatchingQuestion;
+export interface AirportMatchingQuestion extends BaseMatchingQuestion {
+    type: "airport";
+}
+
+export type MatchingQuestion = ZoneMatchingQuestion | AirportMatchingQuestion;
 
 export const adjustPerMatching = async (
     question: MatchingQuestion,
@@ -29,34 +35,63 @@ export const adjustPerMatching = async (
 ) => {
     if (mapData === null) return;
 
+    if (question.same && masked) {
+        throw new Error("Cannot be masked");
+    } else if (!question.same && !masked) {
+        throw new Error("Must be masked");
+    }
+
+    let boundary;
+
     switch (question.type) {
         case "zone": {
-            const boundary = await findAdminBoundary(
+            boundary = await findAdminBoundary(
                 question.lat,
                 question.lng,
                 question.cat.adminLevel,
             );
+            break;
+        }
+        case "airport": {
+            const airportData = _.uniqBy(
+                (
+                    await findPlacesInZone(
+                        '["aeroway"="aerodrome"]["iata"]', // Only commercial airports have IATA codes,
+                        "Finding airports...",
+                    )
+                ).elements,
+                (feature: any) => feature.tags.iata,
+            ).map((x) =>
+                turf.point([
+                    x.center ? x.center.lon : x.lon,
+                    x.center ? x.center.lat : x.lat,
+                ]),
+            );
 
-            if (question.same) {
-                if (masked) {
-                    throw new Error("Cannot be masked");
+            const voronoi = geoSpatialVoronoi(airportData);
+            const point = turf.point([question.lng, question.lat]);
+
+            for (const feature of voronoi.features) {
+                if (turf.booleanPointInPolygon(point, feature)) {
+                    boundary = feature;
+                    break;
                 }
-                return turf.intersect(
-                    turf.featureCollection(
-                        mapData.features.length > 1
-                            ? [turf.union(mapData)!, boundary]
-                            : [...mapData.features, boundary],
-                    ),
-                );
-            } else {
-                if (!masked) {
-                    throw new Error("Must be masked");
-                }
-                return turf.union(
-                    turf.featureCollection([...mapData.features, boundary]),
-                );
             }
         }
+    }
+
+    if (question.same) {
+        return turf.intersect(
+            turf.featureCollection(
+                mapData.features.length > 1
+                    ? [turf.union(mapData)!, boundary]
+                    : [...mapData.features, boundary],
+            ),
+        );
+    } else {
+        return turf.union(
+            turf.featureCollection([...mapData.features, boundary]),
+        );
     }
 };
 
@@ -89,14 +124,33 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
         return question;
     }
 
-    const boundary = await findAdminBoundary(
-        question.lat,
-        question.lng,
-        question.cat.adminLevel,
-    );
-    const hider = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
+    const $mapGeoJSON = mapGeoJSON.get();
+    if ($mapGeoJSON === null) return question;
 
-    question.same = turf.booleanWithin(hider, boundary);
+    let feature = null;
+
+    try {
+        feature = turf.mask(
+            (await adjustPerMatching(question, $mapGeoJSON, false))!,
+        );
+    } catch {
+        feature = await adjustPerMatching(
+            question,
+            {
+                type: "FeatureCollection",
+                features: [turf.mask($mapGeoJSON)],
+            },
+            true,
+        );
+    }
+
+    if (feature === null || feature === undefined) return question;
+
+    const hiderPoint = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
+
+    if (turf.booleanPointInPolygon(hiderPoint, feature)) {
+        question.same = !question.same;
+    }
 
     return question;
 };
