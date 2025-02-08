@@ -151,6 +151,7 @@ export const Map = ({ className }: { className?: string }) => {
                                 /* empty */
                             } else {
                                 console.log(error);
+                                throw error;
                             }
                         }
                         break;
@@ -166,6 +167,7 @@ export const Map = ({ className }: { className?: string }) => {
                                 /* empty */
                             } else {
                                 console.log(error);
+                                throw error;
                             }
                         }
                         break;
@@ -231,6 +233,7 @@ export const Map = ({ className }: { className?: string }) => {
                                 /* empty */
                             } else {
                                 console.log(error);
+                                throw error;
                             }
                         }
                         break;
@@ -246,6 +249,7 @@ export const Map = ({ className }: { className?: string }) => {
                                 /* empty */
                             } else {
                                 console.log(error);
+                                throw error;
                             }
                         }
                         break;
@@ -269,7 +273,10 @@ export const Map = ({ className }: { className?: string }) => {
             geoJSON(mapGeoData).addTo(map);
         } catch (error) {
             console.log(error);
-            return toast.error("No solutions found / error occurred");
+
+            if (document.querySelectorAll(".Toastify__toast").length === 0) {
+                return toast.error("No solutions found / error occurred");
+            }
         }
     };
 
