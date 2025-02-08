@@ -78,23 +78,26 @@ export const adjustPerMatching = async (
 
             const letter = englishName[0].toUpperCase();
 
-            boundary = turf.union(
-                turf.featureCollection(
-                    osmtogeojson(
-                        await findPlacesInZone(
-                            `[admin_level=${question.cat.adminLevel}]["name:en"~"^${letter}.+"]`, // Regex is faster than filtering afterward
-                            `Finding zones that start with the same letter (${letter})...`,
-                            "relation",
-                            "geom",
-                        ),
-                    ).features.filter(
-                        (x) =>
-                            x.geometry &&
-                            (x.geometry.type === "Polygon" ||
-                                x.geometry.type === "MultiPolygon"),
+            boundary = turf.featureCollection(
+                osmtogeojson(
+                    await findPlacesInZone(
+                        `[admin_level=${question.cat.adminLevel}]["name:en"~"^${letter}.+"]`, // Regex is faster than filtering afterward
+                        `Finding zones that start with the same letter (${letter})...`,
+                        "relation",
+                        "geom",
                     ),
-                ) as any,
+                ).features.filter(
+                    (x) =>
+                        x.geometry &&
+                        (x.geometry.type === "Polygon" ||
+                            x.geometry.type === "MultiPolygon"),
+                ),
             );
+
+            if (boundary.features.length > 1) {
+                boundary = turf.union(boundary as any);
+            }
+
             break;
         }
         case "airport": {
