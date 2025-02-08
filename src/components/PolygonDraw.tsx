@@ -5,6 +5,7 @@ import * as L from "leaflet";
 import { useRef } from "react";
 import * as turf from "@turf/turf";
 import { mapGeoJSON, polyGeoJSON, questions } from "@/utils/context";
+import { CacheType, clearCache } from "@/maps/api";
 
 export const PolygonDraw = () => {
     const featureRef = useRef<any | null>(null);
@@ -24,6 +25,7 @@ export const PolygonDraw = () => {
         mapGeoJSON.set(geoJSON);
         polyGeoJSON.set(geoJSON);
         questions.set([]);
+        clearCache(CacheType.ZONE_CACHE);
     };
 
     return (

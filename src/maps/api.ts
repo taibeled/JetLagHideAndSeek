@@ -45,10 +45,15 @@ export const iconColors = {
     violet: "#9C2BCB",
 };
 
-export const getOverpassData = async (query: string, loadingText?: string) => {
+export const getOverpassData = async (
+    query: string,
+    loadingText?: string,
+    cacheType: CacheType = CacheType.CACHE,
+) => {
     const response = await cacheFetch(
         `${OVERPASS_API}?data=${encodeURIComponent(query)}`,
         loadingText,
+        cacheType,
     );
     const data = await response.json();
     return data;
@@ -67,7 +72,11 @@ export const determineGeoJSON = async (
     const osmType = osmTypeMap[osmTypeLetter];
 
     const query = `[out:json];${osmType}(${osmId});out geom;`;
-    const data = await getOverpassData(query, "Loading map data...");
+    const data = await getOverpassData(
+        query,
+        "Loading map data...",
+        CacheType.PERMANENT_CACHE, // Speedy switching
+    );
 
     const geo = osmtogeojson(data);
 
@@ -207,6 +216,7 @@ export const fetchCoastline = async () => {
     const response = await cacheFetch(
         import.meta.env.BASE_URL + "/coastline50.geojson",
         "Fetching coastline data...",
+        CacheType.PERMANENT_CACHE,
     );
     const data = await response.json();
     return data;
@@ -252,16 +262,39 @@ out ${outType};
 `;
     }
 
-    return await getOverpassData(query, loadingText);
+    return await getOverpassData(query, loadingText, CacheType.ZONE_CACHE);
 };
 
-const CACHE_NAME = "jlhs-map-generator-cache";
+export enum CacheType {
+    CACHE = "jlhs-map-generator-cache",
+    ZONE_CACHE = "jlhs-map-generator-zone-cache",
+    PERMANENT_CACHE = "jlhs-map-generator-permanent-cache",
+}
 
-const determineCache = _.memoize(() => caches.open(CACHE_NAME));
+const determineQuestionCache = _.memoize(() => caches.open(CacheType.CACHE));
+const determineZoneCache = _.memoize(() => caches.open(CacheType.ZONE_CACHE));
+const determinePermanentCache = _.memoize(() =>
+    caches.open(CacheType.PERMANENT_CACHE),
+);
 
-const cacheFetch = async (url: string, loadingText?: string) => {
+const determineCache = async (cacheType: CacheType) => {
+    switch (cacheType) {
+        case CacheType.CACHE:
+            return await determineQuestionCache();
+        case CacheType.ZONE_CACHE:
+            return await determineZoneCache();
+        case CacheType.PERMANENT_CACHE:
+            return await determinePermanentCache();
+    }
+};
+
+const cacheFetch = async (
+    url: string,
+    loadingText?: string,
+    cacheType: CacheType = CacheType.CACHE,
+) => {
     try {
-        const cache = await determineCache();
+        const cache = await determineCache(cacheType);
 
         const cachedResponse = await cache.match(url);
         if (cachedResponse) return cachedResponse;
@@ -289,8 +322,8 @@ const cacheFetch = async (url: string, loadingText?: string) => {
     }
 };
 
-export const clearCache = async () => {
-    const cache = await determineCache();
+export const clearCache = async (cacheType: CacheType = CacheType.CACHE) => {
+    const cache = await determineCache(cacheType);
     await cache.keys().then((keys) => {
         keys.forEach((key) => {
             cache.delete(key);

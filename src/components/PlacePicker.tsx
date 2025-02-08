@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { useDebounce } from "../hooks/useDebounce";
 import { cn } from "../lib/utils";
-import { geocode, type OpenStreetMap, determineName } from "../maps/api";
+import {
+    geocode,
+    type OpenStreetMap,
+    determineName,
+    clearCache,
+    CacheType,
+} from "../maps/api";
 import {
     mapGeoJSON,
     mapGeoLocation,
@@ -98,6 +104,7 @@ export const PlacePicker = ({
                                         mapGeoJSON.set(null);
                                         polyGeoJSON.set(null);
                                         questions.set([]);
+                                        clearCache(CacheType.ZONE_CACHE);
                                     }}
                                     className="cursor-pointer"
                                 >
