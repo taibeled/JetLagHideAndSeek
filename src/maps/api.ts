@@ -252,13 +252,14 @@ ${searchType}${filter}(poly:"${turf
             .map((coord) => [coord[1], coord[0]].join(" "))
             .join(" ")}");
 ${
-    alternative &&
-    `${searchType}${alternative}(poly:"${turf
-        .getCoords($polyGeoJSON.features)
-        .flatMap((polygon) => polygon.geometry.coordinates)
-        .flat()
-        .map((coord) => [coord[1], coord[0]].join(" "))
-        .join(" ")}");`
+    alternative
+        ? `${searchType}${alternative}(poly:"${turf
+              .getCoords($polyGeoJSON.features)
+              .flatMap((polygon) => polygon.geometry.coordinates)
+              .flat()
+              .map((coord) => [coord[1], coord[0]].join(" "))
+              .join(" ")}");`
+        : ""
 }
 );
 out ${outType};
@@ -271,7 +272,7 @@ out ${outType};
 relation(${geoLocation.properties.osm_id});map_to_area->.region;
 (
 ${searchType}${filter}(area.region);
-${alternative && `${searchType}${alternative}(area.region);`}
+${alternative ? `${searchType}${alternative}(area.region);` : ""}
 );
 out ${outType};
 `;
