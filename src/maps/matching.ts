@@ -60,6 +60,11 @@ export const adjustPerMatching = async (
                 question.lng,
                 question.cat.adminLevel,
             );
+
+            if (!boundary) {
+                toast.error("No boundary found for this zone");
+                throw new Error("No boundary found");
+            }
             break;
         }
         case "letter-zone": {
@@ -69,11 +74,22 @@ export const adjustPerMatching = async (
                 question.cat.adminLevel,
             );
 
-            const englishName = zone.properties?.["name:en"];
+            if (!zone) {
+                toast.error("No boundary found for this zone");
+                throw new Error("No boundary found");
+            }
+
+            let englishName = zone.properties?.["name:en"];
 
             if (!englishName) {
-                toast.error("No English name found for this zone");
-                throw new Error("No English name");
+                const name = zone.properties?.name;
+
+                if (/^[a-zA-Z]$/.test(name[0])) {
+                    englishName = name;
+                } else {
+                    toast.error("No English name found for this zone");
+                    throw new Error("No English name");
+                }
             }
 
             const letter = englishName[0].toUpperCase();
@@ -93,6 +109,13 @@ export const adjustPerMatching = async (
                             x.geometry.type === "MultiPolygon"),
                 ),
             );
+
+            // It's either simplify or crash. Technically this could be bad if someone's hiding zone was inside multiple zones, but that's unlikely.
+            boundary = turf.simplify(boundary, {
+                tolerance: 0.001,
+                highQuality: true,
+                mutate: true,
+            });
 
             if (boundary.features.length > 1) {
                 boundary = turf.union(boundary as any);

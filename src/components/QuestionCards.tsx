@@ -253,36 +253,45 @@ export const MatchingQuestionComponent = ({
         case "zone":
         case "letter-zone":
             questionSpecific = (
-                <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
-                    <Select
-                        value={data.cat.adminLevel.toString()}
-                        onValueChange={(value) => {
-                            const newQuestions = [...$questions];
-                            (
-                                newQuestions[index].data as typeof data
-                            ).cat.adminLevel = parseInt(value) as any;
-                            questions.set(newQuestions);
-                        }}
-                    >
-                        <SelectTrigger>
-                            <SelectValue placeholder="OSM Zone" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="3">
-                                OSM Zone 3 (region in Japan)
-                            </SelectItem>
-                            <SelectItem value="4">
-                                OSM Zone 4 (prefecture in Japan)
-                            </SelectItem>
-                            <SelectItem value="5">OSM Zone 5</SelectItem>
-                            <SelectItem value="6">OSM Zone 6</SelectItem>
-                            <SelectItem value="7">OSM Zone 7</SelectItem>
-                            <SelectItem value="8">OSM Zone 8</SelectItem>
-                            <SelectItem value="9">OSM Zone 9</SelectItem>
-                            <SelectItem value="10">OSM Zone 10</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </SidebarMenuItem>
+                <>
+                    <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                        <Select
+                            value={data.cat.adminLevel.toString()}
+                            onValueChange={(value) => {
+                                const newQuestions = [...$questions];
+                                (
+                                    newQuestions[index].data as typeof data
+                                ).cat.adminLevel = parseInt(value) as any;
+                                questions.set(newQuestions);
+                            }}
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="OSM Zone" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="3">
+                                    OSM Zone 3 (region in Japan)
+                                </SelectItem>
+                                <SelectItem value="4">
+                                    OSM Zone 4 (prefecture in Japan)
+                                </SelectItem>
+                                <SelectItem value="5">OSM Zone 5</SelectItem>
+                                <SelectItem value="6">OSM Zone 6</SelectItem>
+                                <SelectItem value="7">OSM Zone 7</SelectItem>
+                                <SelectItem value="8">OSM Zone 8</SelectItem>
+                                <SelectItem value="9">OSM Zone 9</SelectItem>
+                                <SelectItem value="10">OSM Zone 10</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </SidebarMenuItem>
+                    {data.type === "letter-zone" && (
+                        <span className="px-2 text-center text-orange-500">
+                            Warning: The zone data has been simplified by
+                            &plusmn;360 feet (100 meters) in order for the
+                            browser to not crash.
+                        </span>
+                    )}
+                </>
             );
     }
 
