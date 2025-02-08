@@ -2,6 +2,7 @@ import {
     defaultUnit,
     hiderMode,
     highlightTrainLines,
+    leafletMapContext,
     mapGeoJSON,
     mapGeoLocation,
     polyGeoJSON,
@@ -259,10 +260,22 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     checked={!!$hiderMode}
                                     onCheckedChange={() => {
                                         if ($hiderMode === false) {
-                                            hiderMode.set({
-                                                latitude: 0,
-                                                longitude: 0,
-                                            });
+                                            const $leafletMapContext =
+                                                leafletMapContext.get();
+
+                                            if ($leafletMapContext) {
+                                                const center =
+                                                    $leafletMapContext.getCenter();
+                                                hiderMode.set({
+                                                    latitude: center.lat,
+                                                    longitude: center.lng,
+                                                });
+                                            } else {
+                                                hiderMode.set({
+                                                    latitude: 0,
+                                                    longitude: 0,
+                                                });
+                                            }
                                         } else {
                                             hiderMode.set(false);
                                         }
