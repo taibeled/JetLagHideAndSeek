@@ -4,6 +4,8 @@ import * as turf from "@turf/turf";
 import type { LatLng } from "leaflet";
 import _ from "lodash";
 import { geoSpatialVoronoi } from "./voronoi";
+import { toast } from "react-toastify";
+import osmtogeojson from "osmtogeojson";
 
 export interface MatchingZoneQuestion {
     adminLevel: 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
@@ -26,7 +28,15 @@ export interface AirportMatchingQuestion extends BaseMatchingQuestion {
     type: "airport";
 }
 
-export type MatchingQuestion = ZoneMatchingQuestion | AirportMatchingQuestion;
+export interface LetterMatchingZoneQuestion extends BaseMatchingQuestion {
+    type: "letter-zone";
+    cat: MatchingZoneQuestion;
+}
+
+export type MatchingQuestion =
+    | ZoneMatchingQuestion
+    | AirportMatchingQuestion
+    | LetterMatchingZoneQuestion;
 
 export const adjustPerMatching = async (
     question: MatchingQuestion,
@@ -49,6 +59,41 @@ export const adjustPerMatching = async (
                 question.lat,
                 question.lng,
                 question.cat.adminLevel,
+            );
+            break;
+        }
+        case "letter-zone": {
+            const zone = await findAdminBoundary(
+                question.lat,
+                question.lng,
+                question.cat.adminLevel,
+            );
+
+            const englishName = zone.properties?.["name:en"];
+
+            if (!englishName) {
+                toast.error("No English name found for this zone");
+                throw new Error("No English name");
+            }
+
+            const letter = englishName[0].toUpperCase();
+
+            boundary = turf.union(
+                turf.featureCollection(
+                    osmtogeojson(
+                        await findPlacesInZone(
+                            `[admin_level=${question.cat.adminLevel}]["name:en"~"^${letter}.+"]`, // Regex is faster than filtering afterward
+                            `Finding zones that start with the same letter (${letter})...`,
+                            "relation",
+                            "geom",
+                        ),
+                    ).features.filter(
+                        (x) =>
+                            x.geometry &&
+                            (x.geometry.type === "Polygon" ||
+                                x.geometry.type === "MultiPolygon"),
+                    ),
+                ) as any,
             );
             break;
         }

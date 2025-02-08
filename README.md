@@ -9,6 +9,7 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
 - [ ] Matching
   - [x] Same zone (i.e., same region or prefecture)
   - [x] Commercial airports
+  - [x] Zone that starts with the same letter
 - [ ] Measuring
   - [x] Coastline
   - [x] Commercial airports

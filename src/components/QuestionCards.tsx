@@ -8,7 +8,7 @@ import { useStore } from "@nanostores/react";
 import { cn } from "../lib/utils";
 import { hiderMode, questions, triggerLocalRefresh } from "../utils/context";
 import { findTentacleLocations, iconColors } from "../maps/api";
-import type { MatchingQuestion, ZoneMatchingQuestion } from "../maps/matching";
+import type { MatchingQuestion } from "../maps/matching";
 import {
     MENU_ITEM_CLASSNAME,
     SidebarGroup,
@@ -251,6 +251,7 @@ export const MatchingQuestionComponent = ({
 
     switch (data.type) {
         case "zone":
+        case "letter-zone":
             questionSpecific = (
                 <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                     <Select
@@ -258,7 +259,7 @@ export const MatchingQuestionComponent = ({
                         onValueChange={(value) => {
                             const newQuestions = [...$questions];
                             (
-                                newQuestions[index].data as ZoneMatchingQuestion
+                                newQuestions[index].data as typeof data
                             ).cat.adminLevel = parseInt(value) as any;
                             questions.set(newQuestions);
                         }}
@@ -308,6 +309,9 @@ export const MatchingQuestionComponent = ({
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="zone">Zone Question</SelectItem>
+                        <SelectItem value="letter-zone">
+                            Zone Starts With Same Letter Question
+                        </SelectItem>
                         <SelectItem value="airport">
                             Commercial Airport In Zone Question
                         </SelectItem>
