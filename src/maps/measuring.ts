@@ -91,6 +91,7 @@ export const adjustPerMeasuring = async (
             }
         }
         case "airport":
+            if (!masked) throw new Error("Must be masked");
             placeDataFull = _.uniqBy(
                 (
                     await findPlacesInZone(
@@ -102,6 +103,7 @@ export const adjustPerMeasuring = async (
             );
             break;
         case "city":
+            if (!masked) throw new Error("Must be masked");
             placeDataFull = (
                 await findPlacesInZone(
                     '[place=city]["population"~"^[1-9]+[0-9]{6}$"]', // The regex is faster than (if:number(t["population"])>1000000)
