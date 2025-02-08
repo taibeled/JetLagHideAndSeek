@@ -11,6 +11,7 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
 - [ ] Measuring
   - [x] Coastline
   - [x] Commercial airports
+  - [x] Major city
 - [x] Tentacles
   - [x] Zoo
   - [x] Aquarium
@@ -29,7 +30,7 @@ If anyone wants to help, please focus on one of the following or leave an issue 
 - [ ] Adding questions (https://github.com/taibeled/JetLagHideAndSeek/issues/9)
 - [ ] Refactoring code
 - [x] Hider menu (prevent conflicting information between hiders and seekers by adding a menu for hiders to automatically obtain answers)
-- [ ] Train station fetching (use Overpass to fetch train stations in the zone and automatically show them)
+- [ ] Train station fetching (use Overpass to fetch train stations in the zone and automatically show them, https://github.com/taibeled/JetLagHideAndSeek/issues/24)
 - [x] Progressive web app (https://github.com/taibeled/JetLagHideAndSeek/issues/1)
   - [ ] Icon for the app
 

@@ -427,6 +427,9 @@ export const MeasuringQuestionComponent = ({
                         <SelectItem value="airport">
                             Commercial Airport In Zone Question
                         </SelectItem>
+                        <SelectItem value="city">
+                            Major City (1,000,000+ people) Question
+                        </SelectItem>
                     </SelectContent>
                 </Select>
             </SidebarMenuItem>

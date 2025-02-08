@@ -26,9 +26,14 @@ export interface AirportMeasuringQuestion extends BaseMeasuringQuestion {
     type: "airport";
 }
 
+export interface CityMeasuringQuestion extends BaseMeasuringQuestion {
+    type: "city";
+}
+
 export type MeasuringQuestion =
     | CoastlineMeasuringQuestion
-    | AirportMeasuringQuestion;
+    | AirportMeasuringQuestion
+    | CityMeasuringQuestion;
 
 export const adjustPerMeasuring = async (
     question: MeasuringQuestion,
@@ -38,6 +43,8 @@ export const adjustPerMeasuring = async (
     if (mapData === null) return;
 
     const bBox = turf.bbox(mapGeoJSON.get());
+
+    let placeDataFull;
 
     switch (question.type) {
         case "coastline": {
@@ -83,79 +90,91 @@ export const adjustPerMeasuring = async (
                 );
             }
         }
-        case "airport": {
-            if (!masked) throw new Error("Must be masked");
-
-            const airportDataFull = await findPlacesInZone(
-                '["aeroway"="aerodrome"]["iata"]', // Only commercial airports have IATA codes,
-                "Finding airports...",
-            );
-            const airportDataUnique = _.uniqBy(
-                airportDataFull.elements,
+        case "airport":
+            placeDataFull = _.uniqBy(
+                (
+                    await findPlacesInZone(
+                        '["aeroway"="aerodrome"]["iata"]', // Only commercial airports have IATA codes,
+                        "Finding airports...",
+                    )
+                ).elements,
                 (feature: any) => feature.tags.iata,
             );
-            const airportData = turf.featureCollection(
-                airportDataUnique.map((x) =>
-                    turf.point([
-                        x.center ? x.center.lon : x.lon,
-                        x.center ? x.center.lat : x.lat,
-                    ]),
-                ),
-            );
+            break;
+        case "city":
+            placeDataFull = (
+                await findPlacesInZone(
+                    '[place=city]["population"~"^[1-9]+[0-9]{6}$"]', // The regex is faster than (if:number(t["population"])>1000000)
+                    "Finding cities...",
+                )
+            ).elements;
+            break;
+    }
 
-            const point = turf.point([question.lng, question.lat]);
-            const closestPoint = turf.nearestPoint(point, airportData);
-            const distance = turf.distance(point, closestPoint, {
+    if (placeDataFull) {
+        if (!masked) throw new Error("Must be masked");
+
+        const placeData = turf.featureCollection(
+            placeDataFull.map((x: any) =>
+                turf.point([
+                    x.center ? x.center.lon : x.lon,
+                    x.center ? x.center.lat : x.lat,
+                ]),
+            ),
+        );
+
+        const point = turf.point([question.lng, question.lat]);
+        const closestPoint = turf.nearestPoint(point, placeData as any);
+        const distance = turf.distance(point, closestPoint, {
+            units: "miles",
+        });
+
+        const circles: Feature<Polygon, GeoJsonProperties>[] = [];
+
+        placeData.features.forEach((feature: any) => {
+            const circle = turf.circle(feature, distance, {
                 units: "miles",
             });
+            circles.push(circle);
+        });
 
-            const circles: Feature<Polygon, GeoJsonProperties>[] = [];
+        let unionCircles;
 
-            airportData.features.forEach((feature: any) => {
-                const circle = turf.circle(feature, distance, {
-                    units: "miles",
-                });
-                circles.push(circle);
-            });
+        if (circles.length > 1) {
+            unionCircles = turf.union(turf.featureCollection(circles));
+        } else {
+            unionCircles = circles[0];
+        }
 
-            let unionCircles;
+        if (question.hiderCloser) {
+            if (!unionCircles) return null;
 
-            if (circles.length > 1) {
-                unionCircles = turf.union(turf.featureCollection(circles));
-            } else {
-                unionCircles = circles[0];
-            }
+            const maskedCircles = turf.mask(unionCircles);
 
-            if (question.hiderCloser) {
-                if (!unionCircles) return null;
-
-                const maskedCircles = turf.mask(unionCircles);
-
-                const holes = [];
-                for (const feature of unionCircles.geometry.coordinates) {
-                    if (feature.length > 1) {
-                        holes.push(...feature.slice(1));
-                    }
+            const holes = [];
+            for (const feature of unionCircles.geometry.coordinates) {
+                if (feature.length > 1) {
+                    holes.push(...feature.slice(1));
                 }
-
-                return turf.union(
-                    turf.featureCollection([
-                        turf.difference(
-                            turf.featureCollection([
-                                maskedCircles,
-                                ...mapData.features,
-                            ]),
-                        )!,
-                        // @ts-expect-error This made sense when I wrote it
-                        turf.multiPolygon(holes.map((x) => [x])),
-                        ...mapData.features,
-                    ]),
-                );
-            } else {
-                return turf.union(
-                    turf.featureCollection([...mapData.features, unionCircles]),
-                );
             }
+
+            return turf.union(
+                turf.featureCollection([
+                    turf.difference(
+                        turf.featureCollection([
+                            maskedCircles,
+                            ...mapData.features,
+                        ]),
+                    )!,
+                    // @ts-expect-error This made sense when I wrote it
+                    turf.multiPolygon(holes.map((x) => [x])),
+                    ...mapData.features,
+                ]),
+            );
+        } else {
+            return turf.union(
+                turf.featureCollection([...mapData.features, unionCircles]),
+            );
         }
     }
 };
