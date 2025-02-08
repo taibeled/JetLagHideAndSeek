@@ -18,7 +18,7 @@ import { useStore } from "@nanostores/react";
 import { useEffect, useMemo } from "react";
 import { toast } from "react-toastify";
 import * as turf from "@turf/turf";
-import { determineGeoJSON, type OpenStreetMap } from "../maps/api";
+import { clearCache, determineGeoJSON, type OpenStreetMap } from "../maps/api";
 import { addDefaultRadius, adjustPerRadius } from "../maps/radius";
 import { DraggableMarkers } from "./DraggableMarkers";
 import {
@@ -90,6 +90,10 @@ export const Map = ({ className }: { className?: string }) => {
 
     const refreshQuestions = async (focus: boolean = false) => {
         if (!map) return;
+
+        if ($questions.length === 0) {
+            await clearCache();
+        }
 
         let mapGeoData = mapGeoJSON.get();
 

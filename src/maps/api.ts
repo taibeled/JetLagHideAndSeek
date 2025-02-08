@@ -288,3 +288,12 @@ const cacheFetch = async (url: string, loadingText?: string) => {
         return fetch(url);
     }
 };
+
+export const clearCache = async () => {
+    const cache = await determineCache();
+    await cache.keys().then((keys) => {
+        keys.forEach((key) => {
+            cache.delete(key);
+        });
+    });
+};
