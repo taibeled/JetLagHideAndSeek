@@ -284,13 +284,11 @@ export const MatchingQuestionComponent = ({
                             </SelectContent>
                         </Select>
                     </SidebarMenuItem>
-                    {data.type === "letter-zone" && (
-                        <span className="px-2 text-center text-orange-500">
-                            Warning: The zone data has been simplified by
-                            &plusmn;360 feet (100 meters) in order for the
-                            browser to not crash.
-                        </span>
-                    )}
+                    <span className="px-2 text-center text-orange-500">
+                        Warning: The zone data has been simplified by
+                        &plusmn;360 feet (100 meters) in order for the browser
+                        to not crash.
+                    </span>
                 </>
             );
     }

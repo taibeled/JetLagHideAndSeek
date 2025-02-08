@@ -65,6 +65,14 @@ export const adjustPerMatching = async (
                 toast.error("No boundary found for this zone");
                 throw new Error("No boundary found");
             }
+
+            // It's either simplify or have slow code. Technically this could be bad if someone's hiding zone was inside multiple zones, but that's unlikely.
+            boundary = turf.simplify(boundary, {
+                tolerance: 0.001,
+                highQuality: true,
+                mutate: true,
+            });
+
             break;
         }
         case "letter-zone": {
