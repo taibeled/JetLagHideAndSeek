@@ -119,6 +119,18 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 requiring a click on each marker to see each
                                 question.
                             </p>
+                            <p className="mb-3">
+                                If you encounter any bugs or have any feature
+                                requests, please report them at the{" "}
+                                <a
+                                    href="https://github.com/taibeled/JetLagHideAndSeek/issues"
+                                    className="text-blue-500 cursor-pointer"
+                                >
+                                    GitHub repository
+                                </a>
+                                . If you appreciate this project, you can also
+                                leave a star there.
+                            </p>
                         </div>
                     </div>
                 </DrawerContent>
