@@ -3,6 +3,7 @@ import { iconColors } from "./api";
 import * as turf from "@turf/turf";
 import type { LatLng } from "leaflet";
 import { geoSpatialVoronoi } from "./voronoi";
+import { unionize } from "./geo-utils";
 
 export interface ThermometerQuestion {
     distance?: number;
@@ -33,19 +34,11 @@ export const adjustPerThermometer = (
 
     if (question.warmer) {
         return turf.intersect(
-            turf.featureCollection(
-                mapData.features.length > 1
-                    ? [turf.union(mapData)!, voronoi.features[1]]
-                    : [...mapData.features, voronoi.features[1]],
-            ),
+            turf.featureCollection([unionize(mapData)!, voronoi.features[1]]),
         );
     } else {
         return turf.intersect(
-            turf.featureCollection(
-                mapData.features.length > 1
-                    ? [turf.union(mapData)!, voronoi.features[0]]
-                    : [...mapData.features, voronoi.features[0]],
-            ),
+            turf.featureCollection([unionize(mapData)!, voronoi.features[0]]),
         );
     }
 };

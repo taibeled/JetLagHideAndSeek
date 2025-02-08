@@ -6,6 +6,7 @@ import _ from "lodash";
 import { geoSpatialVoronoi } from "./voronoi";
 import { toast } from "react-toastify";
 import osmtogeojson from "osmtogeojson";
+import { unionize } from "./geo-utils";
 
 export interface MatchingZoneQuestion {
     adminLevel: 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
@@ -119,15 +120,13 @@ export const adjustPerMatching = async (
             );
 
             // It's either simplify or crash. Technically this could be bad if someone's hiding zone was inside multiple zones, but that's unlikely.
-            boundary = turf.simplify(boundary, {
-                tolerance: 0.001,
-                highQuality: true,
-                mutate: true,
-            });
-
-            if (boundary.features.length > 1) {
-                boundary = turf.union(boundary as any);
-            }
+            boundary = unionize(
+                turf.simplify(boundary, {
+                    tolerance: 0.001,
+                    highQuality: true,
+                    mutate: true,
+                }) as any,
+            );
 
             break;
         }
@@ -161,11 +160,7 @@ export const adjustPerMatching = async (
 
     if (question.same) {
         return turf.intersect(
-            turf.featureCollection(
-                mapData.features.length > 1
-                    ? [turf.union(mapData)!, boundary]
-                    : [...mapData.features, boundary],
-            ),
+            turf.featureCollection([unionize(mapData), boundary]),
         );
     } else {
         return turf.union(

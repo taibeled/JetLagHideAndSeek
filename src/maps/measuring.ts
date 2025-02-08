@@ -9,6 +9,7 @@ import type {
 } from "geojson";
 import { hiderMode, mapGeoJSON, questions } from "@/lib/context";
 import type { LatLng } from "leaflet";
+import { unionize } from "./geo-utils";
 
 export interface BaseMeasuringQuestion {
     lat: number;
@@ -82,11 +83,7 @@ export const adjustPerMeasuring = async (
                 );
             } else {
                 return turf.intersect(
-                    turf.featureCollection(
-                        mapData.features.length > 1
-                            ? [turf.union(mapData)!, buffed]
-                            : [...mapData.features, buffed],
-                    ),
+                    turf.featureCollection([unionize(mapData)!, buffed!]),
                 );
             }
         }

@@ -3,6 +3,7 @@ import { findTentacleLocations, iconColors } from "./api";
 import * as turf from "@turf/turf";
 import { defaultUnit, hiderMode, questions } from "@/lib/context";
 import { geoSpatialVoronoi } from "./voronoi";
+import { unionize } from "./geo-utils";
 
 export type TentacleLocations =
     | "aquarium"
@@ -67,11 +68,7 @@ export const adjustPerTentacle = async (
     );
 
     return turf.intersect(
-        turf.featureCollection(
-            mapData.features.length > 1
-                ? [turf.union(mapData)!, correctPolygon, circle]
-                : [...mapData.features, correctPolygon, circle],
-        ),
+        turf.featureCollection([unionize(mapData)!, correctPolygon, circle]),
     );
 };
 

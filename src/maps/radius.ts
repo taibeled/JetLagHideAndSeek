@@ -2,6 +2,7 @@ import { defaultUnit, hiderMode, questions } from "@/lib/context";
 import { iconColors } from "./api";
 import * as turf from "@turf/turf";
 import type { LatLng } from "leaflet";
+import { unionize } from "./geo-utils";
 
 export interface RadiusQuestion {
     radius: number;
@@ -31,11 +32,7 @@ export const adjustPerRadius = (
         }
 
         return turf.intersect(
-            turf.featureCollection(
-                mapData.features.length > 1
-                    ? [turf.union(mapData)!, circle]
-                    : [...mapData.features, circle],
-            ),
+            turf.featureCollection([unionize(mapData)!, circle]),
         );
     } else {
         if (!masked) {
@@ -77,7 +74,7 @@ export const hiderifyRadius = (question: RadiusQuestion) => {
     const distance = turf.distance(
         turf.point([question.lng, question.lat]),
         turf.point([$hiderMode.longitude, $hiderMode.latitude]),
-        { units: "miles" },
+        { units: question.unit ?? "miles" },
     );
 
     if (distance <= question.radius) {
