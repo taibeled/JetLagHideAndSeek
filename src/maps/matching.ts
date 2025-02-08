@@ -110,6 +110,7 @@ export const adjustPerMatching = async (
                         `Finding zones that start with the same letter (${letter})...`,
                         "relation",
                         "geom",
+                        `[admin_level=${question.cat.adminLevel}]["name"~"^${letter}.+"]`, // Regex is faster than filtering afterward
                     ),
                 ).features.filter(
                     (x) =>

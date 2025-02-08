@@ -235,6 +235,7 @@ export const findPlacesInZone = async (
         | "nr"
         | "area" = "nwr",
     outType: "center" | "geom" = "center",
+    alternative?: string,
 ) => {
     let query = "";
 
@@ -243,12 +244,23 @@ export const findPlacesInZone = async (
     if ($polyGeoJSON) {
         query = `
 [out:json];
+(
 ${searchType}${filter}(poly:"${turf
             .getCoords($polyGeoJSON.features)
             .flatMap((polygon) => polygon.geometry.coordinates)
             .flat()
             .map((coord) => [coord[1], coord[0]].join(" "))
             .join(" ")}");
+${
+    alternative &&
+    `${searchType}${alternative}(poly:"${turf
+        .getCoords($polyGeoJSON.features)
+        .flatMap((polygon) => polygon.geometry.coordinates)
+        .flat()
+        .map((coord) => [coord[1], coord[0]].join(" "))
+        .join(" ")}");`
+}
+);
 out ${outType};
 `;
     } else {
@@ -257,7 +269,10 @@ out ${outType};
         query = `
 [out:json];
 relation(${geoLocation.properties.osm_id});map_to_area->.region;
+(
 ${searchType}${filter}(area.region);
+${alternative && `${searchType}${alternative}(area.region);`}
+);
 out ${outType};
 `;
     }
