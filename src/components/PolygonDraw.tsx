@@ -4,7 +4,7 @@ import { EditControl } from "react-leaflet-draw";
 import * as L from "leaflet";
 import { useRef } from "react";
 import * as turf from "@turf/turf";
-import { mapGeoJSON, polyGeoJSON, questions } from "@/utils/context";
+import { mapGeoJSON, polyGeoJSON, questions } from "@/lib/context";
 import { CacheType, clearCache } from "@/maps/api";
 
 export const PolygonDraw = () => {

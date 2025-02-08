@@ -7,7 +7,7 @@ import {
     mapGeoLocation,
     polyGeoJSON,
     questions,
-} from "@/utils/context";
+} from "@/lib/context";
 import { Button } from "./ui/button";
 import { toast } from "react-toastify";
 import { Label } from "./ui/label";

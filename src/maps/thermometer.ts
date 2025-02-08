@@ -1,4 +1,4 @@
-import { hiderMode, questions } from "@/utils/context";
+import { hiderMode, questions } from "@/lib/context";
 import { iconColors } from "./api";
 import * as turf from "@turf/turf";
 import type { LatLng } from "leaflet";

@@ -7,7 +7,7 @@ import type {
     MultiPolygon,
     Polygon,
 } from "geojson";
-import { hiderMode, mapGeoJSON, questions } from "@/utils/context";
+import { hiderMode, mapGeoJSON, questions } from "@/lib/context";
 import type { LatLng } from "leaflet";
 
 export interface BaseMeasuringQuestion {

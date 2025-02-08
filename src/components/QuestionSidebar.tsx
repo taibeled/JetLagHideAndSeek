@@ -8,7 +8,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { leafletMapContext, questions } from "../utils/context";
+import { leafletMapContext, questions } from "../lib/context";
 import { useStore } from "@nanostores/react";
 import {
     MatchingQuestionComponent,

@@ -6,7 +6,7 @@ import { Suspense, use, useState } from "react";
 import { LatitudeLongitude } from "./LatLngPicker";
 import { useStore } from "@nanostores/react";
 import { cn } from "../lib/utils";
-import { hiderMode, questions, triggerLocalRefresh } from "../utils/context";
+import { hiderMode, questions, triggerLocalRefresh } from "../lib/context";
 import { findTentacleLocations, iconColors } from "../maps/api";
 import type { MatchingQuestion } from "../maps/matching";
 import {

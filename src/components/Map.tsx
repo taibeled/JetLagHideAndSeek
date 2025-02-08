@@ -13,7 +13,7 @@ import {
     highlightTrainLines,
     hiderMode,
     triggerLocalRefresh,
-} from "../utils/context";
+} from "../lib/context";
 import { useStore } from "@nanostores/react";
 import { useEffect, useMemo } from "react";
 import { toast } from "react-toastify";

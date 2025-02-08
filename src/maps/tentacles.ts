@@ -1,7 +1,7 @@
 import type { LatLng } from "leaflet";
 import { findTentacleLocations, iconColors } from "./api";
 import * as turf from "@turf/turf";
-import { defaultUnit, hiderMode, questions } from "@/utils/context";
+import { defaultUnit, hiderMode, questions } from "@/lib/context";
 import { geoSpatialVoronoi } from "./voronoi";
 
 export type TentacleLocations =

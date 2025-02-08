@@ -3,7 +3,7 @@ import { Marker } from "react-leaflet";
 import { Fragment } from "react/jsx-runtime";
 import type { iconColors } from "../maps/api";
 import { useStore } from "@nanostores/react";
-import { hiderMode, questions } from "../utils/context";
+import { hiderMode, questions } from "../lib/context";
 import {
     RadiusQuestionComponent,
     ThermometerQuestionComponent,

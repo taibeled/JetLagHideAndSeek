@@ -2,7 +2,7 @@ import type { LatLngTuple } from "leaflet";
 import osmtogeojson from "osmtogeojson";
 import type { TentacleQuestion, TentacleLocations } from "./tentacles";
 import * as turf from "@turf/turf";
-import { mapGeoLocation, polyGeoJSON } from "@/utils/context";
+import { mapGeoLocation, polyGeoJSON } from "@/lib/context";
 import _ from "lodash";
 import { toast } from "react-toastify";
 

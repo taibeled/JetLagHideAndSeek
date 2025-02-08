@@ -1,4 +1,4 @@
-import { hiderMode, mapGeoJSON, questions } from "@/utils/context";
+import { hiderMode, mapGeoJSON, questions } from "@/lib/context";
 import { findAdminBoundary, findPlacesInZone, iconColors } from "./api";
 import * as turf from "@turf/turf";
 import type { LatLng } from "leaflet";
