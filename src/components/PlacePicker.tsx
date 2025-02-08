@@ -86,7 +86,7 @@ export const PlacePicker = ({
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[300px] p-0 light">
-                <Command>
+                <Command shouldFilter={false}>
                     <CommandInput
                         placeholder="Search place..."
                         onKeyUp={(x) => {
