@@ -1,5 +1,5 @@
 import { hiderMode, mapGeoJSON, questions } from "@/lib/context";
-import { findAdminBoundary, findPlacesInZone, iconColors } from "./api";
+import { findAdminBoundary, findPlacesInZone, iconColors, trainLineNodeFinder } from "./api";
 import * as turf from "@turf/turf";
 import type { LatLng } from "leaflet";
 import _ from "lodash";
@@ -39,6 +39,10 @@ export interface SameLengthStationMatchingQuestion
     type: "same-length-station";
 }
 
+export interface SameTrainLineMatchingQuestion extends BaseMatchingQuestion {
+    type: "same-train-line";
+}
+
 export interface LetterMatchingZoneQuestion extends BaseMatchingQuestion {
     type: "letter-zone";
     cat: MatchingZoneQuestion;
@@ -49,7 +53,8 @@ export type MatchingQuestion =
     | AirportMatchingQuestion
     | LetterMatchingZoneQuestion
     | SameFirstLetterStationMatchingQuestion
-    | SameLengthStationMatchingQuestion;
+    | SameLengthStationMatchingQuestion
+    | SameTrainLineMatchingQuestion;
 
 export const adjustPerMatching = async (
     question: MatchingQuestion,
@@ -71,6 +76,9 @@ export const adjustPerMatching = async (
             return mapData;
         }
         case "same-length-station": {
+            return mapData;
+        }
+        case "same-train-line": {
             return mapData;
         }
         case "zone": {
@@ -211,7 +219,8 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
 
     if (
         question.type === "same-first-letter-station" ||
-        question.type === "same-length-station"
+        question.type === "same-length-station" ||
+        question.type === "same-train-line"
     ) {
         const hiderPoint = turf.point([
             $hiderMode.longitude,
@@ -235,6 +244,22 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
             seekerPoint,
             places as any,
         );
+
+        if (question.type === "same-train-line") {
+            const nodes = await trainLineNodeFinder(
+                nearestSeekerTrainStation.properties.id,
+            );
+
+            const hiderId = parseInt(
+                nearestHiderTrainStation.properties.id.split("/")[1],
+            );
+
+            if (nodes.includes(hiderId)) {
+                question.same = true;
+            } else {
+                question.same = false;
+            }
+        }
 
         const hiderEnglishName =
             nearestHiderTrainStation.properties["name:en"] ||

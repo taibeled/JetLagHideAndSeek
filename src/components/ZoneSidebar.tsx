@@ -18,7 +18,7 @@ import { Label } from "./ui/label";
 import { Checkbox } from "./ui/checkbox";
 import { useEffect, useState } from "react";
 import { geoJSON } from "leaflet";
-import { findPlacesInZone } from "@/maps/api";
+import { findPlacesInZone, trainLineNodeFinder } from "@/maps/api";
 import * as turf from "@turf/turf";
 import osmtogeojson from "osmtogeojson";
 import { unionize } from "@/maps/geo-utils";
@@ -63,11 +63,12 @@ export const ZoneSidebar = () => {
                 ),
             ).features;
 
-            $questions.forEach((question) => {
+            for (const question of $questions) {
                 if (
                     question.id === "matching" &&
                     (question.data.type === "same-first-letter-station" ||
-                        question.data.type === "same-length-station")
+                        question.data.type === "same-length-station" ||
+                        question.data.type === "same-train-line")
                 ) {
                     const location = turf.point([
                         question.data.lng,
@@ -78,6 +79,29 @@ export const ZoneSidebar = () => {
                         location,
                         turf.featureCollection(places) as any,
                     );
+
+                    if (question.data.type === "same-train-line") {
+                        const nodes = await trainLineNodeFinder(
+                            nearestTrainStation.properties.id,
+                        );
+
+                        if (nodes.length === 0) {
+                            toast.warning(
+                                `No train line found for ${nearestTrainStation.properties["name:en"] || nearestTrainStation.properties.name}`,
+                            );
+                            continue;
+                        } else {
+                            places = places.filter((place: any) => {
+                                const id = parseInt(
+                                    place.properties.id.split("/")[1],
+                                );
+
+                                return question.data.same
+                                    ? nodes.includes(id)
+                                    : !nodes.includes(id);
+                            });
+                        }
+                    }
 
                     const englishName =
                         nearestTrainStation.properties["name:en"] ||
@@ -116,7 +140,7 @@ export const ZoneSidebar = () => {
                         });
                     }
                 }
-            });
+            }
 
             const unionized = unionize($questionFinishedMapData)!;
 
