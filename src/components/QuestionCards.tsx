@@ -446,11 +446,20 @@ export const MeasuringQuestionComponent = ({
             .indexOf(questionKey) + 1
     }`;
 
-    const questionSpecific = <></>;
+    let questionSpecific = <></>;
 
-    // Implement this if a question category within measuring has specific fields (also change questionSpecific above to a let statement)
-    // switch (data.type) {
-    // }
+    switch (data.type) {
+        case "mcdonalds":
+        case "seven11":
+            questionSpecific = (
+                <span className="px-2 text-center text-orange-500">
+                    Warning: In places with many{" "}
+                    {data.type === "mcdonalds" ? "McDonald's" : "7-Eleven"}{" "}
+                    locations, processing will take a while and circles will be
+                    rough.
+                </span>
+            );
+    }
 
     return (
         <QuestionCard
@@ -482,6 +491,12 @@ export const MeasuringQuestionComponent = ({
                         </SelectItem>
                         <SelectItem value="city">
                             Major City (1,000,000+ people) Question
+                        </SelectItem>
+                        <SelectItem value="mcdonalds">
+                            McDonald&apos;s Question
+                        </SelectItem>
+                        <SelectItem value="seven11">
+                            7-Eleven Question
                         </SelectItem>
                     </SelectContent>
                 </Select>

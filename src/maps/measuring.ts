@@ -31,10 +31,20 @@ export interface CityMeasuringQuestion extends BaseMeasuringQuestion {
     type: "city";
 }
 
+export interface McDonaldsMeasuringQuestion extends BaseMeasuringQuestion {
+    type: "mcdonalds";
+}
+
+export interface Seven11MeasuringQuestion extends BaseMeasuringQuestion {
+    type: "seven11";
+}
+
 export type MeasuringQuestion =
     | CoastlineMeasuringQuestion
     | AirportMeasuringQuestion
-    | CityMeasuringQuestion;
+    | CityMeasuringQuestion
+    | McDonaldsMeasuringQuestion
+    | Seven11MeasuringQuestion;
 
 export const adjustPerMeasuring = async (
     question: MeasuringQuestion,
@@ -116,6 +126,36 @@ export const adjustPerMeasuring = async (
                 )
             ).elements;
             break;
+        case "mcdonalds":
+            if (question.hiderCloser && masked)
+                throw new Error("Cannot be masked");
+
+            if (!question.hiderCloser && !masked)
+                throw new Error("Must be masked");
+
+            placeDataFull = (
+                await findPlacesInZone(
+                    '["brand:wikidata"="Q38076"]',
+                    "Finding McDonald's...",
+                )
+            ).elements;
+
+            break;
+        case "seven11":
+            if (question.hiderCloser && masked)
+                throw new Error("Cannot be masked");
+
+            if (!question.hiderCloser && !masked)
+                throw new Error("Must be masked");
+
+            placeDataFull = (
+                await findPlacesInZone(
+                    '["brand:wikidata"="Q259340"]',
+                    "Finding 7-Elevens...",
+                )
+            ).elements;
+
+            break;
     }
 
     if (placeDataFull) {
@@ -143,6 +183,7 @@ export const adjustPerMeasuring = async (
         placeData.features.forEach((feature: any) => {
             const circle = turf.circle(feature, distance, {
                 units: "miles",
+                steps: placeData.features.length > 1000 ? 16 : 64,
             });
             circles.push(circle);
         });
