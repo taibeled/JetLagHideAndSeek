@@ -120,6 +120,19 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 question.
                             </p>
                             <p className="mb-3">
+                                Seekers can also enable hiding zone mode by
+                                clicking the thumbtack on the top-right of the
+                                map. This will display all possible hiding zones
+                                (circles with a 0.5 mile radius around a train
+                                station) that the hider could be in on the map
+                                in green. Hiding zone mode must be enabled for
+                                questions that deal with hiding zones (i.e.,
+                                station starts with same letter). All hiding
+                                zones will also be listed in the &ldquo;Hiding
+                                Zone&rdquo; sidebar, accessible from the
+                                top-right of the map.
+                            </p>
+                            <p className="mb-3">
                                 If you encounter any bugs or have any feature
                                 requests, please report them at the{" "}
                                 <a
