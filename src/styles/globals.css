@@ -96,15 +96,15 @@ div.leaflet-control-attribution.leaflet-control {
         --sidebar-ring: 217.2 91.2% 59.8%;
     }
 
-    .leaflet-control-container .leaflet-top.leaflet-left .leaflet-control {
+    main:not(.fullscreen) .leaflet-control-container .leaflet-top.leaflet-left .leaflet-control {
         @apply !mt-[104px] md:!mt-[40px];
     }
 
-    .leaflet-top .leaflet-control {
+    main:not(.fullscreen) .leaflet-top .leaflet-control {
         @apply !mt-[104px] md:!mt-[40px];
     }
 
-    .leaflet-bottom .leaflet-draw.leaflet-control {
+    main:not(.fullscreen) .leaflet-bottom .leaflet-draw.leaflet-control {
         @apply max-[768px]:!mb-6 max-[412px]:!mb-12;
     }
 }

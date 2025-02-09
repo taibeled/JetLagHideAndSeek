@@ -379,14 +379,14 @@ export const Map = ({ className }: { className?: string }) => {
 
     useEffect(() => {
         const handleFullscreenChange = () => {
-            const leafletMap: HTMLDivElement | null =
-                document.querySelector(".leaflet-container");
+            const mainElement: HTMLElement | null =
+                document.querySelector("main");
 
-            if (leafletMap) {
+            if (mainElement) {
                 if (document.fullscreenElement) {
-                    leafletMap.classList.add("fullscreen");
+                    mainElement.classList.add("fullscreen");
                 } else {
-                    leafletMap.classList.remove("fullscreen");
+                    mainElement.classList.remove("fullscreen");
                 }
             }
         };
