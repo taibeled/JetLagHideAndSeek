@@ -338,7 +338,11 @@ export const MatchingQuestionComponent = ({
                             Zone Starts With Same Letter Question
                         </SelectItem>
                         <SelectItem value="airport">
-                            Commercial Airport In Zone Question
+                            Closest Commercial Airport In Zone Question
+                        </SelectItem>
+                        <SelectItem value="major-city">
+                            Closest Major City (1,000,000+ people) In Zone
+                            Question
                         </SelectItem>
                         <SelectItem
                             value="same-first-letter-station"
