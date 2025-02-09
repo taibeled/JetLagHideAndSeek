@@ -38,7 +38,6 @@ let determiningHidingZones = false;
 export const ZoneSidebar = () => {
     const $displayHidingZones = useStore(displayHidingZones);
     const $questionFinishedMapData = useStore(questionFinishedMapData);
-    const $questions = useStore(questions);
     const map = useStore(leafletMapContext);
     const [stations, setStations] = useState<any[]>([]);
 
@@ -63,7 +62,7 @@ export const ZoneSidebar = () => {
                 ),
             ).features;
 
-            for (const question of $questions) {
+            for (const question of questions.get()) {
                 if (
                     question.id === "matching" &&
                     (question.data.type === "same-first-letter-station" ||
@@ -180,7 +179,7 @@ export const ZoneSidebar = () => {
         if ($displayHidingZones && $questionFinishedMapData) {
             initializeHidingZones();
         }
-    }, [$questionFinishedMapData, $displayHidingZones, $questions]);
+    }, [$questionFinishedMapData, $displayHidingZones]);
 
     return (
         <Sidebar side="right">
