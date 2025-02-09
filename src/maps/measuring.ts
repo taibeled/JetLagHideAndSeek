@@ -13,7 +13,7 @@ import type {
     MultiPolygon,
     Polygon,
 } from "geojson";
-import { hiderMode, mapGeoJSON, questions } from "@/lib/context";
+import { hiderMode, mapGeoJSON, questions, trainStations } from "@/lib/context";
 import type { LatLng } from "leaflet";
 import { holedMask, unionize } from "./geo-utils";
 
@@ -45,12 +45,17 @@ export interface Seven11MeasuringQuestion extends BaseMeasuringQuestion {
     type: "seven11";
 }
 
+export interface RailStationMeasuringQuestion extends BaseMeasuringQuestion {
+    type: "rail-measure";
+}
+
 export type MeasuringQuestion =
     | CoastlineMeasuringQuestion
     | AirportMeasuringQuestion
     | CityMeasuringQuestion
     | McDonaldsMeasuringQuestion
-    | Seven11MeasuringQuestion;
+    | Seven11MeasuringQuestion
+    | RailStationMeasuringQuestion;
 
 export const adjustPerMeasuring = async (
     question: MeasuringQuestion,
@@ -134,6 +139,7 @@ export const adjustPerMeasuring = async (
             break;
         case "mcdonalds":
         case "seven11":
+        case "rail-measure":
             return mapData;
     }
 
@@ -217,6 +223,34 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
     const $hiderMode = hiderMode.get();
     if ($hiderMode === false) {
         return question;
+    }
+
+    if (question.type === "rail-measure") {
+        const stations = trainStations.get();
+
+        if (stations.length === 0) {
+            return question;
+        }
+
+        const location = turf.point([question.lng, question.lat]);
+
+        const nearestTrainStation = turf.nearestPoint(
+            location,
+            turf.featureCollection(stations.map((x) => x.properties.geometry)),
+        );
+
+        const distance = turf.distance(location, nearestTrainStation);
+
+        const hider = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
+
+        const hiderNearest = turf.nearestPoint(
+            hider,
+            turf.featureCollection(stations.map((x) => x.properties.geometry)),
+        );
+
+        const hiderDistance = turf.distance(hider, hiderNearest);
+
+        question.hiderCloser = hiderDistance < distance;
     }
 
     if (question.type === "mcdonalds" || question.type === "seven11") {

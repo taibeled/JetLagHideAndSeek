@@ -11,12 +11,13 @@ import {
     leafletMapContext,
     questionFinishedMapData,
     questions,
+    trainStations,
 } from "../lib/context";
 import { useStore } from "@nanostores/react";
 import { MENU_ITEM_CLASSNAME } from "./ui/sidebar-l";
 import { Label } from "./ui/label";
 import { Checkbox } from "./ui/checkbox";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { geoJSON } from "leaflet";
 import {
     findPlacesInZone,
@@ -26,7 +27,7 @@ import {
 } from "@/maps/api";
 import * as turf from "@turf/turf";
 import osmtogeojson from "osmtogeojson";
-import { unionize } from "@/maps/geo-utils";
+import { holedMask, unionize } from "@/maps/geo-utils";
 import { cn } from "@/lib/utils";
 import {
     Command,
@@ -44,7 +45,8 @@ export const ZoneSidebar = () => {
     const $displayHidingZones = useStore(displayHidingZones);
     const $questionFinishedMapData = useStore(questionFinishedMapData);
     const map = useStore(leafletMapContext);
-    const [stations, setStations] = useState<any[]>([]);
+    const stations = useStore(trainStations);
+    const setStations = trainStations.set;
 
     const showGeoJSON = (geoJSONData: any) => {
         if (!map) return;
@@ -320,6 +322,104 @@ export const ZoneSidebar = () => {
                                                             if (
                                                                 question.id ===
                                                                     "measuring" &&
+                                                                question.data
+                                                                    .type ===
+                                                                    "rail-measure"
+                                                            ) {
+                                                                const location =
+                                                                    turf.point([
+                                                                        question
+                                                                            .data
+                                                                            .lng,
+                                                                        question
+                                                                            .data
+                                                                            .lat,
+                                                                    ]);
+
+                                                                const nearestTrainStation =
+                                                                    turf.nearestPoint(
+                                                                        location,
+                                                                        turf.featureCollection(
+                                                                            stations.map(
+                                                                                (
+                                                                                    x,
+                                                                                ) =>
+                                                                                    x
+                                                                                        .properties
+                                                                                        .geometry,
+                                                                            ),
+                                                                        ),
+                                                                    );
+
+                                                                const distance =
+                                                                    turf.distance(
+                                                                        location,
+                                                                        nearestTrainStation,
+                                                                    );
+
+                                                                const circles =
+                                                                    stations
+                                                                        .filter(
+                                                                            (
+                                                                                x,
+                                                                            ) =>
+                                                                                turf.distance(
+                                                                                    station
+                                                                                        .properties
+                                                                                        .geometry,
+                                                                                    x
+                                                                                        .properties
+                                                                                        .geometry,
+                                                                                ) <
+                                                                                distance +
+                                                                                    1.61 /
+                                                                                        2, // This should be 1/2 mile
+                                                                        )
+                                                                        .map(
+                                                                            (
+                                                                                x,
+                                                                            ) =>
+                                                                                turf.circle(
+                                                                                    x
+                                                                                        .properties
+                                                                                        .geometry,
+                                                                                    distance,
+                                                                                ),
+                                                                        );
+
+                                                                if (
+                                                                    question
+                                                                        .data
+                                                                        .hiderCloser
+                                                                ) {
+                                                                    mapData =
+                                                                        unionize(
+                                                                            turf.featureCollection(
+                                                                                [
+                                                                                    ...mapData.features,
+                                                                                    holedMask(
+                                                                                        turf.featureCollection(
+                                                                                            circles,
+                                                                                        ),
+                                                                                    ),
+                                                                                ],
+                                                                            ),
+                                                                        )!;
+                                                                } else {
+                                                                    mapData =
+                                                                        unionize(
+                                                                            turf.featureCollection(
+                                                                                [
+                                                                                    ...mapData.features,
+                                                                                    ...circles,
+                                                                                ],
+                                                                            ),
+                                                                        )!;
+                                                                }
+                                                            }
+                                                            if (
+                                                                question.id ===
+                                                                    "measuring" &&
                                                                 (question.data
                                                                     .type ===
                                                                     "mcdonalds" ||
@@ -400,7 +500,7 @@ export const ZoneSidebar = () => {
                                                                             turf.featureCollection(
                                                                                 [
                                                                                     ...mapData.features,
-                                                                                    turf.mask(
+                                                                                    holedMask(
                                                                                         turf.featureCollection(
                                                                                             circles,
                                                                                         ),

@@ -510,6 +510,12 @@ export const MeasuringQuestionComponent = ({
                         >
                             7-Eleven Question (must be in hiding zone mode)
                         </SelectItem>
+                        <SelectItem
+                            value="rail-measure"
+                            disabled={!$displayHidingZones}
+                        >
+                            Train Station Question
+                        </SelectItem>
                     </SelectContent>
                 </Select>
             </SidebarMenuItem>
