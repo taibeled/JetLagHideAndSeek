@@ -11,7 +11,7 @@ import _ from "lodash";
 import { geoSpatialVoronoi } from "./voronoi";
 import { toast } from "react-toastify";
 import osmtogeojson from "osmtogeojson";
-import { unionize } from "./geo-utils";
+import { holedMask, unionize } from "./geo-utils";
 
 export interface MatchingZoneQuestion {
     adminLevel: 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
@@ -303,7 +303,7 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
     let feature = null;
 
     try {
-        feature = turf.mask(
+        feature = holedMask(
             (await adjustPerMatching(question, $mapGeoJSON, false))!,
         );
     } catch {
@@ -311,7 +311,7 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
             question,
             {
                 type: "FeatureCollection",
-                features: [turf.mask($mapGeoJSON)],
+                features: [holedMask($mapGeoJSON)],
             },
             true,
         );
