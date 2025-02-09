@@ -17,7 +17,7 @@ import { OptionDrawers } from "@/components/OptionDrawers";
 
 <Layout className="bg-jetlag">
     <SidebarProviderL client:load>
-        <SidebarProviderR client:load>
+        <SidebarProviderR client:load defaultOpen={false}>
             <QuestionSidebar client:load />
             <main class="flex flex-col flex-grow group">
                 <div

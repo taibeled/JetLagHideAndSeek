@@ -32,6 +32,7 @@ import { PolygonDraw } from "./PolygonDraw";
 import { addDefaultMeasuring, adjustPerMeasuring } from "@/maps/measuring";
 import { LeafletFullScreenButton } from "./LeafletFullScreenButton";
 import { hiderifyQuestion } from "@/maps";
+import { holedMask } from "@/maps/geo-utils";
 
 export const refreshMapData = (
     $mapGeoLocation: OpenStreetMap,
@@ -197,7 +198,7 @@ export const Map = ({ className }: { className?: string }) => {
 
             mapGeoData = {
                 type: "FeatureCollection",
-                features: [turf.mask(mapGeoData)],
+                features: [holedMask(mapGeoData)],
             };
 
             for (let index = 0; index < $questions.length; index++) {
@@ -412,7 +413,7 @@ export const focusMap = (map: LeafletMap, mapGeoData: any) => {
         }
     });
 
-    const g = geoJSON(turf.mask(mapGeoData));
+    const g = geoJSON(holedMask(mapGeoData));
     // @ts-expect-error This is a check such that only this type of layer is removed
     g.eliminationGeoJSON = true;
     g.addTo(map);

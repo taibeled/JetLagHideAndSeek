@@ -9,7 +9,7 @@ import type {
 } from "geojson";
 import { hiderMode, mapGeoJSON, questions } from "@/lib/context";
 import type { LatLng } from "leaflet";
-import { unionize } from "./geo-utils";
+import { holedMask, unionize } from "./geo-utils";
 
 export interface BaseMeasuringQuestion {
     lat: number;
@@ -88,7 +88,11 @@ export const adjustPerMeasuring = async (
             }
         }
         case "airport":
-            if (!masked) throw new Error("Must be masked");
+            if (question.hiderCloser && masked)
+                throw new Error("Cannot be masked");
+
+            if (!question.hiderCloser && !masked)
+                throw new Error("Must be masked");
             placeDataFull = _.uniqBy(
                 (
                     await findPlacesInZone(
@@ -100,7 +104,11 @@ export const adjustPerMeasuring = async (
             );
             break;
         case "city":
-            if (!masked) throw new Error("Must be masked");
+            if (question.hiderCloser && masked)
+                throw new Error("Cannot be masked");
+
+            if (!question.hiderCloser && !masked)
+                throw new Error("Must be masked");
             placeDataFull = (
                 await findPlacesInZone(
                     '[place=city]["population"~"^[1-9]+[0-9]{6}$"]', // The regex is faster than (if:number(t["population"])>1000000)
@@ -111,7 +119,9 @@ export const adjustPerMeasuring = async (
     }
 
     if (placeDataFull) {
-        if (!masked) throw new Error("Must be masked");
+        if (question.hiderCloser && masked) throw new Error("Cannot be masked");
+
+        if (!question.hiderCloser && !masked) throw new Error("Must be masked");
 
         const placeData = turf.featureCollection(
             placeDataFull.map((x: any) =>
@@ -148,27 +158,12 @@ export const adjustPerMeasuring = async (
         if (question.hiderCloser) {
             if (!unionCircles) return null;
 
-            const maskedCircles = turf.mask(unionCircles);
-
-            const holes = [];
-            for (const feature of unionCircles.geometry.coordinates) {
-                if (feature.length > 1) {
-                    holes.push(...feature.slice(1));
-                }
-            }
-
-            return turf.union(
-                turf.featureCollection([
-                    turf.difference(
-                        turf.featureCollection([
-                            maskedCircles,
-                            ...mapData.features,
-                        ]),
-                    )!,
-                    // @ts-expect-error This made sense when I wrote it
-                    turf.multiPolygon(holes.map((x) => [x])),
-                    ...mapData.features,
-                ]),
+            return turf.intersect(
+                turf.featureCollection(
+                    mapData.features.length > 1
+                        ? [turf.union(mapData)!, unionCircles]
+                        : [...mapData.features, unionCircles],
+                ),
             );
         } else {
             return turf.union(
@@ -210,7 +205,7 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
     let feature = null;
 
     try {
-        feature = turf.mask(
+        feature = holedMask(
             (await adjustPerMeasuring(question, $mapGeoJSON, false))!,
         );
     } catch {
@@ -218,7 +213,7 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
             question,
             {
                 type: "FeatureCollection",
-                features: [turf.mask($mapGeoJSON)],
+                features: [holedMask($mapGeoJSON)],
             },
             true,
         );
