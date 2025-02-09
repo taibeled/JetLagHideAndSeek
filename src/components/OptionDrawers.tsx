@@ -32,7 +32,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Checkbox } from "./ui/checkbox";
 import { LatitudeLongitude } from "./LatLngPicker";
-import { SidebarMenu } from "./ui/sidebar";
+import { SidebarMenu } from "./ui/sidebar-l";
 
 export const OptionDrawers = ({ className }: { className?: string }) => {
     const $defaultUnit = useStore(defaultUnit);

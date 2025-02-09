@@ -7,7 +7,7 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-} from "@/components/ui/sidebar";
+} from "@/components/ui/sidebar-l";
 import { leafletMapContext, questions } from "../lib/context";
 import { useStore } from "@nanostores/react";
 import {
@@ -23,7 +23,7 @@ import { addDefaultTentacles } from "@/maps/tentacles";
 import { addDefaultMatching } from "@/maps/matching";
 import { addDefaultMeasuring } from "@/maps/measuring";
 
-export function QuestionSidebar() {
+export const QuestionSidebar = () => {
     const $questions = useStore(questions);
 
     return (
@@ -161,4 +161,4 @@ export function QuestionSidebar() {
             </SidebarGroup>
         </Sidebar>
     );
-}
+};

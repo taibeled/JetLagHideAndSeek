@@ -16,7 +16,7 @@ import {
     SidebarGroupLabel,
     SidebarMenu,
     SidebarMenuItem,
-} from "./ui/sidebar";
+} from "./ui/sidebar-l";
 import { Input } from "./ui/input";
 import {
     Select,

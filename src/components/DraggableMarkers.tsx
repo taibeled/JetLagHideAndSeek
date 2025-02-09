@@ -14,7 +14,7 @@ import {
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useState } from "react";
 import { Button } from "./ui/button";
-import { SidebarMenu } from "./ui/sidebar";
+import { SidebarMenu } from "./ui/sidebar-l";
 import { LatitudeLongitude } from "./LatLngPicker";
 
 let isDragging = false;

@@ -2,39 +2,57 @@
 import Layout from "../layouts/Layout.astro";
 import { Map } from "../components/Map";
 import { PlacePicker } from "../components/PlacePicker";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import {
+    SidebarProvider as SidebarProviderL,
+    SidebarTrigger as SidebarTriggerL,
+} from "@/components/ui/sidebar-l";
+import {
+    SidebarProvider as SidebarProviderR,
+    SidebarTrigger as SidebarTriggerR,
+} from "@/components/ui/sidebar-r";
 import { QuestionSidebar } from "@/components/QuestionSidebar";
+import { ZoneSidebar } from "@/components/ZoneSidebar";
 import { OptionDrawers } from "@/components/OptionDrawers";
 ---
 
 <Layout className="bg-jetlag">
-    <SidebarProvider client:load>
-        <QuestionSidebar client:load />
-        <main class="flex flex-col flex-grow">
-            <div
-                class="flex justify-center"
-                id="map-modal-dialog-container-leaflet"
-            >
-                <div class="w-full h-full relative">
-                    <div
-                        class="absolute top-[72px] md:top-2 left-2 z-[1030]"
-                    >
-                        <SidebarTrigger client:load />
+    <SidebarProviderL client:load>
+        <SidebarProviderR client:load>
+            <QuestionSidebar client:load />
+            <main class="flex flex-col flex-grow">
+                <div
+                    class="flex justify-center"
+                    id="map-modal-dialog-container-leaflet"
+                >
+                    <div class="w-full h-full relative">
+                        <div
+                            class="absolute top-[72px] md:top-2 left-2 z-[1030]"
+                        >
+                            <SidebarTriggerL client:load />
+                        </div>
+                        <div
+                            class="absolute top-[72px] md:top-2 right-2 z-[1030]"
+                        >
+                            <SidebarTriggerR client:load />
+                        </div>
+                        <div
+                            class="flex flex-shrink max-w-fit z-[1030] absolute left-4 right-0 m-auto"
+                        >
+                            <PlacePicker client:load className="m-4" />
+                        </div>
+                        <div
+                            class="bottom-5 right-2 mx-auto mb-2 w-fit absolute z-[1030]"
+                        >
+                            <OptionDrawers client:load />
+                        </div>
+                        <Map
+                            className="w-full [&.fullscreen]:w-full [&.fullscreen]:h-full"
+                            client:only
+                        />
                     </div>
-                    <div
-                        class="flex flex-shrink max-w-fit z-[1030] absolute left-4 right-0 m-auto"
-                    >
-                        <PlacePicker client:load className="m-4" />
-                    </div>
-                    <div class="bottom-5 right-2 mx-auto mb-2 w-fit absolute z-[1030]">
-                        <OptionDrawers client:load />
-                    </div>
-                    <Map
-                        className="w-full [&.fullscreen]:w-full [&.fullscreen]:h-full"
-                        client:only
-                    />
                 </div>
-            </div>
-        </main>
-    </SidebarProvider>
+            </main>
+            <ZoneSidebar client:only />
+        </SidebarProviderR>
+    </SidebarProviderL>
 </Layout>

@@ -13,6 +13,7 @@ import {
     highlightTrainLines,
     hiderMode,
     triggerLocalRefresh,
+    questionFinishedMapData,
 } from "../lib/context";
 import { useStore } from "@nanostores/react";
 import { useEffect, useMemo } from "react";
@@ -268,13 +269,18 @@ export const Map = ({ className }: { className?: string }) => {
             }
 
             map.eachLayer((layer: any) => {
-                if (layer.addData) {
+                if (layer.eliminationGeoJSON) {
                     // Hopefully only geoJSON layers
                     map.removeLayer(layer);
                 }
             });
 
-            geoJSON(mapGeoData).addTo(map);
+            const g = geoJSON(mapGeoData);
+            // @ts-expect-error This is a check such that only this type of layer is removed
+            g.eliminationGeoJSON = true;
+            g.addTo(map);
+
+            questionFinishedMapData.set(mapGeoData);
         } catch (error) {
             console.log(error);
 
@@ -357,7 +363,7 @@ export const Map = ({ className }: { className?: string }) => {
             if (!map) return;
             let layerCount = 0;
             map.eachLayer((layer: any) => {
-                if (layer.addData) {
+                if (layer.eliminationGeoJSON) {
                     // Hopefully only geoJSON layers
                     layerCount++;
                 }
@@ -400,13 +406,16 @@ export const Map = ({ className }: { className?: string }) => {
 
 export const focusMap = (map: LeafletMap, mapGeoData: any) => {
     map.eachLayer((layer: any) => {
-        if (layer.addData) {
+        if (layer.eliminationGeoJSON) {
             // Hopefully only geoJSON layers
             map.removeLayer(layer);
         }
     });
 
-    geoJSON(turf.mask(mapGeoData)).addTo(map);
+    const g = geoJSON(turf.mask(mapGeoData));
+    // @ts-expect-error This is a check such that only this type of layer is removed
+    g.eliminationGeoJSON = true;
+    g.addTo(map);
 
     const bbox = turf.bbox(mapGeoData as any);
     const bounds: [[number, number], [number, number]] = [

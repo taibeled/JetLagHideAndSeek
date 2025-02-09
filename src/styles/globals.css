@@ -97,11 +97,11 @@ div.leaflet-control-attribution.leaflet-control {
     }
 
     .leaflet-control-container .leaflet-top.leaflet-left .leaflet-control {
-        @apply !mt-[112px] md:!mt-[48px];
+        @apply !mt-[104px] md:!mt-[40px];
     }
 
     .leaflet-top .leaflet-control {
-        @apply !mt-[72px] md:!mt-[10px];
+        @apply !mt-[104px] md:!mt-[40px];
     }
 
     .leaflet-bottom .leaflet-draw.leaflet-control {
