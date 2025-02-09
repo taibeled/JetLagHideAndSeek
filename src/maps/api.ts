@@ -318,6 +318,31 @@ out ${outType};
     return await getOverpassData(query, loadingText, CacheType.ZONE_CACHE);
 };
 
+export const findPlacesSpecificInZone = async (
+    location: QuestionSpecificLocation,
+) => {
+    const locations = (
+        await findPlacesInZone(
+            location,
+            `Finding ${location === QuestionSpecificLocation.McDonalds ? "McDonald's" : "7-Elevens"}...`,
+        )
+    ).elements;
+
+    return turf.featureCollection(
+        locations.map((x: any) =>
+            turf.point([
+                x.center ? x.center.lon : x.lon,
+                x.center ? x.center.lat : x.lat,
+            ]),
+        ),
+    );
+};
+
+export enum QuestionSpecificLocation {
+    McDonalds = '["brand:wikidata"="Q38076"]',
+    Seven11 = '["brand:wikidata"="Q259340"]',
+}
+
 export enum CacheType {
     CACHE = "jlhs-map-generator-cache",
     ZONE_CACHE = "jlhs-map-generator-zone-cache",

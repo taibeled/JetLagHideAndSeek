@@ -18,7 +18,12 @@ import { Label } from "./ui/label";
 import { Checkbox } from "./ui/checkbox";
 import { useEffect, useState } from "react";
 import { geoJSON } from "leaflet";
-import { findPlacesInZone, trainLineNodeFinder } from "@/maps/api";
+import {
+    findPlacesInZone,
+    findPlacesSpecificInZone,
+    QuestionSpecificLocation,
+    trainLineNodeFinder,
+} from "@/maps/api";
 import * as turf from "@turf/turf";
 import osmtogeojson from "osmtogeojson";
 import { unionize } from "@/maps/geo-utils";
@@ -41,8 +46,8 @@ export const ZoneSidebar = () => {
     const map = useStore(leafletMapContext);
     const [stations, setStations] = useState<any[]>([]);
 
-    useEffect(() => {
-        if (!map || determiningHidingZones) return;
+    const showGeoJSON = (geoJSONData: any) => {
+        if (!map) return;
 
         map.eachLayer((layer: any) => {
             if (layer.hidingZones) {
@@ -50,6 +55,23 @@ export const ZoneSidebar = () => {
                 map.removeLayer(layer);
             }
         });
+
+        const geoJsonLayer = geoJSON(geoJSONData, {
+            style: {
+                color: "green",
+                fillColor: "green",
+                fillOpacity: 0.2,
+            },
+        });
+
+        // @ts-expect-error This is intentionally added as a check
+        geoJsonLayer.hidingZones = true;
+
+        geoJsonLayer.addTo(map);
+    };
+
+    useEffect(() => {
+        if (!map || determiningHidingZones) return;
 
         const initializeHidingZones = async () => {
             determiningHidingZones = true;
@@ -61,6 +83,12 @@ export const ZoneSidebar = () => {
                     "node",
                 ),
             ).features;
+
+            const unionized = unionize($questionFinishedMapData);
+
+            places = places.filter(
+                (x) => !turf.booleanPointInPolygon(x as any, unionized!),
+            );
 
             for (const question of questions.get()) {
                 if (
@@ -139,38 +167,63 @@ export const ZoneSidebar = () => {
                         });
                     }
                 }
+                if (
+                    question.id === "measuring" &&
+                    (question.data.type === "mcdonalds" ||
+                        question.data.type === "seven11")
+                ) {
+                    const points = await findPlacesSpecificInZone(
+                        question.data.type === "mcdonalds"
+                            ? QuestionSpecificLocation.McDonalds
+                            : QuestionSpecificLocation.Seven11,
+                    );
+
+                    const nearestPoint = turf.nearestPoint(
+                        turf.point([question.data.lng, question.data.lat]),
+                        points as any,
+                    );
+
+                    const distance = turf.distance(
+                        turf.point([question.data.lng, question.data.lat]),
+                        nearestPoint as any,
+                        {
+                            units: "miles",
+                        },
+                    );
+
+                    places = places.filter((place: any) => {
+                        const point = turf.point(turf.getCoord(place));
+
+                        const nearest = turf.nearestPoint(point, points as any);
+
+                        return question.data.hiderCloser
+                            ? turf.distance(point, nearest as any, {
+                                  units: "miles",
+                              }) <
+                                  distance + 0.5
+                            : turf.distance(point, nearest as any, {
+                                  units: "miles",
+                              }) >
+                                  distance - 0.5;
+                    });
+                }
             }
 
-            const unionized = unionize($questionFinishedMapData)!;
-
             const circles = turf.featureCollection(
-                places
-                    .map((place: any) => {
-                        const radius = 0.5;
-                        const center = turf.getCoord(place);
-                        const circle = turf.circle(center, radius, {
-                            steps: 32,
-                            units: "miles", // As per the rules
-                            properties: place,
-                        });
+                places.map((place: any) => {
+                    const radius = 0.5;
+                    const center = turf.getCoord(place);
+                    const circle = turf.circle(center, radius, {
+                        steps: 32,
+                        units: "miles", // As per the rules
+                        properties: place,
+                    });
 
-                        return circle;
-                    })
-                    .filter((x) => !turf.booleanWithin(x, unionized)),
+                    return circle;
+                }),
             );
 
-            const geoJsonLayer = geoJSON(circles, {
-                style: {
-                    color: "green",
-                    fillColor: "green",
-                    fillOpacity: 0.2,
-                },
-            });
-
-            // @ts-expect-error This is intentionally added as a check
-            geoJsonLayer.hidingZones = true;
-
-            geoJsonLayer.addTo(map);
+            showGeoJSON(circles);
 
             setStations(circles.features);
             determiningHidingZones = false;
@@ -215,13 +268,37 @@ export const ZoneSidebar = () => {
                                             No hiding zones found.
                                         </CommandEmpty>
                                         <CommandGroup>
+                                            {stations.length > 0 && (
+                                                <CommandItem
+                                                    onSelect={() => {
+                                                        const bbox = turf.bbox(
+                                                            turf.featureCollection(
+                                                                stations,
+                                                            ),
+                                                        );
+
+                                                        map?.fitBounds([
+                                                            [bbox[1], bbox[0]],
+                                                            [bbox[3], bbox[2]],
+                                                        ]);
+
+                                                        showGeoJSON(
+                                                            turf.featureCollection(
+                                                                stations,
+                                                            ),
+                                                        );
+                                                    }}
+                                                >
+                                                    All Stations
+                                                </CommandItem>
+                                            )}
                                             {stations.map((station) => (
                                                 <CommandItem
                                                     key={
                                                         station.properties
                                                             .properties.id
                                                     }
-                                                    onSelect={() => {
+                                                    onSelect={async () => {
                                                         const bbox =
                                                             turf.bbox(station);
 
@@ -229,6 +306,135 @@ export const ZoneSidebar = () => {
                                                             [bbox[1], bbox[0]],
                                                             [bbox[3], bbox[2]],
                                                         ]);
+
+                                                        let mapData: any =
+                                                            turf.featureCollection(
+                                                                [
+                                                                    turf.mask(
+                                                                        station,
+                                                                    ),
+                                                                ],
+                                                            );
+
+                                                        for (const question of questions.get()) {
+                                                            if (
+                                                                question.id ===
+                                                                    "measuring" &&
+                                                                (question.data
+                                                                    .type ===
+                                                                    "mcdonalds" ||
+                                                                    question
+                                                                        .data
+                                                                        .type ===
+                                                                        "seven11")
+                                                            ) {
+                                                                const points =
+                                                                    await findPlacesSpecificInZone(
+                                                                        question
+                                                                            .data
+                                                                            .type ===
+                                                                            "mcdonalds"
+                                                                            ? QuestionSpecificLocation.McDonalds
+                                                                            : QuestionSpecificLocation.Seven11,
+                                                                    );
+
+                                                                const seeker =
+                                                                    turf.point([
+                                                                        question
+                                                                            .data
+                                                                            .lng,
+                                                                        question
+                                                                            .data
+                                                                            .lat,
+                                                                    ]);
+                                                                const nearest =
+                                                                    turf.nearestPoint(
+                                                                        seeker,
+                                                                        points as any,
+                                                                    );
+
+                                                                const distance =
+                                                                    turf.distance(
+                                                                        seeker,
+                                                                        nearest,
+                                                                        {
+                                                                            units: "miles",
+                                                                        },
+                                                                    );
+
+                                                                const filtered =
+                                                                    points.features.filter(
+                                                                        (x) =>
+                                                                            turf.distance(
+                                                                                x as any,
+                                                                                station
+                                                                                    .properties
+                                                                                    .geometry,
+                                                                                {
+                                                                                    units: "miles",
+                                                                                },
+                                                                            ) <
+                                                                            distance +
+                                                                                0.5,
+                                                                    );
+
+                                                                const circles =
+                                                                    filtered.map(
+                                                                        (x) =>
+                                                                            turf.circle(
+                                                                                x as any,
+                                                                                distance,
+                                                                                {
+                                                                                    units: "miles",
+                                                                                },
+                                                                            ),
+                                                                    );
+
+                                                                if (
+                                                                    question
+                                                                        .data
+                                                                        .hiderCloser
+                                                                ) {
+                                                                    mapData =
+                                                                        unionize(
+                                                                            turf.featureCollection(
+                                                                                [
+                                                                                    ...mapData.features,
+                                                                                    turf.mask(
+                                                                                        turf.featureCollection(
+                                                                                            circles,
+                                                                                        ),
+                                                                                    ),
+                                                                                ],
+                                                                            ),
+                                                                        )!;
+                                                                } else {
+                                                                    mapData =
+                                                                        unionize(
+                                                                            turf.featureCollection(
+                                                                                [
+                                                                                    ...mapData.features,
+                                                                                    ...circles,
+                                                                                ],
+                                                                            ),
+                                                                        )!;
+                                                                }
+                                                            }
+
+                                                            if (
+                                                                mapData.type !==
+                                                                "FeatureCollection"
+                                                            ) {
+                                                                mapData = {
+                                                                    type: "FeatureCollection",
+                                                                    features: [
+                                                                        mapData,
+                                                                    ],
+                                                                };
+                                                            }
+                                                        }
+
+                                                        showGeoJSON(mapData);
                                                     }}
                                                 >
                                                     {station.properties

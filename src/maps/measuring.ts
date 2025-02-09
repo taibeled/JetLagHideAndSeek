@@ -1,4 +1,10 @@
-import { fetchCoastline, findPlacesInZone, iconColors } from "./api";
+import {
+    fetchCoastline,
+    findPlacesInZone,
+    findPlacesSpecificInZone,
+    iconColors,
+    QuestionSpecificLocation,
+} from "./api";
 import * as turf from "@turf/turf";
 import _ from "lodash";
 import type {
@@ -127,35 +133,8 @@ export const adjustPerMeasuring = async (
             ).elements;
             break;
         case "mcdonalds":
-            if (question.hiderCloser && masked)
-                throw new Error("Cannot be masked");
-
-            if (!question.hiderCloser && !masked)
-                throw new Error("Must be masked");
-
-            placeDataFull = (
-                await findPlacesInZone(
-                    '["brand:wikidata"="Q38076"]',
-                    "Finding McDonald's...",
-                )
-            ).elements;
-
-            break;
         case "seven11":
-            if (question.hiderCloser && masked)
-                throw new Error("Cannot be masked");
-
-            if (!question.hiderCloser && !masked)
-                throw new Error("Must be masked");
-
-            placeDataFull = (
-                await findPlacesInZone(
-                    '["brand:wikidata"="Q259340"]',
-                    "Finding 7-Elevens...",
-                )
-            ).elements;
-
-            break;
+            return mapData;
     }
 
     if (placeDataFull) {
@@ -237,6 +216,31 @@ export const addDefaultMeasuring = (center: LatLng) => {
 export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
     const $hiderMode = hiderMode.get();
     if ($hiderMode === false) {
+        return question;
+    }
+
+    if (question.type === "mcdonalds" || question.type === "seven11") {
+        const points = await findPlacesSpecificInZone(
+            question.type === "mcdonalds"
+                ? QuestionSpecificLocation.McDonalds
+                : QuestionSpecificLocation.Seven11,
+        );
+
+        const seeker = turf.point([question.lng, question.lat]);
+        const nearest = turf.nearestPoint(seeker, points as any);
+
+        const distance = turf.distance(seeker, nearest, {
+            units: "miles",
+        });
+
+        const hider = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
+        const hiderNearest = turf.nearestPoint(hider, points as any);
+
+        const hiderDistance = turf.distance(hider, hiderNearest, {
+            units: "miles",
+        });
+
+        question.hiderCloser = hiderDistance < distance;
         return question;
     }
 
