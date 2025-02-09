@@ -6,7 +6,12 @@ import { Suspense, use, useState } from "react";
 import { LatitudeLongitude } from "./LatLngPicker";
 import { useStore } from "@nanostores/react";
 import { cn } from "../lib/utils";
-import { hiderMode, questions, triggerLocalRefresh } from "../lib/context";
+import {
+    displayHidingZones,
+    hiderMode,
+    questions,
+    triggerLocalRefresh,
+} from "../lib/context";
 import { findTentacleLocations, iconColors } from "../maps/api";
 import type { MatchingQuestion } from "../maps/matching";
 import {
@@ -239,6 +244,7 @@ export const MatchingQuestionComponent = ({
     useStore(triggerLocalRefresh);
     const $hiderMode = useStore(hiderMode);
     const $questions = useStore(questions);
+    const $displayHidingZones = useStore(displayHidingZones);
     const label = `Matching
     ${
         $questions
@@ -323,6 +329,20 @@ export const MatchingQuestionComponent = ({
                         </SelectItem>
                         <SelectItem value="airport">
                             Commercial Airport In Zone Question
+                        </SelectItem>
+                        <SelectItem
+                            value="same-first-letter-station"
+                            disabled={!$displayHidingZones}
+                        >
+                            Station Starts With Same Letter Question (must be in
+                            hiding zone mode)
+                        </SelectItem>
+                        <SelectItem
+                            value="same-length-station"
+                            disabled={!$displayHidingZones}
+                        >
+                            Station Has Same Length Question (must be in hiding
+                            zone mode)
                         </SelectItem>
                     </SelectContent>
                 </Select>

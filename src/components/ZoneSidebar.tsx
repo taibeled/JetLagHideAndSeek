@@ -10,6 +10,7 @@ import {
     displayHidingZones,
     leafletMapContext,
     questionFinishedMapData,
+    questions,
 } from "../lib/context";
 import { useStore } from "@nanostores/react";
 import { MENU_ITEM_CLASSNAME } from "./ui/sidebar-l";
@@ -30,12 +31,14 @@ import {
     CommandItem,
     CommandList,
 } from "./ui/command";
+import { toast } from "react-toastify";
 
 let determiningHidingZones = false;
 
 export const ZoneSidebar = () => {
     const $displayHidingZones = useStore(displayHidingZones);
     const $questionFinishedMapData = useStore(questionFinishedMapData);
+    const $questions = useStore(questions);
     const map = useStore(leafletMapContext);
     const [stations, setStations] = useState<any[]>([]);
 
@@ -52,18 +55,73 @@ export const ZoneSidebar = () => {
         const initializeHidingZones = async () => {
             determiningHidingZones = true;
 
-            const places = osmtogeojson(
+            let places = osmtogeojson(
                 await findPlacesInZone(
                     "[railway=station]",
                     "Finding train stations. This may take a while. Do not press any buttons while this is processing. Don't worry, it will be cached.",
                     "node",
                 ),
-            );
+            ).features;
+
+            $questions.forEach((question) => {
+                if (
+                    question.id === "matching" &&
+                    (question.data.type === "same-first-letter-station" ||
+                        question.data.type === "same-length-station")
+                ) {
+                    const location = turf.point([
+                        question.data.lng,
+                        question.data.lat,
+                    ]);
+
+                    const nearestTrainStation = turf.nearestPoint(
+                        location,
+                        turf.featureCollection(places) as any,
+                    );
+
+                    const englishName =
+                        nearestTrainStation.properties["name:en"] ||
+                        nearestTrainStation.properties.name;
+
+                    if (!englishName)
+                        return toast.error("No English name found");
+
+                    if (question.data.type === "same-first-letter-station") {
+                        const letter = englishName[0].toUpperCase();
+
+                        places = places.filter((place: any) => {
+                            const name =
+                                place.properties["name:en"] ||
+                                place.properties.name;
+
+                            if (!name) return false;
+
+                            return question.data.same
+                                ? name[0].toUpperCase() === letter
+                                : name[0].toUpperCase() !== letter;
+                        });
+                    } else if (question.data.type === "same-length-station") {
+                        const length = englishName.length;
+
+                        places = places.filter((place: any) => {
+                            const name =
+                                place.properties["name:en"] ||
+                                place.properties.name;
+
+                            if (!name) return false;
+
+                            return question.data.same
+                                ? name.length === length
+                                : name.length !== length;
+                        });
+                    }
+                }
+            });
 
             const unionized = unionize($questionFinishedMapData)!;
 
             const circles = turf.featureCollection(
-                places.features
+                places
                     .map((place: any) => {
                         const radius = 0.5;
                         const center = turf.getCoord(place);
@@ -98,7 +156,7 @@ export const ZoneSidebar = () => {
         if ($displayHidingZones && $questionFinishedMapData) {
             initializeHidingZones();
         }
-    }, [$questionFinishedMapData, $displayHidingZones]);
+    }, [$questionFinishedMapData, $displayHidingZones, $questions]);
 
     return (
         <Sidebar side="right">
@@ -138,7 +196,7 @@ export const ZoneSidebar = () => {
                                                 <CommandItem
                                                     key={
                                                         station.properties
-                                                            .properties.osm_id
+                                                            .properties.id
                                                     }
                                                     onSelect={() => {
                                                         const bbox =
