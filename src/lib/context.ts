@@ -75,3 +75,12 @@ export const hiderMode = persistentAtom<
     decode: JSON.parse,
 });
 export const triggerLocalRefresh = atom<number>(0);
+export const displayHidingZones = persistentAtom<boolean>(
+    "displayHidingZones",
+    false,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
+export const questionFinishedMapData = atom<any>(null);

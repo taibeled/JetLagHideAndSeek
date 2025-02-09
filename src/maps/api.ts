@@ -222,6 +222,43 @@ export const fetchCoastline = async () => {
     return data;
 };
 
+export const trainLineNodeFinder = async (node: string): Promise<number[]> => {
+    const nodeId = node.split("/")[1];
+
+    const query = `
+[out:json];
+node(${nodeId});
+wr(bn);
+out geom;
+    `;
+
+    const data = await getOverpassData(query, "Finding train lines...");
+
+    const geoJSON = osmtogeojson(data);
+
+    const nodes: number[] = [];
+
+    geoJSON.features.forEach((feature: any) => {
+        // For relations
+        if (feature && feature.id && feature.id.startsWith("node")) {
+            nodes.push(parseInt(feature.id.split("/")[1]));
+        }
+    });
+
+    data.elements.forEach((element: any) => {
+        // For ways
+        if (element && element.type === "node") {
+            nodes.push(element.id);
+        } else if (element && element.type === "way") {
+            nodes.push(...element.nodes);
+        }
+    });
+
+    const uniqNodes = _.uniq(nodes);
+
+    return uniqNodes;
+};
+
 export const findPlacesInZone = async (
     filter: string,
     loadingText?: string,

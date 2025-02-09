@@ -6,7 +6,12 @@ import { Suspense, use, useState } from "react";
 import { LatitudeLongitude } from "./LatLngPicker";
 import { useStore } from "@nanostores/react";
 import { cn } from "../lib/utils";
-import { hiderMode, questions, triggerLocalRefresh } from "../lib/context";
+import {
+    displayHidingZones,
+    hiderMode,
+    questions,
+    triggerLocalRefresh,
+} from "../lib/context";
 import { findTentacleLocations, iconColors } from "../maps/api";
 import type { MatchingQuestion } from "../maps/matching";
 import {
@@ -16,7 +21,7 @@ import {
     SidebarGroupLabel,
     SidebarMenu,
     SidebarMenuItem,
-} from "./ui/sidebar";
+} from "./ui/sidebar-l";
 import { Input } from "./ui/input";
 import {
     Select,
@@ -239,6 +244,7 @@ export const MatchingQuestionComponent = ({
     useStore(triggerLocalRefresh);
     const $hiderMode = useStore(hiderMode);
     const $questions = useStore(questions);
+    const $displayHidingZones = useStore(displayHidingZones);
     const label = `Matching
     ${
         $questions
@@ -293,6 +299,16 @@ export const MatchingQuestionComponent = ({
                     )}
                 </>
             );
+            break;
+        case "same-train-line":
+            questionSpecific = (
+                <span className="px-2 text-center text-orange-500">
+                    Warning: The train line data is based on OpenStreetMap and
+                    may have fewer train stations than expected. If you are
+                    using this tool, assure that the other players are also
+                    using this tool.
+                </span>
+            );
     }
 
     return (
@@ -323,6 +339,27 @@ export const MatchingQuestionComponent = ({
                         </SelectItem>
                         <SelectItem value="airport">
                             Commercial Airport In Zone Question
+                        </SelectItem>
+                        <SelectItem
+                            value="same-first-letter-station"
+                            disabled={!$displayHidingZones}
+                        >
+                            Station Starts With Same Letter Question (must be in
+                            hiding zone mode)
+                        </SelectItem>
+                        <SelectItem
+                            value="same-length-station"
+                            disabled={!$displayHidingZones}
+                        >
+                            Station Has Same Length Question (must be in hiding
+                            zone mode)
+                        </SelectItem>
+                        <SelectItem
+                            value="same-train-line"
+                            disabled={!$displayHidingZones}
+                        >
+                            Station On Same Train Line Question (must be in
+                            hiding zone mode)
                         </SelectItem>
                     </SelectContent>
                 </Select>

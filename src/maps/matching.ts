@@ -1,5 +1,10 @@
 import { hiderMode, mapGeoJSON, questions } from "@/lib/context";
-import { findAdminBoundary, findPlacesInZone, iconColors } from "./api";
+import {
+    findAdminBoundary,
+    findPlacesInZone,
+    iconColors,
+    trainLineNodeFinder,
+} from "./api";
 import * as turf from "@turf/turf";
 import type { LatLng } from "leaflet";
 import _ from "lodash";
@@ -29,6 +34,20 @@ export interface AirportMatchingQuestion extends BaseMatchingQuestion {
     type: "airport";
 }
 
+export interface SameFirstLetterStationMatchingQuestion
+    extends BaseMatchingQuestion {
+    type: "same-first-letter-station";
+}
+
+export interface SameLengthStationMatchingQuestion
+    extends BaseMatchingQuestion {
+    type: "same-length-station";
+}
+
+export interface SameTrainLineMatchingQuestion extends BaseMatchingQuestion {
+    type: "same-train-line";
+}
+
 export interface LetterMatchingZoneQuestion extends BaseMatchingQuestion {
     type: "letter-zone";
     cat: MatchingZoneQuestion;
@@ -37,7 +56,10 @@ export interface LetterMatchingZoneQuestion extends BaseMatchingQuestion {
 export type MatchingQuestion =
     | ZoneMatchingQuestion
     | AirportMatchingQuestion
-    | LetterMatchingZoneQuestion;
+    | LetterMatchingZoneQuestion
+    | SameFirstLetterStationMatchingQuestion
+    | SameLengthStationMatchingQuestion
+    | SameTrainLineMatchingQuestion;
 
 export const adjustPerMatching = async (
     question: MatchingQuestion,
@@ -55,6 +77,15 @@ export const adjustPerMatching = async (
     let boundary;
 
     switch (question.type) {
+        case "same-first-letter-station": {
+            return mapData;
+        }
+        case "same-length-station": {
+            return mapData;
+        }
+        case "same-train-line": {
+            return mapData;
+        }
         case "zone": {
             boundary = await findAdminBoundary(
                 question.lat,
@@ -188,6 +219,81 @@ export const addDefaultMatching = (center: LatLng) => {
 export const hiderifyMatching = async (question: MatchingQuestion) => {
     const $hiderMode = hiderMode.get();
     if ($hiderMode === false) {
+        return question;
+    }
+
+    if (
+        question.type === "same-first-letter-station" ||
+        question.type === "same-length-station" ||
+        question.type === "same-train-line"
+    ) {
+        const hiderPoint = turf.point([
+            $hiderMode.longitude,
+            $hiderMode.latitude,
+        ]);
+        const seekerPoint = turf.point([question.lng, question.lat]);
+
+        const places = osmtogeojson(
+            await findPlacesInZone(
+                "[railway=station]",
+                "Finding train stations. This may take a while. Do not press any buttons while this is processing. Don't worry, it will be cached.",
+                "node",
+            ),
+        );
+
+        const nearestHiderTrainStation = turf.nearestPoint(
+            hiderPoint,
+            places as any,
+        );
+        const nearestSeekerTrainStation = turf.nearestPoint(
+            seekerPoint,
+            places as any,
+        );
+
+        if (question.type === "same-train-line") {
+            const nodes = await trainLineNodeFinder(
+                nearestSeekerTrainStation.properties.id,
+            );
+
+            const hiderId = parseInt(
+                nearestHiderTrainStation.properties.id.split("/")[1],
+            );
+
+            if (nodes.includes(hiderId)) {
+                question.same = true;
+            } else {
+                question.same = false;
+            }
+        }
+
+        const hiderEnglishName =
+            nearestHiderTrainStation.properties["name:en"] ||
+            nearestHiderTrainStation.properties.name;
+        const seekerEnglishName =
+            nearestSeekerTrainStation.properties["name:en"] ||
+            nearestSeekerTrainStation.properties.name;
+
+        if (!hiderEnglishName || !seekerEnglishName) {
+            return question;
+        }
+
+        if (question.type === "same-first-letter-station") {
+            if (
+                hiderEnglishName[0].toUpperCase() ===
+                seekerEnglishName[0].toUpperCase()
+            ) {
+                question.same = true;
+            } else {
+                question.same = false;
+            }
+        } else if (question.type === "same-length-station") {
+            if (hiderEnglishName.length === seekerEnglishName.length) {
+                question.same = true;
+            } else {
+                question.same = false;
+            }
+        }
+
         return question;
     }
 

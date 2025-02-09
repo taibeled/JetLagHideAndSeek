@@ -3,7 +3,7 @@ import {
     MENU_ITEM_CLASSNAME,
     SidebarMenuButton,
     SidebarMenuItem,
-} from "./ui/sidebar";
+} from "./ui/sidebar-l";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
