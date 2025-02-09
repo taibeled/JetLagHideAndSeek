@@ -12,7 +12,7 @@ export const unionize = (input: FeatureCollection<Polygon | MultiPolygon>) => {
 };
 
 export const holedMask = (input: any) => {
-    input = unionize(input);
+    input = input.features ? unionize(input) : input;
 
     const holes = [];
 

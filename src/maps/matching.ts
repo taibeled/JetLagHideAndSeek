@@ -34,6 +34,10 @@ export interface AirportMatchingQuestion extends BaseMatchingQuestion {
     type: "airport";
 }
 
+export interface MajorCityMatchingQuestion extends BaseMatchingQuestion {
+    type: "major-city";
+}
+
 export interface SameFirstLetterStationMatchingQuestion
     extends BaseMatchingQuestion {
     type: "same-first-letter-station";
@@ -57,6 +61,7 @@ export type MatchingQuestion =
     | ZoneMatchingQuestion
     | AirportMatchingQuestion
     | LetterMatchingZoneQuestion
+    | MajorCityMatchingQuestion
     | SameFirstLetterStationMatchingQuestion
     | SameLengthStationMatchingQuestion
     | SameTrainLineMatchingQuestion;
@@ -179,6 +184,31 @@ export const adjustPerMatching = async (
                     break;
                 }
             }
+            break;
+        }
+        case "major-city": {
+            const cityData = (
+                await findPlacesInZone(
+                    '[place=city]["population"~"^[1-9]+[0-9]{6}$"]', // The regex is faster than (if:number(t["population"])>1000000)
+                    "Finding cities...",
+                )
+            ).elements.map((x: any) =>
+                turf.point([
+                    x.center ? x.center.lon : x.lon,
+                    x.center ? x.center.lat : x.lat,
+                ]),
+            );
+
+            const voronoi = geoSpatialVoronoi(cityData);
+            const point = turf.point([question.lng, question.lat]);
+
+            for (const feature of voronoi.features) {
+                if (turf.booleanPointInPolygon(point, feature)) {
+                    boundary = feature;
+                    break;
+                }
+            }
+            break;
         }
     }
 
