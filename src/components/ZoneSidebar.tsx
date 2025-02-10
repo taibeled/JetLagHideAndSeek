@@ -38,6 +38,7 @@ import {
     CommandList,
 } from "./ui/command";
 import { toast } from "react-toastify";
+import _ from "lodash";
 
 let determiningHidingZones = false;
 
@@ -450,6 +451,34 @@ async function selectionProcess(
                 features: [mapData],
             };
         }
+    }
+
+    if (
+        _.isEqual(mapData, {
+            type: "FeatureCollection",
+            features: [
+                {
+                    type: "Feature",
+                    properties: {},
+                    geometry: {
+                        type: "Polygon",
+                        coordinates: [
+                            [
+                                [-180, -90],
+                                [180, -90],
+                                [180, 90],
+                                [-180, 90],
+                                [-180, -90],
+                            ],
+                        ],
+                    },
+                },
+            ],
+        })
+    ) {
+        toast.warning(
+            "The hider cannot be in this hiding zone. This wasn't eliminated on the sidebar as its absence was caused by multiple criteria.",
+        );
     }
 
     showGeoJSON(mapData);
