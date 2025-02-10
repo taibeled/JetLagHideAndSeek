@@ -78,7 +78,7 @@ export const ZoneSidebar = () => {
         const initializeHidingZones = async () => {
             determiningHidingZones = true;
 
-            let places = osmtogeojson(
+            const places = osmtogeojson(
                 await findPlacesInZone(
                     "[railway=station]",
                     "Finding train stations. This may take a while. Do not press any buttons while this is processing. Don't worry, it will be cached.",
@@ -88,9 +88,21 @@ export const ZoneSidebar = () => {
 
             const unionized = unionize($questionFinishedMapData);
 
-            places = places.filter(
-                (x) => !turf.booleanPointInPolygon(x as any, unionized!),
-            );
+            let circles = places
+                .map((place: any) => {
+                    const radius = 0.5;
+                    const center = turf.getCoord(place);
+                    const circle = turf.circle(center, radius, {
+                        steps: 32,
+                        units: "miles", // As per the rules
+                        properties: place,
+                    });
+
+                    return circle;
+                })
+                .filter((circle) => {
+                    return !turf.booleanWithin(circle, unionized!);
+                });
 
             for (const question of questions.get()) {
                 if (
@@ -106,7 +118,9 @@ export const ZoneSidebar = () => {
 
                     const nearestTrainStation = turf.nearestPoint(
                         location,
-                        turf.featureCollection(places) as any,
+                        turf.featureCollection(
+                            circles.map((x) => x.properties),
+                        ) as any,
                     );
 
                     if (question.data.type === "same-train-line") {
@@ -120,9 +134,11 @@ export const ZoneSidebar = () => {
                             );
                             continue;
                         } else {
-                            places = places.filter((place: any) => {
+                            circles = circles.filter((circle: any) => {
                                 const id = parseInt(
-                                    place.properties.id.split("/")[1],
+                                    circle.properties.properties.id.split(
+                                        "/",
+                                    )[1],
                                 );
 
                                 return question.data.same
@@ -142,10 +158,10 @@ export const ZoneSidebar = () => {
                     if (question.data.type === "same-first-letter-station") {
                         const letter = englishName[0].toUpperCase();
 
-                        places = places.filter((place: any) => {
+                        circles = circles.filter((circle: any) => {
                             const name =
-                                place.properties["name:en"] ||
-                                place.properties.name;
+                                circle.properties.properties["name:en"] ||
+                                circle.properties.properties.name;
 
                             if (!name) return false;
 
@@ -156,10 +172,10 @@ export const ZoneSidebar = () => {
                     } else if (question.data.type === "same-length-station") {
                         const length = englishName.length;
 
-                        places = places.filter((place: any) => {
+                        circles = circles.filter((circle: any) => {
                             const name =
-                                place.properties["name:en"] ||
-                                place.properties.name;
+                                circle.properties.properties["name:en"] ||
+                                circle.properties.properties.name;
 
                             if (!name) return false;
 
@@ -193,8 +209,10 @@ export const ZoneSidebar = () => {
                         },
                     );
 
-                    places = places.filter((place: any) => {
-                        const point = turf.point(turf.getCoord(place));
+                    circles = circles.filter((circle: any) => {
+                        const point = turf.point(
+                            turf.getCoord(circle.properties),
+                        );
 
                         const nearest = turf.nearestPoint(point, points as any);
 
@@ -211,23 +229,9 @@ export const ZoneSidebar = () => {
                 }
             }
 
-            const circles = turf.featureCollection(
-                places.map((place: any) => {
-                    const radius = 0.5;
-                    const center = turf.getCoord(place);
-                    const circle = turf.circle(center, radius, {
-                        steps: 32,
-                        units: "miles", // As per the rules
-                        properties: place,
-                    });
+            showGeoJSON(turf.featureCollection(circles));
 
-                    return circle;
-                }),
-            );
-
-            showGeoJSON(circles);
-
-            setStations(circles.features);
+            setStations(circles);
             determiningHidingZones = false;
         };
 
