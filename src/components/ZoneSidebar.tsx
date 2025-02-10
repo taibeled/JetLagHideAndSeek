@@ -312,6 +312,7 @@ export const ZoneSidebar = () => {
                                                             map,
                                                             stations,
                                                             showGeoJSON,
+                                                            $questionFinishedMapData,
                                                         );
                                                     }}
                                                 >
@@ -339,6 +340,7 @@ async function selectionProcess(
     map: Map,
     stations: any[],
     showGeoJSON: (geoJSONData: any) => void,
+    $questionFinishedMapData: any,
 ) {
     const bbox = turf.bbox(station);
 
@@ -347,7 +349,14 @@ async function selectionProcess(
         [bbox[3], bbox[2]],
     ]);
 
-    let mapData: any = turf.featureCollection([turf.mask(station)]);
+    let mapData: any = turf.featureCollection([
+        unionize(
+            turf.featureCollection([
+                ...$questionFinishedMapData.features,
+                turf.mask(station),
+            ]),
+        )!,
+    ]);
 
     for (const question of questions.get()) {
         if (
