@@ -7,6 +7,7 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar-r";
 import {
+    animateMapMovements,
     displayHidingZones,
     leafletMapContext,
     questionFinishedMapData,
@@ -287,16 +288,31 @@ export const ZoneSidebar = () => {
                                                             ),
                                                         );
 
-                                                        map?.fitBounds([
+                                                        const bounds: [
+                                                            [number, number],
+                                                            [number, number],
+                                                        ] = [
                                                             [bbox[1], bbox[0]],
                                                             [bbox[3], bbox[2]],
-                                                        ]);
+                                                        ];
 
                                                         showGeoJSON(
                                                             turf.featureCollection(
                                                                 stations,
                                                             ),
                                                         );
+
+                                                        if (
+                                                            animateMapMovements.get()
+                                                        ) {
+                                                            map?.flyToBounds(
+                                                                bounds,
+                                                            );
+                                                        } else {
+                                                            map?.fitBounds(
+                                                                bounds,
+                                                            );
+                                                        }
                                                     }}
                                                 >
                                                     All Stations
@@ -348,10 +364,10 @@ async function selectionProcess(
 ) {
     const bbox = turf.bbox(station);
 
-    map?.fitBounds([
+    const bounds: [[number, number], [number, number]] = [
         [bbox[1], bbox[0]],
         [bbox[3], bbox[2]],
-    ]);
+    ];
 
     let mapData: any = turf.featureCollection([
         unionize(
@@ -485,4 +501,10 @@ async function selectionProcess(
     }
 
     showGeoJSON(mapData);
+
+    if (animateMapMovements.get()) {
+        map?.flyToBounds(bounds);
+    } else {
+        map?.fitBounds(bounds);
+    }
 }

@@ -14,6 +14,7 @@ import {
     hiderMode,
     triggerLocalRefresh,
     questionFinishedMapData,
+    animateMapMovements,
 } from "../lib/context";
 import { useStore } from "@nanostores/react";
 import { useEffect, useMemo } from "react";
@@ -196,13 +197,14 @@ export const Map = ({ className }: { className?: string }) => {
                 }
             }
 
+            let bounds: [[number, number], [number, number]] | undefined;
+
             if (focus) {
                 const bbox = turf.bbox(mapGeoData as any);
-                const bounds: [[number, number], [number, number]] = [
+                bounds = [
                     [bbox[1], bbox[0]],
                     [bbox[3], bbox[2]],
                 ];
-                map.fitBounds(bounds);
             }
 
             mapGeoData = {
@@ -291,6 +293,14 @@ export const Map = ({ className }: { className?: string }) => {
             g.addTo(map);
 
             questionFinishedMapData.set(mapGeoData);
+
+            if (bounds) {
+                if (animateMapMovements.get()) {
+                    map.flyToBounds(bounds);
+                } else {
+                    map.fitBounds(bounds);
+                }
+            }
         } catch (error) {
             console.log(error);
 
@@ -435,5 +445,9 @@ export const focusMap = (map: LeafletMap, mapGeoData: any) => {
         [bbox[1], bbox[0]],
         [bbox[3], bbox[2]],
     ];
-    map.fitBounds(bounds);
+    if (animateMapMovements.get()) {
+        map.flyToBounds(bounds);
+    } else {
+        map.fitBounds(bounds);
+    }
 };

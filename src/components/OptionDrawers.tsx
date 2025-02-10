@@ -1,4 +1,5 @@
 import {
+    animateMapMovements,
     defaultUnit,
     hiderMode,
     highlightTrainLines,
@@ -37,6 +38,7 @@ import { SidebarMenu } from "./ui/sidebar-l";
 export const OptionDrawers = ({ className }: { className?: string }) => {
     const $defaultUnit = useStore(defaultUnit);
     const $highlightTrainLines = useStore(highlightTrainLines);
+    const $animateMapMovements = useStore(animateMapMovements);
     const $hiderMode = useStore(hiderMode);
     const [isInstructionsOpen, setInstructionsOpen] = useState(false);
     const [isOptionsOpen, setOptionsOpen] = useState(false);
@@ -264,6 +266,19 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 </SelectContent>
                             </Select>
                             <Separator className="bg-slate-300 w-[280px]" />
+                            <div className="flex flex-row items-center gap-2">
+                                <label className="text-2xl font-semibold font-poppins">
+                                    Animate map movements?
+                                </label>
+                                <Checkbox
+                                    checked={$animateMapMovements}
+                                    onCheckedChange={() => {
+                                        animateMapMovements.set(
+                                            !$animateMapMovements,
+                                        );
+                                    }}
+                                />
+                            </div>
                             <div className="flex flex-row items-center gap-2">
                                 <label className="text-2xl font-semibold font-poppins">
                                     Highlight train lines?
