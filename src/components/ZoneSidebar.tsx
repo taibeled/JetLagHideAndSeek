@@ -243,6 +243,15 @@ export const ZoneSidebar = () => {
         if ($displayHidingZones && $questionFinishedMapData) {
             initializeHidingZones();
         }
+
+        if (!$displayHidingZones) {
+            map.eachLayer((layer: any) => {
+                if (layer.hidingZones) {
+                    // Hopefully only geoJSON layers
+                    map.removeLayer(layer);
+                }
+            });
+        }
     }, [$questionFinishedMapData, $displayHidingZones]);
 
     return (
