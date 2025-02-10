@@ -2,26 +2,33 @@
 
 A tool to trivially generate interactive maps for viewing hiding possibilities in Jet Lag The Game's Hide and Seek. So far, the following questions have been implemented (see https://github.com/taibeled/JetLagHideAndSeek/issues/9 for more):
 
-- [x] Radius
-  - [x] All
-- [x] Thermometer
-  - [x] All
-- [ ] Matching
-  - [x] Same zone (i.e., same region or prefecture)
-  - [x] Commercial airports
-  - [x] Zone that starts with the same letter
-- [ ] Measuring
-  - [x] Coastline
-  - [x] Commercial airports
-  - [x] Major city
-- [x] Tentacles
-  - [x] Zoo
-  - [x] Aquarium
-  - [x] Amusement Park
-  - [x] Museum
-  - [x] Hospital
-  - [x] Movie theater
-  - [x] Library
+- Radius
+  - All
+- Thermometer
+  - All
+- Matching
+  - Same zone (i.e., same region or prefecture)
+  - Zone that starts with the same letter
+  - Same closest commercial airport
+  - Same train line
+  - Same closest major city
+  - Same length of station's name
+  - Same first letter of train station name
+- Measuring
+  - Coastline
+  - Commercial airports
+  - Major city
+  - Rail station
+  - 7-Eleven
+  - McDonald's
+- Tentacles
+  - Zoo
+  - Aquarium
+  - Amusement Park
+  - Museum
+  - Hospital
+  - Movie theater
+  - Library
 
 ## Contributing
 
