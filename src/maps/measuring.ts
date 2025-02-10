@@ -1,4 +1,10 @@
-import { fetchCoastline, findPlacesInZone, iconColors } from "./api";
+import {
+    fetchCoastline,
+    findPlacesInZone,
+    findPlacesSpecificInZone,
+    iconColors,
+    QuestionSpecificLocation,
+} from "./api";
 import * as turf from "@turf/turf";
 import _ from "lodash";
 import type {
@@ -7,7 +13,7 @@ import type {
     MultiPolygon,
     Polygon,
 } from "geojson";
-import { hiderMode, mapGeoJSON, questions } from "@/lib/context";
+import { hiderMode, mapGeoJSON, questions, trainStations } from "@/lib/context";
 import type { LatLng } from "leaflet";
 import { holedMask, unionize } from "./geo-utils";
 
@@ -31,10 +37,25 @@ export interface CityMeasuringQuestion extends BaseMeasuringQuestion {
     type: "city";
 }
 
+export interface McDonaldsMeasuringQuestion extends BaseMeasuringQuestion {
+    type: "mcdonalds";
+}
+
+export interface Seven11MeasuringQuestion extends BaseMeasuringQuestion {
+    type: "seven11";
+}
+
+export interface RailStationMeasuringQuestion extends BaseMeasuringQuestion {
+    type: "rail-measure";
+}
+
 export type MeasuringQuestion =
     | CoastlineMeasuringQuestion
     | AirportMeasuringQuestion
-    | CityMeasuringQuestion;
+    | CityMeasuringQuestion
+    | McDonaldsMeasuringQuestion
+    | Seven11MeasuringQuestion
+    | RailStationMeasuringQuestion;
 
 export const adjustPerMeasuring = async (
     question: MeasuringQuestion,
@@ -116,6 +137,10 @@ export const adjustPerMeasuring = async (
                 )
             ).elements;
             break;
+        case "mcdonalds":
+        case "seven11":
+        case "rail-measure":
+            return mapData;
     }
 
     if (placeDataFull) {
@@ -143,6 +168,7 @@ export const adjustPerMeasuring = async (
         placeData.features.forEach((feature: any) => {
             const circle = turf.circle(feature, distance, {
                 units: "miles",
+                steps: placeData.features.length > 1000 ? 16 : 64,
             });
             circles.push(circle);
         });
@@ -196,6 +222,59 @@ export const addDefaultMeasuring = (center: LatLng) => {
 export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
     const $hiderMode = hiderMode.get();
     if ($hiderMode === false) {
+        return question;
+    }
+
+    if (question.type === "rail-measure") {
+        const stations = trainStations.get();
+
+        if (stations.length === 0) {
+            return question;
+        }
+
+        const location = turf.point([question.lng, question.lat]);
+
+        const nearestTrainStation = turf.nearestPoint(
+            location,
+            turf.featureCollection(stations.map((x) => x.properties.geometry)),
+        );
+
+        const distance = turf.distance(location, nearestTrainStation);
+
+        const hider = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
+
+        const hiderNearest = turf.nearestPoint(
+            hider,
+            turf.featureCollection(stations.map((x) => x.properties.geometry)),
+        );
+
+        const hiderDistance = turf.distance(hider, hiderNearest);
+
+        question.hiderCloser = hiderDistance < distance;
+    }
+
+    if (question.type === "mcdonalds" || question.type === "seven11") {
+        const points = await findPlacesSpecificInZone(
+            question.type === "mcdonalds"
+                ? QuestionSpecificLocation.McDonalds
+                : QuestionSpecificLocation.Seven11,
+        );
+
+        const seeker = turf.point([question.lng, question.lat]);
+        const nearest = turf.nearestPoint(seeker, points as any);
+
+        const distance = turf.distance(seeker, nearest, {
+            units: "miles",
+        });
+
+        const hider = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
+        const hiderNearest = turf.nearestPoint(hider, points as any);
+
+        const hiderDistance = turf.distance(hider, hiderNearest, {
+            units: "miles",
+        });
+
+        question.hiderCloser = hiderDistance < distance;
         return question;
     }
 

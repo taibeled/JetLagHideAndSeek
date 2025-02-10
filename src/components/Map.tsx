@@ -34,6 +34,8 @@ import { LeafletFullScreenButton } from "./LeafletFullScreenButton";
 import { hiderifyQuestion } from "@/maps";
 import { holedMask } from "@/maps/geo-utils";
 
+let refreshingQuestions = false;
+
 export const refreshMapData = (
     $mapGeoLocation: OpenStreetMap,
     screen: boolean = true,
@@ -92,6 +94,13 @@ export const Map = ({ className }: { className?: string }) => {
 
     const refreshQuestions = async (focus: boolean = false) => {
         if (!map) return;
+
+        if (refreshingQuestions)
+            return toast.warning(
+                "Already refreshing. Remodify the questions after the current refresh is done.",
+            );
+
+        refreshingQuestions = true;
 
         if ($questions.length === 0) {
             await clearCache();
@@ -286,8 +295,11 @@ export const Map = ({ className }: { className?: string }) => {
             console.log(error);
 
             if (document.querySelectorAll(".Toastify__toast").length === 0) {
+                refreshingQuestions = false;
                 return toast.error("No solutions found / error occurred");
             }
+        } finally {
+            refreshingQuestions = false;
         }
     };
 

@@ -84,3 +84,4 @@ export const displayHidingZones = persistentAtom<boolean>(
     },
 );
 export const questionFinishedMapData = atom<any>(null);
+export const trainStations = atom<any[]>([]);

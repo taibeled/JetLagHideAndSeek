@@ -442,6 +442,7 @@ export const MeasuringQuestionComponent = ({
     useStore(triggerLocalRefresh);
     const $hiderMode = useStore(hiderMode);
     const $questions = useStore(questions);
+    const $displayHidingZones = useStore(displayHidingZones);
     const label = `Measuring
     ${
         $questions
@@ -450,11 +451,20 @@ export const MeasuringQuestionComponent = ({
             .indexOf(questionKey) + 1
     }`;
 
-    const questionSpecific = <></>;
+    let questionSpecific = <></>;
 
-    // Implement this if a question category within measuring has specific fields (also change questionSpecific above to a let statement)
-    // switch (data.type) {
-    // }
+    switch (data.type) {
+        case "mcdonalds":
+        case "seven11":
+            questionSpecific = (
+                <span className="px-2 text-center text-orange-500">
+                    This question will eliminate hiding zones that don&apos;t
+                    fit the criteria. When you click on a zone, the parts of
+                    that zone that don&apos;t satisfy the criteria will be
+                    eliminated.
+                </span>
+            );
+    }
 
     return (
         <QuestionCard
@@ -486,6 +496,25 @@ export const MeasuringQuestionComponent = ({
                         </SelectItem>
                         <SelectItem value="city">
                             Major City (1,000,000+ people) Question
+                        </SelectItem>
+                        <SelectItem
+                            value="mcdonalds"
+                            disabled={!$displayHidingZones}
+                        >
+                            McDonald&apos;s Question (must be in hiding zone
+                            mode)
+                        </SelectItem>
+                        <SelectItem
+                            value="seven11"
+                            disabled={!$displayHidingZones}
+                        >
+                            7-Eleven Question (must be in hiding zone mode)
+                        </SelectItem>
+                        <SelectItem
+                            value="rail-measure"
+                            disabled={!$displayHidingZones}
+                        >
+                            Train Station Question
                         </SelectItem>
                     </SelectContent>
                 </Select>
