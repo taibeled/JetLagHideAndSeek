@@ -131,7 +131,10 @@ export const ZoneSidebar = () => {
 
                         if (nodes.length === 0) {
                             toast.warning(
-                                `No train line found for ${nearestTrainStation.properties["name:en"] || nearestTrainStation.properties.name}`,
+                                `No train line found for ${
+                                    nearestTrainStation.properties["name:en"] ||
+                                    nearestTrainStation.properties.name
+                                }`,
                             );
                             continue;
                         } else {

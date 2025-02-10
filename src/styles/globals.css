@@ -14,7 +14,8 @@ body {
     height: 100svh;
 }
 
-.leaflet-bottom.leaflet-right { /* Hypothetically this could cause an issue with other bottom right elements */
+.leaflet-bottom.leaflet-right {
+    /* Hypothetically this could cause an issue with other bottom right elements */
     z-index: 752;
 }
 
@@ -26,7 +27,8 @@ div.leaflet-control-attribution.leaflet-control {
     html {
         @apply text-slate-50;
     }
-    :root, .light {
+    :root,
+    .light {
         --background: 0 0% 100%;
         --foreground: 222.2 84% 4.9%;
         --card: 0 0% 100%;
@@ -96,7 +98,10 @@ div.leaflet-control-attribution.leaflet-control {
         --sidebar-ring: 217.2 91.2% 59.8%;
     }
 
-    main:not(.fullscreen) .leaflet-control-container .leaflet-top.leaflet-left .leaflet-control {
+    main:not(.fullscreen)
+        .leaflet-control-container
+        .leaflet-top.leaflet-left
+        .leaflet-control {
         @apply !mt-[104px] md:!mt-[40px];
     }
 
