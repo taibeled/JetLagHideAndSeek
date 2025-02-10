@@ -324,7 +324,11 @@ export const findPlacesSpecificInZone = async (
     const locations = (
         await findPlacesInZone(
             location,
-            `Finding ${location === QuestionSpecificLocation.McDonalds ? "McDonald's" : "7-Elevens"}...`,
+            `Finding ${
+                location === QuestionSpecificLocation.McDonalds
+                    ? "McDonald's"
+                    : "7-Elevens"
+            }...`,
         )
     ).elements;
 
