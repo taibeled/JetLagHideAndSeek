@@ -43,28 +43,52 @@ const { className } = Astro.props;
             gtag("config", "G-RKJ9G6CNC2");
         </script>
         <meta name="generator" content={Astro.generator} />
+        <!-- HTML Meta Tags -->
+        <title>Map Generator for Jet Lag The Game: Hide and Seek</title>
         <meta
             name="description"
             content="Automatically generate maps for Jet Lag The Game: Hide and Seek with ease! Simply name the questions and watch the map eliminate hundreds of possibilities in seconds."
         />
+
+        <!-- Facebook Meta Tags -->
         <meta
-            name="keywords"
-            content="Jet Lag, Hide and Seek, Jet Lag The Game, Map Generator"
-        />
-        <meta
-            name="og:url"
+            property="og:url"
             content="https://taibeled.github.io/JetLagHideAndSeek/"
         />
-        <meta name="og:type" content="website" />
+        <meta property="og:type" content="website" />
         <meta
-            name="og:title"
+            property="og:title"
             content="Map Generator for Jet Lag The Game: Hide and Seek"
         />
         <meta
-            name="og:image"
+            property="og:description"
+            content="Automatically generate maps for Jet Lag The Game: Hide and Seek with ease! Simply name the questions and watch the map eliminate hundreds of possibilities in seconds."
+        />
+        <meta
+            property="og:image"
             content="https://taibeled.github.io/JetLagHideAndSeek/JLIcon.png"
         />
-        <title>Map Generator for Jet Lag The Game: Hide and Seek</title>
+
+        <!-- Twitter Meta Tags -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta property="twitter:domain" content="taibeled.github.io" />
+        <meta
+            property="twitter:url"
+            content="https://taibeled.github.io/JetLagHideAndSeek/"
+        />
+        <meta
+            name="twitter:title"
+            content="Map Generator for Jet Lag The Game: Hide and Seek"
+        />
+        <meta
+            name="twitter:description"
+            content="Automatically generate maps for Jet Lag The Game: Hide and Seek with ease! Simply name the questions and watch the map eliminate hundreds of possibilities in seconds."
+        />
+        <meta
+            name="twitter:image"
+            content="https://taibeled.github.io/JetLagHideAndSeek/JLIcon.png"
+        />
+
         {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
     </head>
     <body class:list={[className, "dark"]}>
