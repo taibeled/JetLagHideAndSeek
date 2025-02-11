@@ -26,7 +26,9 @@ import { Input } from "./ui/input";
 import {
     Select,
     SelectContent,
+    SelectGroup,
     SelectItem,
+    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "./ui/select";
@@ -657,27 +659,23 @@ export const TentacleQuestionComponent = ({
                         <SelectValue placeholder="Location Type" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="theme_park">
-                            Theme Parks (typically 15 miles)
-                        </SelectItem>
-                        <SelectItem value="zoo">
-                            Zoos (typically 15 miles)
-                        </SelectItem>
-                        <SelectItem value="aquarium">
-                            Aquariums (typically 15 miles)
-                        </SelectItem>
-                        <SelectItem value="museum">
-                            Museums (typically 1 mile)
-                        </SelectItem>
-                        <SelectItem value="hospital">
-                            Hospitals (typically 1 mile)
-                        </SelectItem>
-                        <SelectItem value="cinema">
-                            Movie Theater (typically 1 mile)
-                        </SelectItem>
-                        <SelectItem value="library">
-                            Library (typically 1 mile)
-                        </SelectItem>
+                        <SelectGroup>
+                            <SelectLabel>15 Miles (Typically)</SelectLabel>
+                            <SelectItem value="theme_park">
+                                Theme Parks
+                            </SelectItem>
+                            <SelectItem value="zoo">Zoos</SelectItem>
+                            <SelectItem value="aquarium">Aquariums</SelectItem>
+                        </SelectGroup>
+                        <SelectGroup>
+                            <SelectLabel>1 Mile (Typically)</SelectLabel>
+                            <SelectItem value="museum">Museums</SelectItem>
+                            <SelectItem value="hospital">Hospitals</SelectItem>
+                            <SelectItem value="cinema">
+                                Movie Theater
+                            </SelectItem>
+                            <SelectItem value="library">Library</SelectItem>
+                        </SelectGroup>
                     </SelectContent>
                 </Select>
             </SidebarMenuItem>
