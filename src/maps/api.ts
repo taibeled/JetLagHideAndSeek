@@ -225,12 +225,24 @@ export const fetchCoastline = async () => {
 export const trainLineNodeFinder = async (node: string): Promise<number[]> => {
     const nodeId = node.split("/")[1];
 
-    const query = `
+    const tagQuery = `
 [out:json];
 node(${nodeId});
 wr(bn);
+out tags;
+`;
+
+    const tagData = await getOverpassData(tagQuery, "Finding train line...");
+
+    const lines = _.uniq(tagData.elements.map((x: any) => x.tags.name));
+
+    const query = `
+[out:json];
+(
+${lines.map((line) => `wr["name"="${line}"];`).join("\n")}
+);
 out geom;
-    `;
+`;
 
     const data = await getOverpassData(query, "Finding train lines...");
 
