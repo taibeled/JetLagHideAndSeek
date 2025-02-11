@@ -19,7 +19,7 @@ const { className } = Astro.props;
         <link
             rel="icon"
             type="image/svg+xml"
-            href="/JetLagHideAndSeek/favicon.svg"
+            href="/JetLagHideAndSeek/favicon.ico"
         />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -45,11 +45,24 @@ const { className } = Astro.props;
         <meta name="generator" content={Astro.generator} />
         <meta
             name="description"
-            content="An automatic map generator for Jet Lag The Game's Hide and Seek."
+            content="Automatically generate maps for Jet Lag The Game: Hide and Seek with ease! Simply name the questions and watch the map eliminate hundreds of possibilities in seconds."
         />
         <meta
             name="keywords"
             content="Jet Lag, Hide and Seek, Jet Lag The Game, Map Generator"
+        />
+        <meta
+            name="og:url"
+            content="https://taibeled.github.io/JetLagHideAndSeek/"
+        />
+        <meta name="og:type" content="website" />
+        <meta
+            name="og:title"
+            content="Map Generator for Jet Lag The Game: Hide and Seek"
+        />
+        <meta
+            name="og:image"
+            content="https://taibeled.github.io/JetLagHideAndSeek/JLIcon.png"
         />
         <title>Map Generator for Jet Lag The Game: Hide and Seek</title>
         {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
