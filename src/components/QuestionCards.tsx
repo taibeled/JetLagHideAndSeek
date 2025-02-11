@@ -514,7 +514,7 @@ export const MeasuringQuestionComponent = ({
                             value="rail-measure"
                             disabled={!$displayHidingZones}
                         >
-                            Train Station Question
+                            Train Station Question (must be in hiding zone mode)
                         </SelectItem>
                     </SelectContent>
                 </Select>
