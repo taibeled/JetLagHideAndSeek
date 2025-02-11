@@ -24,8 +24,6 @@ export default defineConfig({
                 short_name: "Map Generator",
                 description:
                     "Automatically generate maps for Jet Lag The Game: Hide and Seek with ease! Simply name the questions and watch the map eliminate hundreds of possibilities in seconds.",
-                display: "standalone",
-                start_url: "/JetLagHideAndSeek",
                 icons: [
                     {
                         src: "/JetLagHideAndSeek/JLIcon.png",
