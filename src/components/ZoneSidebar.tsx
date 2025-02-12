@@ -84,7 +84,7 @@ export const ZoneSidebar = () => {
                 await findPlacesInZone(
                     "[railway=station]",
                     "Finding train stations. This may take a while. Do not press any buttons while this is processing. Don't worry, it will be cached.",
-                    "node",
+                    "nwr",
                 ),
             ).features;
 
