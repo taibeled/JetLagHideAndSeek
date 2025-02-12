@@ -46,19 +46,25 @@ export const PlacePicker = ({
     const [inputValue, setInputValue] = useState("");
     const debouncedValue = useDebounce<string>(inputValue);
     const [results, setResults] = useState<OpenStreetMap[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
         if (debouncedValue === "") {
             setResults([]);
             return;
         } else {
+            setLoading(true);
+            setResults([]);
             geocode(debouncedValue, "en")
                 .then((x) => {
                     setResults(x);
+                    setLoading(false);
                 })
                 .catch((e) => {
                     console.log(e);
-                    setResults([]);
+                    setError(true);
+                    setLoading(false);
                 });
         }
     }, [debouncedValue]);
@@ -94,7 +100,33 @@ export const PlacePicker = ({
                         }}
                     />
                     <CommandList>
-                        <CommandEmpty>No locations found.</CommandEmpty>
+                        <CommandEmpty>
+                            {loading ? (
+                                <>
+                                    Loading...{" "}
+                                    <a
+                                        href="https://github.com/komoot/photon"
+                                        className="text-blue-500"
+                                    >
+                                        Photon
+                                    </a>{" "}
+                                    may be down.{" "}
+                                </>
+                            ) : error ? (
+                                <>
+                                    {" "}
+                                    <a
+                                        href="https://github.com/komoot/photon"
+                                        className="text-blue-500"
+                                    >
+                                        Photon
+                                    </a>{" "}
+                                    is down.{" "}
+                                </>
+                            ) : (
+                                "No locations found."
+                            )}
+                        </CommandEmpty>
                         <CommandGroup>
                             {results.map((result) => (
                                 <CommandItem
