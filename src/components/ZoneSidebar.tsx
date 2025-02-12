@@ -241,7 +241,16 @@ export const ZoneSidebar = () => {
         };
 
         if ($displayHidingZones && $questionFinishedMapData) {
-            initializeHidingZones();
+            initializeHidingZones().catch((error) => {
+                console.log(error);
+
+                if (
+                    document.querySelectorAll(".Toastify__toast").length === 0
+                ) {
+                    determiningHidingZones = false;
+                    return toast.error("An error occurred");
+                }
+            });
         }
 
         if (!$displayHidingZones) {
@@ -342,7 +351,19 @@ export const ZoneSidebar = () => {
                                                             stations,
                                                             showGeoJSON,
                                                             $questionFinishedMapData,
-                                                        );
+                                                        ).catch((error) => {
+                                                            console.log(error);
+
+                                                            if (
+                                                                document.querySelectorAll(
+                                                                    ".Toastify__toast",
+                                                                ).length === 0
+                                                            ) {
+                                                                return toast.error(
+                                                                    "An error occurred",
+                                                                );
+                                                            }
+                                                        });
                                                     }}
                                                 >
                                                     {station.properties
