@@ -94,7 +94,7 @@ export const ZoneSidebar = () => {
             determiningHidingZones = true;
 
             if ($displayHidingZonesOptions.length === 0) {
-                toast.error("No places allowed");
+                toast.error("At least one place type must be selected");
                 determiningHidingZones = false;
                 return;
             }
@@ -334,6 +334,7 @@ export const ZoneSidebar = () => {
                                     placeholder="Select allowed places"
                                     animation={2}
                                     maxCount={3}
+                                    modalPopover
                                     className="!bg-popover bg-opacity-100"
                                 />
                             </SidebarMenuItem>
