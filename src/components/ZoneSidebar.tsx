@@ -9,6 +9,7 @@ import {
 import {
     animateMapMovements,
     displayHidingZones,
+    displayHidingZonesOptions,
     leafletMapContext,
     questionFinishedMapData,
     questions,
@@ -28,7 +29,7 @@ import {
 } from "@/maps/api";
 import * as turf from "@turf/turf";
 import osmtogeojson from "osmtogeojson";
-import { holedMask, unionize } from "@/maps/geo-utils";
+import { holedMask, lngLatToText, unionize } from "@/maps/geo-utils";
 import { cn } from "@/lib/utils";
 import {
     Command,
@@ -40,12 +41,14 @@ import {
 } from "./ui/command";
 import { toast } from "react-toastify";
 import _ from "lodash";
+import { MultiSelect } from "./ui/multi-select";
 
 let determiningHidingZones = false;
 
 export const ZoneSidebar = () => {
     const $displayHidingZones = useStore(displayHidingZones);
     const $questionFinishedMapData = useStore(questionFinishedMapData);
+    const $displayHidingZonesOptions = useStore(displayHidingZonesOptions);
     const map = useStore(leafletMapContext);
     const stations = useStore(trainStations);
     const setStations = trainStations.set;
@@ -80,11 +83,19 @@ export const ZoneSidebar = () => {
         const initializeHidingZones = async () => {
             determiningHidingZones = true;
 
+            if ($displayHidingZonesOptions.length === 0) {
+                toast.error("No places allowed");
+                determiningHidingZones = false;
+                return;
+            }
+
             const places = osmtogeojson(
                 await findPlacesInZone(
-                    "[railway=station]",
-                    "Finding train stations. This may take a while. Do not press any buttons while this is processing. Don't worry, it will be cached.",
+                    $displayHidingZonesOptions[0],
+                    "Finding stations. This may take a while. Do not press any buttons while this is processing. Don't worry, it will be cached.",
                     "nwr",
+                    "center",
+                    $displayHidingZonesOptions.slice(1),
                 ),
             ).features;
 
@@ -261,7 +272,11 @@ export const ZoneSidebar = () => {
                 }
             });
         }
-    }, [$questionFinishedMapData, $displayHidingZones]);
+    }, [
+        $questionFinishedMapData,
+        $displayHidingZones,
+        $displayHidingZonesOptions,
+    ]);
 
     return (
         <Sidebar side="right">
@@ -288,6 +303,28 @@ export const ZoneSidebar = () => {
                             >
                                 Warning: This feature can drastically slow down
                                 your device.
+                            </SidebarMenuItem>
+                            <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                                <MultiSelect
+                                    options={[
+                                        {
+                                            label: "Railway Stations",
+                                            value: "[railway=station]",
+                                        },
+                                        {
+                                            label: "Bus Stops",
+                                            value: "[highway=bus_stop]",
+                                        },
+                                    ]}
+                                    onValueChange={
+                                        displayHidingZonesOptions.set
+                                    }
+                                    defaultValue={$displayHidingZonesOptions}
+                                    placeholder="Select allowed places"
+                                    animation={2}
+                                    maxCount={3}
+                                    className="!bg-popover bg-opacity-100"
+                                />
                             </SidebarMenuItem>
                             {$displayHidingZones && (
                                 <Command>
@@ -371,7 +408,12 @@ export const ZoneSidebar = () => {
                                                         "name:en"
                                                     ] ||
                                                         station.properties
-                                                            .properties.name}
+                                                            .properties.name ||
+                                                        lngLatToText(
+                                                            station.properties
+                                                                .geometry
+                                                                .coordinates,
+                                                        )}
                                                 </CommandItem>
                                             ))}
                                         </CommandGroup>

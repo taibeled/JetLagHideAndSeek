@@ -83,6 +83,14 @@ export const displayHidingZones = persistentAtom<boolean>(
         decode: JSON.parse,
     },
 );
+export const displayHidingZonesOptions = persistentAtom<string[]>(
+    "displayHidingZonesOptions",
+    ["[railway=station]"],
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
 export const questionFinishedMapData = atom<any>(null);
 export const trainStations = atom<any[]>([]);
 export const animateMapMovements = persistentAtom<boolean>(

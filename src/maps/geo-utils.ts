@@ -32,3 +32,10 @@ export const holedMask = (input: any) => {
         ]),
     );
 };
+
+export const lngLatToText = (coordinates: [number, number]) => {
+    /**
+     * @param coordinates - Should be in longitude, latitude order
+     */
+    return `${Math.abs(coordinates[1])}°${coordinates[1] > 0 ? "N" : "S"}, ${Math.abs(coordinates[1])}°${coordinates[1] > 0 ? "E" : "W"}`;
+};

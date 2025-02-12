@@ -284,7 +284,7 @@ export const findPlacesInZone = async (
         | "nr"
         | "area" = "nwr",
     outType: "center" | "geom" = "center",
-    alternative?: string,
+    alternatives: string[] = [],
 ) => {
     let query = "";
 
@@ -301,13 +301,18 @@ ${searchType}${filter}(poly:"${turf
             .map((coord) => [coord[1], coord[0]].join(" "))
             .join(" ")}");
 ${
-    alternative
-        ? `${searchType}${alternative}(poly:"${turf
-              .getCoords($polyGeoJSON.features)
-              .flatMap((polygon) => polygon.geometry.coordinates)
-              .flat()
-              .map((coord) => [coord[1], coord[0]].join(" "))
-              .join(" ")}");`
+    alternatives.length > 0
+        ? alternatives
+              .map(
+                  (alternative) =>
+                      `${searchType}${alternative}(poly:"${turf
+                          .getCoords($polyGeoJSON.features)
+                          .flatMap((polygon) => polygon.geometry.coordinates)
+                          .flat()
+                          .map((coord) => [coord[1], coord[0]].join(" "))
+                          .join(" ")}");`,
+              )
+              .join("\n")
         : ""
 }
 );
@@ -321,7 +326,7 @@ out ${outType};
 relation(${geoLocation.properties.osm_id});map_to_area->.region;
 (
 ${searchType}${filter}(area.region);
-${alternative ? `${searchType}${alternative}(area.region);` : ""}
+${alternatives.length > 0 ? alternatives.map((alternative) => `${searchType}${alternative}(area.region);`).join("\n") : ""}
 );
 out ${outType};
 `;
