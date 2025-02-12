@@ -352,7 +352,6 @@ export const ZoneSidebar = () => {
                                         className="rounded-md p-2 w-16"
                                         defaultValue={$hidingRadius}
                                         onChange={(e) => {
-                                            console.log(e.target.value);
                                             hidingRadius.set(
                                                 parseFloat(e.target.value),
                                             );
