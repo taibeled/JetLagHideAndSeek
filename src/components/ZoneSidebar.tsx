@@ -10,6 +10,7 @@ import {
     animateMapMovements,
     displayHidingZones,
     displayHidingZonesOptions,
+    hidingRadius,
     leafletMapContext,
     questionFinishedMapData,
     questions,
@@ -42,6 +43,14 @@ import {
 import { toast } from "react-toastify";
 import _ from "lodash";
 import { MultiSelect } from "./ui/multi-select";
+import { Input } from "./ui/input";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 let determiningHidingZones = false;
 
@@ -49,6 +58,7 @@ export const ZoneSidebar = () => {
     const $displayHidingZones = useStore(displayHidingZones);
     const $questionFinishedMapData = useStore(questionFinishedMapData);
     const $displayHidingZonesOptions = useStore(displayHidingZonesOptions);
+    const $hidingRadius = useStore(hidingRadius);
     const map = useStore(leafletMapContext);
     const stations = useStore(trainStations);
     const setStations = trainStations.set;
@@ -103,7 +113,7 @@ export const ZoneSidebar = () => {
 
             let circles = places
                 .map((place: any) => {
-                    const radius = 0.5;
+                    const radius = $hidingRadius;
                     const center = turf.getCoord(place);
                     const circle = turf.circle(center, radius, {
                         steps: 32,
@@ -236,11 +246,11 @@ export const ZoneSidebar = () => {
                             ? turf.distance(point, nearest as any, {
                                   units: "miles",
                               }) <
-                                  distance + 0.5
+                                  distance + $hidingRadius
                             : turf.distance(point, nearest as any, {
                                   units: "miles",
                               }) >
-                                  distance - 0.5;
+                                  distance - $hidingRadius;
                     });
                 }
             }
@@ -276,6 +286,7 @@ export const ZoneSidebar = () => {
         $questionFinishedMapData,
         $displayHidingZones,
         $displayHidingZonesOptions,
+        $hidingRadius,
     ]);
 
     return (
@@ -325,6 +336,39 @@ export const ZoneSidebar = () => {
                                     maxCount={3}
                                     className="!bg-popover bg-opacity-100"
                                 />
+                            </SidebarMenuItem>
+                            <SidebarMenuItem>
+                                <Label className="font-semibold font-poppins ml-2">
+                                    Hiding Zone Radius
+                                </Label>
+                                <div
+                                    className={cn(
+                                        MENU_ITEM_CLASSNAME,
+                                        "gap-2 flex flex-row",
+                                    )}
+                                >
+                                    <Input
+                                        type="number"
+                                        className="rounded-md p-2 w-16"
+                                        defaultValue={$hidingRadius}
+                                        onChange={(e) => {
+                                            console.log(e.target.value);
+                                            hidingRadius.set(
+                                                parseFloat(e.target.value),
+                                            );
+                                        }}
+                                    />
+                                    <Select value="miles" disabled>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Unit" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="miles">
+                                                Miles
+                                            </SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                             </SidebarMenuItem>
                             {$displayHidingZones && (
                                 <Command>
@@ -388,6 +432,7 @@ export const ZoneSidebar = () => {
                                                             stations,
                                                             showGeoJSON,
                                                             $questionFinishedMapData,
+                                                            $hidingRadius,
                                                         ).catch((error) => {
                                                             console.log(error);
 
@@ -433,6 +478,7 @@ async function selectionProcess(
     stations: any[],
     showGeoJSON: (geoJSONData: any) => void,
     $questionFinishedMapData: any,
+    $hidingRadius: number,
 ) {
     const bbox = turf.bbox(station);
 
@@ -473,7 +519,7 @@ async function selectionProcess(
                             station.properties.geometry,
                             x.properties.geometry,
                         ) <
-                        distance + 1.61 / 2,
+                        distance + 1.61 * $hidingRadius,
                 )
                 .map((x) => turf.circle(x.properties.geometry, distance));
 
@@ -513,7 +559,7 @@ async function selectionProcess(
                     turf.distance(x as any, station.properties.geometry, {
                         units: "miles",
                     }) <
-                    distance + 0.5,
+                    distance + $hidingRadius,
             );
 
             const circles = filtered.map((x) =>

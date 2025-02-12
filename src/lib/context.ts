@@ -101,3 +101,7 @@ export const animateMapMovements = persistentAtom<boolean>(
         decode: JSON.parse,
     },
 );
+export const hidingRadius = persistentAtom<number>("hidingRadius", 0.5, {
+    encode: JSON.stringify,
+    decode: JSON.parse,
+});
