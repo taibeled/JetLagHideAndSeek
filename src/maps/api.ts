@@ -105,7 +105,7 @@ const tentacleFirstTag: { [key in TentacleLocations]: "amenity" | "tourism" } =
 export const findTentacleLocations = async (question: TentacleQuestion) => {
     const query = `
 [out:json][timeout:25];
-nw["${tentacleFirstTag[question.locationType]}"="${
+nwr["${locationFirstTag[question.locationType]}"="${
         question.locationType
     }"](around:${turf.convertLength(
         question.radius,
@@ -125,6 +125,24 @@ out center;
 
     elements.forEach((element: any) => {
         if (!element.tags["name"] && !element.tags["name:en"]) return;
+
+        if (element.lat && element.lon) {
+            const name = element.tags["name:en"] ?? element.tags["name"];
+
+            if (
+                response.features.find(
+                    (feature: any) => feature.properties.name === name,
+                )
+            )
+                return;
+
+            response.features.push(
+                turf.point([element.lon, element.lat], {
+                    name,
+                }),
+            );
+        }
+
         if (!element.center || !element.center.lon || !element.center.lat)
             return;
 
