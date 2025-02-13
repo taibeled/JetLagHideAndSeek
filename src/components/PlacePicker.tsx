@@ -102,26 +102,17 @@ export const PlacePicker = ({
                     <CommandList>
                         <CommandEmpty>
                             {loading ? (
-                                <>
-                                    Loading...{" "}
-                                    <a
-                                        href="https://github.com/komoot/photon"
-                                        className="text-blue-500"
-                                    >
-                                        Photon
-                                    </a>{" "}
-                                    may be down.{" "}
-                                </>
+                                <>Loading...</>
                             ) : error ? (
                                 <>
-                                    {" "}
                                     <a
                                         href="https://github.com/komoot/photon"
                                         className="text-blue-500"
                                     >
                                         Photon
                                     </a>{" "}
-                                    is down.{" "}
+                                    is down. Please draw a polygon instead at
+                                    the bottom left of the map.
                                 </>
                             ) : (
                                 "No locations found."
