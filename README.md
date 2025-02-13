@@ -36,7 +36,7 @@ If anyone wants to help, please focus on one of the following or leave an issue 
 
 - [x] User interface
 - [x] Custom map bounds (i.e. draw geoJSON which should be used for the bounds)
-- [ ] Adding questions (https://github.com/taibeled/JetLagHideAndSeek/issues/9)
+- [ ] Adding questions (https://github.com/taibeled/JetLagHideAndSeek/issues/9 and https://github.com/taibeled/JetLagHideAndSeek/issues/34)
 - [ ] Refactoring code
 - [x] Hider menu (prevent conflicting information between hiders and seekers by adding a menu for hiders to automatically obtain answers)
 - [x] Train station fetching (use Overpass to fetch train stations in the zone and automatically show them, https://github.com/taibeled/JetLagHideAndSeek/issues/24)
@@ -45,5 +45,3 @@ If anyone wants to help, please focus on one of the following or leave an issue 
 This project uses ESLint and Prettier for formatting/style. Before submitting a pull request/committing, please run `pnpm lint` for your code to be automatically fixed.
 
 More documentation to come.
-
-Note that only questions that are shown in the show will be used, for now. I do not want to "reveal" anything exclusive to The Home Game or take away from its success in any way.
