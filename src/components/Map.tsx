@@ -304,8 +304,8 @@ export const Map = ({ className }: { className?: string }) => {
         } catch (error) {
             console.log(error);
 
+            refreshingQuestions = false;
             if (document.querySelectorAll(".Toastify__toast").length === 0) {
-                refreshingQuestions = false;
                 return toast.error("No solutions found / error occurred");
             }
         } finally {
