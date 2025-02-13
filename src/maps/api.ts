@@ -105,7 +105,7 @@ const tentacleFirstTag: { [key in TentacleLocations]: "amenity" | "tourism" } =
 export const findTentacleLocations = async (question: TentacleQuestion) => {
     const query = `
 [out:json][timeout:25];
-nwr["${locationFirstTag[question.locationType]}"="${
+nwr["${tentacleFirstTag[question.locationType]}"="${
         question.locationType
     }"](around:${turf.convertLength(
         question.radius,
