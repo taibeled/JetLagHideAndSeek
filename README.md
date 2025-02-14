@@ -14,6 +14,16 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
   - Same closest major city
   - Same length of station's name
   - Same first letter of train station name
+  - Same nearest park
+  - Same nearest amusement park
+  - Same nearest zoo
+  - Same nearest aquarium
+  - Same nearest golf course
+  - Same nearest museum
+  - Same nearest movie theater
+  - Same nearest hospital
+  - Same nearest library
+  - Same nearest foreign consulate
 - Measuring
   - Coastline
   - Commercial airports
@@ -38,6 +48,7 @@ If anyone wants to help, please focus on one of the following or leave an issue 
 - [x] Custom map bounds (i.e. draw geoJSON which should be used for the bounds)
 - [ ] Adding questions (https://github.com/taibeled/JetLagHideAndSeek/issues/9 and https://github.com/taibeled/JetLagHideAndSeek/issues/34)
 - [ ] Refactoring code
+- [ ] Tests (https://github.com/taibeled/JetLagHideAndSeek/issues/36)
 - [x] Hider menu (prevent conflicting information between hiders and seekers by adding a menu for hiders to automatically obtain answers)
 - [x] Train station fetching (use Overpass to fetch train stations in the zone and automatically show them, https://github.com/taibeled/JetLagHideAndSeek/issues/24)
 - [x] Progressive web app (https://github.com/taibeled/JetLagHideAndSeek/issues/1)
