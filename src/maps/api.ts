@@ -5,6 +5,7 @@ import * as turf from "@turf/turf";
 import { mapGeoLocation, polyGeoJSON } from "@/lib/context";
 import _ from "lodash";
 import { toast } from "react-toastify";
+import type { HomeGameMatchingQuestions } from "./matching";
 
 export interface OpenStreetMap {
     type: string;
@@ -91,21 +92,32 @@ export const determineGeoJSON = async (
     };
 };
 
-const tentacleFirstTag: { [key in TentacleLocations]: "amenity" | "tourism" } =
-    {
-        aquarium: "tourism",
-        hospital: "amenity",
-        museum: "tourism",
-        theme_park: "tourism",
-        zoo: "tourism",
-        cinema: "amenity",
-        library: "amenity",
-    };
+const locationFirstTag: {
+    [key in TentacleLocations]:
+        | "amenity"
+        | "tourism"
+        | "leisure"
+        | "diplomatic";
+} = {
+    aquarium: "tourism",
+    hospital: "amenity",
+    museum: "tourism",
+    theme_park: "tourism",
+    zoo: "tourism",
+    cinema: "amenity",
+    library: "amenity",
+    golf_course: "leisure",
+    consulate: "diplomatic",
+    park: "leisure",
+};
 
-export const findTentacleLocations = async (question: TentacleQuestion) => {
+export const findTentacleLocations = async (
+    question: TentacleQuestion,
+    text: string = "Determining tentacle locations...",
+) => {
     const query = `
 [out:json][timeout:25];
-nwr["${tentacleFirstTag[question.locationType]}"="${
+nwr["${locationFirstTag[question.locationType]}"="${
         question.locationType
     }"](around:${turf.convertLength(
         question.radius,
@@ -114,10 +126,7 @@ nwr["${tentacleFirstTag[question.locationType]}"="${
     )}, ${question.lat}, ${question.lng});
 out center;
     `;
-    const data = await getOverpassData(
-        query,
-        "Determining tentacle locations...",
-    );
+    const data = await getOverpassData(query, text);
 
     const elements = data.elements;
 
@@ -446,4 +455,56 @@ export const clearCache = async (cacheType: CacheType = CacheType.CACHE) => {
             cache.delete(key);
         });
     });
+};
+
+export const prettifyLocation = (location: TentacleLocations) => {
+    switch (location) {
+        case "aquarium":
+            return "Aquarium";
+        case "hospital":
+            return "Hospital";
+        case "museum":
+            return "Museum";
+        case "theme_park":
+            return "Theme Park";
+        case "zoo":
+            return "Zoo";
+        case "cinema":
+            return "Cinema";
+        case "library":
+            return "Library";
+        case "golf_course":
+            return "Golf Course";
+        case "consulate":
+            return "Foreign Consulate";
+        case "park":
+            return "Park";
+    }
+};
+
+export const nearestToQuestion = async (
+    question: HomeGameMatchingQuestions,
+) => {
+    let radius = 30;
+
+    let instances: any = { features: [] };
+
+    while (instances.features.length === 0) {
+        instances = await findTentacleLocations(
+            {
+                lat: question.lat,
+                lng: question.lng,
+                radius: radius,
+                unit: "miles",
+                location: false,
+                locationType: question.type,
+            },
+            "Finding matching locations...",
+        );
+        radius += 30;
+    }
+
+    const questionPoint = turf.point([question.lng, question.lat]);
+
+    return turf.nearestPoint(questionPoint, instances as any);
 };

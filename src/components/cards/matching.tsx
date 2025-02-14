@@ -7,18 +7,21 @@ import {
     questions,
     triggerLocalRefresh,
 } from "../../lib/context";
-import { iconColors } from "../../maps/api";
+import { iconColors, prettifyLocation } from "../../maps/api";
 import type { MatchingQuestion } from "../../maps/matching";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
 import {
     Select,
     SelectContent,
+    SelectGroup,
     SelectItem,
+    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "../ui/select";
 import { Checkbox } from "../ui/checkbox";
 import { QuestionCard } from "./base";
+import type { TentacleLocations } from "@/maps/tentacles";
 
 export const MatchingQuestionComponent = ({
     data,
@@ -103,6 +106,23 @@ export const MatchingQuestionComponent = ({
                     using this tool.
                 </span>
             );
+            break;
+        case "aquarium":
+        case "hospital":
+        case "museum":
+        case "theme_park":
+        case "zoo":
+        case "cinema":
+        case "library":
+        case "golf_course":
+        case "consulate":
+        case "park":
+            questionSpecific = (
+                <span className="px-2 text-center text-orange-500">
+                    This question will only influence the map when you click on
+                    a hiding zone in the hiding zone sidebar.
+                </span>
+            );
     }
 
     return (
@@ -138,27 +158,49 @@ export const MatchingQuestionComponent = ({
                             Closest Major City (1,000,000+ people) In Zone
                             Question
                         </SelectItem>
-                        <SelectItem
-                            value="same-first-letter-station"
-                            disabled={!$displayHidingZones}
-                        >
-                            Station Starts With Same Letter Question (must be in
-                            hiding zone mode)
-                        </SelectItem>
-                        <SelectItem
-                            value="same-length-station"
-                            disabled={!$displayHidingZones}
-                        >
-                            Station Has Same Length Question (must be in hiding
-                            zone mode)
-                        </SelectItem>
-                        <SelectItem
-                            value="same-train-line"
-                            disabled={!$displayHidingZones}
-                        >
-                            Station On Same Train Line Question (must be in
-                            hiding zone mode)
-                        </SelectItem>
+                        <SelectGroup>
+                            <SelectLabel>Hiding Zone Mode</SelectLabel>
+                            <SelectItem
+                                value="same-first-letter-station"
+                                disabled={!$displayHidingZones}
+                            >
+                                Station Starts With Same Letter Question
+                            </SelectItem>
+                            <SelectItem
+                                value="same-length-station"
+                                disabled={!$displayHidingZones}
+                            >
+                                Station Has Same Length Question
+                            </SelectItem>
+                            <SelectItem
+                                value="same-train-line"
+                                disabled={!$displayHidingZones}
+                            >
+                                Station On Same Train Line Question
+                            </SelectItem>
+                            {(
+                                [
+                                    "aquarium",
+                                    "zoo",
+                                    "theme_park",
+                                    "museum",
+                                    "hospital",
+                                    "cinema",
+                                    "library",
+                                    "golf_course",
+                                    "consulate",
+                                    "park",
+                                ] as TentacleLocations[]
+                            ).map((location) => (
+                                <SelectItem
+                                    value={location}
+                                    key={location}
+                                    disabled={!$displayHidingZones}
+                                >
+                                    {prettifyLocation(location)} Question
+                                </SelectItem>
+                            ))}
+                        </SelectGroup>
                     </SelectContent>
                 </Select>
             </SidebarMenuItem>

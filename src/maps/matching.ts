@@ -3,6 +3,7 @@ import {
     findAdminBoundary,
     findPlacesInZone,
     iconColors,
+    nearestToQuestion,
     trainLineNodeFinder,
 } from "./api";
 import * as turf from "@turf/turf";
@@ -57,6 +58,20 @@ export interface LetterMatchingZoneQuestion extends BaseMatchingQuestion {
     cat: MatchingZoneQuestion;
 }
 
+export interface HomeGameMatchingQuestions extends BaseMatchingQuestion {
+    type:
+        | "aquarium"
+        | "zoo"
+        | "theme_park"
+        | "museum"
+        | "hospital"
+        | "cinema"
+        | "library"
+        | "golf_course"
+        | "consulate"
+        | "park";
+}
+
 export type MatchingQuestion =
     | ZoneMatchingQuestion
     | AirportMatchingQuestion
@@ -64,7 +79,8 @@ export type MatchingQuestion =
     | MajorCityMatchingQuestion
     | SameFirstLetterStationMatchingQuestion
     | SameLengthStationMatchingQuestion
-    | SameTrainLineMatchingQuestion;
+    | SameTrainLineMatchingQuestion
+    | HomeGameMatchingQuestions;
 
 export const adjustPerMatching = async (
     question: MatchingQuestion,
@@ -82,12 +98,18 @@ export const adjustPerMatching = async (
     let boundary;
 
     switch (question.type) {
-        case "same-first-letter-station": {
-            return mapData;
-        }
-        case "same-length-station": {
-            return mapData;
-        }
+        case "aquarium":
+        case "zoo":
+        case "theme_park":
+        case "museum":
+        case "hospital":
+        case "cinema":
+        case "library":
+        case "golf_course":
+        case "consulate":
+        case "park":
+        case "same-first-letter-station":
+        case "same-length-station":
         case "same-train-line": {
             return mapData;
         }
@@ -251,6 +273,36 @@ export const addDefaultMatching = (center: LatLng) => {
 export const hiderifyMatching = async (question: MatchingQuestion) => {
     const $hiderMode = hiderMode.get();
     if ($hiderMode === false) {
+        return question;
+    }
+
+    if (
+        [
+            "aquarium",
+            "zoo",
+            "theme_park",
+            "museum",
+            "hospital",
+            "cinema",
+            "library",
+            "golf_course",
+            "consulate",
+            "park",
+        ].includes(question.type)
+    ) {
+        const questionNearest = await nearestToQuestion(
+            question as HomeGameMatchingQuestions,
+        );
+        const hiderNearest = await nearestToQuestion({
+            lat: $hiderMode.latitude,
+            lng: $hiderMode.longitude,
+            same: true,
+            type: (question as HomeGameMatchingQuestions).type,
+        });
+
+        question.same =
+            questionNearest.properties.name === hiderNearest.properties.name;
+
         return question;
     }
 

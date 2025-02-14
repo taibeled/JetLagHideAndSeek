@@ -25,6 +25,8 @@ import { geoJSON, type Map } from "leaflet";
 import {
     findPlacesInZone,
     findPlacesSpecificInZone,
+    findTentacleLocations,
+    nearestToQuestion,
     QuestionSpecificLocation,
     trainLineNodeFinder,
 } from "@/maps/api";
@@ -51,6 +53,9 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import type { TentacleLocations } from "@/maps/tentacles";
+import { geoSpatialVoronoi } from "@/maps/voronoi";
+import type { HomeGameMatchingQuestions } from "@/maps/matching";
 
 let determiningHidingZones = false;
 
@@ -109,7 +114,11 @@ export const ZoneSidebar = () => {
                 ),
             ).features;
 
-            const unionized = unionize($questionFinishedMapData);
+            const unionized = unionize(
+                turf.simplify($questionFinishedMapData, {
+                    tolerance: 0.01,
+                }),
+            );
 
             let circles = places
                 .map((place: any) => {
@@ -472,6 +481,29 @@ export const ZoneSidebar = () => {
         </Sidebar>
     );
 };
+
+const BLANK_GEOJSON = {
+    type: "FeatureCollection",
+    features: [
+        {
+            type: "Feature",
+            properties: {},
+            geometry: {
+                type: "Polygon",
+                coordinates: [
+                    [
+                        [-180, -90],
+                        [180, -90],
+                        [180, 90],
+                        [-180, 90],
+                        [-180, -90],
+                    ],
+                ],
+            },
+        },
+    ],
+};
+
 async function selectionProcess(
     station: any,
     map: Map,
@@ -497,6 +529,118 @@ async function selectionProcess(
     ]);
 
     for (const question of questions.get()) {
+        if (
+            question.id === "matching" &&
+            (
+                [
+                    "aquarium",
+                    "zoo",
+                    "theme_park",
+                    "museum",
+                    "hospital",
+                    "cinema",
+                    "library",
+                    "golf_course",
+                    "consulate",
+                    "park",
+                ] as TentacleLocations[]
+            ).includes(question.data.type as TentacleLocations)
+        ) {
+            const nearestQuestion = await nearestToQuestion(
+                question.data as HomeGameMatchingQuestions,
+            );
+
+            let radius = 30;
+
+            let instances: any = { features: [] };
+
+            const nearestPoints = [];
+
+            while (instances.features.length === 0) {
+                instances = await findTentacleLocations(
+                    {
+                        lat: station.properties.geometry.coordinates[1],
+                        lng: station.properties.geometry.coordinates[0],
+                        radius: radius,
+                        unit: "miles",
+                        location: false,
+                        locationType: question.data.type as TentacleLocations,
+                    },
+                    "Finding matching locations to hiding zone...",
+                );
+
+                const distances: any[] = instances.features.map((x: any) => {
+                    return {
+                        distance: turf.distance(
+                            turf.point(turf.getCoord(x)),
+                            station.properties,
+                            {
+                                units: "miles",
+                            },
+                        ),
+                        point: x,
+                    };
+                });
+
+                if (distances.length === 0) {
+                    radius += 30;
+                    continue;
+                }
+
+                const minimumPoint = _.minBy(distances, "distance")!;
+
+                if (minimumPoint.distance + $hidingRadius * 2 > radius) {
+                    radius = minimumPoint.distance + $hidingRadius * 2;
+                    continue;
+                }
+
+                nearestPoints.push(
+                    ...distances
+                        .filter(
+                            (x) =>
+                                x.distance <
+                                    minimumPoint.distance + $hidingRadius * 2 &&
+                                x.point.properties.name, // If it doesn't have a name, it's not a valid location
+                        )
+                        .map((x) => x.point),
+                );
+            }
+
+            const voronoi = geoSpatialVoronoi(
+                turf.featureCollection(nearestPoints),
+            );
+
+            const correctPolygon = voronoi.features.find((feature: any) => {
+                return (
+                    feature.properties.site.properties.name ===
+                    nearestQuestion.properties.name
+                );
+            });
+
+            if (!correctPolygon) {
+                if (question.data.same) {
+                    mapData = BLANK_GEOJSON;
+                }
+
+                continue;
+            }
+
+            if (question.data.same) {
+                mapData = unionize(
+                    turf.featureCollection([
+                        ...mapData.features,
+                        turf.mask(correctPolygon),
+                    ]),
+                )!;
+            } else {
+                mapData = unionize(
+                    turf.featureCollection([
+                        ...mapData.features,
+                        correctPolygon,
+                    ]),
+                )!;
+            }
+        }
         if (
             question.id === "measuring" &&
             question.data.type === "rail-measure"
@@ -590,29 +734,7 @@ async function selectionProcess(
         }
     }
 
-    if (
-        _.isEqual(mapData, {
-            type: "FeatureCollection",
-            features: [
-                {
-                    type: "Feature",
-                    properties: {},
-                    geometry: {
-                        type: "Polygon",
-                        coordinates: [
-                            [
-                                [-180, -90],
-                                [180, -90],
-                                [180, 90],
-                                [-180, 90],
-                                [-180, -90],
-                            ],
-                        ],
-                    },
-                },
-            ],
-        })
-    ) {
+    if (_.isEqual(mapData, BLANK_GEOJSON)) {
         toast.warning(
             "The hider cannot be in this hiding zone. This wasn't eliminated on the sidebar as its absence was caused by multiple criteria.",
         );

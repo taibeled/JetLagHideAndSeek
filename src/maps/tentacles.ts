@@ -12,7 +12,10 @@ export type TentacleLocations =
     | "museum"
     | "hospital"
     | "cinema"
-    | "library";
+    | "library"
+    | "golf_course"
+    | "consulate"
+    | "park";
 
 export interface TentacleQuestion {
     radius: number;
