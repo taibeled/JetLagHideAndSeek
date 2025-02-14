@@ -1,6 +1,6 @@
 import "leaflet/dist/leaflet.css";
 import "leaflet-contextmenu/dist/leaflet.contextmenu.css";
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, ScaleControl, TileLayer } from "react-leaflet";
 import { geoJSON, type Map as LeafletMap } from "leaflet";
 import "leaflet-contextmenu";
 import { cn } from "../lib/utils";
@@ -370,6 +370,7 @@ export const Map = ({ className }: { className?: string }) => {
                     </div>
                 </div>
                 <PolygonDraw />
+                <ScaleControl position="bottomleft" />
             </MapContainer>
         ),
         [map, $highlightTrainLines],
