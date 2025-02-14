@@ -59,7 +59,7 @@ export const RadiusQuestionComponent = ({
                         onChange={(e) => {
                             const newQuestions = [...$questions];
                             (newQuestions[index].data as typeof data).radius =
-                                parseInt(e.target.value);
+                                parseFloat(e.target.value);
                             questions.set(newQuestions);
                         }}
                     />
