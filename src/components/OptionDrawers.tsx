@@ -173,15 +173,21 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                             );
 
                                         const $polyGeoJSON = polyGeoJSON.get();
+
                                         if ($polyGeoJSON !== null) {
                                             navigator.clipboard.writeText(
-                                                JSON.stringify($polyGeoJSON),
+                                                JSON.stringify({
+                                                    ...$polyGeoJSON,
+                                                    questions: questions.get(),
+                                                }),
                                             );
                                         } else {
                                             const location =
                                                 mapGeoLocation.get();
                                             location.properties.isHidingZone =
                                                 true;
+                                            location.properties.questions =
+                                                questions.get();
 
                                             navigator.clipboard.writeText(
                                                 JSON.stringify(location),
@@ -222,13 +228,33 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                                         );
                                                         mapGeoJSON.set(null);
                                                         polyGeoJSON.set(null);
-                                                        questions.set([]);
-                                                    } else {
-                                                        mapGeoJSON.set(geojson);
-                                                        polyGeoJSON.set(
-                                                            geojson,
+                                                        questions.set(
+                                                            geojson.properties
+                                                                .questions ??
+                                                                [],
                                                         );
-                                                        questions.set([]);
+                                                    } else {
+                                                        if (geojson.questions) {
+                                                            questions.set(
+                                                                geojson.questions,
+                                                            );
+                                                            delete geojson.questions;
+
+                                                            mapGeoJSON.set(
+                                                                geojson,
+                                                            );
+                                                            polyGeoJSON.set(
+                                                                geojson,
+                                                            );
+                                                        } else {
+                                                            mapGeoJSON.set(
+                                                                geojson,
+                                                            );
+                                                            polyGeoJSON.set(
+                                                                geojson,
+                                                            );
+                                                            questions.set([]);
+                                                        }
                                                     }
 
                                                     toast.success(

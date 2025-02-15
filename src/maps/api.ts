@@ -2,7 +2,7 @@ import type { LatLngTuple } from "leaflet";
 import osmtogeojson from "osmtogeojson";
 import type { TentacleQuestion, TentacleLocations } from "./tentacles";
 import * as turf from "@turf/turf";
-import { mapGeoLocation, polyGeoJSON } from "@/lib/context";
+import { mapGeoLocation, polyGeoJSON, type Question } from "@/lib/context";
 import _ from "lodash";
 import { toast } from "react-toastify";
 import type { HomeGameMatchingQuestions } from "./matching";
@@ -31,6 +31,7 @@ interface OpenStreetMapProperties {
     name: string;
     type: string;
     isHidingZone?: boolean;
+    questions?: Question[];
 }
 
 export const OVERPASS_API = "https://overpass-api.de/api/interpreter";
