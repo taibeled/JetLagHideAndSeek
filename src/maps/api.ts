@@ -263,12 +263,35 @@ out tags;
 
     const tagData = await getOverpassData(tagQuery, "Finding train line...");
 
-    const lines = _.uniq(tagData.elements.map((x: any) => x.tags.name));
-
     const query = `
 [out:json];
 (
-${lines.map((line) => `wr["name"="${line}"];`).join("\n")}
+${tagData.elements
+    .map((element: any) => {
+        if (
+            !element.tags.name &&
+            !element.tags["name:en"] &&
+            !element.tags.network
+        )
+            return "";
+
+        let query = "";
+
+        if (element.tags.name) {
+            query += `wr["name"="${element.tags.name}"];`;
+        }
+
+        if (element.tags["name:en"]) {
+            query += `wr["name:en"="${element.tags["name:en"]}"];`;
+        }
+
+        if (element.tags["network"]) {
+            query += `wr["network"="${element.tags["network"]}"];`;
+        }
+
+        return query;
+    })
+    .join("\n")}
 );
 out geom;
 `;
