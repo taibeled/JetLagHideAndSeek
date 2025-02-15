@@ -9,9 +9,9 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
 - Matching
   - Same zone (i.e., same region or prefecture)
   - Same first letter of zone
-  - Same closest commercial airport
+  - Same nearest commercial airport
   - Same train line
-  - Same closest major city
+  - Same nearest major city
   - Same length of station's name
   - Same first letter of train station name
   - Same nearest park
