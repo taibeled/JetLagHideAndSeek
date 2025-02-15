@@ -6,6 +6,7 @@ import { mapGeoLocation, polyGeoJSON } from "@/lib/context";
 import _ from "lodash";
 import { toast } from "react-toastify";
 import type { HomeGameMatchingQuestions } from "./matching";
+import type { HomeGameMeasuringQuestions } from "./measuring";
 
 export interface OpenStreetMap {
     type: string;
@@ -483,7 +484,7 @@ export const prettifyLocation = (location: TentacleLocations) => {
 };
 
 export const nearestToQuestion = async (
-    question: HomeGameMatchingQuestions,
+    question: HomeGameMatchingQuestions | HomeGameMeasuringQuestions,
 ) => {
     let radius = 30;
 

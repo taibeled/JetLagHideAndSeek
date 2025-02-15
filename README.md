@@ -31,6 +31,16 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
   - Rail station
   - 7-Eleven
   - McDonald's
+  - Same nearest park
+  - Same nearest amusement park
+  - Same nearest zoo
+  - Same nearest aquarium
+  - Same nearest golf course
+  - Same nearest museum
+  - Same nearest movie theater
+  - Same nearest hospital
+  - Same nearest library
+  - Same nearest foreign consulate
 - Tentacles
   - Zoo
   - Aquarium

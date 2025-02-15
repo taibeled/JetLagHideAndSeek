@@ -3,6 +3,7 @@ import {
     findPlacesInZone,
     findPlacesSpecificInZone,
     iconColors,
+    nearestToQuestion,
     QuestionSpecificLocation,
 } from "./api";
 import * as turf from "@turf/turf";
@@ -49,13 +50,28 @@ export interface RailStationMeasuringQuestion extends BaseMeasuringQuestion {
     type: "rail-measure";
 }
 
+export interface HomeGameMeasuringQuestions extends BaseMeasuringQuestion {
+    type:
+        | "aquarium"
+        | "zoo"
+        | "theme_park"
+        | "museum"
+        | "hospital"
+        | "cinema"
+        | "library"
+        | "golf_course"
+        | "consulate"
+        | "park";
+}
+
 export type MeasuringQuestion =
     | CoastlineMeasuringQuestion
     | AirportMeasuringQuestion
     | CityMeasuringQuestion
     | McDonaldsMeasuringQuestion
     | Seven11MeasuringQuestion
-    | RailStationMeasuringQuestion;
+    | RailStationMeasuringQuestion
+    | HomeGameMeasuringQuestions;
 
 export const adjustPerMeasuring = async (
     question: MeasuringQuestion,
@@ -137,6 +153,16 @@ export const adjustPerMeasuring = async (
                 )
             ).elements;
             break;
+        case "aquarium":
+        case "zoo":
+        case "theme_park":
+        case "museum":
+        case "hospital":
+        case "cinema":
+        case "library":
+        case "golf_course":
+        case "consulate":
+        case "park":
         case "mcdonalds":
         case "seven11":
         case "rail-measure":
@@ -222,6 +248,37 @@ export const addDefaultMeasuring = (center: LatLng) => {
 export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
     const $hiderMode = hiderMode.get();
     if ($hiderMode === false) {
+        return question;
+    }
+
+    if (
+        [
+            "aquarium",
+            "zoo",
+            "theme_park",
+            "museum",
+            "hospital",
+            "cinema",
+            "library",
+            "golf_course",
+            "consulate",
+            "park",
+        ].includes(question.type)
+    ) {
+        const questionNearest = await nearestToQuestion(
+            question as HomeGameMeasuringQuestions,
+        );
+        const hiderNearest = await nearestToQuestion({
+            lat: $hiderMode.latitude,
+            lng: $hiderMode.longitude,
+            hiderCloser: true,
+            type: (question as HomeGameMeasuringQuestions).type,
+        });
+
+        question.hiderCloser =
+            questionNearest.properties.distanceToPoint >
+            hiderNearest.properties.distanceToPoint;
+
         return question;
     }
 

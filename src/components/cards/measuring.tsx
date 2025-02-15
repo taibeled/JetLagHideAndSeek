@@ -7,18 +7,21 @@ import {
     questions,
     triggerLocalRefresh,
 } from "../../lib/context";
-import { iconColors } from "../../maps/api";
+import { iconColors, prettifyLocation } from "../../maps/api";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
 import {
     Select,
     SelectContent,
+    SelectGroup,
     SelectItem,
+    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "../ui/select";
 import { Checkbox } from "../ui/checkbox";
 import type { MeasuringQuestion } from "@/maps/measuring";
 import { QuestionCard } from "./base";
+import type { TentacleLocations } from "@/maps/tentacles";
 
 export const MeasuringQuestionComponent = ({
     data,
@@ -60,6 +63,23 @@ export const MeasuringQuestionComponent = ({
                     eliminated.
                 </span>
             );
+            break;
+        case "aquarium":
+        case "hospital":
+        case "museum":
+        case "theme_park":
+        case "zoo":
+        case "cinema":
+        case "library":
+        case "golf_course":
+        case "consulate":
+        case "park":
+            questionSpecific = (
+                <span className="px-2 text-center text-orange-500">
+                    This question will only influence the map when you click on
+                    a hiding zone in the hiding zone sidebar.
+                </span>
+            );
     }
 
     return (
@@ -93,25 +113,49 @@ export const MeasuringQuestionComponent = ({
                         <SelectItem value="city">
                             Major City (1,000,000+ people) Question
                         </SelectItem>
-                        <SelectItem
-                            value="mcdonalds"
-                            disabled={!$displayHidingZones}
-                        >
-                            McDonald&apos;s Question (must be in hiding zone
-                            mode)
-                        </SelectItem>
-                        <SelectItem
-                            value="seven11"
-                            disabled={!$displayHidingZones}
-                        >
-                            7-Eleven Question (must be in hiding zone mode)
-                        </SelectItem>
-                        <SelectItem
-                            value="rail-measure"
-                            disabled={!$displayHidingZones}
-                        >
-                            Train Station Question (must be in hiding zone mode)
-                        </SelectItem>
+                        <SelectGroup>
+                            <SelectLabel>Hiding Zone Mode</SelectLabel>
+                            <SelectItem
+                                value="mcdonalds"
+                                disabled={!$displayHidingZones}
+                            >
+                                McDonald&apos;s Question
+                            </SelectItem>
+                            <SelectItem
+                                value="seven11"
+                                disabled={!$displayHidingZones}
+                            >
+                                7-Eleven Question
+                            </SelectItem>
+                            <SelectItem
+                                value="rail-measure"
+                                disabled={!$displayHidingZones}
+                            >
+                                Train Station Question
+                            </SelectItem>
+                            {(
+                                [
+                                    "aquarium",
+                                    "zoo",
+                                    "theme_park",
+                                    "museum",
+                                    "hospital",
+                                    "cinema",
+                                    "library",
+                                    "golf_course",
+                                    "consulate",
+                                    "park",
+                                ] as TentacleLocations[]
+                            ).map((location) => (
+                                <SelectItem
+                                    value={location}
+                                    key={location}
+                                    disabled={!$displayHidingZones}
+                                >
+                                    {prettifyLocation(location)} Question
+                                </SelectItem>
+                            ))}
+                        </SelectGroup>
                     </SelectContent>
                 </Select>
             </SidebarMenuItem>

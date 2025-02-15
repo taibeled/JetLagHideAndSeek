@@ -53,9 +53,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import type { TentacleLocations } from "@/maps/tentacles";
 import { geoSpatialVoronoi } from "@/maps/voronoi";
-import type { HomeGameMatchingQuestions } from "@/maps/matching";
 
 let determiningHidingZones = false;
 
@@ -536,25 +534,19 @@ async function selectionProcess(
 
     for (const question of questions.get()) {
         if (
-            question.id === "matching" &&
-            (
-                [
-                    "aquarium",
-                    "zoo",
-                    "theme_park",
-                    "museum",
-                    "hospital",
-                    "cinema",
-                    "library",
-                    "golf_course",
-                    "consulate",
-                    "park",
-                ] as TentacleLocations[]
-            ).includes(question.data.type as TentacleLocations)
+            (question.id === "measuring" || question.id === "matching") &&
+            (question.data.type === "aquarium" ||
+                question.data.type === "zoo" ||
+                question.data.type === "theme_park" ||
+                question.data.type === "museum" ||
+                question.data.type === "hospital" ||
+                question.data.type === "cinema" ||
+                question.data.type === "library" ||
+                question.data.type === "golf_course" ||
+                question.data.type === "consulate" ||
+                question.data.type === "park")
         ) {
-            const nearestQuestion = await nearestToQuestion(
-                question.data as HomeGameMatchingQuestions,
-            );
+            const nearestQuestion = await nearestToQuestion(question.data);
 
             let radius = 30;
 
@@ -570,7 +562,7 @@ async function selectionProcess(
                         radius: radius,
                         unit: "miles",
                         location: false,
-                        locationType: question.data.type as TentacleLocations,
+                        locationType: question.data.type,
                     },
                     "Finding matching locations to hiding zone...",
                 );
@@ -612,39 +604,64 @@ async function selectionProcess(
                 );
             }
 
-            const voronoi = geoSpatialVoronoi(
-                turf.featureCollection(nearestPoints),
-            );
-
-            const correctPolygon = voronoi.features.find((feature: any) => {
-                return (
-                    feature.properties.site.properties.name ===
-                    nearestQuestion.properties.name
+            if (question.id === "matching") {
+                const voronoi = geoSpatialVoronoi(
+                    turf.featureCollection(nearestPoints),
                 );
-            });
 
-            if (!correctPolygon) {
-                if (question.data.same) {
-                    mapData = BLANK_GEOJSON;
+                const correctPolygon = voronoi.features.find((feature: any) => {
+                    return (
+                        feature.properties.site.properties.name ===
+                        nearestQuestion.properties.name
+                    );
+                });
+
+                if (!correctPolygon) {
+                    if (question.data.same) {
+                        mapData = BLANK_GEOJSON;
+                    }
+
+                    continue;
                 }
 
-                continue;
-            }
-
-            if (question.data.same) {
-                mapData = unionize(
-                    turf.featureCollection([
-                        ...mapData.features,
-                        turf.mask(correctPolygon),
-                    ]),
-                )!;
+                if (question.data.same) {
+                    mapData = unionize(
+                        turf.featureCollection([
+                            ...mapData.features,
+                            turf.mask(correctPolygon),
+                        ]),
+                    )!;
+                } else {
+                    mapData = unionize(
+                        turf.featureCollection([
+                            ...mapData.features,
+                            correctPolygon,
+                        ]),
+                    )!;
+                }
             } else {
-                mapData = unionize(
-                    turf.featureCollection([
-                        ...mapData.features,
-                        correctPolygon,
-                    ]),
-                )!;
+                const circles = nearestPoints.map((x) =>
+                    turf.circle(
+                        turf.getCoord(x),
+                        nearestQuestion.properties.distanceToPoint,
+                    ),
+                );
+
+                if (question.data.hiderCloser) {
+                    mapData = unionize(
+                        turf.featureCollection([
+                            ...mapData.features,
+                            holedMask(turf.featureCollection(circles)),
+                        ]),
+                    )!;
+                } else {
+                    mapData = unionize(
+                        turf.featureCollection([
+                            ...mapData.features,
+                            ...circles,
+                        ]),
+                    )!;
+                }
             }
         }
         if (
