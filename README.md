@@ -8,7 +8,7 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
   - All
 - Matching
   - Same zone (i.e., same region or prefecture)
-  - Zone that starts with the same letter
+  - Same first letter of zone
   - Same closest commercial airport
   - Same train line
   - Same closest major city
@@ -25,12 +25,12 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
   - Same nearest library
   - Same nearest foreign consulate
 - Measuring
-  - Coastline
-  - Commercial airports
-  - Major city
-  - Rail station
-  - 7-Eleven
-  - McDonald's
+  - Distance to coastline
+  - Distance to commercial airport
+  - Distance to major city
+  - Distance to rail station
+  - Distance to 7-Eleven
+  - Distance to McDonald's
   - Distance to park
   - Distance to amusement park
   - Distance to zoo
