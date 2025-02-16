@@ -114,7 +114,7 @@ export const MeasuringQuestionComponent = ({
                             Major City (1,000,000+ people) Question
                         </SelectItem>
                         <SelectItem value="highspeed-measure-shinkansen">
-                            High-Speed Train Question
+                            High-Speed Rail Question
                         </SelectItem>
                         <SelectGroup>
                             <SelectLabel>Hiding Zone Mode</SelectLabel>
