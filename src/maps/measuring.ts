@@ -14,9 +14,21 @@ import type {
     MultiPolygon,
     Polygon,
 } from "geojson";
-import { hiderMode, mapGeoJSON, questions, trainStations } from "@/lib/context";
+import {
+    hiderMode,
+    mapGeoJSON,
+    mapGeoLocation,
+    questions,
+    trainStations,
+} from "@/lib/context";
 import type { LatLng } from "leaflet";
-import { holedMask, unionize } from "./geo-utils";
+import {
+    groupObjects,
+    holedMask,
+    nearestNeighborSort,
+    unionize,
+} from "./geo-utils";
+import osmtogeojson from "osmtogeojson";
 
 export interface BaseMeasuringQuestion {
     lat: number;
@@ -50,6 +62,10 @@ export interface RailStationMeasuringQuestion extends BaseMeasuringQuestion {
     type: "rail-measure";
 }
 
+export interface DistanceToHighSpeedRail extends BaseMeasuringQuestion {
+    type: "highspeed-measure-shinkansen";
+}
+
 export interface HomeGameMeasuringQuestions extends BaseMeasuringQuestion {
     type:
         | "aquarium"
@@ -71,7 +87,47 @@ export type MeasuringQuestion =
     | McDonaldsMeasuringQuestion
     | Seven11MeasuringQuestion
     | RailStationMeasuringQuestion
-    | HomeGameMeasuringQuestions;
+    | HomeGameMeasuringQuestions
+    | DistanceToHighSpeedRail;
+
+const highSpeedBase = _.memoize(
+    (features: Feature[], point: [number, number]) => {
+        const grouped = groupObjects(features);
+
+        const neighbored = grouped.map((group) => {
+            const points = turf.coordAll(turf.featureCollection(group)) as [
+                number,
+                number,
+            ][];
+
+            return turf.multiLineString(
+                nearestNeighborSort(
+                    points.filter(
+                        (_, index) =>
+                            index % Math.ceil(points.length / 1000) === 0, // More than a thousand points is slow and just unneeded accuracy
+                    ),
+                ),
+            );
+        });
+
+        const sampleBuff = turf.union(
+            turf.featureCollection(
+                neighbored.map((x) => turf.buffer(x, 0.001)!),
+            ),
+        )!;
+        const distanceToSampleBuff = turf.pointToPolygonDistance(
+            point,
+            sampleBuff,
+            {
+                method: "geodesic",
+            },
+        );
+
+        return turf.buffer(sampleBuff, distanceToSampleBuff - 0.001);
+    },
+    (features, point) =>
+        `${features.length},${mapGeoLocation.get().properties.osm_id},${point.join(",")}`,
+);
 
 export const adjustPerMeasuring = async (
     question: MeasuringQuestion,
@@ -85,6 +141,36 @@ export const adjustPerMeasuring = async (
     let placeDataFull;
 
     switch (question.type) {
+        case "highspeed-measure-shinkansen": {
+            if (question.hiderCloser && masked)
+                throw new Error("Cannot be masked");
+            if (!question.hiderCloser && !masked)
+                throw new Error("Must be masked");
+
+            const features = osmtogeojson(
+                await findPlacesInZone(
+                    "[highspeed=yes]",
+                    "Finding high-speed lines...",
+                    "way",
+                    "geom",
+                ),
+            ).features;
+
+            const buffed = highSpeedBase(features, [
+                question.lng,
+                question.lat,
+            ]);
+
+            if (question.hiderCloser) {
+                return turf.intersect(
+                    turf.featureCollection([unionize(mapData)!, buffed!]),
+                );
+            } else {
+                return turf.union(
+                    turf.featureCollection([...mapData.features, buffed!]),
+                );
+            }
+        }
         case "coastline": {
             if (question.hiderCloser && !masked)
                 throw new Error("Must be masked");

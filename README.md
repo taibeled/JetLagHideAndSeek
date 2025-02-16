@@ -28,6 +28,7 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
   - Distance to coastline
   - Distance to commercial airport
   - Distance to major city
+  - Distance to high-speed rail
   - Distance to rail station
   - Distance to 7-Eleven
   - Distance to McDonald's
