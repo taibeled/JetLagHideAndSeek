@@ -383,7 +383,7 @@ export const ZoneSidebar = () => {
                                     </Select>
                                 </div>
                             </SidebarMenuItem>
-                            {stations.length > 0 && (
+                            {$displayHidingZones && stations.length > 0 && (
                                 <SidebarMenuItem
                                     className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
                                     onClick={removeHidingZones}
@@ -391,7 +391,7 @@ export const ZoneSidebar = () => {
                                     No Stations
                                 </SidebarMenuItem>
                             )}
-                            {stations.length > 0 && (
+                            {$displayHidingZones && stations.length > 0 && (
                                 <SidebarMenuItem
                                     className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
                                     onClick={() => {
@@ -419,6 +419,40 @@ export const ZoneSidebar = () => {
                                     }}
                                 >
                                     All Stations
+                                </SidebarMenuItem>
+                            )}
+                            {$displayHidingZones && stations.length > 0 && (
+                                <SidebarMenuItem
+                                    className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
+                                    onClick={() => {
+                                        const bbox = turf.bbox(
+                                            turf.featureCollection(stations),
+                                        );
+
+                                        const bounds: [
+                                            [number, number],
+                                            [number, number],
+                                        ] = [
+                                            [bbox[1], bbox[0]],
+                                            [bbox[3], bbox[2]],
+                                        ];
+
+                                        showGeoJSON(
+                                            unionize(
+                                                turf.featureCollection(
+                                                    stations,
+                                                ),
+                                            ),
+                                        );
+
+                                        if (animateMapMovements.get()) {
+                                            map?.flyToBounds(bounds);
+                                        } else {
+                                            map?.fitBounds(bounds);
+                                        }
+                                    }}
+                                >
+                                    No Overlap
                                 </SidebarMenuItem>
                             )}
                             {$displayHidingZones && (
