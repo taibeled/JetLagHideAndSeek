@@ -120,7 +120,7 @@ export const ZoneSidebar = () => {
 
             const unionized = unionize(
                 turf.simplify($questionFinishedMapData, {
-                    tolerance: 0.01,
+                    tolerance: 0.001,
                 }),
             );
 
