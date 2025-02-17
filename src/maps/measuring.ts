@@ -129,6 +129,27 @@ const highSpeedBase = _.memoize(
         `${features.length},${mapGeoLocation.get().properties.osm_id},${point.join(",")}`,
 );
 
+const bboxExtension = (
+    bBox: [number, number, number, number],
+    distance: number,
+): [number, number, number, number] => {
+    const buffered = turf.bbox(
+        turf.buffer(turf.bboxPolygon(bBox), Math.abs(distance), {
+            units: "miles",
+        })!,
+    );
+
+    const originalDeltaLat = bBox[3] - bBox[1];
+    const originalDeltaLng = bBox[2] - bBox[0];
+
+    return [
+        buffered[0] - originalDeltaLng,
+        buffered[1] - originalDeltaLat,
+        buffered[2] + originalDeltaLng,
+        buffered[3] + originalDeltaLat,
+    ];
+};
+
 export const adjustPerMeasuring = async (
     question: MeasuringQuestion,
     mapData: any,
@@ -192,7 +213,12 @@ export const adjustPerMeasuring = async (
             );
 
             const buffed = turf.buffer(
-                turf.bboxClip(coastline, bBox ? bBox : [-180, -90, 180, 90]),
+                turf.bboxClip(
+                    coastline,
+                    bBox
+                        ? bboxExtension(bBox as any, distanceToCoastline)
+                        : [-180, -90, 180, 90],
+                ),
                 distanceToCoastline,
                 {
                     units: "miles",
