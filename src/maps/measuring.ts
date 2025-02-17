@@ -212,7 +212,7 @@ export const adjustPerMeasuring = async (
                 },
             );
 
-            const buffed = turf.buffer(
+            const originalBuffed = turf.buffer(
                 turf.bboxClip(
                     coastline,
                     bBox
@@ -220,6 +220,19 @@ export const adjustPerMeasuring = async (
                         : [-180, -90, 180, 90],
                 ),
                 distanceToCoastline,
+                {
+                    units: "miles",
+                    steps: 64,
+                },
+            )!;
+
+            const buffed = turf.buffer(
+                originalBuffed,
+                turf.pointToPolygonDistance(
+                    turf.point([question.lng, question.lat]),
+                    originalBuffed!,
+                    { units: "miles", method: "geodesic" },
+                ),
                 {
                     units: "miles",
                     steps: 64,
