@@ -36,7 +36,7 @@
         "leaflet-contextmenu": "^1.4.0",
         "leaflet-draw": "^1.0.4",
         "lodash": "^4.17.21",
-        "lucide-react": "^0.474.0",
+        "lucide-react": "^0.475.0",
         "nanostores": "^0.11.3",
         "osmtogeojson": "3.0.0-beta.5",
         "react": "19.0.0",
