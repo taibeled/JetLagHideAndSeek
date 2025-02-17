@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/sidebar-r";
 import {
     animateMapMovements,
+    disabledStations,
     displayHidingZones,
     displayHidingZonesOptions,
     hidingRadius,
@@ -20,7 +21,7 @@ import { useStore } from "@nanostores/react";
 import { MENU_ITEM_CLASSNAME } from "./ui/sidebar-l";
 import { Label } from "./ui/label";
 import { Checkbox } from "./ui/checkbox";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { geoJSON, type Map } from "leaflet";
 import {
     findPlacesInZone,
@@ -56,6 +57,7 @@ import {
 import { geoSpatialVoronoi } from "@/maps/voronoi";
 
 let determiningHidingZones = false;
+let buttonJustClicked = false;
 
 export const ZoneSidebar = () => {
     const $displayHidingZones = useStore(displayHidingZones);
@@ -64,6 +66,8 @@ export const ZoneSidebar = () => {
     const $hidingRadius = useStore(hidingRadius);
     const map = useStore(leafletMapContext);
     const stations = useStore(trainStations);
+    const $disabledStations = useStore(disabledStations);
+    const [commandValue, setCommandValue] = useState<string>("");
     const setStations = trainStations.set;
 
     const removeHidingZones = () => {
@@ -77,7 +81,10 @@ export const ZoneSidebar = () => {
         });
     };
 
-    const showGeoJSON = (geoJSONData: any) => {
+    const showGeoJSON = (
+        geoJSONData: any,
+        nonOverlappingStations: boolean = false,
+    ) => {
         if (!map) return;
 
         removeHidingZones();
@@ -88,6 +95,33 @@ export const ZoneSidebar = () => {
                 fillColor: "green",
                 fillOpacity: 0.2,
             },
+            onEachFeature: nonOverlappingStations
+                ? (feature, layer) => {
+                      layer.on("click", async () => {
+                          if (!map) return;
+
+                          setCommandValue(feature.properties.properties.id);
+
+                          await selectionProcess(
+                              feature,
+                              map,
+                              stations,
+                              showGeoJSON,
+                              $questionFinishedMapData,
+                              $hidingRadius,
+                          ).catch((error) => {
+                              console.log(error);
+
+                              if (
+                                  document.querySelectorAll(".Toastify__toast")
+                                      .length === 0
+                              ) {
+                                  return toast.error("An error occurred");
+                              }
+                          });
+                      });
+                  }
+                : undefined,
         });
 
         // @ts-expect-error This is intentionally added as a check
@@ -268,7 +302,18 @@ export const ZoneSidebar = () => {
                 }
             }
 
-            showGeoJSON(turf.featureCollection(circles));
+            setCommandValue("");
+            showGeoJSON(
+                turf.featureCollection(
+                    circles.filter(
+                        (x) =>
+                            !$disabledStations.includes(
+                                x.properties.properties.id,
+                            ),
+                    ),
+                ),
+                true,
+            );
 
             setStations(circles);
             determiningHidingZones = false;
@@ -388,7 +433,7 @@ export const ZoneSidebar = () => {
                                     className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
                                     onClick={removeHidingZones}
                                 >
-                                    No Stations
+                                    No Display
                                 </SidebarMenuItem>
                             )}
                             {$displayHidingZones && stations.length > 0 && (
@@ -407,8 +452,18 @@ export const ZoneSidebar = () => {
                                             [bbox[3], bbox[2]],
                                         ];
 
+                                        setCommandValue("");
                                         showGeoJSON(
-                                            turf.featureCollection(stations),
+                                            turf.featureCollection(
+                                                stations.filter(
+                                                    (x) =>
+                                                        !$disabledStations.includes(
+                                                            x.properties
+                                                                .properties.id,
+                                                        ),
+                                                ),
+                                            ),
+                                            true,
                                         );
 
                                         if (animateMapMovements.get()) {
@@ -418,7 +473,7 @@ export const ZoneSidebar = () => {
                                         }
                                     }}
                                 >
-                                    All Stations
+                                    All Zones
                                 </SidebarMenuItem>
                             )}
                             {$displayHidingZones && stations.length > 0 && (
@@ -437,6 +492,7 @@ export const ZoneSidebar = () => {
                                             [bbox[3], bbox[2]],
                                         ];
 
+                                        setCommandValue("");
                                         showGeoJSON(
                                             unionize(
                                                 turf.featureCollection(
@@ -455,6 +511,51 @@ export const ZoneSidebar = () => {
                                     No Overlap
                                 </SidebarMenuItem>
                             )}
+                            {$displayHidingZones && commandValue && (
+                                <SidebarMenuItem
+                                    className={cn(
+                                        MENU_ITEM_CLASSNAME,
+                                        "bg-popover hover:bg-accent",
+                                    )}
+                                >
+                                    Current:{" "}
+                                    {stations.find(
+                                        (x) =>
+                                            x.properties.properties.id ===
+                                            commandValue,
+                                    ).properties.properties["name:en"] ||
+                                        stations.find(
+                                            (x) =>
+                                                x.properties.properties.id ===
+                                                commandValue,
+                                        ).properties.properties.name ||
+                                        lngLatToText(
+                                            stations.find(
+                                                (x) =>
+                                                    x.properties.properties
+                                                        .id === commandValue,
+                                            ).properties.geometry.coordinates,
+                                        )}
+                                </SidebarMenuItem>
+                            )}
+                            {$displayHidingZones &&
+                                $disabledStations.length > 0 && (
+                                    <SidebarMenuItem
+                                        className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
+                                        onClick={() => {
+                                            disabledStations.set([]);
+
+                                            showGeoJSON(
+                                                turf.featureCollection(
+                                                    stations,
+                                                ),
+                                                true,
+                                            );
+                                        }}
+                                    >
+                                        Clear Disabled
+                                    </SidebarMenuItem>
+                                )}
                             {$displayHidingZones && (
                                 <Command>
                                     <CommandInput placeholder="Search for a hiding zone..." />
@@ -469,31 +570,80 @@ export const ZoneSidebar = () => {
                                                         station.properties
                                                             .properties.id
                                                     }
+                                                    className={cn(
+                                                        $disabledStations.includes(
+                                                            station.properties
+                                                                .properties.id,
+                                                        ) && "line-through",
+                                                    )}
                                                     onSelect={async () => {
                                                         if (!map) return;
 
-                                                        await selectionProcess(
-                                                            station,
-                                                            map,
-                                                            stations,
-                                                            showGeoJSON,
-                                                            $questionFinishedMapData,
-                                                            $hidingRadius,
-                                                        ).catch((error) => {
-                                                            console.log(error);
+                                                        setTimeout(() => {
+                                                            if (
+                                                                buttonJustClicked
+                                                            ) {
+                                                                buttonJustClicked =
+                                                                    false;
+                                                                return;
+                                                            }
 
                                                             if (
-                                                                document.querySelectorAll(
-                                                                    ".Toastify__toast",
-                                                                ).length === 0
+                                                                $disabledStations.includes(
+                                                                    station
+                                                                        .properties
+                                                                        .properties
+                                                                        .id,
+                                                                )
                                                             ) {
-                                                                return toast.error(
-                                                                    "An error occurred",
+                                                                disabledStations.set(
+                                                                    [
+                                                                        ...$disabledStations.filter(
+                                                                            (
+                                                                                x,
+                                                                            ) =>
+                                                                                x !==
+                                                                                station
+                                                                                    .properties
+                                                                                    .properties
+                                                                                    .id,
+                                                                        ),
+                                                                    ],
+                                                                );
+                                                            } else {
+                                                                disabledStations.set(
+                                                                    [
+                                                                        ...$disabledStations,
+                                                                        station
+                                                                            .properties
+                                                                            .properties
+                                                                            .id,
+                                                                    ],
                                                                 );
                                                             }
-                                                        });
+
+                                                            setStations([
+                                                                ...stations,
+                                                            ]);
+
+                                                            showGeoJSON(
+                                                                turf.featureCollection(
+                                                                    stations.filter(
+                                                                        (x) =>
+                                                                            !disabledStations
+                                                                                .get()
+                                                                                .includes(
+                                                                                    x
+                                                                                        .properties
+                                                                                        .properties
+                                                                                        .id,
+                                                                                ),
+                                                                    ),
+                                                                ),
+                                                                true,
+                                                            );
+                                                        }, 100);
                                                     }}
-                                                    className="cursor-pointer"
                                                 >
                                                     {station.properties
                                                         .properties[
@@ -506,6 +656,48 @@ export const ZoneSidebar = () => {
                                                                 .geometry
                                                                 .coordinates,
                                                         )}
+                                                    <button
+                                                        onClick={async () => {
+                                                            if (!map) return;
+
+                                                            buttonJustClicked =
+                                                                true;
+
+                                                            setCommandValue(
+                                                                station
+                                                                    .properties
+                                                                    .properties
+                                                                    .id,
+                                                            );
+
+                                                            await selectionProcess(
+                                                                station,
+                                                                map,
+                                                                stations,
+                                                                showGeoJSON,
+                                                                $questionFinishedMapData,
+                                                                $hidingRadius,
+                                                            ).catch((error) => {
+                                                                console.log(
+                                                                    error,
+                                                                );
+
+                                                                if (
+                                                                    document.querySelectorAll(
+                                                                        ".Toastify__toast",
+                                                                    ).length ===
+                                                                    0
+                                                                ) {
+                                                                    return toast.error(
+                                                                        "An error occurred",
+                                                                    );
+                                                                }
+                                                            });
+                                                        }}
+                                                        className="bg-slate-600 p-0.5 rounded-md"
+                                                    >
+                                                        View
+                                                    </button>
                                                 </CommandItem>
                                             ))}
                                         </CommandGroup>
