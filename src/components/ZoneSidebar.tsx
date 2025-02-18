@@ -22,7 +22,7 @@ import { MENU_ITEM_CLASSNAME } from "./ui/sidebar-l";
 import { Label } from "./ui/label";
 import { Checkbox } from "./ui/checkbox";
 import { useEffect, useState } from "react";
-import { geoJSON, type Map } from "leaflet";
+import * as L from "leaflet";
 import {
     findPlacesInZone,
     findPlacesSpecificInZone,
@@ -55,6 +55,8 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { geoSpatialVoronoi } from "@/maps/voronoi";
+import { renderToString } from "react-dom/server";
+import { FaTrain } from "react-icons/fa6";
 
 let determiningHidingZones = false;
 let buttonJustClicked = false;
@@ -84,12 +86,13 @@ export const ZoneSidebar = () => {
     const showGeoJSON = (
         geoJSONData: any,
         nonOverlappingStations: boolean = false,
+        additionalOptions: L.GeoJSONOptions = {},
     ) => {
         if (!map) return;
 
         removeHidingZones();
 
-        const geoJsonLayer = geoJSON(geoJSONData, {
+        const geoJsonLayer = L.geoJSON(geoJSONData, {
             style: {
                 color: "green",
                 fillColor: "green",
@@ -122,6 +125,7 @@ export const ZoneSidebar = () => {
                       });
                   }
                 : undefined,
+            ...additionalOptions,
         });
 
         // @ts-expect-error This is intentionally added as a check
@@ -455,6 +459,97 @@ export const ZoneSidebar = () => {
                                         setCommandValue("");
                                         showGeoJSON(
                                             turf.featureCollection(
+                                                stations
+                                                    .filter(
+                                                        (x) =>
+                                                            x.properties
+                                                                .properties
+                                                                .id !==
+                                                            commandValue,
+                                                    )
+                                                    .map((x) => x.properties),
+                                            ),
+                                            false,
+                                            {
+                                                pointToLayer(
+                                                    geoJsonPoint,
+                                                    latlng,
+                                                ) {
+                                                    const marker = L.marker(
+                                                        latlng,
+                                                        {
+                                                            icon: L.divIcon({
+                                                                html: renderToString(
+                                                                    <div className="text-black bg-opacity-0">
+                                                                        <FaTrain
+                                                                            width={
+                                                                                100
+                                                                            }
+                                                                            height={
+                                                                                100
+                                                                            }
+                                                                        />
+                                                                    </div>,
+                                                                ),
+                                                                className: "",
+                                                            }),
+                                                        },
+                                                    );
+
+                                                    marker.bindPopup(
+                                                        `<b>${
+                                                            geoJsonPoint
+                                                                .properties[
+                                                                "name:en"
+                                                            ] ||
+                                                            geoJsonPoint
+                                                                .properties
+                                                                .name ||
+                                                            lngLatToText(
+                                                                geoJsonPoint
+                                                                    .geometry
+                                                                    .coordinates as [
+                                                                    number,
+                                                                    number,
+                                                                ],
+                                                            )
+                                                        }</b>`,
+                                                    );
+
+                                                    return marker;
+                                                },
+                                            },
+                                        );
+
+                                        if (animateMapMovements.get()) {
+                                            map?.flyToBounds(bounds);
+                                        } else {
+                                            map?.fitBounds(bounds);
+                                        }
+                                    }}
+                                >
+                                    All Stations
+                                </SidebarMenuItem>
+                            )}
+                            {$displayHidingZones && stations.length > 0 && (
+                                <SidebarMenuItem
+                                    className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
+                                    onClick={() => {
+                                        const bbox = turf.bbox(
+                                            turf.featureCollection(stations),
+                                        );
+
+                                        const bounds: [
+                                            [number, number],
+                                            [number, number],
+                                        ] = [
+                                            [bbox[1], bbox[0]],
+                                            [bbox[3], bbox[2]],
+                                        ];
+
+                                        setCommandValue("");
+                                        showGeoJSON(
+                                            turf.featureCollection(
                                                 stations.filter(
                                                     (x) =>
                                                         !$disabledStations.includes(
@@ -736,7 +831,7 @@ const BLANK_GEOJSON = {
 
 async function selectionProcess(
     station: any,
-    map: Map,
+    map: L.Map,
     stations: any[],
     showGeoJSON: (geoJSONData: any) => void,
     $questionFinishedMapData: any,
