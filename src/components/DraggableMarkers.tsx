@@ -127,10 +127,6 @@ const ColoredMarker = ({
                                         key={q.key}
                                         data={q.data}
                                         questionKey={q.key}
-                                        index={$questions.findIndex(
-                                            (question) =>
-                                                question.key === q.key,
-                                        )}
                                         sub={sub}
                                         showDeleteButton={false}
                                     />

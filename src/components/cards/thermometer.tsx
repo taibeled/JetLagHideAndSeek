@@ -1,7 +1,12 @@
 import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
 import { cn } from "../../lib/utils";
-import { hiderMode, questions, triggerLocalRefresh } from "../../lib/context";
+import {
+    hiderMode,
+    questionModified,
+    questions,
+    triggerLocalRefresh,
+} from "../../lib/context";
 import { iconColors } from "../../maps/api";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
 import { Checkbox } from "../ui/checkbox";
@@ -12,14 +17,12 @@ import type { ThermometerQuestion } from "@/lib/schema";
 export const ThermometerQuestionComponent = ({
     data,
     questionKey,
-    index,
     sub,
     className,
     showDeleteButton = true,
 }: {
     data: ThermometerQuestion;
     questionKey: number;
-    index: number;
     sub?: string;
     className?: string;
     showDeleteButton?: boolean;
@@ -50,12 +53,9 @@ export const ThermometerQuestionComponent = ({
                 <Checkbox
                     disabled={!!$hiderMode}
                     checked={data.warmer}
-                    onCheckedChange={(checked) => {
-                        const newQuestions = [...$questions];
-                        (newQuestions[index].data as typeof data).warmer =
-                            (checked ?? false) as boolean;
-                        questions.set(newQuestions);
-                    }}
+                    onCheckedChange={(checked) =>
+                        questionModified((data.warmer = checked as boolean))
+                    }
                 />
             </SidebarMenuItem>
             <SidebarMenuItem
@@ -71,12 +71,9 @@ export const ThermometerQuestionComponent = ({
                 Color start (drag{" "}
                 <Checkbox
                     checked={data.drag}
-                    onCheckedChange={(checked) => {
-                        const newQuestions = [...$questions];
-                        newQuestions[index].data.drag = (checked ??
-                            false) as boolean;
-                        questions.set(newQuestions);
-                    }}
+                    onCheckedChange={(checked) =>
+                        questionModified((data.drag = checked as boolean))
+                    }
                 />
                 )
             </SidebarMenuItem>
@@ -86,14 +83,13 @@ export const ThermometerQuestionComponent = ({
                 latLabel="Latitude Start"
                 lngLabel="Longitude Start"
                 onChange={(lat, lng) => {
-                    const newQuestions = [...$questions];
                     if (lat !== null) {
-                        (newQuestions[index].data as typeof data).latA = lat;
+                        data.latA = lat;
                     }
                     if (lng !== null) {
-                        (newQuestions[index].data as typeof data).lngA = lng;
+                        data.lngA = lng;
                     }
-                    questions.set(newQuestions);
+                    questionModified();
                 }}
             />
             <Separator className="my-2" />
@@ -110,12 +106,9 @@ export const ThermometerQuestionComponent = ({
                 Color end (drag{" "}
                 <Checkbox
                     checked={data.drag}
-                    onCheckedChange={(checked) => {
-                        const newQuestions = [...$questions];
-                        newQuestions[index].data.drag = (checked ??
-                            false) as boolean;
-                        questions.set(newQuestions);
-                    }}
+                    onCheckedChange={(checked) =>
+                        questionModified((data.drag = checked as boolean))
+                    }
                 />
                 )
             </SidebarMenuItem>
@@ -125,14 +118,13 @@ export const ThermometerQuestionComponent = ({
                 latLabel="Latitude End"
                 lngLabel="Longitude End"
                 onChange={(lat, lng) => {
-                    const newQuestions = [...$questions];
                     if (lat !== null) {
-                        (newQuestions[index].data as typeof data).latB = lat;
+                        data.latB = lat;
                     }
                     if (lng !== null) {
-                        (newQuestions[index].data as typeof data).lngB = lng;
+                        data.lngB = lng;
                     }
-                    questions.set(newQuestions);
+                    questionModified();
                 }}
             />
         </QuestionCard>
