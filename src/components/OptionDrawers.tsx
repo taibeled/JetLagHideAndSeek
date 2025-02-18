@@ -35,6 +35,7 @@ import { useState } from "react";
 import { Checkbox } from "./ui/checkbox";
 import { LatitudeLongitude } from "./LatLngPicker";
 import { SidebarMenu } from "./ui/sidebar-l";
+import { questionsSchema } from "@/lib/schema";
 
 export const OptionDrawers = ({ className }: { className?: string }) => {
     const $defaultUnit = useStore(defaultUnit);
@@ -229,14 +230,19 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                                         mapGeoJSON.set(null);
                                                         polyGeoJSON.set(null);
                                                         questions.set(
-                                                            geojson.properties
-                                                                .questions ??
-                                                                [],
+                                                            questionsSchema.parse(
+                                                                geojson
+                                                                    .properties
+                                                                    .questions ??
+                                                                    [],
+                                                            ),
                                                         );
                                                     } else {
                                                         if (geojson.questions) {
                                                             questions.set(
-                                                                geojson.questions,
+                                                                questionsSchema.parse(
+                                                                    geojson.questions,
+                                                                ),
                                                             );
                                                             delete geojson.questions;
 
@@ -264,9 +270,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                                         },
                                                     );
                                                 } catch {
-                                                    toast.error(
-                                                        "Invalid GeoJSON",
-                                                    );
+                                                    toast.error("Invalid Data");
                                                 }
                                             });
                                     }}
