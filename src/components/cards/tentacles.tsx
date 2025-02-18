@@ -2,7 +2,12 @@ import { Suspense, use } from "react";
 import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
 import { cn } from "../../lib/utils";
-import { hiderMode, questions, triggerLocalRefresh } from "../../lib/context";
+import {
+    hiderMode,
+    questionModified,
+    questions,
+    triggerLocalRefresh,
+} from "../../lib/context";
 import { findTentacleLocations, iconColors } from "../../maps/api";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
 import { Input } from "../ui/input";
@@ -18,18 +23,17 @@ import {
 import { Checkbox } from "../ui/checkbox";
 import { QuestionCard } from "./base";
 import type { TentacleQuestion } from "@/lib/schema";
+import { UnitSelect } from "../UnitSelect";
 
 export const TentacleQuestionComponent = ({
     data,
     questionKey,
-    index,
     sub,
     className,
     showDeleteButton = true,
 }: {
     data: TentacleQuestion;
     questionKey: number;
-    index: number;
     sub?: string;
     className?: string;
     showDeleteButton?: boolean;
@@ -57,44 +61,26 @@ export const TentacleQuestionComponent = ({
                         type="number"
                         className="rounded-md p-2 w-16"
                         value={data.radius}
-                        onChange={(e) => {
-                            const newQuestions = [...$questions];
-                            (newQuestions[index].data as typeof data).radius =
-                                parseFloat(e.target.value);
-                            questions.set(newQuestions);
-                        }}
+                        onChange={(e) =>
+                            questionModified(
+                                (data.radius = parseFloat(e.target.value)),
+                            )
+                        }
                     />
-                    <Select
-                        value={data.unit}
-                        onValueChange={(value) => {
-                            const newQuestions = [...$questions];
-                            (newQuestions[index].data as typeof data).unit =
-                                value as any;
-                            questions.set(newQuestions);
-                        }}
-                    >
-                        <SelectTrigger>
-                            <SelectValue placeholder="Unit" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="miles">Miles</SelectItem>
-                            <SelectItem value="kilometers">
-                                Kilometers
-                            </SelectItem>
-                            <SelectItem value="meters">Meters</SelectItem>
-                        </SelectContent>
-                    </Select>
+                    <UnitSelect
+                        unit={data.unit}
+                        onChange={(unit) =>
+                            questionModified((data.unit = unit))
+                        }
+                    />
                 </div>
             </SidebarMenuItem>
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
                     value={data.locationType}
-                    onValueChange={(value) => {
-                        const newQuestions = [...$questions];
-                        (newQuestions[index].data as typeof data).locationType =
-                            value as any;
-                        questions.set(newQuestions);
-                    }}
+                    onValueChange={(value) =>
+                        questionModified((data.locationType = value as any))
+                    }
                 >
                     <SelectTrigger>
                         <SelectValue placeholder="Location Type" />
@@ -133,12 +119,9 @@ export const TentacleQuestionComponent = ({
                 Color (drag{" "}
                 <Checkbox
                     checked={data.drag}
-                    onCheckedChange={(checked) => {
-                        const newQuestions = [...$questions];
-                        newQuestions[index].data.drag = (checked ??
-                            false) as boolean;
-                        questions.set(newQuestions);
-                    }}
+                    onCheckedChange={(checked) =>
+                        questionModified((data.drag = checked as boolean))
+                    }
                 />
                 )
             </SidebarMenuItem>
@@ -146,14 +129,13 @@ export const TentacleQuestionComponent = ({
                 latitude={data.lat}
                 longitude={data.lng}
                 onChange={(lat, lng) => {
-                    const newQuestions = [...$questions];
                     if (lat !== null) {
-                        (newQuestions[index].data as typeof data).lat = lat;
+                        data.lat = lat;
                     }
                     if (lng !== null) {
-                        (newQuestions[index].data as typeof data).lng = lng;
+                        data.lng = lng;
                     }
-                    questions.set(newQuestions);
+                    questionModified();
                 }}
             />
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
@@ -179,7 +161,6 @@ export const TentacleQuestionComponent = ({
                 >
                     <TentacleLocationSelector
                         data={data}
-                        index={index}
                         promise={findTentacleLocations(data)}
                     />
                 </Suspense>
@@ -190,33 +171,28 @@ export const TentacleQuestionComponent = ({
 
 const TentacleLocationSelector = ({
     data,
-    index,
     promise,
 }: {
     data: TentacleQuestion;
-    index: number;
     promise: Promise<any>;
 }) => {
     useStore(triggerLocalRefresh);
     const $hiderMode = useStore(hiderMode);
-    const $questions = useStore(questions);
     const locations = use(promise);
 
     return (
         <Select
             value={data.location ? data.location.properties.name : "false"}
             onValueChange={(value) => {
-                const newQuestions = [...$questions];
                 if (value === "false") {
-                    (newQuestions[index].data as TentacleQuestion).location =
-                        false;
+                    data.location = false;
                 } else {
-                    (newQuestions[index].data as TentacleQuestion).location =
-                        locations.features.find(
-                            (feature: any) => feature.properties.name === value,
-                        );
+                    data.location = locations.features.find(
+                        (feature: any) => feature.properties.name === value,
+                    );
                 }
-                questions.set(newQuestions);
+
+                questionModified();
             }}
             disabled={!!$hiderMode}
         >

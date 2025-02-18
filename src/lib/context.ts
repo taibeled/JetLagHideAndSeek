@@ -47,7 +47,11 @@ export const questions = persistentAtom<Questions>("questions", [], {
     decode: JSON.parse,
 });
 export const addQuestion = (question: DeepPartial<Question>) =>
-    questions.set([...questions.get(), questionSchema.parse(question)]);
+    questionModified(questions.get().push(questionSchema.parse(question)));
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const questionModified = (..._: any[]) => {
+    questions.set([...questions.get()]);
+};
 
 export const leafletMapContext = atom<Map | null>(null);
 

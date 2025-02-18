@@ -34,7 +34,6 @@ export const QuestionSidebar = () => {
                                     data={question.data}
                                     key={question.key}
                                     questionKey={question.key}
-                                    index={index}
                                 />
                             );
                         case "thermometer":
@@ -52,7 +51,6 @@ export const QuestionSidebar = () => {
                                     data={question.data}
                                     key={question.key}
                                     questionKey={question.key}
-                                    index={index}
                                 />
                             );
                         case "matching":

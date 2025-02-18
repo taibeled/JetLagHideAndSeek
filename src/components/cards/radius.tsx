@@ -2,31 +2,28 @@ import type { RadiusQuestion } from "../../lib/schema";
 import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
 import { cn } from "../../lib/utils";
-import { hiderMode, questions, triggerLocalRefresh } from "../../lib/context";
+import {
+    hiderMode,
+    questionModified,
+    questions,
+    triggerLocalRefresh,
+} from "../../lib/context";
 import { iconColors } from "../../maps/api";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
 import { Input } from "../ui/input";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "../ui/select";
 import { Checkbox } from "../ui/checkbox";
 import { QuestionCard } from "./base";
+import { UnitSelect } from "../UnitSelect";
 
 export const RadiusQuestionComponent = ({
     data,
     questionKey,
-    index,
     sub,
     className,
     showDeleteButton = true,
 }: {
     data: RadiusQuestion;
     questionKey: number;
-    index: number;
     sub?: string;
     className?: string;
     showDeleteButton?: boolean;
@@ -56,33 +53,18 @@ export const RadiusQuestionComponent = ({
                         type="number"
                         className="rounded-md p-2 w-16"
                         value={data.radius}
-                        onChange={(e) => {
-                            const newQuestions = [...$questions];
-                            (newQuestions[index].data as typeof data).radius =
-                                parseFloat(e.target.value);
-                            questions.set(newQuestions);
-                        }}
+                        onChange={(e) =>
+                            questionModified(
+                                (data.radius = parseFloat(e.target.value)),
+                            )
+                        }
                     />
-                    <Select
-                        value={data.unit}
-                        onValueChange={(value) => {
-                            const newQuestions = [...$questions];
-                            (newQuestions[index].data as typeof data).unit =
-                                value as any;
-                            questions.set(newQuestions);
-                        }}
-                    >
-                        <SelectTrigger>
-                            <SelectValue placeholder="Unit" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="miles">Miles</SelectItem>
-                            <SelectItem value="kilometers">
-                                Kilometers
-                            </SelectItem>
-                            <SelectItem value="meters">Meters</SelectItem>
-                        </SelectContent>
-                    </Select>
+                    <UnitSelect
+                        unit={data.unit}
+                        onChange={(unit) =>
+                            questionModified((data.unit = unit))
+                        }
+                    />
                 </div>
             </SidebarMenuItem>
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
@@ -92,12 +74,9 @@ export const RadiusQuestionComponent = ({
                 <Checkbox
                     checked={data.within}
                     disabled={!!$hiderMode}
-                    onCheckedChange={(checked) => {
-                        const newQuestions = [...$questions];
-                        (newQuestions[index].data as typeof data).within =
-                            (checked ?? false) as boolean;
-                        questions.set(newQuestions);
-                    }}
+                    onCheckedChange={(checked) =>
+                        questionModified((data.within = checked as boolean))
+                    }
                 />
             </SidebarMenuItem>
             <SidebarMenuItem
@@ -113,12 +92,9 @@ export const RadiusQuestionComponent = ({
                 Color (drag{" "}
                 <Checkbox
                     checked={data.drag}
-                    onCheckedChange={(checked) => {
-                        const newQuestions = [...$questions];
-                        newQuestions[index].data.drag = (checked ??
-                            false) as boolean;
-                        questions.set(newQuestions);
-                    }}
+                    onCheckedChange={(checked) =>
+                        questionModified((data.drag = checked as boolean))
+                    }
                 />
                 )
             </SidebarMenuItem>
@@ -126,14 +102,13 @@ export const RadiusQuestionComponent = ({
                 latitude={data.lat}
                 longitude={data.lng}
                 onChange={(lat, lng) => {
-                    const newQuestions = [...$questions];
                     if (lat !== null) {
-                        (newQuestions[index].data as typeof data).lat = lat;
+                        data.lat = lat;
                     }
                     if (lng !== null) {
-                        (newQuestions[index].data as typeof data).lng = lng;
+                        data.lng = lng;
                     }
-                    questions.set(newQuestions);
+                    questionModified();
                 }}
             />
         </QuestionCard>
