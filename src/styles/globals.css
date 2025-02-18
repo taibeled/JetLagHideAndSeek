@@ -108,6 +108,10 @@ div.leaflet-control-attribution.leaflet-control {
     main:not(.fullscreen) .leaflet-top .leaflet-control {
         @apply !mt-[104px] md:!mt-[40px];
     }
+
+    .selected-card-background-temporary {
+        @apply bg-slate-500;
+    }
 }
 
 @layer base {

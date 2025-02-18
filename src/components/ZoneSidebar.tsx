@@ -21,7 +21,7 @@ import { useStore } from "@nanostores/react";
 import { MENU_ITEM_CLASSNAME } from "./ui/sidebar-l";
 import { Label } from "./ui/label";
 import { Checkbox } from "./ui/checkbox";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as L from "leaflet";
 import {
     findPlacesInZone,
@@ -57,6 +57,7 @@ import {
 import { geoSpatialVoronoi } from "@/maps/voronoi";
 import { renderToString } from "react-dom/server";
 import { FaTrain } from "react-icons/fa6";
+import { ScrollToTop } from "./ui/scroll-to-top";
 
 let determiningHidingZones = false;
 let buttonJustClicked = false;
@@ -71,6 +72,7 @@ export const ZoneSidebar = () => {
     const $disabledStations = useStore(disabledStations);
     const [commandValue, setCommandValue] = useState<string>("");
     const setStations = trainStations.set;
+    const sidebarRef = useRef<HTMLDivElement>(null);
 
     const removeHidingZones = () => {
         if (!map) return;
@@ -354,7 +356,8 @@ export const ZoneSidebar = () => {
     return (
         <Sidebar side="right">
             <h2 className="ml-4 mt-4 font-poppins text-2xl">Hiding Zone</h2>
-            <SidebarContent>
+            <SidebarContent ref={sidebarRef}>
+                <ScrollToTop element={sidebarRef} minHeight={500} />
                 <SidebarGroup>
                     <SidebarGroupContent>
                         <SidebarMenu>
@@ -608,6 +611,10 @@ export const ZoneSidebar = () => {
                                             {stations.map((station) => (
                                                 <CommandItem
                                                     key={
+                                                        station.properties
+                                                            .properties.id
+                                                    }
+                                                    data-station-id={
                                                         station.properties
                                                             .properties.id
                                                     }
@@ -1036,5 +1043,21 @@ async function selectionProcess(
         map?.flyToBounds(bounds);
     } else {
         map?.fitBounds(bounds);
+    }
+
+    const element: HTMLDivElement | null = document.querySelector(
+        `[data-station-id="${station.properties.properties.id}"]`,
+    );
+
+    if (element) {
+        element.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+        });
+        element.classList.add("selected-card-background-temporary");
+
+        setTimeout(() => {
+            element.classList.remove("selected-card-background-temporary");
+        }, 5000);
     }
 }
