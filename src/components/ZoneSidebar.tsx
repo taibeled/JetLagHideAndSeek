@@ -127,6 +127,30 @@ export const ZoneSidebar = () => {
                       });
                   }
                 : undefined,
+            pointToLayer(geoJsonPoint, latlng) {
+                const marker = L.marker(latlng, {
+                    icon: L.divIcon({
+                        html: renderToString(
+                            <div className="text-black bg-opacity-0">
+                                <FaTrain width={100} height={100} />
+                            </div>,
+                        ),
+                        className: "",
+                    }),
+                });
+
+                marker.bindPopup(
+                    `<b>${
+                        geoJsonPoint.properties["name:en"] ||
+                        geoJsonPoint.properties.name ||
+                        "No Name Found"
+                    } (${lngLatToText(
+                        geoJsonPoint.geometry.coordinates as [number, number],
+                    )})</b>`,
+                );
+
+                return marker;
+            },
             ...additionalOptions,
         });
 
@@ -461,55 +485,6 @@ export const ZoneSidebar = () => {
                                                     .map((x) => x.properties),
                                             ),
                                             false,
-                                            {
-                                                pointToLayer(
-                                                    geoJsonPoint,
-                                                    latlng,
-                                                ) {
-                                                    const marker = L.marker(
-                                                        latlng,
-                                                        {
-                                                            icon: L.divIcon({
-                                                                html: renderToString(
-                                                                    <div className="text-black bg-opacity-0">
-                                                                        <FaTrain
-                                                                            width={
-                                                                                100
-                                                                            }
-                                                                            height={
-                                                                                100
-                                                                            }
-                                                                        />
-                                                                    </div>,
-                                                                ),
-                                                                className: "",
-                                                            }),
-                                                        },
-                                                    );
-
-                                                    marker.bindPopup(
-                                                        `<b>${
-                                                            geoJsonPoint
-                                                                .properties[
-                                                                "name:en"
-                                                            ] ||
-                                                            geoJsonPoint
-                                                                .properties
-                                                                .name ||
-                                                            lngLatToText(
-                                                                geoJsonPoint
-                                                                    .geometry
-                                                                    .coordinates as [
-                                                                    number,
-                                                                    number,
-                                                                ],
-                                                            )
-                                                        }</b>`,
-                                                    );
-
-                                                    return marker;
-                                                },
-                                            },
                                         );
                                     }}
                                 >
