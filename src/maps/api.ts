@@ -1,12 +1,16 @@
 import type { LatLngTuple } from "leaflet";
 import osmtogeojson from "osmtogeojson";
-import type { TentacleQuestion, TentacleLocations } from "./tentacles";
 import * as turf from "@turf/turf";
-import { mapGeoLocation, polyGeoJSON, type Question } from "@/lib/context";
+import { mapGeoLocation, polyGeoJSON } from "@/lib/context";
+import type { Question } from "@/lib/schema";
 import _ from "lodash";
 import { toast } from "react-toastify";
-import type { HomeGameMatchingQuestions } from "./matching";
-import type { HomeGameMeasuringQuestions } from "./measuring";
+import type {
+    HomeGameMatchingQuestions,
+    HomeGameMeasuringQuestions,
+    TentacleQuestion,
+    TentacleLocations,
+} from "@/lib/schema";
 
 export interface OpenStreetMap {
     type: string;
@@ -123,7 +127,7 @@ nwr["${locationFirstTag[question.locationType]}"="${
         question.locationType
     }"](around:${turf.convertLength(
         question.radius,
-        question.unit ?? "miles",
+        question.unit,
         "meters",
     )}, ${question.lat}, ${question.lng});
 out center;
@@ -523,6 +527,8 @@ export const nearestToQuestion = async (
                 unit: "miles",
                 location: false,
                 locationType: question.type,
+                drag: false,
+                color: "black",
             },
             "Finding matching locations...",
         );

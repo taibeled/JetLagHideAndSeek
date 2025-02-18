@@ -1,4 +1,4 @@
-import type { Question } from "@/lib/context";
+import type { Question } from "@/lib/schema";
 import { hiderifyRadius } from "./radius";
 import { hiderifyThermometer } from "./thermometer";
 import { hiderifyTentacles } from "./tentacles";

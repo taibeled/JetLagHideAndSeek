@@ -225,7 +225,7 @@ export const DraggableMarkers = () => {
                     case "measuring":
                         return (
                             <ColoredMarker
-                                color={question.data.color ?? "gold"}
+                                color={question.data.color}
                                 key={question.key}
                                 questionKey={question.key}
                                 latitude={question.data.lat}
@@ -246,7 +246,7 @@ export const DraggableMarkers = () => {
                         return (
                             <Fragment key={question.key}>
                                 <ColoredMarker
-                                    color={question.data.colorA ?? "gold"}
+                                    color={question.data.colorA}
                                     key={"a" + question.key.toString()}
                                     questionKey={question.key}
                                     sub="Start"
@@ -268,7 +268,7 @@ export const DraggableMarkers = () => {
                                     }}
                                 />
                                 <ColoredMarker
-                                    color={question.data.colorB ?? "gold"}
+                                    color={question.data.colorB}
                                     key={"b" + question.key.toString()}
                                     questionKey={question.key}
                                     sub="End"

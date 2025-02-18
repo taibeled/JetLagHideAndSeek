@@ -812,6 +812,8 @@ async function selectionProcess(
                         unit: "miles",
                         location: false,
                         locationType: question.data.type,
+                        drag: false,
+                        color: "black",
                     },
                     "Finding matching locations to hiding zone...",
                 );

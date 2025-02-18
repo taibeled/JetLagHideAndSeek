@@ -19,9 +19,8 @@ import {
     SelectValue,
 } from "../ui/select";
 import { Checkbox } from "../ui/checkbox";
-import type { MeasuringQuestion } from "@/maps/measuring";
 import { QuestionCard } from "./base";
-import type { TentacleLocations } from "@/maps/tentacles";
+import type { MeasuringQuestion, TentacleLocations } from "@/lib/schema";
 
 export const MeasuringQuestionComponent = ({
     data,
@@ -184,14 +183,13 @@ export const MeasuringQuestionComponent = ({
                     "text-2xl font-semibold font-poppins",
                 )}
                 style={{
-                    backgroundColor: iconColors[data.color ?? "gold"],
-                    color:
-                        (data.color ?? "gold") === "gold" ? "black" : undefined,
+                    backgroundColor: iconColors[data.color],
+                    color: data.color === "gold" ? "black" : undefined,
                 }}
             >
                 Color (drag{" "}
                 <Checkbox
-                    checked={data.drag ?? false}
+                    checked={data.drag}
                     onCheckedChange={(checked) => {
                         const newQuestions = [...$questions];
                         newQuestions[index].data.drag = (checked ??

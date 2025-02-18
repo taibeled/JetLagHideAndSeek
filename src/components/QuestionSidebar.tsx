@@ -8,7 +8,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar-l";
-import { leafletMapContext, questions } from "../lib/context";
+import { addQuestion, leafletMapContext, questions } from "../lib/context";
 import { useStore } from "@nanostores/react";
 import {
     MatchingQuestionComponent,
@@ -17,11 +17,7 @@ import {
     TentacleQuestionComponent,
     ThermometerQuestionComponent,
 } from "./QuestionCards";
-import { addDefaultRadius } from "@/maps/radius";
-import { addDefaultThermometer } from "@/maps/thermometer";
-import { addDefaultTentacles } from "@/maps/tentacles";
-import { addDefaultMatching } from "@/maps/matching";
-import { addDefaultMeasuring } from "@/maps/measuring";
+import * as turf from "@turf/turf";
 
 export const QuestionSidebar = () => {
     const $questions = useStore(questions);
@@ -94,7 +90,13 @@ export const QuestionSidebar = () => {
 
                                     const center = map.getCenter();
 
-                                    addDefaultRadius(center);
+                                    addQuestion({
+                                        id: "radius",
+                                        data: {
+                                            lat: center.lat,
+                                            lng: center.lng,
+                                        },
+                                    });
                                 }}
                             >
                                 Add Radius
@@ -108,7 +110,26 @@ export const QuestionSidebar = () => {
 
                                     const center = map.getCenter();
 
-                                    addDefaultThermometer(center);
+                                    const destination = turf.destination(
+                                        [center.lng, center.lat],
+                                        5,
+                                        90,
+                                        {
+                                            units: "miles",
+                                        },
+                                    );
+
+                                    addQuestion({
+                                        id: "thermometer",
+                                        data: {
+                                            latA: center.lat,
+                                            lngB: center.lng,
+                                            latB: destination.geometry
+                                                .coordinates[1],
+                                            lngA: destination.geometry
+                                                .coordinates[0],
+                                        },
+                                    });
                                 }}
                             >
                                 Add Thermometer
@@ -122,7 +143,13 @@ export const QuestionSidebar = () => {
 
                                     const center = map.getCenter();
 
-                                    addDefaultTentacles(center);
+                                    addQuestion({
+                                        id: "tentacles",
+                                        data: {
+                                            lat: center.lat,
+                                            lng: center.lng,
+                                        },
+                                    });
                                 }}
                             >
                                 Add Tentacles
@@ -136,7 +163,14 @@ export const QuestionSidebar = () => {
 
                                     const center = map.getCenter();
 
-                                    addDefaultMatching(center);
+                                    addQuestion({
+                                        id: "matching",
+                                        data: {
+                                            lat: center.lat,
+                                            lng: center.lng,
+                                            cat: {},
+                                        },
+                                    });
                                 }}
                             >
                                 Add Matching
@@ -150,7 +184,13 @@ export const QuestionSidebar = () => {
 
                                     const center = map.getCenter();
 
-                                    addDefaultMeasuring(center);
+                                    addQuestion({
+                                        id: "measuring",
+                                        data: {
+                                            lat: center.lat,
+                                            lng: center.lng,
+                                        },
+                                    });
                                 }}
                             >
                                 Add Measuring

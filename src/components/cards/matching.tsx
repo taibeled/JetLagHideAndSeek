@@ -8,7 +8,7 @@ import {
     triggerLocalRefresh,
 } from "../../lib/context";
 import { iconColors, prettifyLocation } from "../../maps/api";
-import type { MatchingQuestion } from "../../maps/matching";
+import type { MatchingQuestion, TentacleLocations } from "../../lib/schema";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
 import {
     Select,
@@ -21,7 +21,6 @@ import {
 } from "../ui/select";
 import { Checkbox } from "../ui/checkbox";
 import { QuestionCard } from "./base";
-import type { TentacleLocations } from "@/maps/tentacles";
 
 export const MatchingQuestionComponent = ({
     data,
@@ -226,14 +225,13 @@ export const MatchingQuestionComponent = ({
                     "text-2xl font-semibold font-poppins",
                 )}
                 style={{
-                    backgroundColor: iconColors[data.color ?? "gold"],
-                    color:
-                        (data.color ?? "gold") === "gold" ? "black" : undefined,
+                    backgroundColor: iconColors[data.color],
+                    color: data.color === "gold" ? "black" : undefined,
                 }}
             >
                 Color (drag{" "}
                 <Checkbox
-                    checked={data.drag ?? false}
+                    checked={data.drag}
                     onCheckedChange={(checked) => {
                         const newQuestions = [...$questions];
                         newQuestions[index].data.drag = (checked ??

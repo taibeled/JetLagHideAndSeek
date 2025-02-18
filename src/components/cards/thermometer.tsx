@@ -1,4 +1,3 @@
-import type { ThermometerQuestion } from "../../maps/thermometer";
 import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
 import { cn } from "../../lib/utils";
@@ -8,6 +7,7 @@ import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
 import { Checkbox } from "../ui/checkbox";
 import { Separator } from "../ui/separator";
 import { QuestionCard } from "./base";
+import type { ThermometerQuestion } from "@/lib/schema";
 
 export const ThermometerQuestionComponent = ({
     data,
@@ -64,16 +64,13 @@ export const ThermometerQuestionComponent = ({
                     "text-xl font-semibold font-poppins",
                 )}
                 style={{
-                    backgroundColor: iconColors[data.colorA ?? "gold"],
-                    color:
-                        (data.colorA ?? "gold") === "gold"
-                            ? "black"
-                            : undefined,
+                    backgroundColor: iconColors[data.colorA],
+                    color: data.colorA === "gold" ? "black" : undefined,
                 }}
             >
                 Color start (drag{" "}
                 <Checkbox
-                    checked={data.drag ?? false}
+                    checked={data.drag}
                     onCheckedChange={(checked) => {
                         const newQuestions = [...$questions];
                         newQuestions[index].data.drag = (checked ??
@@ -106,16 +103,13 @@ export const ThermometerQuestionComponent = ({
                     "text-xl font-semibold font-poppins",
                 )}
                 style={{
-                    backgroundColor: iconColors[data.colorB ?? "gold"],
-                    color:
-                        (data.colorB ?? "gold") === "gold"
-                            ? "black"
-                            : undefined,
+                    backgroundColor: iconColors[data.colorB],
+                    color: data.colorB === "gold" ? "black" : undefined,
                 }}
             >
                 Color end (drag{" "}
                 <Checkbox
-                    checked={data.drag ?? false}
+                    checked={data.drag}
                     onCheckedChange={(checked) => {
                         const newQuestions = [...$questions];
                         newQuestions[index].data.drag = (checked ??

@@ -2,7 +2,6 @@ import {
     fetchCoastline,
     findPlacesInZone,
     findPlacesSpecificInZone,
-    iconColors,
     nearestToQuestion,
     QuestionSpecificLocation,
 } from "./api";
@@ -18,10 +17,8 @@ import {
     hiderMode,
     mapGeoJSON,
     mapGeoLocation,
-    questions,
     trainStations,
 } from "@/lib/context";
-import type { LatLng } from "leaflet";
 import {
     groupObjects,
     holedMask,
@@ -29,66 +26,10 @@ import {
     unionize,
 } from "./geo-utils";
 import osmtogeojson from "osmtogeojson";
-
-export interface BaseMeasuringQuestion {
-    lat: number;
-    lng: number;
-    hiderCloser: boolean;
-    color?: keyof typeof iconColors;
-    drag?: boolean;
-}
-
-export interface CoastlineMeasuringQuestion extends BaseMeasuringQuestion {
-    type: "coastline";
-}
-
-export interface AirportMeasuringQuestion extends BaseMeasuringQuestion {
-    type: "airport";
-}
-
-export interface CityMeasuringQuestion extends BaseMeasuringQuestion {
-    type: "city";
-}
-
-export interface McDonaldsMeasuringQuestion extends BaseMeasuringQuestion {
-    type: "mcdonalds";
-}
-
-export interface Seven11MeasuringQuestion extends BaseMeasuringQuestion {
-    type: "seven11";
-}
-
-export interface RailStationMeasuringQuestion extends BaseMeasuringQuestion {
-    type: "rail-measure";
-}
-
-export interface DistanceToHighSpeedRail extends BaseMeasuringQuestion {
-    type: "highspeed-measure-shinkansen";
-}
-
-export interface HomeGameMeasuringQuestions extends BaseMeasuringQuestion {
-    type:
-        | "aquarium"
-        | "zoo"
-        | "theme_park"
-        | "museum"
-        | "hospital"
-        | "cinema"
-        | "library"
-        | "golf_course"
-        | "consulate"
-        | "park";
-}
-
-export type MeasuringQuestion =
-    | CoastlineMeasuringQuestion
-    | AirportMeasuringQuestion
-    | CityMeasuringQuestion
-    | McDonaldsMeasuringQuestion
-    | Seven11MeasuringQuestion
-    | RailStationMeasuringQuestion
-    | HomeGameMeasuringQuestions
-    | DistanceToHighSpeedRail;
+import type {
+    MeasuringQuestion,
+    HomeGameMeasuringQuestions,
+} from "@/lib/schema";
 
 const highSpeedBase = _.memoize(
     (features: Feature[], point: [number, number]) => {
@@ -350,26 +291,6 @@ export const adjustPerMeasuring = async (
     }
 };
 
-export const addDefaultMeasuring = (center: LatLng) => {
-    questions.set([
-        ...questions.get(),
-        {
-            id: "measuring",
-            key: Math.random() * 1e9,
-            data: {
-                color: Object.keys(iconColors)[
-                    Math.floor(Math.random() * Object.keys(iconColors).length)
-                ] as keyof typeof iconColors,
-                lat: center.lat,
-                lng: center.lng,
-                drag: true,
-                hiderCloser: true,
-                type: "coastline",
-            },
-        },
-    ]);
-};
-
 export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
     const $hiderMode = hiderMode.get();
     if ($hiderMode === false) {
@@ -398,6 +319,8 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
             lng: $hiderMode.longitude,
             hiderCloser: true,
             type: (question as HomeGameMeasuringQuestions).type,
+            drag: false,
+            color: "black",
         });
 
         question.hiderCloser =

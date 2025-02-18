@@ -1,13 +1,14 @@
 import { atom } from "nanostores";
 import { persistentAtom } from "@nanostores/persistent";
 import { type OpenStreetMap } from "../maps/api";
-import type { RadiusQuestion } from "../maps/radius";
-import type { ThermometerQuestion } from "../maps/thermometer";
-import type { TentacleQuestion } from "../maps/tentacles";
-import type { MatchingQuestion } from "../maps/matching";
 import type { Map } from "leaflet";
-import type { Units } from "@turf/turf";
-import type { MeasuringQuestion } from "@/maps/measuring";
+import {
+    questionSchema,
+    type DeepPartial,
+    type Question,
+    type Questions,
+    type Units,
+} from "./schema";
 
 export const mapGeoLocation = persistentAtom<OpenStreetMap>(
     "mapGeoLocation",
@@ -41,17 +42,12 @@ export const polyGeoJSON = persistentAtom<any>("polyGeoJSON", null, {
     decode: JSON.parse,
 });
 
-export type Question =
-    | { id: "radius"; key: number; data: RadiusQuestion }
-    | { id: "thermometer"; key: number; data: ThermometerQuestion }
-    | { id: "tentacles"; key: number; data: TentacleQuestion }
-    | { id: "measuring"; key: number; data: MeasuringQuestion }
-    | { id: "matching"; key: number; data: MatchingQuestion };
-
-export const questions = persistentAtom<Question[]>("questions", [], {
+export const questions = persistentAtom<Questions>("questions", [], {
     encode: JSON.stringify,
     decode: JSON.parse,
 });
+export const addQuestion = (question: DeepPartial<Question>) =>
+    questions.set([...questions.get(), questionSchema.parse(question)]);
 
 export const leafletMapContext = atom<Map | null>(null);
 

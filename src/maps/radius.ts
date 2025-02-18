@@ -1,18 +1,7 @@
-import { defaultUnit, hiderMode, questions } from "@/lib/context";
-import { iconColors } from "./api";
+import { hiderMode } from "@/lib/context";
 import * as turf from "@turf/turf";
-import type { LatLng } from "leaflet";
 import { unionize } from "./geo-utils";
-
-export interface RadiusQuestion {
-    radius: number;
-    unit?: turf.Units;
-    lat: number;
-    lng: number;
-    within: boolean;
-    color?: keyof typeof iconColors;
-    drag?: boolean;
-}
+import type { RadiusQuestion } from "@/lib/schema";
 
 export const adjustPerRadius = (
     question: RadiusQuestion,
@@ -23,7 +12,7 @@ export const adjustPerRadius = (
 
     const point = turf.point([question.lng, question.lat]);
     const circle = turf.circle(point, question.radius, {
-        units: question.unit ?? "miles",
+        units: question.unit,
     });
 
     if (question.within) {
@@ -44,27 +33,6 @@ export const adjustPerRadius = (
     }
 };
 
-export const addDefaultRadius = (center: LatLng) => {
-    questions.set([
-        ...questions.get(),
-        {
-            id: "radius",
-            key: Math.random() * 1e9,
-            data: {
-                radius: 50,
-                unit: defaultUnit.get(),
-                lat: center.lat,
-                lng: center.lng,
-                within: false,
-                color: Object.keys(iconColors)[
-                    Math.floor(Math.random() * Object.keys(iconColors).length)
-                ] as keyof typeof iconColors,
-                drag: true,
-            },
-        },
-    ]);
-};
-
 export const hiderifyRadius = (question: RadiusQuestion) => {
     const $hiderMode = hiderMode.get();
     if ($hiderMode === false) {
@@ -74,7 +42,7 @@ export const hiderifyRadius = (question: RadiusQuestion) => {
     const distance = turf.distance(
         turf.point([question.lng, question.lat]),
         turf.point([$hiderMode.longitude, $hiderMode.latitude]),
-        { units: question.unit ?? "miles" },
+        { units: question.unit },
     );
 
     if (distance <= question.radius) {

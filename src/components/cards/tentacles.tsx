@@ -1,4 +1,3 @@
-import type { TentacleQuestion } from "../../maps/tentacles";
 import { Suspense, use } from "react";
 import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
@@ -18,6 +17,7 @@ import {
 } from "../ui/select";
 import { Checkbox } from "../ui/checkbox";
 import { QuestionCard } from "./base";
+import type { TentacleQuestion } from "@/lib/schema";
 
 export const TentacleQuestionComponent = ({
     data,
@@ -65,7 +65,7 @@ export const TentacleQuestionComponent = ({
                         }}
                     />
                     <Select
-                        value={data.unit ?? "miles"}
+                        value={data.unit}
                         onValueChange={(value) => {
                             const newQuestions = [...$questions];
                             (newQuestions[index].data as typeof data).unit =
@@ -126,14 +126,13 @@ export const TentacleQuestionComponent = ({
                     "text-2xl font-semibold font-poppins",
                 )}
                 style={{
-                    backgroundColor: iconColors[data.color ?? "gold"],
-                    color:
-                        (data.color ?? "gold") === "gold" ? "black" : undefined,
+                    backgroundColor: iconColors[data.color],
+                    color: data.color === "gold" ? "black" : undefined,
                 }}
             >
                 Color (drag{" "}
                 <Checkbox
-                    checked={data.drag ?? false}
+                    checked={data.drag}
                     onCheckedChange={(checked) => {
                         const newQuestions = [...$questions];
                         newQuestions[index].data.drag = (checked ??

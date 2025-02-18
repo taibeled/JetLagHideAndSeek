@@ -1,38 +1,9 @@
-import type { LatLng } from "leaflet";
-import { findTentacleLocations, iconColors } from "./api";
+import { findTentacleLocations } from "./api";
 import * as turf from "@turf/turf";
-import { defaultUnit, hiderMode, questions } from "@/lib/context";
+import { hiderMode } from "@/lib/context";
 import { geoSpatialVoronoi } from "./voronoi";
 import { unionize } from "./geo-utils";
-
-export type TentacleLocations =
-    | "aquarium"
-    | "zoo"
-    | "theme_park"
-    | "museum"
-    | "hospital"
-    | "cinema"
-    | "library"
-    | "golf_course"
-    | "consulate"
-    | "park";
-
-export interface TentacleQuestion {
-    radius: number;
-    unit?: turf.Units;
-    lat: number;
-    lng: number;
-    color?: keyof typeof iconColors;
-    drag?: boolean;
-    location:
-        | ReturnType<
-              typeof turf.point<{
-                  name: any;
-              }>
-          >
-        | false;
-    locationType: TentacleLocations;
-}
+import type { TentacleQuestion } from "@/lib/schema";
 
 export const adjustPerTentacle = async (
     question: TentacleQuestion,
@@ -66,35 +37,13 @@ export const adjustPerTentacle = async (
         turf.point([question.lng, question.lat]),
         question.radius,
         {
-            units: question.unit ?? "miles",
+            units: question.unit,
         },
     );
 
     return turf.intersect(
         turf.featureCollection([unionize(mapData)!, correctPolygon, circle]),
     );
-};
-
-export const addDefaultTentacles = (center: LatLng) => {
-    questions.set([
-        ...questions.get(),
-        {
-            id: "tentacles",
-            key: Math.random() * 1e9,
-            data: {
-                color: Object.keys(iconColors)[
-                    Math.floor(Math.random() * Object.keys(iconColors).length)
-                ] as keyof typeof iconColors,
-                lat: center.lat,
-                unit: defaultUnit.get(),
-                lng: center.lng,
-                drag: true,
-                location: false,
-                locationType: "theme_park",
-                radius: 15,
-            },
-        },
-    ]);
 };
 
 export const hiderifyTentacles = async (question: TentacleQuestion) => {

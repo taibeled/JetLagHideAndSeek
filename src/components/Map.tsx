@@ -15,22 +15,20 @@ import {
     triggerLocalRefresh,
     questionFinishedMapData,
     animateMapMovements,
+    addQuestion,
 } from "../lib/context";
 import { useStore } from "@nanostores/react";
 import { useEffect, useMemo } from "react";
 import { toast } from "react-toastify";
 import * as turf from "@turf/turf";
 import { clearCache, determineGeoJSON, type OpenStreetMap } from "../maps/api";
-import { addDefaultRadius, adjustPerRadius } from "../maps/radius";
+import { adjustPerRadius } from "../maps/radius";
 import { DraggableMarkers } from "./DraggableMarkers";
-import {
-    addDefaultThermometer,
-    adjustPerThermometer,
-} from "../maps/thermometer";
-import { addDefaultTentacles, adjustPerTentacle } from "../maps/tentacles";
-import { addDefaultMatching, adjustPerMatching } from "../maps/matching";
+import { adjustPerThermometer } from "../maps/thermometer";
+import { adjustPerTentacle } from "../maps/tentacles";
+import { adjustPerMatching } from "../maps/matching";
 import { PolygonDraw } from "./PolygonDraw";
-import { addDefaultMeasuring, adjustPerMeasuring } from "@/maps/measuring";
+import { adjustPerMeasuring } from "@/maps/measuring";
 import { LeafletFullScreenButton } from "./LeafletFullScreenButton";
 import { hiderifyQuestion } from "@/maps";
 import { holedMask } from "@/maps/geo-utils";
@@ -72,26 +70,6 @@ export const Map = ({ className }: { className?: string }) => {
     const $highlightTrainLines = useStore(highlightTrainLines);
     const $hiderMode = useStore(hiderMode);
     const map = useStore(leafletMapContext);
-
-    const addRadius = (e: { latlng: any }) => {
-        addDefaultRadius(e.latlng);
-    };
-
-    const addThermometer = (e: { latlng: any }) => {
-        addDefaultThermometer(e.latlng);
-    };
-
-    const addTentacles = (e: { latlng: any }) => {
-        addDefaultTentacles(e.latlng);
-    };
-
-    const addMatching = (e: { latlng: any }) => {
-        addDefaultMatching(e.latlng);
-    };
-
-    const addMeasuring = (e: { latlng: any }) => {
-        addDefaultMeasuring(e.latlng);
-    };
 
     const refreshQuestions = async (focus: boolean = false) => {
         if (!map) return;
@@ -326,23 +304,74 @@ export const Map = ({ className }: { className?: string }) => {
                 contextmenuItems={[
                     {
                         text: "Add Radius",
-                        callback: (e: any) => addRadius(e),
+                        callback: (e: any) =>
+                            addQuestion({
+                                id: "radius",
+                                data: {
+                                    lat: e.latlng.lat,
+                                    lng: e.latlng.lng,
+                                },
+                            }),
                     },
                     {
                         text: "Add Thermometer",
-                        callback: (e: any) => addThermometer(e),
+                        callback: (e: any) => {
+                            const destination = turf.destination(
+                                [e.latlng.lng, e.latlng.lat],
+                                5,
+                                90,
+                                {
+                                    units: "miles",
+                                },
+                            );
+
+                            addQuestion({
+                                id: "thermometer",
+                                data: {
+                                    latA: e.latlng.lat,
+                                    lngA: e.latlng.lng,
+                                    latB: destination.geometry.coordinates[1],
+                                    lngB: destination.geometry.coordinates[0],
+                                },
+                            });
+                        },
                     },
                     {
                         text: "Add Tentacles",
-                        callback: (e: any) => addTentacles(e),
+                        callback: (e: any) => {
+                            addQuestion({
+                                id: "tentacles",
+                                data: {
+                                    lat: e.latlng.lat,
+                                    lng: e.latlng.lng,
+                                },
+                            });
+                        },
                     },
                     {
                         text: "Add Matching",
-                        callback: (e: any) => addMatching(e),
+                        callback: (e: any) => {
+                            addQuestion({
+                                id: "matching",
+                                data: {
+                                    lat: e.latlng.lat,
+                                    lng: e.latlng.lng,
+                                    cat: {},
+                                },
+                            });
+                        },
                     },
                     {
                         text: "Add Measuring",
-                        callback: (e: any) => addMeasuring(e),
+                        callback: (e: any) => {
+                            addQuestion({
+                                id: "measuring",
+                                data: {
+                                    lat: e.latlng.lat,
+                                    lng: e.latlng.lng,
+                                },
+                            });
+                        },
                     },
                 ]}
             >

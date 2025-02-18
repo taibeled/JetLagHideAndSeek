@@ -1,4 +1,4 @@
-import type { RadiusQuestion } from "../../maps/radius";
+import type { RadiusQuestion } from "../../lib/schema";
 import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
 import { cn } from "../../lib/utils";
@@ -64,7 +64,7 @@ export const RadiusQuestionComponent = ({
                         }}
                     />
                     <Select
-                        value={data.unit ?? "miles"}
+                        value={data.unit}
                         onValueChange={(value) => {
                             const newQuestions = [...$questions];
                             (newQuestions[index].data as typeof data).unit =
@@ -106,14 +106,13 @@ export const RadiusQuestionComponent = ({
                     "text-2xl font-semibold font-poppins",
                 )}
                 style={{
-                    backgroundColor: iconColors[data.color ?? "gold"],
-                    color:
-                        (data.color ?? "gold") === "gold" ? "black" : undefined,
+                    backgroundColor: iconColors[data.color],
+                    color: data.color === "gold" ? "black" : undefined,
                 }}
             >
                 Color (drag{" "}
                 <Checkbox
-                    checked={data.drag ?? false}
+                    checked={data.drag}
                     onCheckedChange={(checked) => {
                         const newQuestions = [...$questions];
                         newQuestions[index].data.drag = (checked ??

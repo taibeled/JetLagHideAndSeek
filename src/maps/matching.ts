@@ -1,86 +1,17 @@
-import { hiderMode, mapGeoJSON, questions } from "@/lib/context";
+import { hiderMode, mapGeoJSON } from "@/lib/context";
 import {
     findAdminBoundary,
     findPlacesInZone,
-    iconColors,
     nearestToQuestion,
     trainLineNodeFinder,
 } from "./api";
 import * as turf from "@turf/turf";
-import type { LatLng } from "leaflet";
 import _ from "lodash";
 import { geoSpatialVoronoi } from "./voronoi";
 import { toast } from "react-toastify";
 import osmtogeojson from "osmtogeojson";
 import { holedMask, unionize } from "./geo-utils";
-
-export interface MatchingZoneQuestion {
-    adminLevel: 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
-}
-
-export interface BaseMatchingQuestion {
-    lat: number;
-    lng: number;
-    same: boolean;
-    color?: keyof typeof iconColors;
-    drag?: boolean;
-}
-
-export interface ZoneMatchingQuestion extends BaseMatchingQuestion {
-    type: "zone";
-    cat: MatchingZoneQuestion;
-}
-
-export interface AirportMatchingQuestion extends BaseMatchingQuestion {
-    type: "airport";
-}
-
-export interface MajorCityMatchingQuestion extends BaseMatchingQuestion {
-    type: "major-city";
-}
-
-export interface SameFirstLetterStationMatchingQuestion
-    extends BaseMatchingQuestion {
-    type: "same-first-letter-station";
-}
-
-export interface SameLengthStationMatchingQuestion
-    extends BaseMatchingQuestion {
-    type: "same-length-station";
-}
-
-export interface SameTrainLineMatchingQuestion extends BaseMatchingQuestion {
-    type: "same-train-line";
-}
-
-export interface LetterMatchingZoneQuestion extends BaseMatchingQuestion {
-    type: "letter-zone";
-    cat: MatchingZoneQuestion;
-}
-
-export interface HomeGameMatchingQuestions extends BaseMatchingQuestion {
-    type:
-        | "aquarium"
-        | "zoo"
-        | "theme_park"
-        | "museum"
-        | "hospital"
-        | "cinema"
-        | "library"
-        | "golf_course"
-        | "consulate"
-        | "park";
-}
-
-export type MatchingQuestion =
-    | ZoneMatchingQuestion
-    | AirportMatchingQuestion
-    | LetterMatchingZoneQuestion
-    | MajorCityMatchingQuestion
-    | SameFirstLetterStationMatchingQuestion
-    | SameLengthStationMatchingQuestion
-    | SameTrainLineMatchingQuestion
-    | HomeGameMatchingQuestions;
+import type { HomeGameMatchingQuestions, MatchingQuestion } from "@/lib/schema";
 
 export const adjustPerMatching = async (
     question: MatchingQuestion,
@@ -247,29 +178,6 @@ export const adjustPerMatching = async (
     }
 };
 
-export const addDefaultMatching = (center: LatLng) => {
-    questions.set([
-        ...questions.get(),
-        {
-            id: "matching",
-            key: Math.random() * 1e9,
-            data: {
-                color: Object.keys(iconColors)[
-                    Math.floor(Math.random() * Object.keys(iconColors).length)
-                ] as keyof typeof iconColors,
-                lat: center.lat,
-                lng: center.lng,
-                drag: true,
-                same: true,
-                type: "zone",
-                cat: {
-                    adminLevel: 3,
-                },
-            },
-        },
-    ]);
-};
-
 export const hiderifyMatching = async (question: MatchingQuestion) => {
     const $hiderMode = hiderMode.get();
     if ($hiderMode === false) {
@@ -298,6 +206,8 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
             lng: $hiderMode.longitude,
             same: true,
             type: (question as HomeGameMatchingQuestions).type,
+            drag: false,
+            color: "black",
         });
 
         question.same =
