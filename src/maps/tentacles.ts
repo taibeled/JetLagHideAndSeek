@@ -118,7 +118,7 @@ export const hiderifyTentacles = async (question: TentacleQuestion) => {
         return question;
     }
 
-    let correctLocation = null;
+    let correctLocation: any = null;
 
     const correctPolygon = voronoi.features.find(
         (feature: any, index: number) => {
