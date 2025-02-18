@@ -58,7 +58,6 @@ export const QuestionSidebar = () => {
                                     data={question.data}
                                     key={question.key}
                                     questionKey={question.key}
-                                    index={index}
                                 />
                             );
                         case "measuring":

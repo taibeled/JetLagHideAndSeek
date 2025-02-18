@@ -4,6 +4,7 @@ import { cn } from "../../lib/utils";
 import {
     displayHidingZones,
     hiderMode,
+    questionModified,
     questions,
     triggerLocalRefresh,
 } from "../../lib/context";
@@ -25,14 +26,12 @@ import { QuestionCard } from "./base";
 export const MatchingQuestionComponent = ({
     data,
     questionKey,
-    index,
     sub,
     className,
     showDeleteButton = true,
 }: {
     data: MatchingQuestion;
     questionKey: number;
-    index: number;
     sub?: string;
     className?: string;
     showDeleteButton?: boolean;
@@ -59,13 +58,13 @@ export const MatchingQuestionComponent = ({
                     <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                         <Select
                             value={data.cat.adminLevel.toString()}
-                            onValueChange={(value) => {
-                                const newQuestions = [...$questions];
-                                (
-                                    newQuestions[index].data as typeof data
-                                ).cat.adminLevel = parseInt(value) as any;
-                                questions.set(newQuestions);
-                            }}
+                            onValueChange={(value) =>
+                                questionModified(
+                                    (data.cat.adminLevel = parseInt(
+                                        value as string,
+                                    ) as 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10),
+                                )
+                            }
                         >
                             <SelectTrigger>
                                 <SelectValue placeholder="OSM Zone" />
@@ -135,12 +134,9 @@ export const MatchingQuestionComponent = ({
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
                     value={data.type}
-                    onValueChange={(value) => {
-                        const newQuestions = [...$questions];
-                        (newQuestions[index].data as typeof data).type =
-                            value as any;
-                        questions.set(newQuestions);
-                    }}
+                    onValueChange={(value) =>
+                        questionModified((data.type = value as any))
+                    }
                 >
                     <SelectTrigger>
                         <SelectValue placeholder="Matching Type" />
@@ -211,12 +207,9 @@ export const MatchingQuestionComponent = ({
                 <Checkbox
                     disabled={!!$hiderMode}
                     checked={data.same}
-                    onCheckedChange={(checked) => {
-                        const newQuestions = [...$questions];
-                        (newQuestions[index].data as typeof data).same =
-                            (checked ?? false) as boolean;
-                        questions.set(newQuestions);
-                    }}
+                    onCheckedChange={(checked) =>
+                        questionModified((data.same = checked as boolean))
+                    }
                 />
             </SidebarMenuItem>
             <SidebarMenuItem
@@ -232,12 +225,9 @@ export const MatchingQuestionComponent = ({
                 Color (drag{" "}
                 <Checkbox
                     checked={data.drag}
-                    onCheckedChange={(checked) => {
-                        const newQuestions = [...$questions];
-                        newQuestions[index].data.drag = (checked ??
-                            false) as boolean;
-                        questions.set(newQuestions);
-                    }}
+                    onCheckedChange={(checked) =>
+                        questionModified((data.drag = checked as boolean))
+                    }
                 />
                 )
             </SidebarMenuItem>
@@ -245,14 +235,13 @@ export const MatchingQuestionComponent = ({
                 latitude={data.lat}
                 longitude={data.lng}
                 onChange={(lat, lng) => {
-                    const newQuestions = [...$questions];
                     if (lat !== null) {
-                        (newQuestions[index].data as typeof data).lat = lat;
+                        data.lat = lat;
                     }
                     if (lng !== null) {
-                        (newQuestions[index].data as typeof data).lng = lng;
+                        data.lng = lng;
                     }
-                    questions.set(newQuestions);
+                    questionModified();
                 }}
             />
         </QuestionCard>
