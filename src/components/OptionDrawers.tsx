@@ -14,13 +14,6 @@ import { Button } from "./ui/button";
 import { toast } from "react-toastify";
 import { Label } from "./ui/label";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "./ui/select";
-import {
     Drawer,
     DrawerContent,
     DrawerDescription,
@@ -36,6 +29,7 @@ import { Checkbox } from "./ui/checkbox";
 import { LatitudeLongitude } from "./LatLngPicker";
 import { SidebarMenu } from "./ui/sidebar-l";
 import { questionsSchema } from "@/lib/schema";
+import { UnitSelect } from "./UnitSelect";
 
 export const OptionDrawers = ({ className }: { className?: string }) => {
     const $defaultUnit = useStore(defaultUnit);
@@ -280,23 +274,10 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                             </div>
                             <Separator className="bg-slate-300 w-[280px]" />
                             <Label>Default Unit</Label>
-                            <Select
-                                value={$defaultUnit}
-                                onValueChange={defaultUnit.set}
-                            >
-                                <SelectTrigger className="w-[250px]">
-                                    <SelectValue placeholder="Select a unit" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="meters">
-                                        Meters
-                                    </SelectItem>
-                                    <SelectItem value="kilometers">
-                                        Kilometers
-                                    </SelectItem>
-                                    <SelectItem value="miles">Miles</SelectItem>
-                                </SelectContent>
-                            </Select>
+                            <UnitSelect
+                                unit={$defaultUnit}
+                                onChange={defaultUnit.set}
+                            />
                             <Separator className="bg-slate-300 w-[280px]" />
                             <div className="flex flex-row items-center gap-2">
                                 <label className="text-2xl font-semibold font-poppins">
