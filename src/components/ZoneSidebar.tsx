@@ -521,7 +521,14 @@ export const ZoneSidebar = () => {
                                         showGeoJSON(
                                             unionize(
                                                 turf.featureCollection(
-                                                    stations,
+                                                    stations.filter(
+                                                        (x) =>
+                                                            !$disabledStations.includes(
+                                                                x.properties
+                                                                    .properties
+                                                                    .id,
+                                                            ),
+                                                    ),
                                                 ),
                                             ),
                                         );
