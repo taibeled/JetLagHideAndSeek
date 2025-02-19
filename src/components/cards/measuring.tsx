@@ -4,6 +4,7 @@ import { cn } from "../../lib/utils";
 import {
     displayHidingZones,
     hiderMode,
+    questionModified,
     questions,
     triggerLocalRefresh,
 } from "../../lib/context";
@@ -25,14 +26,12 @@ import type { MeasuringQuestion, TentacleLocations } from "@/lib/schema";
 export const MeasuringQuestionComponent = ({
     data,
     questionKey,
-    index,
     sub,
     className,
     showDeleteButton = true,
 }: {
     data: MeasuringQuestion;
     questionKey: number;
-    index: number;
     sub?: string;
     className?: string;
     showDeleteButton?: boolean;
@@ -92,12 +91,9 @@ export const MeasuringQuestionComponent = ({
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
                     value={data.type}
-                    onValueChange={(value) => {
-                        const newQuestions = [...$questions];
-                        (newQuestions[index].data as typeof data).type =
-                            value as any;
-                        questions.set(newQuestions);
-                    }}
+                    onValueChange={(value) =>
+                        questionModified((data.type = value as any))
+                    }
                 >
                     <SelectTrigger>
                         <SelectValue placeholder="Measuring Type" />
@@ -169,12 +165,11 @@ export const MeasuringQuestionComponent = ({
                 <Checkbox
                     disabled={!!$hiderMode}
                     checked={data.hiderCloser}
-                    onCheckedChange={(checked) => {
-                        const newQuestions = [...$questions];
-                        (newQuestions[index].data as typeof data).hiderCloser =
-                            (checked ?? false) as boolean;
-                        questions.set(newQuestions);
-                    }}
+                    onCheckedChange={(checked) =>
+                        questionModified(
+                            (data.hiderCloser = checked as boolean),
+                        )
+                    }
                 />
             </SidebarMenuItem>
             <SidebarMenuItem
@@ -190,12 +185,9 @@ export const MeasuringQuestionComponent = ({
                 Color (drag{" "}
                 <Checkbox
                     checked={data.drag}
-                    onCheckedChange={(checked) => {
-                        const newQuestions = [...$questions];
-                        newQuestions[index].data.drag = (checked ??
-                            false) as boolean;
-                        questions.set(newQuestions);
-                    }}
+                    onCheckedChange={(checked) =>
+                        questionModified((data.drag = checked as boolean))
+                    }
                 />
                 )
             </SidebarMenuItem>
@@ -203,14 +195,13 @@ export const MeasuringQuestionComponent = ({
                 latitude={data.lat}
                 longitude={data.lng}
                 onChange={(lat, lng) => {
-                    const newQuestions = [...$questions];
                     if (lat !== null) {
-                        (newQuestions[index].data as typeof data).lat = lat;
+                        data.lat = lat;
                     }
                     if (lng !== null) {
-                        (newQuestions[index].data as typeof data).lng = lng;
+                        data.lng = lng;
                     }
-                    questions.set(newQuestions);
+                    questionModified();
                 }}
             />
         </QuestionCard>

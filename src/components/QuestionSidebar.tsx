@@ -26,7 +26,7 @@ export const QuestionSidebar = () => {
         <Sidebar>
             <h2 className="ml-4 mt-4 font-poppins text-2xl">Questions</h2>
             <SidebarContent>
-                {$questions.map((question, index) => {
+                {$questions.map((question) => {
                     switch (question.id) {
                         case "radius":
                             return (
@@ -66,7 +66,6 @@ export const QuestionSidebar = () => {
                                     data={question.data}
                                     key={question.key}
                                     questionKey={question.key}
-                                    index={index}
                                 />
                             );
                         default:
