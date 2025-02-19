@@ -3,12 +3,18 @@ import {
     SidebarContent,
     SidebarGroup,
     SidebarGroupContent,
-    SidebarGroupLabel,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar-l";
-import { addQuestion, leafletMapContext, questions } from "../lib/context";
+import {
+    addQuestion,
+    autoSave,
+    leafletMapContext,
+    questions,
+    save,
+    triggerLocalRefresh,
+} from "../lib/context";
 import { useStore } from "@nanostores/react";
 import {
     MatchingQuestionComponent,
@@ -20,7 +26,9 @@ import {
 import * as turf from "@turf/turf";
 
 export const QuestionSidebar = () => {
+    useStore(triggerLocalRefresh);
     const $questions = useStore(questions);
+    const $autoSave = useStore(autoSave);
 
     return (
         <Sidebar>
@@ -74,7 +82,6 @@ export const QuestionSidebar = () => {
                 })}
             </SidebarContent>
             <SidebarGroup>
-                <SidebarGroupLabel>Add Question</SidebarGroupLabel>
                 <SidebarGroupContent>
                     <SidebarMenu>
                         <SidebarMenuItem>
@@ -191,6 +198,16 @@ export const QuestionSidebar = () => {
                                 Add Measuring
                             </SidebarMenuButton>
                         </SidebarMenuItem>
+                        {!$autoSave && (
+                            <SidebarMenuItem>
+                                <SidebarMenuButton
+                                    className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-shadow duration-500"
+                                    onClick={save}
+                                >
+                                    Save
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        )}
                     </SidebarMenu>
                 </SidebarGroupContent>
             </SidebarGroup>

@@ -3,7 +3,14 @@ import { Marker } from "react-leaflet";
 import { Fragment } from "react/jsx-runtime";
 import type { iconColors } from "../maps/api";
 import { useStore } from "@nanostores/react";
-import { hiderMode, questions } from "../lib/context";
+import {
+    autoSave,
+    hiderMode,
+    questionModified,
+    questions,
+    save,
+    triggerLocalRefresh,
+} from "../lib/context";
 import {
     RadiusQuestionComponent,
     ThermometerQuestionComponent,
@@ -36,6 +43,7 @@ const ColoredMarker = ({
 }) => {
     const $questions = useStore(questions);
     const $hiderMode = useStore(hiderMode);
+    const $autoSave = useStore(autoSave);
     const [open, setOpen] = useState(false);
 
     return (
@@ -155,17 +163,29 @@ const ColoredMarker = ({
                                 return null;
                         }
                     })}
-                {questionKey !== -1 && (
-                    <Button
-                        onClick={() => {
+
+                <Button
+                    onClick={() => {
+                        if (questionKey === -1) {
+                            hiderMode.set(false);
+                        } else {
                             questions.set(
                                 $questions.filter((q) => q.key !== questionKey),
                             );
-                        }}
-                        variant="destructive"
+                        }
+                    }}
+                    variant="destructive"
+                    className="font-semibold font-poppins"
+                >
+                    {questionKey === -1 ? "Disable" : "Delete"}
+                </Button>
+                {!$autoSave && (
+                    <button
+                        onClick={save}
+                        className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-shadow duration-500"
                     >
-                        Delete
-                    </Button>
+                        Save
+                    </button>
                 )}
             </DialogContent>
         </Dialog>
@@ -173,6 +193,7 @@ const ColoredMarker = ({
 };
 
 export const DraggableMarkers = () => {
+    useStore(triggerLocalRefresh);
     const $questions = useStore(questions);
     const $hiderMode = useStore(hiderMode);
 
@@ -187,14 +208,22 @@ export const DraggableMarkers = () => {
                     latitude={$hiderMode.latitude}
                     longitude={$hiderMode.longitude}
                     onChange={(e) => {
-                        hiderMode.set({
-                            latitude: e.target.getLatLng().lat,
-                            longitude: e.target.getLatLng().lng,
-                        });
+                        $hiderMode.latitude =
+                            e.target.getLatLng().lat ?? $hiderMode.latitude;
+                        $hiderMode.longitude =
+                            e.target.getLatLng().lng ?? $hiderMode.longitude;
+
+                        if (autoSave.get()) {
+                            hiderMode.set({
+                                ...$hiderMode,
+                            });
+                        } else {
+                            triggerLocalRefresh.set(Math.random());
+                        }
                     }}
                 />
             )}
-            {$questions.map((question, index) => {
+            {$questions.map((question) => {
                 if (!question.data) return null;
                 if (!question.data.drag) return null;
 
@@ -211,14 +240,11 @@ export const DraggableMarkers = () => {
                                 latitude={question.data.lat}
                                 longitude={question.data.lng}
                                 onChange={(e) => {
-                                    const newQuestions = [...$questions];
-                                    (
-                                        newQuestions[index] as typeof question
-                                    ).data.lat = e.target.getLatLng().lat;
-                                    (
-                                        newQuestions[index] as typeof question
-                                    ).data.lng = e.target.getLatLng().lng;
-                                    questions.set(newQuestions);
+                                    question.data.lat =
+                                        e.target.getLatLng().lat;
+                                    question.data.lng =
+                                        e.target.getLatLng().lng;
+                                    questionModified();
                                 }}
                             />
                         );
@@ -233,18 +259,11 @@ export const DraggableMarkers = () => {
                                     latitude={question.data.latA}
                                     longitude={question.data.lngA}
                                     onChange={(e) => {
-                                        const newQuestions = [...$questions];
-                                        (
-                                            newQuestions[
-                                                index
-                                            ] as typeof question
-                                        ).data.latA = e.target.getLatLng().lat;
-                                        (
-                                            newQuestions[
-                                                index
-                                            ] as typeof question
-                                        ).data.lngA = e.target.getLatLng().lng;
-                                        questions.set(newQuestions);
+                                        question.data.latA =
+                                            e.target.getLatLng().lat;
+                                        question.data.lngA =
+                                            e.target.getLatLng().lng;
+                                        questionModified();
                                     }}
                                 />
                                 <ColoredMarker
@@ -255,18 +274,11 @@ export const DraggableMarkers = () => {
                                     latitude={question.data.latB}
                                     longitude={question.data.lngB}
                                     onChange={(e) => {
-                                        const newQuestions = [...$questions];
-                                        (
-                                            newQuestions[
-                                                index
-                                            ] as typeof question
-                                        ).data.latB = e.target.getLatLng().lat;
-                                        (
-                                            newQuestions[
-                                                index
-                                            ] as typeof question
-                                        ).data.lngB = e.target.getLatLng().lng;
-                                        questions.set(newQuestions);
+                                        question.data.latB =
+                                            e.target.getLatLng().lat;
+                                        question.data.lngB =
+                                            e.target.getLatLng().lng;
+                                        questionModified();
                                     }}
                                 />
                             </Fragment>

@@ -1,5 +1,6 @@
 import {
     animateMapMovements,
+    autoSave,
     defaultUnit,
     hiderMode,
     hidingRadius,
@@ -9,6 +10,8 @@ import {
     mapGeoLocation,
     polyGeoJSON,
     questions,
+    save,
+    triggerLocalRefresh,
 } from "@/lib/context";
 import { Button } from "./ui/button";
 import { toast } from "react-toastify";
@@ -27,16 +30,22 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Checkbox } from "./ui/checkbox";
 import { LatitudeLongitude } from "./LatLngPicker";
-import { SidebarMenu } from "./ui/sidebar-l";
+import {
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+} from "./ui/sidebar-l";
 import { questionsSchema } from "@/lib/schema";
 import { UnitSelect } from "./UnitSelect";
 
 export const OptionDrawers = ({ className }: { className?: string }) => {
+    useStore(triggerLocalRefresh);
     const $defaultUnit = useStore(defaultUnit);
     const $highlightTrainLines = useStore(highlightTrainLines);
     const $animateMapMovements = useStore(animateMapMovements);
     const $hiderMode = useStore(hiderMode);
     const $hidingRadius = useStore(hidingRadius);
+    const $autoSave = useStore(autoSave);
     const [isInstructionsOpen, setInstructionsOpen] = useState(false);
     const [isOptionsOpen, setOptionsOpen] = useState(false);
 
@@ -307,6 +316,17 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                             </div>
                             <div className="flex flex-row items-center gap-2">
                                 <label className="text-2xl font-semibold font-poppins">
+                                    Auto save?
+                                </label>
+                                <Checkbox
+                                    checked={$autoSave}
+                                    onCheckedChange={() =>
+                                        autoSave.set(!$autoSave)
+                                    }
+                                />
+                            </div>
+                            <div className="flex flex-row items-center gap-2">
+                                <label className="text-2xl font-semibold font-poppins">
                                     Hider mode?
                                 </label>
                                 <Checkbox
@@ -341,18 +361,35 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                         latitude={$hiderMode.latitude}
                                         longitude={$hiderMode.longitude}
                                         onChange={(latitude, longitude) => {
-                                            hiderMode.set({
-                                                latitude:
-                                                    latitude ??
-                                                    $hiderMode.latitude,
-                                                longitude:
-                                                    longitude ??
-                                                    $hiderMode.longitude,
-                                            });
+                                            $hiderMode.latitude =
+                                                latitude ?? $hiderMode.latitude;
+                                            $hiderMode.longitude =
+                                                longitude ??
+                                                $hiderMode.longitude;
+
+                                            if ($autoSave) {
+                                                hiderMode.set({
+                                                    ...$hiderMode,
+                                                });
+                                            } else {
+                                                triggerLocalRefresh.set(
+                                                    Math.random(),
+                                                );
+                                            }
                                         }}
                                         latLabel="Hider Latitude"
                                         lngLabel="Hider Longitude"
                                     />
+                                    {!autoSave && (
+                                        <SidebarMenuItem>
+                                            <SidebarMenuButton
+                                                className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-shadow duration-500 mt-2"
+                                                onClick={save}
+                                            >
+                                                Save
+                                            </SidebarMenuButton>
+                                        </SidebarMenuItem>
+                                    )}
                                 </SidebarMenu>
                             )}
                         </div>

@@ -50,7 +50,11 @@ export const addQuestion = (question: DeepPartial<Question>) =>
     questionModified(questions.get().push(questionSchema.parse(question)));
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const questionModified = (..._: any[]) => {
-    questions.set([...questions.get()]);
+    if (autoSave.get()) {
+        questions.set([...questions.get()]);
+    } else {
+        triggerLocalRefresh.set(Math.random());
+    }
 };
 
 export const leafletMapContext = atom<Map | null>(null);
@@ -113,3 +117,15 @@ export const disabledStations = persistentAtom<string[]>(
         decode: JSON.parse,
     },
 );
+export const autoSave = persistentAtom<boolean>("autoSave", true, {
+    encode: JSON.stringify,
+    decode: JSON.parse,
+});
+export const save = () => {
+    questions.set([...questions.get()]);
+    const $hiderMode = hiderMode.get();
+
+    if ($hiderMode !== false) {
+        hiderMode.set({ ...$hiderMode });
+    }
+};
