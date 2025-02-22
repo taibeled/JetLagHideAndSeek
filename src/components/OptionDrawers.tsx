@@ -143,6 +143,10 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 disabledStations.set(geojson.disabledStations);
             }
 
+            if (geojson.hidingRadius !== null) {
+                hidingRadius.set(geojson.hidingRadius)
+            }
+
             toast.success("Hiding zone loaded successfully", { autoClose: 2000 });
         } catch(e) {
             toast.error(`Invalid hiding zone settings: ${e}`);
