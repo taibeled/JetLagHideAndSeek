@@ -137,13 +137,13 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                     );
                     questions.set([]);
                 }
+            }
 
-                if (geojson.disabledStations !== null && geojson.disabledStations.constructor === Array) {
-                    disabledStations.set(geojson.disabledStations);
-                }
+            if (geojson.disabledStations !== null && geojson.disabledStations.constructor === Array) {
+                disabledStations.set(geojson.disabledStations);
+            }
 
-                toast.success("Hiding zone loaded successfully", { autoClose: 2000 });
-            }   
+            toast.success("Hiding zone loaded successfully", { autoClose: 2000 });
         } catch(e) {
             toast.error(`Invalid hiding zone settings: ${e}`);
         }
