@@ -1,4 +1,4 @@
-import { atom } from "nanostores";
+import { atom, computed } from "nanostores";
 import { persistentAtom } from "@nanostores/persistent";
 import { type OpenStreetMap } from "../maps/api";
 import type { Map } from "leaflet";
@@ -129,3 +129,19 @@ export const save = () => {
         hiderMode.set({ ...$hiderMode });
     }
 };
+
+// Exported settings that can be loaded from clipboard or URL
+export const settings = computed([questions, polyGeoJSON, mapGeoLocation], (q, geo, loc) => {
+    if (geo !== null) {
+        return {
+            ...geo,
+            questions: q
+        }
+    } else {
+        return {
+            ...loc,
+            isHidingZone: true,
+            questions: q          
+        }    
+    }
+})
