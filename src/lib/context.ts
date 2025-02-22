@@ -130,8 +130,8 @@ export const save = () => {
     }
 };
 
-// Exported settings that can be loaded from clipboard or URL
-export const settings = computed([questions, polyGeoJSON, mapGeoLocation], (q, geo, loc) => {
+// Exported hiding zone that can be loaded from clipboard or URL
+export const hidingZone = computed([questions, polyGeoJSON, mapGeoLocation], (q, geo, loc) => {
     if (geo !== null) {
         return {
             ...geo,

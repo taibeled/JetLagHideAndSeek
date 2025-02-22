@@ -12,7 +12,7 @@ import {
     questions,
     save,
     triggerLocalRefresh,
-    settings,
+    hidingZone,
 } from "@/lib/context";
 import { useEffect } from "react";
 import { Button } from "./ui/button";
@@ -40,6 +40,8 @@ import {
 import { questionsSchema } from "@/lib/schema";
 import { UnitSelect } from "./UnitSelect";
 
+const hidingZoneUrlParam = "hz";
+
 export const OptionDrawers = ({ className }: { className?: string }) => {
     useStore(triggerLocalRefresh);
     const $defaultUnit = useStore(defaultUnit);
@@ -51,24 +53,29 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const [isInstructionsOpen, setInstructionsOpen] = useState(false);
     const [isOptionsOpen, setOptionsOpen] = useState(false);
 
-    settings.listen(s => {
+    hidingZone.listen(s => {
         let _params = new URL(window.location.toString()).searchParams;
-        let _current = _params.get("settings");
+        let _current = _params.get(hidingZoneUrlParam);
 
         let b64 = btoa(JSON.stringify(s));
 
         if (_current === b64) { return }
 
-        const params = new URLSearchParams({settings: b64});
+        const params = new URLSearchParams({[hidingZoneUrlParam]: b64});
         window.history.pushState({}, "", `${window.location.pathname}?${params.toString()}`);
     });
 
+    // Listen for history state changes to enable use of back-button to undo changes to zone
     useEffect(() => {
-        const handler = (ev) => {
+        const handler = () => {
             let params = new URL(window.location.toString()).searchParams;
-            let settings = params.get("settings");
-            if (settings !== null) {
-                loadSettings(settings);
+            let hidingZone = params.get(hidingZoneUrlParam);
+            if (hidingZone !== null) {
+                try {
+                    loadHidingZone(atob(hidingZone));   
+                } catch(e) {
+                    toast.error(`Invalid hiding zone settings: ${e}`);
+                }
             }
         };
         // Load on init
@@ -80,9 +87,9 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
         }
     }, []);
 
-    const loadSettings = (settings) => {
+    const loadHidingZone = (hidingZone) => {
         try {
-            const geojson = JSON.parse(atob(settings));
+            const geojson = JSON.parse(hidingZone);
 
             if (
                 geojson.properties &&
@@ -130,7 +137,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 toast.success("Hiding zone loaded successfully", { autoClose: 2000 });
             }   
         } catch(e) {
-            toast.error(`Invalid Settings: ${e}`);
+            toast.error(`Invalid hiding zone settings: ${e}`);
         }
     };
 
@@ -260,7 +267,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                             return toast.error(
                                                 "Clipboard not supported",
                                             );
-                                        navigator.clipboard.writeText(btoa(JSON.stringify(settings.get())));
+                                        navigator.clipboard.writeText(JSON.stringify(hidingZone.get()));
                                         toast.success(
                                             "Hiding zone copied successfully",
                                             {
@@ -277,7 +284,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                             return toast.error(
                                                 "Clipboard not supported",
                                             );
-                                        navigator.clipboard.readText().then(loadSettings);
+                                        navigator.clipboard.readText().then(loadHidingZone);
                                     }}
                                 >
                                     Paste Hiding Zone
