@@ -41,7 +41,7 @@ import {
 import { questionsSchema } from "@/lib/schema";
 import { UnitSelect } from "./UnitSelect";
 
-const hidingZoneUrlParam = "hz";
+const HIDING_ZONE_URL_PARAM = "hz";
 
 export const OptionDrawers = ({ className }: { className?: string }) => {
     useStore(triggerLocalRefresh);
@@ -51,34 +51,35 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $hiderMode = useStore(hiderMode);
     const $hidingRadius = useStore(hidingRadius);
     const $autoSave = useStore(autoSave);
+    const $hidingZone = useStore(hidingZone);
     const [isInstructionsOpen, setInstructionsOpen] = useState(false);
     const [isOptionsOpen, setOptionsOpen] = useState(false);
 
-    const $hidingZone = useStore(hidingZone);
-
-    hidingZone.listen((s) => {
+    useEffect(() => {
         const _params = new URL(window.location.toString()).searchParams;
-        const _current = _params.get(hidingZoneUrlParam);
+        const _current = _params.get(HIDING_ZONE_URL_PARAM);
 
-        const b64 = btoa(JSON.stringify(s));
+        const b64 = btoa(JSON.stringify($hidingZone));
 
         if (_current === b64) {
             return;
         }
 
-        const params = new URLSearchParams({ [hidingZoneUrlParam]: b64 });
+        const params = new URLSearchParams({
+            [HIDING_ZONE_URL_PARAM]: b64,
+        });
         window.history.pushState(
             {},
             "",
             `${window.location.pathname}?${params.toString()}`,
         );
-    });
+    }, [$hidingZone]);
 
     // Listen for history state changes to enable use of back-button to undo changes to zone
     useEffect(() => {
         const handler = () => {
             const params = new URL(window.location.toString()).searchParams;
-            const hidingZone = params.get(hidingZoneUrlParam);
+            const hidingZone = params.get(HIDING_ZONE_URL_PARAM);
             if (hidingZone !== null) {
                 try {
                     loadHidingZone(atob(hidingZone));
@@ -96,7 +97,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
         };
     }, []);
 
-    const loadHidingZone = (hidingZone) => {
+    const loadHidingZone = (hidingZone: typeof $hidingZone) => {
         try {
             const geojson = JSON.parse(hidingZone);
 
