@@ -56,27 +56,33 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
 
     const $hidingZone = useStore(hidingZone);
 
-    hidingZone.listen(s => {
-        let _params = new URL(window.location.toString()).searchParams;
-        let _current = _params.get(hidingZoneUrlParam);
+    hidingZone.listen((s) => {
+        const _params = new URL(window.location.toString()).searchParams;
+        const _current = _params.get(hidingZoneUrlParam);
 
-        let b64 = btoa(JSON.stringify(s));
+        const b64 = btoa(JSON.stringify(s));
 
-        if (_current === b64) { return }
+        if (_current === b64) {
+            return;
+        }
 
-        const params = new URLSearchParams({[hidingZoneUrlParam]: b64});
-        window.history.pushState({}, "", `${window.location.pathname}?${params.toString()}`);
+        const params = new URLSearchParams({ [hidingZoneUrlParam]: b64 });
+        window.history.pushState(
+            {},
+            "",
+            `${window.location.pathname}?${params.toString()}`,
+        );
     });
 
     // Listen for history state changes to enable use of back-button to undo changes to zone
     useEffect(() => {
         const handler = () => {
-            let params = new URL(window.location.toString()).searchParams;
-            let hidingZone = params.get(hidingZoneUrlParam);
+            const params = new URL(window.location.toString()).searchParams;
+            const hidingZone = params.get(hidingZoneUrlParam);
             if (hidingZone !== null) {
                 try {
-                    loadHidingZone(atob(hidingZone));   
-                } catch(e) {
+                    loadHidingZone(atob(hidingZone));
+                } catch (e) {
                     toast.error(`Invalid hiding zone settings: ${e}`);
                 }
             }
@@ -87,7 +93,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
         window.addEventListener("popstate", handler);
         return () => {
             window.removeEventListener("popstate", handler);
-        }
+        };
     }, []);
 
     const loadHidingZone = (hidingZone) => {
@@ -96,59 +102,43 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
 
             if (
                 geojson.properties &&
-                geojson.properties
-                    .isHidingZone ===
-                    true
+                geojson.properties.isHidingZone === true
             ) {
-                mapGeoLocation.set(
-                    geojson,
-                );
+                mapGeoLocation.set(geojson);
                 mapGeoJSON.set(null);
                 polyGeoJSON.set(null);
                 questions.set(
-                    questionsSchema.parse(
-                        geojson
-                            .properties
-                            .questions ??
-                            [],
-                    ),
+                    questionsSchema.parse(geojson.properties.questions ?? []),
                 );
             } else {
                 if (geojson.questions) {
-                    questions.set(
-                        questionsSchema.parse(
-                            geojson.questions,
-                        ),
-                    );
+                    questions.set(questionsSchema.parse(geojson.questions));
                     delete geojson.questions;
 
-                    mapGeoJSON.set(
-                        geojson,
-                    );
-                    polyGeoJSON.set(
-                        geojson,
-                    );
+                    mapGeoJSON.set(geojson);
+                    polyGeoJSON.set(geojson);
                 } else {
-                    mapGeoJSON.set(
-                        geojson,
-                    );
-                    polyGeoJSON.set(
-                        geojson,
-                    );
+                    mapGeoJSON.set(geojson);
+                    polyGeoJSON.set(geojson);
                     questions.set([]);
                 }
             }
 
-            if (geojson.disabledStations !== null && geojson.disabledStations.constructor === Array) {
+            if (
+                geojson.disabledStations !== null &&
+                geojson.disabledStations.constructor === Array
+            ) {
                 disabledStations.set(geojson.disabledStations);
             }
 
             if (geojson.hidingRadius !== null) {
-                hidingRadius.set(geojson.hidingRadius)
+                hidingRadius.set(geojson.hidingRadius);
             }
 
-            toast.success("Hiding zone loaded successfully", { autoClose: 2000 });
-        } catch(e) {
+            toast.success("Hiding zone loaded successfully", {
+                autoClose: 2000,
+            });
+        } catch (e) {
             toast.error(`Invalid hiding zone settings: ${e}`);
         }
     };
@@ -279,7 +269,9 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                             return toast.error(
                                                 "Clipboard not supported",
                                             );
-                                        navigator.clipboard.writeText(JSON.stringify($hidingZone));
+                                        navigator.clipboard.writeText(
+                                            JSON.stringify($hidingZone),
+                                        );
                                         toast.success(
                                             "Hiding zone copied successfully",
                                             {
@@ -296,7 +288,9 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                             return toast.error(
                                                 "Clipboard not supported",
                                             );
-                                        navigator.clipboard.readText().then(loadHidingZone);
+                                        navigator.clipboard
+                                            .readText()
+                                            .then(loadHidingZone);
                                     }}
                                 >
                                     Paste Hiding Zone
