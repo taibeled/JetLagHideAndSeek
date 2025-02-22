@@ -53,6 +53,8 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const [isInstructionsOpen, setInstructionsOpen] = useState(false);
     const [isOptionsOpen, setOptionsOpen] = useState(false);
 
+    const $hidingZone = useStore(hidingZone);
+
     hidingZone.listen(s => {
         let _params = new URL(window.location.toString()).searchParams;
         let _current = _params.get(hidingZoneUrlParam);
@@ -267,7 +269,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                             return toast.error(
                                                 "Clipboard not supported",
                                             );
-                                        navigator.clipboard.writeText(JSON.stringify(hidingZone.get()));
+                                        navigator.clipboard.writeText(JSON.stringify($hidingZone));
                                         toast.success(
                                             "Hiding zone copied successfully",
                                             {
