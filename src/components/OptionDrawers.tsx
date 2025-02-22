@@ -10,6 +10,7 @@ import {
     mapGeoLocation,
     polyGeoJSON,
     questions,
+    disabledStations,
     save,
     triggerLocalRefresh,
     hidingZone,
@@ -136,6 +137,11 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                     );
                     questions.set([]);
                 }
+
+                if (geojson.disabledStations !== null && geojson.disabledStations.constructor === Array) {
+                    disabledStations.set(geojson.disabledStations);
+                }
+
                 toast.success("Hiding zone loaded successfully", { autoClose: 2000 });
             }   
         } catch(e) {

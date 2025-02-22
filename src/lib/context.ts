@@ -131,17 +131,19 @@ export const save = () => {
 };
 
 // Exported hiding zone that can be loaded from clipboard or URL
-export const hidingZone = computed([questions, polyGeoJSON, mapGeoLocation], (q, geo, loc) => {
+export const hidingZone = computed([questions, polyGeoJSON, mapGeoLocation, disabledStations], (q, geo, loc, disabledStations) => {
     if (geo !== null) {
         return {
             ...geo,
-            questions: q
+            questions: q,
+            disabledStations: disabledStations,
         }
     } else {
         return {
             ...loc,
             isHidingZone: true,
-            questions: q          
+            questions: q,
+            disabledStations: disabledStations,
         }    
     }
 })
