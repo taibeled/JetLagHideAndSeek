@@ -55,26 +55,6 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const [isInstructionsOpen, setInstructionsOpen] = useState(false);
     const [isOptionsOpen, setOptionsOpen] = useState(false);
 
-    useEffect(() => {
-        const _params = new URL(window.location.toString()).searchParams;
-        const _current = _params.get(HIDING_ZONE_URL_PARAM);
-
-        const b64 = btoa(JSON.stringify($hidingZone));
-
-        if (_current === b64) {
-            return;
-        }
-
-        const params = new URLSearchParams({
-            [HIDING_ZONE_URL_PARAM]: b64,
-        });
-        window.history.pushState(
-            {},
-            "",
-            `${window.location.pathname}?${params.toString()}`,
-        );
-    }, [$hidingZone]);
-
     // Listen for history state changes to enable use of back-button to undo changes to zone
     useEffect(() => {
         const handler = () => {
@@ -96,6 +76,27 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
             window.removeEventListener("popstate", handler);
         };
     }, []);
+
+    // Set URL state whenever hiding zone changes
+    useEffect(() => {
+        const _params = new URL(window.location.toString()).searchParams;
+        const _current = _params.get(HIDING_ZONE_URL_PARAM);
+        const b64 = btoa(JSON.stringify($hidingZone));
+
+        if (_current === b64) {
+            return;
+        }
+
+        const params = new URLSearchParams({
+            [HIDING_ZONE_URL_PARAM]: b64,
+        });
+        window.history.pushState(
+            {},
+            "",
+            `${window.location.pathname}?${params.toString()}`,
+        );
+    }, [$hidingZone]);
+
 
     const loadHidingZone = (hidingZone: typeof $hidingZone) => {
         try {
