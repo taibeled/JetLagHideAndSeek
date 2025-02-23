@@ -377,7 +377,7 @@ export const Map = ({ className }: { className?: string }) => {
             >
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a> and <a href="http://www.openrailwaymap.org/">OpenRailwayMap</a>'
-                    url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                    url="https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=80add02166f6434d8e6dca27b0573474"
                     subdomains="abcd"
                     maxZoom={20}
                     minZoom={2}
