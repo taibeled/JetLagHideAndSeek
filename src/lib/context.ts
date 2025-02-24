@@ -1,4 +1,4 @@
-import { atom, computed } from "nanostores";
+import { atom } from "nanostores";
 import { persistentAtom } from "@nanostores/persistent";
 import { type OpenStreetMap } from "../maps/api";
 import type { Map } from "leaflet";
@@ -129,26 +129,3 @@ export const save = () => {
         hiderMode.set({ ...$hiderMode });
     }
 };
-
-// Exported hiding zone that can be loaded from clipboard or URL
-export const hidingZone = computed(
-    [questions, polyGeoJSON, mapGeoLocation, disabledStations, hidingRadius],
-    (q, geo, loc, disabledStations, radius) => {
-        if (geo !== null) {
-            return {
-                ...geo,
-                questions: q,
-                disabledStations: disabledStations,
-                hidingRadius: radius,
-            };
-        } else {
-            return {
-                ...loc,
-                isHidingZone: true,
-                questions: q,
-                disabledStations: disabledStations,
-                hidingRadius: radius,
-            };
-        }
-    },
-);
