@@ -412,6 +412,18 @@ export const ZoneSidebar = () => {
                                             value: "[railway=station]",
                                         },
                                         {
+                                            label: "Railway Halts",
+                                            value: "[railway=halt]",
+                                        },
+                                        {
+                                            label: "Railway Stops",
+                                            value: "[railway=stop]",
+                                        },
+                                        {
+                                            label: "Tram Stops",
+                                            value: "[railway=tram_stop]",
+                                        },
+                                        {
                                             label: "Bus Stops",
                                             value: "[highway=bus_stop]",
                                         },
