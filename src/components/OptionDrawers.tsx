@@ -10,8 +10,10 @@ import {
     mapGeoLocation,
     polyGeoJSON,
     questions,
+    disabledStations,
     save,
     triggerLocalRefresh,
+    hidingZone,
 } from "@/lib/context";
 import { Button } from "./ui/button";
 import { toast } from "react-toastify";
@@ -27,7 +29,7 @@ import {
 import { Separator } from "./ui/separator";
 import { useStore } from "@nanostores/react";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Checkbox } from "./ui/checkbox";
 import { LatitudeLongitude } from "./LatLngPicker";
 import {
@@ -38,6 +40,8 @@ import {
 import { questionsSchema } from "@/lib/schema";
 import { UnitSelect } from "./UnitSelect";
 
+const HIDING_ZONE_URL_PARAM = "hz";
+
 export const OptionDrawers = ({ className }: { className?: string }) => {
     useStore(triggerLocalRefresh);
     const $defaultUnit = useStore(defaultUnit);
@@ -46,8 +50,90 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $hiderMode = useStore(hiderMode);
     const $hidingRadius = useStore(hidingRadius);
     const $autoSave = useStore(autoSave);
+    const $hidingZone = useStore(hidingZone);
     const [isInstructionsOpen, setInstructionsOpen] = useState(false);
     const [isOptionsOpen, setOptionsOpen] = useState(false);
+
+    const getHidingZoneUrl = () => {
+        const b64 = btoa(JSON.stringify($hidingZone));
+
+        const params = new URLSearchParams({
+            [HIDING_ZONE_URL_PARAM]: b64,
+        });
+
+        return `?${params.toString()}`;
+    };
+
+    // Listen for history state changes to load hiding zone from URL param
+    useEffect(() => {
+        const handler = () => {
+            const params = new URL(window.location.toString()).searchParams;
+            const hidingZone = params.get(HIDING_ZONE_URL_PARAM);
+            if (hidingZone !== null) {
+                try {
+                    loadHidingZone(atob(hidingZone));
+                    // Remove hiding zone parameter after initial load
+                    window.history.replaceState({}, "", window.location.pathname);
+                } catch (e) {
+                    toast.error(`Invalid hiding zone settings: ${e}`);
+                }
+            }
+        };
+        // Load on init
+        handler();
+
+        window.addEventListener("popstate", handler);
+        return () => {
+            window.removeEventListener("popstate", handler);
+        };
+    }, []);
+
+    const loadHidingZone = (hidingZone: typeof $hidingZone) => {
+        try {
+            const geojson = JSON.parse(hidingZone);
+
+            if (
+                geojson.properties &&
+                geojson.properties.isHidingZone === true
+            ) {
+                mapGeoLocation.set(geojson);
+                mapGeoJSON.set(null);
+                polyGeoJSON.set(null);
+                questions.set(
+                    questionsSchema.parse(geojson.properties.questions ?? []),
+                );
+            } else {
+                if (geojson.questions) {
+                    questions.set(questionsSchema.parse(geojson.questions));
+                    delete geojson.questions;
+
+                    mapGeoJSON.set(geojson);
+                    polyGeoJSON.set(geojson);
+                } else {
+                    mapGeoJSON.set(geojson);
+                    polyGeoJSON.set(geojson);
+                    questions.set([]);
+                }
+            }
+
+            if (
+                geojson.disabledStations !== null &&
+                geojson.disabledStations.constructor === Array
+            ) {
+                disabledStations.set(geojson.disabledStations);
+            }
+
+            if (geojson.hidingRadius !== null) {
+                hidingRadius.set(geojson.hidingRadius);
+            }
+
+            toast.success("Hiding zone loaded successfully", {
+                autoClose: 2000,
+            });
+        } catch (e) {
+            toast.error(`Invalid hiding zone settings: ${e}`);
+        }
+    };
 
     return (
         <div
@@ -56,6 +142,44 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 className,
             )}
         >
+		<Button
+			className="shadow-md"
+			onClick={() => {
+				const b64 = btoa(JSON.stringify($hidingZone));
+				const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}?hz=${b64}`;
+
+				// Show platform native share sheet if possible
+				if (navigator.share) {
+					navigator.share({
+						title: document.title,
+						url: url,
+					})
+					.then(() => {
+						toast.success(
+							"Hiding zone shared",
+							{
+								autoClose: 2000,
+							},
+						);
+					})
+					.catch(error => toast.error("Failed to share via OS"));
+				} else if (!navigator || !navigator.clipboard) {
+					return toast.error(
+						`Clipboard not supported. Try manually copying/pasting: ${url}`,
+						{ className: 'p-0 w-[1000px]' }
+					);
+				} else {
+					navigator.clipboard.writeText(url);
+					toast.success(
+						"Hiding zone URL copied to clipboard",
+						{
+							autoClose: 2000,
+						},
+					);
+				}
+			}}>
+				Share
+			</Button>
             <Drawer
                 open={isInstructionsOpen}
                 onOpenChange={setInstructionsOpen}
@@ -175,28 +299,9 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                             return toast.error(
                                                 "Clipboard not supported",
                                             );
-
-                                        const $polyGeoJSON = polyGeoJSON.get();
-
-                                        if ($polyGeoJSON !== null) {
-                                            navigator.clipboard.writeText(
-                                                JSON.stringify({
-                                                    ...$polyGeoJSON,
-                                                    questions: questions.get(),
-                                                }),
-                                            );
-                                        } else {
-                                            const location =
-                                                mapGeoLocation.get();
-                                            location.properties.isHidingZone =
-                                                true;
-                                            location.properties.questions =
-                                                questions.get();
-
-                                            navigator.clipboard.writeText(
-                                                JSON.stringify(location),
-                                            );
-                                        }
+                                        navigator.clipboard.writeText(
+                                            JSON.stringify($hidingZone),
+                                        );
                                         toast.success(
                                             "Hiding zone copied successfully",
                                             {
@@ -213,69 +318,9 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                             return toast.error(
                                                 "Clipboard not supported",
                                             );
-
                                         navigator.clipboard
                                             .readText()
-                                            .then((text) => {
-                                                try {
-                                                    const geojson =
-                                                        JSON.parse(text);
-
-                                                    if (
-                                                        geojson.properties &&
-                                                        geojson.properties
-                                                            .isHidingZone ===
-                                                            true
-                                                    ) {
-                                                        mapGeoLocation.set(
-                                                            geojson,
-                                                        );
-                                                        mapGeoJSON.set(null);
-                                                        polyGeoJSON.set(null);
-                                                        questions.set(
-                                                            questionsSchema.parse(
-                                                                geojson
-                                                                    .properties
-                                                                    .questions ??
-                                                                    [],
-                                                            ),
-                                                        );
-                                                    } else {
-                                                        if (geojson.questions) {
-                                                            questions.set(
-                                                                questionsSchema.parse(
-                                                                    geojson.questions,
-                                                                ),
-                                                            );
-                                                            delete geojson.questions;
-
-                                                            mapGeoJSON.set(
-                                                                geojson,
-                                                            );
-                                                            polyGeoJSON.set(
-                                                                geojson,
-                                                            );
-                                                        } else {
-                                                            mapGeoJSON.set(
-                                                                geojson,
-                                                            );
-                                                            polyGeoJSON.set(
-                                                                geojson,
-                                                            );
-                                                            questions.set([]);
-                                                        }
-                                                    }
-
-                                                    toast.success(
-                                                        "Hiding zone pasted successfully",
-                                                        {
-                                                            autoClose: 2000,
-                                                        },
-                                                    );
-                                                } catch {
-                                                    toast.error("Invalid Data");
-                                                }
-                                            });
+                                            .then(loadHidingZone);
                                     }}
                                 >
                                     Paste Hiding Zone
