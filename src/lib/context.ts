@@ -142,7 +142,7 @@ export const hidingZone = computed(
                 hidingRadius: radius,
             };
         } else {
-            let $loc = structuredClone(loc);
+            const $loc = structuredClone(loc);
             $loc.properties.isHidingZone = true;
             $loc.properties.questions = q;
             return {
