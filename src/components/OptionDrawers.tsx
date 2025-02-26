@@ -54,16 +54,6 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const [isInstructionsOpen, setInstructionsOpen] = useState(false);
     const [isOptionsOpen, setOptionsOpen] = useState(false);
 
-    const getHidingZoneUrl = () => {
-        const b64 = btoa(JSON.stringify($hidingZone));
-
-        const params = new URLSearchParams({
-            [HIDING_ZONE_URL_PARAM]: b64,
-        });
-
-        return `?${params.toString()}`;
-    };
-
     // Listen for history state changes to load hiding zone from URL param
     useEffect(() => {
         const handler = () => {
@@ -73,7 +63,11 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 try {
                     loadHidingZone(atob(hidingZone));
                     // Remove hiding zone parameter after initial load
-                    window.history.replaceState({}, "", window.location.pathname);
+                    window.history.replaceState(
+                        {},
+                        "",
+                        window.location.pathname,
+                    );
                 } catch (e) {
                     toast.error(`Invalid hiding zone settings: ${e}`);
                 }
@@ -142,44 +136,42 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 className,
             )}
         >
-		<Button
-			className="shadow-md"
-			onClick={() => {
-				const b64 = btoa(JSON.stringify($hidingZone));
-				const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}?hz=${b64}`;
+            <Button
+                className="shadow-md"
+                onClick={() => {
+                    const b64 = btoa(JSON.stringify($hidingZone));
+                    const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}?hz=${b64}`;
 
-				// Show platform native share sheet if possible
-				if (navigator.share) {
-					navigator.share({
-						title: document.title,
-						url: url,
-					})
-					.then(() => {
-						toast.success(
-							"Hiding zone shared",
-							{
-								autoClose: 2000,
-							},
-						);
-					})
-					.catch(error => toast.error("Failed to share via OS"));
-				} else if (!navigator || !navigator.clipboard) {
-					return toast.error(
-						`Clipboard not supported. Try manually copying/pasting: ${url}`,
-						{ className: 'p-0 w-[1000px]' }
-					);
-				} else {
-					navigator.clipboard.writeText(url);
-					toast.success(
-						"Hiding zone URL copied to clipboard",
-						{
-							autoClose: 2000,
-						},
-					);
-				}
-			}}>
-				Share
-			</Button>
+                    // Show platform native share sheet if possible
+                    if (navigator.share) {
+                        navigator
+                            .share({
+                                title: document.title,
+                                url: url,
+                            })
+                            .then(() => {
+                                toast.success("Hiding zone shared", {
+                                    autoClose: 2000,
+                                });
+                            })
+                            .catch(() =>
+                                toast.error("Failed to share via OS"),
+                            );
+                    } else if (!navigator || !navigator.clipboard) {
+                        return toast.error(
+                            `Clipboard not supported. Try manually copying/pasting: ${url}`,
+                            { className: "p-0 w-[1000px]" },
+                        );
+                    } else {
+                        navigator.clipboard.writeText(url);
+                        toast.success("Hiding zone URL copied to clipboard", {
+                            autoClose: 2000,
+                        });
+                    }
+                }}
+            >
+                Share
+            </Button>
             <Drawer
                 open={isInstructionsOpen}
                 onOpenChange={setInstructionsOpen}
