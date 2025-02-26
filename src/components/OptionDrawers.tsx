@@ -54,32 +54,18 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const [isInstructionsOpen, setInstructionsOpen] = useState(false);
     const [isOptionsOpen, setOptionsOpen] = useState(false);
 
-    // Listen for history state changes to load hiding zone from URL param
     useEffect(() => {
-        const handler = () => {
-            const params = new URL(window.location.toString()).searchParams;
-            const hidingZone = params.get(HIDING_ZONE_URL_PARAM);
-            if (hidingZone !== null) {
-                try {
-                    loadHidingZone(atob(hidingZone));
-                    // Remove hiding zone parameter after initial load
-                    window.history.replaceState(
-                        {},
-                        "",
-                        window.location.pathname,
-                    );
-                } catch (e) {
-                    toast.error(`Invalid hiding zone settings: ${e}`);
-                }
+        const params = new URL(window.location.toString()).searchParams;
+        const hidingZone = params.get(HIDING_ZONE_URL_PARAM);
+        if (hidingZone !== null) {
+            try {
+                loadHidingZone(atob(hidingZone));
+                // Remove hiding zone parameter after initial load
+                window.history.replaceState({}, "", window.location.pathname);
+            } catch (e) {
+                toast.error(`Invalid hiding zone settings: ${e}`);
             }
-        };
-        // Load on init
-        handler();
-
-        window.addEventListener("popstate", handler);
-        return () => {
-            window.removeEventListener("popstate", handler);
-        };
+        }
     }, []);
 
     const loadHidingZone = (hidingZone: typeof $hidingZone) => {
@@ -148,11 +134,6 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                             .share({
                                 title: document.title,
                                 url: url,
-                            })
-                            .then(() => {
-                                toast.success("Hiding zone shared", {
-                                    autoClose: 2000,
-                                });
                             })
                             .catch(() => toast.error("Failed to share via OS"));
                     } else if (!navigator || !navigator.clipboard) {
