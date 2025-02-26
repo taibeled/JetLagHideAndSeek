@@ -90,12 +90,12 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 geojson.properties &&
                 geojson.properties.isHidingZone === true
             ) {
-                mapGeoLocation.set(geojson);
-                mapGeoJSON.set(null);
-                polyGeoJSON.set(null);
                 questions.set(
                     questionsSchema.parse(geojson.properties.questions ?? []),
                 );
+                mapGeoLocation.set(geojson);
+                mapGeoJSON.set(null);
+                polyGeoJSON.set(null);
             } else {
                 if (geojson.questions) {
                     questions.set(questionsSchema.parse(geojson.questions));
@@ -104,9 +104,9 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                     mapGeoJSON.set(geojson);
                     polyGeoJSON.set(geojson);
                 } else {
+                    questions.set([]);
                     mapGeoJSON.set(geojson);
                     polyGeoJSON.set(geojson);
-                    questions.set([]);
                 }
             }
 
@@ -154,9 +154,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     autoClose: 2000,
                                 });
                             })
-                            .catch(() =>
-                                toast.error("Failed to share via OS"),
-                            );
+                            .catch(() => toast.error("Failed to share via OS"));
                     } else if (!navigator || !navigator.clipboard) {
                         return toast.error(
                             `Clipboard not supported. Try manually copying/pasting: ${url}`,
