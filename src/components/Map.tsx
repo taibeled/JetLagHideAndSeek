@@ -10,7 +10,6 @@ import {
     mapGeoLocation,
     polyGeoJSON,
     questions,
-    highlightTrainLines,
     hiderMode,
     triggerLocalRefresh,
     questionFinishedMapData,
@@ -67,7 +66,6 @@ export const refreshMapData = (
 export const Map = ({ className }: { className?: string }) => {
     const $mapGeoLocation = useStore(mapGeoLocation);
     const $questions = useStore(questions);
-    const $highlightTrainLines = useStore(highlightTrainLines);
     const $hiderMode = useStore(hiderMode);
     const map = useStore(leafletMapContext);
 
@@ -383,15 +381,6 @@ export const Map = ({ className }: { className?: string }) => {
                     minZoom={2}
                     noWrap
                 />
-                {$highlightTrainLines && (
-                    <TileLayer
-                        url="https://c.tiles.openrailwaymap.org/maxspeed/{z}/{x}/{y}.png"
-                        maxZoom={19}
-                        tileSize={256}
-                        minZoom={2}
-                        noWrap
-                    />
-                )}
                 <DraggableMarkers />
                 <div className="leaflet-top leaflet-right">
                     <div className="leaflet-control flex-col flex gap-2">
@@ -402,7 +391,7 @@ export const Map = ({ className }: { className?: string }) => {
                 <ScaleControl position="bottomleft" />
             </MapContainer>
         ),
-        [map, $highlightTrainLines],
+        [map],
     );
 
     useEffect(() => {
