@@ -4,6 +4,7 @@ import {
     defaultUnit,
     hiderMode,
     hidingRadius,
+    highlightTrainLines,
     leafletMapContext,
     mapGeoJSON,
     mapGeoLocation,
@@ -40,6 +41,7 @@ import { UnitSelect } from "./UnitSelect";
 export const OptionDrawers = ({ className }: { className?: string }) => {
     useStore(triggerLocalRefresh);
     const $defaultUnit = useStore(defaultUnit);
+    const $highlightTrainLines = useStore(highlightTrainLines);
     const $animateMapMovements = useStore(animateMapMovements);
     const $hiderMode = useStore(hiderMode);
     const $hidingRadius = useStore(hidingRadius);
@@ -295,6 +297,19 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     onCheckedChange={() => {
                                         animateMapMovements.set(
                                             !$animateMapMovements,
+                                        );
+                                    }}
+                                />
+                            </div>
+                            <div className="flex flex-row items-center gap-2">
+                                <label className="text-2xl font-semibold font-poppins">
+                                    Highlight train lines?
+                                </label>
+                                <Checkbox
+                                    checked={$highlightTrainLines}
+                                    onCheckedChange={() => {
+                                        highlightTrainLines.set(
+                                            !$highlightTrainLines,
                                         );
                                     }}
                                 />
