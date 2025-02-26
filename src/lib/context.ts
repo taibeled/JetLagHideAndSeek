@@ -142,10 +142,10 @@ export const hidingZone = computed(
                 hidingRadius: radius,
             };
         } else {
+            loc.properties.isHidingZone = true;
+            loc.properties.questions = q;
             return {
                 ...loc,
-                isHidingZone: true,
-                questions: q,
                 disabledStations: disabledStations,
                 hidingRadius: radius,
             };
