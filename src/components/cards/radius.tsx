@@ -53,6 +53,7 @@ export const RadiusQuestionComponent = ({
                         type="number"
                         className="rounded-md p-2 w-16"
                         value={data.radius}
+                        disabled={!data.drag}
                         onChange={(e) =>
                             questionModified(
                                 (data.radius = parseFloat(e.target.value)),
@@ -61,6 +62,7 @@ export const RadiusQuestionComponent = ({
                     />
                     <UnitSelect
                         unit={data.unit}
+                        disabled={!data.drag}
                         onChange={(unit) =>
                             questionModified((data.unit = unit))
                         }
@@ -73,7 +75,7 @@ export const RadiusQuestionComponent = ({
                 </label>
                 <Checkbox
                     checked={data.within}
-                    disabled={!!$hiderMode}
+                    disabled={!!$hiderMode || !data.drag}
                     onCheckedChange={(checked) =>
                         questionModified((data.within = checked as boolean))
                     }
@@ -89,11 +91,11 @@ export const RadiusQuestionComponent = ({
                     color: data.color === "gold" ? "black" : undefined,
                 }}
             >
-                Color (drag{" "}
+                Color (lock{" "}
                 <Checkbox
-                    checked={data.drag}
+                    checked={!data.drag}
                     onCheckedChange={(checked) =>
-                        questionModified((data.drag = checked as boolean))
+                        questionModified((data.drag = !checked as boolean))
                     }
                 />
                 )
@@ -110,6 +112,7 @@ export const RadiusQuestionComponent = ({
                     }
                     questionModified();
                 }}
+                disabled={!data.drag}
             />
         </QuestionCard>
     );

@@ -21,6 +21,7 @@ export const LatitudeLongitude = ({
     latLabel = "Latitude",
     lngLabel = "Longitude",
     children,
+    disabled,
 }: {
     latitude: number;
     longitude: number;
@@ -29,6 +30,7 @@ export const LatitudeLongitude = ({
     lngLabel?: string;
     className?: string;
     children?: React.ReactNode;
+    disabled?: boolean;
 }) => {
     return (
         <>
@@ -48,6 +50,7 @@ export const LatitudeLongitude = ({
                             null,
                         );
                     }}
+                    disabled={disabled}
                 />
                 <Select
                     onValueChange={(value) =>
@@ -59,6 +62,7 @@ export const LatitudeLongitude = ({
                         )
                     }
                     value={latitude > 0 ? "north" : "south"}
+                    disabled={disabled}
                 >
                     <SelectTrigger className="max-w-[55px]">
                         <SelectValue placeholder="Direction"></SelectValue>
@@ -85,6 +89,7 @@ export const LatitudeLongitude = ({
                                 (longitude !== 0 ? Math.sign(longitude) : -1),
                         );
                     }}
+                    disabled={disabled}
                 />
                 <Select
                     onValueChange={(value) =>
@@ -96,6 +101,7 @@ export const LatitudeLongitude = ({
                         )
                     }
                     value={longitude > 0 ? "east" : "west"}
+                    disabled={disabled}
                 >
                     <SelectTrigger className="max-w-[55px]">
                         <SelectValue placeholder="Direction"></SelectValue>
@@ -139,6 +145,7 @@ export const LatitudeLongitude = ({
                             { autoClose: 500 },
                         );
                     }}
+                    disabled={disabled}
                 >
                     Current
                 </SidebarMenuButton>

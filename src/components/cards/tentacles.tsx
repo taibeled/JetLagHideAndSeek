@@ -66,12 +66,14 @@ export const TentacleQuestionComponent = ({
                                 (data.radius = parseFloat(e.target.value)),
                             )
                         }
+                        disabled={!data.drag}
                     />
                     <UnitSelect
                         unit={data.unit}
                         onChange={(unit) =>
                             questionModified((data.unit = unit))
                         }
+                        disabled={!data.drag}
                     />
                 </div>
             </SidebarMenuItem>
@@ -81,6 +83,7 @@ export const TentacleQuestionComponent = ({
                     onValueChange={(value) =>
                         questionModified((data.locationType = value as any))
                     }
+                    disabled={!data.drag}
                 >
                     <SelectTrigger>
                         <SelectValue placeholder="Location Type" />
@@ -116,11 +119,11 @@ export const TentacleQuestionComponent = ({
                     color: data.color === "gold" ? "black" : undefined,
                 }}
             >
-                Color (drag{" "}
+                Color (lock{" "}
                 <Checkbox
-                    checked={data.drag}
+                    checked={!data.drag}
                     onCheckedChange={(checked) =>
-                        questionModified((data.drag = checked as boolean))
+                        questionModified((data.drag = !checked as boolean))
                     }
                 />
                 )
@@ -137,6 +140,7 @@ export const TentacleQuestionComponent = ({
                     }
                     questionModified();
                 }}
+                disabled={!data.drag}
             />
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Suspense
@@ -162,6 +166,7 @@ export const TentacleQuestionComponent = ({
                     <TentacleLocationSelector
                         data={data}
                         promise={findTentacleLocations(data)}
+                        disabled={!data.drag}
                     />
                 </Suspense>
             </SidebarMenuItem>
@@ -172,9 +177,11 @@ export const TentacleQuestionComponent = ({
 const TentacleLocationSelector = ({
     data,
     promise,
+    disabled,
 }: {
     data: TentacleQuestion;
     promise: Promise<any>;
+    disabled: boolean;
 }) => {
     useStore(triggerLocalRefresh);
     const $hiderMode = useStore(hiderMode);
@@ -194,7 +201,7 @@ const TentacleLocationSelector = ({
 
                 questionModified();
             }}
-            disabled={!!$hiderMode}
+            disabled={!!$hiderMode || disabled}
         >
             <SelectTrigger>
                 <SelectValue placeholder="Location" />

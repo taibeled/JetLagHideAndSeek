@@ -65,6 +65,7 @@ export const MatchingQuestionComponent = ({
                                     ) as 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10),
                                 )
                             }
+                            disabled={!data.drag}
                         >
                             <SelectTrigger>
                                 <SelectValue placeholder="OSM Zone" />
@@ -137,6 +138,7 @@ export const MatchingQuestionComponent = ({
                     onValueChange={(value) =>
                         questionModified((data.type = value as any))
                     }
+                    disabled={!data.drag}
                 >
                     <SelectTrigger>
                         <SelectValue placeholder="Matching Type" />
@@ -205,7 +207,7 @@ export const MatchingQuestionComponent = ({
                     Same
                 </label>
                 <Checkbox
-                    disabled={!!$hiderMode}
+                    disabled={!!$hiderMode || !data.drag}
                     checked={data.same}
                     onCheckedChange={(checked) =>
                         questionModified((data.same = checked as boolean))
@@ -222,11 +224,11 @@ export const MatchingQuestionComponent = ({
                     color: data.color === "gold" ? "black" : undefined,
                 }}
             >
-                Color (drag{" "}
+                Color (lock{" "}
                 <Checkbox
-                    checked={data.drag}
+                    checked={!data.drag}
                     onCheckedChange={(checked) =>
-                        questionModified((data.drag = checked as boolean))
+                        questionModified((data.drag = !checked as boolean))
                     }
                 />
                 )
@@ -243,6 +245,7 @@ export const MatchingQuestionComponent = ({
                     }
                     questionModified();
                 }}
+                disabled={!data.drag}
             />
         </QuestionCard>
     );

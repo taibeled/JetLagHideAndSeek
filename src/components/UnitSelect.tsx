@@ -10,12 +10,14 @@ import {
 export const UnitSelect = ({
     unit,
     onChange,
+    disabled,
 }: {
     unit: Units;
     onChange: (unit: Units) => void;
+    disabled?: boolean;
 }) => {
     return (
-        <Select value={unit} onValueChange={onChange}>
+        <Select disabled={disabled} value={unit} onValueChange={onChange}>
             <SelectTrigger>
                 <SelectValue placeholder="Unit" />
             </SelectTrigger>

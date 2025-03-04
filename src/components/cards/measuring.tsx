@@ -94,6 +94,7 @@ export const MeasuringQuestionComponent = ({
                     onValueChange={(value) =>
                         questionModified((data.type = value as any))
                     }
+                    disabled={!data.drag}
                 >
                     <SelectTrigger>
                         <SelectValue placeholder="Measuring Type" />
@@ -163,7 +164,7 @@ export const MeasuringQuestionComponent = ({
                     Hider Closer
                 </label>
                 <Checkbox
-                    disabled={!!$hiderMode}
+                    disabled={!!$hiderMode || !data.drag}
                     checked={data.hiderCloser}
                     onCheckedChange={(checked) =>
                         questionModified(
@@ -182,11 +183,11 @@ export const MeasuringQuestionComponent = ({
                     color: data.color === "gold" ? "black" : undefined,
                 }}
             >
-                Color (drag{" "}
+                Color (lock{" "}
                 <Checkbox
-                    checked={data.drag}
+                    checked={!data.drag}
                     onCheckedChange={(checked) =>
-                        questionModified((data.drag = checked as boolean))
+                        questionModified((data.drag = !checked as boolean))
                     }
                 />
                 )
@@ -203,6 +204,7 @@ export const MeasuringQuestionComponent = ({
                     }
                     questionModified();
                 }}
+                disabled={!data.drag}
             />
         </QuestionCard>
     );

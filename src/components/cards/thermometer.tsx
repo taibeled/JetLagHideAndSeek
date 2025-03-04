@@ -51,7 +51,7 @@ export const ThermometerQuestionComponent = ({
                     Warmer
                 </label>
                 <Checkbox
-                    disabled={!!$hiderMode}
+                    disabled={!!$hiderMode || !data.drag}
                     checked={data.warmer}
                     onCheckedChange={(checked) =>
                         questionModified((data.warmer = checked as boolean))
@@ -68,11 +68,11 @@ export const ThermometerQuestionComponent = ({
                     color: data.colorA === "gold" ? "black" : undefined,
                 }}
             >
-                Color start (drag{" "}
+                Color start (lock{" "}
                 <Checkbox
-                    checked={data.drag}
+                    checked={!data.drag}
                     onCheckedChange={(checked) =>
-                        questionModified((data.drag = checked as boolean))
+                        questionModified((data.drag = !checked as boolean))
                     }
                 />
                 )
@@ -91,6 +91,7 @@ export const ThermometerQuestionComponent = ({
                     }
                     questionModified();
                 }}
+                disabled={!data.drag}
             />
             <Separator className="my-2" />
             <SidebarMenuItem
@@ -103,14 +104,7 @@ export const ThermometerQuestionComponent = ({
                     color: data.colorB === "gold" ? "black" : undefined,
                 }}
             >
-                Color end (drag{" "}
-                <Checkbox
-                    checked={data.drag}
-                    onCheckedChange={(checked) =>
-                        questionModified((data.drag = checked as boolean))
-                    }
-                />
-                )
+                Color end
             </SidebarMenuItem>
             <LatitudeLongitude
                 latitude={data.latB}
@@ -126,6 +120,7 @@ export const ThermometerQuestionComponent = ({
                     }
                     questionModified();
                 }}
+                disabled={!data.drag}
             />
         </QuestionCard>
     );

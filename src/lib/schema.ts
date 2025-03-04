@@ -43,6 +43,7 @@ const thermometerQuestionSchema = z.object({
     warmer: z.boolean().default(true),
     colorA: iconColorSchema.default(randomColor),
     colorB: iconColorSchema.default(randomColor),
+    /** Note that drag is now synonymous with unlocked */
     drag: z.boolean().default(true),
 });
 
@@ -55,6 +56,7 @@ const ordinaryBaseQuestionSchema = z.object({
         .number()
         .min(-180, "Longitude must not overlap with the antemeridian")
         .max(180, "Longitude must not overlap with the antemeridian"),
+    /** Note that drag is now synonymous with unlocked */
     drag: z.boolean().default(true),
     color: iconColorSchema.default(randomColor),
 });
