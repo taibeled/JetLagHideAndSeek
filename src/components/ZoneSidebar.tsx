@@ -62,6 +62,180 @@ import { ScrollToTop } from './ui/scroll-to-top';
 let determiningHidingZones = false;
 let buttonJustClicked = false;
 
+// Function to filter out duplicate stations that are within a certain distance
+const filterDuplicateStations = (
+  stations: any[],
+  distanceThresholdMeters = 25
+) => {
+  if (!stations || stations.length === 0)
+    return {
+      filtered: [],
+      duplicateIds: new Set(),
+      duplicateInfo: [],
+      duplicateDistances: new Map(),
+    };
+
+  console.log(`Starting duplicate filtering with ${stations.length} stations`);
+
+  const result: any[] = [];
+  const processed = new Set<string>();
+  const duplicateIds = new Set<string>();
+  const duplicateInfo: {
+    id1: string;
+    id2: string;
+    distance: number;
+    name1: string;
+    name2: string;
+  }[] = [];
+  const duplicateDistances = new Map<string, number>();
+
+  // First pass: identify stations with identical names (likely duplicates)
+  const stationsByName = new Map<string, any[]>();
+
+  stations.forEach((station) => {
+    const name = (
+      station.properties.properties['name:en'] ||
+      station.properties.properties.name ||
+      ''
+    )
+      .toLowerCase()
+      .trim();
+
+    if (name) {
+      if (!stationsByName.has(name)) {
+        stationsByName.set(name, []);
+      }
+      stationsByName.get(name)!.push(station);
+    }
+  });
+
+  // Process stations in groups by name first, then handle remaining stations
+  for (const [name, stationsWithSameName] of stationsByName.entries()) {
+    if (stationsWithSameName.length > 1) {
+      console.log(
+        `Found ${stationsWithSameName.length} stations with name "${name}"`
+      );
+
+      // Sort by ID to ensure consistent selection
+      stationsWithSameName.sort((a, b) =>
+        a.properties.properties.id.localeCompare(b.properties.properties.id)
+      );
+
+      // Keep the first station in each name group
+      const firstStation = stationsWithSameName[0];
+      result.push(firstStation);
+      processed.add(firstStation.properties.properties.id);
+
+      // Check distances between all stations with the same name
+      const point1 = firstStation.properties.geometry.coordinates;
+
+      for (let j = 1; j < stationsWithSameName.length; j++) {
+        const station2 = stationsWithSameName[j];
+        const id2 = station2.properties.properties.id;
+
+        // Skip if already processed
+        if (processed.has(id2)) continue;
+
+        const point2 = station2.properties.geometry.coordinates;
+
+        // Calculate distance
+        const from = turf.point(point1);
+        const to = turf.point(point2);
+        const distance = turf.distance(from, to, { units: 'meters' });
+
+        if (distance < distanceThresholdMeters) {
+          // This is a duplicate
+          processed.add(id2);
+          duplicateIds.add(id2);
+          duplicateDistances.set(id2, distance);
+          duplicateInfo.push({
+            id1: firstStation.properties.properties.id,
+            id2,
+            distance,
+            name1: name,
+            name2: name,
+          });
+        } else {
+          // Not a duplicate by distance, keep it
+          result.push(station2);
+          processed.add(id2);
+        }
+      }
+    } else {
+      // Only one station with this name, keep it
+      const station = stationsWithSameName[0];
+      if (!processed.has(station.properties.properties.id)) {
+        result.push(station);
+        processed.add(station.properties.properties.id);
+      }
+    }
+  }
+
+  // Second pass: process remaining stations (those without names)
+  // and check for proximity duplicates across all stations
+  for (let i = 0; i < stations.length; i++) {
+    const station1 = stations[i];
+    const id1 = station1.properties.properties.id;
+
+    // Skip if already processed
+    if (processed.has(id1)) continue;
+
+    // Add this station to results
+    result.push(station1);
+    processed.add(id1);
+
+    const point1 = station1.properties.geometry.coordinates;
+    const name1 =
+      station1.properties.properties['name:en'] ||
+      station1.properties.properties.name ||
+      '';
+
+    // Check all remaining stations for proximity duplicates
+    for (let j = i + 1; j < stations.length; j++) {
+      const station2 = stations[j];
+      const id2 = station2.properties.properties.id;
+
+      // Skip if already processed
+      if (processed.has(id2)) continue;
+
+      const point2 = station2.properties.geometry.coordinates;
+      const name2 =
+        station2.properties.properties['name:en'] ||
+        station2.properties.properties.name ||
+        '';
+
+      // Calculate distance
+      const from = turf.point(point1);
+      const to = turf.point(point2);
+      const distance = turf.distance(from, to, { units: 'meters' });
+
+      if (distance < distanceThresholdMeters) {
+        // This is a duplicate
+        processed.add(id2);
+        duplicateIds.add(id2);
+        duplicateDistances.set(id2, distance);
+        duplicateInfo.push({
+          id1,
+          id2,
+          distance,
+          name1,
+          name2,
+        });
+      }
+    }
+  }
+
+  console.log(`Filtered out ${stations.length - result.length} duplicates`);
+  console.log('Duplicates found:', duplicateInfo);
+
+  return {
+    filtered: result,
+    duplicateIds,
+    duplicateInfo,
+    duplicateDistances,
+  };
+};
+
 export const ZoneSidebar = () => {
   const $displayHidingZones = useStore(displayHidingZones);
   const $questionFinishedMapData = useStore(questionFinishedMapData);
@@ -73,9 +247,44 @@ export const ZoneSidebar = () => {
   const [commandValue, setCommandValue] = useState<string>('');
   const setStations = trainStations.set;
   const sidebarRef = useRef<HTMLDivElement>(null);
+  const [duplicateThreshold, setDuplicateThreshold] = useState<number>(25);
+  const [duplicatesFound, setDuplicatesFound] = useState<number>(0);
+  const [showDuplicates, setShowDuplicates] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+
+  // Filter out duplicate stations that are within the threshold distance of each other
+  const filteredStations = useMemo(() => {
+    const filtered = filterDuplicateStations(stations, duplicateThreshold);
+    setDuplicatesFound(stations.length - filtered.filtered.length);
+    return filtered;
+  }, [stations, duplicateThreshold]);
 
   // Memoize sorted stations for better performance
   const sortedStations = useMemo(() => {
+    if (!filteredStations || filteredStations.filtered.length === 0) return [];
+
+    return [...filteredStations.filtered].sort((a, b) => {
+      // Get station names, falling back to empty string if not available
+      const nameA = (
+        a.properties.properties['name:en'] ||
+        a.properties.properties.name ||
+        lngLatToText(a.properties.geometry.coordinates) ||
+        ''
+      ).toLowerCase();
+      const nameB = (
+        b.properties.properties['name:en'] ||
+        b.properties.properties.name ||
+        lngLatToText(b.properties.geometry.coordinates) ||
+        ''
+      ).toLowerCase();
+
+      // Use localeCompare for proper alphabetical sorting
+      return nameA.localeCompare(nameB);
+    });
+  }, [filteredStations]);
+
+  // Memoize all stations sorted for display
+  const allSortedStations = useMemo(() => {
     if (!stations || stations.length === 0) return [];
 
     return [...stations].sort((a, b) => {
@@ -97,6 +306,30 @@ export const ZoneSidebar = () => {
       return nameA.localeCompare(nameB);
     });
   }, [stations]);
+
+  // Filtered stations for display based on search and duplicate settings
+  const displayStations = useMemo(() => {
+    // Start with either filtered stations or all stations based on showDuplicates
+    const stationsToFilter = showDuplicates
+      ? allSortedStations
+      : sortedStations;
+
+    // If there's a search term, filter by name
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      return stationsToFilter.filter((station) => {
+        const name = (
+          station.properties.properties['name:en'] ||
+          station.properties.properties.name ||
+          lngLatToText(station.properties.geometry.coordinates) ||
+          ''
+        ).toLowerCase();
+        return name.includes(term);
+      });
+    }
+
+    return stationsToFilter;
+  }, [sortedStations, allSortedStations, showDuplicates, searchTerm]);
 
   const removeHidingZones = () => {
     if (!map) return;
@@ -464,7 +697,79 @@ export const ZoneSidebar = () => {
                   </Select>
                 </div>
               </SidebarMenuItem>
-              {$displayHidingZones && stations.length > 0 && (
+              <SidebarMenuItem>
+                <Label className="font-semibold font-poppins ml-2">
+                  Duplicate Station Threshold
+                </Label>
+                <div
+                  className={cn(
+                    MENU_ITEM_CLASSNAME,
+                    'gap-2 flex flex-row items-center'
+                  )}
+                >
+                  <Input
+                    type="range"
+                    min="1"
+                    max="100"
+                    step="1"
+                    className="flex-grow"
+                    value={duplicateThreshold}
+                    onChange={(e) => {
+                      setDuplicateThreshold(parseInt(e.target.value, 10));
+                    }}
+                  />
+                  <Input
+                    type="number"
+                    className="rounded-md p-2 w-16"
+                    value={duplicateThreshold}
+                    onChange={(e) => {
+                      const value = parseInt(e.target.value, 10);
+                      if (!isNaN(value) && value > 0) {
+                        setDuplicateThreshold(value);
+                      }
+                    }}
+                  />
+                  <span className="text-sm">meters</span>
+                </div>
+                {duplicatesFound > 0 && (
+                  <div className="text-xs text-muted-foreground ml-2 mt-1">
+                    {duplicatesFound} duplicate stations filtered
+                  </div>
+                )}
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="show-duplicates"
+                    checked={showDuplicates}
+                    onCheckedChange={(checked) => {
+                      if (typeof checked === 'boolean') {
+                        setShowDuplicates(checked);
+                      }
+                    }}
+                  />
+                  <Label
+                    htmlFor="show-duplicates"
+                    className="font-semibold font-poppins"
+                  >
+                    Show Duplicates ({duplicatesFound})
+                  </Label>
+                </div>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <Label className="font-semibold font-poppins ml-2">
+                  Search
+                </Label>
+                <Input
+                  type="text"
+                  className="rounded-md p-2 w-32"
+                  value={searchTerm}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                  }}
+                />
+              </SidebarMenuItem>
+              {$displayHidingZones && filteredStations.filtered.length > 0 && (
                 <SidebarMenuItem
                   className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
                   onClick={removeHidingZones}
@@ -472,14 +777,14 @@ export const ZoneSidebar = () => {
                   No Display
                 </SidebarMenuItem>
               )}
-              {$displayHidingZones && stations.length > 0 && (
+              {$displayHidingZones && filteredStations.filtered.length > 0 && (
                 <SidebarMenuItem
                   className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
                   onClick={() => {
                     setCommandValue('');
                     showGeoJSON(
                       turf.featureCollection(
-                        stations
+                        filteredStations.filtered
                           .filter(
                             (x) => x.properties.properties.id !== commandValue
                           )
@@ -492,14 +797,14 @@ export const ZoneSidebar = () => {
                   All Stations
                 </SidebarMenuItem>
               )}
-              {$displayHidingZones && stations.length > 0 && (
+              {$displayHidingZones && filteredStations.filtered.length > 0 && (
                 <SidebarMenuItem
                   className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
                   onClick={() => {
                     setCommandValue('');
                     showGeoJSON(
                       turf.featureCollection(
-                        stations.filter(
+                        filteredStations.filtered.filter(
                           (x) =>
                             !$disabledStations.includes(
                               x.properties.properties.id
@@ -513,7 +818,7 @@ export const ZoneSidebar = () => {
                   All Zones
                 </SidebarMenuItem>
               )}
-              {$displayHidingZones && stations.length > 0 && (
+              {$displayHidingZones && filteredStations.filtered.length > 0 && (
                 <SidebarMenuItem
                   className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
                   onClick={() => {
@@ -521,7 +826,7 @@ export const ZoneSidebar = () => {
                     showGeoJSON(
                       unionize(
                         turf.featureCollection(
-                          stations.filter(
+                          filteredStations.filtered.filter(
                             (x) =>
                               !$disabledStations.includes(
                                 x.properties.properties.id
@@ -543,16 +848,16 @@ export const ZoneSidebar = () => {
                   )}
                 >
                   Current:{' '}
-                  {stations.find(
+                  {filteredStations.filtered.find(
                     (x) => x.properties.properties.id === commandValue
-                  ).properties.properties['name:en'] ||
-                    stations.find(
+                  )?.properties.properties['name:en'] ||
+                    filteredStations.filtered.find(
                       (x) => x.properties.properties.id === commandValue
-                    ).properties.properties.name ||
+                    )?.properties.properties.name ||
                     lngLatToText(
-                      stations.find(
+                      filteredStations.filtered.find(
                         (x) => x.properties.properties.id === commandValue
-                      ).properties.geometry.coordinates
+                      )?.properties.geometry.coordinates
                     )}
                 </SidebarMenuItem>
               )}
@@ -562,7 +867,10 @@ export const ZoneSidebar = () => {
                   onClick={() => {
                     disabledStations.set([]);
 
-                    showGeoJSON(turf.featureCollection(stations), true);
+                    showGeoJSON(
+                      turf.featureCollection(filteredStations.filtered),
+                      true
+                    );
                   }}
                 >
                   Clear Disabled
@@ -570,99 +878,133 @@ export const ZoneSidebar = () => {
               )}
               {$displayHidingZones && (
                 <Command>
-                  <CommandInput placeholder="Search for a hiding zone..." />
+                  <CommandInput
+                    placeholder="Search for a hiding zone..."
+                    value={searchTerm}
+                    onValueChange={setSearchTerm}
+                  />
                   <CommandList className="max-h-full">
                     <CommandEmpty>No hiding zones found.</CommandEmpty>
+                    {stations.length > filteredStations.filtered.length && (
+                      <div className="px-2 py-1.5 text-xs text-muted-foreground">
+                        Filtered out{' '}
+                        {stations.length - filteredStations.filtered.length}{' '}
+                        duplicate stations (within {duplicateThreshold}m)
+                      </div>
+                    )}
                     <CommandGroup>
-                      {sortedStations.map((station) => (
-                        <CommandItem
-                          key={station.properties.properties.id}
-                          data-station-id={station.properties.properties.id}
-                          className={cn(
-                            $disabledStations.includes(
-                              station.properties.properties.id
-                            ) && 'line-through'
-                          )}
-                          onSelect={async () => {
-                            if (!map) return;
+                      {displayStations.map((station) => {
+                        const isDuplicate = filteredStations.duplicateIds.has(
+                          station.properties.properties.id
+                        );
+                        const stationName =
+                          station.properties.properties['name:en'] ||
+                          station.properties.properties.name ||
+                          lngLatToText(station.properties.geometry.coordinates);
+                        const distance =
+                          filteredStations.duplicateDistances.get(
+                            station.properties.properties.id
+                          );
 
-                            setTimeout(() => {
-                              if (buttonJustClicked) {
-                                buttonJustClicked = false;
-                                return;
-                              }
-
-                              if (
-                                $disabledStations.includes(
-                                  station.properties.properties.id
-                                )
-                              ) {
-                                disabledStations.set([
-                                  ...$disabledStations.filter(
-                                    (x) =>
-                                      x !== station.properties.properties.id
-                                  ),
-                                ]);
-                              } else {
-                                disabledStations.set([
-                                  ...$disabledStations,
-                                  station.properties.properties.id,
-                                ]);
-                              }
-
-                              setStations([...stations]);
-
-                              showGeoJSON(
-                                turf.featureCollection(
-                                  stations.filter(
-                                    (x) =>
-                                      !disabledStations
-                                        .get()
-                                        .includes(x.properties.properties.id)
-                                  )
-                                ),
-                                true
-                              );
-                            }, 100);
-                          }}
-                        >
-                          {station.properties.properties['name:en'] ||
-                            station.properties.properties.name ||
-                            lngLatToText(
-                              station.properties.geometry.coordinates
+                        return (
+                          <CommandItem
+                            key={station.properties.properties.id}
+                            data-station-id={station.properties.properties.id}
+                            className={cn(
+                              $disabledStations.includes(
+                                station.properties.properties.id
+                              ) && 'line-through',
+                              isDuplicate && 'bg-red-50 dark:bg-red-950/20'
                             )}
-                          <button
-                            onClick={async () => {
+                            onSelect={async () => {
                               if (!map) return;
 
-                              buttonJustClicked = true;
-
-                              setCommandValue(station.properties.properties.id);
-
-                              await selectionProcess(
-                                station,
-                                map,
-                                stations,
-                                showGeoJSON,
-                                $questionFinishedMapData,
-                                $hidingRadius
-                              ).catch((error) => {
-                                console.log(error);
+                              setTimeout(() => {
+                                if (buttonJustClicked) {
+                                  buttonJustClicked = false;
+                                  return;
+                                }
 
                                 if (
-                                  document.querySelectorAll('.Toastify__toast')
-                                    .length === 0
+                                  $disabledStations.includes(
+                                    station.properties.properties.id
+                                  )
                                 ) {
-                                  return toast.error('An error occurred');
+                                  disabledStations.set([
+                                    ...$disabledStations.filter(
+                                      (x) =>
+                                        x !== station.properties.properties.id
+                                    ),
+                                  ]);
+                                } else {
+                                  disabledStations.set([
+                                    ...$disabledStations,
+                                    station.properties.properties.id,
+                                  ]);
                                 }
-                              });
+
+                                setStations([...stations]);
+
+                                showGeoJSON(
+                                  turf.featureCollection(
+                                    filteredStations.filtered.filter(
+                                      (x) =>
+                                        !disabledStations
+                                          .get()
+                                          .includes(x.properties.properties.id)
+                                    )
+                                  ),
+                                  true
+                                );
+                              }, 100);
                             }}
-                            className="bg-slate-600 p-0.5 rounded-md"
                           >
-                            View
-                          </button>
-                        </CommandItem>
-                      ))}
+                            <div className="flex-1">
+                              {stationName}
+                              {isDuplicate && (
+                                <span className="ml-2 text-xs text-red-500 font-semibold">
+                                  (duplicate
+                                  {distance ? ` - ${distance.toFixed(1)}m` : ''}
+                                  )
+                                </span>
+                              )}
+                            </div>
+                            <button
+                              onClick={async () => {
+                                if (!map) return;
+
+                                buttonJustClicked = true;
+
+                                setCommandValue(
+                                  station.properties.properties.id
+                                );
+
+                                await selectionProcess(
+                                  station,
+                                  map,
+                                  filteredStations.filtered,
+                                  showGeoJSON,
+                                  $questionFinishedMapData,
+                                  $hidingRadius
+                                ).catch((error) => {
+                                  console.log(error);
+
+                                  if (
+                                    document.querySelectorAll(
+                                      '.Toastify__toast'
+                                    ).length === 0
+                                  ) {
+                                    return toast.error('An error occurred');
+                                  }
+                                });
+                              }}
+                              className="bg-slate-600 p-0.5 rounded-md"
+                            >
+                              View
+                            </button>
+                          </CommandItem>
+                        );
+                      })}
                     </CommandGroup>
                   </CommandList>
                 </Command>
