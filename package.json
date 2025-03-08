@@ -35,6 +35,7 @@
         "leaflet": "^1.9.4",
         "leaflet-contextmenu": "^1.4.0",
         "leaflet-draw": "^1.0.4",
+        "leaflet-easyprint": "^2.1.9",
         "lodash": "^4.17.21",
         "lucide-react": "^0.475.0",
         "nanostores": "^0.11.3",

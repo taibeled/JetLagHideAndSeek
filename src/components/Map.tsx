@@ -32,6 +32,7 @@ import { adjustPerMeasuring } from "@/maps/measuring";
 import { LeafletFullScreenButton } from "./LeafletFullScreenButton";
 import { hiderifyQuestion } from "@/maps";
 import { holedMask } from "@/maps/geo-utils";
+import { MapPrint } from "./MapPrint";
 
 let refreshingQuestions = false;
 
@@ -399,6 +400,13 @@ export const Map = ({ className }: { className?: string }) => {
                 </div>
                 <PolygonDraw />
                 <ScaleControl position="bottomleft" />
+                <MapPrint
+                    position="topright"
+                    sizeModes={["Current", "A4Portrait", "A4Landscape"]}
+                    hideControlContainer={true}
+                    hideClasses={["leaflet-full-screen-specific-name"]}
+                    title="Print"
+                />
             </MapContainer>
         ),
         [map, $highlightTrainLines],

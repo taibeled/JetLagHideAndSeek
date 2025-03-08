@@ -105,8 +105,16 @@ div.leaflet-control-attribution.leaflet-control {
         @apply !mt-[104px] md:!mt-[40px];
     }
 
-    main:not(.fullscreen) .leaflet-top .leaflet-control {
+    main:not(.fullscreen) .leaflet-top .leaflet-control:not(.leaflet-control-easyPrint) {
         @apply !mt-[104px] md:!mt-[40px];
+    }
+
+    div.leaflet-top div.leaflet-control-easyPrint {
+        @apply !mt-[140px] md:!mt-[74px];
+    }
+
+    main.fullscreen div.leaflet-control-easyPrint {
+        @apply hidden;
     }
 
     .selected-card-background-temporary {
