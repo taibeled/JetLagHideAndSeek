@@ -155,7 +155,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 open={isInstructionsOpen}
                 onOpenChange={setInstructionsOpen}
             >
-                <DrawerTrigger className="w-24">
+                <DrawerTrigger className="w-24" asChild>
                     <Button className="w-24 shadow-md">Instructions</Button>
                 </DrawerTrigger>
                 <DrawerContent>
@@ -252,7 +252,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 </DrawerContent>
             </Drawer>
             <Drawer open={isOptionsOpen} onOpenChange={setOptionsOpen}>
-                <DrawerTrigger className="w-24">
+                <DrawerTrigger className="w-24" asChild>
                     <Button className="w-24 shadow-md">Options</Button>
                 </DrawerTrigger>
                 <DrawerContent>
