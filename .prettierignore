@@ -1,0 +1,39 @@
+# Build output
+dist/
+.astro/
+
+# Dependencies
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.production
+.env.local
+.env.development
+
+# macOS-specific files
+.DS_Store
+
+# Generated files
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Cache
+.cache/
+.eslintcache
+
+# Coverage directory
+coverage/
+
+# Misc
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json 
