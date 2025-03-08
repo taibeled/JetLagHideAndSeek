@@ -21,7 +21,7 @@ import { useStore } from '@nanostores/react';
 import { MENU_ITEM_CLASSNAME } from './ui/sidebar-l';
 import { Label } from './ui/label';
 import { Checkbox } from './ui/checkbox';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import * as L from 'leaflet';
 import {
   findPlacesInZone,
@@ -73,6 +73,30 @@ export const ZoneSidebar = () => {
   const [commandValue, setCommandValue] = useState<string>('');
   const setStations = trainStations.set;
   const sidebarRef = useRef<HTMLDivElement>(null);
+
+  // Memoize sorted stations for better performance
+  const sortedStations = useMemo(() => {
+    if (!stations || stations.length === 0) return [];
+
+    return [...stations].sort((a, b) => {
+      // Get station names, falling back to empty string if not available
+      const nameA = (
+        a.properties.properties['name:en'] ||
+        a.properties.properties.name ||
+        lngLatToText(a.properties.geometry.coordinates) ||
+        ''
+      ).toLowerCase();
+      const nameB = (
+        b.properties.properties['name:en'] ||
+        b.properties.properties.name ||
+        lngLatToText(b.properties.geometry.coordinates) ||
+        ''
+      ).toLowerCase();
+
+      // Use localeCompare for proper alphabetical sorting
+      return nameA.localeCompare(nameB);
+    });
+  }, [stations]);
 
   const removeHidingZones = () => {
     if (!map) return;
@@ -550,7 +574,7 @@ export const ZoneSidebar = () => {
                   <CommandList className="max-h-full">
                     <CommandEmpty>No hiding zones found.</CommandEmpty>
                     <CommandGroup>
-                      {stations.map((station) => (
+                      {sortedStations.map((station) => (
                         <CommandItem
                           key={station.properties.properties.id}
                           data-station-id={station.properties.properties.id}
