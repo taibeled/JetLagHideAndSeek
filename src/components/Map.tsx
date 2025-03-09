@@ -24,7 +24,7 @@ import * as turf from "@turf/turf";
 import { clearCache, determineGeoJSON, type OpenStreetMap } from "../maps/api";
 import { adjustPerRadius, radiusPlanningPolygon } from "../maps/radius";
 import { DraggableMarkers } from "./DraggableMarkers";
-import { adjustPerThermometer } from "../maps/thermometer";
+import { adjustPerThermometer, thermometerPlanningPolygon } from "../maps/thermometer";
 import { adjustPerTentacle, tentaclesPlanningPolygon } from "../maps/tentacles";
 import { adjustPerMatching } from "../maps/matching";
 import { PolygonDraw } from "./PolygonDraw";
@@ -136,6 +136,16 @@ export const Map = ({ className }: { className?: string }) => {
                         );
                         break;
                     case "thermometer":
+                        if (question.data.drag) {
+                            const geoJSONObj = thermometerPlanningPolygon(
+                                question.data,
+                            );
+                            const geoJSONPlane = geoJSON(geoJSONObj);
+                            // @ts-expect-error This is a check such that only this type of layer is removed
+                            geoJSONPlane.questionKey = question.key;
+                            geoJSONPlane.addTo(map);
+                        }
+
                         mapGeoData = adjustPerThermometer(
                             question.data,
                             mapGeoData,
