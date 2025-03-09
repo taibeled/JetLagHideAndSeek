@@ -250,6 +250,13 @@ export const PolygonDraw = () => {
                 .features[0];
 
             question.data.geo = geoJSON;
+            if (featureRef.current) {
+                Object.values(featureRef.current._layers).map((layer: any) => {
+                    if (!layer.options.isSpecial) {
+                        featureRef.current.removeLayer(layer);
+                    }
+                });
+            }
             questionModified();
         } else if (
             question?.id === "matching" &&
@@ -315,6 +322,8 @@ export const PolygonDraw = () => {
                     <Polygon
                         key={JSON.stringify(x)}
                         positions={swapCoordinates(x.geometry.coordinates)}
+                        // @ts-expect-error This is passed to options, so it is not typed
+                        isSpecial={true}
                         stroke
                         pathOptions={{ color: "red" }}
                         fill={false}
