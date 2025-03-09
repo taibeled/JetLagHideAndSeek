@@ -18,7 +18,10 @@ export const adjustPerTentacle = async (
         throw new Error("Must have a location");
     }
 
-    const points = await findTentacleLocations(question);
+    const points =
+        question.locationType === "custom"
+            ? turf.featureCollection(question.places)
+            : await findTentacleLocations(question);
 
     const voronoi = geoSpatialVoronoi(points);
 
@@ -52,7 +55,10 @@ export const hiderifyTentacles = async (question: TentacleQuestion) => {
         return question;
     }
 
-    const points = await findTentacleLocations(question);
+    const points =
+        question.locationType === "custom"
+            ? turf.featureCollection(question.places)
+            : await findTentacleLocations(question);
 
     const voronoi = geoSpatialVoronoi(points);
 

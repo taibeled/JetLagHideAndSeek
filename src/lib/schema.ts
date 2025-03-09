@@ -80,7 +80,7 @@ const tentacleLocationsSchema = z.union([
     z.literal("park"),
 ]);
 
-const tentacleQuestionSchema = ordinaryBaseQuestionSchema.extend({
+const baseTentacleQuestionSchema = ordinaryBaseQuestionSchema.extend({
     radius: z.number().min(0, "You cannot have a negative radius").default(15),
     unit: unitsSchema.default("miles"),
     location: z
@@ -99,8 +99,33 @@ const tentacleQuestionSchema = ordinaryBaseQuestionSchema.extend({
             z.literal(false),
         ])
         .default(false),
-    locationType: tentacleLocationsSchema.default("theme_park"),
 });
+const tentacleQuestionSpecificSchema = baseTentacleQuestionSchema.extend({
+    locationType: tentacleLocationsSchema.default("theme_park"),
+    places: z.array(z.any()).optional(),
+});
+
+const customTentacleQuestionSchema = baseTentacleQuestionSchema.extend({
+    locationType: z.literal("custom"),
+    places: z.array(
+        z.object({
+            type: z.literal("Feature"),
+            geometry: z.object({
+                type: z.literal("Point"),
+                coordinates: z.array(z.number()),
+            }),
+            id: z.union([z.string(), z.number(), z.undefined()]).optional(),
+            properties: z.object({
+                name: z.any(),
+            }),
+        }),
+    ),
+});
+
+const tentacleQuestionSchema = z.union([
+    tentacleQuestionSpecificSchema,
+    customTentacleQuestionSchema,
+]);
 
 const baseMatchingQuestionSchema = ordinaryBaseQuestionSchema.extend({
     same: z.boolean().default(true),
@@ -243,3 +268,9 @@ export type Questions = z.infer<typeof questionsSchema>;
 export type DeepPartial<T> = {
     [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
+export type TraditionalTentacleQuestion = z.infer<
+    typeof tentacleQuestionSpecificSchema
+>;
+export type CustomTentacleQuestion = z.infer<
+    typeof customTentacleQuestionSchema
+>;

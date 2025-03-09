@@ -2,13 +2,12 @@ import type { LatLngTuple } from "leaflet";
 import osmtogeojson from "osmtogeojson";
 import * as turf from "@turf/turf";
 import { mapGeoLocation, polyGeoJSON } from "@/lib/context";
-import type { Question } from "@/lib/schema";
+import type { Question, TraditionalTentacleQuestion } from "@/lib/schema";
 import _ from "lodash";
 import { toast } from "react-toastify";
 import type {
     HomeGameMatchingQuestions,
     HomeGameMeasuringQuestions,
-    TentacleQuestion,
     TentacleLocations,
 } from "@/lib/schema";
 
@@ -118,7 +117,7 @@ const locationFirstTag: {
 };
 
 export const findTentacleLocations = async (
-    question: TentacleQuestion,
+    question: TraditionalTentacleQuestion,
     text: string = "Determining tentacle locations...",
 ) => {
     const query = `

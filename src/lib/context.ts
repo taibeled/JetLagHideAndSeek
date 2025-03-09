@@ -4,6 +4,7 @@ import { type OpenStreetMap } from "../maps/api";
 import type { Map } from "leaflet";
 import {
     questionSchema,
+    questionsSchema,
     type DeepPartial,
     type Question,
     type Questions,
@@ -44,7 +45,7 @@ export const polyGeoJSON = persistentAtom<any>("polyGeoJSON", null, {
 
 export const questions = persistentAtom<Questions>("questions", [], {
     encode: JSON.stringify,
-    decode: JSON.parse,
+    decode: (x) => questionsSchema.parse(JSON.parse(x)),
 });
 export const addQuestion = (question: DeepPartial<Question>) =>
     questionModified(questions.get().push(questionSchema.parse(question)));
@@ -153,3 +154,5 @@ export const hidingZone = computed(
         }
     },
 );
+
+export const drawingQuestionKey = atom<number>(-1);

@@ -3,6 +3,7 @@ import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
 import { cn } from "../../lib/utils";
 import {
+    drawingQuestionKey,
     hiderMode,
     questionModified,
     questions,
@@ -22,8 +23,12 @@ import {
 } from "../ui/select";
 import { Checkbox } from "../ui/checkbox";
 import { QuestionCard } from "./base";
-import type { TentacleQuestion } from "@/lib/schema";
+import type {
+    TentacleQuestion,
+    TraditionalTentacleQuestion,
+} from "@/lib/schema";
 import { UnitSelect } from "../UnitSelect";
+import * as turf from "@turf/turf";
 
 export const TentacleQuestionComponent = ({
     data,
@@ -39,6 +44,7 @@ export const TentacleQuestionComponent = ({
     showDeleteButton?: boolean;
 }) => {
     const $questions = useStore(questions);
+    const $drawingQuestionKey = useStore(drawingQuestionKey);
     const label = `Tentacles
     ${
         $questions
@@ -80,15 +86,36 @@ export const TentacleQuestionComponent = ({
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
                     value={data.locationType}
-                    onValueChange={(value) =>
-                        questionModified((data.locationType = value as any))
-                    }
+                    onValueChange={async (value) => {
+                        if (value === "custom") {
+                            const priorLocations = await findTentacleLocations(
+                                data as TraditionalTentacleQuestion,
+                            );
+
+                            data.locationType = "custom";
+                            data.places = priorLocations.features.map((x) => ({
+                                ...x,
+                                properties: {
+                                    ...x.properties,
+                                    name:
+                                        x.properties?.["name:en"] ??
+                                        x.properties?.name,
+                                },
+                            }));
+                            data.location = false;
+                        } else {
+                            data.location = false;
+                            data.locationType = value as any;
+                        }
+                        questionModified();
+                    }}
                     disabled={!data.drag}
                 >
                     <SelectTrigger>
                         <SelectValue placeholder="Location Type" />
                     </SelectTrigger>
                     <SelectContent>
+                        <SelectItem value="custom">Custom Locations</SelectItem>
                         <SelectGroup>
                             <SelectLabel>15 Miles (Typically)</SelectLabel>
                             <SelectItem value="theme_park">
@@ -109,6 +136,23 @@ export const TentacleQuestionComponent = ({
                     </SelectContent>
                 </Select>
             </SidebarMenuItem>
+            {data.locationType === "custom" && data.drag && (
+                <p className="px-2 mb-1 text-center text-orange-500">
+                    To modify tentacle locations, enable it:
+                    <Checkbox
+                        className="mx-1 my-1"
+                        checked={$drawingQuestionKey === questionKey}
+                        onCheckedChange={(checked) => {
+                            if (checked) {
+                                drawingQuestionKey.set(questionKey);
+                            } else {
+                                drawingQuestionKey.set(-1);
+                            }
+                        }}
+                    />
+                    and use the buttons at the bottom left of the map.
+                </p>
+            )}
             <SidebarMenuItem
                 className={cn(
                     MENU_ITEM_CLASSNAME,
@@ -165,7 +209,13 @@ export const TentacleQuestionComponent = ({
                 >
                     <TentacleLocationSelector
                         data={data}
-                        promise={findTentacleLocations(data)}
+                        promise={
+                            data.locationType === "custom"
+                                ? Promise.resolve(
+                                      turf.featureCollection(data.places),
+                                  )
+                                : findTentacleLocations(data)
+                        }
                         disabled={!data.drag}
                     />
                 </Suspense>
