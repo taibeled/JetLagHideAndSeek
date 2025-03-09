@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>S6 Bus Route</name>
+    <description>Bus stops for S6 route</description>
+    
+    <!-- Style for the route -->
+    <Style id="routeStyle">
+      <LineStyle>
+        <color>ffffff00</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+    
+    <!-- Style for the stops -->
+    <Style id="stopStyle">
+      <IconStyle>
+        <color>ffffff00</color>
+        <scale>1.0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0.8</scale>
+      </LabelStyle>
+    </Style>
+    
+    <!-- Folder for stops -->
+    <Folder>
+      <name>S6 Stops</name>
+      <Placemark>
+        <name>Firhouse Centre (S6)</name>
+        <description>Stop ID: 8230DB002522</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.34234624628978,53.2814222293892,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Seskin View Road (S6)</name>
+        <description>Stop ID: 8230DB002535</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.35891860284657,53.2810133262279,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Cherryfield Way (S6)</name>
+        <description>Stop ID: 8230DB002515</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.31281606279928,53.2913443620348,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Firhouse College (S6)</name>
+        <description>Stop ID: 8230DB002523</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.34875137969137,53.2771069428584,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Parkwood Lawn (S6)</name>
+        <description>Stop ID: 8230DB002533</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.35764330397158,53.2775083920898,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Ballycullen Road (S6)</name>
+        <description>Stop ID: 8230DB002520</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.3326568733498,53.2860777851868,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Butterfield Avenue (S6)</name>
+        <description>Stop ID: 8230DB005129</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.28577015809693,53.2977087167285,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Rathfarnham SC (S6)</name>
+        <description>Stop ID: 8230DB007966</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.29835862052667,53.2954172767558,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Green Acre Court (S6)</name>
+        <description>Stop ID: 8230DB002517</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.31859990290756,53.2892149823068,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Tallaght Luas (S6)</name>
+        <description>Stop ID: 8230DB004347</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.37500751308393,53.28622205242,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>St Maelruan's Park (S6)</name>
+        <description>Stop ID: 8230DB002616</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.36063933900619,53.2846412135097,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Old Bridge Road (S6)</name>
+        <description>Stop ID: 8230DB001139</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.3067469243238,53.2942244156253,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>UCD (S6)</name>
+        <description>Stop ID: 8250DB000765</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.21686235884919,53.3052550302794,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Belgard Square North (S6)</name>
+        <description>Stop ID: 8230DB005008</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.36935699388662,53.2904501890287,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>St Mary's School (S6)</name>
+        <description>Stop ID: 8230DB001329</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.28199447212766,53.2949669228751,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Nutgrove Avenue (S6)</name>
+        <description>Stop ID: 8250DB001314</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.25823154104951,53.2942267141944,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Whitebarn Road (S6)</name>
+        <description>Stop ID: 8250DB001315</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.26424076010732,53.2921661624614,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Nutgrove Court (S6)</name>
+        <description>Stop ID: 8250DB001319</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.27587930843346,53.2937102018088,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Tallaght Village (S6)</name>
+        <description>Stop ID: 8230DB002557</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.36328124896313,53.2885064213358,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Loreto Park (S6)</name>
+        <description>Stop ID: 8250DB001317</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.26996547269059,53.2919347714584,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Grove Avenue (S6)</name>
+        <description>Stop ID: 8250DB000433</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.19635883802389,53.2986279440755,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Notre Dame School (S6)</name>
+        <description>Stop ID: 8250DB002867</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.24994497074115,53.2939975275947,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Stoney Road (S6)</name>
+        <description>Stop ID: 8250GD10159</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.23693508701988,53.2915318601353,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Callary Road (S6)</name>
+        <description>Stop ID: 8250DB000867</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.2182208604393,53.2996576898735,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>St Thomas Road (S6)</name>
+        <description>Stop ID: 8250DB002070</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.20801,53.30296,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Cross Avenue (S6)</name>
+        <description>Stop ID: 8250DB000431</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.18925586166452,53.3005516484199,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Greenfield Road (S6)</name>
+        <description>Stop ID: 8250DB002068</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.20457300251729,53.2980957596886,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Frascati SC (S6)</name>
+        <description>Stop ID: 8250DB003084</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.18116341196204,53.3013812515105,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Blackrock Station (S6)</name>
+        <description>Stop ID: 8250DB003085</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.17837083201603,53.3024801380971,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Mount Anville School (S6)</name>
+        <description>Stop ID: 8250GD10097</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.22451989510434,53.2932082086634,0</coordinates>
+        </Point>
+      </Placemark>
+    </Folder>
+    
+    <!-- Route line -->
+    <Placemark>
+      <name>S6 Route Line</name>
+      <styleUrl>#routeStyle</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>-6.34234624628978,53.2814222293892,0 -6.35891860284657,53.2810133262279,0 -6.31281606279928,53.2913443620348,0 -6.34875137969137,53.2771069428584,0 -6.35764330397158,53.2775083920898,0 -6.3326568733498,53.2860777851868,0 -6.28577015809693,53.2977087167285,0 -6.29835862052667,53.2954172767558,0 -6.31859990290756,53.2892149823068,0 -6.37500751308393,53.28622205242,0 -6.36063933900619,53.2846412135097,0 -6.3067469243238,53.2942244156253,0 -6.21686235884919,53.3052550302794,0 -6.36935699388662,53.2904501890287,0 -6.28199447212766,53.2949669228751,0 -6.25823154104951,53.2942267141944,0 -6.26424076010732,53.2921661624614,0 -6.27587930843346,53.2937102018088,0 -6.36328124896313,53.2885064213358,0 -6.26996547269059,53.2919347714584,0 -6.19635883802389,53.2986279440755,0 -6.24994497074115,53.2939975275947,0 -6.23693508701988,53.2915318601353,0 -6.2182208604393,53.2996576898735,0 -6.20801,53.30296,0 -6.18925586166452,53.3005516484199,0 -6.20457300251729,53.2980957596886,0 -6.18116341196204,53.3013812515105,0 -6.17837083201603,53.3024801380971,0 -6.22451989510434,53.2932082086634,0 </coordinates>
+      </LineString>
+    </Placemark>
+  </Document>
+</kml>

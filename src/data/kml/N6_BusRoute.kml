@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>N6 Bus Route</name>
+    <description>Bus stops for N6 route</description>
+    
+    <!-- Style for the route -->
+    <Style id="routeStyle">
+      <LineStyle>
+        <color>ffff0000</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+    
+    <!-- Style for the stops -->
+    <Style id="stopStyle">
+      <IconStyle>
+        <color>ffff0000</color>
+        <scale>1.0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0.8</scale>
+      </LabelStyle>
+    </Style>
+    
+    <!-- Folder for stops -->
+    <Folder>
+      <name>N6 Stops</name>
+      <Placemark>
+        <name>Dundaniel Road (N6)</name>
+        <description>Stop ID: 8220DB005060</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.22402924061363,53.3971670149003,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>IDA Poppintree (N6)</name>
+        <description>Stop ID: 8220DB004781</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.28405666346634,53.4017480300026,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Kilbarron Road (N6)</name>
+        <description>Stop ID: 8220DB001235</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.22560408418954,53.3947366846993,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Cromcastle Avenue (N6)</name>
+        <description>Stop ID: 8220DB001237</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.21898347230117,53.3926786799977,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Northside SC (N6)</name>
+        <description>Stop ID: 8220DB000997</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.21149309335645,53.3941665688856,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Limewood (N6)</name>
+        <description>Stop ID: 8220DB001005</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.1819170834231,53.3909514065877,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Brookville Crescent (N6)</name>
+        <description>Stop ID: 8220DB001001</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.19921499123031,53.3900811211552,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Howth Junction (N6)</name>
+        <description>Stop ID: 8220GD007837</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.15592581329108,53.3901212520171,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Beaumont Hospital (N6)</name>
+        <description>Stop ID: 8220DB000253</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.22429914227646,53.3899625746413,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Nursing Home (N6)</name>
+        <description>Stop ID: 8220DB000126</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.26408696056045,53.3990954666854,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Ard na Meala (N6)</name>
+        <description>Stop ID: 8220DB000110</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.26860038147331,53.3979386409613,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>St. Donagh's Road (N6)</name>
+        <description>Stop ID: 8220DB001009</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.16448455072243,53.3910890756575,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>McKee Avenue (N6)</name>
+        <description>Stop ID: 8220DB004937</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.30051059439893,53.3926718421294,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Poppintree Parade (N6)</name>
+        <description>Stop ID: 8220DB006125</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.27683792298323,53.3998824003142,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Aulden Grange (N6)</name>
+        <description>Stop ID: 8220DB007044</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.2324855678718,53.3974093697435,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Coolock Drive (N6)</name>
+        <description>Stop ID: 8220DB000999</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.20596530798649,53.3922410515282,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>St John's Church (N6)</name>
+        <description>Stop ID: 8220DB001003</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.19107150115658,53.3902995343274,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Millbrook Drive (N6)</name>
+        <description>Stop ID: 8220DB001007</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.17238672965418,53.3912462839647,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>McKee Avenue North (N6)</name>
+        <description>Stop ID: 8220DB001548</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.30274949327834,53.3961101450105,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Melville (N6)</name>
+        <description>Stop ID: 8240DB006228</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.29263072232741,53.399830687923,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Century Business Pk (N6)</name>
+        <description>Stop ID: 8240DB006366</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.30134609639605,53.4026514127009,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Hazelwood (N6)</name>
+        <description>Stop ID: 8240DB006009</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.25721799078834,53.4001099014218,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Finglas Village (N6)</name>
+        <description>Stop ID: 8220DB007838</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.30012780832554,53.3898261843036,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Santry Villas (N6)</name>
+        <description>Stop ID: 8240GD007847</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.24492099119354,53.3977995737997,0</coordinates>
+        </Point>
+      </Placemark>
+    </Folder>
+    
+    <!-- Route line -->
+    <Placemark>
+      <name>N6 Route Line</name>
+      <styleUrl>#routeStyle</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>-6.22402924061363,53.3971670149003,0 -6.28405666346634,53.4017480300026,0 -6.22560408418954,53.3947366846993,0 -6.21898347230117,53.3926786799977,0 -6.21149309335645,53.3941665688856,0 -6.1819170834231,53.3909514065877,0 -6.19921499123031,53.3900811211552,0 -6.15592581329108,53.3901212520171,0 -6.22429914227646,53.3899625746413,0 -6.26408696056045,53.3990954666854,0 -6.26860038147331,53.3979386409613,0 -6.16448455072243,53.3910890756575,0 -6.30051059439893,53.3926718421294,0 -6.27683792298323,53.3998824003142,0 -6.2324855678718,53.3974093697435,0 -6.20596530798649,53.3922410515282,0 -6.19107150115658,53.3902995343274,0 -6.17238672965418,53.3912462839647,0 -6.30274949327834,53.3961101450105,0 -6.29263072232741,53.399830687923,0 -6.30134609639605,53.4026514127009,0 -6.25721799078834,53.4001099014218,0 -6.30012780832554,53.3898261843036,0 -6.24492099119354,53.3977995737997,0 </coordinates>
+      </LineString>
+    </Placemark>
+  </Document>
+</kml>

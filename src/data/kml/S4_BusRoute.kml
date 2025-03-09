@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>S4 Bus Route</name>
+    <description>Bus stops for S4 route</description>
+    
+    <!-- Style for the route -->
+    <Style id="routeStyle">
+      <LineStyle>
+        <color>ffff00ff</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+    
+    <!-- Style for the stops -->
+    <Style id="stopStyle">
+      <IconStyle>
+        <color>ffff00ff</color>
+        <scale>1.0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0.8</scale>
+      </LabelStyle>
+    </Style>
+    
+    <!-- Folder for stops -->
+    <Folder>
+      <name>S4 Stops</name>
+      <Placemark>
+        <name>Dodder Walk (S4)</name>
+        <description>Stop ID: 8220DB001027</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.25791094112817,53.3087379400331,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Terenure Garda Station (S4)</name>
+        <description>Stop ID: 8220DB001120</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.28798605930363,53.3101981052294,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Terenure Road East (S4)</name>
+        <description>Stop ID: 8220DB001164</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.28158440093591,53.3104116361098,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Kylemore Road (S4)</name>
+        <description>Stop ID: 8220DB002700</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.34853980731358,53.3412966525983,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Trinity Hall (S4)</name>
+        <description>Stop ID: 8220DB001025</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.26247682304637,53.3115998654594,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Cleggan Park (S4)</name>
+        <description>Stop ID: 8220DB002688</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.36819070772058,53.3434635062577,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Bankside Cottages (S4)</name>
+        <description>Stop ID: 8220DB007948</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.24710333082368,53.3102693590525,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Cherry Orchard Hosp (S4)</name>
+        <description>Stop ID: 8230DB002205</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.37702396338742,53.344590643431,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Liffey Valley SC (S4)</name>
+        <description>Stop ID: 8230DB007884</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.392001,53.354078,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Brookfield (S4)</name>
+        <description>Stop ID: 8220DB002437</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.30251926023377,53.3126888171566,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Somerville Avenue (S4)</name>
+        <description>Stop ID: 8220DB002318</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.31884304552821,53.3219800054738,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Hazelbrook Road (S4)</name>
+        <description>Stop ID: 8220DB001118</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.29491782827779,53.3113669927789,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Ballyfermot (S4)</name>
+        <description>Stop ID: 8220DB002696</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.35880375521618,53.3426876161001,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Kylemore Luas (S4)</name>
+        <description>Stop ID: 8220DB007941</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.34233022618322,53.3263803007096,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Highfield Road (S4)</name>
+        <description>Stop ID: 8220DB007943</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.27038486298018,53.3127394599831,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Crumlin Garda Station (S4)</name>
+        <description>Stop ID: 8220DB002319</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.3152003885886,53.3195647461053,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Westbrook (S4)</name>
+        <description>Stop ID: 8220DB002435</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.3112948332241,53.3143144024734,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Cloverhill Road (S4)</name>
+        <description>Stop ID: 8230DB007510</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.384513,53.347196,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Liffey Valley Retail Park (S4)</name>
+        <description>Stop ID: 8230DB007940</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.39114653108505,53.3496533769826,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Milltown Luas (S4)</name>
+        <description>Stop ID: 8220DB007946</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.25293170393568,53.3082965879174,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Bluebell Avenue (S4)</name>
+        <description>Stop ID: 8220DB002785</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.3449642241989,53.3300839894121,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>UCD (S4)</name>
+        <description>Stop ID: 8250DB000765</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.21686235884919,53.3052550302794,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Kylemore Avenue (S4)</name>
+        <description>Stop ID: 8220DB002702</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.34770212371673,53.3381032999033,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Crumlin Hospital (S4)</name>
+        <description>Stop ID: 8220DB001421</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.3204526633011,53.3249507659531,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Drimnagh Castle (S4)</name>
+        <description>Stop ID: 8220DB002778</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.33194320027363,53.3240244462321,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>UCD Sports Centre (S4)</name>
+        <description>Stop ID: 8250DB04558</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.2285,53.30786,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Long Mile Road (S4)</name>
+        <description>Stop ID: 8220DB002181</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.33917121398624,53.3238376853462,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Millmount Terrace (S4)</name>
+        <description>Stop ID: 8250DB002819</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.24570873357588,53.3054851144751,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Roebuck Road (S4)</name>
+        <description>Stop ID: 8250DB007949</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.23718976656935,53.3057459876655,0</coordinates>
+        </Point>
+      </Placemark>
+    </Folder>
+    
+    <!-- Route line -->
+    <Placemark>
+      <name>S4 Route Line</name>
+      <styleUrl>#routeStyle</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>-6.25791094112817,53.3087379400331,0 -6.28798605930363,53.3101981052294,0 -6.28158440093591,53.3104116361098,0 -6.34853980731358,53.3412966525983,0 -6.26247682304637,53.3115998654594,0 -6.36819070772058,53.3434635062577,0 -6.24710333082368,53.3102693590525,0 -6.37702396338742,53.344590643431,0 -6.392001,53.354078,0 -6.30251926023377,53.3126888171566,0 -6.31884304552821,53.3219800054738,0 -6.29491782827779,53.3113669927789,0 -6.35880375521618,53.3426876161001,0 -6.34233022618322,53.3263803007096,0 -6.27038486298018,53.3127394599831,0 -6.3152003885886,53.3195647461053,0 -6.3112948332241,53.3143144024734,0 -6.384513,53.347196,0 -6.39114653108505,53.3496533769826,0 -6.25293170393568,53.3082965879174,0 -6.3449642241989,53.3300839894121,0 -6.21686235884919,53.3052550302794,0 -6.34770212371673,53.3381032999033,0 -6.3204526633011,53.3249507659531,0 -6.33194320027363,53.3240244462321,0 -6.2285,53.30786,0 -6.33917121398624,53.3238376853462,0 -6.24570873357588,53.3054851144751,0 -6.23718976656935,53.3057459876655,0 </coordinates>
+      </LineString>
+    </Placemark>
+  </Document>
+</kml>

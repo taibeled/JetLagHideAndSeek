@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>N2 Bus Route</name>
+    <description>Bus stops for N2 route</description>
+    
+    <!-- Style for the route -->
+    <Style id="routeStyle">
+      <LineStyle>
+        <color>ff0000ff</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+    
+    <!-- Style for the stops -->
+    <Style id="stopStyle">
+      <IconStyle>
+        <color>ff0000ff</color>
+        <scale>1.0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0.8</scale>
+      </LabelStyle>
+    </Style>
+    
+    <!-- Folder for stops -->
+    <Folder>
+      <name>N2 Stops</name>
+      <Placemark>
+        <name>Glenbeigh Avenue (N2)</name>
+        <description>Stop ID: 8220DB001709</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.29705299143726,53.3568682016769,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Clontarf Road Station (N2)</name>
+        <description>Stop ID: 8220DB004794</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.22656242306654,53.3630049005914,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Broombridge Road (N2)</name>
+        <description>Stop ID: 8220DB008312</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.29975,53.3748,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Dunard Walk (N2)</name>
+        <description>Stop ID: 8220DB001707</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.30245957267131,53.3584282663489,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Aughrim Court (N2)</name>
+        <description>Stop ID: 8220DB001712</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.28624259176384,53.3533339170032,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Stoneybatter (N2)</name>
+        <description>Stop ID: 8220DB001714</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.28188938800201,53.3506378069371,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>St Clare's (N2)</name>
+        <description>Stop ID: 8220DB008308</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.271342,53.379157,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Lambay Road (N2)</name>
+        <description>Stop ID: 8220DB00089</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.261644,53.377939,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Clare Road (N2)</name>
+        <description>Stop ID: 8220DB000087</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.2548802899246,53.3767517255719,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Park Crescent (N2)</name>
+        <description>Stop ID: 8220DB008315</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.31075,53.3625,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Old Finglas Road (N2)</name>
+        <description>Stop ID: 8220DB000155</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.27957552717572,53.3778742492869,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Grace Park Road (N2)</name>
+        <description>Stop ID: 8220DB000259</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.24388537443071,53.3740108657416,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Victoria Quay (N2)</name>
+        <description>Stop ID: 8220DB004407</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.285165,53.346488,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Nephin Road (N2)</name>
+        <description>Stop ID: 8220DB004498</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.30426041382606,53.3668037534418,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Malahide Road (N2)</name>
+        <description>Stop ID: 8220DB000669</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.22867890531785,53.3663170047508,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Aughrim Street (N2)</name>
+        <description>Stop ID: 8220DB001710</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.29174149147947,53.3555699040255,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Ballyboggan Road (N2)</name>
+        <description>Stop ID: 8220DB008310</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.28725,53.375599,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Marino Church (N2)</name>
+        <description>Stop ID: 8220DB001492</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.23255805716234,53.3702573904197,0</coordinates>
+        </Point>
+      </Placemark>
+    </Folder>
+    
+    <!-- Route line -->
+    <Placemark>
+      <name>N2 Route Line</name>
+      <styleUrl>#routeStyle</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>-6.29705299143726,53.3568682016769,0 -6.22656242306654,53.3630049005914,0 -6.29975,53.3748,0 -6.30245957267131,53.3584282663489,0 -6.28624259176384,53.3533339170032,0 -6.28188938800201,53.3506378069371,0 -6.271342,53.379157,0 -6.261644,53.377939,0 -6.2548802899246,53.3767517255719,0 -6.31075,53.3625,0 -6.27957552717572,53.3778742492869,0 -6.24388537443071,53.3740108657416,0 -6.285165,53.346488,0 -6.30426041382606,53.3668037534418,0 -6.22867890531785,53.3663170047508,0 -6.29174149147947,53.3555699040255,0 -6.28725,53.375599,0 -6.23255805716234,53.3702573904197,0 </coordinates>
+      </LineString>
+    </Placemark>
+  </Document>
+</kml>

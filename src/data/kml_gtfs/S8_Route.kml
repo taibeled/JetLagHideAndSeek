@@ -1,0 +1,675 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>S8 Route</name>
+    <description>Stops for S8 route</description>
+    
+    <!-- Style for the route -->
+    <Style id="routeStyle">
+      <LineStyle>
+        <color>ff7f00ff</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+    
+    <!-- Style for the stops -->
+    <Style id="stopStyle">
+      <IconStyle>
+        <scale>1.0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/paddle/purple-blank.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0.8</scale>
+      </LabelStyle>
+    </Style>
+    
+    <!-- Folder for stops -->
+    <Folder>
+      <name>S8 Stops</name>
+      <Placemark>
+        <name>1. Kingswood Avenue (S8)</name>
+        <description>Stop ID: 8230DB006001</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.41939858171847,53.2944765104208,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>2. Citywest Campus (S8)</name>
+        <description>Stop ID: 8230DB004438</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.42260669701534,53.2933146001978,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>3. Bianconi Avenue (S8)</name>
+        <description>Stop ID: 8230DB004713</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.4271364109145,53.2912892220378,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>4. Castle Drive (S8)</name>
+        <description>Stop ID: 8230DB004714</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.42385492509485,53.2887472357322,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>5. Citywest Road (S8)</name>
+        <description>Stop ID: 8230DB004960</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.42162128652658,53.2850505921398,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>6. Citywest SC (S8)</name>
+        <description>Stop ID: 8230DB007967</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.42142123870602,53.2827470180647,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>7. Magna Drive (S8)</name>
+        <description>Stop ID: 8230DB004932</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.42049974981812,53.2788609880708,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>8. Belfry (S8)</name>
+        <description>Stop ID: 8230DB004933</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.41927014304667,53.2776403003762,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>9. Belfry Downs (S8)</name>
+        <description>Stop ID: 8230DB002590</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.41549358352696,53.2751454328557,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>10. De Selby Estate (S8)</name>
+        <description>Stop ID: 8230DB002591</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.41044522105174,53.2746108567552,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>11. Kiltalown Cottages (S8)</name>
+        <description>Stop ID: 8230DB002592</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.40627319230772,53.2743034961588,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>12. Jobstown House (S8)</name>
+        <description>Stop ID: 8230DB002357</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.39676450981219,53.2779689604231,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>13. Killinarden (S8)</name>
+        <description>Stop ID: 8230DB002358</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.38961370639414,53.2807038231884,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>14. Maplewood Avenue (S8)</name>
+        <description>Stop ID: 8230DB002359</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.3843759662733,53.2835900308709,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>15. Alderwood (S8)</name>
+        <description>Stop ID: 8230DB002360</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.3796848797551,53.2846948207358,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>16. Tallaght Luas (S8)</name>
+        <description>Stop ID: 8230DB004348</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.37505043118617,53.2866720396011,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>17. Tallaght Hospital (S8)</name>
+        <description>Stop ID: 8230DB004646</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.3742704403854,53.2894387134306,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>18. South Dublin CC (S8)</name>
+        <description>Stop ID: 8230DB004647</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.37153194884299,53.2900574732897,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>19. Belgard Square North (S8)</name>
+        <description>Stop ID: 8230DB002346</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.36790110381364,53.2900797370838,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>20. Tallaght Village (S8)</name>
+        <description>Stop ID: 8230DB004435</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.36356837702225,53.2888429202736,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>21. Village Green (S8)</name>
+        <description>Stop ID: 8230DB002604</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.36184601942402,53.2868149331786,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>22. St Maelruan's Park (S8)</name>
+        <description>Stop ID: 8230DB002605</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.35991184833955,53.2840559727596,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>23. The Crescent (S8)</name>
+        <description>Stop ID: 8230DB002538</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.35891362658071,53.281534566011,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>24. Seskin View Road (S8)</name>
+        <description>Stop ID: 8230DB007960</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.35829678695901,53.2796295904385,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>25. Kiltipper Road (S8)</name>
+        <description>Stop ID: 8230DB002539</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.35618107892913,53.2765355041079,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>26. Old Bawn Centre (S8)</name>
+        <description>Stop ID: 8230DB002540</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.3537754303515,53.275531598616,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>27. Old Court Road (S8)</name>
+        <description>Stop ID: 8230DB004882</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.35034008190742,53.2747920313822,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>28. Old Court Farm (S8)</name>
+        <description>Stop ID: 8230DB004883</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.34683293352434,53.2751389286643,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>29. Parklands (S8)</name>
+        <description>Stop ID: 8230DB004884</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.34260045154128,53.2756284397548,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>30. Wood Dale View (S8)</name>
+        <description>Stop ID: 8230DB004885</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.33659451965014,53.2762189048752,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>31. Woodstown (S8)</name>
+        <description>Stop ID: 8230DB004886</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.32968674190357,53.2768593539206,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>32. St Colmcille's Way (S8)</name>
+        <description>Stop ID: 8230DB004887</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.31803760867395,53.2794729155331,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>33. St Colmcille's School (S8)</name>
+        <description>Stop ID: 8230DB001146</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.31421742122974,53.2793740217827,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>34. Scholarstown Park (S8)</name>
+        <description>Stop ID: 8230GD10154</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.31003328977485,53.2793777050522,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>35. Templeroan Estate (S8)</name>
+        <description>Stop ID: 8230DB007443</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.30695153563064,53.2814641732317,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>36. Ballyboden St Endas (S8)</name>
+        <description>Stop ID: 8230DB007968</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.30183478657508,53.282667723117,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>37. The Glen (S8)</name>
+        <description>Stop ID: 8230DB007444</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.29913139992251,53.2823865090999,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>38. Ballyboden Crescent (S8)</name>
+        <description>Stop ID: 8230DB002948</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.29581922742648,53.2819527231185,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>39. Moyville Lawns (S8)</name>
+        <description>Stop ID: 8230DB002949</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.29325082629437,53.2816733044618,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>40. Pearse Brothers Park (S8)</name>
+        <description>Stop ID: 8230DB002950</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.28846191367872,53.2817934073387,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>41. Grange Golf Club (S8)</name>
+        <description>Stop ID: 8230DB007448</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.28141545916275,53.281736988145,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>42. Eden Avenue (S8)</name>
+        <description>Stop ID: 8230DB002967</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.27691727465228,53.2813395031682,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>43. Three Rock Rovers (S8)</name>
+        <description>Stop ID: 8230DB002968</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.273568644566,53.2803293260032,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>44. Marley Park (S8)</name>
+        <description>Stop ID: 8250DB002969</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.27041174873562,53.27940272893,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>45. Grange Road (S8)</name>
+        <description>Stop ID: 8250DB002970</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.26726734687084,53.2781706300674,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>46. Stonemasons Way (S8)</name>
+        <description>Stop ID: 8250DB002971</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.26422427079282,53.2762927713643,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>47. Pine Valley (S8)</name>
+        <description>Stop ID: 8250DB005051</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.2597467856516,53.2735579991915,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>48. Grange Hall (S8)</name>
+        <description>Stop ID: 8250DB005052</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.25492078421179,53.2720313631456,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>49. Kingston (S8)</name>
+        <description>Stop ID: 8250DB002975</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.24788043364346,53.2718651810703,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>50. Blackthorn Drive (S8)</name>
+        <description>Stop ID: 8250DB007969</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.220262,53.277031,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>51. Blackthorn Road (S8)</name>
+        <description>Stop ID: 8250DB000449</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.21692737889845,53.2763228251629,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>52. Heather Road (S8)</name>
+        <description>Stop ID: 8250DB000450</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.21349966939986,53.2750940462756,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>53. Carmanhall Road (S8)</name>
+        <description>Stop ID: 8250DB003181</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.20777790443505,53.2767339177509,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>54. Sandyford Luas (S8)</name>
+        <description>Stop ID: 8250DB005142</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.20517423011536,53.2776744715647,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>55. Burton Hall Road (S8)</name>
+        <description>Stop ID: 8250DB003187</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.20332617138686,53.2738266122562,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>56. Racecourse (S8)</name>
+        <description>Stop ID: 8250DB003188</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.19902000524394,53.2731773978754,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>57. Silverpark GAA (S8)</name>
+        <description>Stop ID: 8250DB003189</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.19557317570234,53.2738443410885,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>58. Torquay Road (S8)</name>
+        <description>Stop ID: 8250DB003190</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.19185556505106,53.2748845875592,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>59. Foxrock Manor (S8)</name>
+        <description>Stop ID: 8250DB003191</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.18833124044106,53.2763141538316,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>60. Kelston Park (S8)</name>
+        <description>Stop ID: 8250DB003192</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.18652730499117,53.2774821726676,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>61. Stillorgan Road (S8)</name>
+        <description>Stop ID: 8250DB007970</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.18489625952223,53.2788145865792,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>62. Newtownpark Avenue (S8)</name>
+        <description>Stop ID: 8250DB003193</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.1833383971239,53.2798335028089,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>63. Holly Park Avenue (S8)</name>
+        <description>Stop ID: 8250DB003194</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.17884354823076,53.2832613825795,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>64. Meadow Close (S8)</name>
+        <description>Stop ID: 8250DB003195</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.17754416687629,53.2848953777081,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>65. Newtown Park (S8)</name>
+        <description>Stop ID: 8250DB007971</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.17596237837408,53.2875227416374,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>66. Fleurville Road (S8)</name>
+        <description>Stop ID: 8250DB007972</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.17463206201294,53.2895247531153,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>67. Rockville Road (S8)</name>
+        <description>Stop ID: 8250DB004352</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.17191895152452,53.2912359082869,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>68. National School (S8)</name>
+        <description>Stop ID: 8250DB007973</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.17037763874539,53.2925515264126,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>69. Temple Hill (S8)</name>
+        <description>Stop ID: 8250DB003164</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.1698872726453,53.2956000271742,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>70. Monkstown Road (S8)</name>
+        <description>Stop ID: 8250DB003036</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.16765645848464,53.2958444056534,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>71. Alma Road (S8)</name>
+        <description>Stop ID: 8250DB003037</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.16575087934276,53.2955005171025,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>72. Belgrave Square (S8)</name>
+        <description>Stop ID: 8250DB003038</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.16095225999932,53.2947524807638,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>73. Albany Avenue (S8)</name>
+        <description>Stop ID: 8250DB003039</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.15792431672826,53.2943462090748,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>74. Monkstown Crescent (S8)</name>
+        <description>Stop ID: 8250DB003040</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.15436137446672,53.2938237202627,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>75. Grosvenor Terrace (S8)</name>
+        <description>Stop ID: 8250DB003041</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.14959695119317,53.2940285174671,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>76. De Vesci Terrace (S8)</name>
+        <description>Stop ID: 8250DB003042</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.1462370834572,53.2950549316107,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>77. Crofton Road (S8)</name>
+        <description>Stop ID: 8250DB002035</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.14266542172264,53.295772349365,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>78. Crofton Avenue (S8)</name>
+        <description>Stop ID: 8250DB002036</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.13820878983198,53.2957927315715,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>79. Dun Laoghaire Stn (S8)</name>
+        <description>Stop ID: 8250DB002039</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.13490268686881,53.2948871708134,0</coordinates>
+        </Point>
+      </Placemark>
+    </Folder>
+    
+    <!-- Route line -->
+    <Placemark>
+      <name>S8 Route Line</name>
+      <styleUrl>#routeStyle</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>-6.41944443991598,53.2945068152874,0 -6.41998,53.2942165,0 -6.420326,53.2940413,0 -6.420364,53.2940218,0 -6.4207084,53.293874,0 -6.4210354,53.2937502,0 -6.4213465,53.2936488,0 -6.4217715,53.293527,0 -6.4223996,53.2933742,0 -6.4226086298858,53.2933434936515,0 -6.4226416,53.2933388,0 -6.4228536,53.29332,0 -6.4231945,53.2933199,0 -6.423814,53.2933397,0 -6.4246009,53.2933723,0 -6.4251926,53.2933875,0 -6.4253954,53.2933863,0 -6.425787,53.2933839,0 -6.4261189,53.2933578,0 -6.4263557,53.2933329,0 -6.4264787,53.2933199,0 -6.4267649,53.2932796,0 -6.4269999,53.2932413,0 -6.4271948,53.2931991,0 -6.4273607,53.2931491,0 -6.4275119,53.2930872,0 -6.4276047,53.2930325,0 -6.4276994,53.2929422,0 -6.4277924,53.292854,0 -6.4277898,53.2928256,0 -6.4277992,53.2927977,0 -6.4277416,53.2927406,0 -6.4277203,53.2927151,0 -6.4276451,53.292625,0 -6.4275321,53.2925549,0 -6.4274394,53.2924841,0 -6.4273505,53.2923998,0 -6.4272757,53.2923011,0 -6.4272329,53.2921849,0 -6.4272082,53.2920919,0 -6.4272203,53.2919099,0 -6.4272463,53.2916809,0 -6.4272666,53.2914114,0 -6.42724988967635,53.2912838349899,0 -6.4272206,53.2910628,0 -6.42716035488247,53.2908549917776,0 -6.4271445,53.2908008,0 -6.4270545,53.2905905,0 -6.4268838,53.2903279,0 -6.4268227,53.2902279,0 -6.426693,53.2901479,0 -6.4266511,53.2901219,0 -6.4264884,53.2900693,0 -6.4264058,53.2900642,0 -6.4263279,53.2900469,0 -6.4262689,53.2900234,0 -6.4262198,53.2899932,0 -6.4261824,53.2899573,0 -6.4261587,53.2899175,0 -6.4261495,53.2898678,0 -6.4261615,53.2898183,0 -6.4261938,53.2897722,0 -6.4261389,53.2896927,0 -6.4261202,53.2896657,0 -6.4259547,53.289433,0 -6.4256566,53.2892488,0 -6.4254451,53.2891412,0 -6.42529285654358,53.2890701789569,0 -6.42523,53.2890411,0 -6.4248472,53.2888943,0 -6.4244401,53.288775,0 -6.42390538911743,53.2886620160984,0 -6.4236707,53.2886126,0 -6.4235063,53.2885624,0 -6.423363,53.2885141,0 -6.4231469,53.2884141,0 -6.4229581,53.2882984,0 -6.4228538,53.2882629,0 -6.4227837,53.2882377,0 -6.4226466,53.2881829,0 -6.4226229,53.288184,0 -6.4225991,53.2881832,0 -6.4225434,53.2881738,0 -6.4224951,53.2881546,0 -6.4224591,53.2881274,0 -6.4224387,53.288095,0 -6.4224361,53.2880604,0 -6.4224491,53.2880301,0 -6.4224756,53.2880032,0 -6.4224602,53.2879014,0 -6.4224533,53.2878544,0 -6.4224047,53.2876918,0 -6.42235403082184,53.2875946922985,0 -6.4221991,53.2872991,0 -6.4221033,53.2870969,0 -6.4220441,53.2869605,0 -6.4219932,53.2867683,0 -6.4219582,53.2866434,0 -6.4219314,53.2865476,0 -6.4218863,53.2862696,0 -6.4218268,53.2858063,0 -6.4218069,53.285564,0 -6.4218005,53.2855125,0 -6.4217835,53.2853763,0 -6.42174201737406,53.2850451125503,0 -6.4216957,53.2846752,0 -6.4216566,53.2843625,0 -6.4216416,53.2841685,0 -6.4215997,53.2839209,0 -6.4215655,53.2836061,0 -6.4215204,53.2831907,0 -6.4214955,53.2829887,0 -6.4214904,53.282946,0 -6.42146562650527,53.2827450046654,0 -6.42145195217175,53.2826350273061,0 -6.4214299,53.2824581,0 -6.4213794,53.2820431,0 -6.4213699,53.2819712,0 -6.4213634,53.2819449,0 -6.4213352,53.2816851,0 -6.421317,53.2815175,0 -6.4213142,53.2814922,0 -6.4212972,53.2812551,0 -6.4212854,53.2809541,0 -6.42128401884162,53.2808059979377,0 -6.4212827,53.2806697,0 -6.4212895,53.2803802,0 -6.4212756,53.2801106,0 -6.4212479,53.2799738,0 -6.4212099,53.279835,0 -6.421198,53.2797927,0 -6.4211738,53.2797065,0 -6.4211128,53.2795559,0 -6.4210244,53.2793846,0 -6.4209035,53.279196,0 -6.4208425,53.2791008,0 -6.4206459,53.2788761,0 -6.42060405810013,53.2788282120498,0 -6.4203849,53.278578,0 -6.4200505,53.2783648,0 -6.4199956,53.2783596,0 -6.4199384,53.2783439,0 -6.4198912,53.2783191,0 -6.4198579,53.2782872,0 -6.4198414,53.2782509,0 -6.419843,53.2782133,0 -6.4198614,53.278179,0 -6.419823,53.2780851,0 -6.4197493,53.2779084,0 -6.4196569,53.2778282,0 -6.4194544,53.2776921,0 -6.4193279336526,53.2776089006097,0 -6.4191287,53.2774782,0 -6.41871959806864,53.2772156359301,0 -6.4185768,53.2771242,0 -6.4183318,53.2769542,0 -6.4181628,53.2768171,0 -6.4179888,53.2766632,0 -6.4177625,53.2764516,0 -6.4175135,53.2761915,0 -6.4173985,53.2760598,0 -6.4172464,53.2758382,0 -6.4170685,53.2755851,0 -6.4169209,53.2753772,0 -6.416918,53.2753619,0 -6.4169368,53.2752868,0 -6.4168449,53.275276,0 -6.4163352,53.275216,0 -6.4162727,53.2752074,0 -6.4158714,53.2751522,0 -6.4156299,53.2751189,0 -6.41551229405518,53.2751011083951,0 -6.4153544,53.2750774,0 -6.414391,53.2749341,0 -6.4138447,53.2748555,0 -6.4111781,53.2746418,0 -6.4111625,53.2746407,0 -6.41072241923115,53.2746094202,0 -6.4104763,53.274592,0 -6.41044997615701,53.2745898155175,0 -6.4103088,53.2745789,0 -6.4101321,53.274563,0 -6.4099037,53.2745441,0 -6.409581,53.2745187,0 -6.4095204,53.274514,0 -6.4074317,53.2743622,0 -6.40685004695557,53.2743152210006,0 -6.4064387,53.2742821,0 -6.40627965693049,53.2742709559975,0 -6.4058164,53.2742388,0 -6.4055346,53.274222,0 -6.4053958,53.2742195,0 -6.4053135,53.274218,0 -6.4048233,53.2742117,0 -6.4046066,53.2742294,0 -6.40346,53.27432,0 -6.402855,53.27444,0 -6.4024184,53.2746039,0 -6.4016673,53.2749365,0 -6.4014322,53.2750317,0 -6.40127,53.2750963,0 -6.4007075,53.2754096,0 -6.4002073,53.2756606,0 -6.3999784,53.2757779,0 -6.3997027,53.2759792,0 -6.3995529,53.2761924,0 -6.3994193,53.2764313,0 -6.399285,53.27671,0 -6.3990283,53.2769649,0 -6.3987967,53.2771133,0 -6.3983244,53.2773133,0 -6.3981278,53.277389,0 -6.3975658,53.2776055,0 -6.39750803366502,53.2776277290038,0 -6.3972208,53.2777383,0 -6.3970404,53.277806,0 -6.3967767,53.2779049,0 -6.39672061355838,53.2779249902113,0 -6.3963817,53.2780478,0 -6.3958129,53.2782367,0 -6.3954772,53.2783482,0 -6.395171,53.2784489,0 -6.3948361,53.2785612,0 -6.3947693,53.2785834,0 -6.3937532,53.2789142,0 -6.3926743,53.2793009,0 -6.3918681,53.2795794,0 -6.3910128,53.2798521,0 -6.3906776,53.2799919,0 -6.3903139,53.2801483,0 -6.3902295,53.2801909,0 -6.3900688,53.2802953,0 -6.3895744,53.2806376,0 -6.38953657851151,53.2806638754341,0 -6.3892724,53.2808467,0 -6.3890005,53.2810216,0 -6.3884947,53.2813472,0 -6.3884565,53.2813717,0 -6.3883017,53.2814715,0 -6.3881713,53.2815547,0 -6.387645,53.281911,0 -6.3875849,53.2819534,0 -6.3870981,53.282253,0 -6.3867673,53.282455,0 -6.386235,53.2827604,0 -6.385928,53.2829185,0 -6.3856643,53.283038,0 -6.3854518,53.2831276,0 -6.3852278,53.283213,0 -6.384667,53.2833992,0 -6.38430695127886,53.2835079487549,0 -6.3842295,53.2835314,0 -6.3837685,53.2836582,0 -6.3833688,53.2837668,0 -6.3828598,53.2838818,0 -6.3823507,53.2839744,0 -6.3813935,53.2841083,0 -6.38099,53.2841432,0 -6.3799769,53.2842269,0 -6.3798234,53.2842396,0 -6.379842,53.2843039,0 -6.3798584,53.2844003,0 -6.3798539,53.2844744,0 -6.3798339,53.2845147,0 -6.3797705,53.2845775,0 -6.3797295,53.2845954,0 -6.37964663072854,53.2846271139766,0 -6.37962346917103,53.2846357162322,0 -6.3791738,53.2848037,0 -6.3788154,53.284931,0 -6.3785185781361,53.2850652411554,0 -6.3783842,53.2851261,0 -6.3781035,53.2852753,0 -6.3778838,53.2853734,0 -6.3777289,53.2854328,0 -6.3776825,53.2854511,0 -6.377373,53.285539,0 -6.3771835,53.2855928,0 -6.3765831,53.285687,0 -6.3763636,53.2856955,0 -6.3763366,53.2856967,0 -6.3761912,53.2857022,0 -6.376056,53.2857103,0 -6.3760192,53.2857127,0 -6.3759197,53.2857191,0 -6.375706,53.2857484,0 -6.3755808,53.285766,0 -6.3755678,53.2857845,0 -6.3755397,53.2858059,0 -6.375218,53.2860838,0 -6.3751041,53.2862329,0 -6.3750559,53.2863187,0 -6.3750126,53.2864211,0 -6.3750042,53.2864507,0 -6.374969,53.286633,0 -6.37496861159966,53.2866716311894,0 -6.3749677,53.2867405,0 -6.3749753,53.2868316,0 -6.3749905,53.2869201,0 -6.3750327,53.2870962,0 -6.3750909,53.287272,0 -6.3751163,53.2873485,0 -6.3751248,53.2873741,0 -6.3751363,53.2874088,0 -6.3751483,53.2874454,0 -6.3752656,53.2877892,0 -6.3752787,53.2878277,0 -6.3754,53.2881835,0 -6.375408,53.2882073,0 -6.3754229,53.2882507,0 -6.3754965,53.2884666,0 -6.3755482,53.2886182,0 -6.3756137,53.2888219,0 -6.3756692,53.2890366,0 -6.3756828,53.289085,0 -6.3757234,53.2890839,0 -6.3757629,53.2890895,0 -6.3757981,53.2891017,0 -6.3758261,53.2891194,0 -6.3758447,53.289141,0 -6.3758524,53.2891676,0 -6.3758457,53.2891943,0 -6.3758255,53.2892184,0 -6.3757936,53.2892376,0 -6.3757532,53.2892498,0 -6.3757064,53.2892538,0 -6.37566,53.2892484,0 -6.375619,53.2892342,0 -6.3755881,53.2892129,0 -6.3755706,53.2891866,0 -6.3754183,53.2892036,0 -6.3752437,53.2892232,0 -6.3750949,53.2892396,0 -6.3748419,53.2892675,0 -6.3745527,53.2893025,0 -6.37423740009934,53.2893405955581,0 -6.3741918,53.2893462,0 -6.3739828,53.2893823,0 -6.37376937836759,53.2894306209765,0 -6.3734599,53.2895009,0 -6.373273,53.2895421,0 -6.3727083,53.2896671,0 -6.372537,53.2897135,0 -6.3724448,53.2897385,0 -6.3720305,53.2898508,0 -6.3719627,53.2898708,0 -6.37149233406541,53.2900091709803,0 -6.3713879,53.29004,0 -6.3709149,53.2901795,0 -6.3706998,53.2902319,0 -6.3706444,53.2902433,0 -6.3705379,53.2902674,0 -6.3705489,53.2903034,0 -6.3705405,53.2903398,0 -6.3705136,53.2903727,0 -6.3704708,53.290399,0 -6.3704164,53.2904159,0 -6.3703876,53.2904186,0 -6.3703557,53.2904218,0 -6.3702952,53.2904162,0 -6.3702406,53.2903995,0 -6.3701974,53.2903734,0 -6.3701782,53.2903497,0 -6.3700846,53.290366,0 -6.3699074,53.2903973,0 -6.3697301,53.2904286,0 -6.36937726109588,53.2904907896341,0 -6.3693133,53.2905022,0 -6.3685788,53.2906087,0 -6.3685653,53.2906106,0 -6.3685207,53.2906175,0 -6.3684795,53.2906245,0 -6.3684752,53.2906433,0 -6.3684668,53.2906664,0 -6.3684488,53.2906889,0 -6.3684147,53.290718,0 -6.3683576,53.2907427,0 -6.3682975,53.2907545,0 -6.3682371,53.2907556,0 -6.3681919,53.2907494,0 -6.3681345,53.2907336,0 -6.3680968,53.2907107,0 -6.3680745,53.2906918,0 -6.3680527,53.2906598,0 -6.3680433,53.2906331,0 -6.3680494,53.2906041,0 -6.3680625,53.2905779,0 -6.3680925,53.2905059,0 -6.3681086,53.2904572,0 -6.3681114,53.2904072,0 -6.3681063,53.2903677,0 -6.3680958,53.2903281,0 -6.36801809819297,53.2900671771206,0 -6.3679222,53.2897457,0 -6.3677661,53.289229,0 -6.3677498,53.2891748,0 -6.3677175,53.2890912,0 -6.3676727,53.2891012,0 -6.3675894,53.2891199,0 -6.3675442,53.2891289,0 -6.3672216,53.2891746,0 -6.36695153175842,53.2892436387396,0 -6.3666954,53.2893092,0 -6.3663356,53.2894006,0 -6.3661702,53.2894352,0 -6.3661063,53.2894464,0 -6.3658728,53.2894833,0 -6.3654409,53.2895311,0 -6.3652406,53.2895507,0 -6.3650254,53.2895634,0 -6.364937,53.2895584,0 -6.3648638,53.289553,0 -6.3648087,53.289546,0 -6.3647413,53.2895328,0 -6.3646934,53.2895198,0 -6.3645897,53.2894853,0 -6.3645176,53.2894521,0 -6.3644467,53.2894143,0 -6.3643884,53.2893793,0 -6.3641581,53.2892117,0 -6.363888,53.2890051,0 -6.36363068617669,53.2888129615066,0 -6.3633758,53.288623,0 -6.36323776504126,53.2885293155702,0 -6.3631945,53.2885002,0 -6.3629425,53.2883191,0 -6.3626879,53.2881268,0 -6.3623333,53.2878798,0 -6.3622655,53.2878038,0 -6.3622359,53.287625,0 -6.3621576,53.287305,0 -6.3620952,53.2870842,0 -6.3620594,53.2869869,0 -6.3619962,53.2868681,0 -6.36196889230955,53.2867977463526,0 -6.36194191253232,53.2867287824884,0 -6.3618628,53.2865265,0 -6.3618297,53.2864497,0 -6.3617315,53.2862741,0 -6.3616986,53.2862152,0 -6.3616205,53.2860818,0 -6.3615924,53.286037,0 -6.3614138,53.285752,0 -6.3612873,53.2855507,0 -6.3612257,53.2854772,0 -6.3609175,53.2850803,0 -6.3608886,53.2850385,0 -6.3607867,53.2849092,0 -6.36055573900581,53.2846700432644,0 -6.360393,53.2845018,0 -6.3602869,53.2843844,0 -6.35998002952512,53.284034448597,0 -6.3599603,53.284012,0 -6.3598395,53.2838141,0 -6.3596967,53.2835482,0 -6.359597,53.2833449,0 -6.359454,53.2829535,0 -6.35944713785515,53.2829301090723,0 -6.3594339,53.2828874,0 -6.3592668,53.2823374,0 -6.3590843,53.2818281,0 -6.35899347095231,53.2815258967615,0 -6.35884150865503,53.2810215111013,0 -6.3587588,53.2807472,0 -6.3586593,53.2804209,0 -6.3586292,53.2803078,0 -6.3586004,53.2802178,0 -6.3585001,53.2798656,0 -6.3584208514832,53.2796154220781,0 -6.3582687,53.2791367,0 -6.35821202641258,53.2789385451651,0 -6.3581132,53.2785939,0 -6.3580588,53.2784541,0 -6.3580171,53.2783277,0 -6.3579419,53.278097,0 -6.3579027,53.2779865,0 -6.3578701,53.2779152,0 -6.3578481,53.2778816,0 -6.3578226,53.2778441,0 -6.357761,53.2777632,0 -6.3577446,53.2777401,0 -6.3575441,53.277526,0 -6.357232,53.277219,0 -6.3570946,53.2770976,0 -6.357062,53.2770689,0 -6.3569628,53.2769806,0 -6.3569042,53.2769257,0 -6.3566543,53.2766913,0 -6.35630823569099,53.2764656618088,0 -6.3562398,53.2764211,0 -6.3560564,53.2763216,0 -6.3559604,53.2762695,0 -6.3557582,53.2761811,0 -6.3556167,53.2761193,0 -6.3553027,53.2760015,0 -6.3552368,53.275978,0 -6.3547103,53.2757901,0 -6.3544254,53.2756795,0 -6.35437067968568,53.2756566061455,0 -6.3543115,53.2756321,0 -6.3542915,53.2756239,0 -6.3541648,53.2755763,0 -6.35384280645658,53.2754551620211,0 -6.3534567,53.2753101,0 -6.3532079,53.2752165,0 -6.3530881,53.2751715,0 -6.352991,53.2751291,0 -6.352834,53.2750606,0 -6.3527362,53.2750104,0 -6.3525912,53.2749635,0 -6.3522999,53.274884,0 -6.3520193,53.2748354,0 -6.3518755,53.2748198,0 -6.3516942,53.2748001,0 -6.3513895,53.2747692,0 -6.3509885,53.2747412,0 -6.35062646482962,53.2747328139957,0 -6.3505419,53.274731,0 -6.35033950288644,53.2747316503368,0 -6.3501565,53.2747325,0 -6.3498683,53.2747431,0 -6.3495426,53.2747632,0 -6.348981,53.2748085,0 -6.3483382,53.2748802,0 -6.3477759,53.274951,0 -6.3469739,53.2750513,0 -6.3468092100306,53.2750723779412,0 -6.3455391,53.2752355,0 -6.3448998,53.2753065,0 -6.3447914,53.2753185,0 -6.344793,53.2753548,0 -6.344776,53.2753897,0 -6.344742,53.2754199,0 -6.3446944,53.2754424,0 -6.3446375,53.2754554,0 -6.3445702,53.2754569,0 -6.3445059,53.2754448,0 -6.3444522,53.2754205,0 -6.3444151,53.2753869,0 -6.3443991,53.2753478,0 -6.3442727,53.2753675,0 -6.3438556,53.2754326,0 -6.3430215,53.275526,0 -6.34258436655827,53.27556818907,0 -6.3425255,53.2755739,0 -6.34235666042663,53.275591301515,0 -6.3422346,53.2756041,0 -6.341349,53.2756791,0 -6.340353,53.2757478,0 -6.3398334,53.2757851,0 -6.3398237,53.2758382,0 -6.3397945,53.275875,0 -6.3397469,53.2759042,0 -6.339686,53.2759224,0 -6.3396184,53.2759278,0 -6.3395517,53.2759197,0 -6.3394929,53.275899,0 -6.3394486,53.2758682,0 -6.3394189,53.2758149,0 -6.3392932,53.2758314,0 -6.3386927,53.275931,0 -6.3378154,53.2760358,0 -6.3376789,53.2760498,0 -6.3372849,53.2760827,0 -6.33657632614126,53.2761504512551,0 -6.3358241,53.2762225,0 -6.3357869,53.2762262,0 -6.335776,53.2762273,0 -6.3354232,53.2762611,0 -6.3333082,53.2764422,0 -6.3329666,53.2764714,0 -6.3317606,53.2765811,0 -6.3313027,53.2766227,0 -6.3311196,53.2766394,0 -6.330974,53.2766538,0 -6.3306011,53.2766907,0 -6.33011884301579,53.2767383595487,0 -6.3299979,53.2767504,0 -6.32966722414372,53.2767794602071,0 -6.3295166,53.2767928,0 -6.328316,53.2769198,0 -6.3273312,53.2770306,0 -6.327021,53.277057,0 -6.3266154,53.2770953,0 -6.3263914,53.2771208,0 -6.3262102,53.2771412,0 -6.3258212,53.2771883,0 -6.3257397,53.2772002,0 -6.3256089,53.2772359,0 -6.3255371,53.2772555,0 -6.325481,53.2772707,0 -6.324689,53.2774047,0 -6.3241898,53.2775115,0 -6.3236963,53.2776815,0 -6.3231301,53.2778623,0 -6.3222452,53.2781857,0 -6.3218881,53.2783357,0 -6.3214486,53.2785107,0 -6.3208826,53.2786775,0 -6.320499,53.278756,0 -6.3202174,53.2788266,0 -6.3198446,53.2789245,0 -6.3194015,53.2790364,0 -6.31879487736423,53.279174414957,0 -6.3186793,53.2792008,0 -6.31796684070178,53.2793584121216,0 -6.31795242476667,53.2793623562014,0 -6.31757,53.2794683,0 -6.3175052,53.2794802,0 -6.317345,53.2795129,0 -6.3173019,53.2795252,0 -6.317275,53.279537,0 -6.3172581,53.2795472,0 -6.317221,53.2795812,0 -6.3172136,53.2796198,0 -6.3171891,53.2796574,0 -6.3171494,53.27969,0 -6.317097,53.2797154,0 -6.3170334,53.279732,0 -6.3169648,53.2797382,0 -6.3168984,53.2797336,0 -6.3168694,53.2797281,0 -6.3168416,53.2797207,0 -6.3167984,53.2797038,0 -6.3167616,53.2796821,0 -6.3167327,53.2796565,0 -6.3167129,53.279628,0 -6.3166851,53.2795906,0 -6.3166531,53.2795762,0 -6.3166323,53.279571,0 -6.3165984,53.2795642,0 -6.3164957,53.2795513,0 -6.3164704,53.2795484,0 -6.3164203,53.2795425,0 -6.3163392,53.279532,0 -6.3162454,53.2794916,0 -6.3160738,53.2794742,0 -6.3159253,53.2794567,0 -6.3156358,53.2794225,0 -6.31561059111374,53.2794198828712,0 -6.3151693,53.2793763,0 -6.3148956,53.2793522,0 -6.31423276056759,53.2793018761656,0 -6.3133508,53.2792352,0 -6.3131549,53.2792211,0 -6.3129861,53.2792082,0 -6.3126376,53.2791831,0 -6.3123406,53.2791568,0 -6.3120934,53.2791316,0 -6.3119197,53.2791183,0 -6.3117461,53.2791098,0 -6.3115739,53.2791047,0 -6.3114263,53.2791053,0 -6.3113605,53.2791085,0 -6.31128,53.2791123,0 -6.3111113,53.2791241,0 -6.3106327,53.2791791,0 -6.3105927,53.2791852,0 -6.3105222,53.2791968,0 -6.3102829,53.279243,0 -6.3100644,53.2792912,0 -6.3100033045146,53.2793066982786,0 -6.30998601650365,53.279311107804,0 -6.3097551,53.2793701,0 -6.3094925,53.2794539,0 -6.3093069,53.2795271,0 -6.3091026,53.2796147,0 -6.308909,53.279707,0 -6.3088055,53.2797594,0 -6.30869,53.2798181,0 -6.3087099,53.279835,0 -6.308733,53.2798632,0 -6.308744,53.2798938,0 -6.3087424,53.2799251,0 -6.3087283,53.2799553,0 -6.3087025,53.2799825,0 -6.3086684,53.2800042,0 -6.3086455,53.280016,0 -6.3086282,53.2800207,0 -6.3085853,53.2800308,0 -6.3085397,53.2800353,0 -6.3084936,53.2800339,0 -6.3084491,53.2800268,0 -6.30842,53.280019,0 -6.3083736,53.2799991,0 -6.3082798,53.2800739,0 -6.3079274,53.2804008,0 -6.3074659,53.2808598,0 -6.3073477,53.2809815,0 -6.3071277939153,53.2811996606288,0 -6.30688538884503,53.2814401971572,0 -6.3068364,53.2814889,0 -6.3066307,53.2816485,0 -6.3062466,53.2819114,0 -6.3059888,53.2820515,0 -6.3055689,53.2822346,0 -6.3052189,53.2823629,0 -6.3048308,53.28247,0 -6.3042152,53.2825933,0 -6.3038473,53.2826379,0 -6.3033995,53.2826701,0 -6.3031005,53.2826715,0 -6.3029809,53.2826707,0 -6.3027575,53.2826655,0 -6.302643,53.2826628,0 -6.3024431,53.2826559,0 -6.3023433,53.2826501,0 -6.30207407012939,53.2826344557567,0 -6.30184248158212,53.282621031521,0 -6.3017105,53.2826136,0 -6.301033,53.2825592,0 -6.3004463,53.2824889,0 -6.2997246,53.2824023,0 -6.29915153087095,53.2823296790982,0 -6.29891722597436,53.2823000575134,0 -6.2985184,53.2822496,0 -6.2981336,53.2822011,0 -6.2979044,53.2821771,0 -6.2976552,53.2821409,0 -6.2975544,53.2821352,0 -6.2975481,53.2821511,0 -6.2975393,53.2821635,0 -6.2975248,53.2821757,0 -6.2974977,53.2821938,0 -6.2974643,53.2822077,0 -6.297436,53.2822149,0 -6.2974061,53.282219,0 -6.2973723,53.2822203,0 -6.2973385,53.2822167,0 -6.2973095,53.2822105,0 -6.2972829,53.2822015,0 -6.2972592,53.2821898,0 -6.2972306,53.2821676,0 -6.2972127,53.2821416,0 -6.2972073,53.2821197,0 -6.2972115,53.2820863,0 -6.2971128,53.2820826,0 -6.2965599,53.281993,0 -6.2962066,53.281935,0 -6.2961566,53.2819273,0 -6.2959276,53.281892,0 -6.29584939731208,53.2818802467118,0 -6.2957590264073,53.2818668088588,0 -6.2951631,53.2817784,0 -6.2944917,53.2816768,0 -6.294252,53.2816481,0 -6.2940231,53.2816254,0 -6.29360606891237,53.2815977232992,0 -6.2935907,53.2815968,0 -6.29325259537709,53.2815939736701,0 -6.2930661,53.2815926,0 -6.2921265,53.2816287,0 -6.2918748,53.2816426,0 -6.2908718,53.2816935,0 -6.2903196,53.2817066,0 -6.2897267,53.2817141,0 -6.2893278,53.281707,0 -6.2889818,53.2817071,0 -6.2886497,53.2816974,0 -6.28847382993294,53.2816900454926,0 -6.2879669,53.2816693,0 -6.2876851,53.2816522,0 -6.28755376551421,53.2816516633761,0 -6.287254,53.2816506,0 -6.2866684,53.2816701,0 -6.2862324,53.2816842,0 -6.2857108,53.281709,0 -6.2848471,53.2817362,0 -6.2847804,53.2817383,0 -6.2845523,53.2817427,0 -6.284374,53.2817382,0 -6.2843304,53.2817369,0 -6.2836584,53.2817169,0 -6.283164,53.2817028,0 -6.2828521,53.2816967,0 -6.2823491,53.2816868,0 -6.281956,53.2816755,0 -6.28142169740739,53.2816599620512,0 -6.2812347,53.2816546,0 -6.28111642317325,53.281651008401,0 -6.2805703,53.2816347,0 -6.2799784,53.281617,0 -6.2787095,53.281553,0 -6.2785384,53.2815416,0 -6.2783039,53.2815087,0 -6.277773,53.2814343,0 -6.2773004,53.2813469,0 -6.27721407042504,53.2813262089646,0 -6.27696565476215,53.2812669898686,0 -6.2768949,53.2812503,0 -6.2766358,53.2811836,0 -6.276256,53.2810733,0 -6.2756023,53.2808704,0 -6.2750203,53.2806987,0 -6.2738203,53.2803327,0 -6.27361862781396,53.2802709112102,0 -6.27301241112752,53.2800854423795,0 -6.2723709,53.2798893,0 -6.2715219,53.2796323,0 -6.2714881,53.2796211,0 -6.2707641,53.2793982,0 -6.27048950973269,53.2793129851671,0 -6.2702625,53.2792428,0 -6.2700734,53.279186,0 -6.2698508,53.2791191,0 -6.2693576,53.278958,0 -6.2689438,53.2788131,0 -6.268592,53.2786794,0 -6.26826944452865,53.2785518882708,0 -6.2681342,53.2784986,0 -6.2676255,53.2782705,0 -6.26732719896293,53.2781262927143,0 -6.266927,53.277933,0 -6.2666596,53.2777941,0 -6.266268,53.2775735,0 -6.2659026,53.2773616,0 -6.2658536,53.2773323,0 -6.2657419,53.2772656,0 -6.2654621,53.2770833,0 -6.26540507361446,53.2770435366176,0 -6.2650487,53.2767963,0 -6.2649359,53.2767147,0 -6.2648165,53.276631,0 -6.2646555,53.2765123,0 -6.2645909,53.2764608,0 -6.26434075751924,53.2762445604307,0 -6.2640245,53.2759717,0 -6.263523,53.275521,0 -6.2633558,53.2753713,0 -6.2628933,53.2750265,0 -6.2628071,53.2749678,0 -6.2625247,53.2747911,0 -6.2624094,53.2747263,0 -6.2621591,53.2745867,0 -6.2612363,53.274121,0 -6.2610583,53.2740221,0 -6.2610222,53.2740048,0 -6.2609136,53.2739525,0 -6.2605782,53.2738033,0 -6.26015191398583,53.2736240411894,0 -6.25982870009438,53.273488233041,0 -6.2589565,53.2731219,0 -6.2577537,53.2726808,0 -6.2568877,53.2724125,0 -6.2560915,53.2722116,0 -6.2555177,53.2720905,0 -6.25544886826886,53.2720771078128,0 -6.2550122,53.2719929,0 -6.2549428057549,53.2719817683731,0 -6.2544439,53.2719035,0 -6.2541576,53.271863,0 -6.2538724,53.2718289,0 -6.2535746,53.2717994,0 -6.2531462,53.2717631,0 -6.252473,53.2717199,0 -6.2519268,53.2717017,0 -6.2513735,53.2716945,0 -6.2507918,53.2717033,0 -6.2491543,53.2717588,0 -6.2489577,53.2717655,0 -6.24826531777786,53.2717880254045,0 -6.24787465867257,53.271800616473,0 -6.2459936,53.2718615,0 -6.2457274,53.2718671,0 -6.2454623,53.2718755,0 -6.2453854,53.2718748,0 -6.2451694,53.271873,0 -6.2449755,53.2718668,0 -6.2447647,53.2718468,0 -6.2445176,53.2718141,0 -6.2443504,53.2718272,0 -6.2442152,53.2718263,0 -6.2440687,53.2718382,0 -6.243933,53.2718631,0 -6.2438781,53.2718993,0 -6.2437443,53.2719556,0 -6.2436074,53.2719844,0 -6.243471,53.2719915,0 -6.2432994,53.2719717,0 -6.2432174,53.2719493,0 -6.2431445,53.2719205,0 -6.2430559,53.271869,0 -6.2428718,53.2718043,0 -6.2425594,53.2717499,0 -6.2424201,53.2717368,0 -6.2419965,53.2717096,0 -6.2414318,53.2717685,0 -6.240689,53.2718293,0 -6.2401767,53.2718682,0 -6.2395753,53.2718985,0 -6.2389683,53.2719309,0 -6.2382698,53.2719531,0 -6.2377442,53.2719709,0 -6.2368812,53.2719844,0 -6.2362944,53.2719821,0 -6.2357837,53.2719756,0 -6.2348301,53.2719559,0 -6.2339171,53.2719411,0 -6.2331788,53.2719375,0 -6.2324158,53.2719428,0 -6.2315218,53.2719634,0 -6.2307118,53.2719905,0 -6.2299848,53.2720255,0 -6.2288966,53.2720808,0 -6.2281273,53.2721379,0 -6.2271716,53.2721904,0 -6.2263258,53.272243,0 -6.2256234,53.2722652,0 -6.2248214,53.2722817,0 -6.2240079,53.2723061,0 -6.223649,53.2723056,0 -6.2232266,53.2723109,0 -6.2226581,53.272322,0 -6.2223255,53.2723312,0 -6.2215299,53.272382,0 -6.2210707,53.272443,0 -6.2207785,53.272532,0 -6.2204822,53.2726633,0 -6.2202707,53.2728088,0 -6.220148,53.2729307,0 -6.2200549,53.2730526,0 -6.2199517,53.2732535,0 -6.2199253,53.2734455,0 -6.2199346,53.2735778,0 -6.220009,53.2738559,0 -6.2203424,53.2743355,0 -6.221083,53.2754009,0 -6.2212588,53.2756203,0 -6.2216866,53.2762749,0 -6.221714,53.2763167,0 -6.2217848,53.2764358,0 -6.2218175,53.2765176,0 -6.2217143,53.2765549,0 -6.2216022,53.2765939,0 -6.2214385,53.2766335,0 -6.2213692,53.2766503,0 -6.2213001,53.276667,0 -6.220976,53.2767405,0 -6.2208515,53.2767718,0 -6.2205427,53.2768673,0 -6.22021418334269,53.2769815917143,0 -6.2201542,53.2770026,0 -6.2198007,53.2771271,0 -6.2195653,53.2772121,0 -6.2194969,53.2772363,0 -6.2194347,53.277261,0 -6.2193417,53.2771844,0 -6.2193106,53.2771576,0 -6.2190985,53.2769752,0 -6.2188268,53.2768629,0 -6.2183915,53.2767099,0 -6.2176457,53.2764643,0 -6.2175734,53.2764409,0 -6.21700357019528,53.2762440272604,0 -6.21697830942461,53.2762352718677,0 -6.216325,53.2760162,0 -6.2157871,53.2758338,0 -6.2153881,53.2757018,0 -6.2144991,53.2753785,0 -6.21412980652776,53.2752542786312,0 -6.214077,53.2752366,0 -6.2139704,53.2752008,0 -6.2138872,53.2751728,0 -6.2136233,53.2750786,0 -6.21354112835332,53.2750504459976,0 -6.2131071,53.274902,0 -6.2126797,53.2747528,0 -6.2122558,53.2746043,0 -6.2120381,53.2745392,0 -6.2118251,53.2744953,0 -6.2115409,53.2744534,0 -6.2110644,53.2744251,0 -6.2106875,53.2744445,0 -6.2104621,53.2744884,0 -6.210168,53.274551,0 -6.2098789,53.2746429,0 -6.2095917,53.2747699,0 -6.2094262,53.2748741,0 -6.2092157,53.2750466,0 -6.20919014529138,53.2750733149601,0 -6.2089964,53.2752763,0 -6.208902,53.2753819,0 -6.2088229,53.2754744,0 -6.2087202,53.2755881,0 -6.2086169,53.2757033,0 -6.2085895,53.2757338,0 -6.2082998,53.2760559,0 -6.2079269,53.2764534,0 -6.2077296,53.27667,0 -6.20769577916403,53.2767070285785,0 -6.20767608355303,53.276728777858,0 -6.2074328,53.2769864,0 -6.2070983,53.2773404,0 -6.2068713,53.2775899,0 -6.2066634,53.2778184,0 -6.2065744,53.2779517,0 -6.2061928,53.2778414,0 -6.2058669,53.2777501,0 -6.2055215,53.2776482,0 -6.20528551785608,53.2775635025644,0 -6.2051711,53.2775227,0 -6.2051507,53.2775132,0 -6.2049249,53.2774039,0 -6.2045918,53.2772257,0 -6.2044867,53.2771589,0 -6.2041088,53.2768599,0 -6.203906,53.2766603,0 -6.2037851,53.2765045,0 -6.2037101,53.2763988,0 -6.2035921,53.2761755,0 -6.2035376,53.2760194,0 -6.203515,53.2759221,0 -6.2034763,53.2757007,0 -6.2034747,53.2755315,0 -6.2034909,53.275381,0 -6.2035474,53.2750843,0 -6.203602,53.2749022,0 -6.2037022,53.2746899,0 -6.2037978,53.274551,0 -6.2039343,53.2743547,0 -6.2039541,53.2742236,0 -6.2039503,53.2741898,0 -6.20394,53.274154,0 -6.2039343,53.2741257,0 -6.2039027,53.2740706,0 -6.2038332,53.273984,0 -6.2035767,53.273798,0 -6.2034117,53.2737398,0 -6.2033654,53.2737249,0 -6.2030431,53.2736123,0 -6.2025012,53.2734442,0 -6.2018245,53.2732487,0 -6.2017643,53.2732313,0 -6.2016501,53.2732021,0 -6.2014801,53.2731625,0 -6.2014053,53.273145,0 -6.2013242,53.2731268,0 -6.201117,53.2730969,0 -6.2008328,53.2730531,0 -6.2007052,53.2730351,0 -6.2006113,53.2730271,0 -6.2003764,53.2730072,0 -6.2000771,53.2730082,0 -6.1994484,53.2730316,0 -6.19906127674741,53.2730586213727,0 -6.19899460225191,53.2730639403534,0 -6.19884868767869,53.2730757329177,0 -6.1987784,53.2730815,0 -6.1984913,53.273114,0 -6.1982923,53.2731454,0 -6.1980442,53.2731942,0 -6.19759,53.2732957,0 -6.1972303,53.2733783,0 -6.1967308,53.2734905,0 -6.1965399,53.273539,0 -6.196035,53.2736441,0 -6.19556695994385,53.2737461150825,0 -6.19551975525885,53.2737563737631,0 -6.1951168,53.2738444,0 -6.1946677,53.2739436,0 -6.1944691,53.273991,0 -6.1942705,53.2740383,0 -6.1940737,53.2740852,0 -6.193742,53.2741677,0 -6.1934942,53.2742294,0 -6.1931326,53.2743495,0 -6.19300573891833,53.2743915602351,0 -6.1922881,53.27463,0 -6.1922065,53.2746568,0 -6.1917765258739,53.2747982194274,0 -6.1916133,53.274852,0 -6.1908918,53.2751064,0 -6.1897763,53.2755076,0 -6.1888331,53.2759089,0 -6.18845575889338,53.2761170947117,0 -6.18822456748982,53.2762446823429,0 -6.188105,53.2763107,0 -6.1870188,53.2770006,0 -6.1865943,53.2773297,0 -6.18644502738801,53.2774432974172,0 -6.1862137162728,53.2776194675821,0 -6.1860058,53.2777778,0 -6.1858693,53.2778833,0 -6.1856934,53.2780165,0 -6.1856384,53.2780621,0 -6.1855763,53.2781136,0 -6.1853068,53.2783349,0 -6.1852017,53.2784211,0 -6.1850415,53.2785431,0 -6.184967,53.2785992,0 -6.18476447995595,53.2787516793076,0 -6.1847365,53.2787728,0 -6.1844873,53.2789544,0 -6.1842632,53.2791128,0 -6.183862,53.2794083,0 -6.1835185,53.2796274,0 -6.18349792424027,53.2796420482719,0 -6.18327483405903,53.2798015280821,0 -6.1828758,53.2800866,0 -6.1822509,53.2805627,0 -6.1821137,53.2806673,0 -6.1817472,53.2809466,0 -6.181325,53.2812684,0 -6.1812531,53.2813232,0 -6.1807449,53.2816922,0 -6.180249,53.2820848,0 -6.18014591041162,53.2821605087618,0 -6.1799361,53.2823148,0 -6.179514,53.2826613,0 -6.1791283,53.2829479,0 -6.1789994,53.2830447,0 -6.17875600909821,53.2832169080805,0 -6.1786371,53.2833013,0 -6.1782674,53.2835984,0 -6.1780662,53.2837604,0 -6.1778145,53.2840378,0 -6.1777536,53.2841321,0 -6.1776583,53.2842644,0 -6.1775922,53.2844012,0 -6.1774954,53.2846386,0 -6.17747077672418,53.2847079775081,0 -6.1774632,53.2847289,0 -6.17742280015498,53.2848839050058,0 -6.1773922,53.2850001,0 -6.1773717,53.2850783,0 -6.1772715,53.2853925,0 -6.1772284,53.2854839,0 -6.1771505,53.2856237,0 -6.1769763,53.2859168,0 -6.1766654,53.2863898,0 -6.176434,53.2867269,0 -6.1762103,53.2870617,0 -6.1760892,53.2872701,0 -6.17592819228072,53.2874971334439,0 -6.17591802394807,53.2875112984508,0 -6.1756854,53.2878394,0 -6.1754774,53.2881406,0 -6.1754104,53.28824,0 -6.1752756,53.2884452,0 -6.1751874,53.2885893,0 -6.1751649,53.2886261,0 -6.1750957,53.2887291,0 -6.1750501,53.288797,0 -6.1749232,53.2889861,0 -6.1749009,53.2890192,0 -6.1748787,53.2890523,0 -6.1748023,53.2891661,0 -6.1747284,53.2892691,0 -6.1747057,53.2893009,0 -6.1746829,53.2893327,0 -6.1746527,53.2893749,0 -6.17455538826193,53.2895039529911,0 -6.1744085,53.2897028,0 -6.1743623,53.2897531,0 -6.1741826,53.2899313,0 -6.17415,53.2899632,0 -6.1740178,53.2900456,0 -6.1739225,53.2901048,0 -6.1735562,53.2903079,0 -6.1732001,53.2904951,0 -6.1729014,53.2906533,0 -6.1728643,53.290673,0 -6.1728208,53.2906959,0 -6.1727302,53.2907439,0 -6.1726741,53.2907725,0 -6.1723102,53.2909509,0 -6.1719105,53.2911596,0 -6.17185168482067,53.2911917685784,0 -6.17181861290459,53.2912100275486,0 -6.1716546,53.2913,0 -6.1713628,53.2914711,0 -6.1712065,53.2915833,0 -6.1710299,53.29171,0 -6.1707519,53.291979,0 -6.170636,53.2921097,0 -6.1705495,53.2922208,0 -6.17040067924238,53.2924123617425,0 -6.170383,53.2924349,0 -6.17032682820449,53.2925418729581,0 -6.1702551,53.2926783,0 -6.1701413,53.2930458,0 -6.1700611,53.2934483,0 -6.1700156,53.2935889,0 -6.1699423,53.2936722,0 -6.1695703,53.2940499,0 -6.1690414,53.2945517,0 -6.168904,53.294676,0 -6.1688684,53.2947084,0 -6.1690425,53.2948,0 -6.1692606,53.2949307,0 -6.1695098,53.295077,0 -6.1695901,53.2951755,0 -6.1696688,53.2952721,0 -6.1697228,53.2953953,0 -6.1697835,53.2955758,0 -6.1697965,53.295606,0 -6.16987510694708,53.2957894219105,0 -6.1698806,53.2958024,0 -6.1699003,53.295844,0 -6.1699694,53.295975,0 -6.1700079,53.2960516,0 -6.1700977,53.2962058,0 -6.1701422,53.296315,0 -6.1701613,53.2963411,0 -6.1702416,53.2964621,0 -6.170363,53.2966193,0 -6.1704484,53.2967131,0 -6.1706766,53.2969478,0 -6.1707785,53.2970524,0 -6.1709048,53.2971747,0 -6.1711244,53.2973453,0 -6.1709701,53.2974295,0 -6.1706647,53.2971975,0 -6.1705239,53.2970455,0 -6.1704097,53.2969139,0 -6.1701887,53.2966487,0 -6.1701027,53.2965408,0 -6.1700787,53.2964976,0 -6.1700429,53.2964382,0 -6.169941,53.2963858,0 -6.1698022,53.2963302,0 -6.1696612,53.2962861,0 -6.1696378,53.2962552,0 -6.1686797,53.2960134,0 -6.16843838754651,53.2959600612097,0 -6.1681386,53.2958939,0 -6.1678296,53.2958195,0 -6.16769520233053,53.2957869278316,0 -6.167521,53.2957451,0 -6.1674642,53.2957325,0 -6.1668616,53.2955903,0 -6.1664874,53.2955215,0 -6.1662433,53.2954822,0 -6.16601712774771,53.2954497632064,0 -6.16578454794865,53.2954165308974,0 -6.1653763,53.2953582,0 -6.1652204,53.2953359,0 -6.1643937,53.2952044,0 -6.1639279,53.2951439,0 -6.1637763,53.2951223,0 -6.1637478,53.2951184,0 -6.1633055,53.295051,0 -6.1628083,53.2949759,0 -6.16224781783884,53.2948900301903,0 -6.1614554,53.2947689,0 -6.161341,53.2947559,0 -6.16097013181397,53.2947054186829,0 -6.1605479,53.2946481,0 -6.1601831,53.2946012,0 -6.1601178,53.2945929,0 -6.15929426557635,53.2944672384853,0 -6.1583204,53.2943188,0 -6.1581244,53.2942879,0 -6.15796064456465,53.2942624290967,0 -6.1573394,53.2941663,0 -6.1572664,53.2941546,0 -6.1571999,53.2941432,0 -6.1571052,53.2941257,0 -6.1563863,53.2940188,0 -6.1562431,53.2939988,0 -6.1555786,53.2938877,0 -6.1552461,53.2938266,0 -6.15517546306631,53.2938171488415,0 -6.1549261,53.2937843,0 -6.1548767,53.2937795,0 -6.1547557,53.2937807,0 -6.1546886,53.2937814,0 -6.1546342,53.293782,0 -6.1546036,53.2937822,0 -6.15436029051856,53.2937847435549,0 -6.1543059,53.2937854,0 -6.1537882,53.2938331,0 -6.1536761,53.2938434,0 -6.1535936,53.2938509,0 -6.153516,53.2938582,0 -6.1533653,53.2938722,0 -6.153078,53.293883,0 -6.1527939,53.2938728,0 -6.1525256,53.2938598,0 -6.1522122,53.2938329,0 -6.1518388,53.2937956,0 -6.1515955,53.2937809,0 -6.151296,53.293767,0 -6.1510322,53.2937679,0 -6.1507618,53.2937793,0 -6.1504988,53.2937909,0 -6.1503071,53.2938099,0 -6.1501471,53.2938288,0 -6.1499871,53.2938618,0 -6.14955745066379,53.2939743923807,0 -6.149427,53.2940086,0 -6.1491172,53.2940968,0 -6.1489604,53.2941375,0 -6.1487721,53.2941944,0 -6.14871653535293,53.2942130752352,0 -6.1482086,53.2943841,0 -6.1476965,53.2945532,0 -6.1471256,53.2947639,0 -6.1467539,53.2948802,0 -6.1463352,53.295003,0 -6.14622647123941,53.2950127929421,0 -6.1460483,53.2950292,0 -6.1460115,53.2950326,0 -6.14518821872605,53.2950098832955,0 -6.1448986,53.2950021,0 -6.1446848,53.2949926,0 -6.1442935,53.294976,0 -6.1428454,53.2949196,0 -6.1426701,53.2949135,0 -6.1426539,53.2953616,0 -6.1426394,53.2957449,0 -6.14263577559361,53.2957706629554,0 -6.1426308,53.2958048,0 -6.142601,53.2958552,0 -6.142547,53.2959039,0 -6.1424823,53.295948,0 -6.1423905,53.29599,0 -6.1423179,53.2960169,0 -6.142269,53.2960335,0 -6.1422514,53.2960386,0 -6.1422041,53.2960901,0 -6.1421677,53.2961581,0 -6.1419428,53.2961655,0 -6.1418586,53.296172,0 -6.1416882,53.2961844,0 -6.1413832,53.296199,0 -6.1411329,53.2962019,0 -6.1407546,53.2961982,0 -6.1404471,53.2961938,0 -6.1401331,53.2961801,0 -6.1399345,53.2961643,0 -6.1396949,53.2961116,0 -6.138759,53.2958876,0 -6.1383587,53.2957915,0 -6.138305,53.2957786,0 -6.13823082786373,53.2957604413988,0 -6.1380471,53.2957159,0 -6.1375038,53.295589,0 -6.1368849,53.2954461,0 -6.136522,53.2953558,0 -6.1363591,53.295317,0 -6.1360443,53.2952409,0 -6.135987,53.2952269,0 -6.135385,53.294996,0 -6.1350963,53.294873,0 -6.1350805,53.2948662,0 -6.13501050145142,53.2948386785322,0 -6.13496983050681,53.294823276486,0 </coordinates>
+      </LineString>
+    </Placemark>
+  </Document>
+</kml>

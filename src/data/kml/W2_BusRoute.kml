@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>W2 Bus Route</name>
+    <description>Bus stops for W2 route</description>
+    
+    <!-- Style for the route -->
+    <Style id="routeStyle">
+      <LineStyle>
+        <color>ffff7f00</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+    
+    <!-- Style for the stops -->
+    <Style id="stopStyle">
+      <IconStyle>
+        <color>ffff7f00</color>
+        <scale>1.0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0.8</scale>
+      </LabelStyle>
+    </Style>
+    
+    <!-- Folder for stops -->
+    <Folder>
+      <name>W2 Stops</name>
+      <Placemark>
+        <name>Knockmeenagh Road (W2)</name>
+        <description>Stop ID: 8230DB002174</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.39122691549203,53.3163990070179,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Neilstown Road (W2)</name>
+        <description>Stop ID: 8230DB002124</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.39793187307251,53.3469584164072,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Cappaghmore (W2)</name>
+        <description>Stop ID: 8230DB007878</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.39906772380998,53.3310739923675,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Rowlagh (W2)</name>
+        <description>Stop ID: 8230DB002126</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.39837562988944,53.343935440152,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Belgard (W2)</name>
+        <description>Stop ID: 8230DB002620</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.37084224462122,53.2987215110506,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Clondalkin Garda Stn (W2)</name>
+        <description>Stop ID: 8230DB002159</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.39388252941308,53.3232207170865,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Newlands Golf Club (W2)</name>
+        <description>Stop ID: 8230DB002763</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.38629004350369,53.3088093657372,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Liffey Valley SC (W2)</name>
+        <description>Stop ID: 8230DB008062</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.39279530305583,53.3545380681384,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Neilstown Avenue (W2)</name>
+        <description>Stop ID: 8230DB002128</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.39975201801215,53.3396666624101,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Tallaght Luas (W2)</name>
+        <description>Stop ID: 8230DB004347</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.37500751308393,53.28622205242,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Ninth Lock Road (W2)</name>
+        <description>Stop ID: 8230DB007875</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.39509987726236,53.3271828190871,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Main Street (W2)</name>
+        <description>Stop ID: 8230DB007880</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.39318217095721,53.3206856645393,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Liffey Valley Retail Park (W2)</name>
+        <description>Stop ID: 8230DB007940</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.39114653108505,53.3496533769826,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Belgard Square North (W2)</name>
+        <description>Stop ID: 8230DB005008</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.36935699388662,53.2904501890287,0</coordinates>
+        </Point>
+      </Placemark>
+    </Folder>
+    
+    <!-- Route line -->
+    <Placemark>
+      <name>W2 Route Line</name>
+      <styleUrl>#routeStyle</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>-6.39122691549203,53.3163990070179,0 -6.39793187307251,53.3469584164072,0 -6.39906772380998,53.3310739923675,0 -6.39837562988944,53.343935440152,0 -6.37084224462122,53.2987215110506,0 -6.39388252941308,53.3232207170865,0 -6.38629004350369,53.3088093657372,0 -6.39279530305583,53.3545380681384,0 -6.39975201801215,53.3396666624101,0 -6.37500751308393,53.28622205242,0 -6.39509987726236,53.3271828190871,0 -6.39318217095721,53.3206856645393,0 -6.39114653108505,53.3496533769826,0 -6.36935699388662,53.2904501890287,0 </coordinates>
+      </LineString>
+    </Placemark>
+  </Document>
+</kml>

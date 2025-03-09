@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>S8 Bus Route</name>
+    <description>Bus stops for S8 route</description>
+    
+    <!-- Style for the route -->
+    <Style id="routeStyle">
+      <LineStyle>
+        <color>ff7f00ff</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+    
+    <!-- Style for the stops -->
+    <Style id="stopStyle">
+      <IconStyle>
+        <color>ff7f00ff</color>
+        <scale>1.0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0.8</scale>
+      </LabelStyle>
+    </Style>
+    
+    <!-- Folder for stops -->
+    <Folder>
+      <name>S8 Stops</name>
+      <Placemark>
+        <name>Templeroan Estate (S8)</name>
+        <description>Stop ID: 8230DB007443</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.30695153563064,53.2814641732317,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Three Rock Rovers (S8)</name>
+        <description>Stop ID: 8230DB002968</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.273568644566,53.2803293260032,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Belgard Square North (S8)</name>
+        <description>Stop ID: 8230DB002346</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.36790110381364,53.2900797370838,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Alderwood (S8)</name>
+        <description>Stop ID: 8230DB002360</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.3796848797551,53.2846948207358,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Grange Golf Club (S8)</name>
+        <description>Stop ID: 8230DB007448</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.28141545916275,53.281736988145,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Killinarden (S8)</name>
+        <description>Stop ID: 8230DB002358</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.38961370639414,53.2807038231884,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Moyville Lawns (S8)</name>
+        <description>Stop ID: 8230DB002949</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.29325082629437,53.2816733044618,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>The Glen (S8)</name>
+        <description>Stop ID: 8230DB007444</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.29913139992251,53.2823865090999,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Village Green (S8)</name>
+        <description>Stop ID: 8230DB002604</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.36184601942402,53.2868149331786,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Bianconi Avenue (S8)</name>
+        <description>Stop ID: 8230DB004713</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.4271364109145,53.2912892220378,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Old Court Road (S8)</name>
+        <description>Stop ID: 8230DB004882</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.35034008190742,53.2747920313822,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Magna Drive (S8)</name>
+        <description>Stop ID: 8230DB004932</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.42049974981812,53.2788609880708,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Citywest Road (S8)</name>
+        <description>Stop ID: 8230DB004960</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.42162128652658,53.2850505921398,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Parklands (S8)</name>
+        <description>Stop ID: 8230DB004884</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.34260045154128,53.2756284397548,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>The Crescent (S8)</name>
+        <description>Stop ID: 8230DB002538</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.35891362658071,53.281534566011,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Kiltalown Cottages (S8)</name>
+        <description>Stop ID: 8230DB002592</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.40627319230772,53.2743034961588,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Blackthorn Road (S8)</name>
+        <description>Stop ID: 8250DB000449</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.21692737889845,53.2763228251629,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Burton Hall Road (S8)</name>
+        <description>Stop ID: 8250DB003187</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.20332617138686,53.2738266122562,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Silverpark GAA (S8)</name>
+        <description>Stop ID: 8250DB003189</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.19557317570234,53.2738443410885,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Woodstown (S8)</name>
+        <description>Stop ID: 8230DB004886</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.32968674190357,53.2768593539206,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Belfry Downs (S8)</name>
+        <description>Stop ID: 8230DB002590</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.41549358352696,53.2751454328557,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Tallaght Hospital (S8)</name>
+        <description>Stop ID: 8230DB004646</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.3742704403854,53.2894387134306,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Crofton Road (S8)</name>
+        <description>Stop ID: 8250DB002035</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.14266542172264,53.295772349365,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Kiltipper Road (S8)</name>
+        <description>Stop ID: 8230DB002539</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.35618107892913,53.2765355041079,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Foxrock Manor (S8)</name>
+        <description>Stop ID: 8250DB003191</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.18833124044106,53.2763141538316,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Rockville Road (S8)</name>
+        <description>Stop ID: 8250DB004352</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.17191895152452,53.2912359082869,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Kingston (S8)</name>
+        <description>Stop ID: 8250DB002975</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.24788043364346,53.2718651810703,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>St Colmcille's School (S8)</name>
+        <description>Stop ID: 8230DB001146</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.31421742122974,53.2793740217827,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Kingswood Avenue (S8)</name>
+        <description>Stop ID: 8230DB006001</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.41939858171847,53.2944765104208,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Holly Park Avenue (S8)</name>
+        <description>Stop ID: 8250DB003194</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.17884354823076,53.2832613825795,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Albany Avenue (S8)</name>
+        <description>Stop ID: 8250DB003039</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.15792431672826,53.2943462090748,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Dun Laoghaire Stn (S8)</name>
+        <description>Stop ID: 8250DB002039</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.13490268686881,53.2948871708134,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Stillorgan Road (S8)</name>
+        <description>Stop ID: 8250DB007970</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.18489625952223,53.2788145865792,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Grange Road (S8)</name>
+        <description>Stop ID: 8250DB002970</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.26726734687084,53.2781706300674,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Alma Road (S8)</name>
+        <description>Stop ID: 8250DB003037</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.16575087934276,53.2955005171025,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Grosvenor Terrace (S8)</name>
+        <description>Stop ID: 8250DB003041</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.14959695119317,53.2940285174671,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Newtown Park (S8)</name>
+        <description>Stop ID: 8250DB007971</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.17596237837408,53.2875227416374,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Temple Hill (S8)</name>
+        <description>Stop ID: 8250DB003164</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.1698872726453,53.2956000271742,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Carmanhall Road (S8)</name>
+        <description>Stop ID: 8250DB003181</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.20777790443505,53.2767339177509,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Pine Valley (S8)</name>
+        <description>Stop ID: 8250DB005051</description>
+        <styleUrl>#stopStyle</styleUrl>
+        <Point>
+          <coordinates>-6.2597467856516,53.2735579991915,0</coordinates>
+        </Point>
+      </Placemark>
+    </Folder>
+    
+    <!-- Route line -->
+    <Placemark>
+      <name>S8 Route Line</name>
+      <styleUrl>#routeStyle</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>-6.30695153563064,53.2814641732317,0 -6.273568644566,53.2803293260032,0 -6.36790110381364,53.2900797370838,0 -6.3796848797551,53.2846948207358,0 -6.28141545916275,53.281736988145,0 -6.38961370639414,53.2807038231884,0 -6.29325082629437,53.2816733044618,0 -6.29913139992251,53.2823865090999,0 -6.36184601942402,53.2868149331786,0 -6.4271364109145,53.2912892220378,0 -6.35034008190742,53.2747920313822,0 -6.42049974981812,53.2788609880708,0 -6.42162128652658,53.2850505921398,0 -6.34260045154128,53.2756284397548,0 -6.35891362658071,53.281534566011,0 -6.40627319230772,53.2743034961588,0 -6.21692737889845,53.2763228251629,0 -6.20332617138686,53.2738266122562,0 -6.19557317570234,53.2738443410885,0 -6.32968674190357,53.2768593539206,0 -6.41549358352696,53.2751454328557,0 -6.3742704403854,53.2894387134306,0 -6.14266542172264,53.295772349365,0 -6.35618107892913,53.2765355041079,0 -6.18833124044106,53.2763141538316,0 -6.17191895152452,53.2912359082869,0 -6.24788043364346,53.2718651810703,0 -6.31421742122974,53.2793740217827,0 -6.41939858171847,53.2944765104208,0 -6.17884354823076,53.2832613825795,0 -6.15792431672826,53.2943462090748,0 -6.13490268686881,53.2948871708134,0 -6.18489625952223,53.2788145865792,0 -6.26726734687084,53.2781706300674,0 -6.16575087934276,53.2955005171025,0 -6.14959695119317,53.2940285174671,0 -6.17596237837408,53.2875227416374,0 -6.1698872726453,53.2956000271742,0 -6.20777790443505,53.2767339177509,0 -6.2597467856516,53.2735579991915,0 </coordinates>
+      </LineString>
+    </Placemark>
+  </Document>
+</kml>
