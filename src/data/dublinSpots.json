@@ -1,0 +1,197 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Rathmines",
+        "routes": "Dublin Spots",
+        "id": "dublin/rathmines"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.265480063026553, 53.32352423360366]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Liberties",
+        "routes": "Dublin Spots",
+        "id": "dublin/liberties"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.277696417819648, 53.34261331671519]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sandymount",
+        "routes": "Dublin Spots",
+        "id": "dublin/sandymount"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.21567335058748, 53.33258229914048]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Stoneybatter",
+        "routes": "Dublin Spots",
+        "id": "dublin/stoneybatter"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.283952270563642, 53.3523705510358]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kilmainham",
+        "routes": "Dublin Spots",
+        "id": "dublin/kilmainham"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.3077832095956525, 53.340612480097455]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Drumcondra",
+        "routes": "Dublin Spots",
+        "id": "dublin/drumcondra"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.25858473976338, 53.3631165720114]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Donnybrook",
+        "routes": "Dublin Spots",
+        "id": "dublin/donnybrook"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.238274459938508, 53.32286264337584]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "UCD",
+        "routes": "Dublin Spots",
+        "id": "dublin/ucd"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.22204646274071, 53.3077382478846]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "DCU",
+        "routes": "Dublin Spots",
+        "id": "dublin/dcu"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.258892378349267, 53.385412447033374]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Rathfarnham",
+        "routes": "Dublin Spots",
+        "id": "dublin/rathfarnham"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.285507356244741, 53.29871237527471]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Terenure",
+        "routes": "Dublin Spots",
+        "id": "dublin/terenure"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.283480335527292, 53.30989629484159]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Ballsbridge",
+        "routes": "Dublin Spots",
+        "id": "dublin/ballsbridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.230542576001011, 53.328836227732324]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Baggot St",
+        "routes": "Dublin Spots",
+        "id": "dublin/baggot-st"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.24511623530001, 53.33404853409671]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Stillorgan",
+        "routes": "Dublin Spots",
+        "id": "dublin/stillorgan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.200198192024133, 53.28931632500561]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Castleknock",
+        "routes": "Dublin Spots",
+        "id": "dublin/castleknock"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.3616985146409855, 53.37277149338207]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Santry",
+        "routes": "Dublin Spots",
+        "id": "dublin/santry"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-6.248563275258391, 53.39319045068501]
+      }
+    }
+  ]
+}

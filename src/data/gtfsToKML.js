@@ -269,6 +269,24 @@ const routeEndpoints = {
   },
 };
 
+// Define spine route groups
+const spineRouteGroups = {
+  G_Spine: ['G1', 'G2'],
+  H_Spine: ['H1', 'H2', 'H3'],
+  C_Spine: ['C1', 'C2', 'C3', 'C4'],
+  E_Spine: ['E1', 'E2'],
+};
+
+// Function to get spine group for a route
+function getSpineGroup(routeName) {
+  for (const [groupName, routes] of Object.entries(spineRouteGroups)) {
+    if (routes.includes(routeName)) {
+      return { groupName, routes };
+    }
+  }
+  return null;
+}
+
 // Function to read CSV file and return a Promise with the data
 function readCSV(filePath) {
   return new Promise((resolve, reject) => {
@@ -368,7 +386,107 @@ async function findBestTripForRoute(routeName) {
   return trips[0].trip_id;
 }
 
-// Function to process a route and generate a GeoJSON feature collection
+// Function to find the closest point on a shape line to a given stop
+function findClosestPointOnShape(stop, shapeLine) {
+  let closestPoint = null;
+  let closestDistance = Infinity;
+  let closestIndex = -1;
+
+  shapeLine.forEach((point, index) => {
+    const distance = calculateDistance(
+      stop.lat,
+      stop.lon,
+      point.lat,
+      point.lon
+    );
+    if (distance < closestDistance) {
+      closestDistance = distance;
+      closestPoint = point;
+      closestIndex = index;
+    }
+  });
+
+  return {
+    point: closestPoint,
+    index: closestIndex,
+    distance: closestDistance,
+  };
+}
+
+// Function to trim shape line to match common stops
+function trimShapeLineToStops(shapeLine, stops) {
+  if (stops.length < 2) return shapeLine;
+
+  // Find the closest points on the shape line for the first and last stops
+  const firstStop = stops[0];
+  const lastStop = stops[stops.length - 1];
+
+  const firstPoint = findClosestPointOnShape(firstStop, shapeLine);
+  const lastPoint = findClosestPointOnShape(lastStop, shapeLine);
+
+  // Get the segment of the shape line between these points
+  const startIndex = Math.min(firstPoint.index, lastPoint.index);
+  const endIndex = Math.max(firstPoint.index, lastPoint.index);
+
+  return shapeLine.slice(startIndex, endIndex + 1);
+}
+
+// Function to find common stops between multiple routes
+async function findCommonStops(routes) {
+  const stopsByRoute = {};
+  let commonShapeLine = null;
+
+  // Get stops for each route
+  for (const routeName of routes) {
+    const tripId = await findBestTripForRoute(routeName);
+    if (!tripId) continue;
+
+    const gtfsDir = getGTFSDir(routeName);
+    const stops = await getStopsForTrip(tripId, gtfsDir);
+    const shapeLine = await getShapeForTrip(tripId, gtfsDir);
+
+    // Store both stops and shape line
+    stopsByRoute[routeName] = {
+      stops: new Map(stops.map((stop) => [stop.name, stop])),
+      shapeLine: shapeLine,
+    };
+
+    // Use the first route's shape line as a base
+    if (!commonShapeLine) {
+      commonShapeLine = shapeLine;
+    }
+  }
+
+  if (Object.keys(stopsByRoute).length === 0)
+    return { stops: [], shapeLine: [] };
+
+  // Get the first route's stops as a starting point
+  const firstRoute = routes[0];
+  const commonStopNames = [...stopsByRoute[firstRoute].stops.keys()];
+
+  // Find stops that appear in all routes
+  for (const routeName of routes.slice(1)) {
+    const routeStops = stopsByRoute[routeName].stops;
+    for (let i = commonStopNames.length - 1; i >= 0; i--) {
+      const stopName = commonStopNames[i];
+      if (!routeStops.has(stopName)) {
+        commonStopNames.splice(i, 1);
+      }
+    }
+  }
+
+  // Get the common stops from the first route
+  const commonStops = commonStopNames.map((name) =>
+    stopsByRoute[firstRoute].stops.get(name)
+  );
+
+  // Trim the shape line to match the common stops
+  const trimmedShapeLine = trimShapeLineToStops(commonShapeLine, commonStops);
+
+  return { stops: commonStops, shapeLine: trimmedShapeLine };
+}
+
+// Modify the processRoute function to handle spine routes
 async function processRoute(routeName) {
   try {
     console.log(`Processing route ${routeName}...`);
@@ -382,8 +500,22 @@ async function processRoute(routeName) {
     }
 
     // Get stops and shape for this trip
-    const stops = await getStopsForTrip(tripId, gtfsDir);
-    const shapePoints = await getShapeForTrip(tripId, gtfsDir);
+    let stops = await getStopsForTrip(tripId, gtfsDir);
+    let shapeLine = await getShapeForTrip(tripId, gtfsDir);
+
+    // If this is a spine route, get only common stops and trimmed shape line
+    const spineGroup = getSpineGroup(routeName);
+    if (spineGroup) {
+      const { stops: commonStops, shapeLine: trimmedShapeLine } =
+        await findCommonStops(spineGroup.routes);
+      if (commonStops.length > 0) {
+        stops = commonStops;
+        shapeLine = trimmedShapeLine;
+        console.log(
+          `Using ${commonStops.length} common stops for ${spineGroup.groupName}`
+        );
+      }
+    }
 
     // Create GeoJSON features for stops
     const features = stops.map((stop) => ({
@@ -407,9 +539,6 @@ async function processRoute(routeName) {
       type: 'FeatureCollection',
       features: orderedFeatures,
     };
-
-    // Create a shape line from the shape points
-    const shapeLine = shapePoints.map((point) => [point.lon, point.lat]);
 
     return { featureCollection, shapeLine };
   } catch (error) {
@@ -516,21 +645,26 @@ function deg2rad(deg) {
 }
 
 // Function to smooth a route line by adding intermediate points
-function smoothRouteLine(coordinates) {
-  if (coordinates.length <= 1) return coordinates;
+function smoothRouteLine(shapeLine) {
+  if (!shapeLine || shapeLine.length <= 1) return shapeLine;
 
   const smoothedCoordinates = [];
 
   // Add the first point
-  smoothedCoordinates.push(coordinates[0]);
+  smoothedCoordinates.push([shapeLine[0].lon, shapeLine[0].lat]);
 
   // For each pair of consecutive points
-  for (let i = 0; i < coordinates.length - 1; i++) {
-    const [lon1, lat1] = coordinates[i];
-    const [lon2, lat2] = coordinates[i + 1];
+  for (let i = 0; i < shapeLine.length - 1; i++) {
+    const point1 = shapeLine[i];
+    const point2 = shapeLine[i + 1];
 
     // Calculate distance between points
-    const distance = calculateDistance(lat1, lon1, lat2, lon2);
+    const distance = calculateDistance(
+      point1.lat,
+      point1.lon,
+      point2.lat,
+      point2.lon
+    );
 
     // If distance is greater than 1km, add intermediate points
     if (distance > 1) {
@@ -538,14 +672,16 @@ function smoothRouteLine(coordinates) {
 
       for (let j = 1; j < numPoints; j++) {
         const fraction = j / numPoints;
-        const intermediateLon = lon1 + (lon2 - lon1) * fraction;
-        const intermediateLat = lat1 + (lat2 - lat1) * fraction;
+        const intermediateLon =
+          point1.lon + (point2.lon - point1.lon) * fraction;
+        const intermediateLat =
+          point1.lat + (point2.lat - point1.lat) * fraction;
         smoothedCoordinates.push([intermediateLon, intermediateLat]);
       }
     }
 
     // Add the second point
-    smoothedCoordinates.push([lon2, lat2]);
+    smoothedCoordinates.push([point2.lon, point2.lat]);
   }
 
   return smoothedCoordinates;
