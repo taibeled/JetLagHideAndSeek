@@ -16,6 +16,7 @@ import {
     questionFinishedMapData,
     animateMapMovements,
     addQuestion,
+    planningModeEnabled,
 } from "../lib/context";
 import { useStore } from "@nanostores/react";
 import { useEffect, useMemo } from "react";
@@ -121,7 +122,7 @@ export const Map = ({ className }: { className?: string }) => {
 
                 switch (question?.id) {
                     case "radius":
-                        if (question.data.drag) {
+                        if (question.data.drag && planningModeEnabled.get()) {
                             const geoJSONObj = radiusPlanningPolygon(
                                 question.data,
                             );
@@ -139,7 +140,7 @@ export const Map = ({ className }: { className?: string }) => {
                         );
                         break;
                     case "thermometer":
-                        if (question.data.drag) {
+                        if (question.data.drag && planningModeEnabled.get()) {
                             const geoJSONObj = thermometerPlanningPolygon(
                                 question.data,
                             );
@@ -156,7 +157,7 @@ export const Map = ({ className }: { className?: string }) => {
                         );
                         break;
                     case "tentacles":
-                        if (question.data.drag) {
+                        if (question.data.drag && planningModeEnabled.get()) {
                             const geoJSONObj = await tentaclesPlanningPolygon(
                                 question.data,
                             );
