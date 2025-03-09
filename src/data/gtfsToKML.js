@@ -12,8 +12,8 @@ const __dirname = path.dirname(__filename);
 // Define route colors and pin colors
 const routeColors = {
   // Bus routes
-  N2: 'ff00aaff', // Orange-yellow (changed from red)
-  N4: 'ff00d7ff', // Light orange (changed from green)
+  N2: 'ff00aaff', // Orange-yellow
+  N4: 'ff00d7ff', // Light orange
   N6: 'ffff0000', // Blue
   S2: 'ff00ffff', // Yellow
   S4: 'ffff00ff', // Magenta
@@ -21,8 +21,27 @@ const routeColors = {
   S8: 'ff7f00ff', // Purple
   W2: 'ffff7f00', // Orange
 
+  // Core Spine Routes
+  G1: 'ff4b0082', // Indigo
+  G2: 'ff4b0082', // Indigo (same as G1)
+  H1: 'ff8b4513', // Saddle Brown
+  H2: 'ff8b4513', // Saddle Brown (same as H1)
+  H3: 'ff8b4513', // Saddle Brown (same as H1)
+  C1: 'ff483d8b', // Dark Slate Blue
+  C2: 'ff483d8b', // Dark Slate Blue (same as C1)
+  C3: 'ff483d8b', // Dark Slate Blue (same as C1)
+  C4: 'ff483d8b', // Dark Slate Blue (same as C1)
+  E1: 'ff2f4f4f', // Dark Slate Gray
+  E2: 'ff2f4f4f', // Dark Slate Gray (same as E1)
+
+  // Additional High-Frequency Routes
+  1: 'ff8fbc8f', // Dark Sea Green
+  39: 'ff9370db', // Medium Purple
+  15: 'ffa0522d', // Sienna
+  16: 'ff66cdaa', // Medium Aquamarine
+
   // Rail routes
-  DART: 'ffadd8e6', // Light blue (changed from dark green)
+  DART: 'ffadd8e6', // Light blue
   LuasGreen: 'ff90ee90', // Light green
   LuasRed: 'ff0000ff', // Red
 };
@@ -30,8 +49,8 @@ const routeColors = {
 // Map route names to pin colors for Google MyMaps
 const pinColors = {
   // Bus routes
-  N2: 'ylw', // Yellow (changed from red)
-  N4: 'wht', // White (changed from green)
+  N2: 'ylw', // Yellow
+  N4: 'wht', // White
   N6: 'blu', // Blue
   S2: 'ylw', // Yellow
   S4: 'pink', // Pink/Magenta
@@ -39,8 +58,27 @@ const pinColors = {
   S8: 'purple', // Purple
   W2: 'orange', // Orange
 
+  // Core Spine Routes
+  G1: 'purple-dk', // Dark Purple
+  G2: 'purple-dk', // Dark Purple (same as G1)
+  H1: 'brown', // Brown
+  H2: 'brown', // Brown (same as H1)
+  H3: 'brown', // Brown (same as H1)
+  C1: 'blu-dk', // Dark Blue
+  C2: 'blu-dk', // Dark Blue (same as C1)
+  C3: 'blu-dk', // Dark Blue (same as C1)
+  C4: 'blu-dk', // Dark Blue (same as C1)
+  E1: 'grn-dk', // Dark Green
+  E2: 'grn-dk', // Dark Green (same as E1)
+
+  // Additional High-Frequency Routes
+  1: 'grn', // Green
+  39: 'purple', // Purple
+  15: 'red', // Red
+  16: 'cyan', // Cyan
+
   // Rail routes
-  DART: 'ltblu', // Light blue (changed from dark green)
+  DART: 'ltblu', // Light blue
   LuasGreen: 'grn', // Green
   LuasRed: 'red', // Red
 };
@@ -56,10 +94,29 @@ const orbitalRouteMap = {
   S8: '4466_86741', // GoAhead
   W2: '4466_86742', // GoAhead
 
+  // Core Spine Routes
+  G1: '4525_90537', // Dublin Bus
+  G2: '4525_90538', // Dublin Bus
+  H1: '4525_90539', // Dublin Bus
+  H2: '4525_90540', // Dublin Bus
+  H3: '4525_90541', // Dublin Bus
+  C1: '4525_90529', // Dublin Bus
+  C2: '4525_90530', // Dublin Bus
+  C3: '4525_90531', // Dublin Bus
+  C4: '4525_90532', // Dublin Bus
+  E1: '4525_90535', // Dublin Bus
+  E2: '4525_90536', // Dublin Bus
+
+  // Additional High-Frequency Routes
+  1: '4525_90515', // Dublin Bus
+  39: '4525_90465', // Dublin Bus
+  15: '4525_90443', // Dublin Bus
+  16: '4525_90444', // Dublin Bus
+
   // Rail routes
   DART: '4452_86289', // Irish Rail
   LuasGreen: '4419_48886', // Luas Green Line
-  LuasRed: '4419_48887', // Luas Red Line (corrected from 4419_48885)
+  LuasRed: '4419_48887', // Luas Red Line
 };
 
 // Map routes to their providers
@@ -72,6 +129,25 @@ const routeProviders = {
   S6: 'GoAhead',
   S8: 'GoAhead',
   W2: 'GoAhead',
+
+  // Core Spine Routes
+  G1: 'DublinBus',
+  G2: 'DublinBus',
+  H1: 'DublinBus',
+  H2: 'DublinBus',
+  H3: 'DublinBus',
+  C1: 'DublinBus',
+  C2: 'DublinBus',
+  C3: 'DublinBus',
+  C4: 'DublinBus',
+  E1: 'DublinBus',
+  E2: 'DublinBus',
+
+  // Additional High-Frequency Routes
+  1: 'DublinBus',
+  39: 'DublinBus',
+  15: 'DublinBus',
+  16: 'DublinBus',
 
   // Rail routes
   DART: 'IrishRail',
@@ -112,6 +188,70 @@ const routeEndpoints = {
   W2: {
     start: 'Liffey Valley Shopping Centre',
     end: 'UCD Belfield',
+  },
+
+  // Core Spine Routes
+  G1: {
+    start: 'Red Cow Luas',
+    end: 'Spencer Dock',
+  },
+  G2: {
+    start: 'Liffey Valley SC',
+    end: 'Spencer Dock',
+  },
+  H1: {
+    start: 'Baldoyle',
+    end: 'Lower Abbey Street',
+  },
+  H2: {
+    start: 'Malahide',
+    end: 'Lower Abbey Street',
+  },
+  H3: {
+    start: 'Howth Summit',
+    end: 'Lower Abbey Street',
+  },
+  C1: {
+    start: 'Adamstown Station',
+    end: 'Sandymount',
+  },
+  C2: {
+    start: 'Adamstown Station',
+    end: 'Sandymount',
+  },
+  C3: {
+    start: 'Maynooth',
+    end: 'Ringsend',
+  },
+  C4: {
+    start: 'Maynooth',
+    end: 'Ringsend',
+  },
+  E1: {
+    start: 'Ballywaltrim',
+    end: 'Northwood',
+  },
+  E2: {
+    start: 'Dun Laoghaire',
+    end: 'Harristown',
+  },
+
+  // Additional High-Frequency Routes
+  1: {
+    start: 'Santry',
+    end: 'Sandymount',
+  },
+  39: {
+    start: 'Ongar',
+    end: 'Burlington Road',
+  },
+  15: {
+    start: 'Ballycullen Road',
+    end: 'Clongriffin',
+  },
+  16: {
+    start: 'Ballinteer',
+    end: 'Dublin Airport',
   },
 
   // Rail routes
@@ -623,58 +763,127 @@ function createGroupedLayersKML(routeGroups, routeData) {
       <name>${groupName.replace('_', ' ')}</name>
       <description>Routes in the ${groupName.replace('_', ' ')} group</description>`;
 
-    // Process each route in the group
-    for (const routeName of routes) {
-      if (!routeData[routeName]) continue;
+    // Handle nested groups (like Core_Spine_Routes)
+    if (typeof routes === 'object' && !Array.isArray(routes)) {
+      // For nested groups, create a subfolder for each spine
+      for (const [subGroupName, subRoutes] of Object.entries(routes)) {
+        kml += `
+        <Folder>
+          <name>${subGroupName.replace('_', ' ')}</name>
+          <description>Routes in the ${subGroupName.replace('_', ' ')} group</description>`;
 
-      const { featureCollection, shapeLine } = routeData[routeName];
-      const features = featureCollection.features;
-      const smoothedShapeLine = smoothRouteLine(shapeLine);
+        // Process each route in the subgroup
+        for (const routeName of subRoutes) {
+          if (!routeData[routeName]) continue;
 
-      // Create a LineString for the route
-      kml += `
-      <Placemark>
-        <name>${routeName} Route Line</name>
-        <styleUrl>#${routeName}RouteStyle</styleUrl>
-        <LineString>
-          <tessellate>1</tessellate>
-          <coordinates>`;
+          const { featureCollection, shapeLine } = routeData[routeName];
+          const features = featureCollection.features;
+          const smoothedShapeLine = smoothRouteLine(shapeLine);
 
-      // Add coordinates for the shape line
-      smoothedShapeLine.forEach((coords) => {
-        const [longitude, latitude] = coords;
-        kml += `${longitude},${latitude},0 `;
-      });
+          // Create a LineString for the route
+          kml += `
+          <Placemark>
+            <name>${routeName} Route Line</name>
+            <styleUrl>#${routeName}RouteStyle</styleUrl>
+            <LineString>
+              <tessellate>1</tessellate>
+              <coordinates>`;
 
-      // Close the route line
-      kml += `</coordinates>
-        </LineString>
-      </Placemark>`;
+          // Add coordinates for the shape line
+          smoothedShapeLine.forEach((coords) => {
+            const [longitude, latitude] = coords;
+            kml += `${longitude},${latitude},0 `;
+          });
 
-      // Add a single folder for all stops in this route
-      kml += `
-      <Folder>
-        <name>${routeName} Stops</name>`;
+          // Close the route line
+          kml += `</coordinates>
+            </LineString>
+          </Placemark>`;
 
-      // Add placemarks for each stop in order
-      features.forEach((feature, index) => {
-        const { id, name } = feature.properties;
-        const [longitude, latitude] = feature.geometry.coordinates;
+          // Add a single folder for all stops in this route
+          kml += `
+          <Folder>
+            <name>${routeName} Stops</name>`;
 
+          // Add placemarks for each stop in order
+          features.forEach((feature, index) => {
+            const { id, name } = feature.properties;
+            const [longitude, latitude] = feature.geometry.coordinates;
+
+            kml += `
+            <Placemark>
+              <name>${index + 1}. ${name}</name>
+              <description>Stop ID: ${id}</description>
+              <styleUrl>#${routeName}StopStyle</styleUrl>
+              <Point>
+                <coordinates>${longitude},${latitude},0</coordinates>
+              </Point>
+            </Placemark>`;
+          });
+
+          // Close the stops folder
+          kml += `
+          </Folder>`;
+        }
+
+        // Close the subgroup folder
+        kml += `
+        </Folder>`;
+      }
+    } else {
+      // For flat groups, process as before
+      for (const routeName of routes) {
+        if (!routeData[routeName]) continue;
+
+        const { featureCollection, shapeLine } = routeData[routeName];
+        const features = featureCollection.features;
+        const smoothedShapeLine = smoothRouteLine(shapeLine);
+
+        // Create a LineString for the route
         kml += `
         <Placemark>
-          <name>${index + 1}. ${name}</name>
-          <description>Stop ID: ${id}</description>
-          <styleUrl>#${routeName}StopStyle</styleUrl>
-          <Point>
-            <coordinates>${longitude},${latitude},0</coordinates>
-          </Point>
-        </Placemark>`;
-      });
+          <name>${routeName} Route Line</name>
+          <styleUrl>#${routeName}RouteStyle</styleUrl>
+          <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>`;
 
-      // Close the stops folder
-      kml += `
-      </Folder>`;
+        // Add coordinates for the shape line
+        smoothedShapeLine.forEach((coords) => {
+          const [longitude, latitude] = coords;
+          kml += `${longitude},${latitude},0 `;
+        });
+
+        // Close the route line
+        kml += `</coordinates>
+          </LineString>
+        </Placemark>`;
+
+        // Add a single folder for all stops in this route
+        kml += `
+        <Folder>
+          <name>${routeName} Stops</name>`;
+
+        // Add placemarks for each stop in order
+        features.forEach((feature, index) => {
+          const { id, name } = feature.properties;
+          const [longitude, latitude] = feature.geometry.coordinates;
+
+          kml += `
+          <Placemark>
+            <name>${index + 1}. ${name}</name>
+            <description>Stop ID: ${id}</description>
+            <styleUrl>#${routeName}StopStyle</styleUrl>
+            <Point>
+              <coordinates>${longitude},${latitude},0</coordinates>
+            </Point>
+          </Placemark>`;
+        });
+
+        // Close the stops folder
+        kml += `
+        </Folder>`;
+      }
     }
 
     // Close the group folder
@@ -733,31 +942,65 @@ function createConsolidatedKML(routeGroups, routeData) {
   for (const [groupName, routes] of Object.entries(routeGroups)) {
     if (groupName === 'Rail_Routes') continue; // Skip rail routes for now
 
-    for (const routeName of routes) {
-      if (!routeData[routeName]) continue;
+    // Handle nested groups (like Core_Spine_Routes)
+    if (typeof routes === 'object' && !Array.isArray(routes)) {
+      // For nested groups, add all sub-routes
+      for (const [subGroupName, subRoutes] of Object.entries(routes)) {
+        for (const routeName of subRoutes) {
+          if (!routeData[routeName]) continue;
 
-      const { shapeLine } = routeData[routeName];
-      const smoothedShapeLine = smoothRouteLine(shapeLine);
+          const { shapeLine } = routeData[routeName];
+          const smoothedShapeLine = smoothRouteLine(shapeLine);
 
-      // Create a LineString for the route
-      kml += `
-      <Placemark>
-        <name>${routeName} Route Line</name>
-        <styleUrl>#${routeName}RouteStyle</styleUrl>
-        <LineString>
-          <tessellate>1</tessellate>
-          <coordinates>`;
+          // Create a LineString for the route
+          kml += `
+          <Placemark>
+            <name>${routeName} Route Line</name>
+            <styleUrl>#${routeName}RouteStyle</styleUrl>
+            <LineString>
+              <tessellate>1</tessellate>
+              <coordinates>`;
 
-      // Add coordinates for the shape line
-      smoothedShapeLine.forEach((coords) => {
-        const [longitude, latitude] = coords;
-        kml += `${longitude},${latitude},0 `;
-      });
+          // Add coordinates for the shape line
+          smoothedShapeLine.forEach((coords) => {
+            const [longitude, latitude] = coords;
+            kml += `${longitude},${latitude},0 `;
+          });
 
-      // Close the route line
-      kml += `</coordinates>
-        </LineString>
-      </Placemark>`;
+          // Close the route line
+          kml += `</coordinates>
+            </LineString>
+          </Placemark>`;
+        }
+      }
+    } else {
+      // For flat groups, process as before
+      for (const routeName of routes) {
+        if (!routeData[routeName]) continue;
+
+        const { shapeLine } = routeData[routeName];
+        const smoothedShapeLine = smoothRouteLine(shapeLine);
+
+        // Create a LineString for the route
+        kml += `
+        <Placemark>
+          <name>${routeName} Route Line</name>
+          <styleUrl>#${routeName}RouteStyle</styleUrl>
+          <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>`;
+
+        // Add coordinates for the shape line
+        smoothedShapeLine.forEach((coords) => {
+          const [longitude, latitude] = coords;
+          kml += `${longitude},${latitude},0 `;
+        });
+
+        // Close the route line
+        kml += `</coordinates>
+          </LineString>
+        </Placemark>`;
+      }
     }
   }
 
@@ -810,144 +1053,100 @@ function createConsolidatedKML(routeGroups, routeData) {
       <name>All Stops</name>
       <description>All bus and rail stops</description>`;
 
-  // Add North Routes stops in one folder
-  kml += `
+  // Function to add stops for a group of routes
+  const addStopsForRoutes = (routes, folderName, description) => {
+    kml += `
     <Folder>
-      <name>North Routes Stops</name>
-      <description>Stops for N2, N4, N6 routes</description>`;
+      <name>${folderName}</name>
+      <description>${description}</description>`;
 
-  // Add all North routes stops
-  const northRoutes = routeGroups['North_Routes'] || [];
-  for (const routeName of northRoutes) {
-    if (!routeData[routeName]) continue;
+    // Handle nested groups
+    if (typeof routes === 'object' && !Array.isArray(routes)) {
+      for (const [subGroupName, subRoutes] of Object.entries(routes)) {
+        for (const routeName of subRoutes) {
+          if (!routeData[routeName]) continue;
 
-    const { featureCollection } = routeData[routeName];
-    const features = featureCollection.features;
+          const { featureCollection } = routeData[routeName];
+          const features = featureCollection.features;
 
-    // Add placemarks for each stop in order
-    features.forEach((feature, index) => {
-      const { id, name } = feature.properties;
-      const [longitude, latitude] = feature.geometry.coordinates;
+          // Add placemarks for each stop in order
+          features.forEach((feature, index) => {
+            const { id, name } = feature.properties;
+            const [longitude, latitude] = feature.geometry.coordinates;
 
-      kml += `
-      <Placemark>
-        <name>${routeName}: ${index + 1}. ${name}</name>
-        <description>Route: ${routeName}, Stop ID: ${id}</description>
-        <styleUrl>#${routeName}StopStyle</styleUrl>
-        <Point>
-          <coordinates>${longitude},${latitude},0</coordinates>
-        </Point>
-      </Placemark>`;
-    });
-  }
+            kml += `
+            <Placemark>
+              <name>${routeName}: ${index + 1}. ${name}</name>
+              <description>Route: ${routeName}, Stop ID: ${id}</description>
+              <styleUrl>#${routeName}StopStyle</styleUrl>
+              <Point>
+                <coordinates>${longitude},${latitude},0</coordinates>
+              </Point>
+            </Placemark>`;
+          });
+        }
+      }
+    } else {
+      for (const routeName of routes) {
+        if (!routeData[routeName]) continue;
 
-  // Close North Routes Stops folder
-  kml += `
+        const { featureCollection } = routeData[routeName];
+        const features = featureCollection.features;
+
+        // Add placemarks for each stop in order
+        features.forEach((feature, index) => {
+          const { id, name } = feature.properties;
+          const [longitude, latitude] = feature.geometry.coordinates;
+
+          kml += `
+          <Placemark>
+            <name>${routeName}: ${index + 1}. ${name}</name>
+            <description>Route: ${routeName}, Stop ID: ${id}</description>
+            <styleUrl>#${routeName}StopStyle</styleUrl>
+            <Point>
+              <coordinates>${longitude},${latitude},0</coordinates>
+            </Point>
+          </Placemark>`;
+        });
+      }
+    }
+
+    // Close the folder
+    kml += `
     </Folder>`;
+  };
 
-  // Add South Routes stops in one folder
-  kml += `
-    <Folder>
-      <name>South Routes Stops</name>
-      <description>Stops for S2, S4, S6, S8 routes</description>`;
-
-  // Add all South routes stops
-  const southRoutes = routeGroups['South_Routes'] || [];
-  for (const routeName of southRoutes) {
-    if (!routeData[routeName]) continue;
-
-    const { featureCollection } = routeData[routeName];
-    const features = featureCollection.features;
-
-    // Add placemarks for each stop in order
-    features.forEach((feature, index) => {
-      const { id, name } = feature.properties;
-      const [longitude, latitude] = feature.geometry.coordinates;
-
-      kml += `
-      <Placemark>
-        <name>${routeName}: ${index + 1}. ${name}</name>
-        <description>Route: ${routeName}, Stop ID: ${id}</description>
-        <styleUrl>#${routeName}StopStyle</styleUrl>
-        <Point>
-          <coordinates>${longitude},${latitude},0</coordinates>
-        </Point>
-      </Placemark>`;
-    });
-  }
-
-  // Close South Routes Stops folder
-  kml += `
-    </Folder>`;
-
-  // Add West Routes stops in one folder
-  kml += `
-    <Folder>
-      <name>West Routes Stops</name>
-      <description>Stops for W2 route</description>`;
-
-  // Add all West routes stops
-  const westRoutes = routeGroups['West_Routes'] || [];
-  for (const routeName of westRoutes) {
-    if (!routeData[routeName]) continue;
-
-    const { featureCollection } = routeData[routeName];
-    const features = featureCollection.features;
-
-    // Add placemarks for each stop in order
-    features.forEach((feature, index) => {
-      const { id, name } = feature.properties;
-      const [longitude, latitude] = feature.geometry.coordinates;
-
-      kml += `
-      <Placemark>
-        <name>${routeName}: ${index + 1}. ${name}</name>
-        <description>Route: ${routeName}, Stop ID: ${id}</description>
-        <styleUrl>#${routeName}StopStyle</styleUrl>
-        <Point>
-          <coordinates>${longitude},${latitude},0</coordinates>
-        </Point>
-      </Placemark>`;
-    });
-  }
-
-  // Close West Routes Stops folder
-  kml += `
-    </Folder>`;
-
-  // Add Rail Routes stops in one folder
-  kml += `
-    <Folder>
-      <name>Rail Stops</name>
-      <description>Stops for DART, Luas Green Line, Luas Red Line</description>`;
-
-  // Add all rail stops
-  for (const routeName of railRoutes) {
-    if (!routeData[routeName]) continue;
-
-    const { featureCollection } = routeData[routeName];
-    const features = featureCollection.features;
-
-    // Add placemarks for each stop in order
-    features.forEach((feature, index) => {
-      const { id, name } = feature.properties;
-      const [longitude, latitude] = feature.geometry.coordinates;
-
-      kml += `
-      <Placemark>
-        <name>${routeName}: ${index + 1}. ${name}</name>
-        <description>Route: ${routeName}, Stop ID: ${id}</description>
-        <styleUrl>#${routeName}StopStyle</styleUrl>
-        <Point>
-          <coordinates>${longitude},${latitude},0</coordinates>
-        </Point>
-      </Placemark>`;
-    });
-  }
-
-  // Close Rail Stops folder
-  kml += `
-    </Folder>`;
+  // Add stops for each group
+  addStopsForRoutes(
+    routeGroups['North_Routes'],
+    'North Routes Stops',
+    'Stops for N2, N4, N6 routes'
+  );
+  addStopsForRoutes(
+    routeGroups['South_Routes'],
+    'South Routes Stops',
+    'Stops for S2, S4, S6, S8 routes'
+  );
+  addStopsForRoutes(
+    routeGroups['West_Routes'],
+    'West Routes Stops',
+    'Stops for W2 route'
+  );
+  addStopsForRoutes(
+    routeGroups['Core_Spine_Routes'],
+    'Core Spine Routes Stops',
+    'Stops for G, H, C, E spine routes'
+  );
+  addStopsForRoutes(
+    routeGroups['High_Frequency_Routes'],
+    'High Frequency Routes Stops',
+    'Stops for routes 1, 39, 15, 16'
+  );
+  addStopsForRoutes(
+    routeGroups['Rail_Routes'],
+    'Rail Stops',
+    'Stops for DART, Luas Green Line, Luas Red Line'
+  );
 
   // Close All Stops folder
   kml += `
@@ -964,7 +1163,34 @@ function createConsolidatedKML(routeGroups, routeData) {
 // Main function to process all routes
 async function processRoutes() {
   // List of routes to process
-  const busRoutes = ['N2', 'N4', 'N6', 'S2', 'S4', 'S6', 'S8', 'W2'];
+  const busRoutes = [
+    // Orbital Routes
+    'N2',
+    'N4',
+    'N6',
+    'S2',
+    'S4',
+    'S6',
+    'S8',
+    'W2',
+    // Core Spine Routes
+    'G1',
+    'G2',
+    'H1',
+    'H2',
+    'H3',
+    'C1',
+    'C2',
+    'C3',
+    'C4',
+    'E1',
+    'E2',
+    // Additional High-Frequency Routes
+    '1',
+    '39',
+    '15',
+    '16',
+  ];
   const railRoutes = ['DART', 'LuasGreen', 'LuasRed'];
   const allRoutes = [...busRoutes, ...railRoutes];
 
@@ -973,6 +1199,13 @@ async function processRoutes() {
     North_Routes: ['N2', 'N4', 'N6'],
     South_Routes: ['S2', 'S4', 'S6', 'S8'],
     West_Routes: ['W2'],
+    Core_Spine_Routes: {
+      G_Spine: ['G1', 'G2'],
+      H_Spine: ['H1', 'H2', 'H3'],
+      C_Spine: ['C1', 'C2', 'C3', 'C4'],
+      E_Spine: ['E1', 'E2'],
+    },
+    High_Frequency_Routes: ['1', '39', '15', '16'],
     Rail_Routes: ['DART', 'LuasGreen', 'LuasRed'],
   };
 
@@ -1015,10 +1248,22 @@ async function processRoutes() {
   for (const [groupName, routes] of Object.entries(routeGroups)) {
     const groupData = {};
 
-    // Collect data for routes in this group
-    for (const routeName of routes) {
-      if (routeData[routeName]) {
-        groupData[routeName] = routeData[routeName];
+    // Handle nested groups (like Core_Spine_Routes)
+    if (typeof routes === 'object' && !Array.isArray(routes)) {
+      // For nested groups, combine all sub-routes
+      for (const [subGroupName, subRoutes] of Object.entries(routes)) {
+        for (const routeName of subRoutes) {
+          if (routeData[routeName]) {
+            groupData[routeName] = routeData[routeName];
+          }
+        }
+      }
+    } else {
+      // For flat groups, process as before
+      for (const routeName of routes) {
+        if (routeData[routeName]) {
+          groupData[routeName] = routeData[routeName];
+        }
       }
     }
 

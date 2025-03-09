@@ -3,6 +3,74 @@
   <Document>
     <name>All Dublin Transport Routes</name>
     <description>All Dublin bus and rail routes with stops</description>
+    <Style id="1RouteStyle">
+      <LineStyle>
+        <color>ff8fbc8f</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+    <Style id="1StopStyle">
+      <IconStyle>
+        <scale>1.0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/paddle/grn-blank.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0.8</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="15RouteStyle">
+      <LineStyle>
+        <color>ffa0522d</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+    <Style id="15StopStyle">
+      <IconStyle>
+        <scale>1.0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/paddle/red-blank.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0.8</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="16RouteStyle">
+      <LineStyle>
+        <color>ff66cdaa</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+    <Style id="16StopStyle">
+      <IconStyle>
+        <scale>1.0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/paddle/cyan-blank.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0.8</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="39RouteStyle">
+      <LineStyle>
+        <color>ff9370db</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+    <Style id="39StopStyle">
+      <IconStyle>
+        <scale>1.0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/paddle/purple-blank.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0.8</scale>
+      </LabelStyle>
+    </Style>
     <Style id="N2RouteStyle">
       <LineStyle>
         <color>ff00aaff</color>
@@ -133,6 +201,193 @@
         <scale>1.0</scale>
         <Icon>
           <href>http://maps.google.com/mapfiles/kml/paddle/orange-blank.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0.8</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="G1RouteStyle">
+      <LineStyle>
+        <color>ff4b0082</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+    <Style id="G1StopStyle">
+      <IconStyle>
+        <scale>1.0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/paddle/purple-dk-blank.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0.8</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="G2RouteStyle">
+      <LineStyle>
+        <color>ff4b0082</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+    <Style id="G2StopStyle">
+      <IconStyle>
+        <scale>1.0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/paddle/purple-dk-blank.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0.8</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="H1RouteStyle">
+      <LineStyle>
+        <color>ff8b4513</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+    <Style id="H1StopStyle">
+      <IconStyle>
+        <scale>1.0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/paddle/brown-blank.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0.8</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="H2RouteStyle">
+      <LineStyle>
+        <color>ff8b4513</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+    <Style id="H2StopStyle">
+      <IconStyle>
+        <scale>1.0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/paddle/brown-blank.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0.8</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="H3RouteStyle">
+      <LineStyle>
+        <color>ff8b4513</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+    <Style id="H3StopStyle">
+      <IconStyle>
+        <scale>1.0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/paddle/brown-blank.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0.8</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="C1RouteStyle">
+      <LineStyle>
+        <color>ff483d8b</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+    <Style id="C1StopStyle">
+      <IconStyle>
+        <scale>1.0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/paddle/blu-dk-blank.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0.8</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="C2RouteStyle">
+      <LineStyle>
+        <color>ff483d8b</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+    <Style id="C2StopStyle">
+      <IconStyle>
+        <scale>1.0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/paddle/blu-dk-blank.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0.8</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="C3RouteStyle">
+      <LineStyle>
+        <color>ff483d8b</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+    <Style id="C3StopStyle">
+      <IconStyle>
+        <scale>1.0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/paddle/blu-dk-blank.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0.8</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="C4RouteStyle">
+      <LineStyle>
+        <color>ff483d8b</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+    <Style id="C4StopStyle">
+      <IconStyle>
+        <scale>1.0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/paddle/blu-dk-blank.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0.8</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="E1RouteStyle">
+      <LineStyle>
+        <color>ff2f4f4f</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+    <Style id="E1StopStyle">
+      <IconStyle>
+        <scale>1.0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/paddle/grn-dk-blank.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0.8</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="E2RouteStyle">
+      <LineStyle>
+        <color>ff2f4f4f</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+    <Style id="E2StopStyle">
+      <IconStyle>
+        <scale>1.0</scale>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/paddle/grn-dk-blank.png</href>
         </Icon>
       </IconStyle>
       <LabelStyle>
