@@ -149,6 +149,13 @@ export const PolygonDraw = () => {
                 geoJSON.features as CustomTentacleQuestion["places"],
                 (x) => x.geometry.coordinates.join(","),
             ); // Sometimes keys are duplicated
+            if (featureRef.current) {
+                Object.values(featureRef.current._layers).map((layer: any) => {
+                    if (!layer.options.properties) {
+                        featureRef.current.removeLayer(layer);
+                    }
+                });
+            }
             questionModified();
         }
     };
