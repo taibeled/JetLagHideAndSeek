@@ -176,10 +176,16 @@ const homeGameMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
     ]),
 });
 
+const customMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
+    type: z.literal("custom-zone"),
+    geo: z.any(),
+});
+
 const matchingQuestionSchema = z.union([
     zoneMatchingQuestionsSchema,
     ordinaryMatchingQuestionSchema,
     homeGameMatchingQuestionsSchema,
+    customMatchingQuestionSchema,
 ]);
 
 const baseMeasuringQuestionSchema = ordinaryBaseQuestionSchema.extend({

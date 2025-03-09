@@ -1,5 +1,5 @@
 import "leaflet-draw/dist/leaflet.draw.css";
-import { FeatureGroup, Marker } from "react-leaflet";
+import { FeatureGroup, Marker, Polygon } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 import * as L from "leaflet";
 import { useEffect, useRef, useState } from "react";
@@ -26,6 +26,20 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "./ui/sidebar-l";
+
+const swapCoordinates = (geojson: any) => {
+    return JSON.parse(JSON.stringify(geojson), (key, value) => {
+        if (
+            Array.isArray(value) &&
+            value.length >= 2 &&
+            typeof value[0] === "number" &&
+            typeof value[1] === "number"
+        ) {
+            return [value[1], value[0], ...value.slice(2)];
+        }
+        return value;
+    });
+};
 
 const TentacleMarker = ({
     point,
@@ -108,6 +122,10 @@ export const PolygonDraw = () => {
         if (question?.data.drag === false) {
             drawingQuestionKey.set(-1);
         }
+        if (question?.id === "matching") {
+            L.drawLocal.draw.toolbar.buttons.polygon =
+                "Draw the matching zone(s)!";
+        }
     }
 
     const onChange = () => {
@@ -157,6 +175,21 @@ export const PolygonDraw = () => {
                 });
             }
             questionModified();
+        } else if (
+            question?.id === "matching" &&
+            question.data.type === "custom-zone"
+        ) {
+            if (!featureRef.current?._layers) return;
+
+            const layers = featureRef.current._layers;
+            const geoJSONs = Object.values(layers).map((layer: any) =>
+                layer.toGeoJSON(),
+            );
+            const geoJSON = turf.combine(turf.featureCollection(geoJSONs))
+                .features[0];
+
+            question.data.geo = geoJSON;
+            questionModified();
         }
     };
 
@@ -175,6 +208,22 @@ export const PolygonDraw = () => {
                     <TentacleMarker
                         key={x.geometry.coordinates.join(",")}
                         point={x}
+                    />
+                ))}
+            {question &&
+                question.id === "matching" &&
+                question.data.type === "custom-zone" &&
+                question.data.geo &&
+                (question.data.geo.type === "FeatureCollection"
+                    ? turf.flatten(question.data.geo)
+                    : turf.flatten(turf.featureCollection([question.data.geo]))
+                ).features.map((x: any) => (
+                    <Polygon
+                        key={JSON.stringify(x)}
+                        positions={swapCoordinates(x.geometry.coordinates)}
+                        stroke
+                        pathOptions={{ color: "red" }}
+                        fill={false}
                     />
                 ))}
             <EditControl

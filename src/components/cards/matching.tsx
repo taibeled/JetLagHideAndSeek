@@ -3,6 +3,7 @@ import { useStore } from "@nanostores/react";
 import { cn } from "../../lib/utils";
 import {
     displayHidingZones,
+    drawingQuestionKey,
     hiderMode,
     questionModified,
     questions,
@@ -22,6 +23,7 @@ import {
 } from "../ui/select";
 import { Checkbox } from "../ui/checkbox";
 import { QuestionCard } from "./base";
+import { determineMatchingBoundary } from "@/maps/matching";
 
 export const MatchingQuestionComponent = ({
     data,
@@ -40,6 +42,7 @@ export const MatchingQuestionComponent = ({
     const $hiderMode = useStore(hiderMode);
     const $questions = useStore(questions);
     const $displayHidingZones = useStore(displayHidingZones);
+    const $drawingQuestionKey = useStore(drawingQuestionKey);
     const label = `Matching
     ${
         $questions
@@ -122,6 +125,27 @@ export const MatchingQuestionComponent = ({
                     a hiding zone in the hiding zone sidebar.
                 </span>
             );
+            break;
+        case "custom-zone":
+            if (data.drag) {
+                questionSpecific = (
+                    <p className="px-2 mb-1 text-center text-orange-500">
+                        To modify the matching zones, enable it:
+                        <Checkbox
+                            className="mx-1 my-1"
+                            checked={$drawingQuestionKey === questionKey}
+                            onCheckedChange={(checked) => {
+                                if (checked) {
+                                    drawingQuestionKey.set(questionKey);
+                                } else {
+                                    drawingQuestionKey.set(-1);
+                                }
+                            }}
+                        />
+                        and use the buttons at the bottom left of the map.
+                    </p>
+                );
+            }
     }
 
     return (
@@ -135,7 +159,12 @@ export const MatchingQuestionComponent = ({
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
                     value={data.type}
-                    onValueChange={(value) => {
+                    onValueChange={async (value) => {
+                        if (value === "custom-zone") {
+                            (data as any).geo =
+                                await determineMatchingBoundary(data);
+                        }
+
                         // The category should be defined such that no error is thrown if this is a zone question.
                         if (!(data as any).cat) {
                             (data as any).cat = { adminLevel: 3 };
@@ -151,6 +180,9 @@ export const MatchingQuestionComponent = ({
                         <SelectItem value="zone">Zone Question</SelectItem>
                         <SelectItem value="letter-zone">
                             Zone Starts With Same Letter Question
+                        </SelectItem>
+                        <SelectItem value="custom-zone">
+                            Custom Zone Question
                         </SelectItem>
                         <SelectItem value="airport">
                             Closest Commercial Airport In Zone Question
@@ -222,35 +254,43 @@ export const MatchingQuestionComponent = ({
                 className={cn(
                     MENU_ITEM_CLASSNAME,
                     "text-2xl font-semibold font-poppins",
+                    data.type === "custom-zone" && "capitalize",
                 )}
-                style={{
-                    backgroundColor: iconColors[data.color],
-                    color: data.color === "gold" ? "black" : undefined,
-                }}
+                style={
+                    data.type === "custom-zone"
+                        ? {}
+                        : {
+                              backgroundColor: iconColors[data.color],
+                              color:
+                                  data.color === "gold" ? "black" : undefined,
+                          }
+                }
             >
-                Color (lock{" "}
+                {data.type !== "custom-zone" && "Color ("} lock{" "}
                 <Checkbox
                     checked={!data.drag}
                     onCheckedChange={(checked) =>
                         questionModified((data.drag = !checked as boolean))
                     }
                 />
-                )
+                {data.type !== "custom-zone" && ")"}
             </SidebarMenuItem>
-            <LatitudeLongitude
-                latitude={data.lat}
-                longitude={data.lng}
-                onChange={(lat, lng) => {
-                    if (lat !== null) {
-                        data.lat = lat;
-                    }
-                    if (lng !== null) {
-                        data.lng = lng;
-                    }
-                    questionModified();
-                }}
-                disabled={!data.drag}
-            />
+            {data.type !== "custom-zone" && (
+                <LatitudeLongitude
+                    latitude={data.lat}
+                    longitude={data.lng}
+                    onChange={(lat, lng) => {
+                        if (lat !== null) {
+                            data.lat = lat;
+                        }
+                        if (lng !== null) {
+                            data.lng = lng;
+                        }
+                        questionModified();
+                    }}
+                    disabled={!data.drag}
+                />
+            )}
         </QuestionCard>
     );
 };

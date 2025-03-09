@@ -37,6 +37,10 @@ export const determineMatchingBoundary = _.memoize(
             case "same-train-line": {
                 return false;
             }
+            case "custom-zone": {
+                boundary = question.geo;
+                break;
+            }
             case "zone": {
                 boundary = await findAdminBoundary(
                     question.lat,
@@ -168,6 +172,7 @@ export const determineMatchingBoundary = _.memoize(
             lat: question.lat,
             lng: question.lng,
             cat: (question as ZoneMatchingQuestions).cat,
+            geo: (question as any).geo,
         }),
 );
 
