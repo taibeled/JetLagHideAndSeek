@@ -94,3 +94,34 @@ export const hiderifyTentacles = async (question: TentacleQuestion) => {
     question.location = correctLocation!;
     return question;
 };
+
+export const planningPolygon = async (question: TentacleQuestion) => {
+    const points =
+        question.locationType === "custom"
+            ? turf.featureCollection(question.places)
+            : await findTentacleLocations(question);
+
+    const voronoi = geoSpatialVoronoi(points);
+    const circle = turf.circle(
+        turf.point([question.lng, question.lat]),
+        question.radius,
+        {
+            units: question.unit,
+        },
+    );
+
+    const interiorVoronoi = voronoi.features
+        .map((feature: any) => {
+            const polygon = turf.intersect(
+                turf.featureCollection([feature, circle]),
+            );
+            return polygon;
+        })
+        .filter((feature: any) => feature !== null);
+
+    return turf.combine(
+        turf.featureCollection(
+            interiorVoronoi.map((x: any) => turf.polygonToLine(x)),
+        ),
+    );
+};

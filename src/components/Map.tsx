@@ -25,7 +25,7 @@ import { clearCache, determineGeoJSON, type OpenStreetMap } from "../maps/api";
 import { adjustPerRadius } from "../maps/radius";
 import { DraggableMarkers } from "./DraggableMarkers";
 import { adjustPerThermometer } from "../maps/thermometer";
-import { adjustPerTentacle } from "../maps/tentacles";
+import { adjustPerTentacle, planningPolygon } from "../maps/tentacles";
 import { adjustPerMatching } from "../maps/matching";
 import { PolygonDraw } from "./PolygonDraw";
 import { adjustPerMeasuring } from "@/maps/measuring";
@@ -106,6 +106,12 @@ export const Map = ({ className }: { className?: string }) => {
             triggerLocalRefresh.set(Math.random()); // Refresh the question sidebar with new information but not this map
         }
 
+        map.eachLayer((layer: any) => {
+            if (layer.questionKey || layer.questionKey === 0) {
+                map.removeLayer(layer);
+            }
+        });
+
         try {
             for (let index = 0; index < $questions.length; index++) {
                 const question = $questions[index];
@@ -126,7 +132,17 @@ export const Map = ({ className }: { className?: string }) => {
                             false,
                         );
                         break;
-                    case "tentacles":
+                    case "tentacles": {
+                        if (question.data.drag) {
+                            const geoJSONObj = await planningPolygon(
+                                question.data,
+                            );
+                            const geoJSONPlane = geoJSON(geoJSONObj);
+                            // @ts-expect-error This is a check such that only this type of layer is removed
+                            geoJSONPlane.questionKey = question.key;
+                            geoJSONPlane.addTo(map);
+                        }
+
                         if (question.data.location === false) break;
                         mapGeoData = await adjustPerTentacle(
                             question.data,
@@ -134,6 +150,7 @@ export const Map = ({ className }: { className?: string }) => {
                             false,
                         );
                         break;
+                    }
                     case "matching":
                         try {
                             mapGeoData = await adjustPerMatching(
