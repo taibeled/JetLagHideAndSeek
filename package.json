@@ -12,7 +12,6 @@
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,astro,json,css,md}\""
   },
   "dependencies": {
-    "@astrojs/netlify": "^6.2.2",
     "@astrojs/partytown": "^2.1.3",
     "@astrojs/react": "4.2.0",
     "@astrojs/tailwind": "^5.1.5",

@@ -58,6 +58,7 @@ import { geoSpatialVoronoi } from '@/maps/voronoi';
 import { renderToString } from 'react-dom/server';
 import { FaTrain, FaBus, FaSubway } from 'react-icons/fa';
 import { ScrollToTop } from './ui/scroll-to-top';
+import { getBaseUrl } from '@/lib/utils';
 import customBusRoutesData from '../data/customBusRoutes.json';
 import corridorBusRoutesData from '../data/corridorBusRoutes.json';
 import n2BusRoutesData from '../data/n2BusRoutes.json';
