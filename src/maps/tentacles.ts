@@ -95,7 +95,7 @@ export const hiderifyTentacles = async (question: TentacleQuestion) => {
     return question;
 };
 
-export const planningPolygon = async (question: TentacleQuestion) => {
+export const tentaclesPlanningPolygon = async (question: TentacleQuestion) => {
     const points =
         question.locationType === "custom"
             ? turf.featureCollection(question.places)

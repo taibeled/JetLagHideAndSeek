@@ -22,10 +22,10 @@ import { useEffect, useMemo } from "react";
 import { toast } from "react-toastify";
 import * as turf from "@turf/turf";
 import { clearCache, determineGeoJSON, type OpenStreetMap } from "../maps/api";
-import { adjustPerRadius } from "../maps/radius";
+import { adjustPerRadius, radiusPlanningPolygon } from "../maps/radius";
 import { DraggableMarkers } from "./DraggableMarkers";
 import { adjustPerThermometer } from "../maps/thermometer";
-import { adjustPerTentacle, planningPolygon } from "../maps/tentacles";
+import { adjustPerTentacle, tentaclesPlanningPolygon } from "../maps/tentacles";
 import { adjustPerMatching } from "../maps/matching";
 import { PolygonDraw } from "./PolygonDraw";
 import { adjustPerMeasuring } from "@/maps/measuring";
@@ -118,6 +118,16 @@ export const Map = ({ className }: { className?: string }) => {
 
                 switch (question?.id) {
                     case "radius":
+                        if (question.data.drag) {
+                            const geoJSONObj = radiusPlanningPolygon(
+                                question.data,
+                            );
+                            const geoJSONPlane = geoJSON(geoJSONObj);
+                            // @ts-expect-error This is a check such that only this type of layer is removed
+                            geoJSONPlane.questionKey = question.key;
+                            geoJSONPlane.addTo(map);
+                        }
+
                         if (!question.data.within) break;
                         mapGeoData = adjustPerRadius(
                             question.data,
@@ -132,9 +142,9 @@ export const Map = ({ className }: { className?: string }) => {
                             false,
                         );
                         break;
-                    case "tentacles": {
+                    case "tentacles":
                         if (question.data.drag) {
-                            const geoJSONObj = await planningPolygon(
+                            const geoJSONObj = await tentaclesPlanningPolygon(
                                 question.data,
                             );
                             const geoJSONPlane = geoJSON(geoJSONObj);
@@ -150,7 +160,6 @@ export const Map = ({ className }: { className?: string }) => {
                             false,
                         );
                         break;
-                    }
                     case "matching":
                         try {
                             mapGeoData = await adjustPerMatching(

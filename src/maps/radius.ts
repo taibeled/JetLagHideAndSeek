@@ -53,3 +53,15 @@ export const hiderifyRadius = (question: RadiusQuestion) => {
 
     return question;
 };
+
+export const radiusPlanningPolygon = (question: RadiusQuestion) => {
+    const circle = turf.circle(
+        turf.point([question.lng, question.lat]),
+        question.radius,
+        {
+            units: question.unit,
+        },
+    );
+
+    return turf.polygonToLine(circle);
+};
