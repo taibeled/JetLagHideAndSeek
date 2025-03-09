@@ -135,9 +135,13 @@ export const MatchingQuestionComponent = ({
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
                     value={data.type}
-                    onValueChange={(value) =>
-                        questionModified((data.type = value as any))
-                    }
+                    onValueChange={(value) => {
+                        // The category should be defined such that no error is thrown if this is a zone question.
+                        if (!(data as any).cat) {
+                            (data as any).cat = { adminLevel: 3 };
+                        }
+                        questionModified((data.type = value as any));
+                    }}
                     disabled={!data.drag}
                 >
                     <SelectTrigger>

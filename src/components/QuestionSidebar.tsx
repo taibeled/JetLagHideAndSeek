@@ -170,7 +170,6 @@ export const QuestionSidebar = () => {
                                         data: {
                                             lat: center.lat,
                                             lng: center.lng,
-                                            cat: {},
                                         },
                                     });
                                 }}

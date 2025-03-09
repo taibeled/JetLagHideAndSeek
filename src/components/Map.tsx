@@ -397,7 +397,6 @@ export const Map = ({ className }: { className?: string }) => {
                                 data: {
                                     lat: e.latlng.lat,
                                     lng: e.latlng.lng,
-                                    cat: {},
                                 },
                             });
                         },

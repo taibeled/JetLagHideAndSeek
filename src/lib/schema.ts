@@ -145,9 +145,9 @@ const zoneMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
     type: z
         .union([z.literal("zone"), z.literal("letter-zone")])
         .default("zone"),
-    cat: z.object({
-        adminLevel: z
-            .union([
+    cat: z
+        .object({
+            adminLevel: z.union([
                 z.literal(3),
                 z.literal(4),
                 z.literal(5),
@@ -156,9 +156,9 @@ const zoneMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
                 z.literal(8),
                 z.literal(9),
                 z.literal(10),
-            ])
-            .default(3),
-    }),
+            ]),
+        })
+        .default(() => ({ adminLevel: 3 }) as { adminLevel: 3 }),
 });
 
 const homeGameMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
@@ -259,6 +259,7 @@ export type MatchingQuestion = z.infer<typeof matchingQuestionSchema>;
 export type HomeGameMatchingQuestions = z.infer<
     typeof homeGameMatchingQuestionsSchema
 >;
+export type ZoneMatchingQuestions = z.infer<typeof zoneMatchingQuestionsSchema>;
 export type MeasuringQuestion = z.infer<typeof measuringQuestionSchema>;
 export type HomeGameMeasuringQuestions = z.infer<
     typeof homeGameMeasuringQuestionsSchema
