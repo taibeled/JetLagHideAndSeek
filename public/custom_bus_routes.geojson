@@ -1,0 +1,5300 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000128",
+        "name": "Glasnevin Avenue (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.26568972261117,
+          53.3892678697418
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000130",
+        "name": "Glasnevin Park (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.27418126942505,
+          53.3900920127596
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000132",
+        "name": "Beneavin Park (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2827191236982,
+          53.3905207424932
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000206",
+        "name": "Collins Avenue West (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24747670792428,
+          53.3835460890329
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000312",
+        "name": "Wellington Quay (C1, C2, C3, C4)",
+        "routes": "C1, C2, C3, C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2662061554843,
+          53.3454764728264
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000358",
+        "name": "Sean Moore Road (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.21709042092931,
+          53.3390271337242
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000375",
+        "name": "Dromard Terrace (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2143845130625,
+          53.3340611346518
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000381",
+        "name": "St John's Church (C1, C2)",
+        "routes": "C1, C2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.21237419337667,
+          53.3243237661065
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000388",
+        "name": "Farney Park (C1, C2)",
+        "routes": "C1, C2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.21848017255212,
+          53.334508861965
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000391",
+        "name": "Bath Street (C1, C2)",
+        "routes": "C1, C2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22392535183325,
+          53.3400638554722
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000393",
+        "name": "Tritonville Road (C1, C2)",
+        "routes": "C1, C2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22237479685263,
+          53.3369038877169
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000395",
+        "name": "Ringsend Road (C1, C2, C3, C4)",
+        "routes": "C1, C2, C3, C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.23527645441634,
+          53.3419400535651
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000397",
+        "name": "Pearse Square (C1, C2, C3, C4)",
+        "routes": "C1, C2, C3, C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24201500730761,
+          53.3427855554404
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000399",
+        "name": "Pearse Station (C1, C2, C3, C4)",
+        "routes": "C1, C2, C3, C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24830860143225,
+          53.3438668221062
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000415",
+        "name": "American Embassy (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.23294774966437,
+          53.3303378154068
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000417",
+        "name": "Merrion Road (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22597042048855,
+          53.3276995856506
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000525",
+        "name": "Howth Road (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22633091116316,
+          53.3649608735109
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000527",
+        "name": "Ashbrook (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.21267888054445,
+          53.3680198762275
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000529",
+        "name": "Collins Avenue (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.20761234516729,
+          53.3705774149451
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000779",
+        "name": "Waterloo Road (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24544736264854,
+          53.3286887363292
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000781",
+        "name": "Baggot Street (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24366410261763,
+          53.332626271424
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000979",
+        "name": "St Canice's GNS (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29710063600173,
+          53.3899538085893
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000980",
+        "name": "Finglas Sports Centre (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.30303046268457,
+          53.389804569147
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001185",
+        "name": "Oak Road (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22151304646931,
+          53.3763670141117
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001187",
+        "name": "Celtic Park Road (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.23135544113251,
+          53.3786075086935
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001379",
+        "name": "Rialto Luas (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2991226532094,
+          53.3373397013518
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001576",
+        "name": "Cappagh Road (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.31304812471741,
+          53.3893174054908
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001578",
+        "name": "Ratoath Drive (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.31801267740452,
+          53.3903851294541
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001579",
+        "name": "Heathfield Avenue (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.32605,
+          53.3947
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001644",
+        "name": "DCU Collins Avenue (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.25657120617442,
+          53.3868700413836
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001939",
+        "name": "Bridgefoot Street (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2806646665428,
+          53.3429982683414
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001941",
+        "name": "Steeven's Lane (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.28918142026463,
+          53.3433454019831
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002472",
+        "name": "Harolds Cross NS (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.28560029534873,
+          53.3176779065494
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002474",
+        "name": "Westfield Road (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2818195288864,
+          53.3187560070782
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002476",
+        "name": "Kenilworth Square North (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.27746997537541,
+          53.319043808898
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002478",
+        "name": "Grosvenor Road (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.26975,
+          53.32054
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002497",
+        "name": "Sundrive Park (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29190358357236,
+          53.3203299516141
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002637",
+        "name": "Heuston Station (C1, C2, C3, C4)",
+        "routes": "C1, C2, C3, C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.294308,
+          53.345846
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002788",
+        "name": "Castlewood Avenue (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.26334121729297,
+          53.3228386545855
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002790",
+        "name": "Oakley Road (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.25664770588743,
+          53.3246375121016
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002797",
+        "name": "Northumberland Road (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.23653195679318,
+          53.33226039426
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB003353",
+        "name": "Downpatrick Road (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29795813528629,
+          53.3277417972696
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB004320",
+        "name": "Heuston Station (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29208351412565,
+          53.3466406639906
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB004469",
+        "name": "East Road (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.23118,
+          53.35346
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB004792",
+        "name": "Clanawley Road (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2095029405602,
+          53.3727989041641
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007012",
+        "name": "Memorial Gardens (C1, C2, C3, C4)",
+        "routes": "C1, C2, C3, C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.31537467920354,
+          53.3429541422322
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007438",
+        "name": "Herberton Drive (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29774608887872,
+          53.3319362078023
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007453",
+        "name": "Arran Quay (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.27838250402176,
+          53.3463358924171
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007458",
+        "name": "Collins Drive (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2905257060846,
+          53.3900665526326
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007599",
+        "name": "Gilford Road (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.21704832664146,
+          53.3303169486267
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007732",
+        "name": "Tara Street (C1, C2, C3, C4)",
+        "routes": "C1, C2, C3, C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.255171,
+          53.347221
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007741",
+        "name": "Gilford Road (C1, C2)",
+        "routes": "C1, C2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.21498962323813,
+          53.3292794817353
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007827",
+        "name": "Eastpoint (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.230534,
+          53.360514
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007831",
+        "name": "Whitehall Colmcille (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.23992286963184,
+          53.3811699363042
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007843",
+        "name": "Parnell Park (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.21574375174037,
+          53.3745102379887
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007844",
+        "name": "Point Village (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.229931,
+          53.348081
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007855",
+        "name": "Usher's Quay (C1, C2, C3, C4)",
+        "routes": "C1, C2, C3, C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.279809,
+          53.345988
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007926",
+        "name": "St. Bernadette's (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2962034980173,
+          53.3250562729745
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007928",
+        "name": "Leeson Park (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24995797934831,
+          53.3266967090781
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007929",
+        "name": "Sandymount Station (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22012410392182,
+          53.3282057152687
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002213",
+        "name": "Liffey Valley SC (C1, C2, C3, C4)",
+        "routes": "C1, C2, C3, C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.392073,
+          53.355778
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002215",
+        "name": "St Loman's Hospital (C1, C2, C3, C4)",
+        "routes": "C1, C2, C3, C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.40897316569566,
+          53.3582062275899
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002218",
+        "name": "Roselawn (C3, C4)",
+        "routes": "C3, C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.43246150995516,
+          53.3596765183857
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB003365",
+        "name": "St Mary's Church (C3, C4)",
+        "routes": "C3, C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.43919311152571,
+          53.3596568989763
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB003367",
+        "name": "Lucan Village (C3, C4)",
+        "routes": "C3, C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.4487606187479,
+          53.3564291825218
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB003370",
+        "name": "Finnstown Abbey (C1, C2)",
+        "routes": "C1, C2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.44769290531114,
+          53.3444704239216
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB003887",
+        "name": "Ardeevin Avenue (C3, C4)",
+        "routes": "C3, C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.4587792832306,
+          53.3552287991633
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB003893",
+        "name": "Weston Aerodrome (C4)",
+        "routes": "C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.48077362721191,
+          53.3530841328432
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB003896",
+        "name": "Dept of Agriculture (C4)",
+        "routes": "C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.49466187992489,
+          53.3468877869537
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB003947",
+        "name": "Celbridge Road (C4)",
+        "routes": "C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.47323129962302,
+          53.3581648569861
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB004599",
+        "name": "Hermitage Road (C1, C2, C3, C4)",
+        "routes": "C1, C2, C3, C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.42333743295062,
+          53.3577587404062
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB004603",
+        "name": "Castle Road (C1, C2)",
+        "routes": "C1, C2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.42022321155946,
+          53.3460962010452
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB004605",
+        "name": "Foxborough Hall (C1, C2)",
+        "routes": "C1, C2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.42199241806974,
+          53.3433333620042
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB004608",
+        "name": "Griffeen Road (C1)",
+        "routes": "C1"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.43232906342,
+          53.3424090532834
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB004610",
+        "name": "Lucan Leisure Centre (C1)",
+        "routes": "C1"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.43751830089688,
+          53.3479417579424
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB004612",
+        "name": "Arthur Griffith Park (C1)",
+        "routes": "C1"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.44246287111903,
+          53.3474491563756
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB005058",
+        "name": "Ballyowen Road (C1, C2)",
+        "routes": "C1, C2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.42249407625999,
+          53.3508988211271
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB006289",
+        "name": "Adamstown Station (C1)",
+        "routes": "C1"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.468398,
+          53.336262
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007117",
+        "name": "Castlegate Drive (C1)",
+        "routes": "C1"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.46091525036735,
+          53.3376401706649
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007138",
+        "name": "Johnsbridge Avenue (C2)",
+        "routes": "C2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.44521026847398,
+          53.3412923405919
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007140",
+        "name": "Rossberry Avenue (C2)",
+        "routes": "C2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.43738627747236,
+          53.3392307652722
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007186",
+        "name": "Lucan Spa Hotel (C3, C4)",
+        "routes": "C3, C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.465258,
+          53.356795
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007231",
+        "name": "Finnstown Castle (C1)",
+        "routes": "C1"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.45260423906383,
+          53.3403189085027
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007239",
+        "name": "The Oval (C1, C2, C3, C4)",
+        "routes": "C1, C2, C3, C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.36892756671871,
+          53.3540614069948
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007386",
+        "name": "Foxborough Park (C1, C2)",
+        "routes": "C1, C2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.42741471356991,
+          53.3400524653444
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007898",
+        "name": "Adamstown Avenue (C2)",
+        "routes": "C2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.46882356670431,
+          53.3382092962552
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007900",
+        "name": "Gandon Park (C2)",
+        "routes": "C2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.46308506064368,
+          53.3466200496288
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007989",
+        "name": "Shackleton Point (C2)",
+        "routes": "C2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.46648928132982,
+          53.3442551063498
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240DB001814",
+        "name": "Ramor Park (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.37899788575985,
+          53.3875618067808
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240DB001838",
+        "name": "Waterville Road (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.37375958722475,
+          53.3960110854464
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240DB002290",
+        "name": "Waterville Terrace (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.37221829316682,
+          53.3918736208018
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240DB007025",
+        "name": "Blanchardstown SC (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.391609,
+          53.394169
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240DB007237",
+        "name": "Stadium Business Pk (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.34158100949342,
+          53.3971412743395
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240DB007247",
+        "name": "Ballycoolin Road (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.35177289546409,
+          53.398792397797
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240DB007297",
+        "name": "Connolly Hospital (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.37078686684588,
+          53.3880162566005
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240DB007334",
+        "name": "Indoor Arena (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.36323810481859,
+          53.4013768759042
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8260DB003898",
+        "name": "Backweston (C4)",
+        "routes": "C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.50215160235315,
+          53.3453192980085
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8260DB003900",
+        "name": "Celbridge Park (C4)",
+        "routes": "C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.51160548768054,
+          53.3433973717903
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8260DB003902",
+        "name": "Ballyoulster Park (C4)",
+        "routes": "C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.51903332600239,
+          53.3418450324796
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8260DB003905",
+        "name": "Riverview (C4)",
+        "routes": "C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.53789621229173,
+          53.3378803826169
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8260DB003907",
+        "name": "Castletown (C4)",
+        "routes": "C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.53762966229691,
+          53.3408430816693
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8260DB003909",
+        "name": "Beatty Park (C4)",
+        "routes": "C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.54193224831773,
+          53.3467827242972
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8260DB003910",
+        "name": "Thornhill (C4)",
+        "routes": "C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.54688255655727,
+          53.352262726221
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8260DB003912",
+        "name": "Salesian College (C4)",
+        "routes": "C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.55169862959239,
+          53.3590800541382
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8260DB003914",
+        "name": "Obelisk Lane (C4)",
+        "routes": "C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.56705725171881,
+          53.3670128654219
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8260DB003918",
+        "name": "Old Greenfield (C3)",
+        "routes": "C3"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.58742161236596,
+          53.3764500204739
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8260DB003925",
+        "name": "Rockfield Manor (C4)",
+        "routes": "C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.58463416546998,
+          53.3725792635937
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8260DB003954",
+        "name": "Springfield Hotel (C3)",
+        "routes": "C3"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.47869059494903,
+          53.3605354601972
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8260DB003956",
+        "name": "Salmon Leap (C3)",
+        "routes": "C3"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.48492915805382,
+          53.3621337660297
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8260DB003958",
+        "name": "Leixlip Main St (C3)",
+        "routes": "C3"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.49081218507202,
+          53.3636014178669
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8260DB003960",
+        "name": "Ryevale Lawns (C3)",
+        "routes": "C3"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.49751601163106,
+          53.3669485725506
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8260DB003962",
+        "name": "Louisa Bridge Stn (C3)",
+        "routes": "C3"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.50609995058496,
+          53.3694201142475
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8260DB003964",
+        "name": "Intel Main Entrance (C3)",
+        "routes": "C3"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.522961,
+          53.372032
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8260DB003966",
+        "name": "Maynooth SC (C3)",
+        "routes": "C3"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.58609704500149,
+          53.381952763046
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8260DB003968",
+        "name": "Carton House (C3)",
+        "routes": "C3"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.55397411062419,
+          53.3779548870294
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8260DB006089",
+        "name": "Old Greenfield (C4)",
+        "routes": "C4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.58761424896909,
+          53.3765331890873
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8260DB007799",
+        "name": "Hayfield (C3)",
+        "routes": "C3"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.59020011144454,
+          53.3705959483675
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001027",
+        "name": "Dodder Walk (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.25791094112817,
+          53.3087379400331
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001120",
+        "name": "Terenure Garda Station (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.28798605930363,
+          53.3101981052294
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001164",
+        "name": "Terenure Road East (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.28158440093591,
+          53.3104116361098
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001709",
+        "name": "Glenbeigh Avenue (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29705299143726,
+          53.3568682016769
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002700",
+        "name": "Kylemore Road (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.34853980731358,
+          53.3412966525983
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB004794",
+        "name": "Clontarf Road Station (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22656242306654,
+          53.3630049005914
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB005060",
+        "name": "Dundaniel Road (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22402924061363,
+          53.3971670149003
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB008312",
+        "name": "Broombridge Road (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29975,
+          53.3748
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002174",
+        "name": "Knockmeenagh Road (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.39122691549203,
+          53.3163990070179
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007443",
+        "name": "Templeroan Estate (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.30695153563064,
+          53.2814641732317
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001025",
+        "name": "Trinity Hall (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.26247682304637,
+          53.3115998654594
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001707",
+        "name": "Dunard Walk (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.30245957267131,
+          53.3584282663489
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001712",
+        "name": "Aughrim Court (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.28624259176384,
+          53.3533339170032
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001714",
+        "name": "Stoneybatter (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.28188938800201,
+          53.3506378069371
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002688",
+        "name": "Cleggan Park (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.36819070772058,
+          53.3434635062577
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007948",
+        "name": "Bankside Cottages (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24710333082368,
+          53.3102693590525
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB008308",
+        "name": "St Clare's (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.271342,
+          53.379157
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002205",
+        "name": "Cherry Orchard Hosp (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.37702396338742,
+          53.344590643431
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002968",
+        "name": "Three Rock Rovers (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.273568644566,
+          53.2803293260032
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB004781",
+        "name": "IDA Poppintree (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.28405666346634,
+          53.4017480300026
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002124",
+        "name": "Neilstown Road (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.39793187307251,
+          53.3469584164072
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002346",
+        "name": "Belgard Square North (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.36790110381364,
+          53.2900797370838
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002360",
+        "name": "Alderwood (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.3796848797551,
+          53.2846948207358
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002522",
+        "name": "Firhouse Centre (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.34234624628978,
+          53.2814222293892
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002535",
+        "name": "Seskin View Road (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.35891860284657,
+          53.2810133262279
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007448",
+        "name": "Grange Golf Club (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.28141545916275,
+          53.281736988145
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007878",
+        "name": "Cappaghmore (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.39906772380998,
+          53.3310739923675
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001235",
+        "name": "Kilbarron Road (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22560408418954,
+          53.3947366846993
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001237",
+        "name": "Cromcastle Avenue (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.21898347230117,
+          53.3926786799977
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002358",
+        "name": "Killinarden (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.38961370639414,
+          53.2807038231884
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002515",
+        "name": "Cherryfield Way (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.31281606279928,
+          53.2913443620348
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002523",
+        "name": "Firhouse College (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.34875137969137,
+          53.2771069428584
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002533",
+        "name": "Parkwood Lawn (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.35764330397158,
+          53.2775083920898
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007884",
+        "name": "Liffey Valley SC (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.392001,
+          53.354078
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002437",
+        "name": "Brookfield (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.30251926023377,
+          53.3126888171566
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002126",
+        "name": "Rowlagh (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.39837562988944,
+          53.343935440152
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002520",
+        "name": "Ballycullen Road (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.3326568733498,
+          53.2860777851868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB00089",
+        "name": "Lambay Road (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.261644,
+          53.377939
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000997",
+        "name": "Northside SC (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.21149309335645,
+          53.3941665688856
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001005",
+        "name": "Limewood (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.1819170834231,
+          53.3909514065877
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002318",
+        "name": "Somerville Avenue (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.31884304552821,
+          53.3219800054738
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002620",
+        "name": "Belgard (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.37084224462122,
+          53.2987215110506
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002949",
+        "name": "Moyville Lawns (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29325082629437,
+          53.2816733044618
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000087",
+        "name": "Clare Road (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2548802899246,
+          53.3767517255719
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001118",
+        "name": "Hazelbrook Road (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29491782827779,
+          53.3113669927789
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002696",
+        "name": "Ballyfermot (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.35880375521618,
+          53.3426876161001
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007941",
+        "name": "Kylemore Luas (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.34233022618322,
+          53.3263803007096
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007943",
+        "name": "Highfield Road (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.27038486298018,
+          53.3127394599831
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB008315",
+        "name": "Park Crescent (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.31075,
+          53.3625
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002159",
+        "name": "Clondalkin Garda Stn (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.39388252941308,
+          53.3232207170865
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007444",
+        "name": "The Glen (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29913139992251,
+          53.2823865090999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000155",
+        "name": "Old Finglas Road (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.27957552717572,
+          53.3778742492869
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001001",
+        "name": "Brookville Crescent (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.19921499123031,
+          53.3900811211552
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002319",
+        "name": "Crumlin Garda Station (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.3152003885886,
+          53.3195647461053
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GD007837",
+        "name": "Howth Junction (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.15592581329108,
+          53.3901212520171
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002604",
+        "name": "Village Green (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.36184601942402,
+          53.2868149331786
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002763",
+        "name": "Newlands Golf Club (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.38629004350369,
+          53.3088093657372
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB004713",
+        "name": "Bianconi Avenue (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.4271364109145,
+          53.2912892220378
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB004882",
+        "name": "Old Court Road (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.35034008190742,
+          53.2747920313822
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB004932",
+        "name": "Magna Drive (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.42049974981812,
+          53.2788609880708
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB004960",
+        "name": "Citywest Road (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.42162128652658,
+          53.2850505921398
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB005129",
+        "name": "Butterfield Avenue (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.28577015809693,
+          53.2977087167285
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007966",
+        "name": "Rathfarnham SC (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29835862052667,
+          53.2954172767558
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB008062",
+        "name": "Liffey Valley SC (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.39279530305583,
+          53.3545380681384
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000253",
+        "name": "Beaumont Hospital (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22429914227646,
+          53.3899625746413
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000259",
+        "name": "Grace Park Road (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24388537443071,
+          53.3740108657416
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002435",
+        "name": "Westbrook (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.3112948332241,
+          53.3143144024734
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB004407",
+        "name": "Victoria Quay (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.285165,
+          53.346488
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB004498",
+        "name": "Nephin Road (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.30426041382606,
+          53.3668037534418
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002128",
+        "name": "Neilstown Avenue (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.39975201801215,
+          53.3396666624101
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002517",
+        "name": "Green Acre Court (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.31859990290756,
+          53.2892149823068
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB004347",
+        "name": "Tallaght Luas (S6, W2)",
+        "routes": "S6, W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.37500751308393,
+          53.28622205242
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007510",
+        "name": "Cloverhill Road (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.384513,
+          53.347196
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007875",
+        "name": "Ninth Lock Road (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.39509987726236,
+          53.3271828190871
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007880",
+        "name": "Main Street (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.39318217095721,
+          53.3206856645393
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000669",
+        "name": "Malahide Road (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22867890531785,
+          53.3663170047508
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000126",
+        "name": "Nursing Home (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.26408696056045,
+          53.3990954666854
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002616",
+        "name": "St Maelruan's Park (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.36063933900619,
+          53.2846412135097
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB004884",
+        "name": "Parklands (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.34260045154128,
+          53.2756284397548
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007940",
+        "name": "Liffey Valley Retail Park (S4, W2)",
+        "routes": "S4, W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.39114653108505,
+          53.3496533769826
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000110",
+        "name": "Ard na Meala (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.26860038147331,
+          53.3979386409613
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001009",
+        "name": "St. Donagh's Road (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.16448455072243,
+          53.3910890756575
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001710",
+        "name": "Aughrim Street (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29174149147947,
+          53.3555699040255
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB004937",
+        "name": "McKee Avenue (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.30051059439893,
+          53.3926718421294
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB006125",
+        "name": "Poppintree Parade (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.27683792298323,
+          53.3998824003142
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007946",
+        "name": "Milltown Luas (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.25293170393568,
+          53.3082965879174
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB008310",
+        "name": "Ballyboggan Road (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.28725,
+          53.375599
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002785",
+        "name": "Bluebell Avenue (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.3449642241989,
+          53.3300839894121
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007044",
+        "name": "Aulden Grange (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2324855678718,
+          53.3974093697435
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB001139",
+        "name": "Old Bridge Road (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.3067469243238,
+          53.2942244156253
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002538",
+        "name": "The Crescent (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.35891362658071,
+          53.281534566011
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002592",
+        "name": "Kiltalown Cottages (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.40627319230772,
+          53.2743034961588
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB000449",
+        "name": "Blackthorn Road (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.21692737889845,
+          53.2763228251629
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB000765",
+        "name": "UCD (S4, S6)",
+        "routes": "S4, S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.21686235884919,
+          53.3052550302794
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB003187",
+        "name": "Burton Hall Road (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.20332617138686,
+          53.2738266122562
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB003189",
+        "name": "Silverpark GAA (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.19557317570234,
+          53.2738443410885
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000999",
+        "name": "Coolock Drive (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.20596530798649,
+          53.3922410515282
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001003",
+        "name": "St John's Church (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.19107150115658,
+          53.3902995343274
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001007",
+        "name": "Millbrook Drive (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.17238672965418,
+          53.3912462839647
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001492",
+        "name": "Marino Church (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.23255805716234,
+          53.3702573904197
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001548",
+        "name": "McKee Avenue North (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.30274949327834,
+          53.3961101450105
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB004886",
+        "name": "Woodstown (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.32968674190357,
+          53.2768593539206
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB005008",
+        "name": "Belgard Square North (S6, W2)",
+        "routes": "S6, W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.36935699388662,
+          53.2904501890287
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240DB006228",
+        "name": "Melville (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29263072232741,
+          53.399830687923
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002702",
+        "name": "Kylemore Avenue (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.34770212371673,
+          53.3381032999033
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB001329",
+        "name": "St Mary's School (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.28199447212766,
+          53.2949669228751
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002590",
+        "name": "Belfry Downs (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.41549358352696,
+          53.2751454328557
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB004646",
+        "name": "Tallaght Hospital (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.3742704403854,
+          53.2894387134306
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB001314",
+        "name": "Nutgrove Avenue (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.25823154104951,
+          53.2942267141944
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB001315",
+        "name": "Whitebarn Road (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.26424076010732,
+          53.2921661624614
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB001319",
+        "name": "Nutgrove Court (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.27587930843346,
+          53.2937102018088
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB002035",
+        "name": "Crofton Road (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.14266542172264,
+          53.295772349365
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001421",
+        "name": "Crumlin Hospital (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.3204526633011,
+          53.3249507659531
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002778",
+        "name": "Drimnagh Castle (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.33194320027363,
+          53.3240244462321
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002539",
+        "name": "Kiltipper Road (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.35618107892913,
+          53.2765355041079
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002557",
+        "name": "Tallaght Village (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.36328124896313,
+          53.2885064213358
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB001317",
+        "name": "Loreto Park (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.26996547269059,
+          53.2919347714584
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB003191",
+        "name": "Foxrock Manor (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.18833124044106,
+          53.2763141538316
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240DB006366",
+        "name": "Century Business Pk (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.30134609639605,
+          53.4026514127009
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB000433",
+        "name": "Grove Avenue (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.19635883802389,
+          53.2986279440755
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240DB006009",
+        "name": "Hazelwood (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.25721799078834,
+          53.4001099014218
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB004352",
+        "name": "Rockville Road (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.17191895152452,
+          53.2912359082869
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB002867",
+        "name": "Notre Dame School (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24994497074115,
+          53.2939975275947
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB002975",
+        "name": "Kingston (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24788043364346,
+          53.2718651810703
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB04558",
+        "name": "UCD Sports Centre (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2285,
+          53.30786
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GD10159",
+        "name": "Stoney Road (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.23693508701988,
+          53.2915318601353
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002181",
+        "name": "Long Mile Road (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.33917121398624,
+          53.3238376853462
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007838",
+        "name": "Finglas Village (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.30012780832554,
+          53.3898261843036
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB001146",
+        "name": "St Colmcille's School (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.31421742122974,
+          53.2793740217827
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB006001",
+        "name": "Kingswood Avenue (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.41939858171847,
+          53.2944765104208
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB000867",
+        "name": "Callary Road (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2182208604393,
+          53.2996576898735
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB003194",
+        "name": "Holly Park Avenue (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.17884354823076,
+          53.2832613825795
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB002070",
+        "name": "St Thomas Road (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.20801,
+          53.30296
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB002819",
+        "name": "Millmount Terrace (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24570873357588,
+          53.3054851144751
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB003039",
+        "name": "Albany Avenue (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.15792431672826,
+          53.2943462090748
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB000431",
+        "name": "Cross Avenue (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.18925586166452,
+          53.3005516484199
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB002039",
+        "name": "Dun Laoghaire Stn (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.13490268686881,
+          53.2948871708134
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB002068",
+        "name": "Greenfield Road (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.20457300251729,
+          53.2980957596886
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB003084",
+        "name": "Frascati SC (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.18116341196204,
+          53.3013812515105
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB003085",
+        "name": "Blackrock Station (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.17837083201603,
+          53.3024801380971
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB007970",
+        "name": "Stillorgan Road (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.18489625952223,
+          53.2788145865792
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GD10097",
+        "name": "Mount Anville School (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22451989510434,
+          53.2932082086634
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240GD007847",
+        "name": "Santry Villas (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24492099119354,
+          53.3977995737997
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB002970",
+        "name": "Grange Road (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.26726734687084,
+          53.2781706300674
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB003037",
+        "name": "Alma Road (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.16575087934276,
+          53.2955005171025
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB003041",
+        "name": "Grosvenor Terrace (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.14959695119317,
+          53.2940285174671
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB007949",
+        "name": "Roebuck Road (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.23718976656935,
+          53.3057459876655
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB007971",
+        "name": "Newtown Park (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.17596237837408,
+          53.2875227416374
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB003164",
+        "name": "Temple Hill (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.1698872726453,
+          53.2956000271742
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB003181",
+        "name": "Carmanhall Road (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.20777790443505,
+          53.2767339177509
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB005051",
+        "name": "Pine Valley (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2597467856516,
+          53.2735579991915
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR0034",
+        "name": "Sydney Parade (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.211644,
+          53.320956
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR0035",
+        "name": "Raheny (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.175818,
+          53.381423
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR3881",
+        "name": "Killester (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.204046,
+          53.372884
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250IR0022",
+        "name": "Shankill (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.117228,
+          53.236522
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250IR0039",
+        "name": "Booterstown (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.19498,
+          53.309921
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250IR0042",
+        "name": "Salthill and Monkstown (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.15233,
+          53.29526
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250IR0124",
+        "name": "Dun Laoghaire (Mallin) (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.134575,
+          53.294776
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR0025",
+        "name": "Tara Street (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.254359,
+          53.347264
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR0032",
+        "name": "Clontarf Road (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.226784,
+          53.363077
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR0131",
+        "name": "Harmonstown (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.19131,
+          53.378643
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR0134",
+        "name": "Dublin Pearse (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.248048,
+          53.343252
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250IR0021",
+        "name": "Killiney (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.113167,
+          53.25571
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR0135",
+        "name": "Grand Canal Dock (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.237351,
+          53.339446
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240IR0017",
+        "name": "Howth (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.074211,
+          53.388893
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240IR0024",
+        "name": "Sutton (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.115952,
+          53.391905
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8350IR0123",
+        "name": "Bray (Daly) (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.100194,
+          53.203712
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250IR0111",
+        "name": "Sandycove and Glasthule (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.126937,
+          53.288125
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR0007",
+        "name": "Dublin Connolly (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.247731,
+          53.352586
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR0028",
+        "name": "Sandymount (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.220843,
+          53.32784
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR0133",
+        "name": "Lansdowne Road (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.229191,
+          53.333963
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR0141",
+        "name": "Kilbarrack (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.16089,
+          53.387472
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240IR0025",
+        "name": "Howth Junction and Donaghmede (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.155434,
+          53.391496
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240IR0140",
+        "name": "Bayside (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.136925,
+          53.391242
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250IR0014",
+        "name": "Dalkey (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.103358,
+          53.275854
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250IR0029",
+        "name": "Seapoint (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.16512,
+          53.299128
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250IR0030",
+        "name": "Blackrock (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.178846,
+          53.302716
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250IR0037",
+        "name": "Glenageary (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.122893,
+          53.281196
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00031",
+        "name": "Dawson (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.25801984,
+          53.34217543
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00059",
+        "name": "St. Stephen's Green (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.261319,
+          53.339197
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00075",
+        "name": "Ranelagh (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.256196436,
+          53.32613194
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00456",
+        "name": "Phibsborough (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.27902033,
+          53.36033055
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00460",
+        "name": "Broombridge (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29752527,
+          53.37215461
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00470",
+        "name": "O'Connell Upper (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.261151,
+          53.351612
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00478",
+        "name": "Dominick (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.265573,
+          53.351245
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00295",
+        "name": "Kilmacud (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.224107001,
+          53.28291052
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00322",
+        "name": "Ballyogan Wood (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.184472,
+          53.254982
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00325",
+        "name": "Carrickmines (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.171624,
+          53.254334
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00332",
+        "name": "Cherrywood (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.145975,
+          53.245317
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00083",
+        "name": "Beechwood (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.25475,
+          53.320929
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00275",
+        "name": "Cowper (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.253499,
+          53.316398
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00440",
+        "name": "Harcourt (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.26283,
+          53.333631
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00286",
+        "name": "Dundrum (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.245234,
+          53.292375
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00291",
+        "name": "Balally (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.236791,
+          53.286023
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00310",
+        "name": "Central Park (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.20389942,
+          53.27016803
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00313",
+        "name": "Glencairn (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.210132292,
+          53.2663249
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00316",
+        "name": "The Gallops (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.205947,
+          53.261063
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00329",
+        "name": "Laughanstown (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.155087,
+          53.250555
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00468",
+        "name": "Broadstone - University (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.273733,
+          53.354033
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00281",
+        "name": "Windy Arbour (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.250841,
+          53.301757
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00297",
+        "name": "Stillorgan (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.21036734,
+          53.27936144
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00070",
+        "name": "Charlemont (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.258704,
+          53.330585
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00278",
+        "name": "Milltown (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.251749984,
+          53.30967244
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00443",
+        "name": "Westmoreland (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.259086,
+          53.34637
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00444",
+        "name": "O'Connell - GPO (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.259968,
+          53.348839
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00479",
+        "name": "Grangegorman (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.27747,
+          53.357115
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00480",
+        "name": "Cabra (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.282029723,
+          53.36432866
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00293",
+        "name": "Sandyford (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.204714,
+          53.277533
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00319",
+        "name": "Leopardstown Valley (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.198426,
+          53.258206
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00336",
+        "name": "Brides Glen (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.142842986,
+          53.24187177
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00360",
+        "name": "Bluebell (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.333778,
+          53.32924
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00366",
+        "name": "Drimnagh (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.318256,
+          53.335305
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00378",
+        "name": "Fatima (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.292756,
+          53.338362
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00381",
+        "name": "James's (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.293237662,
+          53.34181261
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00408",
+        "name": "Abbey Street (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.25845,
+          53.348504
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00420",
+        "name": "Busáras (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.251598,
+          53.350045
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00436",
+        "name": "The Point (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22918668,
+          53.34827635
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230GA00341",
+        "name": "Hospital (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.378766,
+          53.289374
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00369",
+        "name": "Goldenbridge (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.313299,
+          53.335879
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00372",
+        "name": "Suir Road (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.307231258,
+          53.33659218
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230GA00338",
+        "name": "Cookstown (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.384038,
+          53.293311
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00356",
+        "name": "Kylemore (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.343697,
+          53.32652
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00363",
+        "name": "Blackhorse (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.327515,
+          53.334196
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00375",
+        "name": "Rialto (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.297369,
+          53.337846
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00386",
+        "name": "Heuston (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.291618,
+          53.346697
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00389",
+        "name": "Museum (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.286936,
+          53.347835
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00398",
+        "name": "Smithfield (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.278080805,
+          53.3471135
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00404",
+        "name": "Jervis (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.265275464,
+          53.34768301
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00427",
+        "name": "George's Dock (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.247569832,
+          53.34942861
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00430",
+        "name": "Mayor Square - NCI (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.243269507,
+          53.34916764
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230GA00347",
+        "name": "Belgard (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.374808,
+          53.299145
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230GA00350",
+        "name": "Kingswood (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.365409,
+          53.303586
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230GA00353",
+        "name": "Red Cow (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.369780553,
+          53.31674596
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00401",
+        "name": "Four Courts (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.273660411,
+          53.34685189
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00433",
+        "name": "Spencer Dock (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.237126865,
+          53.34878043
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230GA00344",
+        "name": "Tallaght (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.374685,
+          53.287523
+        ]
+      }
+    }
+  ]
+}

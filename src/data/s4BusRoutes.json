@@ -1,0 +1,440 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001027",
+        "name": "Dodder Walk (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.25791094112817,
+          53.3087379400331
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001120",
+        "name": "Terenure Garda Station (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.28798605930363,
+          53.3101981052294
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001164",
+        "name": "Terenure Road East (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.28158440093591,
+          53.3104116361098
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002700",
+        "name": "Kylemore Road (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.34853980731358,
+          53.3412966525983
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001025",
+        "name": "Trinity Hall (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.26247682304637,
+          53.3115998654594
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002688",
+        "name": "Cleggan Park (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.36819070772058,
+          53.3434635062577
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007948",
+        "name": "Bankside Cottages (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24710333082368,
+          53.3102693590525
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002205",
+        "name": "Cherry Orchard Hosp (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.37702396338742,
+          53.344590643431
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007884",
+        "name": "Liffey Valley SC (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.392001,
+          53.354078
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002437",
+        "name": "Brookfield (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.30251926023377,
+          53.3126888171566
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002318",
+        "name": "Somerville Avenue (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.31884304552821,
+          53.3219800054738
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001118",
+        "name": "Hazelbrook Road (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29491782827779,
+          53.3113669927789
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002696",
+        "name": "Ballyfermot (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.35880375521618,
+          53.3426876161001
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007941",
+        "name": "Kylemore Luas (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.34233022618322,
+          53.3263803007096
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007943",
+        "name": "Highfield Road (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.27038486298018,
+          53.3127394599831
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002319",
+        "name": "Crumlin Garda Station (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.3152003885886,
+          53.3195647461053
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002435",
+        "name": "Westbrook (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.3112948332241,
+          53.3143144024734
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007510",
+        "name": "Cloverhill Road (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.384513,
+          53.347196
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007940",
+        "name": "Liffey Valley Retail Park (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.39114653108505,
+          53.3496533769826
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007946",
+        "name": "Milltown Luas (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.25293170393568,
+          53.3082965879174
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002785",
+        "name": "Bluebell Avenue (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.3449642241989,
+          53.3300839894121
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB000765",
+        "name": "UCD (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.21686235884919,
+          53.3052550302794
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002702",
+        "name": "Kylemore Avenue (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.34770212371673,
+          53.3381032999033
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001421",
+        "name": "Crumlin Hospital (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.3204526633011,
+          53.3249507659531
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002778",
+        "name": "Drimnagh Castle (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.33194320027363,
+          53.3240244462321
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB04558",
+        "name": "UCD Sports Centre (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2285,
+          53.30786
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002181",
+        "name": "Long Mile Road (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.33917121398624,
+          53.3238376853462
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB002819",
+        "name": "Millmount Terrace (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24570873357588,
+          53.3054851144751
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB007949",
+        "name": "Roebuck Road (S4)",
+        "routes": "S4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.23718976656935,
+          53.3057459876655
+        ]
+      }
+    }
+  ]
+}

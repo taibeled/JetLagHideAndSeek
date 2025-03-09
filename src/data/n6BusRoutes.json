@@ -1,0 +1,365 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB005060",
+        "name": "Dundaniel Road (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22402924061363,
+          53.3971670149003
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB004781",
+        "name": "IDA Poppintree (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.28405666346634,
+          53.4017480300026
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001235",
+        "name": "Kilbarron Road (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22560408418954,
+          53.3947366846993
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001237",
+        "name": "Cromcastle Avenue (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.21898347230117,
+          53.3926786799977
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000997",
+        "name": "Northside SC (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.21149309335645,
+          53.3941665688856
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001005",
+        "name": "Limewood (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.1819170834231,
+          53.3909514065877
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001001",
+        "name": "Brookville Crescent (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.19921499123031,
+          53.3900811211552
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GD007837",
+        "name": "Howth Junction (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.15592581329108,
+          53.3901212520171
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000253",
+        "name": "Beaumont Hospital (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22429914227646,
+          53.3899625746413
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000126",
+        "name": "Nursing Home (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.26408696056045,
+          53.3990954666854
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000110",
+        "name": "Ard na Meala (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.26860038147331,
+          53.3979386409613
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001009",
+        "name": "St. Donagh's Road (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.16448455072243,
+          53.3910890756575
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB004937",
+        "name": "McKee Avenue (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.30051059439893,
+          53.3926718421294
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB006125",
+        "name": "Poppintree Parade (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.27683792298323,
+          53.3998824003142
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007044",
+        "name": "Aulden Grange (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2324855678718,
+          53.3974093697435
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000999",
+        "name": "Coolock Drive (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.20596530798649,
+          53.3922410515282
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001003",
+        "name": "St John's Church (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.19107150115658,
+          53.3902995343274
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001007",
+        "name": "Millbrook Drive (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.17238672965418,
+          53.3912462839647
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001548",
+        "name": "McKee Avenue North (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.30274949327834,
+          53.3961101450105
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240DB006228",
+        "name": "Melville (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29263072232741,
+          53.399830687923
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240DB006366",
+        "name": "Century Business Pk (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.30134609639605,
+          53.4026514127009
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240DB006009",
+        "name": "Hazelwood (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.25721799078834,
+          53.4001099014218
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007838",
+        "name": "Finglas Village (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.30012780832554,
+          53.3898261843036
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240GD007847",
+        "name": "Santry Villas (N6)",
+        "routes": "N6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24492099119354,
+          53.3977995737997
+        ]
+      }
+    }
+  ]
+}

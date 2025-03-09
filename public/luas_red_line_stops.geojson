@@ -1,0 +1,395 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00360",
+        "name": "Bluebell (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.333778,
+          53.32924
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00366",
+        "name": "Drimnagh (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.318256,
+          53.335305
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00378",
+        "name": "Fatima (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.292756,
+          53.338362
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00381",
+        "name": "James's (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.293237662,
+          53.34181261
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00408",
+        "name": "Abbey Street (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.25845,
+          53.348504
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00420",
+        "name": "Busáras (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.251598,
+          53.350045
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00436",
+        "name": "The Point (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22918668,
+          53.34827635
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230GA00341",
+        "name": "Hospital (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.378766,
+          53.289374
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00369",
+        "name": "Goldenbridge (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.313299,
+          53.335879
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00372",
+        "name": "Suir Road (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.307231258,
+          53.33659218
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230GA00338",
+        "name": "Cookstown (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.384038,
+          53.293311
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00356",
+        "name": "Kylemore (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.343697,
+          53.32652
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00363",
+        "name": "Blackhorse (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.327515,
+          53.334196
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00375",
+        "name": "Rialto (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.297369,
+          53.337846
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00386",
+        "name": "Heuston (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.291618,
+          53.346697
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00389",
+        "name": "Museum (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.286936,
+          53.347835
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00398",
+        "name": "Smithfield (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.278080805,
+          53.3471135
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00404",
+        "name": "Jervis (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.265275464,
+          53.34768301
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00427",
+        "name": "George's Dock (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.247569832,
+          53.34942861
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00430",
+        "name": "Mayor Square - NCI (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.243269507,
+          53.34916764
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230GA00347",
+        "name": "Belgard (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.374808,
+          53.299145
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230GA00350",
+        "name": "Kingswood (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.365409,
+          53.303586
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230GA00353",
+        "name": "Red Cow (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.369780553,
+          53.31674596
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00401",
+        "name": "Four Courts (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.273660411,
+          53.34685189
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00433",
+        "name": "Spencer Dock (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.237126865,
+          53.34878043
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230GA00344",
+        "name": "Tallaght (Luas Red Line)",
+        "routes": "Luas Red Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.374685,
+          53.287523
+        ]
+      }
+    }
+  ]
+}

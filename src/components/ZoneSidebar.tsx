@@ -56,8 +56,21 @@ import {
 } from '@/components/ui/select';
 import { geoSpatialVoronoi } from '@/maps/voronoi';
 import { renderToString } from 'react-dom/server';
-import { FaTrain } from 'react-icons/fa6';
+import { FaTrain, FaBus, FaSubway } from 'react-icons/fa';
 import { ScrollToTop } from './ui/scroll-to-top';
+import customBusRoutesData from '../data/customBusRoutes.json';
+import corridorBusRoutesData from '../data/corridorBusRoutes.json';
+import n2BusRoutesData from '../data/n2BusRoutes.json';
+import n4BusRoutesData from '../data/n4BusRoutes.json';
+import n6BusRoutesData from '../data/n6BusRoutes.json';
+import s2BusRoutesData from '../data/s2BusRoutes.json';
+import s4BusRoutesData from '../data/s4BusRoutes.json';
+import s6BusRoutesData from '../data/s6BusRoutes.json';
+import s8BusRoutesData from '../data/s8BusRoutes.json';
+import w2BusRoutesData from '../data/w2BusRoutes.json';
+import dartStopsData from '../data/dartStops.json';
+import luasGreenLineStopsData from '../data/luasGreenLineStops.json';
+import luasRedLineStopsData from '../data/luasRedLineStops.json';
 
 let determiningHidingZones = false;
 let buttonJustClicked = false;
@@ -384,11 +397,59 @@ export const ZoneSidebar = () => {
           }
         : undefined,
       pointToLayer(geoJsonPoint, latlng) {
+        // Determine if this is a corridor or orbital route
+        const isCorridorRoute =
+          geoJsonPoint.properties.routes &&
+          geoJsonPoint.properties.routes
+            .split(', ')
+            .some((route: string) => route.startsWith('C'));
+
+        const isOrbitalRoute =
+          geoJsonPoint.properties.routes &&
+          geoJsonPoint.properties.routes
+            .split(', ')
+            .some(
+              (route: string) =>
+                route.startsWith('N') ||
+                route.startsWith('S') ||
+                route.startsWith('W')
+            );
+
+        const isDart =
+          geoJsonPoint.properties.routes &&
+          geoJsonPoint.properties.routes.includes('DART');
+
+        const isLuasGreenLine =
+          geoJsonPoint.properties.routes &&
+          geoJsonPoint.properties.routes.includes('Luas Green Line');
+
+        const isLuasRedLine =
+          geoJsonPoint.properties.routes &&
+          geoJsonPoint.properties.routes.includes('Luas Red Line');
+
         const marker = L.marker(latlng, {
           icon: L.divIcon({
             html: renderToString(
               <div className="text-black bg-opacity-0">
-                <FaTrain width={100} height={100} />
+                {isDart ? (
+                  <FaTrain className="text-blue-800" width={100} height={100} />
+                ) : isLuasGreenLine ? (
+                  <FaSubway
+                    className="text-green-600"
+                    width={100}
+                    height={100}
+                  />
+                ) : isLuasRedLine ? (
+                  <FaSubway className="text-red-600" width={100} height={100} />
+                ) : isCorridorRoute && isOrbitalRoute ? (
+                  <FaBus className="text-purple-600" width={100} height={100} />
+                ) : isCorridorRoute ? (
+                  <FaBus className="text-blue-600" width={100} height={100} />
+                ) : isOrbitalRoute ? (
+                  <FaBus className="text-green-600" width={100} height={100} />
+                ) : (
+                  <FaTrain width={100} height={100} />
+                )}
               </div>
             ),
             className: '',
@@ -397,9 +458,11 @@ export const ZoneSidebar = () => {
 
         marker.bindPopup(
           `<b>${
-            geoJsonPoint.properties['name:en'] ||
-            geoJsonPoint.properties.name ||
-            'No Name Found'
+            geoJsonPoint.properties.routes === 'C1, C2, C3, C4'
+              ? geoJsonPoint.properties.name
+              : geoJsonPoint.properties['name:en'] ||
+                geoJsonPoint.properties.name ||
+                'No Name Found'
           } (${lngLatToText(
             geoJsonPoint.geometry.coordinates as [number, number]
           )})</b>`
@@ -428,15 +491,328 @@ export const ZoneSidebar = () => {
         return;
       }
 
-      const places = osmtogeojson(
-        await findPlacesInZone(
-          $displayHidingZonesOptions[0],
-          "Finding stations. This may take a while. Do not press any buttons while this is processing. Don't worry, it will be cached.",
-          'nwr',
-          'center',
-          $displayHidingZonesOptions.slice(1)
-        )
-      ).features;
+      // Check if custom bus routes option is selected
+      const customBusRoutesIndex =
+        $displayHidingZonesOptions.indexOf('custom_bus_routes');
+      const corridorBusRoutesIndex = $displayHidingZonesOptions.indexOf(
+        'corridor_bus_routes'
+      );
+      const n2BusRoutesIndex =
+        $displayHidingZonesOptions.indexOf('n2_bus_routes');
+      const n4BusRoutesIndex =
+        $displayHidingZonesOptions.indexOf('n4_bus_routes');
+      const n6BusRoutesIndex =
+        $displayHidingZonesOptions.indexOf('n6_bus_routes');
+      const s2BusRoutesIndex =
+        $displayHidingZonesOptions.indexOf('s2_bus_routes');
+      const s4BusRoutesIndex =
+        $displayHidingZonesOptions.indexOf('s4_bus_routes');
+      const s6BusRoutesIndex =
+        $displayHidingZonesOptions.indexOf('s6_bus_routes');
+      const s8BusRoutesIndex =
+        $displayHidingZonesOptions.indexOf('s8_bus_routes');
+      const w2BusRoutesIndex =
+        $displayHidingZonesOptions.indexOf('w2_bus_routes');
+      const dartStopsIndex = $displayHidingZonesOptions.indexOf('dart_stops');
+      const luasGreenLineStopsIndex = $displayHidingZonesOptions.indexOf(
+        'luas_green_line_stops'
+      );
+      const luasRedLineStopsIndex = $displayHidingZonesOptions.indexOf(
+        'luas_red_line_stops'
+      );
+
+      const hasCustomBusRoutes = customBusRoutesIndex !== -1;
+      const hasCorridorBusRoutes = corridorBusRoutesIndex !== -1;
+      const hasN2BusRoutes = n2BusRoutesIndex !== -1;
+      const hasN4BusRoutes = n4BusRoutesIndex !== -1;
+      const hasN6BusRoutes = n6BusRoutesIndex !== -1;
+      const hasS2BusRoutes = s2BusRoutesIndex !== -1;
+      const hasS4BusRoutes = s4BusRoutesIndex !== -1;
+      const hasS6BusRoutes = s6BusRoutesIndex !== -1;
+      const hasS8BusRoutes = s8BusRoutesIndex !== -1;
+      const hasW2BusRoutes = w2BusRoutesIndex !== -1;
+      const hasDartStops = dartStopsIndex !== -1;
+      const hasLuasGreenLineStops = luasGreenLineStopsIndex !== -1;
+      const hasLuasRedLineStops = luasRedLineStopsIndex !== -1;
+
+      // Remove custom bus routes options from the options for OSM query
+      let osmOptions = [...$displayHidingZonesOptions];
+
+      if (hasCustomBusRoutes) {
+        osmOptions = [
+          ...osmOptions.slice(0, customBusRoutesIndex),
+          ...osmOptions.slice(customBusRoutesIndex + 1),
+        ];
+      }
+
+      if (hasCorridorBusRoutes) {
+        const index = osmOptions.indexOf('corridor_bus_routes');
+        if (index !== -1) {
+          osmOptions = [
+            ...osmOptions.slice(0, index),
+            ...osmOptions.slice(index + 1),
+          ];
+        }
+      }
+
+      if (hasN2BusRoutes) {
+        const index = osmOptions.indexOf('n2_bus_routes');
+        if (index !== -1) {
+          osmOptions = [
+            ...osmOptions.slice(0, index),
+            ...osmOptions.slice(index + 1),
+          ];
+        }
+      }
+
+      if (hasN4BusRoutes) {
+        const index = osmOptions.indexOf('n4_bus_routes');
+        if (index !== -1) {
+          osmOptions = [
+            ...osmOptions.slice(0, index),
+            ...osmOptions.slice(index + 1),
+          ];
+        }
+      }
+
+      if (hasN6BusRoutes) {
+        const index = osmOptions.indexOf('n6_bus_routes');
+        if (index !== -1) {
+          osmOptions = [
+            ...osmOptions.slice(0, index),
+            ...osmOptions.slice(index + 1),
+          ];
+        }
+      }
+
+      if (hasS2BusRoutes) {
+        const index = osmOptions.indexOf('s2_bus_routes');
+        if (index !== -1) {
+          osmOptions = [
+            ...osmOptions.slice(0, index),
+            ...osmOptions.slice(index + 1),
+          ];
+        }
+      }
+
+      if (hasS4BusRoutes) {
+        const index = osmOptions.indexOf('s4_bus_routes');
+        if (index !== -1) {
+          osmOptions = [
+            ...osmOptions.slice(0, index),
+            ...osmOptions.slice(index + 1),
+          ];
+        }
+      }
+
+      if (hasS6BusRoutes) {
+        const index = osmOptions.indexOf('s6_bus_routes');
+        if (index !== -1) {
+          osmOptions = [
+            ...osmOptions.slice(0, index),
+            ...osmOptions.slice(index + 1),
+          ];
+        }
+      }
+
+      if (hasS8BusRoutes) {
+        const index = osmOptions.indexOf('s8_bus_routes');
+        if (index !== -1) {
+          osmOptions = [
+            ...osmOptions.slice(0, index),
+            ...osmOptions.slice(index + 1),
+          ];
+        }
+      }
+
+      if (hasW2BusRoutes) {
+        const index = osmOptions.indexOf('w2_bus_routes');
+        if (index !== -1) {
+          osmOptions = [
+            ...osmOptions.slice(0, index),
+            ...osmOptions.slice(index + 1),
+          ];
+        }
+      }
+
+      if (hasDartStops) {
+        const index = osmOptions.indexOf('dart_stops');
+        if (index !== -1) {
+          osmOptions = [
+            ...osmOptions.slice(0, index),
+            ...osmOptions.slice(index + 1),
+          ];
+        }
+      }
+
+      if (hasLuasGreenLineStops) {
+        const index = osmOptions.indexOf('luas_green_line_stops');
+        if (index !== -1) {
+          osmOptions = [
+            ...osmOptions.slice(0, index),
+            ...osmOptions.slice(index + 1),
+          ];
+        }
+      }
+
+      if (hasLuasRedLineStops) {
+        const index = osmOptions.indexOf('luas_red_line_stops');
+        if (index !== -1) {
+          osmOptions = [
+            ...osmOptions.slice(0, index),
+            ...osmOptions.slice(index + 1),
+          ];
+        }
+      }
+
+      // Fetch places from OSM if there are any OSM options
+      let places: any[] = [];
+      if (osmOptions.length > 0) {
+        places = osmtogeojson(
+          await findPlacesInZone(
+            osmOptions[0],
+            "Finding stations. This may take a while. Do not press any buttons while this is processing. Don't worry, it will be cached.",
+            'nwr',
+            'center',
+            osmOptions.slice(1)
+          )
+        ).features;
+      }
+
+      // Add custom bus routes if selected
+      if (hasCustomBusRoutes) {
+        try {
+          // Add custom bus routes to places directly from the imported JSON
+          places = [...places, ...customBusRoutesData.features];
+        } catch (error) {
+          console.error('Error loading custom bus routes:', error);
+          toast.error('Failed to load custom bus routes');
+        }
+      }
+
+      // Add corridor bus routes if selected
+      if (hasCorridorBusRoutes) {
+        try {
+          // Add corridor bus routes to places directly from the imported JSON
+          places = [...places, ...corridorBusRoutesData.features];
+        } catch (error) {
+          console.error('Error loading corridor bus routes:', error);
+          toast.error('Failed to load corridor bus routes');
+        }
+      }
+
+      // Add N2 bus routes if selected
+      if (hasN2BusRoutes) {
+        try {
+          places = [...places, ...n2BusRoutesData.features];
+        } catch (error) {
+          console.error('Error loading N2 bus routes:', error);
+          toast.error('Failed to load N2 bus routes');
+        }
+      }
+
+      // Add N4 bus routes if selected
+      if (hasN4BusRoutes) {
+        try {
+          places = [...places, ...n4BusRoutesData.features];
+        } catch (error) {
+          console.error('Error loading N4 bus routes:', error);
+          toast.error('Failed to load N4 bus routes');
+        }
+      }
+
+      // Add N6 bus routes if selected
+      if (hasN6BusRoutes) {
+        try {
+          places = [...places, ...n6BusRoutesData.features];
+        } catch (error) {
+          console.error('Error loading N6 bus routes:', error);
+          toast.error('Failed to load N6 bus routes');
+        }
+      }
+
+      // Add S2 bus routes if selected
+      if (hasS2BusRoutes) {
+        try {
+          places = [...places, ...s2BusRoutesData.features];
+        } catch (error) {
+          console.error('Error loading S2 bus routes:', error);
+          toast.error('Failed to load S2 bus routes');
+        }
+      }
+
+      // Add S4 bus routes if selected
+      if (hasS4BusRoutes) {
+        try {
+          places = [...places, ...s4BusRoutesData.features];
+        } catch (error) {
+          console.error('Error loading S4 bus routes:', error);
+          toast.error('Failed to load S4 bus routes');
+        }
+      }
+
+      // Add S6 bus routes if selected
+      if (hasS6BusRoutes) {
+        try {
+          places = [...places, ...s6BusRoutesData.features];
+        } catch (error) {
+          console.error('Error loading S6 bus routes:', error);
+          toast.error('Failed to load S6 bus routes');
+        }
+      }
+
+      // Add S8 bus routes if selected
+      if (hasS8BusRoutes) {
+        try {
+          places = [...places, ...s8BusRoutesData.features];
+        } catch (error) {
+          console.error('Error loading S8 bus routes:', error);
+          toast.error('Failed to load S8 bus routes');
+        }
+      }
+
+      // Add W2 bus routes if selected
+      if (hasW2BusRoutes) {
+        try {
+          places = [...places, ...w2BusRoutesData.features];
+        } catch (error) {
+          console.error('Error loading W2 bus routes:', error);
+          toast.error('Failed to load W2 bus routes');
+        }
+      }
+
+      // Add DART stops if selected
+      if (hasDartStops) {
+        try {
+          // Add DART stops to places directly from the imported JSON
+          places = [...places, ...dartStopsData.features];
+        } catch (error) {
+          console.error('Error loading DART stops:', error);
+          toast.error('Failed to load DART stops');
+        }
+      }
+
+      // Add Luas Green Line stops if selected
+      if (hasLuasGreenLineStops) {
+        try {
+          // Add Luas Green Line stops to places directly from the imported JSON
+          places = [...places, ...luasGreenLineStopsData.features];
+        } catch (error) {
+          console.error('Error loading Luas Green Line stops:', error);
+          toast.error('Failed to load Luas Green Line stops');
+        }
+      }
+
+      // Add Luas Red Line stops if selected
+      if (hasLuasRedLineStops) {
+        try {
+          // Add Luas Red Line stops to places directly from the imported JSON
+          places = [...places, ...luasRedLineStopsData.features];
+        } catch (error) {
+          console.error('Error loading Luas Red Line stops:', error);
+          toast.error('Failed to load Luas Red Line stops');
+        }
+      }
 
       const unionized = unionize(
         turf.simplify($questionFinishedMapData, {
@@ -664,6 +1040,54 @@ export const ZoneSidebar = () => {
                       label: 'Bus Stops',
                       value: '[highway=bus_stop]',
                     },
+                    {
+                      label: 'Corridor Routes (C1-C4, Every 2nd Stop)',
+                      value: 'corridor_bus_routes',
+                    },
+                    {
+                      label: 'N2 Route (Every 2nd Stop)',
+                      value: 'n2_bus_routes',
+                    },
+                    {
+                      label: 'N4 Route (Every 2nd Stop)',
+                      value: 'n4_bus_routes',
+                    },
+                    {
+                      label: 'N6 Route (Every 2nd Stop)',
+                      value: 'n6_bus_routes',
+                    },
+                    {
+                      label: 'S2 Route (Every 2nd Stop)',
+                      value: 's2_bus_routes',
+                    },
+                    {
+                      label: 'S4 Route (Every 2nd Stop)',
+                      value: 's4_bus_routes',
+                    },
+                    {
+                      label: 'S6 Route (Every 2nd Stop)',
+                      value: 's6_bus_routes',
+                    },
+                    {
+                      label: 'S8 Route (Every 2nd Stop)',
+                      value: 's8_bus_routes',
+                    },
+                    {
+                      label: 'W2 Route (Every 2nd Stop)',
+                      value: 'w2_bus_routes',
+                    },
+                    {
+                      label: 'DART',
+                      value: 'dart_stops',
+                    },
+                    {
+                      label: 'Luas Green Line',
+                      value: 'luas_green_line_stops',
+                    },
+                    {
+                      label: 'Luas Red Line',
+                      value: 'luas_red_line_stops',
+                    },
                   ]}
                   onValueChange={displayHidingZonesOptions.set}
                   defaultValue={$displayHidingZonesOptions}
@@ -885,13 +1309,14 @@ export const ZoneSidebar = () => {
                   />
                   <CommandList className="max-h-full">
                     <CommandEmpty>No hiding zones found.</CommandEmpty>
-                    {stations.length > filteredStations.filtered.length && (
+                    {
                       <div className="px-2 py-1.5 text-xs text-muted-foreground">
                         Filtered out{' '}
                         {stations.length - filteredStations.filtered.length}{' '}
-                        duplicate stations (within {duplicateThreshold}m)
+                        duplicate stations (within {duplicateThreshold}m).{' '}
+                        {filteredStations.filtered.length} stations remaining.
                       </div>
-                    )}
+                    }
                     <CommandGroup>
                       {displayStations.map((station) => {
                         const isDuplicate = filteredStations.duplicateIds.has(

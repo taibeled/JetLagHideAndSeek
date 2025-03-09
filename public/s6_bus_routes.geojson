@@ -1,0 +1,455 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002522",
+        "name": "Firhouse Centre (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.34234624628978,
+          53.2814222293892
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002535",
+        "name": "Seskin View Road (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.35891860284657,
+          53.2810133262279
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002515",
+        "name": "Cherryfield Way (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.31281606279928,
+          53.2913443620348
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002523",
+        "name": "Firhouse College (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.34875137969137,
+          53.2771069428584
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002533",
+        "name": "Parkwood Lawn (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.35764330397158,
+          53.2775083920898
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002520",
+        "name": "Ballycullen Road (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.3326568733498,
+          53.2860777851868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB005129",
+        "name": "Butterfield Avenue (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.28577015809693,
+          53.2977087167285
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007966",
+        "name": "Rathfarnham SC (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29835862052667,
+          53.2954172767558
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002517",
+        "name": "Green Acre Court (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.31859990290756,
+          53.2892149823068
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB004347",
+        "name": "Tallaght Luas (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.37500751308393,
+          53.28622205242
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002616",
+        "name": "St Maelruan's Park (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.36063933900619,
+          53.2846412135097
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB001139",
+        "name": "Old Bridge Road (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.3067469243238,
+          53.2942244156253
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB000765",
+        "name": "UCD (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.21686235884919,
+          53.3052550302794
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB005008",
+        "name": "Belgard Square North (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.36935699388662,
+          53.2904501890287
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB001329",
+        "name": "St Mary's School (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.28199447212766,
+          53.2949669228751
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB001314",
+        "name": "Nutgrove Avenue (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.25823154104951,
+          53.2942267141944
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB001315",
+        "name": "Whitebarn Road (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.26424076010732,
+          53.2921661624614
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB001319",
+        "name": "Nutgrove Court (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.27587930843346,
+          53.2937102018088
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002557",
+        "name": "Tallaght Village (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.36328124896313,
+          53.2885064213358
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB001317",
+        "name": "Loreto Park (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.26996547269059,
+          53.2919347714584
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB000433",
+        "name": "Grove Avenue (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.19635883802389,
+          53.2986279440755
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB002867",
+        "name": "Notre Dame School (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24994497074115,
+          53.2939975275947
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GD10159",
+        "name": "Stoney Road (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.23693508701988,
+          53.2915318601353
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB000867",
+        "name": "Callary Road (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2182208604393,
+          53.2996576898735
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB002070",
+        "name": "St Thomas Road (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.20801,
+          53.30296
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB000431",
+        "name": "Cross Avenue (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.18925586166452,
+          53.3005516484199
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB002068",
+        "name": "Greenfield Road (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.20457300251729,
+          53.2980957596886
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB003084",
+        "name": "Frascati SC (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.18116341196204,
+          53.3013812515105
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB003085",
+        "name": "Blackrock Station (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.17837083201603,
+          53.3024801380971
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GD10097",
+        "name": "Mount Anville School (S6)",
+        "routes": "S6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22451989510434,
+          53.2932082086634
+        ]
+      }
+    }
+  ]
+}

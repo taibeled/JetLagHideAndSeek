@@ -1,0 +1,275 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001709",
+        "name": "Glenbeigh Avenue (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29705299143726,
+          53.3568682016769
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB004794",
+        "name": "Clontarf Road Station (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22656242306654,
+          53.3630049005914
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB008312",
+        "name": "Broombridge Road (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29975,
+          53.3748
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001707",
+        "name": "Dunard Walk (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.30245957267131,
+          53.3584282663489
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001712",
+        "name": "Aughrim Court (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.28624259176384,
+          53.3533339170032
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001714",
+        "name": "Stoneybatter (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.28188938800201,
+          53.3506378069371
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB008308",
+        "name": "St Clare's (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.271342,
+          53.379157
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB00089",
+        "name": "Lambay Road (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.261644,
+          53.377939
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000087",
+        "name": "Clare Road (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2548802899246,
+          53.3767517255719
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB008315",
+        "name": "Park Crescent (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.31075,
+          53.3625
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000155",
+        "name": "Old Finglas Road (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.27957552717572,
+          53.3778742492869
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000259",
+        "name": "Grace Park Road (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24388537443071,
+          53.3740108657416
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB004407",
+        "name": "Victoria Quay (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.285165,
+          53.346488
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB004498",
+        "name": "Nephin Road (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.30426041382606,
+          53.3668037534418
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000669",
+        "name": "Malahide Road (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22867890531785,
+          53.3663170047508
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001710",
+        "name": "Aughrim Street (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29174149147947,
+          53.3555699040255
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB008310",
+        "name": "Ballyboggan Road (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.28725,
+          53.375599
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001492",
+        "name": "Marino Church (N2)",
+        "routes": "N2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.23255805716234,
+          53.3702573904197
+        ]
+      }
+    }
+  ]
+}

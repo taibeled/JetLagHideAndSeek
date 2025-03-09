@@ -1,0 +1,485 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00031",
+        "name": "Dawson (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.25801984,
+          53.34217543
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00059",
+        "name": "St. Stephen's Green (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.261319,
+          53.339197
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00075",
+        "name": "Ranelagh (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.256196436,
+          53.32613194
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00456",
+        "name": "Phibsborough (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.27902033,
+          53.36033055
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00460",
+        "name": "Broombridge (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29752527,
+          53.37215461
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00470",
+        "name": "O'Connell Upper (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.261151,
+          53.351612
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00478",
+        "name": "Dominick (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.265573,
+          53.351245
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00295",
+        "name": "Kilmacud (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.224107001,
+          53.28291052
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00322",
+        "name": "Ballyogan Wood (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.184472,
+          53.254982
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00325",
+        "name": "Carrickmines (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.171624,
+          53.254334
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00332",
+        "name": "Cherrywood (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.145975,
+          53.245317
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00083",
+        "name": "Beechwood (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.25475,
+          53.320929
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00275",
+        "name": "Cowper (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.253499,
+          53.316398
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00440",
+        "name": "Harcourt (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.26283,
+          53.333631
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00286",
+        "name": "Dundrum (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.245234,
+          53.292375
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00291",
+        "name": "Balally (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.236791,
+          53.286023
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00310",
+        "name": "Central Park (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.20389942,
+          53.27016803
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00313",
+        "name": "Glencairn (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.210132292,
+          53.2663249
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00316",
+        "name": "The Gallops (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.205947,
+          53.261063
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00329",
+        "name": "Laughanstown (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.155087,
+          53.250555
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00468",
+        "name": "Broadstone - University (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.273733,
+          53.354033
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00281",
+        "name": "Windy Arbour (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.250841,
+          53.301757
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00297",
+        "name": "Stillorgan (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.21036734,
+          53.27936144
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00070",
+        "name": "Charlemont (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.258704,
+          53.330585
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00278",
+        "name": "Milltown (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.251749984,
+          53.30967244
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00443",
+        "name": "Westmoreland (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.259086,
+          53.34637
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00444",
+        "name": "O'Connell - GPO (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.259968,
+          53.348839
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00479",
+        "name": "Grangegorman (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.27747,
+          53.357115
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220GA00480",
+        "name": "Cabra (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.282029723,
+          53.36432866
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00293",
+        "name": "Sandyford (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.204714,
+          53.277533
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00319",
+        "name": "Leopardstown Valley (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.198426,
+          53.258206
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250GA00336",
+        "name": "Brides Glen (Luas Green Line)",
+        "routes": "Luas Green Line"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.142842986,
+          53.24187177
+        ]
+      }
+    }
+  ]
+}

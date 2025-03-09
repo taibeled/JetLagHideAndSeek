@@ -1,0 +1,2 @@
+agency_id,agency_name,agency_url,agency_timezone
+7778017,Iarnród Éireann / Irish Rail,https://www.irishrail.ie/en-ie/,Europe/London

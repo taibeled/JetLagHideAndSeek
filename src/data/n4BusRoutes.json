@@ -1,0 +1,455 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000128",
+        "name": "Glasnevin Avenue (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.26568972261117,
+          53.3892678697418
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000130",
+        "name": "Glasnevin Park (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.27418126942505,
+          53.3900920127596
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000132",
+        "name": "Beneavin Park (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2827191236982,
+          53.3905207424932
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000206",
+        "name": "Collins Avenue West (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24747670792428,
+          53.3835460890329
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000525",
+        "name": "Howth Road (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22633091116316,
+          53.3649608735109
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000527",
+        "name": "Ashbrook (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.21267888054445,
+          53.3680198762275
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000529",
+        "name": "Collins Avenue (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.20761234516729,
+          53.3705774149451
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000979",
+        "name": "St Canice's GNS (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29710063600173,
+          53.3899538085893
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000980",
+        "name": "Finglas Sports Centre (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.30303046268457,
+          53.389804569147
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001185",
+        "name": "Oak Road (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22151304646931,
+          53.3763670141117
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001187",
+        "name": "Celtic Park Road (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.23135544113251,
+          53.3786075086935
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001576",
+        "name": "Cappagh Road (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.31304812471741,
+          53.3893174054908
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001578",
+        "name": "Ratoath Drive (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.31801267740452,
+          53.3903851294541
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001579",
+        "name": "Heathfield Avenue (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.32605,
+          53.3947
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001644",
+        "name": "DCU Collins Avenue (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.25657120617442,
+          53.3868700413836
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB004469",
+        "name": "East Road (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.23118,
+          53.35346
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB004792",
+        "name": "Clanawley Road (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2095029405602,
+          53.3727989041641
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007458",
+        "name": "Collins Drive (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2905257060846,
+          53.3900665526326
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007827",
+        "name": "Eastpoint (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.230534,
+          53.360514
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007831",
+        "name": "Whitehall Colmcille (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.23992286963184,
+          53.3811699363042
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007843",
+        "name": "Parnell Park (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.21574375174037,
+          53.3745102379887
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007844",
+        "name": "Point Village (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.229931,
+          53.348081
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240DB001814",
+        "name": "Ramor Park (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.37899788575985,
+          53.3875618067808
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240DB001838",
+        "name": "Waterville Road (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.37375958722475,
+          53.3960110854464
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240DB002290",
+        "name": "Waterville Terrace (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.37221829316682,
+          53.3918736208018
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240DB007025",
+        "name": "Blanchardstown SC (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.391609,
+          53.394169
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240DB007237",
+        "name": "Stadium Business Pk (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.34158100949342,
+          53.3971412743395
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240DB007247",
+        "name": "Ballycoolin Road (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.35177289546409,
+          53.398792397797
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240DB007297",
+        "name": "Connolly Hospital (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.37078686684588,
+          53.3880162566005
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240DB007334",
+        "name": "Indoor Arena (N4)",
+        "routes": "N4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.36323810481859,
+          53.4013768759042
+        ]
+      }
+    }
+  ]
+}

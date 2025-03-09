@@ -1,0 +1,380 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000358",
+        "name": "Sean Moore Road (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.21709042092931,
+          53.3390271337242
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000375",
+        "name": "Dromard Terrace (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2143845130625,
+          53.3340611346518
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000415",
+        "name": "American Embassy (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.23294774966437,
+          53.3303378154068
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000417",
+        "name": "Merrion Road (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22597042048855,
+          53.3276995856506
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000779",
+        "name": "Waterloo Road (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24544736264854,
+          53.3286887363292
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB000781",
+        "name": "Baggot Street (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24366410261763,
+          53.332626271424
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001379",
+        "name": "Rialto Luas (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2991226532094,
+          53.3373397013518
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001939",
+        "name": "Bridgefoot Street (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2806646665428,
+          53.3429982683414
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB001941",
+        "name": "Steeven's Lane (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.28918142026463,
+          53.3433454019831
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002472",
+        "name": "Harolds Cross NS (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.28560029534873,
+          53.3176779065494
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002474",
+        "name": "Westfield Road (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2818195288864,
+          53.3187560070782
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002476",
+        "name": "Kenilworth Square North (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.27746997537541,
+          53.319043808898
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002478",
+        "name": "Grosvenor Road (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.26975,
+          53.32054
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002497",
+        "name": "Sundrive Park (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29190358357236,
+          53.3203299516141
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002788",
+        "name": "Castlewood Avenue (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.26334121729297,
+          53.3228386545855
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002790",
+        "name": "Oakley Road (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.25664770588743,
+          53.3246375121016
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB002797",
+        "name": "Northumberland Road (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.23653195679318,
+          53.33226039426
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB003353",
+        "name": "Downpatrick Road (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29795813528629,
+          53.3277417972696
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB004320",
+        "name": "Heuston Station (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29208351412565,
+          53.3466406639906
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007438",
+        "name": "Herberton Drive (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29774608887872,
+          53.3319362078023
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007453",
+        "name": "Arran Quay (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.27838250402176,
+          53.3463358924171
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007599",
+        "name": "Gilford Road (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.21704832664146,
+          53.3303169486267
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007926",
+        "name": "St. Bernadette's (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2962034980173,
+          53.3250562729745
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007928",
+        "name": "Leeson Park (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24995797934831,
+          53.3266967090781
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220DB007929",
+        "name": "Sandymount Station (S2)",
+        "routes": "S2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.22012410392182,
+          53.3282057152687
+        ]
+      }
+    }
+  ]
+}

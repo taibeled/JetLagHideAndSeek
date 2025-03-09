@@ -1,0 +1,605 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007443",
+        "name": "Templeroan Estate (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.30695153563064,
+          53.2814641732317
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002968",
+        "name": "Three Rock Rovers (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.273568644566,
+          53.2803293260032
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002346",
+        "name": "Belgard Square North (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.36790110381364,
+          53.2900797370838
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002360",
+        "name": "Alderwood (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.3796848797551,
+          53.2846948207358
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007448",
+        "name": "Grange Golf Club (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.28141545916275,
+          53.281736988145
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002358",
+        "name": "Killinarden (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.38961370639414,
+          53.2807038231884
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002949",
+        "name": "Moyville Lawns (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29325082629437,
+          53.2816733044618
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007444",
+        "name": "The Glen (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.29913139992251,
+          53.2823865090999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002604",
+        "name": "Village Green (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.36184601942402,
+          53.2868149331786
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB004713",
+        "name": "Bianconi Avenue (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.4271364109145,
+          53.2912892220378
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB004882",
+        "name": "Old Court Road (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.35034008190742,
+          53.2747920313822
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB004932",
+        "name": "Magna Drive (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.42049974981812,
+          53.2788609880708
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB004960",
+        "name": "Citywest Road (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.42162128652658,
+          53.2850505921398
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB004884",
+        "name": "Parklands (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.34260045154128,
+          53.2756284397548
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002538",
+        "name": "The Crescent (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.35891362658071,
+          53.281534566011
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002592",
+        "name": "Kiltalown Cottages (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.40627319230772,
+          53.2743034961588
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB000449",
+        "name": "Blackthorn Road (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.21692737889845,
+          53.2763228251629
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB003187",
+        "name": "Burton Hall Road (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.20332617138686,
+          53.2738266122562
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB003189",
+        "name": "Silverpark GAA (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.19557317570234,
+          53.2738443410885
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB004886",
+        "name": "Woodstown (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.32968674190357,
+          53.2768593539206
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002590",
+        "name": "Belfry Downs (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.41549358352696,
+          53.2751454328557
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB004646",
+        "name": "Tallaght Hospital (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.3742704403854,
+          53.2894387134306
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB002035",
+        "name": "Crofton Road (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.14266542172264,
+          53.295772349365
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002539",
+        "name": "Kiltipper Road (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.35618107892913,
+          53.2765355041079
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB003191",
+        "name": "Foxrock Manor (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.18833124044106,
+          53.2763141538316
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB004352",
+        "name": "Rockville Road (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.17191895152452,
+          53.2912359082869
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB002975",
+        "name": "Kingston (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.24788043364346,
+          53.2718651810703
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB001146",
+        "name": "St Colmcille's School (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.31421742122974,
+          53.2793740217827
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB006001",
+        "name": "Kingswood Avenue (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.41939858171847,
+          53.2944765104208
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB003194",
+        "name": "Holly Park Avenue (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.17884354823076,
+          53.2832613825795
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB003039",
+        "name": "Albany Avenue (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.15792431672826,
+          53.2943462090748
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB002039",
+        "name": "Dun Laoghaire Stn (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.13490268686881,
+          53.2948871708134
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB007970",
+        "name": "Stillorgan Road (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.18489625952223,
+          53.2788145865792
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB002970",
+        "name": "Grange Road (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.26726734687084,
+          53.2781706300674
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB003037",
+        "name": "Alma Road (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.16575087934276,
+          53.2955005171025
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB003041",
+        "name": "Grosvenor Terrace (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.14959695119317,
+          53.2940285174671
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB007971",
+        "name": "Newtown Park (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.17596237837408,
+          53.2875227416374
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB003164",
+        "name": "Temple Hill (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.1698872726453,
+          53.2956000271742
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB003181",
+        "name": "Carmanhall Road (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.20777790443505,
+          53.2767339177509
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250DB005051",
+        "name": "Pine Valley (S8)",
+        "routes": "S8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2597467856516,
+          53.2735579991915
+        ]
+      }
+    }
+  ]
+}

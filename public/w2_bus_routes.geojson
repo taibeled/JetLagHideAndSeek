@@ -1,0 +1,215 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002174",
+        "name": "Knockmeenagh Road (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.39122691549203,
+          53.3163990070179
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002124",
+        "name": "Neilstown Road (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.39793187307251,
+          53.3469584164072
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007878",
+        "name": "Cappaghmore (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.39906772380998,
+          53.3310739923675
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002126",
+        "name": "Rowlagh (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.39837562988944,
+          53.343935440152
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002620",
+        "name": "Belgard (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.37084224462122,
+          53.2987215110506
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002159",
+        "name": "Clondalkin Garda Stn (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.39388252941308,
+          53.3232207170865
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002763",
+        "name": "Newlands Golf Club (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.38629004350369,
+          53.3088093657372
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB008062",
+        "name": "Liffey Valley SC (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.39279530305583,
+          53.3545380681384
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB002128",
+        "name": "Neilstown Avenue (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.39975201801215,
+          53.3396666624101
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB004347",
+        "name": "Tallaght Luas (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.37500751308393,
+          53.28622205242
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007875",
+        "name": "Ninth Lock Road (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.39509987726236,
+          53.3271828190871
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007880",
+        "name": "Main Street (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.39318217095721,
+          53.3206856645393
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB007940",
+        "name": "Liffey Valley Retail Park (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.39114653108505,
+          53.3496533769826
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8230DB005008",
+        "name": "Belgard Square North (W2)",
+        "routes": "W2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.36935699388662,
+          53.2904501890287
+        ]
+      }
+    }
+  ]
+}

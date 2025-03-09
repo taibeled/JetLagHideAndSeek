@@ -1,0 +1,410 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR0034",
+        "name": "Sydney Parade (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.211644,
+          53.320956
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR0035",
+        "name": "Raheny (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.175818,
+          53.381423
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR3881",
+        "name": "Killester (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.204046,
+          53.372884
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250IR0022",
+        "name": "Shankill (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.117228,
+          53.236522
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250IR0039",
+        "name": "Booterstown (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.19498,
+          53.309921
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250IR0042",
+        "name": "Salthill and Monkstown (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.15233,
+          53.29526
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250IR0124",
+        "name": "Dun Laoghaire (Mallin) (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.134575,
+          53.294776
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR0025",
+        "name": "Tara Street (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.254359,
+          53.347264
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR0032",
+        "name": "Clontarf Road (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.226784,
+          53.363077
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR0131",
+        "name": "Harmonstown (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.19131,
+          53.378643
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR0134",
+        "name": "Dublin Pearse (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.248048,
+          53.343252
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250IR0021",
+        "name": "Killiney (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.113167,
+          53.25571
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR0135",
+        "name": "Grand Canal Dock (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.237351,
+          53.339446
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240IR0017",
+        "name": "Howth (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.074211,
+          53.388893
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240IR0024",
+        "name": "Sutton (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.115952,
+          53.391905
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8350IR0123",
+        "name": "Bray (Daly) (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.100194,
+          53.203712
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250IR0111",
+        "name": "Sandycove and Glasthule (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.126937,
+          53.288125
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR0007",
+        "name": "Dublin Connolly (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.247731,
+          53.352586
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR0028",
+        "name": "Sandymount (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.220843,
+          53.32784
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR0133",
+        "name": "Lansdowne Road (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.229191,
+          53.333963
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8220IR0141",
+        "name": "Kilbarrack (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.16089,
+          53.387472
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240IR0025",
+        "name": "Howth Junction and Donaghmede (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.155434,
+          53.391496
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8240IR0140",
+        "name": "Bayside (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.136925,
+          53.391242
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250IR0014",
+        "name": "Dalkey (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.103358,
+          53.275854
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250IR0029",
+        "name": "Seapoint (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.16512,
+          53.299128
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250IR0030",
+        "name": "Blackrock (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.178846,
+          53.302716
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "8250IR0037",
+        "name": "Glenageary (DART)",
+        "routes": "DART"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.122893,
+          53.281196
+        ]
+      }
+    }
+  ]
+}
