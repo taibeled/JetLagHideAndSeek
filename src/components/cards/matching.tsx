@@ -23,7 +23,8 @@ import {
 } from "../ui/select";
 import { Checkbox } from "../ui/checkbox";
 import { QuestionCard } from "./base";
-import { determineMatchingBoundary } from "@/maps/matching";
+import { determineMatchingBoundary, findMatchingPlaces } from "@/maps/matching";
+import { toast } from "react-toastify";
 
 export const MatchingQuestionComponent = ({
     data,
@@ -127,10 +128,13 @@ export const MatchingQuestionComponent = ({
             );
             break;
         case "custom-zone":
+        case "custom-points":
             if (data.drag) {
                 questionSpecific = (
                     <p className="px-2 mb-1 text-center text-orange-500">
-                        To modify the matching zones, enable it:
+                        To modify the matching{" "}
+                        {data.type === "custom-zone" ? "zones" : "points"},
+                        enable it:
                         <Checkbox
                             className="mx-1 my-1"
                             checked={$drawingQuestionKey === questionKey}
@@ -164,6 +168,20 @@ export const MatchingQuestionComponent = ({
                             (data as any).geo =
                                 await determineMatchingBoundary(data);
                         }
+                        if (value === "custom-points") {
+                            if (
+                                data.type === "airport" ||
+                                data.type === "major-city"
+                            ) {
+                                (data as any).geo =
+                                    await findMatchingPlaces(data);
+                            } else {
+                                (data as any).geo = [];
+                                toast.info(
+                                    "Please draw the points on the map.",
+                                );
+                            }
+                        }
 
                         // The category should be defined such that no error is thrown if this is a zone question.
                         if (!(data as any).cat) {
@@ -190,6 +208,9 @@ export const MatchingQuestionComponent = ({
                         <SelectItem value="major-city">
                             Closest Major City (1,000,000+ people) In Zone
                             Question
+                        </SelectItem>
+                        <SelectItem value="custom-points">
+                            Custom Points Question
                         </SelectItem>
                         <SelectGroup>
                             <SelectLabel>Hiding Zone Mode</SelectLabel>

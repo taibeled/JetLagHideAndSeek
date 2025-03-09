@@ -15,7 +15,11 @@ import {
 } from "@/lib/context";
 import { CacheType, clearCache } from "@/maps/api";
 import { useStore } from "@nanostores/react";
-import type { CustomTentacleQuestion, Question } from "@/lib/schema";
+import type {
+    CustomMatchingQuestion,
+    CustomTentacleQuestion,
+    Question,
+} from "@/lib/schema";
 import { lngLatToText } from "@/maps/geo-utils";
 import { Dialog, DialogContent } from "./ui/dialog";
 import _ from "lodash";
@@ -74,6 +78,63 @@ const TentacleMarker = ({
                             questionModified();
                         }}
                     />
+                    <SidebarMenu>
+                        <LatitudeLongitude
+                            latitude={point.geometry.coordinates[1]}
+                            longitude={point.geometry.coordinates[0]}
+                            onChange={(lat, lng) => {
+                                if (lat) {
+                                    point.geometry.coordinates[1] = lat;
+                                }
+                                if (lng) {
+                                    point.geometry.coordinates[0] = lng;
+                                }
+
+                                questionModified();
+                            }}
+                        />
+                        {!$autoSave && (
+                            <SidebarMenuItem>
+                                <SidebarMenuButton
+                                    className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-shadow duration-500 mt-2"
+                                    onClick={save}
+                                >
+                                    Save
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        )}
+                    </SidebarMenu>
+                </div>
+            </DialogContent>
+        </Dialog>
+    );
+};
+
+const MatchingPointMarker = ({
+    point,
+}: {
+    point: CustomMatchingQuestion["geo"][number];
+}) => {
+    const $autoSave = useStore(autoSave);
+    const [open, setOpen] = useState(false);
+
+    return (
+        <Dialog open={open} onOpenChange={setOpen}>
+            <Marker
+                position={[
+                    point.geometry.coordinates[1],
+                    point.geometry.coordinates[0],
+                ]}
+                // @ts-expect-error This is passed to options, so it is not typed
+                isDialog={true}
+                eventHandlers={{
+                    click: () => {
+                        setOpen(true);
+                    },
+                }}
+            />
+            <DialogContent>
+                <div className="flex flex-col gap-2">
                     <SidebarMenu>
                         <LatitudeLongitude
                             latitude={point.geometry.coordinates[1]}
@@ -190,6 +251,30 @@ export const PolygonDraw = () => {
 
             question.data.geo = geoJSON;
             questionModified();
+        } else if (
+            question?.id === "matching" &&
+            question.data.type === "custom-points"
+        ) {
+            if (!featureRef.current?._layers) return;
+
+            const layers = featureRef.current._layers;
+            const geoJSONs = Object.values(layers).map((layer: any) =>
+                layer.toGeoJSON(),
+            );
+            const geoJSON = turf.featureCollection(geoJSONs);
+
+            question.data.geo = _.uniqBy(
+                geoJSON.features as CustomTentacleQuestion["places"],
+                (x) => x.geometry.coordinates.join(","),
+            ); // Sometimes keys are duplicated
+            if (featureRef.current) {
+                Object.values(featureRef.current._layers).map((layer: any) => {
+                    if (!layer.options.isDialog) {
+                        featureRef.current.removeLayer(layer);
+                    }
+                });
+            }
+            questionModified();
         }
     };
 
@@ -206,6 +291,15 @@ export const PolygonDraw = () => {
                 question.data.locationType === "custom" &&
                 question.data.places.map((x) => (
                     <TentacleMarker
+                        key={x.geometry.coordinates.join(",")}
+                        point={x}
+                    />
+                ))}
+            {question &&
+                question.id === "matching" &&
+                question.data.type === "custom-points" &&
+                question.data.geo.map((x: any) => (
+                    <MatchingPointMarker
                         key={x.geometry.coordinates.join(",")}
                         point={x}
                     />
@@ -232,10 +326,17 @@ export const PolygonDraw = () => {
                     rectangle: false,
                     circle: false,
                     circlemarker: false,
-                    marker: question?.id === "tentacles" ? true : false,
+                    marker:
+                        question?.id === "tentacles" ||
+                        (question?.id === "matching" &&
+                            question.data.type === "custom-points")
+                            ? true
+                            : false,
                     polyline: false,
                     polygon:
-                        question?.id === "tentacles"
+                        question?.id === "tentacles" ||
+                        (question?.id === "matching" &&
+                            question.data.type === "custom-points")
                             ? false
                             : {
                                   shapeOptions: { fillOpacity: 0 },

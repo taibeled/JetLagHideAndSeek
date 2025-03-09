@@ -17,6 +17,43 @@ import type {
     ZoneMatchingQuestions,
 } from "@/lib/schema";
 
+export const findMatchingPlaces = async (question: MatchingQuestion) => {
+    switch (question.type) {
+        case "airport": {
+            return _.uniqBy(
+                (
+                    await findPlacesInZone(
+                        '["aeroway"="aerodrome"]["iata"]', // Only commercial airports have IATA codes,
+                        "Finding airports...",
+                    )
+                ).elements,
+                (feature: any) => feature.tags.iata,
+            ).map((x) =>
+                turf.point([
+                    x.center ? x.center.lon : x.lon,
+                    x.center ? x.center.lat : x.lat,
+                ]),
+            );
+        }
+        case "major-city": {
+            return (
+                await findPlacesInZone(
+                    '[place=city]["population"~"^[1-9]+[0-9]{6}$"]', // The regex is faster than (if:number(t["population"])>1000000)
+                    "Finding cities...",
+                )
+            ).elements.map((x: any) =>
+                turf.point([
+                    x.center ? x.center.lon : x.lon,
+                    x.center ? x.center.lat : x.lat,
+                ]),
+            );
+        }
+        case "custom-points": {
+            return question.geo!;
+        }
+    }
+};
+
 export const determineMatchingBoundary = _.memoize(
     async (question: MatchingQuestion) => {
         let boundary;
@@ -111,47 +148,12 @@ export const determineMatchingBoundary = _.memoize(
 
                 break;
             }
-            case "airport": {
-                const airportData = _.uniqBy(
-                    (
-                        await findPlacesInZone(
-                            '["aeroway"="aerodrome"]["iata"]', // Only commercial airports have IATA codes,
-                            "Finding airports...",
-                        )
-                    ).elements,
-                    (feature: any) => feature.tags.iata,
-                ).map((x) =>
-                    turf.point([
-                        x.center ? x.center.lon : x.lon,
-                        x.center ? x.center.lat : x.lat,
-                    ]),
-                );
+            case "airport":
+            case "major-city":
+            case "custom-points": {
+                const data = await findMatchingPlaces(question);
 
-                const voronoi = geoSpatialVoronoi(airportData);
-                const point = turf.point([question.lng, question.lat]);
-
-                for (const feature of voronoi.features) {
-                    if (turf.booleanPointInPolygon(point, feature)) {
-                        boundary = feature;
-                        break;
-                    }
-                }
-                break;
-            }
-            case "major-city": {
-                const cityData = (
-                    await findPlacesInZone(
-                        '[place=city]["population"~"^[1-9]+[0-9]{6}$"]', // The regex is faster than (if:number(t["population"])>1000000)
-                        "Finding cities...",
-                    )
-                ).elements.map((x: any) =>
-                    turf.point([
-                        x.center ? x.center.lon : x.lon,
-                        x.center ? x.center.lat : x.lat,
-                    ]),
-                );
-
-                const voronoi = geoSpatialVoronoi(cityData);
+                const voronoi = geoSpatialVoronoi(data);
                 const point = turf.point([question.lng, question.lat]);
 
                 for (const feature of voronoi.features) {
