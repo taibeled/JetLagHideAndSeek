@@ -24,7 +24,10 @@ import * as turf from "@turf/turf";
 import { clearCache, determineGeoJSON, type OpenStreetMap } from "../maps/api";
 import { adjustPerRadius, radiusPlanningPolygon } from "../maps/radius";
 import { DraggableMarkers } from "./DraggableMarkers";
-import { adjustPerThermometer, thermometerPlanningPolygon } from "../maps/thermometer";
+import {
+    adjustPerThermometer,
+    thermometerPlanningPolygon,
+} from "../maps/thermometer";
 import { adjustPerTentacle, tentaclesPlanningPolygon } from "../maps/tentacles";
 import { adjustPerMatching } from "../maps/matching";
 import { PolygonDraw } from "./PolygonDraw";
