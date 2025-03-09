@@ -30,7 +30,7 @@ import {
     thermometerPlanningPolygon,
 } from "../maps/thermometer";
 import { adjustPerTentacle, tentaclesPlanningPolygon } from "../maps/tentacles";
-import { adjustPerMatching } from "../maps/matching";
+import { adjustPerMatching, matchingPlanningPolygon } from "../maps/matching";
 import { PolygonDraw } from "./PolygonDraw";
 import { adjustPerMeasuring } from "@/maps/measuring";
 import { LeafletFullScreenButton } from "./LeafletFullScreenButton";
@@ -175,6 +175,17 @@ export const Map = ({ className }: { className?: string }) => {
                         );
                         break;
                     case "matching":
+                        if (question.data.drag && planningModeEnabled.get()) {
+                            const geoJSONObj = await matchingPlanningPolygon(
+                                question.data,
+                            );
+
+                            const geoJSONPlane = geoJSON(geoJSONObj);
+                            // @ts-expect-error This is a check such that only this type of layer is removed
+                            geoJSONPlane.questionKey = question.key;
+                            geoJSONPlane.addTo(map);
+                        }
+
                         try {
                             mapGeoData = await adjustPerMatching(
                                 question.data,

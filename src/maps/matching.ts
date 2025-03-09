@@ -344,3 +344,7 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
 
     return question;
 };
+
+export const matchingPlanningPolygon = async (question: MatchingQuestion) => {
+    return turf.polygonToLine(await determineMatchingBoundary(question));
+};
