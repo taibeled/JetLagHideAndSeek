@@ -95,40 +95,79 @@ export const groupObjects = (objects: any[]): any[][] => {
     return Object.values(groups);
 };
 
-export const nearestNeighborSort = (points: [number, number][]) => {
-    if (points.length === 0) return [];
+const naiveDistance = (
+    point1: [number, number],
+    point2: [number, number],
+): number => {
+    const dx: number = point1[0] - point2[0];
+    const dy: number = point1[1] - point2[1];
+    return Math.sqrt(dx * dx + dy * dy);
+};
 
-    const ordered: [number, number][][] = [[]];
-    const remaining = [...points];
+export const connectToSeparateLines = (
+    lines: [number, number][][],
+    maxJumpDistance: number = 0.01,
+): [number, number][][] => {
+    if (lines.length <= 1) return lines.length === 1 ? [lines[0]] : [];
 
-    let current = remaining.shift();
+    const remainingLines = [...lines];
+    const result: [number, number][][] = [];
+    let currentLine: [number, number][] = [];
 
-    if (!current) return [];
+    const firstLine = remainingLines.shift()!;
+    currentLine.push(...firstLine);
 
-    ordered[0].push(current);
+    while (remainingLines.length > 0) {
+        const lastPoint: [number, number] = currentLine[currentLine.length - 1];
 
-    while (remaining.length > 0) {
-        let nearestIndex = 0;
-        let minDist = Infinity;
+        let bestIndex: number = -1;
+        let minDistance: number = Infinity;
+        let shouldReverse: boolean = false;
 
-        for (let i = 0; i < remaining.length; i++) {
-            const dx = current[0] - remaining[i][0];
-            const dy = current[1] - remaining[i][1];
-            const dist = dx ** 2 + dy ** 2; // First off, no need to square root as everything is relative. Secondly, technically this function is solely for speed from turf.buffer. Therefore, using turf.distance for an accurate distance is not needed as it just slows the program down here.
+        remainingLines.forEach((line, index) => {
+            const distToStart: number = naiveDistance(lastPoint, line[0]);
+            if (distToStart < minDistance) {
+                minDistance = distToStart;
+                bestIndex = index;
+                shouldReverse = false;
+            }
 
-            if (dist < minDist) {
-                minDist = dist;
-                nearestIndex = i;
+            const distToEnd: number = naiveDistance(
+                lastPoint,
+                line[line.length - 1],
+            );
+            if (distToEnd < minDistance) {
+                minDistance = distToEnd;
+                bestIndex = index;
+                shouldReverse = true;
+            }
+        });
+
+        let nextLine: [number, number][] = remainingLines.splice(
+            bestIndex,
+            1,
+        )[0];
+
+        if (shouldReverse) {
+            nextLine = nextLine.slice().reverse();
+        }
+
+        if (minDistance > maxJumpDistance) {
+            result.push(currentLine);
+            currentLine = [...nextLine];
+        } else {
+            const firstPointOfNextLine: [number, number] = nextLine[0];
+            if (naiveDistance(lastPoint, firstPointOfNextLine) < 0.0001) {
+                currentLine.push(...nextLine.slice(1));
+            } else {
+                currentLine.push(...nextLine);
             }
         }
-
-        if (minDist > 0.5) {
-            ordered.push([]);
-        }
-
-        current = remaining.splice(nearestIndex, 1)[0];
-        ordered[ordered.length - 1].push(current);
     }
 
-    return ordered;
+    if (currentLine.length > 0) {
+        result.push(currentLine);
+    }
+
+    return result;
 };

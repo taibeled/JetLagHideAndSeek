@@ -22,7 +22,7 @@ import {
 import {
     groupObjects,
     holedMask,
-    nearestNeighborSort,
+    connectToSeparateLines,
     unionize,
 } from "./geo-utils";
 import osmtogeojson from "osmtogeojson";
@@ -35,36 +35,36 @@ const highSpeedBase = _.memoize(
     (features: Feature[], point: [number, number]) => {
         const grouped = groupObjects(features);
 
-        const neighbored = grouped.map((group) => {
-            const points = turf.coordAll(turf.featureCollection(group)) as [
-                number,
-                number,
-            ][];
-
-            return turf.multiLineString(
-                nearestNeighborSort(
-                    points.filter(
-                        (_, index) =>
-                            index % Math.ceil(points.length / 1000) === 0, // More than a thousand points is slow and just unneeded accuracy
+        const neighbored = grouped
+            .map((group) => {
+                return turf.multiLineString(
+                    connectToSeparateLines(
+                        group
+                            .filter((x) => turf.getType(x) === "LineString")
+                            .map((x) => x.geometry.coordinates),
                     ),
-                ),
-            );
-        });
+                );
+            })
+            .filter((x) => x.geometry.coordinates.length > 0);
 
-        const sampleBuff = turf.union(
-            turf.featureCollection(
-                neighbored.map((x) => turf.buffer(x, 0.001)!),
-            ),
-        )!;
+        const sampleBuff = turf.combine(
+            turf.buffer(
+                turf.simplify(turf.featureCollection(neighbored), {
+                    tolerance: 0.001,
+                }),
+                0.001,
+            )!,
+        ).features[0];
+
         const distanceToSampleBuff = turf.pointToPolygonDistance(
             point,
-            sampleBuff,
+            sampleBuff as any,
             {
                 method: "geodesic",
             },
         );
 
-        return turf.buffer(sampleBuff, distanceToSampleBuff - 0.001);
+        return turf.buffer(sampleBuff, distanceToSampleBuff);
     },
     (features, point) =>
         `${features.length},${mapGeoLocation.get().properties.osm_id},${point.join(",")}`,
