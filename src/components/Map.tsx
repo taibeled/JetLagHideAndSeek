@@ -453,8 +453,13 @@ export const Map = ({ className }: { className?: string }) => {
                 <MapPrint
                     position="topright"
                     sizeModes={["Current", "A4Portrait", "A4Landscape"]}
-                    hideControlContainer={true}
-                    hideClasses={["leaflet-full-screen-specific-name"]}
+                    hideControlContainer={false}
+                    hideClasses={[
+                        "leaflet-full-screen-specific-name",
+                        "leaflet-top",
+                        "leaflet-control-easyPrint",
+                        "leaflet-draw",
+                    ]}
                     title="Print"
                 />
             </MapContainer>
