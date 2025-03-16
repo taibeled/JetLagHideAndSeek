@@ -72,10 +72,7 @@ const bboxExtension = (
 
 export const determineMeasuringBoundary = async (
     question: MeasuringQuestion,
-    mapData: any,
 ) => {
-    if (mapData === null) return;
-
     const bBox = turf.bbox(mapGeoJSON.get());
 
     switch (question.type) {
@@ -170,6 +167,60 @@ export const determineMeasuringBoundary = async (
     }
 };
 
+const bufferedDeterminer = _.memoize(
+    async (question: MeasuringQuestion) => {
+        const placeData = await determineMeasuringBoundary(question);
+
+        if (placeData === false || placeData === undefined) return false;
+
+        const questionPoint = turf.point([question.lng, question.lat]);
+
+        let buffer = turf.buffer(placeData, 0.001, {
+            units: "miles",
+        })!;
+        let distance = turf.pointToPolygonDistance(questionPoint, buffer, {
+            units: "miles",
+            method: "geodesic",
+        });
+
+        let round = 0;
+        while (Math.abs(distance) > turf.convertLength(5, "feet", "miles")) {
+            round++;
+            console.info(
+                "Measuring buffer off by",
+                distance,
+                "miles after",
+                round,
+                "rounds",
+            );
+            buffer = turf.simplify(
+                turf.buffer(buffer, distance, {
+                    units: "miles",
+                })!,
+                { tolerance: 0.001 },
+            );
+            distance = turf.pointToPolygonDistance(questionPoint, buffer, {
+                units: "miles",
+                method: "geodesic",
+            });
+        }
+
+        console.info(
+            "Measuring buffer off by",
+            turf.convertLength(Math.abs(distance), "miles", "feet"),
+            "ft",
+        );
+
+        return buffer;
+    },
+    (question) =>
+        JSON.stringify({
+            type: question.type,
+            lat: question.lat,
+            lng: question.lng,
+        }),
+);
+
 export const adjustPerMeasuring = async (
     question: MeasuringQuestion,
     mapData: any,
@@ -178,47 +229,9 @@ export const adjustPerMeasuring = async (
     if (mapData === null) return;
     if (masked) throw new Error("Cannot be masked");
 
-    const placeData = await determineMeasuringBoundary(question, mapData);
+    const buffer = await bufferedDeterminer(question);
 
-    if (placeData === false || placeData === undefined) return mapData;
-
-    const questionPoint = turf.point([question.lng, question.lat]);
-
-    let buffer = turf.buffer(placeData, 0.001, {
-        units: "miles",
-    })!;
-    let distance = turf.pointToPolygonDistance(questionPoint, buffer, {
-        units: "miles",
-        method: "geodesic",
-    });
-
-    let round = 0;
-    while (Math.abs(distance) > turf.convertLength(5, "feet", "miles")) {
-        round++;
-        console.info(
-            "Measuring buffer off by",
-            distance,
-            "miles after",
-            round,
-            "rounds",
-        );
-        buffer = turf.simplify(
-            turf.buffer(buffer, distance, {
-                units: "miles",
-            })!,
-            { tolerance: 0.001 },
-        );
-        distance = turf.pointToPolygonDistance(questionPoint, buffer, {
-            units: "miles",
-            method: "geodesic",
-        });
-    }
-
-    console.info(
-        "Measuring buffer off by",
-        turf.convertLength(Math.abs(distance), "miles", "feet"),
-        "ft",
-    );
+    if (buffer === false) return mapData;
 
     if (question.hiderCloser) {
         return turf.intersect(
