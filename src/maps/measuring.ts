@@ -8,7 +8,13 @@ import {
 import * as turf from "@turf/turf";
 import _ from "lodash";
 import type { Feature, MultiPolygon } from "geojson";
-import { hiderMode, mapGeoJSON, trainStations } from "@/lib/context";
+import {
+    hiderMode,
+    mapGeoJSON,
+    mapGeoLocation,
+    polyGeoJSON,
+    trainStations,
+} from "@/lib/context";
 import {
     groupObjects,
     holedMask,
@@ -218,6 +224,9 @@ const bufferedDeterminer = _.memoize(
             type: question.type,
             lat: question.lat,
             lng: question.lng,
+            entirety: polyGeoJSON.get()
+                ? polyGeoJSON.get()
+                : mapGeoLocation.get(),
         }),
 );
 

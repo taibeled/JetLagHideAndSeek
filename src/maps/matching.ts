@@ -1,4 +1,9 @@
-import { hiderMode, mapGeoJSON } from "@/lib/context";
+import {
+    hiderMode,
+    mapGeoJSON,
+    mapGeoLocation,
+    polyGeoJSON,
+} from "@/lib/context";
 import {
     findAdminBoundary,
     findPlacesInZone,
@@ -175,6 +180,9 @@ export const determineMatchingBoundary = _.memoize(
             lng: question.lng,
             cat: (question as ZoneMatchingQuestions).cat,
             geo: (question as any).geo,
+            entirety: polyGeoJSON.get()
+                ? polyGeoJSON.get()
+                : mapGeoLocation.get(),
         }),
 );
 
