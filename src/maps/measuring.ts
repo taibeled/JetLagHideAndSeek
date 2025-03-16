@@ -377,5 +377,13 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
 };
 
 export const measuringPlanningPolygon = async (question: MeasuringQuestion) => {
-    return turf.polygonToLine(await bufferedDeterminer(question));
+    try {
+        const buffered = await bufferedDeterminer(question);
+
+        if (buffered === false) return false;
+
+        return turf.polygonToLine(buffered);
+    } catch {
+        return false;
+    }
 };

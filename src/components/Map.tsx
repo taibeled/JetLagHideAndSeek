@@ -188,10 +188,12 @@ export const Map = ({ className }: { className?: string }) => {
                                 question.data,
                             );
 
-                            const geoJSONPlane = geoJSON(geoJSONObj);
-                            // @ts-expect-error This is a check such that only this type of layer is removed
-                            geoJSONPlane.questionKey = question.key;
-                            geoJSONPlane.addTo(map);
+                            if (geoJSONObj) {
+                                const geoJSONPlane = geoJSON(geoJSONObj);
+                                // @ts-expect-error This is a check such that only this type of layer is removed
+                                geoJSONPlane.questionKey = question.key;
+                                geoJSONPlane.addTo(map);
+                            }
                         }
                         if (planningModeEnabled.get() && question.data.drag) {
                             break;
@@ -218,10 +220,12 @@ export const Map = ({ className }: { className?: string }) => {
                                 question.data,
                             );
 
-                            const geoJSONPlane = geoJSON(geoJSONObj);
-                            // @ts-expect-error This is a check such that only this type of layer is removed
-                            geoJSONPlane.questionKey = question.key;
-                            geoJSONPlane.addTo(map);
+                            if (geoJSONObj) {
+                                const geoJSONPlane = geoJSON(geoJSONObj);
+                                // @ts-expect-error This is a check such that only this type of layer is removed
+                                geoJSONPlane.questionKey = question.key;
+                                geoJSONPlane.addTo(map);
+                            }
                         }
                         if (planningModeEnabled.get() && question.data.drag) {
                             break;
