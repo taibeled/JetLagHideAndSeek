@@ -131,7 +131,9 @@ export const Map = ({ className }: { className?: string }) => {
                             geoJSONPlane.questionKey = question.key;
                             geoJSONPlane.addTo(map);
                         }
-
+                        if (planningModeEnabled.get() && question.data.drag) {
+                            break;
+                        }
                         if (!question.data.within) break;
                         mapGeoData = adjustPerRadius(
                             question.data,
@@ -149,6 +151,9 @@ export const Map = ({ className }: { className?: string }) => {
                             geoJSONPlane.questionKey = question.key;
                             geoJSONPlane.addTo(map);
                         }
+                        if (planningModeEnabled.get() && question.data.drag) {
+                            break;
+                        }
 
                         mapGeoData = adjustPerThermometer(
                             question.data,
@@ -165,6 +170,9 @@ export const Map = ({ className }: { className?: string }) => {
                             // @ts-expect-error This is a check such that only this type of layer is removed
                             geoJSONPlane.questionKey = question.key;
                             geoJSONPlane.addTo(map);
+                        }
+                        if (planningModeEnabled.get() && question.data.drag) {
+                            break;
                         }
 
                         if (question.data.location === false) break;
@@ -185,6 +193,9 @@ export const Map = ({ className }: { className?: string }) => {
                             geoJSONPlane.questionKey = question.key;
                             geoJSONPlane.addTo(map);
                         }
+                        if (planningModeEnabled.get() && question.data.drag) {
+                            break;
+                        }
 
                         try {
                             mapGeoData = await adjustPerMatching(
@@ -202,6 +213,9 @@ export const Map = ({ className }: { className?: string }) => {
                         }
                         break;
                     case "measuring":
+                        if (planningModeEnabled.get() && question.data.drag) {
+                            break;
+                        }
                         try {
                             mapGeoData = await adjustPerMeasuring(
                                 question.data,
@@ -244,6 +258,10 @@ export const Map = ({ className }: { className?: string }) => {
 
             for (let index = 0; index < $questions.length; index++) {
                 const question = $questions[index];
+
+                if (planningModeEnabled.get() && question.data.drag) {
+                    continue;
+                }
 
                 switch (question?.id) {
                     case "radius":
