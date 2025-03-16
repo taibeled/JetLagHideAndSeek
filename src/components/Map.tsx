@@ -32,7 +32,7 @@ import {
 import { adjustPerTentacle, tentaclesPlanningPolygon } from "../maps/tentacles";
 import { adjustPerMatching, matchingPlanningPolygon } from "../maps/matching";
 import { PolygonDraw } from "./PolygonDraw";
-import { adjustPerMeasuring } from "@/maps/measuring";
+import { adjustPerMeasuring, measuringPlanningPolygon } from "@/maps/measuring";
 import { LeafletFullScreenButton } from "./LeafletFullScreenButton";
 import { hiderifyQuestion } from "@/maps";
 import { holedMask } from "@/maps/geo-utils";
@@ -213,6 +213,16 @@ export const Map = ({ className }: { className?: string }) => {
                         }
                         break;
                     case "measuring":
+                        if (question.data.drag && planningModeEnabled.get()) {
+                            const geoJSONObj = await measuringPlanningPolygon(
+                                question.data,
+                            );
+
+                            const geoJSONPlane = geoJSON(geoJSONObj);
+                            // @ts-expect-error This is a check such that only this type of layer is removed
+                            geoJSONPlane.questionKey = question.key;
+                            geoJSONPlane.addTo(map);
+                        }
                         if (planningModeEnabled.get() && question.data.drag) {
                             break;
                         }
