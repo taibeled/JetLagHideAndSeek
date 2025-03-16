@@ -16,6 +16,10 @@ export const holedMask = (input: any) => {
 
     const holes = [];
 
+    if (input.geometry.type === "Polygon") {
+        input = turf.multiPolygon([input.geometry.coordinates]);
+    }
+
     if (input.geometry.type === "MultiPolygon") {
         for (const feature of input.geometry.coordinates) {
             if (feature.length > 1) {

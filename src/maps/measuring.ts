@@ -7,18 +7,8 @@ import {
 } from "./api";
 import * as turf from "@turf/turf";
 import _ from "lodash";
-import type {
-    Feature,
-    GeoJsonProperties,
-    MultiPolygon,
-    Polygon,
-} from "geojson";
-import {
-    hiderMode,
-    mapGeoJSON,
-    mapGeoLocation,
-    trainStations,
-} from "@/lib/context";
+import type { Feature, MultiPolygon } from "geojson";
+import { hiderMode, mapGeoJSON, trainStations } from "@/lib/context";
 import {
     groupObjects,
     holedMask,
@@ -32,7 +22,7 @@ import type {
 } from "@/lib/schema";
 
 const highSpeedBase = _.memoize(
-    (features: Feature[], point: [number, number]) => {
+    (features: Feature[]) => {
         const grouped = groupObjects(features);
 
         const neighbored = grouped
@@ -47,7 +37,7 @@ const highSpeedBase = _.memoize(
             })
             .filter((x) => x.geometry.coordinates.length > 0);
 
-        const sampleBuff = turf.combine(
+        return turf.combine(
             turf.buffer(
                 turf.simplify(turf.featureCollection(neighbored), {
                     tolerance: 0.001,
@@ -55,19 +45,8 @@ const highSpeedBase = _.memoize(
                 0.001,
             )!,
         ).features[0];
-
-        const distanceToSampleBuff = turf.pointToPolygonDistance(
-            point,
-            sampleBuff as any,
-            {
-                method: "geodesic",
-            },
-        );
-
-        return turf.buffer(sampleBuff, distanceToSampleBuff);
     },
-    (features, point) =>
-        `${features.length},${mapGeoLocation.get().properties.osm_id},${point.join(",")}`,
+    (features) => `${JSON.stringify(features.map((x) => x.geometry))}`,
 );
 
 const bboxExtension = (
@@ -91,24 +70,16 @@ const bboxExtension = (
     ];
 };
 
-export const adjustPerMeasuring = async (
+export const determineMeasuringBoundary = async (
     question: MeasuringQuestion,
     mapData: any,
-    masked: boolean,
 ) => {
     if (mapData === null) return;
 
     const bBox = turf.bbox(mapGeoJSON.get());
 
-    let placeDataFull;
-
     switch (question.type) {
         case "highspeed-measure-shinkansen": {
-            if (question.hiderCloser && masked)
-                throw new Error("Cannot be masked");
-            if (!question.hiderCloser && !masked)
-                throw new Error("Must be masked");
-
             const features = osmtogeojson(
                 await findPlacesInZone(
                     "[highspeed=yes]",
@@ -118,30 +89,12 @@ export const adjustPerMeasuring = async (
                 ),
             ).features;
 
-            const buffed = highSpeedBase(features, [
-                question.lng,
-                question.lat,
-            ]);
-
-            if (question.hiderCloser) {
-                return turf.intersect(
-                    turf.featureCollection([unionize(mapData)!, buffed!]),
-                );
-            } else {
-                return turf.union(
-                    turf.featureCollection([...mapData.features, buffed!]),
-                );
-            }
+            return highSpeedBase(features);
         }
         case "coastline": {
-            if (question.hiderCloser && !masked)
-                throw new Error("Must be masked");
-
-            if (!question.hiderCloser && masked)
-                throw new Error("Cannot be masked");
-
+            const coastlineLine = await fetchCoastline();
             const coastline = turf.lineToPolygon(
-                await fetchCoastline(),
+                coastlineLine,
             ) as Feature<MultiPolygon>;
 
             const distanceToCoastline = turf.pointToPolygonDistance(
@@ -153,72 +106,53 @@ export const adjustPerMeasuring = async (
                 },
             );
 
-            const originalBuffed = turf.buffer(
+            const extendedBoundingBox: [number, number, number, number] = bBox
+                ? bboxExtension(bBox as any, distanceToCoastline)
+                : [-180, -90, 180, 90];
+
+            return turf.simplify(
                 turf.bboxClip(
-                    coastline,
-                    bBox
-                        ? bboxExtension(bBox as any, distanceToCoastline)
-                        : [-180, -90, 180, 90],
+                    turf.combine(coastlineLine).features[0] as any,
+                    extendedBoundingBox,
                 ),
-                distanceToCoastline,
-                {
-                    units: "miles",
-                    steps: 64,
-                },
-            )!;
-
-            const buffed = turf.buffer(
-                originalBuffed,
-                turf.pointToPolygonDistance(
-                    turf.point([question.lng, question.lat]),
-                    originalBuffed!,
-                    { units: "miles", method: "geodesic" },
-                ),
-                {
-                    units: "miles",
-                    steps: 64,
-                },
+                { tolerance: 0.001 },
             );
-
-            if (question.hiderCloser) {
-                return turf.union(
-                    turf.featureCollection([...mapData.features, buffed]),
-                );
-            } else {
-                return turf.intersect(
-                    turf.featureCollection([unionize(mapData)!, buffed!]),
-                );
-            }
         }
         case "airport":
-            if (question.hiderCloser && masked)
-                throw new Error("Cannot be masked");
-
-            if (!question.hiderCloser && !masked)
-                throw new Error("Must be masked");
-            placeDataFull = _.uniqBy(
-                (
-                    await findPlacesInZone(
-                        '["aeroway"="aerodrome"]["iata"]', // Only commercial airports have IATA codes,
-                        "Finding airports...",
-                    )
-                ).elements,
-                (feature: any) => feature.tags.iata,
-            );
-            break;
+            return turf.combine(
+                turf.featureCollection(
+                    _.uniqBy(
+                        (
+                            await findPlacesInZone(
+                                '["aeroway"="aerodrome"]["iata"]', // Only commercial airports have IATA codes,
+                                "Finding airports...",
+                            )
+                        ).elements,
+                        (feature: any) => feature.tags.iata,
+                    ).map((x: any) =>
+                        turf.point([
+                            x.center ? x.center.lon : x.lon,
+                            x.center ? x.center.lat : x.lat,
+                        ]),
+                    ),
+                ),
+            ).features[0];
         case "city":
-            if (question.hiderCloser && masked)
-                throw new Error("Cannot be masked");
-
-            if (!question.hiderCloser && !masked)
-                throw new Error("Must be masked");
-            placeDataFull = (
-                await findPlacesInZone(
-                    '[place=city]["population"~"^[1-9]+[0-9]{6}$"]', // The regex is faster than (if:number(t["population"])>1000000)
-                    "Finding cities...",
-                )
-            ).elements;
-            break;
+            return turf.combine(
+                turf.featureCollection(
+                    (
+                        await findPlacesInZone(
+                            '[place=city]["population"~"^[1-9]+[0-9]{6}$"]', // The regex is faster than (if:number(t["population"])>1000000)
+                            "Finding cities...",
+                        )
+                    ).elements.map((x: any) =>
+                        turf.point([
+                            x.center ? x.center.lon : x.lon,
+                            x.center ? x.center.lat : x.lat,
+                        ]),
+                    ),
+                ),
+            ).features[0];
         case "aquarium":
         case "zoo":
         case "theme_park":
@@ -232,62 +166,68 @@ export const adjustPerMeasuring = async (
         case "mcdonalds":
         case "seven11":
         case "rail-measure":
-            return mapData;
+            return false;
+    }
+};
+
+export const adjustPerMeasuring = async (
+    question: MeasuringQuestion,
+    mapData: any,
+    masked: boolean,
+) => {
+    if (mapData === null) return;
+    if (masked) throw new Error("Cannot be masked");
+
+    const placeData = await determineMeasuringBoundary(question, mapData);
+
+    if (placeData === false || placeData === undefined) return mapData;
+
+    const questionPoint = turf.point([question.lng, question.lat]);
+
+    let buffer = turf.buffer(placeData, 0.001, {
+        units: "miles",
+    })!;
+    let distance = turf.pointToPolygonDistance(questionPoint, buffer, {
+        units: "miles",
+        method: "geodesic",
+    });
+
+    let round = 0;
+    while (Math.abs(distance) > turf.convertLength(5, "feet", "miles")) {
+        round++;
+        console.info(
+            "Measuring buffer off by",
+            distance,
+            "miles after",
+            round,
+            "rounds",
+        );
+        buffer = turf.simplify(
+            turf.buffer(buffer, distance, {
+                units: "miles",
+            })!,
+            { tolerance: 0.001 },
+        );
+        distance = turf.pointToPolygonDistance(questionPoint, buffer, {
+            units: "miles",
+            method: "geodesic",
+        });
     }
 
-    if (placeDataFull) {
-        if (question.hiderCloser && masked) throw new Error("Cannot be masked");
+    console.info(
+        "Measuring buffer off by",
+        turf.convertLength(Math.abs(distance), "miles", "feet"),
+        "ft",
+    );
 
-        if (!question.hiderCloser && !masked) throw new Error("Must be masked");
-
-        const placeData = turf.featureCollection(
-            placeDataFull.map((x: any) =>
-                turf.point([
-                    x.center ? x.center.lon : x.lon,
-                    x.center ? x.center.lat : x.lat,
-                ]),
-            ),
+    if (question.hiderCloser) {
+        return turf.intersect(
+            turf.featureCollection([unionize(mapData)!, buffer]),
         );
-
-        const point = turf.point([question.lng, question.lat]);
-        const closestPoint = turf.nearestPoint(point, placeData as any);
-        const distance = turf.distance(point, closestPoint, {
-            units: "miles",
-        });
-
-        const circles: Feature<Polygon, GeoJsonProperties>[] = [];
-
-        placeData.features.forEach((feature: any) => {
-            const circle = turf.circle(feature, distance, {
-                units: "miles",
-                steps: placeData.features.length > 1000 ? 16 : 64,
-            });
-            circles.push(circle);
-        });
-
-        let unionCircles;
-
-        if (circles.length > 1) {
-            unionCircles = turf.union(turf.featureCollection(circles));
-        } else {
-            unionCircles = circles[0];
-        }
-
-        if (question.hiderCloser) {
-            if (!unionCircles) return null;
-
-            return turf.intersect(
-                turf.featureCollection(
-                    mapData.features.length > 1
-                        ? [turf.union(mapData)!, unionCircles]
-                        : [...mapData.features, unionCircles],
-                ),
-            );
-        } else {
-            return turf.union(
-                turf.featureCollection([...mapData.features, unionCircles]),
-            );
-        }
+    } else {
+        return turf.intersect(
+            turf.featureCollection([unionize(mapData)!, holedMask(buffer)!]),
+        );
     }
 };
 
