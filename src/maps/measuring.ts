@@ -95,9 +95,8 @@ export const determineMeasuringBoundary = async (
             return highSpeedBase(features);
         }
         case "coastline": {
-            const coastlineLine = await fetchCoastline();
             const coastline = turf.lineToPolygon(
-                coastlineLine,
+                await fetchCoastline(),
             ) as Feature<MultiPolygon>;
 
             const distanceToCoastline = turf.pointToPolygonDistance(
@@ -109,17 +108,27 @@ export const determineMeasuringBoundary = async (
                 },
             );
 
-            const extendedBoundingBox: [number, number, number, number] = bBox
-                ? bboxExtension(bBox as any, distanceToCoastline)
-                : [-180, -90, 180, 90];
-
-            return turf.simplify(
-                turf.bboxClip(
-                    turf.combine(coastlineLine).features[0] as any,
-                    extendedBoundingBox,
-                ),
-                { tolerance: 0.001 },
-            );
+            return turf.difference(
+                turf.featureCollection([
+                    turf.bboxPolygon(turf.bbox(mapGeoJSON.get())),
+                    turf.buffer(
+                        turf.bboxClip(
+                            coastline,
+                            bBox
+                                ? bboxExtension(
+                                      bBox as any,
+                                      distanceToCoastline,
+                                  )
+                                : [-180, -90, 180, 90],
+                        ),
+                        distanceToCoastline,
+                        {
+                            units: "miles",
+                            steps: 64,
+                        },
+                    )!,
+                ]),
+            )!;
         }
         case "airport":
             return turf.combine(
