@@ -22,7 +22,7 @@
         "@radix-ui/react-select": "^2.1.5",
         "@radix-ui/react-separator": "^1.1.2",
         "@radix-ui/react-slot": "^1.1.2",
-        "@radix-ui/react-tooltip": "^1.1.7",
+        "@radix-ui/react-tooltip": "^1.2.0",
         "@turf/turf": "^7.2.0",
         "@vite-pwa/astro": "^0.5.0",
         "astro": "^5.2.3",
