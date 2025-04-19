@@ -112,6 +112,28 @@ export const MeasuringQuestionComponent = ({
                         <SelectItem value="highspeed-measure-shinkansen">
                             High-Speed Rail Question
                         </SelectItem>
+                        {(
+                            [
+                                "aquarium",
+                                "zoo",
+                                "theme_park",
+                                "museum",
+                                "hospital",
+                                "cinema",
+                                "library",
+                                "golf_course",
+                                "consulate",
+                                "park",
+                            ] as TentacleLocations[]
+                        ).map((location) => (
+                            <SelectItem
+                                value={location + "-full"}
+                                key={location + "-full"}
+                            >
+                                {prettifyLocation(location)} Question
+                                (Small+Medium Games)
+                            </SelectItem>
+                        ))}
                         <SelectGroup>
                             <SelectLabel>Hiding Zone Mode</SelectLabel>
                             <SelectItem
@@ -151,7 +173,8 @@ export const MeasuringQuestionComponent = ({
                                     key={location}
                                     disabled={!$displayHidingZones}
                                 >
-                                    {prettifyLocation(location)} Question
+                                    {prettifyLocation(location)} Question (Large
+                                    Game)
                                 </SelectItem>
                             ))}
                         </SelectGroup>

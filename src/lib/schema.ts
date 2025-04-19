@@ -212,6 +212,16 @@ const ordinaryMeasuringQuestionSchema = baseMeasuringQuestionSchema.extend({
             z.literal("seven11"),
             z.literal("rail-measure"),
             z.literal("highspeed-measure-shinkansen"),
+            z.literal("aquarium-full"),
+            z.literal("zoo-full"),
+            z.literal("theme_park-full"),
+            z.literal("museum-full"),
+            z.literal("hospital-full"),
+            z.literal("cinema-full"),
+            z.literal("library-full"),
+            z.literal("golf_course-full"),
+            z.literal("consulate-full"),
+            z.literal("park-full"),
         ])
         .default("coastline"),
 });
