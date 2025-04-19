@@ -7,7 +7,9 @@ import {
 import {
     findAdminBoundary,
     findPlacesInZone,
+    locationFirstTag,
     nearestToQuestion,
+    prettifyLocation,
     trainLineNodeFinder,
 } from "./api";
 import * as turf from "@turf/turf";
@@ -19,6 +21,7 @@ import { holedMask, unionize } from "./geo-utils";
 import type {
     HomeGameMatchingQuestions,
     MatchingQuestion,
+    TentacleLocations,
     ZoneMatchingQuestions,
 } from "@/lib/schema";
 
@@ -55,6 +58,54 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
         }
         case "custom-points": {
             return question.geo!;
+        }
+        case "aquarium-full":
+        case "zoo-full":
+        case "theme_park-full":
+        case "museum-full":
+        case "hospital-full":
+        case "cinema-full":
+        case "library-full":
+        case "golf_course-full":
+        case "consulate-full":
+        case "park-full": {
+            const location = question.type.split(
+                "-full",
+            )[0] as TentacleLocations;
+
+            const data = await findPlacesInZone(
+                `[${locationFirstTag[location]}=${location}]`,
+                `Finding ${prettifyLocation(location).toLowerCase()}s...`,
+                "nwr",
+                "center",
+                [],
+                60,
+            );
+
+            if (data.remark && data.remark.startsWith("runtime error")) {
+                toast.error(
+                    `Error finding ${prettifyLocation(
+                        location,
+                    ).toLowerCase()}s. Please enable hiding zone mode and switch to the Large Game variation of this question.`,
+                );
+                return [];
+            }
+
+            if (data.elements.length >= 1000) {
+                toast.error(
+                    `Too many ${prettifyLocation(
+                        location,
+                    ).toLowerCase()}s found (${data.elements.length}). Please enable hiding zone mode and switch to the Large Game variation of this question.`,
+                );
+                return [];
+            }
+
+            return data.elements.map((x: any) =>
+                turf.point([
+                    x.center ? x.center.lon : x.lon,
+                    x.center ? x.center.lat : x.lat,
+                ]),
+            );
         }
     }
 };
@@ -155,6 +206,16 @@ export const determineMatchingBoundary = _.memoize(
             }
             case "airport":
             case "major-city":
+            case "aquarium-full":
+            case "zoo-full":
+            case "theme_park-full":
+            case "museum-full":
+            case "hospital-full":
+            case "cinema-full":
+            case "library-full":
+            case "golf_course-full":
+            case "consulate-full":
+            case "park-full":
             case "custom-points": {
                 const data = await findMatchingPlaces(question);
 

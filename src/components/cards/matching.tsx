@@ -171,7 +171,17 @@ export const MatchingQuestionComponent = ({
                         if (value === "custom-points") {
                             if (
                                 data.type === "airport" ||
-                                data.type === "major-city"
+                                data.type === "major-city" ||
+                                data.type === "aquarium-full" ||
+                                data.type === "zoo-full" ||
+                                data.type === "theme_park-full" ||
+                                data.type === "museum-full" ||
+                                data.type === "hospital-full" ||
+                                data.type === "cinema-full" ||
+                                data.type === "library-full" ||
+                                data.type === "golf_course-full" ||
+                                data.type === "consulate-full" ||
+                                data.type === "park-full"
                             ) {
                                 (data as any).geo =
                                     await findMatchingPlaces(data);
@@ -212,6 +222,28 @@ export const MatchingQuestionComponent = ({
                         <SelectItem value="custom-points">
                             Custom Points Question
                         </SelectItem>
+                        {(
+                            [
+                                "aquarium",
+                                "zoo",
+                                "theme_park",
+                                "museum",
+                                "hospital",
+                                "cinema",
+                                "library",
+                                "golf_course",
+                                "consulate",
+                                "park",
+                            ] as TentacleLocations[]
+                        ).map((location) => (
+                            <SelectItem
+                                value={location + "-full"}
+                                key={location + "-full"}
+                            >
+                                {prettifyLocation(location)} Question
+                                (Small+Medium Games)
+                            </SelectItem>
+                        ))}
                         <SelectGroup>
                             <SelectLabel>Hiding Zone Mode</SelectLabel>
                             <SelectItem
@@ -251,7 +283,8 @@ export const MatchingQuestionComponent = ({
                                     key={location}
                                     disabled={!$displayHidingZones}
                                 >
-                                    {prettifyLocation(location)} Question
+                                    {prettifyLocation(location)} Question (Large
+                                    Game)
                                 </SelectItem>
                             ))}
                         </SelectGroup>

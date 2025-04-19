@@ -138,6 +138,16 @@ const ordinaryMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
         z.literal("same-first-letter-station"),
         z.literal("same-length-station"),
         z.literal("same-train-line"),
+        z.literal("aquarium-full"),
+        z.literal("zoo-full"),
+        z.literal("theme_park-full"),
+        z.literal("museum-full"),
+        z.literal("hospital-full"),
+        z.literal("cinema-full"),
+        z.literal("library-full"),
+        z.literal("golf_course-full"),
+        z.literal("consulate-full"),
+        z.literal("park-full"),
     ]),
 });
 

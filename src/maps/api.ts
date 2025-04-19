@@ -97,7 +97,7 @@ export const determineGeoJSON = async (
     };
 };
 
-const locationFirstTag: {
+export const locationFirstTag: {
     [key in TentacleLocations]:
         | "amenity"
         | "tourism"
@@ -340,6 +340,7 @@ export const findPlacesInZone = async (
         | "area" = "nwr",
     outType: "center" | "geom" = "center",
     alternatives: string[] = [],
+    timeoutDuration: number = 0,
 ) => {
     let query = "";
 
@@ -347,7 +348,7 @@ export const findPlacesInZone = async (
 
     if ($polyGeoJSON) {
         query = `
-[out:json];
+[out:json]${timeoutDuration != 0 ? `[timeout:${timeoutDuration}]` : ""};
 (
 ${searchType}${filter}(poly:"${turf
             .getCoords($polyGeoJSON.features)
@@ -377,7 +378,7 @@ out ${outType};
         const geoLocation = mapGeoLocation.get();
 
         query = `
-[out:json];
+[out:json]${timeoutDuration != 0 ? `[timeout:${timeoutDuration}]` : ""};
 relation(${geoLocation.properties.osm_id});map_to_area->.region;
 (
 ${searchType}${filter}(area.region);
