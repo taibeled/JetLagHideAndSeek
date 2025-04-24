@@ -426,6 +426,10 @@ export const ZoneSidebar = () => {
                                             label: "Bus Stops",
                                             value: "[highway=bus_stop]",
                                         },
+                                        {
+                                            label: "Railway Stations Excluding Subways",
+                                            value: "[railway=station][subway!=yes]",
+                                        },
                                     ]}
                                     onValueChange={
                                         displayHidingZonesOptions.set
