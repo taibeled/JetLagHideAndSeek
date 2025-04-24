@@ -229,7 +229,9 @@ export const MultiSelect = React.forwardRef<
                                                     {IconComponent && (
                                                         <IconComponent className="h-4 w-4 mr-2" />
                                                     )}
-                                                    <span className="max-w-[150px] text-ellipsis overflow-hidden">{option?.label}</span>
+                                                    <span className="max-w-[150px] text-ellipsis overflow-hidden">
+                                                        {option?.label}
+                                                    </span>
                                                     <XCircle
                                                         className="ml-2 h-4 w-4 cursor-pointer"
                                                         onClick={(event) => {
