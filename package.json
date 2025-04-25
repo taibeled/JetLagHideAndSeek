@@ -7,7 +7,7 @@
         "build": "astro build",
         "preview": "astro preview",
         "astro": "astro",
-        "lint": "eslint --fix src"
+        "lint": "eslint --fix src && prettier . --write"
     },
     "dependencies": {
         "@astrojs/partytown": "^2.1.4",
