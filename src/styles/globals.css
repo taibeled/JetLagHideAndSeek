@@ -105,7 +105,9 @@ div.leaflet-control-attribution.leaflet-control {
         @apply !mt-[104px] md:!mt-[40px];
     }
 
-    main:not(.fullscreen) .leaflet-top .leaflet-control:not(.leaflet-control-easyPrint) {
+    main:not(.fullscreen)
+        .leaflet-top
+        .leaflet-control:not(.leaflet-control-easyPrint) {
         @apply !mt-[104px] md:!mt-[40px];
     }
 
