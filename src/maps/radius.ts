@@ -21,7 +21,7 @@ export const adjustPerRadius = (
         }
 
         return turf.intersect(
-            turf.featureCollection([unionize(mapData)!, circle]),
+            turf.featureCollection([unionize(mapData), circle]),
         );
     } else {
         if (!masked) {

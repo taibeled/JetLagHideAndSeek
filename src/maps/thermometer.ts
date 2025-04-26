@@ -21,11 +21,11 @@ export const adjustPerThermometer = (
 
     if (question.warmer) {
         return turf.intersect(
-            turf.featureCollection([unionize(mapData)!, voronoi.features[1]]),
+            turf.featureCollection([unionize(mapData), voronoi.features[1]]),
         );
     } else {
         return turf.intersect(
-            turf.featureCollection([unionize(mapData)!, voronoi.features[0]]),
+            turf.featureCollection([unionize(mapData), voronoi.features[0]]),
         );
     }
 };
