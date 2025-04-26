@@ -45,7 +45,7 @@ export const adjustPerTentacle = async (
     );
 
     return turf.intersect(
-        turf.featureCollection([unionize(mapData)!, correctPolygon, circle]),
+        turf.featureCollection([unionize(mapData), correctPolygon, circle]),
     );
 };
 

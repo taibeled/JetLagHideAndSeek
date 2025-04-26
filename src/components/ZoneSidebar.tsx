@@ -196,7 +196,7 @@ export const ZoneSidebar = () => {
                     return circle;
                 })
                 .filter((circle) => {
-                    return !turf.booleanWithin(circle, unionized!);
+                    return !turf.booleanWithin(circle, unionized);
                 });
 
             for (const question of questions.get()) {
@@ -800,7 +800,7 @@ async function selectionProcess(
                 ...$questionFinishedMapData.features,
                 turf.mask(station),
             ]),
-        )!,
+        ),
     ]);
 
     for (const question of questions.get()) {
@@ -907,14 +907,14 @@ async function selectionProcess(
                             ...mapData.features,
                             turf.mask(correctPolygon),
                         ]),
-                    )!;
+                    );
                 } else {
                     mapData = unionize(
                         turf.featureCollection([
                             ...mapData.features,
                             correctPolygon,
                         ]),
-                    )!;
+                    );
                 }
             } else {
                 const circles = nearestPoints.map((x) =>
@@ -930,14 +930,14 @@ async function selectionProcess(
                             ...mapData.features,
                             holedMask(turf.featureCollection(circles)),
                         ]),
-                    )!;
+                    );
                 } else {
                     mapData = unionize(
                         turf.featureCollection([
                             ...mapData.features,
                             ...circles,
                         ]),
-                    )!;
+                    );
                 }
             }
         }
@@ -973,11 +973,11 @@ async function selectionProcess(
                         ...mapData.features,
                         holedMask(turf.featureCollection(circles)),
                     ]),
-                )!;
+                );
             } else {
                 mapData = unionize(
                     turf.featureCollection([...mapData.features, ...circles]),
-                )!;
+                );
             }
         }
         if (
@@ -1018,11 +1018,11 @@ async function selectionProcess(
                         ...mapData.features,
                         holedMask(turf.featureCollection(circles)),
                     ]),
-                )!;
+                );
             } else {
                 mapData = unionize(
                     turf.featureCollection([...mapData.features, ...circles]),
-                )!;
+                );
             }
         }
 

@@ -309,11 +309,11 @@ export const adjustPerMeasuring = async (
 
     if (question.hiderCloser) {
         return turf.intersect(
-            turf.featureCollection([unionize(mapData)!, buffer]),
+            turf.featureCollection([unionize(mapData), buffer]),
         );
     } else {
         return turf.intersect(
-            turf.featureCollection([unionize(mapData)!, holedMask(buffer)!]),
+            turf.featureCollection([unionize(mapData), holedMask(buffer)!]),
         );
     }
 };
