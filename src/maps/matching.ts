@@ -22,8 +22,14 @@ import type {
     HomeGameMatchingQuestions,
     MatchingQuestion,
     TentacleLocations,
-    ZoneMatchingQuestions,
 } from "@/lib/schema";
+import type {
+    Feature,
+    FeatureCollection,
+    MultiPolygon,
+    Point,
+    Polygon,
+} from "geojson";
 
 export const findMatchingPlaces = async (question: MatchingQuestion) => {
     switch (question.type) {
@@ -186,7 +192,7 @@ export const determineMatchingBoundary = _.memoize(
                             ], // Regex is faster than filtering afterward
                         ),
                     ).features.filter(
-                        (x) =>
+                        (x): x is Feature<Polygon | MultiPolygon> =>
                             x.geometry &&
                             (x.geometry.type === "Polygon" ||
                                 x.geometry.type === "MultiPolygon"),
@@ -199,7 +205,7 @@ export const determineMatchingBoundary = _.memoize(
                         tolerance: 0.001,
                         highQuality: true,
                         mutate: true,
-                    }) as any,
+                    }),
                 );
 
                 break;
@@ -234,13 +240,13 @@ export const determineMatchingBoundary = _.memoize(
 
         return boundary;
     },
-    (question: MatchingQuestion) =>
+    (question: MatchingQuestion & { geo?: unknown; cat?: unknown }) =>
         JSON.stringify({
             type: question.type,
             lat: question.lat,
             lng: question.lng,
-            cat: (question as ZoneMatchingQuestions).cat,
-            geo: (question as any).geo,
+            cat: question.cat,
+            geo: question.geo,
             entirety: polyGeoJSON.get()
                 ? polyGeoJSON.get()
                 : mapGeoLocation.get(),
@@ -332,15 +338,12 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
                 "Finding train stations. This may take a while. Do not press any buttons while this is processing. Don't worry, it will be cached.",
                 "node",
             ),
-        );
+        ) as FeatureCollection<Point>;
 
-        const nearestHiderTrainStation = turf.nearestPoint(
-            hiderPoint,
-            places as any,
-        );
+        const nearestHiderTrainStation = turf.nearestPoint(hiderPoint, places);
         const nearestSeekerTrainStation = turf.nearestPoint(
             seekerPoint,
-            places as any,
+            places,
         );
 
         if (question.type === "same-train-line") {
