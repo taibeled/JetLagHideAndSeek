@@ -7,7 +7,7 @@
         "build": "astro build",
         "preview": "astro preview",
         "astro": "astro",
-        "lint": "eslint --fix src && prettier . --write"
+        "lint": "tsc && eslint --fix src && prettier . --write"
     },
     "dependencies": {
         "@astrojs/partytown": "^2.1.4",
@@ -51,6 +51,7 @@
         "tailwindcss-animate": "^1.0.7",
         "typescript": "^5.7.3",
         "vaul": "^1.1.2",
+        "vite": "^6.3.3",
         "zod": "^3.24.2"
     },
     "devDependencies": {
