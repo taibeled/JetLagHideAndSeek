@@ -1,5 +1,5 @@
 import "leaflet-draw/dist/leaflet.draw.css";
-import { FeatureGroup, Marker, Polygon } from "react-leaflet";
+import { FeatureGroup, Marker, Polygon, Polyline } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 import * as L from "leaflet";
 import { useEffect, useRef, useState } from "react";
@@ -344,6 +344,30 @@ export const PolygonDraw = () => {
                 });
             }
             questionModified();
+        } else if (
+            question?.id === "measuring" &&
+            question.data.type === "custom-measure"
+        ) {
+            if (!featureRef.current?._layers) return;
+
+            const layers = featureRef.current._layers;
+            const geoJSONs = Object.values(layers).map((layer: any) =>
+                layer.toGeoJSON(),
+            );
+            const geoJSON = turf.featureCollection(geoJSONs);
+
+            question.data.geo = turf.featureCollection(_.uniqBy(
+                geoJSON.features as CustomTentacleQuestion["places"],
+                (x) => x.geometry.coordinates.join(","),
+            )); // Sometimes keys are duplicated
+            if (featureRef.current) {
+                Object.values(featureRef.current._layers).map((layer: any) => {
+                    if (!layer.options.isSpecial) {
+                        featureRef.current.removeLayer(layer);
+                    }
+                });
+            }
+            questionModified();
         }
     };
 
@@ -383,6 +407,40 @@ export const PolygonDraw = () => {
                         <MeasuringPointMarker
                             key={x.geometry.coordinates.join(",")}
                             point={x}
+                        />
+                    ))}
+            {question &&
+                question.id === "measuring" &&
+                question.data.type === "custom-measure" &&
+                turf
+                    .flatten(question.data.geo)
+                    .features.filter((x: any) => turf.getType(x) === "Polygon")
+                    .map((x: any) => (
+                        <Polygon
+                            key={x.geometry.coordinates.join(",")}
+                            positions={swapCoordinates(x.geometry.coordinates)}
+                            // @ts-expect-error This is passed to options, so it is not typed
+                            isSpecial={true}
+                            stroke
+                            pathOptions={{ color: "red" }}
+                            fill={false}
+                        />
+                    ))}
+            {question &&
+                question.id === "measuring" &&
+                question.data.type === "custom-measure" &&
+                turf
+                    .flatten(question.data.geo)
+                    .features.filter((x: any) => turf.getType(x) === "LineString")
+                    .map((x: any) => (
+                        <Polyline
+                            key={x.geometry.coordinates.join(",")}
+                            positions={swapCoordinates(x.geometry.coordinates)}
+                            // @ts-expect-error This is passed to options, so it is not typed
+                            isSpecial={true}
+                            stroke
+                            pathOptions={{ color: "red" }}
+                            fill={false}
                         />
                     ))}
             {question &&
