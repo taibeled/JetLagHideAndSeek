@@ -10,6 +10,17 @@ import {
     SidebarMenu,
 } from "../ui/sidebar-l";
 import { Separator } from "../ui/separator";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export const QuestionCard = ({
     children,
@@ -38,18 +49,46 @@ export const QuestionCard = ({
             <SidebarGroup className={className}>
                 <div className="relative">
                     {showDeleteButton && (
-                        <button
-                            className="absolute top-2 right-2 text-white"
-                            onClick={() => {
-                                questions.set(
-                                    $questions.filter(
-                                        (q) => q.key !== questionKey,
-                                    ),
-                                );
-                            }}
-                        >
-                            <VscChromeClose />
-                        </button>
+                        <AlertDialog>
+                            <AlertDialogTrigger className="absolute top-2 right-2 text-white">
+                                <VscChromeClose />
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                        Are you absolutely sure?
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This action cannot be undone. This will
+                                        permanently delete the question.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>
+                                        Cancel
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction
+                                        onClick={() => {
+                                            questions.set([]);
+                                        }}
+                                    >
+                                        Delete All Questions
+                                    </AlertDialogAction>
+                                    <AlertDialogAction
+                                        onClick={() => {
+                                            questions.set(
+                                                $questions.filter(
+                                                    (q) =>
+                                                        q.key !== questionKey,
+                                                ),
+                                            );
+                                        }}
+                                    >
+                                        Delete
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     )}
                     <button
                         onClick={toggleCollapse}
