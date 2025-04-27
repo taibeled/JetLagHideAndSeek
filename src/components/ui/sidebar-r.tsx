@@ -519,12 +519,19 @@ SidebarMenu.displayName = "SidebarMenu";
 
 const SidebarMenuItem = React.forwardRef<
     HTMLLIElement,
-    React.ComponentProps<"li">
->(({ className, ...props }, ref) => (
+    React.ComponentProps<"li"> & {
+        disabled?: boolean;
+    }
+>(({ className, disabled, onClick, ...props }, ref) => (
     <li
         ref={ref}
         data-sidebar="menu-item"
-        className={cn("group/menu-item relative", className)}
+        className={cn(
+            "group/menu-item relative",
+            disabled && "pointer-events-none opacity-50",
+            className,
+        )}
+        onClick={disabled ? undefined : onClick}
         {...props}
     />
 ));

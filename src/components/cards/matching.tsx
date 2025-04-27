@@ -5,6 +5,7 @@ import {
     displayHidingZones,
     drawingQuestionKey,
     hiderMode,
+    isLoading,
     questionModified,
     questions,
     triggerLocalRefresh,
@@ -44,6 +45,7 @@ export const MatchingQuestionComponent = ({
     const $questions = useStore(questions);
     const $displayHidingZones = useStore(displayHidingZones);
     const $drawingQuestionKey = useStore(drawingQuestionKey);
+    const $isLoading = useStore(isLoading);
     const label = `Matching
     ${
         $questions
@@ -69,7 +71,7 @@ export const MatchingQuestionComponent = ({
                                     ) as 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10),
                                 )
                             }
-                            disabled={!data.drag}
+                            disabled={!data.drag || $isLoading}
                         >
                             <SelectTrigger>
                                 <SelectValue placeholder="OSM Zone" />
@@ -145,6 +147,7 @@ export const MatchingQuestionComponent = ({
                                     drawingQuestionKey.set(-1);
                                 }
                             }}
+                            disabled={$isLoading}
                         />
                         and use the buttons at the bottom left of the map.
                     </p>
@@ -199,7 +202,7 @@ export const MatchingQuestionComponent = ({
                         }
                         questionModified((data.type = value as any));
                     }}
-                    disabled={!data.drag}
+                    disabled={!data.drag || $isLoading}
                 >
                     <SelectTrigger>
                         <SelectValue placeholder="Matching Type" />
@@ -297,7 +300,7 @@ export const MatchingQuestionComponent = ({
                     Same
                 </label>
                 <Checkbox
-                    disabled={!!$hiderMode || !data.drag}
+                    disabled={!!$hiderMode || !data.drag || $isLoading}
                     checked={data.same}
                     onCheckedChange={(checked) =>
                         questionModified((data.same = checked as boolean))
@@ -323,6 +326,7 @@ export const MatchingQuestionComponent = ({
                 {data.type !== "custom-zone" && "Color ("} lock{" "}
                 <Checkbox
                     checked={!data.drag}
+                    disabled={$isLoading}
                     onCheckedChange={(checked) =>
                         questionModified((data.drag = !checked as boolean))
                     }
@@ -342,7 +346,7 @@ export const MatchingQuestionComponent = ({
                         }
                         questionModified();
                     }}
-                    disabled={!data.drag}
+                    disabled={!data.drag || $isLoading}
                 />
             )}
         </QuestionCard>

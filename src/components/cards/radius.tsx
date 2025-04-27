@@ -7,6 +7,7 @@ import {
     questionModified,
     questions,
     triggerLocalRefresh,
+    isLoading,
 } from "../../lib/context";
 import { iconColors } from "../../maps/api";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
@@ -31,6 +32,7 @@ export const RadiusQuestionComponent = ({
     useStore(triggerLocalRefresh);
     const $hiderMode = useStore(hiderMode);
     const $questions = useStore(questions);
+    const $isLoading = useStore(isLoading);
     const label = `Radius
     ${
         $questions
@@ -53,7 +55,7 @@ export const RadiusQuestionComponent = ({
                         type="number"
                         className="rounded-md p-2 w-16"
                         value={data.radius}
-                        disabled={!data.drag}
+                        disabled={!data.drag || $isLoading}
                         onChange={(e) =>
                             questionModified(
                                 (data.radius = parseFloat(e.target.value)),
@@ -62,7 +64,7 @@ export const RadiusQuestionComponent = ({
                     />
                     <UnitSelect
                         unit={data.unit}
-                        disabled={!data.drag}
+                        disabled={!data.drag || $isLoading}
                         onChange={(unit) =>
                             questionModified((data.unit = unit))
                         }
@@ -75,7 +77,7 @@ export const RadiusQuestionComponent = ({
                 </label>
                 <Checkbox
                     checked={data.within}
-                    disabled={!!$hiderMode || !data.drag}
+                    disabled={!!$hiderMode || !data.drag || $isLoading}
                     onCheckedChange={(checked) =>
                         questionModified((data.within = checked as boolean))
                     }
@@ -94,6 +96,7 @@ export const RadiusQuestionComponent = ({
                 Color (lock{" "}
                 <Checkbox
                     checked={!data.drag}
+                    disabled={$isLoading}
                     onCheckedChange={(checked) =>
                         questionModified((data.drag = !checked as boolean))
                     }
@@ -112,7 +115,7 @@ export const RadiusQuestionComponent = ({
                     }
                     questionModified();
                 }}
-                disabled={!data.drag}
+                disabled={!data.drag || $isLoading}
             />
         </QuestionCard>
     );

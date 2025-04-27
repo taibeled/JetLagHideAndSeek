@@ -14,6 +14,7 @@ import {
     questions,
     save,
     triggerLocalRefresh,
+    isLoading,
 } from "../lib/context";
 import { useStore } from "@nanostores/react";
 import {
@@ -29,6 +30,7 @@ export const QuestionSidebar = () => {
     useStore(triggerLocalRefresh);
     const $questions = useStore(questions);
     const $autoSave = useStore(autoSave);
+    const $isLoading = useStore(isLoading);
 
     return (
         <Sidebar>
@@ -100,6 +102,7 @@ export const QuestionSidebar = () => {
                                         },
                                     });
                                 }}
+                                disabled={$isLoading}
                             >
                                 Add Radius
                             </SidebarMenuButton>
@@ -133,6 +136,7 @@ export const QuestionSidebar = () => {
                                         },
                                     });
                                 }}
+                                disabled={$isLoading}
                             >
                                 Add Thermometer
                             </SidebarMenuButton>
@@ -153,6 +157,7 @@ export const QuestionSidebar = () => {
                                         },
                                     });
                                 }}
+                                disabled={$isLoading}
                             >
                                 Add Tentacles
                             </SidebarMenuButton>
@@ -173,6 +178,7 @@ export const QuestionSidebar = () => {
                                         },
                                     });
                                 }}
+                                disabled={$isLoading}
                             >
                                 Add Matching
                             </SidebarMenuButton>
@@ -193,6 +199,7 @@ export const QuestionSidebar = () => {
                                         },
                                     });
                                 }}
+                                disabled={$isLoading}
                             >
                                 Add Measuring
                             </SidebarMenuButton>
@@ -202,6 +209,7 @@ export const QuestionSidebar = () => {
                                 <SidebarMenuButton
                                     className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-shadow duration-500"
                                     onClick={save}
+                                    disabled={$isLoading}
                                 >
                                     Save
                                 </SidebarMenuButton>

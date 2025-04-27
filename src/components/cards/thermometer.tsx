@@ -6,6 +6,7 @@ import {
     questionModified,
     questions,
     triggerLocalRefresh,
+    isLoading,
 } from "../../lib/context";
 import { iconColors } from "../../maps/api";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
@@ -30,6 +31,7 @@ export const ThermometerQuestionComponent = ({
     useStore(triggerLocalRefresh);
     const $hiderMode = useStore(hiderMode);
     const $questions = useStore(questions);
+    const $isLoading = useStore(isLoading);
     const label = `Thermometer
     ${
         $questions
@@ -51,7 +53,7 @@ export const ThermometerQuestionComponent = ({
                     Warmer
                 </label>
                 <Checkbox
-                    disabled={!!$hiderMode || !data.drag}
+                    disabled={!!$hiderMode || !data.drag || $isLoading}
                     checked={data.warmer}
                     onCheckedChange={(checked) =>
                         questionModified((data.warmer = checked as boolean))
@@ -71,6 +73,7 @@ export const ThermometerQuestionComponent = ({
                 Color start (lock{" "}
                 <Checkbox
                     checked={!data.drag}
+                    disabled={$isLoading}
                     onCheckedChange={(checked) =>
                         questionModified((data.drag = !checked as boolean))
                     }
@@ -91,7 +94,7 @@ export const ThermometerQuestionComponent = ({
                     }
                     questionModified();
                 }}
-                disabled={!data.drag}
+                disabled={!data.drag || $isLoading}
             />
             <Separator className="my-2" />
             <SidebarMenuItem
@@ -120,7 +123,7 @@ export const ThermometerQuestionComponent = ({
                     }
                     questionModified();
                 }}
-                disabled={!data.drag}
+                disabled={!data.drag || $isLoading}
             />
         </QuestionCard>
     );

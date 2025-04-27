@@ -17,6 +17,7 @@ import {
     questionFinishedMapData,
     questions,
     trainStations,
+    isLoading,
 } from "../lib/context";
 import { useStore } from "@nanostores/react";
 import { MENU_ITEM_CLASSNAME } from "./ui/sidebar-l";
@@ -58,7 +59,6 @@ import {
 import { geoSpatialVoronoi } from "@/maps/voronoi";
 import { ScrollToTop } from "./ui/scroll-to-top";
 
-let determiningHidingZones = false;
 let buttonJustClicked = false;
 
 export const ZoneSidebar = () => {
@@ -66,6 +66,7 @@ export const ZoneSidebar = () => {
     const $questionFinishedMapData = useStore(questionFinishedMapData);
     const $displayHidingZonesOptions = useStore(displayHidingZonesOptions);
     const $hidingRadius = useStore(hidingRadius);
+    const $isLoading = useStore(isLoading);
     const map = useStore(leafletMapContext);
     const stations = useStore(trainStations);
     const $disabledStations = useStore(disabledStations);
@@ -156,14 +157,14 @@ export const ZoneSidebar = () => {
     };
 
     useEffect(() => {
-        if (!map || determiningHidingZones) return;
+        if (!map || isLoading.get()) return;
 
         const initializeHidingZones = async () => {
-            determiningHidingZones = true;
+            isLoading.set(true);
 
             if ($displayHidingZonesOptions.length === 0) {
                 toast.error("At least one place type must be selected");
-                determiningHidingZones = false;
+                isLoading.set(false);
                 return;
             }
 
@@ -345,7 +346,7 @@ export const ZoneSidebar = () => {
             );
 
             setStations(circles);
-            determiningHidingZones = false;
+            isLoading.set(false);
         };
 
         if ($displayHidingZones && $questionFinishedMapData) {
@@ -355,7 +356,7 @@ export const ZoneSidebar = () => {
                 if (
                     document.querySelectorAll(".Toastify__toast").length === 0
                 ) {
-                    determiningHidingZones = false;
+                    isLoading.set(false);
                     return toast.error("An error occurred");
                 }
             });
@@ -392,6 +393,7 @@ export const ZoneSidebar = () => {
                                     defaultChecked={$displayHidingZones}
                                     checked={$displayHidingZones}
                                     onCheckedChange={displayHidingZones.set}
+                                    disabled={$isLoading}
                                 />
                             </SidebarMenuItem>
                             <SidebarMenuItem
@@ -440,6 +442,7 @@ export const ZoneSidebar = () => {
                                     maxCount={3}
                                     modalPopover
                                     className="!bg-popover bg-opacity-100"
+                                    disabled={$isLoading}
                                 />
                             </SidebarMenuItem>
                             <SidebarMenuItem>
@@ -461,6 +464,7 @@ export const ZoneSidebar = () => {
                                                 parseFloat(e.target.value),
                                             );
                                         }}
+                                        disabled={$isLoading}
                                     />
                                     <Select value="miles" disabled>
                                         <SelectTrigger>
@@ -478,6 +482,7 @@ export const ZoneSidebar = () => {
                                 <SidebarMenuItem
                                     className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
                                     onClick={removeHidingZones}
+                                    disabled={$isLoading}
                                 >
                                     No Display
                                 </SidebarMenuItem>
@@ -502,6 +507,7 @@ export const ZoneSidebar = () => {
                                             false,
                                         );
                                     }}
+                                    disabled={$isLoading}
                                 >
                                     All Stations
                                 </SidebarMenuItem>
@@ -524,6 +530,7 @@ export const ZoneSidebar = () => {
                                             true,
                                         );
                                     }}
+                                    disabled={$isLoading}
                                 >
                                     All Zones
                                 </SidebarMenuItem>
@@ -548,6 +555,7 @@ export const ZoneSidebar = () => {
                                             ),
                                         );
                                     }}
+                                    disabled={$isLoading}
                                 >
                                     No Overlap
                                 </SidebarMenuItem>
@@ -558,6 +566,7 @@ export const ZoneSidebar = () => {
                                         MENU_ITEM_CLASSNAME,
                                         "bg-popover hover:bg-accent",
                                     )}
+                                    disabled={$isLoading}
                                 >
                                     Current:{" "}
                                     <a
@@ -608,13 +617,17 @@ export const ZoneSidebar = () => {
                                                 true,
                                             );
                                         }}
+                                        disabled={$isLoading}
                                     >
                                         Clear Disabled
                                     </SidebarMenuItem>
                                 )}
                             {$displayHidingZones && (
                                 <Command>
-                                    <CommandInput placeholder="Search for a hiding zone..." />
+                                    <CommandInput
+                                        placeholder="Search for a hiding zone..."
+                                        disabled={$isLoading}
+                                    />
                                     <CommandList className="max-h-full">
                                         <CommandEmpty>
                                             No hiding zones found.
@@ -704,6 +717,7 @@ export const ZoneSidebar = () => {
                                                             );
                                                         }, 100);
                                                     }}
+                                                    disabled={$isLoading}
                                                 >
                                                     {station.properties
                                                         .properties[
@@ -755,6 +769,7 @@ export const ZoneSidebar = () => {
                                                             });
                                                         }}
                                                         className="bg-slate-600 p-0.5 rounded-md"
+                                                        disabled={$isLoading}
                                                     >
                                                         View
                                                     </button>

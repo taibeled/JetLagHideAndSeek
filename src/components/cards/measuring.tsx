@@ -8,6 +8,7 @@ import {
     questionModified,
     questions,
     triggerLocalRefresh,
+    isLoading,
 } from "../../lib/context";
 import { iconColors, prettifyLocation } from "../../maps/api";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
@@ -43,6 +44,7 @@ export const MeasuringQuestionComponent = ({
     const $questions = useStore(questions);
     const $displayHidingZones = useStore(displayHidingZones);
     const $drawingQuestionKey = useStore(drawingQuestionKey);
+    const $isLoading = useStore(isLoading);
     const label = `Measuring
     ${
         $questions
@@ -97,6 +99,7 @@ export const MeasuringQuestionComponent = ({
                                     drawingQuestionKey.set(-1);
                                 }
                             }}
+                            disabled={!data.drag || $isLoading}
                         />
                         and use the buttons at the bottom left of the map.
                     </p>
@@ -135,7 +138,7 @@ export const MeasuringQuestionComponent = ({
                         data.type = value as any;
                         questionModified();
                     }}
-                    disabled={!data.drag}
+                    disabled={!data.drag || $isLoading}
                 >
                     <SelectTrigger>
                         <SelectValue placeholder="Measuring Type" />
@@ -231,7 +234,7 @@ export const MeasuringQuestionComponent = ({
                     Hider Closer
                 </label>
                 <Checkbox
-                    disabled={!!$hiderMode || !data.drag}
+                    disabled={!!$hiderMode || !data.drag || $isLoading}
                     checked={data.hiderCloser}
                     onCheckedChange={(checked) =>
                         questionModified(
@@ -253,6 +256,7 @@ export const MeasuringQuestionComponent = ({
                 Color (lock{" "}
                 <Checkbox
                     checked={!data.drag}
+                    disabled={$isLoading}
                     onCheckedChange={(checked) =>
                         questionModified((data.drag = !checked as boolean))
                     }
@@ -271,7 +275,7 @@ export const MeasuringQuestionComponent = ({
                     }
                     questionModified();
                 }}
-                disabled={!data.drag}
+                disabled={!data.drag || $isLoading}
             />
         </QuestionCard>
     );

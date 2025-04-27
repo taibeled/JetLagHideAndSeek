@@ -164,3 +164,5 @@ export const planningModeEnabled = persistentAtom<boolean>(
         decode: JSON.parse,
     },
 );
+
+export const isLoading = atom<boolean>(false);

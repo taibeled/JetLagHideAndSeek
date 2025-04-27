@@ -8,6 +8,7 @@ import {
     questionModified,
     questions,
     triggerLocalRefresh,
+    isLoading,
 } from "../../lib/context";
 import { findTentacleLocations, iconColors } from "../../maps/api";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
@@ -45,6 +46,7 @@ export const TentacleQuestionComponent = ({
 }) => {
     const $questions = useStore(questions);
     const $drawingQuestionKey = useStore(drawingQuestionKey);
+    const $isLoading = useStore(isLoading);
     const label = `Tentacles
     ${
         $questions
@@ -72,14 +74,14 @@ export const TentacleQuestionComponent = ({
                                 (data.radius = parseFloat(e.target.value)),
                             )
                         }
-                        disabled={!data.drag}
+                        disabled={!data.drag || $isLoading}
                     />
                     <UnitSelect
                         unit={data.unit}
                         onChange={(unit) =>
                             questionModified((data.unit = unit))
                         }
-                        disabled={!data.drag}
+                        disabled={!data.drag || $isLoading}
                     />
                 </div>
             </SidebarMenuItem>
@@ -109,7 +111,7 @@ export const TentacleQuestionComponent = ({
                         }
                         questionModified();
                     }}
-                    disabled={!data.drag}
+                    disabled={!data.drag || $isLoading}
                 >
                     <SelectTrigger>
                         <SelectValue placeholder="Location Type" />
@@ -149,6 +151,7 @@ export const TentacleQuestionComponent = ({
                                 drawingQuestionKey.set(-1);
                             }
                         }}
+                        disabled={!data.drag || $isLoading}
                     />
                     and use the buttons at the bottom left of the map.
                 </p>
@@ -166,6 +169,7 @@ export const TentacleQuestionComponent = ({
                 Color (lock{" "}
                 <Checkbox
                     checked={!data.drag}
+                    disabled={$isLoading}
                     onCheckedChange={(checked) =>
                         questionModified((data.drag = !checked as boolean))
                     }
@@ -184,7 +188,7 @@ export const TentacleQuestionComponent = ({
                     }
                     questionModified();
                 }}
-                disabled={!data.drag}
+                disabled={!data.drag || $isLoading}
             />
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Suspense
@@ -216,7 +220,7 @@ export const TentacleQuestionComponent = ({
                                   )
                                 : findTentacleLocations(data)
                         }
-                        disabled={!data.drag}
+                        disabled={!data.drag || $isLoading}
                     />
                 </Suspense>
             </SidebarMenuItem>

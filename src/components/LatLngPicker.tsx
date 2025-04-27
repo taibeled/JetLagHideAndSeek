@@ -13,6 +13,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "./ui/select";
+import { isLoading } from "@/lib/context";
 
 export const LatitudeLongitude = ({
     latitude,
@@ -119,6 +120,8 @@ export const LatitudeLongitude = ({
                         if (!navigator || !navigator.geolocation)
                             return alert("Geolocation not supported");
 
+                        isLoading.set(true);
+
                         toast.promise(
                             new Promise<GeolocationPosition>(
                                 (resolve, reject) => {
@@ -131,12 +134,16 @@ export const LatitudeLongitude = ({
                                         },
                                     );
                                 },
-                            ).then((position) => {
-                                onChange(
-                                    position.coords.latitude,
-                                    position.coords.longitude,
-                                );
-                            }),
+                            )
+                                .then((position) => {
+                                    onChange(
+                                        position.coords.latitude,
+                                        position.coords.longitude,
+                                    );
+                                })
+                                .finally(() => {
+                                    isLoading.set(false);
+                                }),
                             {
                                 pending: "Fetching location",
                                 success: "Location fetched",

@@ -17,6 +17,7 @@ import {
     animateMapMovements,
     addQuestion,
     planningModeEnabled,
+    isLoading,
 } from "../lib/context";
 import { useStore } from "@nanostores/react";
 import { useEffect, useMemo } from "react";
@@ -37,8 +38,6 @@ import { LeafletFullScreenButton } from "./LeafletFullScreenButton";
 import { hiderifyQuestion } from "@/maps";
 import { holedMask } from "@/maps/geo-utils";
 import { MapPrint } from "./MapPrint";
-
-let refreshingQuestions = false;
 
 export const refreshMapData = (
     $mapGeoLocation: OpenStreetMap,
@@ -82,17 +81,15 @@ export const Map = ({ className }: { className?: string }) => {
     const $questions = useStore(questions);
     const $highlightTrainLines = useStore(highlightTrainLines);
     const $hiderMode = useStore(hiderMode);
+    const $isLoading = useStore(isLoading);
     const map = useStore(leafletMapContext);
 
     const refreshQuestions = async (focus: boolean = false) => {
         if (!map) return;
 
-        if (refreshingQuestions)
-            return toast.warning(
-                "Already refreshing. Remodify the questions after the current refresh is done.",
-            );
+        if ($isLoading) return;
 
-        refreshingQuestions = true;
+        isLoading.set(true);
 
         if ($questions.length === 0) {
             await clearCache();
@@ -374,12 +371,12 @@ export const Map = ({ className }: { className?: string }) => {
         } catch (error) {
             console.log(error);
 
-            refreshingQuestions = false;
+            isLoading.set(false);
             if (document.querySelectorAll(".Toastify__toast").length === 0) {
                 return toast.error("No solutions found / error occurred");
             }
         } finally {
-            refreshingQuestions = false;
+            isLoading.set(false);
         }
     };
 
