@@ -51,6 +51,14 @@ export const refreshMapData = (
             $mapGeoLocation.properties.osm_type,
         );
 
+        if (turf.coordAll(mapGeoData).length > 10000) {
+            turf.simplify(mapGeoData, {
+                tolerance: 0.0005,
+                highQuality: true,
+                mutate: true,
+            });
+        }
+
         mapGeoJSON.set(mapGeoData);
 
         if (screen) {
