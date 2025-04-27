@@ -362,7 +362,7 @@ export const PolygonDraw = () => {
             )); // Sometimes keys are duplicated
             if (featureRef.current) {
                 Object.values(featureRef.current._layers).map((layer: any) => {
-                    if (!layer.options.isSpecial) {
+                    if (!layer.options.isSpecial && !layer.options.isDialog) {
                         featureRef.current.removeLayer(layer);
                     }
                 });
