@@ -22,6 +22,7 @@ import {
 import { Checkbox } from "../ui/checkbox";
 import { QuestionCard } from "./base";
 import type { MeasuringQuestion, TentacleLocations } from "@/lib/schema";
+import { determineMeasuringBoundary } from "@/maps/measuring";
 
 export const MeasuringQuestionComponent = ({
     data,
@@ -91,9 +92,25 @@ export const MeasuringQuestionComponent = ({
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
                     value={data.type}
-                    onValueChange={(value) =>
-                        questionModified((data.type = value as any))
-                    }
+                    onValueChange={async (value) => {
+                        if (value === "custom-measure") {
+                            const boundary =
+                                await determineMeasuringBoundary(data);
+
+                            if (!(data as any).geo) {
+                                (data as any).geo = {
+                                    type: "FeatureCollection",
+                                    features: [],
+                                };
+                            }
+
+                            (data as any).geo.features = boundary
+                                ? [boundary as any]
+                                : [];
+                        }
+                        data.type = value as any;
+                        questionModified();
+                    }}
                     disabled={!data.drag}
                 >
                     <SelectTrigger>
@@ -134,6 +151,9 @@ export const MeasuringQuestionComponent = ({
                                 (Small+Medium Games)
                             </SelectItem>
                         ))}
+                        <SelectItem value="custom-measure">
+                            Custom Measuring Question
+                        </SelectItem>
                         <SelectGroup>
                             <SelectLabel>Hiding Zone Mode</SelectLabel>
                             <SelectItem

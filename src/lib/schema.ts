@@ -241,9 +241,15 @@ const homeGameMeasuringQuestionsSchema = baseMeasuringQuestionSchema.extend({
     ]),
 });
 
+const customMeasuringQuestionSchema = baseMeasuringQuestionSchema.extend({
+    type: z.literal("custom-measure"),
+    geo: z.any(),
+});
+
 const measuringQuestionSchema = z.union([
     ordinaryMeasuringQuestionSchema,
     homeGameMeasuringQuestionsSchema,
+    customMeasuringQuestionSchema,
 ]);
 
 export const questionSchema = z.union([
