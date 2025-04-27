@@ -17,6 +17,7 @@ import { CacheType, clearCache } from "@/maps/api";
 import { useStore } from "@nanostores/react";
 import type {
     CustomMatchingQuestion,
+    CustomMeasuringQuestion,
     CustomTentacleQuestion,
     Question,
 } from "@/lib/schema";
@@ -167,6 +168,63 @@ const MatchingPointMarker = ({
     );
 };
 
+const MeasuringPointMarker = ({
+    point,
+}: {
+    point: CustomMeasuringQuestion["geo"]["features"][number];
+}) => {
+    const $autoSave = useStore(autoSave);
+    const [open, setOpen] = useState(false);
+
+    return (
+        <Dialog open={open} onOpenChange={setOpen}>
+            <Marker
+                position={[
+                    point.geometry.coordinates[1],
+                    point.geometry.coordinates[0],
+                ]}
+                // @ts-expect-error This is passed to options, so it is not typed
+                isDialog={true}
+                eventHandlers={{
+                    click: () => {
+                        setOpen(true);
+                    },
+                }}
+            />
+            <DialogContent>
+                <div className="flex flex-col gap-2">
+                    <SidebarMenu>
+                        <LatitudeLongitude
+                            latitude={point.geometry.coordinates[1]}
+                            longitude={point.geometry.coordinates[0]}
+                            onChange={(lat, lng) => {
+                                if (lat) {
+                                    point.geometry.coordinates[1] = lat;
+                                }
+                                if (lng) {
+                                    point.geometry.coordinates[0] = lng;
+                                }
+
+                                questionModified();
+                            }}
+                        />
+                        {!$autoSave && (
+                            <SidebarMenuItem>
+                                <SidebarMenuButton
+                                    className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-shadow duration-500 mt-2"
+                                    onClick={save}
+                                >
+                                    Save
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        )}
+                    </SidebarMenu>
+                </div>
+            </DialogContent>
+        </Dialog>
+    );
+};
+
 export const PolygonDraw = () => {
     const $drawingQuestionKey = useStore(drawingQuestionKey);
     const $questions = useStore(questions);
@@ -186,6 +244,10 @@ export const PolygonDraw = () => {
         if (question?.id === "matching") {
             L.drawLocal.draw.toolbar.buttons.polygon =
                 "Draw the matching zone(s)!";
+        }
+        if (question?.id === "measuring") {
+            L.drawLocal.draw.toolbar.buttons.polygon =
+                "Draw the measuring zone(s)!";
         }
     }
 
@@ -312,6 +374,18 @@ export const PolygonDraw = () => {
                     />
                 ))}
             {question &&
+                question.id === "measuring" &&
+                question.data.type === "custom-measure" &&
+                turf
+                    .flatten(question.data.geo)
+                    .features.filter((x: any) => turf.getType(x) === "Point")
+                    .map((x: any) => (
+                        <MeasuringPointMarker
+                            key={x.geometry.coordinates.join(",")}
+                            point={x}
+                        />
+                    ))}
+            {question &&
                 question.id === "matching" &&
                 question.data.type === "custom-zone" &&
                 question.data.geo &&
@@ -338,10 +412,11 @@ export const PolygonDraw = () => {
                     marker:
                         question?.id === "tentacles" ||
                         (question?.id === "matching" &&
-                            question.data.type === "custom-points")
+                            question.data.type === "custom-points") ||
+                        question?.id === "measuring"
                             ? true
                             : false,
-                    polyline: false,
+                    polyline: question?.id === "measuring",
                     polygon:
                         question?.id === "tentacles" ||
                         (question?.id === "matching" &&

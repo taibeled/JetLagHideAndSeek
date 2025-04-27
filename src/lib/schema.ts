@@ -295,6 +295,9 @@ export type ZoneMatchingQuestions = z.infer<typeof zoneMatchingQuestionsSchema>;
 export type CustomMatchingQuestion = z.infer<
     typeof customMatchingQuestionSchema
 >;
+export type CustomMeasuringQuestion = z.infer<
+    typeof customMeasuringQuestionSchema
+>;
 export type MeasuringQuestion = z.infer<typeof measuringQuestionSchema>;
 export type HomeGameMeasuringQuestions = z.infer<
     typeof homeGameMeasuringQuestionsSchema
