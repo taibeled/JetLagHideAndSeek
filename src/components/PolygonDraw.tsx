@@ -356,10 +356,12 @@ export const PolygonDraw = () => {
             );
             const geoJSON = turf.featureCollection(geoJSONs);
 
-            question.data.geo = turf.featureCollection(_.uniqBy(
-                geoJSON.features as CustomTentacleQuestion["places"],
-                (x) => x.geometry.coordinates.join(","),
-            )); // Sometimes keys are duplicated
+            question.data.geo = turf.featureCollection(
+                _.uniqBy(
+                    geoJSON.features as CustomTentacleQuestion["places"],
+                    (x) => x.geometry.coordinates.join(","),
+                ),
+            ); // Sometimes keys are duplicated
             if (featureRef.current) {
                 Object.values(featureRef.current._layers).map((layer: any) => {
                     if (!layer.options.isSpecial && !layer.options.isDialog) {
@@ -431,7 +433,9 @@ export const PolygonDraw = () => {
                 question.data.type === "custom-measure" &&
                 turf
                     .flatten(question.data.geo)
-                    .features.filter((x: any) => turf.getType(x) === "LineString")
+                    .features.filter(
+                        (x: any) => turf.getType(x) === "LineString",
+                    )
                     .map((x: any) => (
                         <Polyline
                             key={x.geometry.coordinates.join(",")}

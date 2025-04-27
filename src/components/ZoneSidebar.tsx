@@ -560,23 +560,38 @@ export const ZoneSidebar = () => {
                                     )}
                                 >
                                     Current:{" "}
-                                    {stations.find(
-                                        (x) =>
-                                            x.properties.properties.id ===
-                                            commandValue,
-                                    ).properties.properties["name:en"] ||
-                                        stations.find(
-                                            (x) =>
-                                                x.properties.properties.id ===
-                                                commandValue,
-                                        ).properties.properties.name ||
-                                        lngLatToText(
+                                    <a
+                                        href={`https://www.openstreetmap.org/${
                                             stations.find(
                                                 (x) =>
                                                     x.properties.properties
                                                         .id === commandValue,
-                                            ).properties.geometry.coordinates,
-                                        )}
+                                            ).properties.properties.id
+                                        }`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="text-blue-500"
+                                    >
+                                        {stations.find(
+                                            (x) =>
+                                                x.properties.properties.id ===
+                                                commandValue,
+                                        ).properties.properties["name:en"] ||
+                                            stations.find(
+                                                (x) =>
+                                                    x.properties.properties
+                                                        .id === commandValue,
+                                            ).properties.properties.name ||
+                                            lngLatToText(
+                                                stations.find(
+                                                    (x) =>
+                                                        x.properties.properties
+                                                            .id ===
+                                                        commandValue,
+                                                ).properties.geometry
+                                                    .coordinates,
+                                            )}
+                                    </a>
                                 </SidebarMenuItem>
                             )}
                             {$displayHidingZones &&
