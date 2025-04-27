@@ -83,6 +83,7 @@ export const QuestionCard = ({
                                                 ),
                                             );
                                         }}
+                                        className="mb-2 sm:mb-0"
                                     >
                                         Delete
                                     </AlertDialogAction>

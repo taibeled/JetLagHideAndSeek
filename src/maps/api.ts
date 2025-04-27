@@ -478,12 +478,16 @@ const cacheFetch = async (
 };
 
 export const clearCache = async (cacheType: CacheType = CacheType.CACHE) => {
-    const cache = await determineCache(cacheType);
-    await cache.keys().then((keys) => {
-        keys.forEach((key) => {
-            cache.delete(key);
+    try {
+        const cache = await determineCache(cacheType);
+        await cache.keys().then((keys) => {
+            keys.forEach((key) => {
+                cache.delete(key);
+            });
         });
-    });
+    } catch (e) {
+        console.log(e); // Probably a caches not supported error
+    }
 };
 
 export const prettifyLocation = (location: TentacleLocations) => {
