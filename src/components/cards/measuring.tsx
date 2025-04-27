@@ -129,7 +129,7 @@ export const MeasuringQuestionComponent = ({
                             }
 
                             (data as any).geo.features = boundary
-                                ? [boundary as any]
+                                ? boundary
                                 : [];
                         }
                         data.type = value as any;

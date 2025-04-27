@@ -96,7 +96,7 @@ export const determineMeasuringBoundary = async (
                 ),
             ).features;
 
-            return highSpeedBase(features);
+            return [highSpeedBase(features)];
         }
         case "coastline": {
             const coastline = turf.lineToPolygon(
@@ -112,63 +112,69 @@ export const determineMeasuringBoundary = async (
                 },
             );
 
-            return turf.difference(
-                turf.featureCollection([
-                    turf.bboxPolygon(turf.bbox(mapGeoJSON.get())),
-                    turf.buffer(
-                        turf.bboxClip(
-                            coastline,
-                            bBox
-                                ? bboxExtension(
-                                      bBox as any,
-                                      distanceToCoastline,
-                                  )
-                                : [-180, -90, 180, 90],
-                        ),
-                        distanceToCoastline,
-                        {
-                            units: "miles",
-                            steps: 64,
-                        },
-                    )!,
-                ]),
-            )!;
+            return [
+                turf.difference(
+                    turf.featureCollection([
+                        turf.bboxPolygon(turf.bbox(mapGeoJSON.get())),
+                        turf.buffer(
+                            turf.bboxClip(
+                                coastline,
+                                bBox
+                                    ? bboxExtension(
+                                          bBox as any,
+                                          distanceToCoastline,
+                                      )
+                                    : [-180, -90, 180, 90],
+                            ),
+                            distanceToCoastline,
+                            {
+                                units: "miles",
+                                steps: 64,
+                            },
+                        )!,
+                    ]),
+                )!,
+            ];
         }
         case "airport":
-            return turf.combine(
-                turf.featureCollection(
-                    _.uniqBy(
+            return [
+                turf.combine(
+                    turf.featureCollection(
+                        _.uniqBy(
+                            (
+                                await findPlacesInZone(
+                                    '["aeroway"="aerodrome"]["iata"]', // Only commercial airports have IATA codes,
+                                    "Finding airports...",
+                                )
+                            ).elements,
+                            (feature: any) => feature.tags.iata,
+                        ).map((x: any) =>
+                            turf.point([
+                                x.center ? x.center.lon : x.lon,
+                                x.center ? x.center.lat : x.lat,
+                            ]),
+                        ),
+                    ),
+                ).features[0],
+            ];
+        case "city":
+            return [
+                turf.combine(
+                    turf.featureCollection(
                         (
                             await findPlacesInZone(
-                                '["aeroway"="aerodrome"]["iata"]', // Only commercial airports have IATA codes,
-                                "Finding airports...",
+                                '[place=city]["population"~"^[1-9]+[0-9]{6}$"]', // The regex is faster than (if:number(t["population"])>1000000)
+                                "Finding cities...",
                             )
-                        ).elements,
-                        (feature: any) => feature.tags.iata,
-                    ).map((x: any) =>
-                        turf.point([
-                            x.center ? x.center.lon : x.lon,
-                            x.center ? x.center.lat : x.lat,
-                        ]),
+                        ).elements.map((x: any) =>
+                            turf.point([
+                                x.center ? x.center.lon : x.lon,
+                                x.center ? x.center.lat : x.lat,
+                            ]),
+                        ),
                     ),
-                ),
-            ).features[0];
-        case "city":
-            return turf.combine(
-                turf.featureCollection(
-                    (
-                        await findPlacesInZone(
-                            '[place=city]["population"~"^[1-9]+[0-9]{6}$"]', // The regex is faster than (if:number(t["population"])>1000000)
-                            "Finding cities...",
-                        )
-                    ).elements.map((x: any) =>
-                        turf.point([
-                            x.center ? x.center.lon : x.lon,
-                            x.center ? x.center.lat : x.lat,
-                        ]),
-                    ),
-                ),
-            ).features[0];
+                ).features[0],
+            ];
         case "aquarium-full":
         case "zoo-full":
         case "theme_park-full":
@@ -198,7 +204,7 @@ export const determineMeasuringBoundary = async (
                         location,
                     ).toLowerCase()}s. Please enable hiding zone mode and switch to the Large Game variation of this question.`,
                 );
-                return turf.multiPolygon([]);
+                return [turf.multiPolygon([])];
             }
 
             if (data.elements.length >= 1000) {
@@ -207,24 +213,26 @@ export const determineMeasuringBoundary = async (
                         location,
                     ).toLowerCase()}s found (${data.elements.length}). Please enable hiding zone mode and switch to the Large Game variation of this question.`,
                 );
-                return turf.multiPolygon([]);
+                return [turf.multiPolygon([])];
             }
 
-            return turf.combine(
-                turf.featureCollection(
-                    data.elements.map((x: any) =>
-                        turf.point([
-                            x.center ? x.center.lon : x.lon,
-                            x.center ? x.center.lat : x.lat,
-                        ]),
+            return [
+                turf.combine(
+                    turf.featureCollection(
+                        data.elements.map((x: any) =>
+                            turf.point([
+                                x.center ? x.center.lon : x.lon,
+                                x.center ? x.center.lat : x.lat,
+                            ]),
+                        ),
                     ),
-                ),
-            ).features[0];
+                ).features[0],
+            ];
         }
         case "custom-measure":
             return turf.combine(
                 turf.featureCollection((question as any).geo.features),
-            ).features[0];
+            ).features;
         case "aquarium":
         case "zoo":
         case "theme_park":
@@ -250,9 +258,16 @@ const bufferedDeterminer = _.memoize(
 
         const questionPoint = turf.point([question.lng, question.lat]);
 
-        let buffer = turf.buffer(placeData, 0.001, {
-            units: "miles",
-        })!;
+        let buffer = unionize(
+            turf.featureCollection(
+                placeData.map(
+                    (x) =>
+                        turf.buffer(x, 0.001, {
+                            units: "miles",
+                        })!,
+                ),
+            ),
+        );
         let distance = turf.pointToPolygonDistance(questionPoint, buffer, {
             units: "miles",
             method: "geodesic",
