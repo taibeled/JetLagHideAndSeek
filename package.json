@@ -68,6 +68,7 @@
         "eslint-plugin-react": "^7.37.4",
         "globals": "^16.0.0",
         "prettier": "3.5.0",
+        "type-fest": "^4.40.1",
         "typescript-eslint": "^8.24.0"
     }
 }

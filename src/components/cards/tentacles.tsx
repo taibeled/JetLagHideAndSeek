@@ -30,6 +30,7 @@ import type {
 } from "@/lib/schema";
 import { UnitSelect } from "../UnitSelect";
 import * as turf from "@turf/turf";
+import type { KeysOfUnion, ValueOf } from "type-fest";
 
 export const TentacleQuestionComponent = ({
     data,
@@ -54,6 +55,21 @@ export const TentacleQuestionComponent = ({
             .map((q) => q.key)
             .indexOf(questionKey) + 1
     }`;
+
+    const tentacleGroups = {
+        "": { custom: "Custom Locations" },
+        "15 Miles (Typically)": {
+            theme_park: "Theme Parks",
+            zoo: "Zoos",
+            aquarium: "Aquariums",
+        },
+        "1 Mile (Typically)": {
+            museum: "Museums",
+            hospital: "Hospitals",
+            cinema: "Movie Theater",
+            library: "Library",
+        },
+    };
 
     return (
         <QuestionCard
@@ -88,7 +104,10 @@ export const TentacleQuestionComponent = ({
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
                     value={data.locationType}
-                    onValueChange={async (value) => {
+                    onValueChange={async (untypedValue) => {
+                        const value = untypedValue as KeysOfUnion<
+                            ValueOf<typeof tentacleGroups>
+                        >;
                         if (value === "custom") {
                             const priorLocations = await findTentacleLocations(
                                 data as TraditionalTentacleQuestion,
@@ -107,7 +126,7 @@ export const TentacleQuestionComponent = ({
                             data.location = false;
                         } else {
                             data.location = false;
-                            data.locationType = value as any;
+                            data.locationType = value;
                         }
                         questionModified();
                     }}
@@ -117,24 +136,23 @@ export const TentacleQuestionComponent = ({
                         <SelectValue placeholder="Location Type" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="custom">Custom Locations</SelectItem>
-                        <SelectGroup>
-                            <SelectLabel>15 Miles (Typically)</SelectLabel>
-                            <SelectItem value="theme_park">
-                                Theme Parks
-                            </SelectItem>
-                            <SelectItem value="zoo">Zoos</SelectItem>
-                            <SelectItem value="aquarium">Aquariums</SelectItem>
-                        </SelectGroup>
-                        <SelectGroup>
-                            <SelectLabel>1 Mile (Typically)</SelectLabel>
-                            <SelectItem value="museum">Museums</SelectItem>
-                            <SelectItem value="hospital">Hospitals</SelectItem>
-                            <SelectItem value="cinema">
-                                Movie Theater
-                            </SelectItem>
-                            <SelectItem value="library">Library</SelectItem>
-                        </SelectGroup>
+                        {Object.entries(tentacleGroups).map(
+                            ([children, types]) => (
+                                <SelectGroup key={children}>
+                                    {children && (
+                                        <SelectLabel {...{ children }} />
+                                    )}
+                                    {Object.entries(types).map(
+                                        ([value, children]) => (
+                                            <SelectItem
+                                                key={value}
+                                                {...{ value, children }}
+                                            />
+                                        ),
+                                    )}
+                                </SelectGroup>
+                            ),
+                        )}
                     </SelectContent>
                 </Select>
             </SidebarMenuItem>
