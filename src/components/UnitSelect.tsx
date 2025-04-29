@@ -1,11 +1,5 @@
 import type { Units } from "@/lib/schema";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "./ui/select";
+import { Select } from "./ui/select";
 
 export const UnitSelect = ({
     unit,
@@ -17,15 +11,16 @@ export const UnitSelect = ({
     disabled?: boolean;
 }) => {
     return (
-        <Select disabled={disabled} value={unit} onValueChange={onChange}>
-            <SelectTrigger>
-                <SelectValue placeholder="Unit" />
-            </SelectTrigger>
-            <SelectContent>
-                <SelectItem value="miles">Miles</SelectItem>
-                <SelectItem value="kilometers">Kilometers</SelectItem>
-                <SelectItem value="meters">Meters</SelectItem>
-            </SelectContent>
-        </Select>
+        <Select
+            trigger="Unit"
+            options={{
+                miles: "Miles",
+                kilometers: "Kilometers",
+                meters: "Meters",
+            }}
+            disabled={disabled}
+            value={unit}
+            onValueChange={onChange}
+        />
     );
 };

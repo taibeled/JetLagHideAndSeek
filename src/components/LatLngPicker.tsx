@@ -6,13 +6,7 @@ import {
 } from "./ui/sidebar-l";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "./ui/select";
+import { Select } from "./ui/select";
 import { isLoading } from "@/lib/context";
 
 export const LatitudeLongitude = ({
@@ -54,6 +48,11 @@ export const LatitudeLongitude = ({
                     disabled={disabled}
                 />
                 <Select
+                    trigger={{
+                        placeholder: "Direction",
+                        className: "max-w-[55px]",
+                    }}
+                    options={{ north: "N", south: "S" }}
                     onValueChange={(value) =>
                         onChange(
                             value === "north"
@@ -64,15 +63,7 @@ export const LatitudeLongitude = ({
                     }
                     value={latitude > 0 ? "north" : "south"}
                     disabled={disabled}
-                >
-                    <SelectTrigger className="max-w-[55px]">
-                        <SelectValue placeholder="Direction"></SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="north">N</SelectItem>
-                        <SelectItem value="south">S</SelectItem>
-                    </SelectContent>
-                </Select>
+                />
             </SidebarMenuItem>
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Label className="leading-5">{lngLabel}</Label>
@@ -93,6 +84,11 @@ export const LatitudeLongitude = ({
                     disabled={disabled}
                 />
                 <Select
+                    trigger={{
+                        placeholder: "Direction",
+                        className: "max-w-[55px]",
+                    }}
+                    options={{ east: "E", west: "W" }}
                     onValueChange={(value) =>
                         onChange(
                             null,
@@ -103,15 +99,7 @@ export const LatitudeLongitude = ({
                     }
                     value={longitude > 0 ? "east" : "west"}
                     disabled={disabled}
-                >
-                    <SelectTrigger className="max-w-[55px]">
-                        <SelectValue placeholder="Direction"></SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="east">E</SelectItem>
-                        <SelectItem value="west">W</SelectItem>
-                    </SelectContent>
-                </Select>
+                />
             </SidebarMenuItem>
             <SidebarMenuItem>
                 <SidebarMenuButton
