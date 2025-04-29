@@ -1,15 +1,15 @@
-import type { RadiusQuestion } from "../../lib/schema";
+import type { RadiusQuestion } from "@/lib/schema";
 import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 import {
     hiderMode,
     questionModified,
     questions,
     triggerLocalRefresh,
     isLoading,
-} from "../../lib/context";
-import { iconColors } from "../../maps/api";
+} from "@/lib/context";
+import { iconColors } from "@/maps/api";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
 import { Input } from "../ui/input";
 import { Checkbox } from "../ui/checkbox";
