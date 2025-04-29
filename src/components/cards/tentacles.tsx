@@ -1,7 +1,7 @@
 import { Suspense, use } from "react";
 import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 import {
     drawingQuestionKey,
     hiderMode,
@@ -9,8 +9,8 @@ import {
     questions,
     triggerLocalRefresh,
     isLoading,
-} from "../../lib/context";
-import { findTentacleLocations, iconColors } from "../../maps/api";
+} from "@/lib/context";
+import { findTentacleLocations, iconColors } from "@/maps/api";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
 import { Input } from "../ui/input";
 import {

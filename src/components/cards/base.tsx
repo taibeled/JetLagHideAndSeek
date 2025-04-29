@@ -1,8 +1,8 @@
 import { VscChromeClose, VscChevronDown } from "react-icons/vsc";
 import { useState } from "react";
 import { useStore } from "@nanostores/react";
-import { cn } from "../../lib/utils";
-import { questions } from "../../lib/context";
+import { cn } from "@/lib/utils";
+import { questions } from "@/lib/context";
 import {
     SidebarGroup,
     SidebarGroupContent,
