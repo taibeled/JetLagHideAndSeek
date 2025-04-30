@@ -21,7 +21,7 @@ import { holedMask, unionize } from "./geo-utils";
 import type {
     HomeGameMatchingQuestions,
     MatchingQuestion,
-    TentacleLocations,
+    APILocations,
 } from "@/lib/schema";
 import type {
     Feature,
@@ -77,7 +77,7 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
         case "park-full": {
             const location = question.type.split(
                 "-full",
-            )[0] as TentacleLocations;
+            )[0] as APILocations;
 
             const data = await findPlacesInZone(
                 `[${locationFirstTag[location]}=${location}]`,

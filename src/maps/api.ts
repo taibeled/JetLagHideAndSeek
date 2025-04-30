@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import type {
     HomeGameMatchingQuestions,
     HomeGameMeasuringQuestions,
-    TentacleLocations,
+    APILocations,
 } from "@/lib/schema";
 
 export interface OpenStreetMap {
@@ -98,7 +98,7 @@ export const determineGeoJSON = async (
 };
 
 export const locationFirstTag: {
-    [key in TentacleLocations]:
+    [key in APILocations]:
         | "amenity"
         | "tourism"
         | "leisure"
@@ -490,7 +490,7 @@ export const clearCache = async (cacheType: CacheType = CacheType.CACHE) => {
     }
 };
 
-export const prettifyLocation = (location: TentacleLocations) => {
+export const prettifyLocation = (location: APILocations) => {
     switch (location) {
         case "aquarium":
             return "Aquarium";

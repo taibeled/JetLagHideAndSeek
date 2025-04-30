@@ -67,17 +67,25 @@ const radiusQuestionSchema = ordinaryBaseQuestionSchema.extend({
     within: z.boolean().default(true),
 });
 
-const tentacleLocationsSchema = z.union([
+const tentacleLocationsFifteen = z.union([
     z.literal("aquarium"),
     z.literal("zoo"),
     z.literal("theme_park"),
+]);
+
+const tentacleLocationsOne = z.union([
     z.literal("museum"),
     z.literal("hospital"),
     z.literal("cinema"),
     z.literal("library"),
+]);
+
+const apiLocationSchema = z.union([
     z.literal("golf_course"),
     z.literal("consulate"),
     z.literal("park"),
+    tentacleLocationsFifteen,
+    tentacleLocationsOne,
 ]);
 
 const baseTentacleQuestionSchema = ordinaryBaseQuestionSchema.extend({
@@ -101,7 +109,9 @@ const baseTentacleQuestionSchema = ordinaryBaseQuestionSchema.extend({
         .default(false),
 });
 const tentacleQuestionSpecificSchema = baseTentacleQuestionSchema.extend({
-    locationType: tentacleLocationsSchema.default("theme_park"),
+    locationType: z
+        .union([tentacleLocationsFifteen, tentacleLocationsOne])
+        .default("theme_park"),
     places: z.array(z.any()).optional(),
 });
 
@@ -135,9 +145,6 @@ const ordinaryMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
     type: z.union([
         z.literal("airport"),
         z.literal("major-city"),
-        z.literal("same-first-letter-station"),
-        z.literal("same-length-station"),
-        z.literal("same-train-line"),
         z.literal("aquarium-full"),
         z.literal("zoo-full"),
         z.literal("theme_park-full"),
@@ -186,6 +193,14 @@ const homeGameMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
     ]),
 });
 
+const hidingZoneMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
+    type: z.union([
+        z.literal("same-first-letter-station"),
+        z.literal("same-length-station"),
+        z.literal("same-train-line"),
+    ]),
+});
+
 const customMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
     type: z.union([z.literal("custom-zone"), z.literal("custom-points")]),
     geo: z.any(),
@@ -195,6 +210,7 @@ const matchingQuestionSchema = z.union([
     zoneMatchingQuestionsSchema,
     ordinaryMatchingQuestionSchema,
     homeGameMatchingQuestionsSchema,
+    hidingZoneMatchingQuestionsSchema,
     customMatchingQuestionSchema,
 ]);
 
@@ -208,9 +224,6 @@ const ordinaryMeasuringQuestionSchema = baseMeasuringQuestionSchema.extend({
             z.literal("coastline"),
             z.literal("airport"),
             z.literal("city"),
-            z.literal("mcdonalds"),
-            z.literal("seven11"),
-            z.literal("rail-measure"),
             z.literal("highspeed-measure-shinkansen"),
             z.literal("aquarium-full"),
             z.literal("zoo-full"),
@@ -224,6 +237,14 @@ const ordinaryMeasuringQuestionSchema = baseMeasuringQuestionSchema.extend({
             z.literal("park-full"),
         ])
         .default("coastline"),
+});
+
+const hidingZoneMeasuringQuestionsSchema = baseMeasuringQuestionSchema.extend({
+    type: z.union([
+        z.literal("mcdonalds"),
+        z.literal("seven11"),
+        z.literal("rail-measure"),
+    ]),
 });
 
 const homeGameMeasuringQuestionsSchema = baseMeasuringQuestionSchema.extend({
@@ -248,6 +269,7 @@ const customMeasuringQuestionSchema = baseMeasuringQuestionSchema.extend({
 
 const measuringQuestionSchema = z.union([
     ordinaryMeasuringQuestionSchema,
+    hidingZoneMeasuringQuestionsSchema,
     homeGameMeasuringQuestionsSchema,
     customMeasuringQuestionSchema,
 ]);
@@ -286,7 +308,7 @@ export type Units = z.infer<typeof unitsSchema>;
 export type RadiusQuestion = z.infer<typeof radiusQuestionSchema>;
 export type ThermometerQuestion = z.infer<typeof thermometerQuestionSchema>;
 export type TentacleQuestion = z.infer<typeof tentacleQuestionSchema>;
-export type TentacleLocations = z.infer<typeof tentacleLocationsSchema>;
+export type APILocations = z.infer<typeof apiLocationSchema>;
 export type MatchingQuestion = z.infer<typeof matchingQuestionSchema>;
 export type HomeGameMatchingQuestions = z.infer<
     typeof homeGameMatchingQuestionsSchema
