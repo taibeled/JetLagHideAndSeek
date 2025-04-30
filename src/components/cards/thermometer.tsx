@@ -1,14 +1,14 @@
 import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 import {
     hiderMode,
     questionModified,
     questions,
     triggerLocalRefresh,
     isLoading,
-} from "../../lib/context";
-import { iconColors } from "../../maps/api";
+} from "@/lib/context";
+import { iconColors } from "@/maps/api";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
 import { Checkbox } from "../ui/checkbox";
 import { Separator } from "../ui/separator";

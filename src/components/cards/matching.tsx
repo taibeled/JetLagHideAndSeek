@@ -1,6 +1,6 @@
 import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
-import { cn, mapToObj } from "../../lib/utils";
+import { cn, mapToObj } from "@/lib/utils";
 import {
     displayHidingZones,
     drawingQuestionKey,
@@ -9,9 +9,9 @@ import {
     questionModified,
     questions,
     triggerLocalRefresh,
-} from "../../lib/context";
-import { iconColors, prettifyLocation } from "../../maps/api";
-import type { MatchingQuestion } from "../../lib/schema";
+} from "@/lib/context";
+import { iconColors, prettifyLocation } from "@/maps/api";
+import type { MatchingQuestion } from "@/lib/schema";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
 import { Select } from "../ui/select";
 import { Checkbox } from "../ui/checkbox";
