@@ -1,6 +1,6 @@
 import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
-import { cn, mapToObj } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import {
     displayHidingZones,
     drawingQuestionKey,
@@ -10,8 +10,13 @@ import {
     questions,
     triggerLocalRefresh,
 } from "@/lib/context";
-import { iconColors, prettifyLocation } from "@/maps/api";
-import type { MatchingQuestion } from "@/lib/schema";
+import { iconColors } from "@/maps/api";
+import {
+    determineUnionizedStrings,
+    matchingQuestionSchema,
+    NO_GROUP,
+    type MatchingQuestion,
+} from "@/lib/schema";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
 import { Select } from "../ui/select";
 import { Checkbox } from "../ui/checkbox";
@@ -157,64 +162,53 @@ export const MatchingQuestionComponent = ({
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
                     trigger="Matching Type"
-                    options={{
-                        zone: "Zone Question",
-                        "letter-zone": "Zone Starts With Same Letter Question",
-                        "custom-zone": "Custom Zone Question",
-                        airport: "Closest Commercial Airport In Zone Question",
-                        "major-city":
-                            "Closest Major City (1,000,000+ people) In Zone Question",
-                        "custom-points": "Custom Points Question",
-                        ...mapToObj(
-                            [
-                                "aquarium",
-                                "zoo",
-                                "theme_park",
-                                "museum",
-                                "hospital",
-                                "cinema",
-                                "library",
-                                "golf_course",
-                                "consulate",
-                                "park",
-                            ] as const,
-                            (location) => [
-                                `${location}-full`,
-                                `${prettifyLocation(location)} Question (Small+Medium Games)`,
-                            ],
-                        ),
-                    }}
-                    groups={{
-                        "Hiding Zone Mode": {
-                            disabled: !$displayHidingZones,
-                            options: {
-                                "same-first-letter-station":
-                                    "Station Starts With Same Letter Question",
-                                "same-length-station":
-                                    "Station Has Same Length Question",
-                                "same-train-line":
-                                    "Station On Same Train Line Question",
-                                ...mapToObj(
-                                    [
-                                        "aquarium",
-                                        "zoo",
-                                        "theme_park",
-                                        "museum",
-                                        "hospital",
-                                        "cinema",
-                                        "library",
-                                        "golf_course",
-                                        "consulate",
-                                        "park",
-                                    ] as const,
-                                    (location) => [
-                                        location,
-                                        `${prettifyLocation(location)} Question (Large Game)`,
+                    options={Object.fromEntries(
+                        matchingQuestionSchema.options
+                            .filter((x) => x.description === NO_GROUP)
+                            .flatMap((x) =>
+                                determineUnionizedStrings(x.shape.type),
+                            )
+                            .map((x) => [(x._def as any).value, x.description]),
+                    )}
+                    groups={matchingQuestionSchema.options
+                        .filter((x) => x.description !== NO_GROUP)
+                        .map((x) => [
+                            x.description,
+                            Object.fromEntries(
+                                determineUnionizedStrings(x.shape.type).map(
+                                    (x) => [
+                                        (x._def as any).value,
+                                        x.description,
                                     ],
                                 ),
+                            ),
+                        ])
+                        .reduce(
+                            (acc, [key, value]) => {
+                                const values = {
+                                    disabled: !$displayHidingZones,
+                                    options: value,
+                                };
+
+                                if (acc[key]) {
+                                    acc[key].options = {
+                                        ...acc[key].options,
+                                        ...value,
+                                    };
+                                } else {
+                                    acc[key] = values;
+                                }
+
+                                return acc;
                             },
-                        },
-                    }}
+                            {} as Record<
+                                string,
+                                {
+                                    disabled: boolean;
+                                    options: Record<string, string>;
+                                }
+                            >,
+                        )}
                     value={data.type}
                     onValueChange={async (value) => {
                         if (value === "custom-zone") {

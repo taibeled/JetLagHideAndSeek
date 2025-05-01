@@ -17,7 +17,7 @@ import { Select } from "../ui/select";
 import { Checkbox } from "../ui/checkbox";
 import { QuestionCard } from "./base";
 import {
-    determineUnionedStrings,
+    determineUnionizedStrings,
     NO_GROUP,
     tentacleQuestionSchema,
     type TentacleQuestion,
@@ -87,7 +87,7 @@ export const TentacleQuestionComponent = ({
                         tentacleQuestionSchema.options
                             .filter((x) => x.description === NO_GROUP)
                             .flatMap((x) =>
-                                determineUnionedStrings(x.shape.locationType),
+                                determineUnionizedStrings(x.shape.locationType),
                             )
                             .map((x) => [(x._def as any).value, x.description]),
                     )}
@@ -97,7 +97,7 @@ export const TentacleQuestionComponent = ({
                             .map((x) => [
                                 x.description,
                                 Object.fromEntries(
-                                    determineUnionedStrings(
+                                    determineUnionizedStrings(
                                         x.shape.locationType,
                                     ).map((x) => [
                                         (x._def as any).value,
