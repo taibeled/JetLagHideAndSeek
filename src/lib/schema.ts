@@ -1,6 +1,23 @@
 import { iconColors } from "@/maps/api";
 import { z } from "zod";
 
+export const NO_GROUP = "NO_GROUP";
+
+export const determineUnionedStrings = (
+    obj: z.ZodUnion<any> | z.ZodLiteral<any> | z.ZodDefault<any>,
+): z.ZodLiteral<any>[] => {
+    if (obj instanceof z.ZodUnion) {
+        return obj.options.flatMap((option: any) =>
+            determineUnionedStrings(option),
+        );
+    } else if (obj instanceof z.ZodLiteral) {
+        return [obj];
+    } else if (obj instanceof z.ZodDefault) {
+        return determineUnionedStrings(obj._def.innerType);
+    }
+    return [];
+};
+
 const unitsSchema = z.union([
     z.literal("miles"),
     z.literal("kilometers"),
@@ -68,16 +85,16 @@ const radiusQuestionSchema = ordinaryBaseQuestionSchema.extend({
 });
 
 const tentacleLocationsFifteen = z.union([
-    z.literal("aquarium"),
-    z.literal("zoo"),
-    z.literal("theme_park"),
+    z.literal("theme_park").describe("Theme Parks"),
+    z.literal("zoo").describe("Zoos"),
+    z.literal("aquarium").describe("Aquariums"),
 ]);
 
 const tentacleLocationsOne = z.union([
-    z.literal("museum"),
-    z.literal("hospital"),
-    z.literal("cinema"),
-    z.literal("library"),
+    z.literal("museum").describe("Museums"),
+    z.literal("hospital").describe("Hospitals"),
+    z.literal("cinema").describe("Movie Theaters"),
+    z.literal("library").describe("Libraries"),
 ]);
 
 const apiLocationSchema = z.union([
@@ -108,15 +125,26 @@ const baseTentacleQuestionSchema = ordinaryBaseQuestionSchema.extend({
         ])
         .default(false),
 });
-const tentacleQuestionSpecificSchema = baseTentacleQuestionSchema.extend({
-    locationType: z
-        .union([tentacleLocationsFifteen, tentacleLocationsOne])
-        .default("theme_park"),
+const tentacleQuestionSpecificSchemaFifteen = baseTentacleQuestionSchema.extend(
+    {
+        locationType: tentacleLocationsFifteen.default("theme_park"),
+        places: z.array(z.any()).optional(),
+    },
+);
+
+const tentacleQuestionSpecificSchemaOne = baseTentacleQuestionSchema.extend({
+    locationType: tentacleLocationsOne,
+    places: z.array(z.any()).optional(),
+});
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const encompassingTentacleQuestionSchema = baseTentacleQuestionSchema.extend({
+    locationType: apiLocationSchema,
     places: z.array(z.any()).optional(),
 });
 
 const customTentacleQuestionSchema = baseTentacleQuestionSchema.extend({
-    locationType: z.literal("custom"),
+    locationType: z.literal("custom").describe("Custom Locations"),
     places: z.array(
         z.object({
             type: z.literal("Feature"),
@@ -132,9 +160,10 @@ const customTentacleQuestionSchema = baseTentacleQuestionSchema.extend({
     ),
 });
 
-const tentacleQuestionSchema = z.union([
-    tentacleQuestionSpecificSchema,
-    customTentacleQuestionSchema,
+export const tentacleQuestionSchema = z.union([
+    customTentacleQuestionSchema.describe(NO_GROUP),
+    tentacleQuestionSpecificSchemaFifteen.describe("15 Miles (Typically)"),
+    tentacleQuestionSpecificSchemaOne.describe("1 Mile (Typically)"),
 ]);
 
 const baseMatchingQuestionSchema = ordinaryBaseQuestionSchema.extend({
@@ -329,8 +358,11 @@ export type Questions = z.infer<typeof questionsSchema>;
 export type DeepPartial<T> = {
     [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
-export type TraditionalTentacleQuestion = z.infer<
-    typeof tentacleQuestionSpecificSchema
+export type TraditionalTentacleQuestion =
+    | z.infer<typeof tentacleQuestionSpecificSchemaFifteen>
+    | z.infer<typeof tentacleQuestionSpecificSchemaOne>;
+export type EncompassingTentacleQuestionSchema = z.infer<
+    typeof encompassingTentacleQuestionSchema
 >;
 export type CustomTentacleQuestion = z.infer<
     typeof customTentacleQuestionSchema

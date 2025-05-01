@@ -75,9 +75,7 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
         case "golf_course-full":
         case "consulate-full":
         case "park-full": {
-            const location = question.type.split(
-                "-full",
-            )[0] as APILocations;
+            const location = question.type.split("-full")[0] as APILocations;
 
             const data = await findPlacesInZone(
                 `[${locationFirstTag[location]}=${location}]`,

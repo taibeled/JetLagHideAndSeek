@@ -16,9 +16,12 @@ import { Input } from "../ui/input";
 import { Select } from "../ui/select";
 import { Checkbox } from "../ui/checkbox";
 import { QuestionCard } from "./base";
-import type {
-    TentacleQuestion,
-    TraditionalTentacleQuestion,
+import {
+    determineUnionedStrings,
+    NO_GROUP,
+    tentacleQuestionSchema,
+    type TentacleQuestion,
+    type TraditionalTentacleQuestion,
 } from "@/lib/schema";
 import { UnitSelect } from "../UnitSelect";
 import * as turf from "@turf/turf";
@@ -80,20 +83,29 @@ export const TentacleQuestionComponent = ({
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
                     trigger="Location Type"
-                    options={{ custom: "Custom Locations" }}
-                    groups={{
-                        "15 Miles (Typically)": {
-                            theme_park: "Theme Parks",
-                            zoo: "Zoos",
-                            aquarium: "Aquariums",
-                        },
-                        "1 Mile (Typically)": {
-                            museum: "Museums",
-                            hospital: "Hospitals",
-                            cinema: "Movie Theater",
-                            library: "Library",
-                        },
-                    }}
+                    options={Object.fromEntries(
+                        tentacleQuestionSchema.options
+                            .filter((x) => x.description === NO_GROUP)
+                            .flatMap((x) =>
+                                determineUnionedStrings(x.shape.locationType),
+                            )
+                            .map((x) => [(x._def as any).value, x.description]),
+                    )}
+                    groups={Object.fromEntries(
+                        tentacleQuestionSchema.options
+                            .filter((x) => x.description !== NO_GROUP)
+                            .map((x) => [
+                                x.description,
+                                Object.fromEntries(
+                                    determineUnionedStrings(
+                                        x.shape.locationType,
+                                    ).map((x) => [
+                                        (x._def as any).value,
+                                        x.description,
+                                    ]),
+                                ),
+                            ]),
+                    )}
                     value={data.locationType}
                     onValueChange={async (value) => {
                         if (value === "custom") {
