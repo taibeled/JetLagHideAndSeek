@@ -1,6 +1,6 @@
 import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
-import { cn, mapToObj } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import {
     displayHidingZones,
     drawingQuestionKey,
@@ -10,12 +10,17 @@ import {
     triggerLocalRefresh,
     isLoading,
 } from "@/lib/context";
-import { iconColors, prettifyLocation } from "@/maps/api";
+import { iconColors } from "@/maps/api";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
 import { Select } from "../ui/select";
 import { Checkbox } from "../ui/checkbox";
 import { QuestionCard } from "./base";
-import type { MeasuringQuestion } from "@/lib/schema";
+import {
+    determineUnionizedStrings,
+    measuringQuestionSchema,
+    NO_GROUP,
+    type MeasuringQuestion,
+} from "@/lib/schema";
 import { determineMeasuringBoundary } from "@/maps/measuring";
 
 export const MeasuringQuestionComponent = ({
@@ -111,60 +116,53 @@ export const MeasuringQuestionComponent = ({
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
                     trigger="Measuring Type"
-                    options={{
-                        coastline: "Coastline Question",
-                        airport: "Commercial Airport In Zone Question",
-                        city: "Major City (1,000,000+ people) Question",
-                        "highspeed-measure-shinkansen":
-                            "High-Speed Rail Question",
-                        ...mapToObj(
-                            [
-                                "aquarium",
-                                "zoo",
-                                "theme_park",
-                                "museum",
-                                "hospital",
-                                "cinema",
-                                "library",
-                                "golf_course",
-                                "consulate",
-                                "park",
-                            ] as const,
-                            (location) => [
-                                `${location}-full`,
-                                `${prettifyLocation(location)} Question (Small+Medium Games)`,
-                            ],
-                        ),
-                        "custom-measure": "Custom Measuring Question",
-                    }}
-                    groups={{
-                        "Hiding Zone Mode": {
-                            disabled: !$displayHidingZones,
-                            options: {
-                                mcdonalds: "McDonald's Question",
-                                seven11: "7-Eleven Question",
-                                "rail-measure": "Train Station Question",
-                                ...mapToObj(
-                                    [
-                                        "aquarium",
-                                        "zoo",
-                                        "theme_park",
-                                        "museum",
-                                        "hospital",
-                                        "cinema",
-                                        "library",
-                                        "golf_course",
-                                        "consulate",
-                                        "park",
-                                    ] as const,
-                                    (location) => [
-                                        location,
-                                        `${prettifyLocation(location)} Question (Large Game)`,
+                    options={Object.fromEntries(
+                        measuringQuestionSchema.options
+                            .filter((x) => x.description === NO_GROUP)
+                            .flatMap((x) =>
+                                determineUnionizedStrings(x.shape.type),
+                            )
+                            .map((x) => [(x._def as any).value, x.description]),
+                    )}
+                    groups={measuringQuestionSchema.options
+                        .filter((x) => x.description !== NO_GROUP)
+                        .map((x) => [
+                            x.description,
+                            Object.fromEntries(
+                                determineUnionizedStrings(x.shape.type).map(
+                                    (x) => [
+                                        (x._def as any).value,
+                                        x.description,
                                     ],
                                 ),
+                            ),
+                        ])
+                        .reduce(
+                            (acc, [key, value]) => {
+                                const values = {
+                                    disabled: !$displayHidingZones,
+                                    options: value,
+                                };
+
+                                if (acc[key]) {
+                                    acc[key].options = {
+                                        ...acc[key].options,
+                                        ...value,
+                                    };
+                                } else {
+                                    acc[key] = values;
+                                }
+
+                                return acc;
                             },
-                        },
-                    }}
+                            {} as Record<
+                                string,
+                                {
+                                    disabled: boolean;
+                                    options: Record<string, string>;
+                                }
+                            >,
+                        )}
                     value={data.type}
                     onValueChange={async (value) => {
                         if (value === "custom-measure") {
