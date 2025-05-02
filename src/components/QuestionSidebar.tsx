@@ -1,6 +1,7 @@
 import {
     Sidebar,
     SidebarContent,
+    SidebarContext,
     SidebarGroup,
     SidebarGroupContent,
     SidebarMenu,
@@ -25,6 +26,7 @@ import {
     ThermometerQuestionComponent,
 } from "./QuestionCards";
 import * as turf from "@turf/turf";
+import { SidebarCloseIcon } from "lucide-react";
 
 export const QuestionSidebar = () => {
     useStore(triggerLocalRefresh);
@@ -34,7 +36,12 @@ export const QuestionSidebar = () => {
 
     return (
         <Sidebar>
-            <h2 className="ml-4 mt-4 font-poppins text-2xl">Questions</h2>
+            <div className="flex items-center justify-between">
+                <h2 className="ml-4 mt-4 font-poppins text-2xl">Questions</h2>
+                <SidebarCloseIcon className="mr-2 visible md:hidden" onClick={() => {
+                    SidebarContext.get().setOpenMobile(false);
+                }} />  
+            </div>
             <SidebarContent>
                 {$questions.map((question) => {
                     switch (question.id) {

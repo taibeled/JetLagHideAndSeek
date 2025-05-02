@@ -1,6 +1,7 @@
 import {
     Sidebar,
     SidebarContent,
+    SidebarContext,
     SidebarGroup,
     SidebarGroupContent,
     SidebarMenu,
@@ -52,6 +53,7 @@ import { Input } from "./ui/input";
 import { Select } from "@/components/ui/select";
 import { geoSpatialVoronoi } from "@/maps/voronoi";
 import { ScrollToTop } from "./ui/scroll-to-top";
+import { SidebarCloseIcon } from "lucide-react";
 
 let buttonJustClicked = false;
 
@@ -373,7 +375,15 @@ export const ZoneSidebar = () => {
 
     return (
         <Sidebar side="right">
-            <h2 className="ml-4 mt-4 font-poppins text-2xl">Hiding Zone</h2>
+            <div className="flex items-center justify-between">
+                <h2 className="ml-4 mt-4 font-poppins text-2xl">Hiding Zone</h2>
+                <SidebarCloseIcon
+                    className="mr-2 visible md:hidden scale-x-[-1]"
+                    onClick={() => {
+                        SidebarContext.get().setOpenMobile(false);
+                    }}
+                />
+            </div>
             <SidebarContent ref={sidebarRef}>
                 <ScrollToTop element={sidebarRef} minHeight={500} />
                 <SidebarGroup>
