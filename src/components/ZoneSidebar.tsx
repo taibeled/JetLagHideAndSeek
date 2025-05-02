@@ -49,13 +49,7 @@ import { toast } from "react-toastify";
 import _ from "lodash";
 import { MultiSelect } from "./ui/multi-select";
 import { Input } from "./ui/input";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { Select } from "@/components/ui/select";
 import { geoSpatialVoronoi } from "@/maps/voronoi";
 import { ScrollToTop } from "./ui/scroll-to-top";
 
@@ -466,16 +460,12 @@ export const ZoneSidebar = () => {
                                         }}
                                         disabled={$isLoading}
                                     />
-                                    <Select value="miles" disabled>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Unit" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="miles">
-                                                Miles
-                                            </SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    <Select
+                                        trigger="Unit"
+                                        value="miles"
+                                        options={{ miles: "Miles" }}
+                                        disabled
+                                    />
                                 </div>
                             </SidebarMenuItem>
                             {$displayHidingZones && stations.length > 0 && (

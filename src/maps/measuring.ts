@@ -27,7 +27,7 @@ import osmtogeojson from "osmtogeojson";
 import type {
     MeasuringQuestion,
     HomeGameMeasuringQuestions,
-    TentacleLocations,
+    APILocations,
 } from "@/lib/schema";
 import { toast } from "react-toastify";
 
@@ -185,9 +185,7 @@ export const determineMeasuringBoundary = async (
         case "golf_course-full":
         case "consulate-full":
         case "park-full": {
-            const location = question.type.split(
-                "-full",
-            )[0] as TentacleLocations;
+            const location = question.type.split("-full")[0] as APILocations;
 
             const data = await findPlacesInZone(
                 `[${locationFirstTag[location]}=${location}]`,

@@ -1,6 +1,23 @@
 import { iconColors } from "@/maps/api";
 import { z } from "zod";
 
+export const NO_GROUP = "NO_GROUP";
+
+export const determineUnionizedStrings = (
+    obj: z.ZodUnion<any> | z.ZodLiteral<any> | z.ZodDefault<any>,
+): z.ZodLiteral<any>[] => {
+    if (obj instanceof z.ZodUnion) {
+        return obj.options.flatMap((option: any) =>
+            determineUnionizedStrings(option),
+        );
+    } else if (obj instanceof z.ZodLiteral) {
+        return [obj];
+    } else if (obj instanceof z.ZodDefault) {
+        return determineUnionizedStrings(obj._def.innerType);
+    }
+    return [];
+};
+
 const unitsSchema = z.union([
     z.literal("miles"),
     z.literal("kilometers"),
@@ -67,17 +84,25 @@ const radiusQuestionSchema = ordinaryBaseQuestionSchema.extend({
     within: z.boolean().default(true),
 });
 
-const tentacleLocationsSchema = z.union([
-    z.literal("aquarium"),
-    z.literal("zoo"),
-    z.literal("theme_park"),
-    z.literal("museum"),
-    z.literal("hospital"),
-    z.literal("cinema"),
-    z.literal("library"),
+const tentacleLocationsFifteen = z.union([
+    z.literal("theme_park").describe("Theme Parks"),
+    z.literal("zoo").describe("Zoos"),
+    z.literal("aquarium").describe("Aquariums"),
+]);
+
+const tentacleLocationsOne = z.union([
+    z.literal("museum").describe("Museums"),
+    z.literal("hospital").describe("Hospitals"),
+    z.literal("cinema").describe("Movie Theaters"),
+    z.literal("library").describe("Libraries"),
+]);
+
+const apiLocationSchema = z.union([
     z.literal("golf_course"),
     z.literal("consulate"),
     z.literal("park"),
+    tentacleLocationsFifteen,
+    tentacleLocationsOne,
 ]);
 
 const baseTentacleQuestionSchema = ordinaryBaseQuestionSchema.extend({
@@ -100,13 +125,26 @@ const baseTentacleQuestionSchema = ordinaryBaseQuestionSchema.extend({
         ])
         .default(false),
 });
-const tentacleQuestionSpecificSchema = baseTentacleQuestionSchema.extend({
-    locationType: tentacleLocationsSchema.default("theme_park"),
+const tentacleQuestionSpecificSchemaFifteen = baseTentacleQuestionSchema.extend(
+    {
+        locationType: tentacleLocationsFifteen.default("theme_park"),
+        places: z.array(z.any()).optional(),
+    },
+);
+
+const tentacleQuestionSpecificSchemaOne = baseTentacleQuestionSchema.extend({
+    locationType: tentacleLocationsOne,
+    places: z.array(z.any()).optional(),
+});
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const encompassingTentacleQuestionSchema = baseTentacleQuestionSchema.extend({
+    locationType: apiLocationSchema,
     places: z.array(z.any()).optional(),
 });
 
 const customTentacleQuestionSchema = baseTentacleQuestionSchema.extend({
-    locationType: z.literal("custom"),
+    locationType: z.literal("custom").describe("Custom Locations"),
     places: z.array(
         z.object({
             type: z.literal("Feature"),
@@ -122,9 +160,10 @@ const customTentacleQuestionSchema = baseTentacleQuestionSchema.extend({
     ),
 });
 
-const tentacleQuestionSchema = z.union([
-    tentacleQuestionSpecificSchema,
-    customTentacleQuestionSchema,
+export const tentacleQuestionSchema = z.union([
+    customTentacleQuestionSchema.describe(NO_GROUP),
+    tentacleQuestionSpecificSchemaFifteen.describe("15 Miles (Typically)"),
+    tentacleQuestionSpecificSchemaOne.describe("1 Mile (Typically)"),
 ]);
 
 const baseMatchingQuestionSchema = ordinaryBaseQuestionSchema.extend({
@@ -133,27 +172,49 @@ const baseMatchingQuestionSchema = ordinaryBaseQuestionSchema.extend({
 
 const ordinaryMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
     type: z.union([
-        z.literal("airport"),
-        z.literal("major-city"),
-        z.literal("same-first-letter-station"),
-        z.literal("same-length-station"),
-        z.literal("same-train-line"),
-        z.literal("aquarium-full"),
-        z.literal("zoo-full"),
-        z.literal("theme_park-full"),
-        z.literal("museum-full"),
-        z.literal("hospital-full"),
-        z.literal("cinema-full"),
-        z.literal("library-full"),
-        z.literal("golf_course-full"),
-        z.literal("consulate-full"),
-        z.literal("park-full"),
+        z
+            .literal("airport")
+            .describe("Same Nearest Commercial Airport In Zone"),
+        z
+            .literal("major-city")
+            .describe("Closest Commercial Airport In Zone Question"),
+        z
+            .literal("aquarium-full")
+            .describe("Aquarium Question (Small+Medium Games)"),
+        z.literal("zoo-full").describe("Zoo Question (Small+Medium Games)"),
+        z
+            .literal("theme_park-full")
+            .describe("Theme Park Question (Small+Medium Games)"),
+        z
+            .literal("museum-full")
+            .describe("Museum Question (Small+Medium Games)"),
+        z
+            .literal("hospital-full")
+            .describe("Hospital Question (Small+Medium Games)"),
+        z
+            .literal("cinema-full")
+            .describe("Cinema Question (Small+Medium Games)"),
+        z
+            .literal("library-full")
+            .describe("Library Question (Small+Medium Games)"),
+        z
+            .literal("golf_course-full")
+            .describe("Golf Course Question (Small+Medium Games)"),
+        z
+            .literal("consulate-full")
+            .describe("Foreign Consulate Question (Small+Medium Games)"),
+        z.literal("park-full").describe("Park Question (Small+Medium Games)"),
     ]),
 });
 
 const zoneMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
     type: z
-        .union([z.literal("zone"), z.literal("letter-zone")])
+        .union([
+            z.literal("zone").describe("Zone Question"),
+            z
+                .literal("letter-zone")
+                .describe("Zone Starts With Same Letter Question"),
+        ])
         .default("zone"),
     cat: z
         .object({
@@ -173,29 +234,47 @@ const zoneMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
 
 const homeGameMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
     type: z.union([
-        z.literal("aquarium"),
-        z.literal("zoo"),
-        z.literal("theme_park"),
-        z.literal("museum"),
-        z.literal("hospital"),
-        z.literal("cinema"),
-        z.literal("library"),
-        z.literal("golf_course"),
-        z.literal("consulate"),
-        z.literal("park"),
+        z.literal("aquarium").describe("Aquarium Question"),
+        z.literal("zoo").describe("Zoo Question"),
+        z.literal("theme_park").describe("Theme Park Question"),
+        z.literal("museum").describe("Museum Question"),
+        z.literal("hospital").describe("Hospital Question"),
+        z.literal("cinema").describe("Cinema Question"),
+        z.literal("library").describe("Library Question"),
+        z.literal("golf_course").describe("Golf Course Question"),
+        z.literal("consulate").describe("Foreign Consulate Question"),
+        z.literal("park").describe("Park Question"),
+    ]),
+});
+
+const hidingZoneMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
+    type: z.union([
+        z
+            .literal("same-first-letter-station")
+            .describe("Station Starts With Same Letter Question"),
+        z
+            .literal("same-length-station")
+            .describe("Station Has Same Length Question"),
+        z
+            .literal("same-train-line")
+            .describe("Station On Same Train Line Question"),
     ]),
 });
 
 const customMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
-    type: z.union([z.literal("custom-zone"), z.literal("custom-points")]),
+    type: z.union([
+        z.literal("custom-zone").describe("Custom Zone Question"),
+        z.literal("custom-points").describe("Custom Points Question"),
+    ]),
     geo: z.any(),
 });
 
-const matchingQuestionSchema = z.union([
-    zoneMatchingQuestionsSchema,
-    ordinaryMatchingQuestionSchema,
-    homeGameMatchingQuestionsSchema,
-    customMatchingQuestionSchema,
+export const matchingQuestionSchema = z.union([
+    zoneMatchingQuestionsSchema.describe(NO_GROUP),
+    ordinaryMatchingQuestionSchema.describe(NO_GROUP),
+    customMatchingQuestionSchema.describe(NO_GROUP),
+    hidingZoneMatchingQuestionsSchema.describe("Hiding Zone Mode"),
+    homeGameMatchingQuestionsSchema.describe("Hiding Zone Mode"),
 ]);
 
 const baseMeasuringQuestionSchema = ordinaryBaseQuestionSchema.extend({
@@ -205,51 +284,81 @@ const baseMeasuringQuestionSchema = ordinaryBaseQuestionSchema.extend({
 const ordinaryMeasuringQuestionSchema = baseMeasuringQuestionSchema.extend({
     type: z
         .union([
-            z.literal("coastline"),
-            z.literal("airport"),
-            z.literal("city"),
-            z.literal("mcdonalds"),
-            z.literal("seven11"),
-            z.literal("rail-measure"),
-            z.literal("highspeed-measure-shinkansen"),
-            z.literal("aquarium-full"),
-            z.literal("zoo-full"),
-            z.literal("theme_park-full"),
-            z.literal("museum-full"),
-            z.literal("hospital-full"),
-            z.literal("cinema-full"),
-            z.literal("library-full"),
-            z.literal("golf_course-full"),
-            z.literal("consulate-full"),
-            z.literal("park-full"),
+            z.literal("coastline").describe("Coastline Question"),
+            z
+                .literal("airport")
+                .describe("Commercial Airport In Zone Question"),
+            z
+                .literal("city")
+                .describe("Major City (1,000,000+ people) Question"),
+            z
+                .literal("highspeed-measure-shinkansen")
+                .describe("High-Speed Rail Question"),
+            z
+                .literal("aquarium-full")
+                .describe("Aquarium Question (Small+Medium Games)"),
+            z.literal("zoo-full").describe("Zoo Question (Small+Medium Games)"),
+            z
+                .literal("theme_park-full")
+                .describe("Theme Park Question (Small+Medium Games)"),
+            z
+                .literal("museum-full")
+                .describe("Museum Question (Small+Medium Games)"),
+            z
+                .literal("hospital-full")
+                .describe("Hospital Question (Small+Medium Games)"),
+            z
+                .literal("cinema-full")
+                .describe("Cinema Question (Small+Medium Games)"),
+            z
+                .literal("library-full")
+                .describe("Library Question (Small+Medium Games)"),
+            z
+                .literal("golf_course-full")
+                .describe("Golf Course Question (Small+Medium Games)"),
+            z
+                .literal("consulate-full")
+                .describe("Foreign Consulate Question (Small+Medium Games)"),
+            z
+                .literal("park-full")
+                .describe("Park Question (Small+Medium Games)"),
         ])
         .default("coastline"),
 });
 
+const hidingZoneMeasuringQuestionsSchema = baseMeasuringQuestionSchema.extend({
+    type: z.union([
+        z.literal("mcdonalds").describe("McDonald's Question"),
+        z.literal("seven11").describe("7-Eleven Question"),
+        z.literal("rail-measure").describe("Train Station Question"),
+    ]),
+});
+
 const homeGameMeasuringQuestionsSchema = baseMeasuringQuestionSchema.extend({
     type: z.union([
-        z.literal("aquarium"),
-        z.literal("zoo"),
-        z.literal("theme_park"),
-        z.literal("museum"),
-        z.literal("hospital"),
-        z.literal("cinema"),
-        z.literal("library"),
-        z.literal("golf_course"),
-        z.literal("consulate"),
-        z.literal("park"),
+        z.literal("aquarium").describe("Aquarium Question"),
+        z.literal("zoo").describe("Zoo Question"),
+        z.literal("theme_park").describe("Theme Park Question"),
+        z.literal("museum").describe("Museum Question"),
+        z.literal("hospital").describe("Hospital Question"),
+        z.literal("cinema").describe("Cinema Question"),
+        z.literal("library").describe("Library Question"),
+        z.literal("golf_course").describe("Golf Course Question"),
+        z.literal("consulate").describe("Foreign Consulate Question"),
+        z.literal("park").describe("Park Question"),
     ]),
 });
 
 const customMeasuringQuestionSchema = baseMeasuringQuestionSchema.extend({
-    type: z.literal("custom-measure"),
+    type: z.literal("custom-measure").describe("Custom Measuring Question"),
     geo: z.any(),
 });
 
-const measuringQuestionSchema = z.union([
-    ordinaryMeasuringQuestionSchema,
-    homeGameMeasuringQuestionsSchema,
-    customMeasuringQuestionSchema,
+export const measuringQuestionSchema = z.union([
+    ordinaryMeasuringQuestionSchema.describe(NO_GROUP),
+    customMeasuringQuestionSchema.describe(NO_GROUP),
+    hidingZoneMeasuringQuestionsSchema.describe("Hiding Zone Mode"),
+    homeGameMeasuringQuestionsSchema.describe("Hiding Zone Mode"),
 ]);
 
 export const questionSchema = z.union([
@@ -286,7 +395,7 @@ export type Units = z.infer<typeof unitsSchema>;
 export type RadiusQuestion = z.infer<typeof radiusQuestionSchema>;
 export type ThermometerQuestion = z.infer<typeof thermometerQuestionSchema>;
 export type TentacleQuestion = z.infer<typeof tentacleQuestionSchema>;
-export type TentacleLocations = z.infer<typeof tentacleLocationsSchema>;
+export type APILocations = z.infer<typeof apiLocationSchema>;
 export type MatchingQuestion = z.infer<typeof matchingQuestionSchema>;
 export type HomeGameMatchingQuestions = z.infer<
     typeof homeGameMatchingQuestionsSchema
@@ -307,8 +416,11 @@ export type Questions = z.infer<typeof questionsSchema>;
 export type DeepPartial<T> = {
     [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
-export type TraditionalTentacleQuestion = z.infer<
-    typeof tentacleQuestionSpecificSchema
+export type TraditionalTentacleQuestion =
+    | z.infer<typeof tentacleQuestionSpecificSchemaFifteen>
+    | z.infer<typeof tentacleQuestionSpecificSchemaOne>;
+export type EncompassingTentacleQuestionSchema = z.infer<
+    typeof encompassingTentacleQuestionSchema
 >;
 export type CustomTentacleQuestion = z.infer<
     typeof customTentacleQuestionSchema
