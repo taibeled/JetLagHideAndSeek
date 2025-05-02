@@ -15,6 +15,58 @@ import {
 } from "./ui/select";
 import { isLoading } from "@/lib/context";
 
+const parseCoordinatesFromText = (
+    text: string,
+): { lat: number | null; lng: number | null } => {
+    // Format: decimal degrees (e.g., 37.7749, -122.4194)
+    const decimalPattern = /(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)/;
+
+    // Format: degrees, minutes, seconds (e.g., 37°46'26"N, 122°25'10"W)
+    const dmsPattern =
+        /(\d+)°\s*(\d+)['′]?\s*(?:(\d+(?:\.\d+)?)["″]?\s*)?([NS])[,\s]+(\d+)°\s*(\d+)['′]?\s*(?:(\d+(?:\.\d+)?)["″]?\s*)?([EW])/i;
+
+    // Format: decimal degrees with comma as separator and cardinal direction (e.g., 48,89607° N, 9,09885° E)
+    const euroDecimalPattern = /(\d+,\d+)°\s*([NS])\s*,\s*(\d+,\d+)°\s*([EW])/i;
+
+    const decimalMatch = text.match(decimalPattern);
+    if (decimalMatch) {
+        return {
+            lat: parseFloat(decimalMatch[1]),
+            lng: parseFloat(decimalMatch[2]),
+        };
+    }
+
+    const dmsMatch = text.match(dmsPattern);
+    if (dmsMatch) {
+        let lat =
+            parseInt(dmsMatch[1]) +
+            parseInt(dmsMatch[2]) / 60 +
+            (parseFloat(dmsMatch[3]) || 0) / 3600;
+        let lng =
+            parseInt(dmsMatch[5]) +
+            parseInt(dmsMatch[6]) / 60 +
+            (parseFloat(dmsMatch[7]) || 0) / 3600;
+
+        if (dmsMatch[4].toUpperCase() === "S") lat = -lat;
+        if (dmsMatch[8].toUpperCase() === "W") lng = -lng;
+
+        return { lat, lng };
+    }
+
+    const euroDecimalMatch = text.match(euroDecimalPattern);
+    if (euroDecimalMatch) {
+        let lat = parseFloat(euroDecimalMatch[1].replace(",", "."));
+        let lng = parseFloat(euroDecimalMatch[3].replace(",", "."));
+
+        if (euroDecimalMatch[2].toUpperCase() === "S") lat = -lat;
+        if (euroDecimalMatch[4].toUpperCase() === "W") lng = -lng;
+
+        return { lat, lng };
+    }
+
+    return { lat: null, lng: null };
+};
+
 export const LatitudeLongitude = ({
     latitude,
     longitude,
@@ -113,7 +165,7 @@ export const LatitudeLongitude = ({
                     </SelectContent>
                 </Select>
             </SidebarMenuItem>
-            <SidebarMenuItem>
+            <SidebarMenuItem className="flex gap-2">
                 <SidebarMenuButton
                     className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-shadow duration-500"
                     onClick={() => {
@@ -155,6 +207,50 @@ export const LatitudeLongitude = ({
                     disabled={disabled}
                 >
                     Current
+                </SidebarMenuButton>
+                <SidebarMenuButton
+                    className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-shadow duration-500"
+                    onClick={() => {
+                        if (!navigator || !navigator.clipboard) {
+                            toast.error(
+                                "Clipboard API not supported in your browser",
+                            );
+                            return;
+                        }
+
+                        isLoading.set(true);
+
+                        toast.promise(
+                            navigator.clipboard
+                                .readText()
+                                .then((text) => {
+                                    const coords =
+                                        parseCoordinatesFromText(text);
+                                    if (
+                                        coords.lat !== null &&
+                                        coords.lng !== null
+                                    ) {
+                                        onChange(coords.lat, coords.lng);
+                                        return;
+                                    }
+                                    throw new Error(
+                                        "Could not find coordinates in clipboard content",
+                                    );
+                                })
+                                .finally(() => {
+                                    isLoading.set(false);
+                                }),
+                            {
+                                pending: "Reading from clipboard",
+                                success: "Coordinates set from clipboard",
+                                error: "No valid coordinates found in clipboard",
+                            },
+                            { autoClose: 1000 },
+                        );
+                    }}
+                    disabled={disabled}
+                >
+                    Clipboard
                 </SidebarMenuButton>
             </SidebarMenuItem>
             {children}
