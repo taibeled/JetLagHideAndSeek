@@ -401,14 +401,18 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
             (await adjustPerMatching(question, $mapGeoJSON, false))!,
         );
     } catch {
-        feature = await adjustPerMatching(
-            question,
-            {
-                type: "FeatureCollection",
-                features: [holedMask($mapGeoJSON)],
-            },
-            true,
-        );
+        try {
+            feature = await adjustPerMatching(
+                question,
+                {
+                    type: "FeatureCollection",
+                    features: [holedMask($mapGeoJSON)],
+                },
+                true,
+            );
+        } catch {
+            return question;
+        }
     }
 
     if (feature === null || feature === undefined) return question;
