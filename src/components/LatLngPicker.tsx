@@ -12,21 +12,22 @@ import { isLoading } from "@/lib/context";
 const parseCoordinatesFromText = (
     text: string,
 ): { lat: number | null; lng: number | null } => {
-    // Format: decimal degrees (e.g., 37.7749, -122.4194)
-    const decimalPattern = /(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)/;
+    // Format: decimal degrees (e.g., 37.7749, -122.4194 or 37,7749, -122,4194)
+    const decimalPattern = /(-?\d+[.,]\d+)\s*,\s*(-?\d+[.,]\d+)/;
 
     // Format: degrees, minutes, seconds (e.g., 37°46'26"N, 122°25'10"W)
     const dmsPattern =
         /(\d+)°\s*(\d+)['′]?\s*(?:(\d+(?:\.\d+)?)["″]?\s*)?([NS])[,\s]+(\d+)°\s*(\d+)['′]?\s*(?:(\d+(?:\.\d+)?)["″]?\s*)?([EW])/i;
 
-    // Format: decimal degrees with comma as separator and cardinal direction (e.g., 48,89607° N, 9,09885° E)
-    const euroDecimalPattern = /(\d+,\d+)°\s*([NS])\s*,\s*(\d+,\d+)°\s*([EW])/i;
+    // Format: decimal degrees with cardinal directions (e.g., 48,89607° N, 9,09885° E or 48.89607° N, 9.09885° E)
+    const decimalCardinalPattern =
+        /(\d+[.,]\d+)°\s*([NS])\s*,\s*(\d+[.,]\d+)°\s*([EW])/i;
 
     const decimalMatch = text.match(decimalPattern);
     if (decimalMatch) {
         return {
-            lat: parseFloat(decimalMatch[1]),
-            lng: parseFloat(decimalMatch[2]),
+            lat: parseFloat(decimalMatch[1].replace(",", ".")),
+            lng: parseFloat(decimalMatch[2].replace(",", ".")),
         };
     }
 
@@ -47,13 +48,13 @@ const parseCoordinatesFromText = (
         return { lat, lng };
     }
 
-    const euroDecimalMatch = text.match(euroDecimalPattern);
-    if (euroDecimalMatch) {
-        let lat = parseFloat(euroDecimalMatch[1].replace(",", "."));
-        let lng = parseFloat(euroDecimalMatch[3].replace(",", "."));
+    const decimalCardinalMatch = text.match(decimalCardinalPattern);
+    if (decimalCardinalMatch) {
+        let lat = parseFloat(decimalCardinalMatch[1].replace(",", "."));
+        let lng = parseFloat(decimalCardinalMatch[3].replace(",", "."));
 
-        if (euroDecimalMatch[2].toUpperCase() === "S") lat = -lat;
-        if (euroDecimalMatch[4].toUpperCase() === "W") lng = -lng;
+        if (decimalCardinalMatch[2].toUpperCase() === "S") lat = -lat;
+        if (decimalCardinalMatch[4].toUpperCase() === "W") lng = -lng;
 
         return { lat, lng };
     }
