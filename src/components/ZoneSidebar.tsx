@@ -443,6 +443,10 @@ export const ZoneSidebar = () => {
                                         {
                                             label: "Light Rail Stations",
                                             value: "[railway=station][light_rail=yes]",
+                                        },
+                                        {
+                                            label: "Light Rail Halts",
+                                            value: "[railway=halt][light_rail=yes]",
                                         }
                                     ]}
                                     onValueChange={
