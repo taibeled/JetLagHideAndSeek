@@ -137,7 +137,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 title: document.title,
                                 url: url,
                             })
-                            .catch(() => toast.error("Failed to share via OS"));
+                            .catch(() => toast.error("Failed to share via OS. You may have disabled too many stations."));
                     } else if (!navigator || !navigator.clipboard) {
                         return toast.error(
                             `Clipboard not supported. Try manually copying/pasting: ${url}`,
