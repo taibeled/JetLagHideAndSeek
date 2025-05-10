@@ -1,4 +1,4 @@
-import { VscChromeClose, VscChevronDown } from "react-icons/vsc";
+import { VscChevronDown, VscTrash } from "react-icons/vsc";
 import { useState } from "react";
 import { useStore } from "@nanostores/react";
 import { cn } from "@/lib/utils";
@@ -58,7 +58,7 @@ export const QuestionCard = ({
                     {showDeleteButton && (
                         <AlertDialog>
                             <AlertDialogTrigger className="absolute top-2 right-2 text-white">
-                                <VscChromeClose />
+                                <VscTrash />
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                                 <AlertDialogHeader>
