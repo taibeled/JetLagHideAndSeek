@@ -1,4 +1,4 @@
-import { VscChevronDown, VscTrash } from "react-icons/vsc";
+import { VscChevronDown, VscShare, VscTrash } from "react-icons/vsc";
 import { useState } from "react";
 import { useStore } from "@nanostores/react";
 import { cn } from "@/lib/utils";
@@ -21,6 +21,14 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+    Dialog,
+    DialogTrigger,
+    DialogContent,
+    DialogTitle,
+    DialogDescription,
+    DialogHeader,
+} from "../ui/dialog";
 
 export const QuestionCard = ({
     children,
@@ -55,49 +63,84 @@ export const QuestionCard = ({
         <>
             <SidebarGroup className={className}>
                 <div className="relative">
-                    {showDeleteButton && (
-                        <AlertDialog>
-                            <AlertDialogTrigger className="absolute top-2 right-2 text-white">
-                                <VscTrash />
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>
-                                        Are you absolutely sure?
-                                    </AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        This action cannot be undone. This will
-                                        permanently delete the question.
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>
-                                        Cancel
-                                    </AlertDialogCancel>
-                                    <AlertDialogAction
-                                        onClick={() => {
-                                            questions.set([]);
-                                        }}
-                                    >
-                                        Delete All Questions
-                                    </AlertDialogAction>
-                                    <AlertDialogAction
-                                        onClick={() => {
-                                            questions.set(
-                                                $questions.filter(
-                                                    (q) =>
-                                                        q.key !== questionKey,
-                                                ),
-                                            );
-                                        }}
-                                        className="mb-2 sm:mb-0"
-                                    >
-                                        Delete Question
-                                    </AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
-                    )}
+                    <div className="absolute top-2 right-2 flex gap-2 justify-end text-white">
+                        <Dialog>
+                            <DialogTrigger>
+                                <VscShare />
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle className="text-2xl">
+                                        Share this Question!
+                                    </DialogTitle>
+                                    <DialogDescription>
+                                        Below you can access the JSON
+                                        representing the question. Send this to
+                                        another player for them to copy. They
+                                        can then click &ldquo;Paste
+                                        Question&rdquo; at the bottom of the
+                                        &ldquo;Questions&rdquo; sidebar.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <textarea
+                                    className="w-full h-[300px] bg-slate-900 text-white rounded-md p-2"
+                                    readOnly
+                                    value={JSON.stringify(
+                                        $questions.find(
+                                            (q) => q.key === questionKey,
+                                        ),
+                                        null,
+                                        4,
+                                    )}
+                                ></textarea>
+                            </DialogContent>
+                        </Dialog>
+                        {showDeleteButton && (
+                            <AlertDialog>
+                                <AlertDialogTrigger>
+                                    <VscTrash />
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>
+                                            Are you absolutely sure?
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This action cannot be undone. This
+                                            will permanently delete the
+                                            question.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>
+                                            Cancel
+                                        </AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={() => {
+                                                questions.set([]);
+                                            }}
+                                        >
+                                            Delete All Questions
+                                        </AlertDialogAction>
+                                        <AlertDialogAction
+                                            onClick={() => {
+                                                questions.set(
+                                                    $questions.filter(
+                                                        (q) =>
+                                                            q.key !==
+                                                            questionKey,
+                                                    ),
+                                                );
+                                            }}
+                                            className="mb-2 sm:mb-0"
+                                        >
+                                            Delete Question
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        )}
+                    </div>
                     <button
                         onClick={toggleCollapse}
                         className={cn(
