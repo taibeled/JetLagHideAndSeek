@@ -18,6 +18,7 @@ import {
     addQuestion,
     planningModeEnabled,
     isLoading,
+    autoZoom,
 } from "../lib/context";
 import { useStore } from "@nanostores/react";
 import { useEffect, useMemo } from "react";
@@ -361,11 +362,13 @@ export const Map = ({ className }: { className?: string }) => {
 
             questionFinishedMapData.set(mapGeoData);
 
-            if (bounds) {
-                if (animateMapMovements.get()) {
-                    map.flyToBounds(bounds);
-                } else {
-                    map.fitBounds(bounds);
+            if (autoZoom.get()) {
+                if (bounds) {
+                    if (animateMapMovements.get()) {
+                        map.flyToBounds(bounds);
+                    } else {
+                        map.fitBounds(bounds);
+                    }
                 }
             }
         } catch (error) {
@@ -574,9 +577,12 @@ export const focusMap = (map: LeafletMap, mapGeoData: any) => {
         [bbox[1], bbox[0]],
         [bbox[3], bbox[2]],
     ];
-    if (animateMapMovements.get()) {
-        map.flyToBounds(bounds);
-    } else {
-        map.fitBounds(bounds);
+
+    if (autoZoom.get()) {
+        if (animateMapMovements.get()) {
+            map.flyToBounds(bounds);
+        } else {
+            map.fitBounds(bounds);
+        }
     }
 };

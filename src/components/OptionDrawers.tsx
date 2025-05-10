@@ -15,6 +15,7 @@ import {
     triggerLocalRefresh,
     hidingZone,
     planningModeEnabled,
+    autoZoom,
 } from "@/lib/context";
 import { Button } from "./ui/button";
 import { toast } from "react-toastify";
@@ -48,6 +49,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $defaultUnit = useStore(defaultUnit);
     const $highlightTrainLines = useStore(highlightTrainLines);
     const $animateMapMovements = useStore(animateMapMovements);
+    const $autoZoom = useStore(autoZoom);
     const $hiderMode = useStore(hiderMode);
     const $hidingRadius = useStore(hidingRadius);
     const $autoSave = useStore(autoSave);
@@ -369,6 +371,15 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     onCheckedChange={() =>
                                         autoSave.set(!$autoSave)
                                     }
+                                />
+                            </div>
+                            <div className="flex flex-row items-center gap-2">
+                                <label className="text-2xl font-semibold font-poppins">
+                                    Auto zoom?
+                                </label>
+                                <Checkbox
+                                    checked={$autoZoom}
+                                    onCheckedChange={() => autoZoom.set(!$autoZoom)}
                                 />
                             </div>
                             <div className="flex flex-row items-center gap-2">

@@ -19,6 +19,7 @@ import {
     questions,
     trainStations,
     isLoading,
+    autoZoom,
 } from "../lib/context";
 import { useStore } from "@nanostores/react";
 import { MENU_ITEM_CLASSNAME } from "./ui/sidebar-l";
@@ -447,7 +448,7 @@ export const ZoneSidebar = () => {
                                         {
                                             label: "Light Rail Halts",
                                             value: "[railway=halt][light_rail=yes]",
-                                        }
+                                        },
                                     ]}
                                     onValueChange={
                                         displayHidingZonesOptions.set
@@ -1101,10 +1102,12 @@ async function selectionProcess(
 
     showGeoJSON(mapData);
 
-    if (animateMapMovements.get()) {
-        map?.flyToBounds(bounds);
-    } else {
-        map?.fitBounds(bounds);
+    if (autoZoom.get()) {
+        if (animateMapMovements.get()) {
+            map?.flyToBounds(bounds);
+        } else {
+            map?.fitBounds(bounds);
+        }
     }
 
     const element: HTMLDivElement | null = document.querySelector(
