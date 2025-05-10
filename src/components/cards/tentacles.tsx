@@ -57,6 +57,10 @@ export const TentacleQuestionComponent = ({
             sub={sub}
             className={className}
             showDeleteButton={showDeleteButton}
+            collapsed={data.collapsed}
+            setCollapsed={(collapsed) => {
+                data.collapsed = collapsed; // Doesn't trigger a re-render so no need for questionModified
+            }}
         >
             <SidebarMenuItem>
                 <div className={cn(MENU_ITEM_CLASSNAME, "gap-2 flex flex-row")}>

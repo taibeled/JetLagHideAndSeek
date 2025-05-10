@@ -29,6 +29,8 @@ export const QuestionCard = ({
     label,
     sub,
     showDeleteButton,
+    collapsed,
+    setCollapsed,
 }: {
     children: React.ReactNode;
     questionKey: number;
@@ -36,11 +38,16 @@ export const QuestionCard = ({
     label?: string;
     sub?: string;
     showDeleteButton?: boolean;
+    collapsed?: boolean;
+    setCollapsed?: (collapsed: boolean) => void;
 }) => {
-    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(collapsed ?? false);
     const $questions = useStore(questions);
 
     const toggleCollapse = () => {
+        if (setCollapsed) {
+            setCollapsed(!isCollapsed);
+        }
         setIsCollapsed((prevState) => !prevState);
     };
 
