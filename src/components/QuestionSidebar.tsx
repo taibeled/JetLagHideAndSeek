@@ -38,9 +38,12 @@ export const QuestionSidebar = () => {
         <Sidebar>
             <div className="flex items-center justify-between">
                 <h2 className="ml-4 mt-4 font-poppins text-2xl">Questions</h2>
-                <SidebarCloseIcon className="mr-2 visible md:hidden" onClick={() => {
-                    SidebarContext.get().setOpenMobile(false);
-                }} />  
+                <SidebarCloseIcon
+                    className="mr-2 visible md:hidden"
+                    onClick={() => {
+                        SidebarContext.get().setOpenMobile(false);
+                    }}
+                />
             </div>
             <SidebarContent>
                 {$questions.map((question) => {
