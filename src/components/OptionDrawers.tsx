@@ -16,6 +16,7 @@ import {
     hidingZone,
     planningModeEnabled,
     autoZoom,
+    additionalMapGeoLocations,
 } from "@/lib/context";
 import { Button } from "./ui/button";
 import { toast } from "react-toastify";
@@ -86,6 +87,12 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 mapGeoLocation.set(geojson);
                 mapGeoJSON.set(null);
                 polyGeoJSON.set(null);
+
+                if (geojson.alternateLocations) {
+                    additionalMapGeoLocations.set(geojson.alternateLocations);
+                } else {
+                    additionalMapGeoLocations.set([]);
+                }
             } else {
                 if (geojson.questions) {
                     questions.set(questionsSchema.parse(geojson.questions));
@@ -139,7 +146,11 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 title: document.title,
                                 url: url,
                             })
-                            .catch(() => toast.error("Failed to share via OS. You may have disabled too many stations."));
+                            .catch(() =>
+                                toast.error(
+                                    "Failed to share via OS. You may have disabled too many stations.",
+                                ),
+                            );
                     } else if (!navigator || !navigator.clipboard) {
                         return toast.error(
                             `Clipboard not supported. Try manually copying/pasting: ${url}`,
@@ -379,7 +390,9 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 </label>
                                 <Checkbox
                                     checked={$autoZoom}
-                                    onCheckedChange={() => autoZoom.set(!$autoZoom)}
+                                    onCheckedChange={() =>
+                                        autoZoom.set(!$autoZoom)
+                                    }
                                 />
                             </div>
                             <div className="flex flex-row items-center gap-2">

@@ -9,6 +9,8 @@ import {
     CacheType,
 } from "../maps/api";
 import {
+    additionalMapGeoLocations,
+    isLoading,
     mapGeoJSON,
     mapGeoLocation,
     polyGeoJSON,
@@ -29,7 +31,14 @@ import {
 } from "@/components/ui/popover";
 import { useStore } from "@nanostores/react";
 import { Button } from "./ui/button";
-import { ChevronsUpDown } from "lucide-react";
+import {
+    ChevronsUpDown,
+    LucideMinusSquare,
+    LucidePlusSquare,
+    LucideX,
+} from "lucide-react";
+import { Separator } from "./ui/separator";
+import { toast } from "react-toastify";
 
 export const PlacePicker = ({
     className = "",
@@ -41,7 +50,9 @@ export const PlacePicker = ({
     className?: string;
 }) => {
     const $mapGeoLocation = useStore(mapGeoLocation);
+    const $additionalMapGeoLocations = useStore(additionalMapGeoLocations);
     const $polyGeoJSON = useStore(polyGeoJSON);
+    const $isLoading = useStore(isLoading);
     const [open, setOpen] = useState(false);
     const [inputValue, setInputValue] = useState("");
     const debouncedValue = useDebounce<string>(inputValue);
@@ -86,12 +97,147 @@ export const PlacePicker = ({
                         : $mapGeoLocation &&
                             $mapGeoLocation.properties &&
                             $mapGeoLocation.properties.name
-                          ? determineName($mapGeoLocation)
+                          ? [
+                                $mapGeoLocation,
+                                ...$additionalMapGeoLocations.map(
+                                    (x) => x.location,
+                                ),
+                            ]
+                                .map((location) => determineName(location))
+                                .join("; ")
                           : "Hiding bounds"}
                     <ChevronsUpDown className="opacity-50" />
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[300px] p-0 light">
+                <div
+                    className={cn(
+                        "font-normal flex flex-col",
+                        $polyGeoJSON && "bg-muted text-muted-foreground",
+                    )}
+                >
+                    {[
+                        { location: $mapGeoLocation, added: true, base: true },
+                        ...$additionalMapGeoLocations,
+                    ].map((location, index) => (
+                        <div
+                            className={cn(
+                                "flex justify-between items-center px-3 py-2",
+                                index % 2 === 1 && "bg-slate-100",
+                                !$polyGeoJSON &&
+                                    "transition-colors duration-200 hover:bg-slate-200",
+                            )}
+                            key={determineName(location.location)}
+                        >
+                            <span className="w-[78%] text-ellipsis">
+                                {determineName(location.location)}
+                            </span>
+                            <div
+                                className={cn(
+                                    "flex flex-row gap-2 *:stroke-[1.5]",
+                                    $polyGeoJSON && "hidden",
+                                )}
+                            >
+                                {!location.base &&
+                                    (location.added ? (
+                                        <LucidePlusSquare
+                                            className={cn(
+                                                "text-green-700 cursor-pointer",
+                                                $isLoading &&
+                                                    "text-muted-foreground cursor-not-allowed",
+                                            )}
+                                            onClick={() => {
+                                                if ($isLoading) return;
+
+                                                location.added = false;
+
+                                                additionalMapGeoLocations.set([
+                                                    ...$additionalMapGeoLocations,
+                                                ]);
+                                                mapGeoJSON.set(null);
+                                                polyGeoJSON.set(null);
+                                                questions.set([
+                                                    ...questions.get(),
+                                                ]);
+                                            }}
+                                        />
+                                    ) : (
+                                        <LucideMinusSquare
+                                            className={cn(
+                                                "text-red-700 cursor-pointer",
+                                                $isLoading &&
+                                                    "text-muted-foreground cursor-not-allowed",
+                                            )}
+                                            onClick={() => {
+                                                if ($isLoading) return;
+
+                                                location.added = true;
+
+                                                additionalMapGeoLocations.set([
+                                                    ...$additionalMapGeoLocations,
+                                                ]);
+                                                mapGeoJSON.set(null);
+                                                polyGeoJSON.set(null);
+                                                questions.set([
+                                                    ...questions.get(),
+                                                ]);
+                                            }}
+                                        />
+                                    ))}
+                                <LucideX
+                                    className={cn(
+                                        "scale-[90%] text-gray-700 cursor-pointer hover:bg-slate-300 rounded-full transition-colors duration-200",
+                                    )}
+                                    onClick={() => {
+                                        if (location.base) {
+                                            const addedLocations =
+                                                $additionalMapGeoLocations.filter(
+                                                    (x) => x.added === true,
+                                                );
+
+                                            if (addedLocations.length > 0) {
+                                                addedLocations[0].base = true;
+                                                additionalMapGeoLocations.set(
+                                                    additionalMapGeoLocations
+                                                        .get()
+                                                        .filter(
+                                                            (x) =>
+                                                                x.base !== true,
+                                                        ),
+                                                );
+                                                mapGeoLocation.set(
+                                                    addedLocations[0].location,
+                                                );
+                                            } else {
+                                                return toast.error(
+                                                    "Please add another location in addition mode.",
+                                                    {
+                                                        autoClose: 3000,
+                                                    },
+                                                );
+                                            }
+                                        } else {
+                                            additionalMapGeoLocations.set(
+                                                $additionalMapGeoLocations.filter(
+                                                    (x) =>
+                                                        x.location.properties
+                                                            .osm_id !==
+                                                        location.location
+                                                            .properties.osm_id,
+                                                ),
+                                            );
+                                        }
+
+                                        mapGeoJSON.set(null);
+                                        polyGeoJSON.set(null);
+                                        questions.set([...questions.get()]);
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                <Separator className="h-[0.5px]" />
                 <Command shouldFilter={false}>
                     <CommandInput
                         placeholder="Search place..."
@@ -123,11 +269,18 @@ export const PlacePicker = ({
                                 <CommandItem
                                     key={`${result.properties.osm_id}${result.properties.name}`}
                                     onSelect={() => {
-                                        mapGeoLocation.set(result);
+                                        additionalMapGeoLocations.set([
+                                            ...additionalMapGeoLocations.get(),
+                                            {
+                                                added: true,
+                                                location: result,
+                                                base: false,
+                                            },
+                                        ]);
+
                                         mapGeoJSON.set(null);
                                         polyGeoJSON.set(null);
-                                        questions.set([]);
-                                        clearCache(CacheType.ZONE_CACHE);
+                                        questions.set([...questions.get()]);
                                     }}
                                     className="cursor-pointer"
                                 >
@@ -136,6 +289,31 @@ export const PlacePicker = ({
                             ))}
                         </CommandGroup>
                     </CommandList>
+                    <Button
+                        variant="outline"
+                        className="font-normal bg-slate-50 hover:bg-slate-200"
+                        onClick={() => {
+                            mapGeoJSON.set(null);
+                            polyGeoJSON.set(null);
+                            questions.set([]);
+                            clearCache(CacheType.ZONE_CACHE);
+                        }}
+                    >
+                        Clear Questions & Cache
+                    </Button>
+                    {$polyGeoJSON && (
+                        <Button
+                            variant="outline"
+                            className="font-normal hover:bg-slate-200"
+                            onClick={() => {
+                                polyGeoJSON.set(null);
+                                mapGeoJSON.set(null);
+                                questions.set([...questions.get()]);
+                            }}
+                        >
+                            Reuse Preset Locations
+                        </Button>
+                    )}
                 </Command>
             </PopoverContent>
         </Popover>
