@@ -532,6 +532,7 @@ export const nearestToQuestion = async (
                 locationType: question.type,
                 drag: false,
                 color: "black",
+                collapsed: false,
             },
             "Finding matching locations...",
         );

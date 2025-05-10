@@ -112,6 +112,10 @@ export const MeasuringQuestionComponent = ({
             sub={sub}
             className={className}
             showDeleteButton={showDeleteButton}
+            collapsed={data.collapsed}
+            setCollapsed={(collapsed) => {
+                data.collapsed = collapsed; // Doesn't trigger a re-render so no need for questionModified
+            }}
         >
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select

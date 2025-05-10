@@ -27,6 +27,7 @@ import {
 } from "./QuestionCards";
 import * as turf from "@turf/turf";
 import { SidebarCloseIcon } from "lucide-react";
+import { toast } from "react-toastify";
 
 export const QuestionSidebar = () => {
     useStore(triggerLocalRefresh);
@@ -212,6 +213,36 @@ export const QuestionSidebar = () => {
                                 disabled={$isLoading}
                             >
                                 Add Measuring
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton
+                                onClick={() => {
+                                    if (!navigator || !navigator.clipboard) {
+                                        toast.error(
+                                            "Clipboard API not supported in your browser",
+                                        );
+                                        return;
+                                    }
+
+                                    toast.promise(
+                                        navigator.clipboard
+                                            .readText()
+                                            .then((text) => {
+                                                addQuestion(JSON.parse(text));
+                                            }),
+                                        {
+                                            pending: "Reading from clipboard",
+                                            success:
+                                                "Question added from clipboard!",
+                                            error: "No valid question found in clipboard",
+                                        },
+                                        { autoClose: 1000 },
+                                    );
+                                }}
+                                disabled={$isLoading}
+                            >
+                                Paste Question
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                         {!$autoSave && (

@@ -103,6 +103,7 @@ export const LatitudeLongitude = ({
                 <Button
                     variant="outline"
                     onClick={() => onChange(-latitude, null)}
+                    disabled={disabled}
                 >
                     {latitude > 0 ? "N" : "S"}
                 </Button>
@@ -128,6 +129,7 @@ export const LatitudeLongitude = ({
                 <Button
                     variant="outline"
                     onClick={() => onChange(null, -longitude)}
+                    disabled={disabled}
                 >
                     {longitude > 0 ? "E" : "W"}
                 </Button>
