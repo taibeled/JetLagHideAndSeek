@@ -164,13 +164,9 @@ export const planningModeEnabled = persistentAtom<boolean>(
         decode: JSON.parse,
     },
 );
-export const autoZoom = persistentAtom<boolean>(
-    "autoZoom",
-    true,
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
-);
+export const autoZoom = persistentAtom<boolean>("autoZoom", true, {
+    encode: JSON.stringify,
+    decode: JSON.parse,
+});
 
 export const isLoading = atom<boolean>(false);
