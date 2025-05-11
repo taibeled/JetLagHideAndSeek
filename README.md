@@ -7,8 +7,6 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
 - Thermometer
     - All
 - Matching
-    - Same occupance of custom zone
-    - Same nearest of custom points
     - Same zone (i.e., same region or prefecture)
     - Same first letter of zone
     - Same nearest commercial airport
@@ -27,7 +25,6 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
     - Same nearest library
     - Same nearest foreign consulate
 - Measuring
-    - Distance to custom points/line/polygon
     - Distance to coastline
     - Distance to commercial airport
     - Distance to major city
@@ -46,7 +43,6 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
     - Distance to library
     - Distance to foreign consulate
 - Tentacles
-    - Custom locations
     - Zoo
     - Aquarium
     - Amusement Park
@@ -57,50 +53,17 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
 
 ## Contributing
 
-This project has evolved significantly, encompassing over 10,000 lines of code. Many intricate features have been developed, so therefore contributions are very much welcome. If you find a bug, please either file an issue or create a pull request. Furthermore, enhancements/feature requests are necessary to keep developing this project, so developments of those would also be appreciated. Here is a list of some suggestions for those wanting to help develop this tool:
+If anyone wants to help, please focus on one of the following or leave an issue with your request:
 
-- [ ] Adding more questions (https://github.com/taibeled/JetLagHideAndSeek/issues/9, https://github.com/taibeled/JetLagHideAndSeek/issues/32, https://github.com/taibeled/JetLagHideAndSeek/issues/34)
+- [x] User interface
+- [x] Custom map bounds (i.e. draw geoJSON which should be used for the bounds)
+- [ ] Adding questions (https://github.com/taibeled/JetLagHideAndSeek/issues/9 and https://github.com/taibeled/JetLagHideAndSeek/issues/34)
 - [ ] Refactoring code
 - [ ] Tests (https://github.com/taibeled/JetLagHideAndSeek/issues/36)
-- [ ] Custom question presets (https://github.com/taibeled/JetLagHideAndSeek/issues/95)
-- [ ] Enable/disable specific bus/train routes (https://github.com/taibeled/JetLagHideAndSeek/issues/65)
-- [ ] Manually define bus/train routes (https://github.com/taibeled/JetLagHideAndSeek/issues/61)
-- [ ] Copy coordinates of right-clicked point on map (https://github.com/taibeled/JetLagHideAndSeek/issues/94)
+- [x] Hider menu (prevent conflicting information between hiders and seekers by adding a menu for hiders to automatically obtain answers)
+- [x] Train station fetching (use Overpass to fetch train stations in the zone and automatically show them, https://github.com/taibeled/JetLagHideAndSeek/issues/24)
+- [x] Progressive web app (https://github.com/taibeled/JetLagHideAndSeek/issues/1)
 
-Even if you're not a programmer, you can still help by further documenting the unknown questions.
+This project uses ESLint and Prettier for formatting/style. Before submitting a pull request/committing, please run `pnpm lint` for your code to be automatically fixed.
 
-## Developer Workflow
-
-To develop this website, you need to have [git](https://git-scm.com/downloads) and [pnpm](https://pnpm.io/installation) installed. You should then start by cloning this repository and entering the directory:
-
-```bash
-git clone https://github.com/taibeled/JetLagHideAndSeek.git
-cd JetLagHideAndSeek
-```
-
-Next, use `pnpm` to install the dependencies:
-
-```bash
-pnpm install
-```
-
-You can now host the website as you make modifications:
-
-```bash
-pnpm dev
-```
-
-After making any modifications, please run `pnpm lint` to have your code automatically formatted and errors spotted.
-
-## Contributors
-
-A great deal of appreciation goes out to these individuals who have helped to create this tool:
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
+More documentation to come.

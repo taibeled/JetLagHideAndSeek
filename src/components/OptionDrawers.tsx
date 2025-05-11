@@ -139,11 +139,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 title: document.title,
                                 url: url,
                             })
-                            .catch(() =>
-                                toast.error(
-                                    "Failed to share via OS. You may have disabled too many stations.",
-                                ),
-                            );
+                            .catch(() => toast.error("Failed to share via OS. You may have disabled too many stations."));
                     } else if (!navigator || !navigator.clipboard) {
                         return toast.error(
                             `Clipboard not supported. Try manually copying/pasting: ${url}`,
@@ -383,9 +379,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 </label>
                                 <Checkbox
                                     checked={$autoZoom}
-                                    onCheckedChange={() =>
-                                        autoZoom.set(!$autoZoom)
-                                    }
+                                    onCheckedChange={() => autoZoom.set(!$autoZoom)}
                                 />
                             </div>
                             <div className="flex flex-row items-center gap-2">
