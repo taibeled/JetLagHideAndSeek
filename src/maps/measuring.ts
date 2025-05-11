@@ -366,6 +366,7 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
             type: (question as HomeGameMeasuringQuestions).type,
             drag: false,
             color: "black",
+            collapsed: false,
         });
 
         question.hiderCloser =

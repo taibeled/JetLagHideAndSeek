@@ -6,7 +6,6 @@ import {
 } from "./ui/sidebar-l";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select } from "./ui/select";
 import { isLoading } from "@/lib/context";
 import { Button } from "./ui/button";
 

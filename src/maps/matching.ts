@@ -311,6 +311,7 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
             type: (question as HomeGameMatchingQuestions).type,
             drag: false,
             color: "black",
+            collapsed: false,
         });
 
         question.same =
