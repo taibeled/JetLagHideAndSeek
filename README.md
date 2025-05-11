@@ -65,7 +65,7 @@ This project has evolved significantly, encompassing over 10,000 lines of code. 
 - [ ] Custom question presets (https://github.com/taibeled/JetLagHideAndSeek/issues/95)
 - [ ] Enable/disable specific bus/train routes (https://github.com/taibeled/JetLagHideAndSeek/issues/65)
 - [ ] Manually define bus/train routes (https://github.com/taibeled/JetLagHideAndSeek/issues/61)
-- [ ] Copy coordinates of right-clicked point on map (https://github.com/taibeled/JetLagHideAndSeek/issues/94)
+- [x] Copy coordinates of right-clicked point on map (https://github.com/taibeled/JetLagHideAndSeek/issues/94)
 
 Even if you're not a programmer, you can still help by further documenting the unknown questions.
 
