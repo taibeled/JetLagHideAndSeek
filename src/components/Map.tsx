@@ -464,6 +464,34 @@ export const Map = ({ className }: { className?: string }) => {
                             });
                         },
                     },
+                    {
+                        text: "Copy Coordinates",
+                        callback: (e: any) => {
+                            if (!navigator || !navigator.clipboard) {
+                                toast.error(
+                                    "Clipboard API not supported in your browser",
+                                );
+                                return;
+                            }
+
+                            const latitude = e.latlng.lat;
+                            const longitude = e.latlng.lng;
+
+                            toast.promise(
+                                navigator.clipboard.writeText(
+                                    `${Math.abs(latitude)}°${latitude > 0 ? "N" : "S"}, ${Math.abs(
+                                        longitude,
+                                    )}°${longitude > 0 ? "E" : "W"}`,
+                                ),
+                                {
+                                    pending: "Writing to clipboard...",
+                                    success: "Coordinates copied!",
+                                    error: "An error occurred while copying",
+                                },
+                                { autoClose: 1000 },
+                            );
+                        },
+                    },
                 ]}
             >
                 <TileLayer
