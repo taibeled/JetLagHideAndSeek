@@ -95,6 +95,7 @@ After making any modifications, please run `pnpm lint` to have your code automat
 ## Contributors
 
 A great deal of appreciation goes out to these individuals who have helped to create this tool:
+
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
