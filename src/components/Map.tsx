@@ -380,6 +380,86 @@ export const Map = ({ className }: { className?: string }) => {
         }
     };
 
+    const contextmenuItems = [{
+        text: "Add Radius",
+        callback: (e: any) =>
+            addQuestion({
+                id: "radius",
+                data: {
+                    lat: e.latlng.lat,
+                    lng: e.latlng.lng,
+                },
+            }),
+    },
+    {
+        text: "Add Thermometer",
+        callback: (e: any) => {
+            const destination = turf.destination(
+                [e.latlng.lng, e.latlng.lat],
+                5,
+                90,
+                {
+                    units: "miles",
+                },
+            );
+
+            addQuestion({
+                id: "thermometer",
+                data: {
+                    latA: e.latlng.lat,
+                    lngA: e.latlng.lng,
+                    latB: destination.geometry.coordinates[1],
+                    lngB: destination.geometry.coordinates[0],
+                },
+            });
+        },
+    },
+    {
+        text: "Add Tentacles",
+        callback: (e: any) => {
+            addQuestion({
+                id: "tentacles",
+                data: {
+                    lat: e.latlng.lat,
+                    lng: e.latlng.lng,
+                },
+            });
+        },
+    },
+    {
+        text: "Add Matching",
+        callback: (e: any) => {
+            addQuestion({
+                id: "matching",
+                data: {
+                    lat: e.latlng.lat,
+                    lng: e.latlng.lng,
+                },
+            });
+        },
+    },
+    {
+        text: "Add Measuring",
+        callback: (e: any) => {
+            addQuestion({
+                id: "measuring",
+                data: {
+                    lat: e.latlng.lat,
+                    lng: e.latlng.lng,
+                },
+            });
+        },
+    },
+    ];
+
+    $hiderMode ?? contextmenuItems.push({
+        text: "Draw Cards",
+        callback: (e: any) => {
+           console.log("Drawing cards");
+        },
+    })
+
+    
     const displayMap = useMemo(
         () => (
             <MapContainer
@@ -390,78 +470,7 @@ export const Map = ({ className }: { className?: string }) => {
                 // @ts-expect-error Typing doesn't update from react-contextmenu
                 contextmenu={true}
                 contextmenuWidth={140}
-                contextmenuItems={[
-                    {
-                        text: "Add Radius",
-                        callback: (e: any) =>
-                            addQuestion({
-                                id: "radius",
-                                data: {
-                                    lat: e.latlng.lat,
-                                    lng: e.latlng.lng,
-                                },
-                            }),
-                    },
-                    {
-                        text: "Add Thermometer",
-                        callback: (e: any) => {
-                            const destination = turf.destination(
-                                [e.latlng.lng, e.latlng.lat],
-                                5,
-                                90,
-                                {
-                                    units: "miles",
-                                },
-                            );
-
-                            addQuestion({
-                                id: "thermometer",
-                                data: {
-                                    latA: e.latlng.lat,
-                                    lngA: e.latlng.lng,
-                                    latB: destination.geometry.coordinates[1],
-                                    lngB: destination.geometry.coordinates[0],
-                                },
-                            });
-                        },
-                    },
-                    {
-                        text: "Add Tentacles",
-                        callback: (e: any) => {
-                            addQuestion({
-                                id: "tentacles",
-                                data: {
-                                    lat: e.latlng.lat,
-                                    lng: e.latlng.lng,
-                                },
-                            });
-                        },
-                    },
-                    {
-                        text: "Add Matching",
-                        callback: (e: any) => {
-                            addQuestion({
-                                id: "matching",
-                                data: {
-                                    lat: e.latlng.lat,
-                                    lng: e.latlng.lng,
-                                },
-                            });
-                        },
-                    },
-                    {
-                        text: "Add Measuring",
-                        callback: (e: any) => {
-                            addQuestion({
-                                id: "measuring",
-                                data: {
-                                    lat: e.latlng.lat,
-                                    lng: e.latlng.lng,
-                                },
-                            });
-                        },
-                    },
-                ]}
+                contextmenuItems={contextmenuItems}
             >
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a> and <a href="http://www.thunderforest.com/">Thunderforest</a>'
@@ -473,7 +482,7 @@ export const Map = ({ className }: { className?: string }) => {
                 />
                 {$highlightTrainLines && (
                     <TileLayer
-                        url="https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=80add02166f6434d8e6dca27b0573474"
+                        url="https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=cf77911eaa8e4a5e80a6c54090ba44aa"
                         maxZoom={22}
                         minZoom={7}
                         noWrap

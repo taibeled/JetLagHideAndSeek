@@ -1,6 +1,6 @@
 # Jet Lag The Game: Hide and Seek Map Generator
 
-A tool to trivially generate interactive maps for viewing hiding possibilities in Jet Lag The Game's Hide and Seek. So far, the following questions have been implemented (see https://github.com/taibeled/JetLagHideAndSeek/issues/9 for more):
+A tool to trivially generate interactive maps for viewing hiding possibilities in Jet Lag The Game's Hide and Seek. So far, the following questions have been implemented (see https://github.com/akshygupt/JetLagHideAndSeek/issues/9 for more):
 
 - Radius
     - All
@@ -57,12 +57,12 @@ If anyone wants to help, please focus on one of the following or leave an issue 
 
 - [x] User interface
 - [x] Custom map bounds (i.e. draw geoJSON which should be used for the bounds)
-- [ ] Adding questions (https://github.com/taibeled/JetLagHideAndSeek/issues/9 and https://github.com/taibeled/JetLagHideAndSeek/issues/34)
+- [ ] Adding questions (https://github.com/akshygupt/JetLagHideAndSeek/issues/9 and https://github.com/akshygupt/JetLagHideAndSeek/issues/34)
 - [ ] Refactoring code
-- [ ] Tests (https://github.com/taibeled/JetLagHideAndSeek/issues/36)
+- [ ] Tests (https://github.com/akshygupt/JetLagHideAndSeek/issues/36)
 - [x] Hider menu (prevent conflicting information between hiders and seekers by adding a menu for hiders to automatically obtain answers)
-- [x] Train station fetching (use Overpass to fetch train stations in the zone and automatically show them, https://github.com/taibeled/JetLagHideAndSeek/issues/24)
-- [x] Progressive web app (https://github.com/taibeled/JetLagHideAndSeek/issues/1)
+- [x] Train station fetching (use Overpass to fetch train stations in the zone and automatically show them, https://github.com/akshygupt/JetLagHideAndSeek/issues/24)
+- [x] Progressive web app (https://github.com/akshygupt/JetLagHideAndSeek/issues/1)
 
 This project uses ESLint and Prettier for formatting/style. Before submitting a pull request/committing, please run `pnpm lint` for your code to be automatically fixed.
 

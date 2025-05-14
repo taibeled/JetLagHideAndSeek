@@ -11,23 +11,28 @@ import {
     type Units,
 } from "./schema";
 
+import { CardDeck, type HidersCard } from "./cardSchema";
+
 export const mapGeoLocation = persistentAtom<OpenStreetMap>(
     "mapGeoLocation",
     {
         geometry: {
-            coordinates: [36.5748441, 139.2394179],
+            coordinates: [
+                13.3796369,
+                52.5247168,
+            ],
             type: "Point",
         },
         type: "Feature",
         properties: {
-            osm_type: "R",
-            osm_id: 382313,
-            extent: [45.7112046, 122.7141754, 20.2145811, 154.205541],
-            country: "Japan",
+            osm_type: "boundary",
+            osm_id: 62422,
+            // extent: [45.7112046, 122.7141754, 20.2145811, 154.205541],
+            country: "Germany",
             osm_key: "place",
-            countrycode: "JP",
+            countrycode: "DE",
             osm_value: "country",
-            name: "Japan",
+            name: "Berlin",
             type: "country",
         },
     },
@@ -60,7 +65,7 @@ export const questionModified = (..._: any[]) => {
 
 export const leafletMapContext = atom<Map | null>(null);
 
-export const defaultUnit = persistentAtom<Units>("defaultUnit", "miles");
+export const defaultUnit = persistentAtom<Units>("defaultUnit", "kilometers");
 export const highlightTrainLines = persistentAtom<boolean>(
     "highlightTrainLines",
     false,
@@ -72,9 +77,9 @@ export const highlightTrainLines = persistentAtom<boolean>(
 export const hiderMode = persistentAtom<
     | false
     | {
-          latitude: number;
-          longitude: number;
-      }
+        latitude: number;
+        longitude: number;
+    }
 >("isHiderMode", false, {
     encode: JSON.stringify,
     decode: JSON.parse,
@@ -165,4 +170,60 @@ export const planningModeEnabled = persistentAtom<boolean>(
     },
 );
 
-export const isLoading = atom<boolean>(false);
+export const isLoading = atom<boolean>(false)
+
+export const parseDrawerDeck = (deck: HidersCard[]) => {
+    const finalCards: HidersCard[] = [];
+     deck.forEach((card: any) => {
+        if(card.quantity && typeof card.quantity === "number") {
+            for (let i = 0; i < card.quantity; i++) {
+                finalCards.push({
+                    ...card,
+                    id: card.id + "_" + (i+1)
+                });
+            }
+        }
+        else {
+            finalCards.push(card);
+        }
+        return card;
+    });
+    return finalCards;
+}
+
+
+export const drawPileDeck = persistentAtom<HidersCard[]>("drawPileDeck", parseDrawerDeck(CardDeck.allCards), {
+    encode: (x: any) => JSON.stringify(x),
+    decode: (x: any) => JSON.parse(x),
+});
+
+export const discardDeck = persistentAtom<HidersCard[]>("discardDeck", [], {
+    encode: (x: any) => JSON.stringify(x),
+    decode: (x: any) => JSON.parse(x),
+});
+
+export const hiderInHandsDeck = persistentAtom<HidersCard[]>("hiderInHandsDeck", [], {
+    encode: (x: any) => JSON.stringify(x),
+    decode: (x: any) => JSON.parse(x),
+});
+
+export const addCardsToHiderDeck = (cards: HidersCard[]) => {
+    // add cards to hiderInHandsDeck
+    const currentDeck = hiderInHandsDeck.get();
+    const newDeck = [...currentDeck, ...cards];
+    hiderInHandsDeck.set(newDeck);
+    // remove cards from drawPileDeck
+    const newDrawPileDeck = drawPileDeck.get().filter((card) => !cards.includes(card));
+    drawPileDeck.set(newDrawPileDeck);
+    const newDiscardDeck = [...discardDeck.get(), ...cards];
+    discardDeck.set(newDiscardDeck);
+}
+
+export const removeCardsFromHiderDeck = (cards: HidersCard[]) => {
+    // remove cards from hiderInHandsDeck
+    const currentDeck = hiderInHandsDeck.get();
+    const newDeck = currentDeck.filter((card) => !cards.includes(card));
+    hiderInHandsDeck.set(newDeck);
+}
+
+export type { HidersCard } from "./cardSchema";

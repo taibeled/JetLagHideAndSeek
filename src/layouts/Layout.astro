@@ -19,29 +19,29 @@ const { className } = Astro.props;
         <link
             rel="icon"
             type="image/x-icon"
-            href="https://taibeled.github.io/JetLagHideAndSeek/favicon.ico"
+            href="https://akshygupt.github.io/JetLagHideAndSeek/favicon.ico"
         />
         <link
             rel="shortcut icon"
             type="image/x-icon"
-            href="https://taibeled.github.io/JetLagHideAndSeek/favicon.ico"
+            href="https://akshygupt.github.io/JetLagHideAndSeek/favicon.ico"
         />
         <link
             rel="apple-touch-icon"
             sizes="180x180"
-            href="https://taibeled.github.io/JetLagHideAndSeek/apple-touch-icon.png"
+            href="https://akshygupt.github.io/JetLagHideAndSeek/apple-touch-icon.png"
         />
         <link
             rel="icon"
             type="image/png"
             sizes="32x32"
-            href="https://taibeled.github.io/JetLagHideAndSeek/favicon-32x32.png"
+            href="https://akshygupt.github.io/JetLagHideAndSeek/favicon-32x32.png"
         />
         <link
             rel="icon"
             type="image/png"
             sizes="16x16"
-            href="https://taibeled.github.io/JetLagHideAndSeek/favicon-16x16.png"
+            href="https://akshygupt.github.io/JetLagHideAndSeek/favicon-16x16.png"
         />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -75,7 +75,7 @@ const { className } = Astro.props;
         <!-- Facebook Meta Tags -->
         <meta
             property="og:url"
-            content="https://taibeled.github.io/JetLagHideAndSeek/"
+            content="https://akshygupt.github.io/JetLagHideAndSeek/"
         />
         <meta property="og:type" content="website" />
         <meta
@@ -88,15 +88,15 @@ const { className } = Astro.props;
         />
         <meta
             property="og:image"
-            content="https://taibeled.github.io/JetLagHideAndSeek/JLIcon.png"
+            content="https://akshygupt.github.io/JetLagHideAndSeek/JLIcon.png"
         />
 
         <!-- Twitter Meta Tags -->
         <meta name="twitter:card" content="summary_large_image" />
-        <meta property="twitter:domain" content="taibeled.github.io" />
+        <meta property="twitter:domain" content="akshygupt.github.io" />
         <meta
             property="twitter:url"
-            content="https://taibeled.github.io/JetLagHideAndSeek/"
+            content="https://akshygupt.github.io/JetLagHideAndSeek/"
         />
         <meta
             name="twitter:title"
@@ -108,7 +108,7 @@ const { className } = Astro.props;
         />
         <meta
             name="twitter:image"
-            content="https://taibeled.github.io/JetLagHideAndSeek/JLIcon.png"
+            content="https://akshygupt.github.io/JetLagHideAndSeek/JLIcon.png"
         />
 
         {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
@@ -116,5 +116,7 @@ const { className } = Astro.props;
     <body class:list={[className, "dark"]}>
         <slot />
         <ToastContainer client:only />
+        <script is:inline src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+
     </body>
 </html>

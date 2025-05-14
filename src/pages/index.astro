@@ -13,6 +13,10 @@ import {
 import { QuestionSidebar } from "@/components/QuestionSidebar";
 import { ZoneSidebar } from "@/components/ZoneSidebar";
 import { OptionDrawers } from "@/components/OptionDrawers";
+import CardDeckDrawer from "../components/CardDeckDrawer";
+
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 ---
 
 <Layout className="bg-jetlag">
@@ -49,6 +53,8 @@ import { OptionDrawers } from "@/components/OptionDrawers";
                             className="w-full group-[.fullscreen]:w-full group-[.fullscreen]:h-full"
                             client:only
                         />
+
+                        
                     </div>
                 </div>
             </main>
