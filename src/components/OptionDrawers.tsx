@@ -40,6 +40,7 @@ import {
 } from "./ui/sidebar-l";
 import { questionsSchema } from "@/lib/schema";
 import { UnitSelect } from "./UnitSelect";
+import CardDeckDrawer from "./CardDeckDrawer";
 
 const HIDING_ZONE_URL_PARAM = "hz";
 
@@ -124,35 +125,8 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 className,
             )}
         >
-            <Button
-                className="shadow-md"
-                onClick={() => {
-                    const b64 = btoa(JSON.stringify($hidingZone));
-                    const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}?hz=${b64}`;
+            <CardDeckDrawer />
 
-                    // Show platform native share sheet if possible
-                    if (navigator.share) {
-                        navigator
-                            .share({
-                                title: document.title,
-                                url: url,
-                            })
-                            .catch(() => toast.error("Failed to share via OS"));
-                    } else if (!navigator || !navigator.clipboard) {
-                        return toast.error(
-                            `Clipboard not supported. Try manually copying/pasting: ${url}`,
-                            { className: "p-0 w-[1000px]" },
-                        );
-                    } else {
-                        navigator.clipboard.writeText(url);
-                        toast.success("Hiding zone URL copied to clipboard", {
-                            autoClose: 2000,
-                        });
-                    }
-                }}
-            >
-                Share
-            </Button>
             <Drawer
                 open={isInstructionsOpen}
                 onOpenChange={setInstructionsOpen}
@@ -241,7 +215,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 If you encounter any bugs or have any feature
                                 requests, please report them at the{" "}
                                 <a
-                                    href="https://github.com/taibeled/JetLagHideAndSeek/issues"
+                                    href="https://github.com/akshygupt/JetLagHideAndSeek/issues"
                                     className="text-blue-500 cursor-pointer"
                                 >
                                     GitHub repository
@@ -438,8 +412,38 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     )}
                                 </SidebarMenu>
                             )}
+                            <Button
+                                className="shadow-md"
+                                onClick={() => {
+                                    const b64 = btoa(JSON.stringify($hidingZone));
+                                    const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}?hz=${b64}`;
+
+                                    // Show platform native share sheet if possible
+                                    if (navigator.share) {
+                                        navigator
+                                            .share({
+                                                title: document.title,
+                                                url: url,
+                                            })
+                                            .catch(() => toast.error("Failed to share via OS"));
+                                    } else if (!navigator || !navigator.clipboard) {
+                                        return toast.error(
+                                            `Clipboard not supported. Try manually copying/pasting: ${url}`,
+                                            { className: "p-0 w-[1000px]" },
+                                        );
+                                    } else {
+                                        navigator.clipboard.writeText(url);
+                                        toast.success("Hiding zone URL copied to clipboard", {
+                                            autoClose: 2000,
+                                        });
+                                    }
+                                }}
+                            >
+                                Share
+                            </Button>
                         </div>
                     </div>
+
                 </DrawerContent>
             </Drawer>
         </div>

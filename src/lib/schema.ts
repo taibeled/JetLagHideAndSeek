@@ -161,8 +161,8 @@ const customTentacleQuestionSchema = baseTentacleQuestionSchema.extend({
 });
 
 export const tentacleQuestionSchema = z.union([
-    customTentacleQuestionSchema.describe(NO_GROUP),
-    tentacleQuestionSpecificSchemaFifteen.describe("15 Miles (Typically)"),
+    // customTentacleQuestionSchema.describe(NO_GROUP),
+    // tentacleQuestionSpecificSchemaFifteen.describe("15 Miles (Typically)"),
     tentacleQuestionSpecificSchemaOne.describe("1 Mile (Typically)"),
 ]);
 
@@ -214,8 +214,8 @@ const zoneMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
             z
                 .literal("letter-zone")
                 .describe("Zone Starts With Same Letter Question"),
-        ])
-        .default("zone"),
+        ]),
+        // .default("zone"),
     cat: z
         .object({
             adminLevel: z.union([

@@ -6,6 +6,7 @@ import tailwind from "@astrojs/tailwind";
 import partytown from "@astrojs/partytown";
 import AstroPWA from "@vite-pwa/astro";
 
+
 // https://astro.build/config
 export default defineConfig({
     integrations: [
@@ -26,17 +27,17 @@ export default defineConfig({
                     "Automatically generate maps for Jet Lag The Game: Hide and Seek with ease! Simply name the questions and watch the map eliminate hundreds of possibilities in seconds.",
                 icons: [
                     {
-                        src: "https://taibeled.github.io/JetLagHideAndSeek/JLIcon.png",
+                        src: "https://akshygupt.github.io/JetLagHideAndSeek/JLIcon.png",
                         sizes: "1080x1080",
                         type: "image/png",
                     },
                     {
-                        src: "https://taibeled.github.io/JetLagHideAndSeek/android-chrome-192x192.png",
+                        src: "https://akshygupt.github.io/JetLagHideAndSeek/android-chrome-192x192.png",
                         sizes: "192x192",
                         type: "image/png",
                     },
                     {
-                        src: "https://taibeled.github.io/JetLagHideAndSeek/android-chrome-512x512.png",
+                        src: "https://akshygupt.github.io/JetLagHideAndSeek/android-chrome-512x512.png",
                         sizes: "512x512",
                         type: "image/png",
                     },
@@ -47,6 +48,6 @@ export default defineConfig({
     devToolbar: {
         enabled: false,
     },
-    site: "https://taibeled.github.io",
+    site: "https://akshygupt.github.io",
     base: "JetLagHideAndSeek",
 });
