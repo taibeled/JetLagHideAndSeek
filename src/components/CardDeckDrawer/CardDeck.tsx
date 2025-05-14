@@ -9,7 +9,6 @@ import {
     Pagination,
     Scrollbar,
     A11y,
-    FreeMode,
 } from "swiper/modules";
 
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -21,7 +20,7 @@ import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 
 import { Select } from "../ui/select";
-import { Check, CheckCircle, CheckSquare } from "lucide-react";
+import { CheckCircle, CheckSquare } from "lucide-react";
 import { Button } from "../ui/button";
 
 interface CardDeckProps {
