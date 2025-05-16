@@ -16,6 +16,7 @@ import {
     hidingZone,
     planningModeEnabled,
     autoZoom,
+    additionalMapGeoLocations,
 } from "@/lib/context";
 import { Button } from "./ui/button";
 import { toast } from "react-toastify";
@@ -86,6 +87,12 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 mapGeoLocation.set(geojson);
                 mapGeoJSON.set(null);
                 polyGeoJSON.set(null);
+
+                if (geojson.alternateLocations) {
+                    additionalMapGeoLocations.set(geojson.alternateLocations);
+                } else {
+                    additionalMapGeoLocations.set([]);
+                }
             } else {
                 if (geojson.questions) {
                     questions.set(questionsSchema.parse(geojson.questions));

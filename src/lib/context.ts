@@ -37,6 +37,19 @@ export const mapGeoLocation = persistentAtom<OpenStreetMap>(
     },
 );
 
+interface AdditionalMapGeoLocations {
+    added: boolean;
+    location: OpenStreetMap;
+    base: boolean;
+}
+
+export const additionalMapGeoLocations = persistentAtom<
+    AdditionalMapGeoLocations[]
+>("additionalMapGeoLocations", [], {
+    encode: JSON.stringify,
+    decode: JSON.parse,
+});
+
 export const mapGeoJSON = atom<any>(null);
 export const polyGeoJSON = persistentAtom<any>("polyGeoJSON", null, {
     encode: JSON.stringify,
@@ -133,8 +146,15 @@ export const save = () => {
 
 // Exported hiding zone that can be loaded from clipboard or URL
 export const hidingZone = computed(
-    [questions, polyGeoJSON, mapGeoLocation, disabledStations, hidingRadius],
-    (q, geo, loc, disabledStations, radius) => {
+    [
+        questions,
+        polyGeoJSON,
+        mapGeoLocation,
+        additionalMapGeoLocations,
+        disabledStations,
+        hidingRadius,
+    ],
+    (q, geo, loc, altLoc, disabledStations, radius) => {
         if (geo !== null) {
             return {
                 ...geo,
@@ -150,6 +170,7 @@ export const hidingZone = computed(
                 ...$loc,
                 disabledStations: disabledStations,
                 hidingRadius: radius,
+                alternateLocations: structuredClone(altLoc),
             };
         }
     },
