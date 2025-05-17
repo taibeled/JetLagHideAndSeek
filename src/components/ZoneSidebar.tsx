@@ -472,8 +472,8 @@ export const ZoneSidebar = () => {
                                     />
                                     <Select
                                         trigger="Unit"
-                                        value="miles"
-                                        options={{ miles: "Miles" }}
+                                        value="kilometers"
+                                        options={{ kilometers: "Kilometers" }}
                                         disabled
                                     />
                                 </div>

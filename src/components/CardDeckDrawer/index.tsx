@@ -34,7 +34,7 @@ const MAX_IN_HAND_CARDS = 6;
 
 
 const CardDeckDrawer: React.FC<{}> = () => {
-    const [isCardDeckOpen, setCardDeckOpen] = React.useState(true);
+    const [isCardDeckOpen, setCardDeckOpen] = React.useState(false);
 
     const hiderInHandsDeck = useStore($hiderInHandsDeck);
     const drawPileDeck = useStore($drawPileDeck);
@@ -60,7 +60,7 @@ const CardDeckDrawer: React.FC<{}> = () => {
         removeCardsFromHiderDeck(cards);
     }
 
-    const playCard = (card: HidersCard, file?: File) => {
+    const playCard = async (card: HidersCard, file?: File) => {
         //tell plater to play the card
         if (navigator.share) {
 
@@ -68,9 +68,9 @@ const CardDeckDrawer: React.FC<{}> = () => {
                 title: card.type === "curse" ? "Here is a fuck you Curse Card" : (card.type === "action" ? "Just a card" : ""),
                 files: file ? [file] : undefined
             }
-            navigator
+            await navigator
                 .share(data)
-                .then(() => toast.success("Successfully shared"))
+                // .then(() => toast.success("Successfully shared"))
                 .catch((error) => console.log("Error sharing", error));
         } else {
             console.log(
@@ -95,7 +95,7 @@ const CardDeckDrawer: React.FC<{}> = () => {
                 <Button className="w-24 shadow-md">Card Deck</Button>
             </DrawerTrigger>
             <DrawerContent className="min-h-full">
-                <DrawerHeader className="pb-0">
+                {/* <DrawerHeader className="pb-0"> */}
                     <div className="flex gap-2 justify-center items-center mt-2">
                         <Button
                             className={`w-24 shadow-md ${mode === "pickup" && "active"} [&.active]:bg-blue-400`}
@@ -110,18 +110,18 @@ const CardDeckDrawer: React.FC<{}> = () => {
                             In Hand Deck
                         </Button>
                     </div>
-                </DrawerHeader>
+                {/* </DrawerHeader> */}
                 <div className="flex flex-col mt-2 pl-4 pr-4">
                     {mode === "holding" && (
                         <div className="flex flex-col justify-center items-center">
                             <h3 className="text-lg font-bold">In Hand Deck</h3>
-                            <div className="flex flex-wrap justify-center items-center mt-4">
+                            {/* <div className="flex flex-wrap justify-center items-center"> */}
                                 {hiderInHandsDeck.length > 0 ? (
                                     <CardList cards={hiderInHandsDeck} discardCards={discardCards} playCard={playCard}/>
                                 ) : (
                                     "You have no cards in your hand."
                                 )}
-                            </div>
+                            {/* </div> */}
                         </div>
                     )}
                     {mode === "pickup" && (

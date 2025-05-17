@@ -159,6 +159,13 @@ const CurseCards: HidersCard<"curse">[] = [
         description: "Seekers must go to their Buergeramt and take a selfie with it.",
         castingCost: "You must go to your nearest Buergeramt.",
         type: "curse"
+    },
+    {
+        id: "curse_22",
+        title: "Curse of the Lemon Phylactery",
+        description: "Before asking another question, the seekers must each find a lemon and affix it to the outermost layer of their clothes or skin. If, at any point, one of these lemons is no longer touching a seeker, you are awarded an extra 30 minutes.  The curse can not be played during the endgame.",
+        castingCost: "Discard a card",
+        type: "curse"
     }
 ];
 

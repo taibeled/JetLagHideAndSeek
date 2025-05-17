@@ -2,10 +2,19 @@ import * as React from "react";
 import Card from "./Card";
 import type { HidersCard } from "@/lib/cardSchema";
 
-import { Play, Ban, CheckCircle } from "lucide-react";
+import { Play, Ban } from "lucide-react";
 import { Button } from "../ui/button";
 
 import { cn } from "@/lib/utils";
+import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/scrollbar";
 
 //@ts-ignore
 import domtoimage from "dom-to-image";
@@ -37,12 +46,13 @@ const CardList = (props: CardListProps) => {
         }
     };
 
-    const playCard = () => {
+    const playCard = async () => {
         if (selectedCards.length === 0) {
             return;
         }
         if (!isAPlayAbleCardSelected(selectedCards)) {
             alert("You do not have any playable cards selected");
+            return;
         }
         if (selectedCards.length > 1) {
             alert("You can only play one card at a time.");
@@ -56,12 +66,9 @@ const CardList = (props: CardListProps) => {
                 // var img = new Image();
                 // img.src = dataUrl;
                 // document.body.appendChild(img);
-                file = new File(
-                    [blob],
-                    `${selectedCards[0].title}-image.png`,
-                    { type: blob.type },
-                );
-                
+                file = new File([blob], `${selectedCards[0].title}-image.png`, {
+                    type: blob.type,
+                });
             })
             .catch(function (error: any) {
                 console.error(
@@ -72,7 +79,7 @@ const CardList = (props: CardListProps) => {
             .finally(() => {
                 props.playCard(selectedCards[0], file);
                 return;
-            })
+            });
     };
 
     const discardCards = () => {
@@ -90,48 +97,47 @@ const CardList = (props: CardListProps) => {
     };
 
     return (
-        <div className="flex flex-col justify-center items-center p-4">
-            {/* don't know why height is not working */}
-            <div
-                className="w-full overflow-y-auto"
-                style={{ height: "calc(100vh - 200px)" }}
+        <>
+            <Swiper
+                spaceBetween={50}
+                slidesPerView={1}
+                freeMode={true}
+                pagination={{
+                    clickable: true,
+                }}
+                modules={[Navigation, Pagination, Scrollbar, A11y]}
+                style={{ height: "60vh", width: "100%", marginTop: "1rem" }}
             >
-                {props.cards.map((card, index) => (
-                    <div
-                        key={index}
-                        className={cn(
-                            "mb-2 bg-gray-100 rounded-lg drop-shadow-md z-30 flex p-4",
-                            selectedCards.includes(card) &&
-                                "border-blue-500 border-2",
-                            "relative",
-                        )}
-                        onClick={() => selectCard(card)}
-                        id={`card-${card.id}`}
-                    >
-                        {selectedCards.includes(card) && (
-                            <CheckCircle className="absolute top-2 right-2 fill-blue-500" />
-                        )}
-                        <Card card={card} />
-                    </div>
-                ))}
-            </div>
+                {props.cards.map((card, index) => {
+                    return (
+                        <SwiperSlide key={index}>
+                            <Card
+                                card={card}
+                                onSelect={(card) => selectCard(card)}
+                                isSelected={selectedCards.includes(card)}
+                            />
+                        </SwiperSlide>
+                    );
+                })}
+            </Swiper>
+
             {
-                <div className="flex flex-row justify-center items-center mt-4">
+                <div className="flex flex-row justify-center items-center mt-4 flex-wrap gap-2">
                     <Button
-                        className={`w-40 shadow-md flex justify-center align-center mr-4 ${isAPlayAbleCardSelected(selectedCards) && "active"} [&.active]:bg-green-400`}
+                        className={`shadow-md flex justify-center align-center mr-4 ${isAPlayAbleCardSelected(selectedCards) && "active"} [&.active]:bg-green-400`}
                         onClick={playCard}
                     >
                         <Play /> Play the card
                     </Button>
                     <Button
-                        className={`w-50 shadow-md flex justify-center align-center mr-4 ${selectedCards.length > 0 && "active"} [&.active]:bg-red-400`}
+                        className={`shadow-md flex justify-center align-center mr-4 ${selectedCards.length > 0 && "active"} [&.active]:bg-red-400`}
                         onClick={discardCards}
                     >
                         <Ban /> Discard selected card(s)
                     </Button>
                 </div>
             }
-        </div>
+        </>
     );
 };
 

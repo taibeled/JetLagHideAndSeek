@@ -4,12 +4,7 @@ import type { HidersCard } from "@/lib/cardSchema";
 
 import { cn } from "@/lib/utils";
 
-import {
-    Navigation,
-    Pagination,
-    Scrollbar,
-    A11y,
-} from "swiper/modules";
+import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -211,8 +206,6 @@ const CardDeck = ({
                     spaceBetween={50}
                     slidesPerView={1}
                     freeMode={true}
-                    onSlideChange={(e) => console.log("slide change", e)}
-                    onSwiper={(swiper) => console.log(swiper)}
                     pagination={{
                         clickable: true,
                     }}
@@ -222,25 +215,11 @@ const CardDeck = ({
                     {pickupDrawCards.map((card, index) => {
                         return (
                             <SwiperSlide key={index}>
-                                <div
-                                    onClick={() => selectCard(card)}
-                                    className={cn(
-                                        "p-4 rounded-md bg-white h-full",
-                                        selectedCards.includes(card) &&
-                                            "border-blue-500 border-2",
-                                        "relative",
-                                    )}
-                                >
-                                    {selectedCards.includes(card) && (
-                                        <CheckCircle className="absolute top-2 right-2 fill-blue-500" />
-                                    )}
-                                    <Card
-                                        card={card}
-                                        onSelect={(card) => selectCard(card)}
-                                        isSelected={true}
-                                        // isSelected={selectedCards.includes(card)}
-                                    />
-                                </div>
+                                <Card
+                                    card={card}
+                                    onSelect={(card) => selectCard(card)}
+                                    isSelected={selectedCards.includes(card)}
+                                />
                             </SwiperSlide>
                         );
                     })}
@@ -255,16 +234,18 @@ const CardDeck = ({
                             className={`w-30 shadow-md flex justify-center mt-4 align-center ${selectedCards.length === PickUpOptionsType[pickupOption].pickup && "active"} [&.active]:bg-green-400 ${selectedCards.length > PickUpOptionsType[pickupOption].pickup && "toomany"} [&.toomany]:bg-red-400`}
                             onClick={() => {
                                 if (PickUpOptionsType[pickupOption]) {
-                                    if(keepSelectedCards(
-                                        selectedCards,
-                                        PickUpOptionsType[pickupOption].pickup,
-                                    )) {
+                                    if (
+                                        keepSelectedCards(
+                                            selectedCards,
+                                            PickUpOptionsType[pickupOption]
+                                                .pickup,
+                                        )
+                                    ) {
                                         storeInHandsDeck(selectedCards);
                                         setPickupDrawCards(null);
                                         setPickupOption("");
                                         setSelectedCards([]);
                                     }
-                                  
                                 } else {
                                     alert(
                                         "Something went wrong, please contact the idiot who made this",

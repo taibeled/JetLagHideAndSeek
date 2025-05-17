@@ -12,7 +12,7 @@ import {
 } from "./schema";
 
 import { CardDeck, type HidersCard } from "./cardSchema";
-
+import berlinRingBahnBoundary from "./berlin-ringbahnboundary.json"
 export const mapGeoLocation = persistentAtom<OpenStreetMap>(
     "mapGeoLocation",
     {
@@ -25,8 +25,9 @@ export const mapGeoLocation = persistentAtom<OpenStreetMap>(
         },
         type: "Feature",
         properties: {
-            osm_type: "boundary",
+            osm_type: "R",
             osm_id: 62422,
+            extent:    [52.6755087, 13.088345, 52.3382448, 13.7611609],
             // extent: [45.7112046, 122.7141754, 20.2145811, 154.205541],
             country: "Germany",
             osm_key: "place",
@@ -43,7 +44,7 @@ export const mapGeoLocation = persistentAtom<OpenStreetMap>(
 );
 
 export const mapGeoJSON = atom<any>(null);
-export const polyGeoJSON = persistentAtom<any>("polyGeoJSON", null, {
+export const polyGeoJSON = persistentAtom<any>("polyGeoJSON", berlinRingBahnBoundary, {
     encode: JSON.stringify,
     decode: JSON.parse,
 });

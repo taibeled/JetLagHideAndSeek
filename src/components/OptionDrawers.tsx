@@ -125,7 +125,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 className,
             )}
         >
-            <CardDeckDrawer />
+            {$hiderMode &&  <CardDeckDrawer />}
 
             <Drawer
                 open={isInstructionsOpen}
