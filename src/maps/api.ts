@@ -1,7 +1,11 @@
 import type { LatLngTuple } from "leaflet";
 import osmtogeojson from "osmtogeojson";
 import * as turf from "@turf/turf";
-import { mapGeoLocation, polyGeoJSON } from "@/lib/context";
+import {
+    additionalMapGeoLocations,
+    mapGeoLocation,
+    polyGeoJSON,
+} from "@/lib/context";
 import type {
     EncompassingTentacleQuestionSchema,
     Question,
@@ -374,17 +378,52 @@ ${
 out ${outType};
 `;
     } else {
-        const geoLocation = mapGeoLocation.get();
+        const primaryLocation = mapGeoLocation.get();
+
+        // Extract additional locations and unwrap the nested structure
+        const additionalLocations = additionalMapGeoLocations
+            .get()
+            .map((entry) => entry.location);
+
+        // Combine all locations
+        const allLocations = [primaryLocation, ...additionalLocations];
+
+        // Generate relation and area conversion blocks
+        const relationToAreaBlocks = allLocations
+            .map((loc, idx) => {
+                const regionVar = `.region${idx}`;
+                return `relation(${loc.properties.osm_id});map_to_area->${regionVar};`;
+            })
+            .join("\n");
+
+        // Generate search blocks for each region
+        const searchBlocks = allLocations
+            .map((_, idx) => {
+                const regionVar = `area.region${idx}`;
+                const altQueries =
+                    alternatives.length > 0
+                        ? alternatives
+                              .map(
+                                  (alt) => `${searchType}${alt}(${regionVar});`,
+                              )
+                              .join("\n")
+                        : "";
+
+                return `
+            ${searchType}${filter}(${regionVar});
+            ${altQueries}
+          `;
+            })
+            .join("\n");
 
         query = `
-[out:json]${timeoutDuration != 0 ? `[timeout:${timeoutDuration}]` : ""};
-relation(${geoLocation.properties.osm_id});map_to_area->.region;
-(
-${searchType}${filter}(area.region);
-${alternatives.length > 0 ? alternatives.map((alternative) => `${searchType}${alternative}(area.region);`).join("\n") : ""}
-);
-out ${outType};
-`;
+        [out:json]${timeoutDuration !== 0 ? `[timeout:${timeoutDuration}]` : ""};
+        ${relationToAreaBlocks}
+        (
+        ${searchBlocks}
+        );
+        out ${outType};
+        `;
     }
 
     return await getOverpassData(query, loadingText, CacheType.ZONE_CACHE);
