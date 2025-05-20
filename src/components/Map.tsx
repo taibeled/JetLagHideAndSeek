@@ -26,19 +26,11 @@ import { useEffect, useMemo } from "react";
 import { toast } from "react-toastify";
 import * as turf from "@turf/turf";
 import { clearCache, determineGeoJSON } from "../maps/api";
-import { adjustPerRadius, radiusPlanningPolygon } from "../maps/radius";
+import { holedMask, unionize, applyQuestionsToMapGeoData } from "../maps";
 import { DraggableMarkers } from "./DraggableMarkers";
-import {
-    adjustPerThermometer,
-    thermometerPlanningPolygon,
-} from "../maps/thermometer";
-import { adjustPerTentacle, tentaclesPlanningPolygon } from "../maps/tentacles";
-import { adjustPerMatching, matchingPlanningPolygon } from "../maps/matching";
 import { PolygonDraw } from "./PolygonDraw";
-import { adjustPerMeasuring, measuringPlanningPolygon } from "@/maps/measuring";
 import { LeafletFullScreenButton } from "./LeafletFullScreenButton";
 import { hiderifyQuestion } from "@/maps";
-import { holedMask, unionize } from "@/maps/geo-utils";
 import { MapPrint } from "./MapPrint";
 
 export const refreshMapData = (screen: boolean = true, map?: LeafletMap) => {
@@ -154,143 +146,18 @@ export const Map = ({ className }: { className?: string }) => {
         });
 
         try {
-            for (let index = 0; index < $questions.length; index++) {
-                const question = $questions[index];
-
-                switch (question?.id) {
-                    case "radius":
-                        if (question.data.drag && planningModeEnabled.get()) {
-                            const geoJSONObj = radiusPlanningPolygon(
-                                question.data,
-                            );
-                            const geoJSONPlane = geoJSON(geoJSONObj);
-                            // @ts-expect-error This is a check such that only this type of layer is removed
-                            geoJSONPlane.questionKey = question.key;
-                            geoJSONPlane.addTo(map);
-                        }
-                        if (planningModeEnabled.get() && question.data.drag) {
-                            break;
-                        }
-                        if (!question.data.within) break;
-                        mapGeoData = adjustPerRadius(
-                            question.data,
-                            mapGeoData,
-                            false,
-                        );
-                        break;
-                    case "thermometer":
-                        if (question.data.drag && planningModeEnabled.get()) {
-                            const geoJSONObj = thermometerPlanningPolygon(
-                                question.data,
-                            );
-                            const geoJSONPlane = geoJSON(geoJSONObj);
-                            // @ts-expect-error This is a check such that only this type of layer is removed
-                            geoJSONPlane.questionKey = question.key;
-                            geoJSONPlane.addTo(map);
-                        }
-                        if (planningModeEnabled.get() && question.data.drag) {
-                            break;
-                        }
-
-                        mapGeoData = adjustPerThermometer(
-                            question.data,
-                            mapGeoData,
-                            false,
-                        );
-                        break;
-                    case "tentacles":
-                        if (question.data.drag && planningModeEnabled.get()) {
-                            const geoJSONObj = await tentaclesPlanningPolygon(
-                                question.data,
-                            );
-                            const geoJSONPlane = geoJSON(geoJSONObj);
-                            // @ts-expect-error This is a check such that only this type of layer is removed
-                            geoJSONPlane.questionKey = question.key;
-                            geoJSONPlane.addTo(map);
-                        }
-                        if (planningModeEnabled.get() && question.data.drag) {
-                            break;
-                        }
-
-                        if (question.data.location === false) break;
-                        mapGeoData = await adjustPerTentacle(
-                            question.data,
-                            mapGeoData,
-                            false,
-                        );
-                        break;
-                    case "matching":
-                        if (question.data.drag && planningModeEnabled.get()) {
-                            const geoJSONObj = await matchingPlanningPolygon(
-                                question.data,
-                            );
-
-                            if (geoJSONObj) {
-                                const geoJSONPlane = geoJSON(geoJSONObj);
-                                // @ts-expect-error This is a check such that only this type of layer is removed
-                                geoJSONPlane.questionKey = question.key;
-                                geoJSONPlane.addTo(map);
-                            }
-                        }
-                        if (planningModeEnabled.get() && question.data.drag) {
-                            break;
-                        }
-
-                        try {
-                            mapGeoData = await adjustPerMatching(
-                                question.data,
-                                mapGeoData,
-                                false,
-                            );
-                        } catch (error: any) {
-                            if (error && error.message === "Must be masked") {
-                                /* empty */
-                            } else {
-                                console.log(error);
-                                throw error;
-                            }
-                        }
-                        break;
-                    case "measuring":
-                        if (question.data.drag && planningModeEnabled.get()) {
-                            const geoJSONObj = await measuringPlanningPolygon(
-                                question.data,
-                            );
-
-                            if (geoJSONObj) {
-                                const geoJSONPlane = geoJSON(geoJSONObj);
-                                // @ts-expect-error This is a check such that only this type of layer is removed
-                                geoJSONPlane.questionKey = question.key;
-                                geoJSONPlane.addTo(map);
-                            }
-                        }
-                        if (planningModeEnabled.get() && question.data.drag) {
-                            break;
-                        }
-                        try {
-                            mapGeoData = await adjustPerMeasuring(
-                                question.data,
-                                mapGeoData,
-                                false,
-                            );
-                        } catch (error: any) {
-                            if (error && error.message === "Must be masked") {
-                                /* empty */
-                            } else {
-                                console.log(error);
-                                throw error;
-                            }
-                        }
-                        break;
-                }
-
-                if (mapGeoData.type !== "FeatureCollection") {
-                    mapGeoData = {
-                        type: "FeatureCollection",
-                        features: [mapGeoData],
-                    };
-                }
-            }
+            mapGeoData = await applyQuestionsToMapGeoData(
+                $questions,
+                mapGeoData,
+                false,
+                planningModeEnabled.get(),
+                (geoJSONObj, question) => {
+                    const geoJSONPlane = geoJSON(geoJSONObj);
+                    // @ts-expect-error This is a check such that only this type of layer is removed
+                    geoJSONPlane.questionKey = question.key;
+                    geoJSONPlane.addTo(map);
+                },
+            );
 
             let bounds: [[number, number], [number, number]] | undefined;
 
@@ -307,77 +174,12 @@ export const Map = ({ className }: { className?: string }) => {
                 features: [holedMask(mapGeoData)],
             };
 
-            for (let index = 0; index < $questions.length; index++) {
-                const question = $questions[index];
-
-                if (planningModeEnabled.get() && question.data.drag) {
-                    continue;
-                }
-
-                switch (question?.id) {
-                    case "radius":
-                        if (question.data.within) break;
-
-                        mapGeoData = adjustPerRadius(
-                            question.data,
-                            mapGeoData,
-                            true,
-                        );
-
-                        break;
-                    case "tentacles":
-                        if (question.data.location !== false) break;
-
-                        mapGeoData = adjustPerRadius(
-                            {
-                                ...question.data,
-                                within: false,
-                            },
-                            mapGeoData,
-                            true,
-                        );
-                        break;
-                    case "matching":
-                        try {
-                            mapGeoData = await adjustPerMatching(
-                                question.data,
-                                mapGeoData,
-                                true,
-                            );
-                        } catch (error: any) {
-                            if (error && error.message === "Cannot be masked") {
-                                /* empty */
-                            } else {
-                                console.log(error);
-                                throw error;
-                            }
-                        }
-                        break;
-                    case "measuring":
-                        try {
-                            mapGeoData = await adjustPerMeasuring(
-                                question.data,
-                                mapGeoData,
-                                true,
-                            );
-                        } catch (error: any) {
-                            if (error && error.message === "Cannot be masked") {
-                                /* empty */
-                            } else {
-                                console.log(error);
-                                throw error;
-                            }
-                        }
-                        break;
-                }
-
-                if (mapGeoData.type !== "FeatureCollection") {
-                    mapGeoData = {
-                        type: "FeatureCollection",
-                        features: [mapGeoData],
-                    };
-                }
-            }
+            mapGeoData = await applyQuestionsToMapGeoData(
+                $questions,
+                mapGeoData,
+                true,
+                planningModeEnabled.get(),
+            );
 
             map.eachLayer((layer: any) => {
                 if (layer.eliminationGeoJSON) {
