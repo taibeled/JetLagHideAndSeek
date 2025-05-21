@@ -10,11 +10,12 @@ import {
     questions,
     triggerLocalRefresh,
 } from "@/lib/context";
-import { iconColors } from "@/maps/api";
+import { iconColors, prettifyLocation } from "@/maps/api";
 import {
     determineUnionizedStrings,
     matchingQuestionSchema,
     NO_GROUP,
+    type APILocations,
     type MatchingQuestion,
 } from "@/lib/schema";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
@@ -212,8 +213,13 @@ export const MatchingQuestionComponent = ({
                     value={data.type}
                     onValueChange={async (value) => {
                         if (value === "custom-zone") {
-                            (data as any).geo =
+                            const matchingBoundary =
                                 await determineMatchingBoundary(data);
+                            if (matchingBoundary === false) {
+                                (data as any).geo = matchingBoundary;
+                            }
+                            (data as any).geo =
+                                matchingBoundary && matchingBoundary.boundary;
                         }
                         if (value === "custom-points") {
                             if (
@@ -228,7 +234,8 @@ export const MatchingQuestionComponent = ({
                                 data.type === "library-full" ||
                                 data.type === "golf_course-full" ||
                                 data.type === "consulate-full" ||
-                                data.type === "park-full"
+                                data.type === "park-full" ||
+                                data.type === "kindergarten-full"
                             ) {
                                 (data as any).geo =
                                     await findMatchingPlaces(data);
@@ -304,6 +311,10 @@ export const MatchingQuestionComponent = ({
                     disabled={!data.drag || $isLoading}
                 />
             )}
+            {data.name &&
+            prettifyLocation(data.type.split("-full")[0] as APILocations)
+                ? `Your nearest ${prettifyLocation(data.type.split("-full")[0] as APILocations)} is ${data.name}`
+                : null}
         </QuestionCard>
     );
 };

@@ -15,6 +15,7 @@ import {
     mapGeoJSON,
     mapGeoLocation,
     polyGeoJSON,
+    questionModified,
     trainStations,
 } from "@/lib/context";
 import {
@@ -65,7 +66,7 @@ const bboxExtension = (
 ): [number, number, number, number] => {
     const buffered = turf.bbox(
         turf.buffer(turf.bboxPolygon(bBox), Math.abs(distance), {
-            units: "miles",
+            units: "kilometers",
         })!,
     );
 
@@ -79,6 +80,12 @@ const bboxExtension = (
         buffered[3] + originalDeltaLat,
     ];
 };
+
+const findNameFromElement = (element: any) => {
+     if (!element.tags["name"] && !element.tags["name:en"]) return;
+     return element.tags["name:en"] ?? element.tags["name"];
+              
+}
 
 export const determineMeasuringBoundary = async (
     question: MeasuringQuestion,
@@ -107,7 +114,7 @@ export const determineMeasuringBoundary = async (
                 turf.point([question.lng, question.lat]),
                 coastline,
                 {
-                    units: "miles",
+                    units: "kilometers",
                     method: "geodesic",
                 },
             );
@@ -128,7 +135,7 @@ export const determineMeasuringBoundary = async (
                             ),
                             distanceToCoastline,
                             {
-                                units: "miles",
+                                units: "kilometers",
                                 steps: 64,
                             },
                         )!,
@@ -184,7 +191,16 @@ export const determineMeasuringBoundary = async (
         case "library-full":
         case "golf_course-full":
         case "consulate-full":
-        case "park-full": {
+        case "park-full":
+        case "kindergarten-full":
+        case "school-full":
+        case "church-full":
+        // case "pharmacy-full":
+        case "police-full":
+        case "fire_station-full":
+        case "library-full":
+        case "station-full":
+        case "tram_stop-full": {
             const location = question.type.split("-full")[0] as APILocations;
 
             const data = await findPlacesInZone(
@@ -214,18 +230,19 @@ export const determineMeasuringBoundary = async (
                 return [turf.multiPolygon([])];
             }
 
-            return [
+            const featuresCombined =  [
                 turf.combine(
                     turf.featureCollection(
                         data.elements.map((x: any) =>
                             turf.point([
                                 x.center ? x.center.lon : x.lon,
                                 x.center ? x.center.lat : x.lat,
-                            ]),
+                            ], findNameFromElement(x)),
                         ),
                     ),
-                ).features[0],
+                )
             ];
+            return [featuresCombined[0].features[0]]
         }
         case "custom-measure":
             return turf.combine(
@@ -261,45 +278,57 @@ const bufferedDeterminer = _.memoize(
                 placeData.map(
                     (x) =>
                         turf.buffer(x, 0.001, {
-                            units: "miles",
+                            units: "kilometers",
                         })!,
                 ),
             ),
         );
         let distance = turf.pointToPolygonDistance(questionPoint, buffer, {
-            units: "miles",
+            units: "kilometers",
             method: "geodesic",
         });
 
         let round = 0;
-        while (Math.abs(distance) > turf.convertLength(5, "feet", "miles")) {
+        while (Math.abs(distance) > turf.convertLength(5, "meters", "kilometers")) {
             round++;
             console.info(
                 "Measuring buffer off by",
                 distance,
-                "miles after",
+                "kilometers after",
                 round,
                 "rounds",
             );
             buffer = turf.simplify(
                 turf.buffer(buffer, distance, {
-                    units: "miles",
+                    units: "kilometers",
                 })!,
                 { tolerance: 0.001 },
             );
             distance = turf.pointToPolygonDistance(questionPoint, buffer, {
-                units: "miles",
+                units: "kilometers",
                 method: "geodesic",
             });
         }
 
         console.info(
             "Measuring buffer off by",
-            turf.convertLength(Math.abs(distance), "miles", "feet"),
-            "ft",
+            turf.convertLength(Math.abs(distance), "kilometers", "meters"),
+            "meters",
         );
 
-        return buffer;
+        let questionPointAndClosestPointDistance = 10000;
+        placeData.forEach((x) => {
+            const d = turf.distance(questionPoint, turf.center(x), {units: "kilometers"});
+            if(d < questionPointAndClosestPointDistance ) {
+                questionPointAndClosestPointDistance = d;
+            }
+        })
+
+        return {
+            buffer,
+            questionPointAndClosestPointDistance,
+            
+        };
     },
     (question) =>
         JSON.stringify({
@@ -327,7 +356,7 @@ export const adjustPerMeasuring = async (
 
     if (question.hiderCloser) {
         return turf.intersect(
-            turf.featureCollection([unionize(mapData), buffer]),
+            turf.featureCollection([unionize(mapData), buffer.buffer]),
         );
     } else {
         return turf.intersect(
@@ -414,14 +443,14 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
         const nearest = turf.nearestPoint(seeker, points as any);
 
         const distance = turf.distance(seeker, nearest, {
-            units: "miles",
+            units: "kilometers",
         });
 
         const hider = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
         const hiderNearest = turf.nearestPoint(hider, points as any);
 
         const hiderDistance = turf.distance(hider, hiderNearest, {
-            units: "miles",
+            units: "kilometers",
         });
 
         question.hiderCloser = hiderDistance < distance;
@@ -468,8 +497,9 @@ export const measuringPlanningPolygon = async (question: MeasuringQuestion) => {
         const buffered = await bufferedDeterminer(question);
 
         if (buffered === false) return false;
+         questionModified((question.distance = buffered.questionPointAndClosestPointDistance))
 
-        return turf.polygonToLine(buffered);
+        return turf.polygonToLine(buffered.buffer);
     } catch {
         return false;
     }

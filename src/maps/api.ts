@@ -101,7 +101,7 @@ export const determineGeoJSON = async (
 };
 
 export const locationFirstTag: {
-    [key in APILocations]: "amenity" | "tourism" | "leisure" | "diplomatic";
+    [key in APILocations]: "amenity" | "tourism" | "leisure" | "diplomatic" | "water" | "railway";
 } = {
     aquarium: "tourism",
     hospital: "amenity",
@@ -113,6 +113,15 @@ export const locationFirstTag: {
     golf_course: "leisure",
     consulate: "diplomatic",
     park: "leisure",
+    school: "amenity",
+    kindergarten: "amenity",
+    church: "amenity",
+    lake: "water",
+    pharmacy: "amenity",
+    "police": "amenity",
+    "fire_station": "amenity",
+    "station": "railway",
+    "tram_stop": "railway"
 };
 
 export const findTentacleLocations = async (
@@ -489,6 +498,7 @@ export const clearCache = async (cacheType: CacheType = CacheType.CACHE) => {
     }
 };
 
+
 export const prettifyLocation = (location: APILocations) => {
     switch (location) {
         case "aquarium":
@@ -511,6 +521,26 @@ export const prettifyLocation = (location: APILocations) => {
             return "Foreign Consulate";
         case "park":
             return "Park";
+        case "kindergarten":
+            return "Kindergarten"
+        case "school":
+            return "School"
+        case "church":
+            return "Church"
+        case "lake":
+            return "Lake"
+        case "pharmacy":
+            return "Pharmacy"
+        case "police":
+            return "Police Station"
+        case "fire_station":
+            return "Fire Station"
+        case "library":
+            return "Library"
+        case "station":
+            return "U/S Bahn"
+        case "tram_stop":
+            return "Tram Stop"
     }
 };
 

@@ -10,7 +10,7 @@ import {
     triggerLocalRefresh,
     isLoading,
 } from "@/lib/context";
-import { iconColors } from "@/maps/api";
+import { iconColors, prettifyLocation } from "@/maps/api";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
 import { Select } from "../ui/select";
 import { Checkbox } from "../ui/checkbox";
@@ -19,6 +19,7 @@ import {
     determineUnionizedStrings,
     measuringQuestionSchema,
     NO_GROUP,
+    type APILocations,
     type MeasuringQuestion,
 } from "@/lib/schema";
 import { determineMeasuringBoundary } from "@/maps/measuring";
@@ -235,6 +236,9 @@ export const MeasuringQuestionComponent = ({
                 }}
                 disabled={!data.drag || $isLoading}
             />
+            {data.distance
+                ? `You are ${data.distance.toPrecision(2)} KM away from your nearest ${prettifyLocation(data.type.split("-full")[0] as APILocations)}`
+                : null}
         </QuestionCard>
     );
 };
