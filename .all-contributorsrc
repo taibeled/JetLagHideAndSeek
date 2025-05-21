@@ -1,169 +1,232 @@
 {
-    "files": ["README.md"],
-    "imageSize": 100,
-    "commit": false,
-    "commitType": "docs",
-    "commitConvention": "angular",
-    "contributors": [
-        {
-            "login": "taibeled",
-            "name": "taibeled",
-            "avatar_url": "https://avatars.githubusercontent.com/u/179261820?v=4",
-            "profile": "https://github.com/taibeled",
-            "contributions": ["bug", "code", "design", "doc"]
-        },
-        {
-            "login": "vdumestre",
-            "name": "vdumestre",
-            "avatar_url": "https://avatars.githubusercontent.com/u/33914769?v=4",
-            "profile": "https://github.com/vdumestre",
-            "contributions": ["ideas"]
-        },
-        {
-            "login": "MrYawnie",
-            "name": "Jani Andsten",
-            "avatar_url": "https://avatars.githubusercontent.com/u/14262612?v=4",
-            "profile": "https://github.com/MrYawnie",
-            "contributions": ["code"]
-        },
-        {
-            "login": "BoringCode",
-            "name": "ʙʀᴀᴅʟᴇʏ ʀᴏsᴇɴғᴇʟᴅ",
-            "avatar_url": "https://avatars.githubusercontent.com/u/938452?v=4",
-            "profile": "https://bradleyrosenfeld.com/",
-            "contributions": ["code", "bug"]
-        },
-        {
-            "login": "abrahamguo",
-            "name": "Abraham Guo",
-            "avatar_url": "https://avatars.githubusercontent.com/u/7842684?v=4",
-            "profile": "https://github.com/abrahamguo",
-            "contributions": ["code"]
-        },
-        {
-            "login": "zusorio",
-            "name": "Tobias Messner",
-            "avatar_url": "https://avatars.githubusercontent.com/u/23165606?v=4",
-            "profile": "https://zusor.io/",
-            "contributions": ["code"]
-        },
-        {
-            "login": "UnknownSilicon",
-            "name": "Eris",
-            "avatar_url": "https://avatars.githubusercontent.com/u/14339279?v=4",
-            "profile": "https://github.com/UnknownSilicon",
-            "contributions": ["code"]
-        },
-        {
-            "login": "khiral",
-            "name": "khiral",
-            "avatar_url": "https://avatars.githubusercontent.com/u/23667350?v=4",
-            "profile": "https://github.com/khiral",
-            "contributions": ["code"]
-        },
-        {
-            "login": "hanneshier",
-            "name": "hanneshier",
-            "avatar_url": "https://avatars.githubusercontent.com/u/11063798?v=4",
-            "profile": "https://github.com/hanneshier",
-            "contributions": ["ideas"]
-        },
-        {
-            "login": "blahajjessie",
-            "name": "blahajjessie",
-            "avatar_url": "https://avatars.githubusercontent.com/u/78718906?v=4",
-            "profile": "https://github.com/blahajjessie",
-            "contributions": ["ideas"]
-        },
-        {
-            "login": "Blaa00",
-            "name": "Bla0",
-            "avatar_url": "https://avatars.githubusercontent.com/u/88278955?v=4",
-            "profile": "https://bagottgames.uk/",
-            "contributions": ["ideas"]
-        },
-        {
-            "login": "leoherzog",
-            "name": "Leo",
-            "avatar_url": "https://avatars.githubusercontent.com/u/5376265?v=4",
-            "profile": "https://herzog.tech/",
-            "contributions": ["ideas"]
-        },
-        {
-            "login": "Acclamator",
-            "name": "Acclamator",
-            "avatar_url": "https://avatars.githubusercontent.com/u/4201849?v=4",
-            "profile": "https://github.com/Acclamator",
-            "contributions": ["ideas"]
-        },
-        {
-            "login": "selacey42",
-            "name": "selacey42",
-            "avatar_url": "https://avatars.githubusercontent.com/u/200851729?v=4",
-            "profile": "https://github.com/selacey42",
-            "contributions": ["ideas", "bug"]
-        },
-        {
-            "login": "asemaca",
-            "name": "asemaca",
-            "avatar_url": "https://avatars.githubusercontent.com/u/64056714?v=4",
-            "profile": "https://github.com/asemaca",
-            "contributions": ["ideas", "bug"]
-        },
-        {
-            "login": "Akiva-Cohen",
-            "name": "Akiva Cohen",
-            "avatar_url": "https://avatars.githubusercontent.com/u/150308530?v=4",
-            "profile": "https://github.com/Akiva-Cohen",
-            "contributions": ["ideas", "bug"]
-        },
-        {
-            "login": "ChrisHartman",
-            "name": "Christopher Robert Hartman",
-            "avatar_url": "https://avatars.githubusercontent.com/u/9095854?v=4",
-            "profile": "https://github.com/ChrisHartman",
-            "contributions": ["ideas"]
-        },
-        {
-            "login": "miniBill",
-            "name": "Leonardo Taglialegne",
-            "avatar_url": "https://avatars.githubusercontent.com/u/191825?v=4",
-            "profile": "https://github.com/miniBill",
-            "contributions": ["ideas"]
-        },
-        {
-            "login": "JackSouster",
-            "name": "JackSouster",
-            "avatar_url": "https://avatars.githubusercontent.com/u/96268675?v=4",
-            "profile": "https://github.com/JackSouster",
-            "contributions": ["bug"]
-        },
-        {
-            "login": "fkloft",
-            "name": "fkloft",
-            "avatar_url": "https://avatars.githubusercontent.com/u/2741656?v=4",
-            "profile": "https://github.com/fkloft",
-            "contributions": ["ideas"]
-        },
-        {
-            "login": "InvestigateXM",
-            "name": "InvestigateXM",
-            "avatar_url": "https://avatars.githubusercontent.com/u/52758500?v=4",
-            "profile": "https://github.com/InvestigateXM",
-            "contributions": ["ideas"]
-        },
-        {
-            "login": "Hawkguye",
-            "name": "Hawkguye",
-            "avatar_url": "https://avatars.githubusercontent.com/u/121480806?v=4",
-            "profile": "https://github.com/Hawkguye",
-            "contributions": ["data"]
-        }
-    ],
-    "contributorsPerLine": 7,
-    "skipCi": true,
-    "repoType": "github",
-    "repoHost": "https://github.com",
-    "projectName": "JetLagHideAndSeek",
-    "projectOwner": "taibeled"
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "taibeled",
+      "name": "taibeled",
+      "avatar_url": "https://avatars.githubusercontent.com/u/179261820?v=4",
+      "profile": "https://github.com/taibeled",
+      "contributions": [
+        "bug",
+        "code",
+        "design",
+        "doc"
+      ]
+    },
+    {
+      "login": "vdumestre",
+      "name": "vdumestre",
+      "avatar_url": "https://avatars.githubusercontent.com/u/33914769?v=4",
+      "profile": "https://github.com/vdumestre",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "MrYawnie",
+      "name": "Jani Andsten",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14262612?v=4",
+      "profile": "https://github.com/MrYawnie",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "BoringCode",
+      "name": "ʙʀᴀᴅʟᴇʏ ʀᴏsᴇɴғᴇʟᴅ",
+      "avatar_url": "https://avatars.githubusercontent.com/u/938452?v=4",
+      "profile": "https://bradleyrosenfeld.com/",
+      "contributions": [
+        "code",
+        "bug"
+      ]
+    },
+    {
+      "login": "abrahamguo",
+      "name": "Abraham Guo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7842684?v=4",
+      "profile": "https://github.com/abrahamguo",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "zusorio",
+      "name": "Tobias Messner",
+      "avatar_url": "https://avatars.githubusercontent.com/u/23165606?v=4",
+      "profile": "https://zusor.io/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "UnknownSilicon",
+      "name": "Eris",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14339279?v=4",
+      "profile": "https://github.com/UnknownSilicon",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "khiral",
+      "name": "khiral",
+      "avatar_url": "https://avatars.githubusercontent.com/u/23667350?v=4",
+      "profile": "https://github.com/khiral",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "hanneshier",
+      "name": "hanneshier",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11063798?v=4",
+      "profile": "https://github.com/hanneshier",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "blahajjessie",
+      "name": "blahajjessie",
+      "avatar_url": "https://avatars.githubusercontent.com/u/78718906?v=4",
+      "profile": "https://github.com/blahajjessie",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "Blaa00",
+      "name": "Bla0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88278955?v=4",
+      "profile": "https://bagottgames.uk/",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "leoherzog",
+      "name": "Leo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5376265?v=4",
+      "profile": "https://herzog.tech/",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "Acclamator",
+      "name": "Acclamator",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4201849?v=4",
+      "profile": "https://github.com/Acclamator",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "selacey42",
+      "name": "selacey42",
+      "avatar_url": "https://avatars.githubusercontent.com/u/200851729?v=4",
+      "profile": "https://github.com/selacey42",
+      "contributions": [
+        "ideas",
+        "bug"
+      ]
+    },
+    {
+      "login": "asemaca",
+      "name": "asemaca",
+      "avatar_url": "https://avatars.githubusercontent.com/u/64056714?v=4",
+      "profile": "https://github.com/asemaca",
+      "contributions": [
+        "ideas",
+        "bug"
+      ]
+    },
+    {
+      "login": "Akiva-Cohen",
+      "name": "Akiva Cohen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/150308530?v=4",
+      "profile": "https://github.com/Akiva-Cohen",
+      "contributions": [
+        "ideas",
+        "bug"
+      ]
+    },
+    {
+      "login": "ChrisHartman",
+      "name": "Christopher Robert Hartman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/9095854?v=4",
+      "profile": "https://github.com/ChrisHartman",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "miniBill",
+      "name": "Leonardo Taglialegne",
+      "avatar_url": "https://avatars.githubusercontent.com/u/191825?v=4",
+      "profile": "https://github.com/miniBill",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "JackSouster",
+      "name": "JackSouster",
+      "avatar_url": "https://avatars.githubusercontent.com/u/96268675?v=4",
+      "profile": "https://github.com/JackSouster",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "fkloft",
+      "name": "fkloft",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2741656?v=4",
+      "profile": "https://github.com/fkloft",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "InvestigateXM",
+      "name": "InvestigateXM",
+      "avatar_url": "https://avatars.githubusercontent.com/u/52758500?v=4",
+      "profile": "https://github.com/InvestigateXM",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "Hawkguye",
+      "name": "Hawkguye",
+      "avatar_url": "https://avatars.githubusercontent.com/u/121480806?v=4",
+      "profile": "https://github.com/Hawkguye",
+      "contributions": [
+        "data"
+      ]
+    },
+    {
+      "login": "jlewis1778",
+      "name": "jlewis1778",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22303191?v=4",
+      "profile": "https://github.com/jlewis1778",
+      "contributions": [
+        "code",
+        "bug"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "skipCi": true,
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "projectName": "JetLagHideAndSeek",
+  "projectOwner": "taibeled"
 }

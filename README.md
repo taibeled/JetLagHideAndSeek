@@ -130,6 +130,7 @@ A great deal of appreciation goes out to these individuals who have helped to cr
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Hawkguye"><img src="https://avatars.githubusercontent.com/u/121480806?v=4?s=100" width="100px;" alt="Hawkguye"/><br /><sub><b>Hawkguye</b></sub></a><br /><a href="#data-Hawkguye" title="Data">🔣</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/jlewis1778"><img src="https://avatars.githubusercontent.com/u/22303191?v=4?s=100" width="100px;" alt="jlewis1778"/><br /><sub><b>jlewis1778</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=jlewis1778" title="Code">💻</a> <a href="https://github.com/taibeled/JetLagHideAndSeek/issues?q=author%3Ajlewis1778" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
