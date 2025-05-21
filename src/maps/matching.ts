@@ -25,11 +25,11 @@ import type {
 import {
     findAdminBoundary,
     findPlacesInZone,
-    locationFirstTag,
+    LOCATION_FIRST_TAG,
     nearestToQuestion,
     prettifyLocation,
     trainLineNodeFinder,
-} from "./api";
+} from "./api/index";
 import { holedMask, unionize } from "./geo-utils";
 import { geoSpatialVoronoi } from "./voronoi";
 
@@ -80,7 +80,7 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
             const location = question.type.split("-full")[0] as APILocations;
 
             const data = await findPlacesInZone(
-                `[${locationFirstTag[location]}=${location}]`,
+                `[${LOCATION_FIRST_TAG[location]}=${location}]`,
                 `Finding ${prettifyLocation(location).toLowerCase()}s...`,
                 "nwr",
                 "center",

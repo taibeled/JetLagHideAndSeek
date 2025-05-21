@@ -15,7 +15,7 @@ import {
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
-import { iconColors } from "@/maps/api";
+import { ICON_COLORS } from "@/maps/api/index";
 import type { ThermometerQuestion } from "@/maps/schema";
 
 import { QuestionCard } from "./base";
@@ -75,7 +75,7 @@ export const ThermometerQuestionComponent = ({
                     "text-xl font-semibold font-poppins",
                 )}
                 style={{
-                    backgroundColor: iconColors[data.colorA],
+                    backgroundColor: ICON_COLORS[data.colorA],
                     color: data.colorA === "gold" ? "black" : undefined,
                 }}
             >
@@ -112,7 +112,7 @@ export const ThermometerQuestionComponent = ({
                     "text-xl font-semibold font-poppins",
                 )}
                 style={{
-                    backgroundColor: iconColors[data.colorB],
+                    backgroundColor: ICON_COLORS[data.colorB],
                     color: data.colorB === "gold" ? "black" : undefined,
                 }}
             >

@@ -20,7 +20,7 @@ import {
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn, mapToObj } from "@/lib/utils";
-import { findTentacleLocations, iconColors } from "@/maps/api";
+import { findTentacleLocations, ICON_COLORS } from "@/maps/api/index";
 import {
     determineUnionizedStrings,
     NO_GROUP,
@@ -166,7 +166,7 @@ export const TentacleQuestionComponent = ({
                     "text-2xl font-semibold font-poppins",
                 )}
                 style={{
-                    backgroundColor: iconColors[data.color],
+                    backgroundColor: ICON_COLORS[data.color],
                     color: data.color === "gold" ? "black" : undefined,
                 }}
             >

@@ -16,7 +16,7 @@ import {
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
-import { iconColors } from "@/maps/api";
+import { ICON_COLORS } from "@/maps/api/index";
 import type { RadiusQuestion } from "@/maps/schema";
 
 import { QuestionCard } from "./base";
@@ -98,7 +98,7 @@ export const RadiusQuestionComponent = ({
                     "text-2xl font-semibold font-poppins",
                 )}
                 style={{
-                    backgroundColor: iconColors[data.color],
+                    backgroundColor: ICON_COLORS[data.color],
                     color: data.color === "gold" ? "black" : undefined,
                 }}
             >

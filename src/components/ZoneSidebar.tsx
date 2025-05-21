@@ -39,7 +39,7 @@ import {
     nearestToQuestion,
     QuestionSpecificLocation,
     trainLineNodeFinder,
-} from "@/maps/api";
+} from "@/maps/api/index";
 import { holedMask, lngLatToText, unionize } from "@/maps/geo-utils";
 import { geoSpatialVoronoi } from "@/maps/voronoi";
 

@@ -3,7 +3,7 @@ import * as turf from "@turf/turf";
 import { hiderMode } from "@/lib/context";
 import type { TentacleQuestion } from "@/maps/schema";
 
-import { findTentacleLocations } from "./api";
+import { findTentacleLocations } from "./api/index";
 import { unionize } from "./geo-utils";
 import { geoSpatialVoronoi } from "./voronoi";
 

@@ -29,7 +29,7 @@ import {
 import { cn } from "@/lib/utils";
 import { applyQuestionsToMapGeoData, holedMask, unionize } from "@/maps";
 import { hiderifyQuestion } from "@/maps";
-import { clearCache, determineGeoJSON } from "@/maps/api";
+import { clearCache, determineGeoJSON } from "@/maps/api/index";
 
 import { DraggableMarkers } from "./DraggableMarkers";
 import { LeafletFullScreenButton } from "./LeafletFullScreenButton";

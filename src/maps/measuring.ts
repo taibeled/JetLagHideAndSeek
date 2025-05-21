@@ -21,11 +21,11 @@ import {
     fetchCoastline,
     findPlacesInZone,
     findPlacesSpecificInZone,
-    locationFirstTag,
+    LOCATION_FIRST_TAG,
     nearestToQuestion,
     prettifyLocation,
     QuestionSpecificLocation,
-} from "./api";
+} from "./api/index";
 import {
     connectToSeparateLines,
     groupObjects,
@@ -190,7 +190,7 @@ export const determineMeasuringBoundary = async (
             const location = question.type.split("-full")[0] as APILocations;
 
             const data = await findPlacesInZone(
-                `[${locationFirstTag[location]}=${location}]`,
+                `[${LOCATION_FIRST_TAG[location]}=${location}]`,
                 `Finding ${prettifyLocation(location).toLowerCase()}s...`,
                 "nwr",
                 "center",

@@ -17,7 +17,7 @@ import {
     questions,
     save,
 } from "@/lib/context";
-import { CacheType, clearCache } from "@/maps/api";
+import { CacheType, clearCache } from "@/maps/api/index";
 import { lngLatToText } from "@/maps/geo-utils";
 import type {
     CustomMatchingQuestion,

@@ -13,7 +13,7 @@ import {
     save,
     triggerLocalRefresh,
 } from "@/lib/context";
-import type { iconColors } from "@/maps/api";
+import type { ICON_COLORS } from "@/maps/api/index";
 
 import { LatitudeLongitude } from "./LatLngPicker";
 import {
@@ -39,7 +39,7 @@ const ColoredMarker = ({
     onChange: (event: DragEndEvent) => void;
     latitude: number;
     longitude: number;
-    color: keyof typeof iconColors;
+    color: keyof typeof ICON_COLORS;
     questionKey: number;
     sub?: string;
 }) => {

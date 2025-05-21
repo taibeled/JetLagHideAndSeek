@@ -2,7 +2,7 @@ import { persistentAtom } from "@nanostores/persistent";
 import type { Map } from "leaflet";
 import { atom, computed } from "nanostores";
 
-import { type OpenStreetMap } from "@/maps/api";
+import { type AdditionalMapGeoLocations, type OpenStreetMap } from "@/maps/api/index";
 import {
     type DeepPartial,
     type Question,
@@ -37,12 +37,6 @@ export const mapGeoLocation = persistentAtom<OpenStreetMap>(
         decode: JSON.parse,
     },
 );
-
-interface AdditionalMapGeoLocations {
-    added: boolean;
-    location: OpenStreetMap;
-    base: boolean;
-}
 
 export const additionalMapGeoLocations = persistentAtom<
     AdditionalMapGeoLocations[]

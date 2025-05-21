@@ -18,7 +18,7 @@ import {
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
-import { iconColors } from "@/maps/api";
+import { ICON_COLORS } from "@/maps/api/index";
 import { determineMatchingBoundary, findMatchingPlaces } from "@/maps/matching";
 import {
     determineUnionizedStrings,
@@ -281,7 +281,7 @@ export const MatchingQuestionComponent = ({
                     data.type === "custom-zone"
                         ? {}
                         : {
-                              backgroundColor: iconColors[data.color],
+                              backgroundColor: ICON_COLORS[data.color],
                               color:
                                   data.color === "gold" ? "black" : undefined,
                           }
