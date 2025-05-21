@@ -3,6 +3,7 @@ import {
     mapGeoJSON,
     mapGeoLocation,
     polyGeoJSON,
+    questionModified,
 } from "@/lib/context";
 import {
     findAdminBoundary,
@@ -74,8 +75,17 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
         case "library-full":
         case "golf_course-full":
         case "consulate-full":
+        case "kindergarten-full":
+        case "school-full":
+        case "church-full":
+        case "pharmacy-full":
+        case "police-full":
+        case "fire_station-full":
+        case "library-full":
+        case "station-full":
+        case "tram_stop-full":
         case "park-full": {
-            const location = question.type.split("-full")[0] as APILocations;
+            const location = question.  type.split("-full")[0] as APILocations;
 
             const data = await findPlacesInZone(
                 `[${locationFirstTag[location]}=${location}]`,
@@ -104,12 +114,49 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
                 return [];
             }
 
-            return data.elements.map((x: any) =>
-                turf.point([
-                    x.center ? x.center.lon : x.lon,
-                    x.center ? x.center.lat : x.lat,
-                ]),
-            );
+              const response = turf.points([]);
+          
+              data.elements.forEach((element: any) => {
+                  if (!element.tags["name"] && !element.tags["name:en"]) return;
+          
+                  if (element.lat && element.lon) {
+                      const name = element.tags["name:en"] ?? element.tags["name"];
+          
+                      if (
+                          response.features.find(
+                              (feature: any) => feature.properties.name === name,
+                          )
+                      )
+                          return;
+          
+                      response.features.push(
+                          turf.point([element.lon, element.lat], {
+                              name,
+                          }),
+                      );
+                  }
+          
+                  if (!element.center || !element.center.lon || !element.center.lat)
+                      return;
+          
+                  const name = element.tags["name:en"] ?? element.tags["name"];
+          
+                  if (
+                      response.features.find(
+                          (feature: any) => feature.properties.name === name,
+                      )
+                  )
+                      return;
+          
+                  response.features.push(
+                      turf.point([element.center.lon, element.center.lat], {
+                          name,
+                      }),
+                  );
+              });
+          
+            return response;
+
         }
     }
 };
@@ -117,6 +164,7 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
 export const determineMatchingBoundary = _.memoize(
     async (question: MatchingQuestion) => {
         let boundary;
+        let name;
 
         switch (question.type) {
             case "aquarium":
@@ -220,6 +268,15 @@ export const determineMatchingBoundary = _.memoize(
             case "golf_course-full":
             case "consulate-full":
             case "park-full":
+            case "kindergarten-full":
+            case "school-full":
+            case "church-full":
+            case "pharmacy-full":
+            case "police-full":
+            case "fire_station-full":
+            case "library-full":
+            case "station-full":
+            case "tram_stop-full":
             case "custom-points": {
                 const data = await findMatchingPlaces(question);
 
@@ -229,6 +286,7 @@ export const determineMatchingBoundary = _.memoize(
                 for (const feature of voronoi.features) {
                     if (turf.booleanPointInPolygon(point, feature)) {
                         boundary = feature;
+                        name = feature.properties.site.properties.name;
                         break;
                     }
                 }
@@ -236,7 +294,10 @@ export const determineMatchingBoundary = _.memoize(
             }
         }
 
-        return boundary;
+        return {
+            boundary,
+            name,
+        };
     },
     (question: MatchingQuestion & { geo?: unknown; cat?: unknown }) =>
         JSON.stringify({
@@ -264,11 +325,13 @@ export const adjustPerMatching = async (
         throw new Error("Must be masked");
     }
 
-    const boundary = await determineMatchingBoundary(question);
+    const matchingBoundary = await determineMatchingBoundary(question);
 
-    if (boundary === false) {
+    if (matchingBoundary === false) {
         return mapData;
     }
+
+    const {boundary, name} = matchingBoundary;
 
     if (question.same) {
         return turf.intersect(
@@ -428,11 +491,15 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
 
 export const matchingPlanningPolygon = async (question: MatchingQuestion) => {
     try {
-        const boundary = await determineMatchingBoundary(question);
+        const matchingBoundary = await determineMatchingBoundary(question);
 
-        if (boundary === false) {
+        if (matchingBoundary === false) {
             return false;
         }
+
+        const {boundary, name} = matchingBoundary;
+
+        questionModified((question.name = name))
 
         return turf.polygonToLine(boundary);
     } catch {

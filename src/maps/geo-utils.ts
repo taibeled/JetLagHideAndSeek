@@ -31,7 +31,7 @@ export const holedMask = (input: any) => {
             // @ts-expect-error This made sense when I wrote it
             turf.multiPolygon(holes.map((x) => [x])),
         ]),
-    );
+);
 };
 
 export const lngLatToText = (coordinates: [number, number]) => {
