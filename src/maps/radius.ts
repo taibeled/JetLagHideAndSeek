@@ -1,7 +1,9 @@
-import { hiderMode } from "@/lib/context";
 import * as turf from "@turf/turf";
-import { unionize } from "./geo-utils";
+
+import { hiderMode } from "@/lib/context";
 import type { RadiusQuestion } from "@/maps/schema";
+
+import { unionize } from "./geo-utils";
 
 export const adjustPerRadius = (
     question: RadiusQuestion,

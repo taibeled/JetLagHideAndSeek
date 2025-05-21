@@ -1,20 +1,5 @@
-import type { Question } from "./schema";
 import type { Feature, FeatureCollection } from "geojson";
-import {
-    adjustPerRadius,
-    hiderifyRadius,
-    radiusPlanningPolygon,
-} from "./radius";
-import {
-    adjustPerThermometer,
-    hiderifyThermometer,
-    thermometerPlanningPolygon,
-} from "./thermometer";
-import {
-    adjustPerTentacle,
-    hiderifyTentacles,
-    tentaclesPlanningPolygon,
-} from "./tentacles";
+
 import {
     adjustPerMatching,
     hiderifyMatching,
@@ -25,13 +10,29 @@ import {
     hiderifyMeasuring,
     measuringPlanningPolygon,
 } from "./measuring";
+import {
+    adjustPerRadius,
+    hiderifyRadius,
+    radiusPlanningPolygon,
+} from "./radius";
+import type { Question } from "./schema";
+import {
+    adjustPerTentacle,
+    hiderifyTentacles,
+    tentaclesPlanningPolygon,
+} from "./tentacles";
+import {
+    adjustPerThermometer,
+    hiderifyThermometer,
+    thermometerPlanningPolygon,
+} from "./thermometer";
 
-export * from "./radius";
-export * from "./thermometer";
-export * from "./tentacles";
+export * from "./geo-utils";
 export * from "./matching";
 export * from "./measuring";
-export * from "./geo-utils";
+export * from "./radius";
+export * from "./tentacles";
+export * from "./thermometer";
 
 export const hiderifyQuestion = async (question: Question) => {
     switch (question.id) {

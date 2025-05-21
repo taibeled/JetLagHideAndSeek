@@ -1,5 +1,6 @@
-import { iconColors } from "@/maps/api";
 import { z } from "zod";
+
+import { iconColors } from "@/maps/api";
 
 export const NO_GROUP = "NO_GROUP";
 

@@ -1,8 +1,10 @@
-import globals from "globals";
 import pluginJs from "@eslint/js";
-import tseslint from "typescript-eslint";
 import pluginImportAlias from "eslint-plugin-import-alias";
 import pluginReact from "eslint-plugin-react";
+import simpleImportSort from "eslint-plugin-simple-import-sort";
+import globals from "globals";
+import tseslint from "typescript-eslint";
+
 import tsconfig from "./tsconfig.json" with { type: "json" };
 
 /** @type {import('eslint').Linter.Config[]} */
@@ -13,7 +15,10 @@ export default [
     ...tseslint.configs.recommended,
     pluginReact.configs.flat.recommended,
     {
-        plugins: { "import-alias": pluginImportAlias },
+        plugins: {
+            "import-alias": pluginImportAlias,
+            "simple-import-sort": simpleImportSort,
+        },
         settings: {
             react: {
                 version: "19",
@@ -23,7 +28,7 @@ export default [
             "import-alias/import-alias": [
                 "error",
                 {
-                    relativeDepth: 1,
+                    relativeDepth: 0,
                     aliases: Object.entries(tsconfig.compilerOptions.paths).map(
                         ([to, [from]]) => ({
                             alias: to.replace(/\*$/, ""),
@@ -34,6 +39,8 @@ export default [
             ],
             "react/react-in-jsx-scope": "off",
             "@typescript-eslint/no-explicit-any": "off", // Would be great to remove all `any` types...
+            "simple-import-sort/imports": "error",
+            "simple-import-sort/exports": "error",
         },
     },
 ];

@@ -1,5 +1,5 @@
 import * as turf from "@turf/turf";
-import type { FeatureCollection, Polygon, MultiPolygon } from "geojson";
+import type { FeatureCollection, MultiPolygon, Polygon } from "geojson";
 
 export const unionize = (input: FeatureCollection<Polygon | MultiPolygon>) => {
     if (input.features.length === 1) return input.features[0];

@@ -1,13 +1,15 @@
 import { toast } from "react-toastify";
+
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { isLoading } from "@/lib/context";
+
+import { Button } from "./ui/button";
 import {
     MENU_ITEM_CLASSNAME,
     SidebarMenuButton,
     SidebarMenuItem,
 } from "./ui/sidebar-l";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { isLoading } from "@/lib/context";
-import { Button } from "./ui/button";
 
 const parseCoordinatesFromText = (
     text: string,

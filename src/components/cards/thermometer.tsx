@@ -1,19 +1,24 @@
-import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
-import { cn } from "@/lib/utils";
+
+import { LatitudeLongitude } from "@/components/LatLngPicker";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Separator } from "@/components/ui/separator";
+import {
+    MENU_ITEM_CLASSNAME,
+    SidebarMenuItem,
+} from "@/components/ui/sidebar-l";
 import {
     hiderMode,
+    isLoading,
     questionModified,
     questions,
     triggerLocalRefresh,
-    isLoading,
 } from "@/lib/context";
+import { cn } from "@/lib/utils";
 import { iconColors } from "@/maps/api";
-import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
-import { Checkbox } from "../ui/checkbox";
-import { Separator } from "../ui/separator";
-import { QuestionCard } from "./base";
 import type { ThermometerQuestion } from "@/maps/schema";
+
+import { QuestionCard } from "./base";
 
 export const ThermometerQuestionComponent = ({
     data,

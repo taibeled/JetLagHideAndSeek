@@ -1,17 +1,18 @@
-import type { LatLngTuple } from "leaflet";
-import osmtogeojson from "osmtogeojson";
 import * as turf from "@turf/turf";
+import type { LatLngTuple } from "leaflet";
+import _ from "lodash";
+import osmtogeojson from "osmtogeojson";
+import { toast } from "react-toastify";
+
 import { mapGeoLocation, polyGeoJSON } from "@/lib/context";
 import type {
     EncompassingTentacleQuestionSchema,
     Question,
 } from "@/maps/schema";
-import _ from "lodash";
-import { toast } from "react-toastify";
 import type {
+    APILocations,
     HomeGameMatchingQuestions,
     HomeGameMeasuringQuestions,
-    APILocations,
 } from "@/maps/schema";
 
 export interface OpenStreetMap {

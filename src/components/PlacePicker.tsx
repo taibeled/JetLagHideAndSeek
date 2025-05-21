@@ -1,21 +1,13 @@
+import { useStore } from "@nanostores/react";
+import {
+    ChevronsUpDown,
+    LucideMinusSquare,
+    LucidePlusSquare,
+    LucideX,
+} from "lucide-react";
 import { useEffect, useState } from "react";
-import { useDebounce } from "../hooks/useDebounce";
-import { cn } from "../lib/utils";
-import {
-    geocode,
-    type OpenStreetMap,
-    determineName,
-    clearCache,
-    CacheType,
-} from "../maps/api";
-import {
-    additionalMapGeoLocations,
-    isLoading,
-    mapGeoJSON,
-    mapGeoLocation,
-    polyGeoJSON,
-    questions,
-} from "../lib/context";
+import { toast } from "react-toastify";
+
 import {
     Command,
     CommandEmpty,
@@ -29,16 +21,26 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import { useStore } from "@nanostores/react";
-import { Button } from "./ui/button";
+import { useDebounce } from "@/hooks/useDebounce";
 import {
-    ChevronsUpDown,
-    LucideMinusSquare,
-    LucidePlusSquare,
-    LucideX,
-} from "lucide-react";
+    additionalMapGeoLocations,
+    isLoading,
+    mapGeoJSON,
+    mapGeoLocation,
+    polyGeoJSON,
+    questions,
+} from "@/lib/context";
+import { cn } from "@/lib/utils";
+import {
+    CacheType,
+    clearCache,
+    determineName,
+    geocode,
+    type OpenStreetMap,
+} from "@/maps/api";
+
+import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
-import { toast } from "react-toastify";
 
 export const PlacePicker = ({
     className = "",

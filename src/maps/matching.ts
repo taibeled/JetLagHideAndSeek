@@ -1,9 +1,27 @@
+import * as turf from "@turf/turf";
+import type {
+    Feature,
+    FeatureCollection,
+    MultiPolygon,
+    Point,
+    Polygon,
+} from "geojson";
+import _ from "lodash";
+import osmtogeojson from "osmtogeojson";
+import { toast } from "react-toastify";
+
 import {
     hiderMode,
     mapGeoJSON,
     mapGeoLocation,
     polyGeoJSON,
 } from "@/lib/context";
+import type {
+    APILocations,
+    HomeGameMatchingQuestions,
+    MatchingQuestion,
+} from "@/maps/schema";
+
 import {
     findAdminBoundary,
     findPlacesInZone,
@@ -12,24 +30,8 @@ import {
     prettifyLocation,
     trainLineNodeFinder,
 } from "./api";
-import * as turf from "@turf/turf";
-import _ from "lodash";
-import { geoSpatialVoronoi } from "./voronoi";
-import { toast } from "react-toastify";
-import osmtogeojson from "osmtogeojson";
 import { holedMask, unionize } from "./geo-utils";
-import type {
-    HomeGameMatchingQuestions,
-    MatchingQuestion,
-    APILocations,
-} from "@/maps/schema";
-import type {
-    Feature,
-    FeatureCollection,
-    MultiPolygon,
-    Point,
-    Polygon,
-} from "geojson";
+import { geoSpatialVoronoi } from "./voronoi";
 
 export const findMatchingPlaces = async (question: MatchingQuestion) => {
     switch (question.type) {

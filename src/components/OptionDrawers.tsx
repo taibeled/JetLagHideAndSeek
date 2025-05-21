@@ -1,26 +1,7 @@
-import {
-    animateMapMovements,
-    autoSave,
-    defaultUnit,
-    hiderMode,
-    hidingRadius,
-    highlightTrainLines,
-    leafletMapContext,
-    mapGeoJSON,
-    mapGeoLocation,
-    polyGeoJSON,
-    questions,
-    disabledStations,
-    save,
-    triggerLocalRefresh,
-    hidingZone,
-    planningModeEnabled,
-    autoZoom,
-    additionalMapGeoLocations,
-} from "@/lib/context";
-import { Button } from "./ui/button";
+import { useStore } from "@nanostores/react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { Label } from "./ui/label";
+
 import {
     Drawer,
     DrawerContent,
@@ -29,18 +10,39 @@ import {
     DrawerTitle,
     DrawerTrigger,
 } from "@/components/ui/drawer";
-import { Separator } from "./ui/separator";
-import { useStore } from "@nanostores/react";
+import {
+    additionalMapGeoLocations,
+    animateMapMovements,
+    autoSave,
+    autoZoom,
+    defaultUnit,
+    disabledStations,
+    hiderMode,
+    hidingRadius,
+    hidingZone,
+    highlightTrainLines,
+    leafletMapContext,
+    mapGeoJSON,
+    mapGeoLocation,
+    planningModeEnabled,
+    polyGeoJSON,
+    questions,
+    save,
+    triggerLocalRefresh,
+} from "@/lib/context";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
-import { Checkbox } from "./ui/checkbox";
+import { questionsSchema } from "@/maps/schema";
+
 import { LatitudeLongitude } from "./LatLngPicker";
+import { Button } from "./ui/button";
+import { Checkbox } from "./ui/checkbox";
+import { Label } from "./ui/label";
+import { Separator } from "./ui/separator";
 import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
 } from "./ui/sidebar-l";
-import { questionsSchema } from "@/maps/schema";
 import { UnitSelect } from "./UnitSelect";
 
 const HIDING_ZONE_URL_PARAM = "hz";

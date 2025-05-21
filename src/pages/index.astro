@@ -1,7 +1,7 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import { Map } from "../components/Map";
-import { PlacePicker } from "../components/PlacePicker";
+import Layout from "@/layouts/Layout.astro";
+import { Map } from "@/components/Map";
+import { PlacePicker } from "@/components/PlacePicker";
 import {
     SidebarProvider as SidebarProviderL,
     SidebarTrigger as SidebarTriggerL,
@@ -38,7 +38,10 @@ import { OptionDrawers } from "@/components/OptionDrawers";
                         <div
                             class="flex flex-shrink max-w-fit z-[1030] absolute left-4 right-0 m-auto group-[.fullscreen]:hidden"
                         >
-                            <PlacePicker client:load className="m-4 overflow-hidden" />
+                            <PlacePicker
+                                client:load
+                                className="m-4 overflow-hidden"
+                            />
                         </div>
                         <div
                             class="bottom-5 right-2 mx-auto mb-2 w-fit absolute z-[1030] group-[.fullscreen]:hidden"

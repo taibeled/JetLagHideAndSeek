@@ -1,15 +1,7 @@
-import { VscChevronDown, VscShare, VscTrash } from "react-icons/vsc";
-import { useState } from "react";
 import { useStore } from "@nanostores/react";
-import { cn } from "@/lib/utils";
-import { questions } from "@/lib/context";
-import {
-    SidebarGroup,
-    SidebarGroupContent,
-    SidebarGroupLabel,
-    SidebarMenu,
-} from "../ui/sidebar-l";
-import { Separator } from "../ui/separator";
+import { useState } from "react";
+import { VscChevronDown, VscShare, VscTrash } from "react-icons/vsc";
+
 import {
     AlertDialog,
     AlertDialogAction,
@@ -23,12 +15,21 @@ import {
 } from "@/components/ui/alert-dialog";
 import {
     Dialog,
-    DialogTrigger,
     DialogContent,
-    DialogTitle,
     DialogDescription,
     DialogHeader,
-} from "../ui/dialog";
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
+import {
+    SidebarGroup,
+    SidebarGroupContent,
+    SidebarGroupLabel,
+    SidebarMenu,
+} from "@/components/ui/sidebar-l";
+import { questions } from "@/lib/context";
+import { cn } from "@/lib/utils";
 
 export const QuestionCard = ({
     children,

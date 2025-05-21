@@ -1,6 +1,7 @@
-import { Button, type ButtonProps } from "@/components/ui/button";
-import { useEffect, useState, type RefObject } from "react";
+import { type RefObject, useEffect, useState } from "react";
 import { MdOutlineVerticalAlignTop } from "react-icons/md";
+
+import { Button, type ButtonProps } from "@/components/ui/button";
 
 export function ScrollToTop({
     minHeight, // Height from which button will be visible

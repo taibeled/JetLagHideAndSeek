@@ -1,3 +1,8 @@
+import { useStore } from "@nanostores/react";
+import * as turf from "@turf/turf";
+import { SidebarCloseIcon } from "lucide-react";
+import { toast } from "react-toastify";
+
 import {
     Sidebar,
     SidebarContent,
@@ -11,13 +16,13 @@ import {
 import {
     addQuestion,
     autoSave,
+    isLoading,
     leafletMapContext,
     questions,
     save,
     triggerLocalRefresh,
-    isLoading,
-} from "../lib/context";
-import { useStore } from "@nanostores/react";
+} from "@/lib/context";
+
 import {
     MatchingQuestionComponent,
     MeasuringQuestionComponent,
@@ -25,9 +30,6 @@ import {
     TentacleQuestionComponent,
     ThermometerQuestionComponent,
 } from "./QuestionCards";
-import * as turf from "@turf/turf";
-import { SidebarCloseIcon } from "lucide-react";
-import { toast } from "react-toastify";
 
 export const QuestionSidebar = () => {
     useStore(triggerLocalRefresh);

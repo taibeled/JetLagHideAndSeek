@@ -1,37 +1,40 @@
 import "leaflet/dist/leaflet.css";
 import "leaflet-contextmenu/dist/leaflet.contextmenu.css";
-import { MapContainer, ScaleControl, TileLayer } from "react-leaflet";
-import { geoJSON, type Map as LeafletMap } from "leaflet";
 import "leaflet-contextmenu";
-import { cn } from "../lib/utils";
+
+import { useStore } from "@nanostores/react";
+import * as turf from "@turf/turf";
+import { geoJSON, type Map as LeafletMap } from "leaflet";
+import { useEffect, useMemo } from "react";
+import { MapContainer, ScaleControl, TileLayer } from "react-leaflet";
+import { toast } from "react-toastify";
+
 import {
+    additionalMapGeoLocations,
+    addQuestion,
+    animateMapMovements,
+    autoZoom,
+    hiderMode,
+    highlightTrainLines,
+    isLoading,
     leafletMapContext,
     mapGeoJSON,
     mapGeoLocation,
-    polyGeoJSON,
-    questions,
-    highlightTrainLines,
-    hiderMode,
-    triggerLocalRefresh,
-    questionFinishedMapData,
-    animateMapMovements,
-    addQuestion,
     planningModeEnabled,
-    isLoading,
-    autoZoom,
-    additionalMapGeoLocations,
-} from "../lib/context";
-import { useStore } from "@nanostores/react";
-import { useEffect, useMemo } from "react";
-import { toast } from "react-toastify";
-import * as turf from "@turf/turf";
-import { clearCache, determineGeoJSON } from "../maps/api";
-import { holedMask, unionize, applyQuestionsToMapGeoData } from "../maps";
-import { DraggableMarkers } from "./DraggableMarkers";
-import { PolygonDraw } from "./PolygonDraw";
-import { LeafletFullScreenButton } from "./LeafletFullScreenButton";
+    polyGeoJSON,
+    questionFinishedMapData,
+    questions,
+    triggerLocalRefresh,
+} from "@/lib/context";
+import { cn } from "@/lib/utils";
+import { applyQuestionsToMapGeoData, holedMask, unionize } from "@/maps";
 import { hiderifyQuestion } from "@/maps";
+import { clearCache, determineGeoJSON } from "@/maps/api";
+
+import { DraggableMarkers } from "./DraggableMarkers";
+import { LeafletFullScreenButton } from "./LeafletFullScreenButton";
 import { MapPrint } from "./MapPrint";
+import { PolygonDraw } from "./PolygonDraw";
 
 export const refreshMapData = (screen: boolean = true, map?: LeafletMap) => {
     const refresh = async () => {

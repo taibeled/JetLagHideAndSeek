@@ -1,15 +1,16 @@
-import { atom, computed } from "nanostores";
 import { persistentAtom } from "@nanostores/persistent";
-import { type OpenStreetMap } from "../maps/api";
 import type { Map } from "leaflet";
+import { atom, computed } from "nanostores";
+
+import { type OpenStreetMap } from "@/maps/api";
 import {
-    questionSchema,
-    questionsSchema,
     type DeepPartial,
     type Question,
     type Questions,
+    questionSchema,
+    questionsSchema,
     type Units,
-} from "../maps/schema";
+} from "@/maps/schema";
 
 export const mapGeoLocation = persistentAtom<OpenStreetMap>(
     "mapGeoLocation",

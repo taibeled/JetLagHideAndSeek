@@ -1,7 +1,16 @@
-import { Suspense, use } from "react";
-import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
-import { cn, mapToObj } from "@/lib/utils";
+import * as turf from "@turf/turf";
+import { Suspense, use } from "react";
+
+import { LatitudeLongitude } from "@/components/LatLngPicker";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
+import {
+    MENU_ITEM_CLASSNAME,
+    SidebarMenuItem,
+} from "@/components/ui/sidebar-l";
+import { UnitSelect } from "@/components/UnitSelect";
 import {
     drawingQuestionKey,
     hiderMode,
@@ -10,21 +19,17 @@ import {
     questions,
     triggerLocalRefresh,
 } from "@/lib/context";
+import { cn, mapToObj } from "@/lib/utils";
 import { findTentacleLocations, iconColors } from "@/maps/api";
-import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
-import { Input } from "../ui/input";
-import { Select } from "../ui/select";
-import { Checkbox } from "../ui/checkbox";
-import { QuestionCard } from "./base";
 import {
     determineUnionizedStrings,
     NO_GROUP,
-    tentacleQuestionSchema,
     type TentacleQuestion,
+    tentacleQuestionSchema,
     type TraditionalTentacleQuestion,
 } from "@/maps/schema";
-import { UnitSelect } from "../UnitSelect";
-import * as turf from "@turf/turf";
+
+import { QuestionCard } from "./base";
 
 export const TentacleQuestionComponent = ({
     data,

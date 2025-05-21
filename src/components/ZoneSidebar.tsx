@@ -1,3 +1,13 @@
+import { useStore } from "@nanostores/react";
+import * as turf from "@turf/turf";
+import * as L from "leaflet";
+import _ from "lodash";
+import { SidebarCloseIcon } from "lucide-react";
+import osmtogeojson from "osmtogeojson";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
+
+import { Select } from "@/components/ui/select";
 import {
     Sidebar,
     SidebarContent,
@@ -9,24 +19,19 @@ import {
 } from "@/components/ui/sidebar-r";
 import {
     animateMapMovements,
+    autoZoom,
     disabledStations,
     displayHidingZones,
     displayHidingZonesOptions,
     hidingRadius,
+    isLoading,
     leafletMapContext,
     planningModeEnabled,
     questionFinishedMapData,
     questions,
     trainStations,
-    isLoading,
-    autoZoom,
-} from "../lib/context";
-import { useStore } from "@nanostores/react";
-import { MENU_ITEM_CLASSNAME } from "./ui/sidebar-l";
-import { Label } from "./ui/label";
-import { Checkbox } from "./ui/checkbox";
-import { useEffect, useRef, useState } from "react";
-import * as L from "leaflet";
+} from "@/lib/context";
+import { cn } from "@/lib/utils";
 import {
     findPlacesInZone,
     findPlacesSpecificInZone,
@@ -35,10 +40,10 @@ import {
     QuestionSpecificLocation,
     trainLineNodeFinder,
 } from "@/maps/api";
-import * as turf from "@turf/turf";
-import osmtogeojson from "osmtogeojson";
 import { holedMask, lngLatToText, unionize } from "@/maps/geo-utils";
-import { cn } from "@/lib/utils";
+import { geoSpatialVoronoi } from "@/maps/voronoi";
+
+import { Checkbox } from "./ui/checkbox";
 import {
     Command,
     CommandEmpty,
@@ -47,14 +52,11 @@ import {
     CommandItem,
     CommandList,
 } from "./ui/command";
-import { toast } from "react-toastify";
-import _ from "lodash";
-import { MultiSelect } from "./ui/multi-select";
 import { Input } from "./ui/input";
-import { Select } from "@/components/ui/select";
-import { geoSpatialVoronoi } from "@/maps/voronoi";
+import { Label } from "./ui/label";
+import { MultiSelect } from "./ui/multi-select";
 import { ScrollToTop } from "./ui/scroll-to-top";
-import { SidebarCloseIcon } from "lucide-react";
+import { MENU_ITEM_CLASSNAME } from "./ui/sidebar-l";
 
 let buttonJustClicked = false;
 

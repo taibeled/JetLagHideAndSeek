@@ -1,3 +1,22 @@
+import * as turf from "@turf/turf";
+import type { Feature, MultiPolygon } from "geojson";
+import _ from "lodash";
+import osmtogeojson from "osmtogeojson";
+import { toast } from "react-toastify";
+
+import {
+    hiderMode,
+    mapGeoJSON,
+    mapGeoLocation,
+    polyGeoJSON,
+    trainStations,
+} from "@/lib/context";
+import type {
+    APILocations,
+    HomeGameMeasuringQuestions,
+    MeasuringQuestion,
+} from "@/maps/schema";
+
 import {
     fetchCoastline,
     findPlacesInZone,
@@ -7,29 +26,12 @@ import {
     prettifyLocation,
     QuestionSpecificLocation,
 } from "./api";
-import * as turf from "@turf/turf";
-import _ from "lodash";
-import type { Feature, MultiPolygon } from "geojson";
 import {
-    hiderMode,
-    mapGeoJSON,
-    mapGeoLocation,
-    polyGeoJSON,
-    trainStations,
-} from "@/lib/context";
-import {
+    connectToSeparateLines,
     groupObjects,
     holedMask,
-    connectToSeparateLines,
     unionize,
 } from "./geo-utils";
-import osmtogeojson from "osmtogeojson";
-import type {
-    MeasuringQuestion,
-    HomeGameMeasuringQuestions,
-    APILocations,
-} from "@/maps/schema";
-import { toast } from "react-toastify";
 
 const highSpeedBase = _.memoize(
     (features: Feature[]) => {
