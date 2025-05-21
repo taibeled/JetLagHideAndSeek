@@ -174,12 +174,10 @@ const baseMatchingQuestionSchema = ordinaryBaseQuestionSchema.extend({
 
 const ordinaryMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
     type: z.union([
-        z
-            .literal("airport")
-            .describe("Same Nearest Commercial Airport In Zone"),
+        z.literal("airport").describe("Commercial Airport In Zone Question"),
         z
             .literal("major-city")
-            .describe("Closest Commercial Airport In Zone Question"),
+            .describe("Major City (1,000,000+ people) In Zone Question"),
         z
             .literal("aquarium-full")
             .describe("Aquarium Question (Small+Medium Games)"),
