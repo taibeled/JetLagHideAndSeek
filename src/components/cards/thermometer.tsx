@@ -13,7 +13,7 @@ import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
 import { Checkbox } from "../ui/checkbox";
 import { Separator } from "../ui/separator";
 import { QuestionCard } from "./base";
-import type { ThermometerQuestion } from "@/lib/schema";
+import type { ThermometerQuestion } from "@/maps/schema";
 
 export const ThermometerQuestionComponent = ({
     data,

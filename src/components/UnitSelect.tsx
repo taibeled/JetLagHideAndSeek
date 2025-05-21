@@ -1,4 +1,4 @@
-import type { Units } from "@/lib/schema";
+import type { Units } from "@/maps/schema";
 import { Select } from "./ui/select";
 
 export const UnitSelect = ({

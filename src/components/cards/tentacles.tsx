@@ -22,7 +22,7 @@ import {
     tentacleQuestionSchema,
     type TentacleQuestion,
     type TraditionalTentacleQuestion,
-} from "@/lib/schema";
+} from "@/maps/schema";
 import { UnitSelect } from "../UnitSelect";
 import * as turf from "@turf/turf";
 

@@ -9,7 +9,7 @@ import {
     type Question,
     type Questions,
     type Units,
-} from "./schema";
+} from "../maps/schema";
 
 export const mapGeoLocation = persistentAtom<OpenStreetMap>(
     "mapGeoLocation",

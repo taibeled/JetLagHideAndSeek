@@ -3,7 +3,7 @@ import * as turf from "@turf/turf";
 import { hiderMode } from "@/lib/context";
 import { geoSpatialVoronoi } from "./voronoi";
 import { unionize } from "./geo-utils";
-import type { TentacleQuestion } from "@/lib/schema";
+import type { TentacleQuestion } from "@/maps/schema";
 
 export const adjustPerTentacle = async (
     question: TentacleQuestion,

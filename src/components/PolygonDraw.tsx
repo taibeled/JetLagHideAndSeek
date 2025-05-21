@@ -20,7 +20,7 @@ import type {
     CustomMeasuringQuestion,
     CustomTentacleQuestion,
     Question,
-} from "@/lib/schema";
+} from "@/maps/schema";
 import { lngLatToText } from "@/maps/geo-utils";
 import { Dialog, DialogContent } from "./ui/dialog";
 import _ from "lodash";

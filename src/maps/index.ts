@@ -1,4 +1,4 @@
-import type { Question } from "@/lib/schema";
+import type { Question } from "./schema";
 import type { Feature, FeatureCollection } from "geojson";
 import {
     adjustPerRadius,

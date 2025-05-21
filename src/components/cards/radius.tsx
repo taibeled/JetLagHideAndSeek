@@ -1,4 +1,4 @@
-import type { RadiusQuestion } from "@/lib/schema";
+import type { RadiusQuestion } from "@/maps/schema";
 import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
 import { cn } from "@/lib/utils";

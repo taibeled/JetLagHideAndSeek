@@ -28,7 +28,7 @@ import type {
     MeasuringQuestion,
     HomeGameMeasuringQuestions,
     APILocations,
-} from "@/lib/schema";
+} from "@/maps/schema";
 import { toast } from "react-toastify";
 
 const highSpeedBase = _.memoize(

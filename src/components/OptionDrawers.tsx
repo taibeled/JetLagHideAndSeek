@@ -40,7 +40,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "./ui/sidebar-l";
-import { questionsSchema } from "@/lib/schema";
+import { questionsSchema } from "@/maps/schema";
 import { UnitSelect } from "./UnitSelect";
 
 const HIDING_ZONE_URL_PARAM = "hz";

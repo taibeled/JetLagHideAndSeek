@@ -16,7 +16,7 @@ import {
     matchingQuestionSchema,
     NO_GROUP,
     type MatchingQuestion,
-} from "@/lib/schema";
+} from "@/maps/schema";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
 import { Select } from "../ui/select";
 import { Checkbox } from "../ui/checkbox";

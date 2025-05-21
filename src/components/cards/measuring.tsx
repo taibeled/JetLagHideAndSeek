@@ -20,7 +20,7 @@ import {
     measuringQuestionSchema,
     NO_GROUP,
     type MeasuringQuestion,
-} from "@/lib/schema";
+} from "@/maps/schema";
 import { determineMeasuringBoundary } from "@/maps/measuring";
 
 export const MeasuringQuestionComponent = ({

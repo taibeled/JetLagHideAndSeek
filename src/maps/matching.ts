@@ -22,7 +22,7 @@ import type {
     HomeGameMatchingQuestions,
     MatchingQuestion,
     APILocations,
-} from "@/lib/schema";
+} from "@/maps/schema";
 import type {
     Feature,
     FeatureCollection,

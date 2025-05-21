@@ -5,14 +5,14 @@ import { mapGeoLocation, polyGeoJSON } from "@/lib/context";
 import type {
     EncompassingTentacleQuestionSchema,
     Question,
-} from "@/lib/schema";
+} from "@/maps/schema";
 import _ from "lodash";
 import { toast } from "react-toastify";
 import type {
     HomeGameMatchingQuestions,
     HomeGameMeasuringQuestions,
     APILocations,
-} from "@/lib/schema";
+} from "@/maps/schema";
 
 export interface OpenStreetMap {
     type: string;
