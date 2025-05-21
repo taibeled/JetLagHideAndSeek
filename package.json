@@ -26,7 +26,7 @@
         "@radix-ui/react-tooltip": "^1.2.6",
         "@turf/turf": "^7.2.0",
         "@vite-pwa/astro": "^0.5.0",
-        "astro": "^5.7.8",
+        "astro": "^5.7.13",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "cmdk": "1.0.4",
