@@ -317,12 +317,19 @@ const bufferedDeterminer = _.memoize(
         );
 
         let questionPointAndClosestPointDistance = 10000;
+        let nearestPointCoord;
         placeData.forEach((x) => {
             const d = turf.distance(questionPoint, turf.center(x), {units: "kilometers"});
             if(d < questionPointAndClosestPointDistance ) {
                 questionPointAndClosestPointDistance = d;
+                nearestPointCoord = turf.center(x);
             }
         })
+
+        console.info('The closest point is ', questionPointAndClosestPointDistance, 
+            'your current point is', questionPoint,
+            'and the nearest point is', nearestPointCoord
+        )
 
         return {
             buffer,
