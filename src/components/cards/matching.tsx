@@ -18,8 +18,11 @@ import {
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
-import { ICON_COLORS } from "@/maps/api/index";
-import { determineMatchingBoundary, findMatchingPlaces } from "@/maps/matching";
+import { ICON_COLORS } from "@/maps/api";
+import {
+    determineMatchingBoundary,
+    findMatchingPlaces,
+} from "@/maps/questions/matching";
 import {
     determineUnionizedStrings,
     type MatchingQuestion,

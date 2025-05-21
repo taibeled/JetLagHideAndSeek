@@ -2,7 +2,7 @@ import { persistentAtom } from "@nanostores/persistent";
 import type { Map } from "leaflet";
 import { atom, computed } from "nanostores";
 
-import { type AdditionalMapGeoLocations, type OpenStreetMap } from "@/maps/api/index";
+import { type AdditionalMapGeoLocations, type OpenStreetMap } from "@/maps/api";
 import {
     type DeepPartial,
     type Question,

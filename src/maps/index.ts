@@ -4,35 +4,30 @@ import {
     adjustPerMatching,
     hiderifyMatching,
     matchingPlanningPolygon,
-} from "./matching";
+} from "./questions/matching";
 import {
     adjustPerMeasuring,
     hiderifyMeasuring,
     measuringPlanningPolygon,
-} from "./measuring";
+} from "./questions/measuring";
 import {
     adjustPerRadius,
     hiderifyRadius,
     radiusPlanningPolygon,
-} from "./radius";
-import type { Question } from "./schema";
+} from "./questions/radius";
 import {
     adjustPerTentacle,
     hiderifyTentacles,
     tentaclesPlanningPolygon,
-} from "./tentacles";
+} from "./questions/tentacles";
 import {
     adjustPerThermometer,
     hiderifyThermometer,
     thermometerPlanningPolygon,
-} from "./thermometer";
+} from "./questions/thermometer";
+import type { Question } from "./schema";
 
 export * from "./geo-utils";
-export * from "./matching";
-export * from "./measuring";
-export * from "./radius";
-export * from "./tentacles";
-export * from "./thermometer";
 
 export const hiderifyQuestion = async (question: Question) => {
     switch (question.id) {

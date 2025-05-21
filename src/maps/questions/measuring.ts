@@ -11,12 +11,6 @@ import {
     polyGeoJSON,
     trainStations,
 } from "@/lib/context";
-import type {
-    APILocations,
-    HomeGameMeasuringQuestions,
-    MeasuringQuestion,
-} from "@/maps/schema";
-
 import {
     fetchCoastline,
     findPlacesInZone,
@@ -25,13 +19,18 @@ import {
     nearestToQuestion,
     prettifyLocation,
     QuestionSpecificLocation,
-} from "./api/index";
+} from "@/maps/api";
 import {
     connectToSeparateLines,
     groupObjects,
     holedMask,
     unionize,
-} from "./geo-utils";
+} from "@/maps/geo-utils";
+import type {
+    APILocations,
+    HomeGameMeasuringQuestions,
+    MeasuringQuestion,
+} from "@/maps/schema";
 
 const highSpeedBase = _.memoize(
     (features: Feature[]) => {

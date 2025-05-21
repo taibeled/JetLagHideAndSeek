@@ -17,8 +17,8 @@ import {
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
-import { ICON_COLORS } from "@/maps/api/index";
-import { determineMeasuringBoundary } from "@/maps/measuring";
+import { ICON_COLORS } from "@/maps/api";
+import { determineMeasuringBoundary } from "@/maps/questions/measuring";
 import {
     determineUnionizedStrings,
     type MeasuringQuestion,

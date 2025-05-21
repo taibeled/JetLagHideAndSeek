@@ -16,12 +16,6 @@ import {
     mapGeoLocation,
     polyGeoJSON,
 } from "@/lib/context";
-import type {
-    APILocations,
-    HomeGameMatchingQuestions,
-    MatchingQuestion,
-} from "@/maps/schema";
-
 import {
     findAdminBoundary,
     findPlacesInZone,
@@ -29,9 +23,14 @@ import {
     nearestToQuestion,
     prettifyLocation,
     trainLineNodeFinder,
-} from "./api/index";
-import { holedMask, unionize } from "./geo-utils";
-import { geoSpatialVoronoi } from "./voronoi";
+} from "@/maps/api";
+import { holedMask, unionize } from "@/maps/geo-utils";
+import type {
+    APILocations,
+    HomeGameMatchingQuestions,
+    MatchingQuestion,
+} from "@/maps/schema";
+import { geoSpatialVoronoi } from "@/maps/voronoi";
 
 export const findMatchingPlaces = async (question: MatchingQuestion) => {
     switch (question.type) {

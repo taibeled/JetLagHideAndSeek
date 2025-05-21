@@ -13,7 +13,7 @@ import {
     save,
     triggerLocalRefresh,
 } from "@/lib/context";
-import type { ICON_COLORS } from "@/maps/api/index";
+import type { ICON_COLORS } from "@/maps/api";
 
 import { LatitudeLongitude } from "./LatLngPicker";
 import {

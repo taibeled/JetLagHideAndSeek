@@ -16,7 +16,7 @@ import {
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
-import { ICON_COLORS } from "@/maps/api/index";
+import { ICON_COLORS } from "@/maps/api";
 import type { RadiusQuestion } from "@/maps/schema";
 
 import { QuestionCard } from "./base";

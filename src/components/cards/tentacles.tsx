@@ -20,7 +20,7 @@ import {
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn, mapToObj } from "@/lib/utils";
-import { findTentacleLocations, ICON_COLORS } from "@/maps/api/index";
+import { findTentacleLocations, ICON_COLORS } from "@/maps/api";
 import {
     determineUnionizedStrings,
     NO_GROUP,

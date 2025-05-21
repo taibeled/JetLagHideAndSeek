@@ -1,11 +1,10 @@
 import * as turf from "@turf/turf";
 
 import { hiderMode } from "@/lib/context";
+import { findTentacleLocations } from "@/maps/api";
+import { unionize } from "@/maps/geo-utils";
 import type { TentacleQuestion } from "@/maps/schema";
-
-import { findTentacleLocations } from "./api/index";
-import { unionize } from "./geo-utils";
-import { geoSpatialVoronoi } from "./voronoi";
+import { geoSpatialVoronoi } from "@/maps/voronoi";
 
 export const adjustPerTentacle = async (
     question: TentacleQuestion,
