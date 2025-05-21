@@ -380,15 +380,13 @@ out ${outType};
     } else {
         const primaryLocation = mapGeoLocation.get();
 
-        // Extract additional locations and unwrap the nested structure
         const additionalLocations = additionalMapGeoLocations
             .get()
+            .filter((entry) => entry.added)
             .map((entry) => entry.location);
 
-        // Combine all locations
         const allLocations = [primaryLocation, ...additionalLocations];
 
-        // Generate relation and area conversion blocks
         const relationToAreaBlocks = allLocations
             .map((loc, idx) => {
                 const regionVar = `.region${idx}`;
@@ -396,7 +394,6 @@ out ${outType};
             })
             .join("\n");
 
-        // Generate search blocks for each region
         const searchBlocks = allLocations
             .map((_, idx) => {
                 const regionVar = `area.region${idx}`;
@@ -426,7 +423,44 @@ out ${outType};
         `;
     }
 
-    return await getOverpassData(query, loadingText, CacheType.ZONE_CACHE);
+    const data = await getOverpassData(
+        query,
+        loadingText,
+        CacheType.ZONE_CACHE,
+    );
+
+    const subtractedEntries = additionalMapGeoLocations
+        .get()
+        .filter((e) => !e.added);
+    const subtractedPolygons = subtractedEntries.map((entry) => entry.location);
+
+    if (subtractedPolygons.length > 0 && data && data.elements) {
+        const turfPolys = await Promise.all(
+            subtractedPolygons.map(
+                async (location) =>
+                    turf.combine(
+                        await determineGeoJSON(
+                            location.properties.osm_id.toString(),
+                            location.properties.osm_type,
+                        ),
+                    ).features[0],
+            ),
+        );
+
+        data.elements = data.elements.filter((el: any) => {
+            const lon = el.center ? el.center.lon : el.lon;
+            const lat = el.center ? el.center.lat : el.lat;
+            if (typeof lon !== "number" || typeof lat !== "number")
+                return false;
+            const pt = turf.point([lon, lat]);
+
+            return !turfPolys.some((poly) =>
+                turf.booleanPointInPolygon(pt, poly as any),
+            );
+        });
+    }
+
+    return data;
 };
 
 export const findPlacesSpecificInZone = async (
