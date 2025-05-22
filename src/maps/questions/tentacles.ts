@@ -2,7 +2,7 @@ import * as turf from "@turf/turf";
 
 import { hiderMode } from "@/lib/context";
 import { findTentacleLocations } from "@/maps/api";
-import { unionize } from "@/maps/geo-utils";
+import { safeUnion } from "@/maps/geo-utils";
 import type { TentacleQuestion } from "@/maps/schema";
 import { geoSpatialVoronoi } from "@/maps/voronoi";
 
@@ -46,7 +46,7 @@ export const adjustPerTentacle = async (
     );
 
     return turf.intersect(
-        turf.featureCollection([unionize(mapData), correctPolygon, circle]),
+        turf.featureCollection([safeUnion(mapData), correctPolygon, circle]),
     );
 };
 

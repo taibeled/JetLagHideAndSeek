@@ -24,7 +24,7 @@ import {
     connectToSeparateLines,
     groupObjects,
     holedMask,
-    unionize,
+    safeUnion,
 } from "@/maps/geo-utils";
 import type {
     APILocations,
@@ -257,7 +257,7 @@ const bufferedDeterminer = _.memoize(
 
         const questionPoint = turf.point([question.lng, question.lat]);
 
-        let buffer = unionize(
+        let buffer = safeUnion(
             turf.featureCollection(
                 placeData.map(
                     (x) =>
@@ -328,11 +328,11 @@ export const adjustPerMeasuring = async (
 
     if (question.hiderCloser) {
         return turf.intersect(
-            turf.featureCollection([unionize(mapData), buffer]),
+            turf.featureCollection([safeUnion(mapData), buffer]),
         );
     } else {
         return turf.intersect(
-            turf.featureCollection([unionize(mapData), holedMask(buffer)!]),
+            turf.featureCollection([safeUnion(mapData), holedMask(buffer)!]),
         );
     }
 };

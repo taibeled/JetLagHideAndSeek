@@ -1,7 +1,7 @@
 import * as turf from "@turf/turf";
 
 import { hiderMode } from "@/lib/context";
-import { unionize } from "@/maps/geo-utils";
+import { safeUnion } from "@/maps/geo-utils";
 import type { ThermometerQuestion } from "@/maps/schema";
 import { geoSpatialVoronoi } from "@/maps/voronoi";
 
@@ -22,11 +22,11 @@ export const adjustPerThermometer = (
 
     if (question.warmer) {
         return turf.intersect(
-            turf.featureCollection([unionize(mapData), voronoi.features[1]]),
+            turf.featureCollection([safeUnion(mapData), voronoi.features[1]]),
         );
     } else {
         return turf.intersect(
-            turf.featureCollection([unionize(mapData), voronoi.features[0]]),
+            turf.featureCollection([safeUnion(mapData), voronoi.features[0]]),
         );
     }
 };

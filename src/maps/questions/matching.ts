@@ -24,7 +24,7 @@ import {
     prettifyLocation,
     trainLineNodeFinder,
 } from "@/maps/api";
-import { holedMask, unionize } from "@/maps/geo-utils";
+import { holedMask, safeUnion } from "@/maps/geo-utils";
 import type {
     APILocations,
     HomeGameMatchingQuestions,
@@ -199,7 +199,7 @@ export const determineMatchingBoundary = _.memoize(
                 );
 
                 // It's either simplify or crash. Technically this could be bad if someone's hiding zone was inside multiple zones, but that's unlikely.
-                boundary = unionize(
+                boundary = safeUnion(
                     turf.simplify(boundary, {
                         tolerance: 0.001,
                         highQuality: true,
@@ -273,7 +273,7 @@ export const adjustPerMatching = async (
 
     if (question.same) {
         return turf.intersect(
-            turf.featureCollection([unionize(mapData), boundary]),
+            turf.featureCollection([safeUnion(mapData), boundary]),
         );
     } else {
         return turf.union(

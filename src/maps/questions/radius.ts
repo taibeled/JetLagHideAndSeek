@@ -1,7 +1,7 @@
 import * as turf from "@turf/turf";
 
 import { hiderMode } from "@/lib/context";
-import { unionize } from "@/maps/geo-utils";
+import { safeUnion } from "@/maps/geo-utils";
 import type { RadiusQuestion } from "@/maps/schema";
 
 export const adjustPerRadius = (
@@ -22,7 +22,7 @@ export const adjustPerRadius = (
         }
 
         return turf.intersect(
-            turf.featureCollection([unionize(mapData), circle]),
+            turf.featureCollection([safeUnion(mapData), circle]),
         );
     } else {
         if (!masked) {

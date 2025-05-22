@@ -27,7 +27,7 @@ import {
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
-import { applyQuestionsToMapGeoData, holedMask, unionize } from "@/maps";
+import { applyQuestionsToMapGeoData, holedMask, safeUnion } from "@/maps";
 import { hiderifyQuestion } from "@/maps";
 import { clearCache, determineGeoJSON } from "@/maps/api";
 
@@ -52,7 +52,7 @@ export const refreshMapData = (screen: boolean = true, map?: LeafletMap) => {
         );
 
         let mapGeoData = turf.featureCollection([
-            unionize(
+            safeUnion(
                 turf.featureCollection(
                     mapGeoDatum
                         .filter((x) => x.added)

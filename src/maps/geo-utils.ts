@@ -1,7 +1,7 @@
 import * as turf from "@turf/turf";
 import type { FeatureCollection, MultiPolygon, Polygon } from "geojson";
 
-export const unionize = (input: FeatureCollection<Polygon | MultiPolygon>) => {
+export const safeUnion = (input: FeatureCollection<Polygon | MultiPolygon>) => {
     if (input.features.length === 1) return input.features[0];
     const union = turf.union(input);
     if (union) return union;
@@ -9,7 +9,7 @@ export const unionize = (input: FeatureCollection<Polygon | MultiPolygon>) => {
 };
 
 export const holedMask = (input: any) => {
-    input = input.features ? unionize(input) : input;
+    input = input.features ? safeUnion(input) : input;
 
     const holes = [];
 

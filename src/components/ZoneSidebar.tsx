@@ -40,7 +40,7 @@ import {
     QuestionSpecificLocation,
     trainLineNodeFinder,
 } from "@/maps/api";
-import { holedMask, lngLatToText, unionize } from "@/maps/geo-utils";
+import { holedMask, lngLatToText, safeUnion } from "@/maps/geo-utils";
 import { geoSpatialVoronoi } from "@/maps/voronoi";
 
 import { Checkbox } from "./ui/checkbox";
@@ -177,7 +177,7 @@ export const ZoneSidebar = () => {
                 ),
             ).features;
 
-            const unionized = unionize(
+            const unionized = safeUnion(
                 turf.simplify($questionFinishedMapData, {
                     tolerance: 0.001,
                 }),
@@ -556,7 +556,7 @@ export const ZoneSidebar = () => {
                                     onClick={() => {
                                         setCommandValue("");
                                         showGeoJSON(
-                                            unionize(
+                                            safeUnion(
                                                 turf.featureCollection(
                                                     stations.filter(
                                                         (x) =>
@@ -857,7 +857,7 @@ async function selectionProcess(
     ];
 
     let mapData: any = turf.featureCollection([
-        unionize(
+        safeUnion(
             turf.featureCollection([
                 ...$questionFinishedMapData.features,
                 turf.mask(station),
@@ -965,14 +965,14 @@ async function selectionProcess(
                 }
 
                 if (question.data.same) {
-                    mapData = unionize(
+                    mapData = safeUnion(
                         turf.featureCollection([
                             ...mapData.features,
                             turf.mask(correctPolygon),
                         ]),
                     );
                 } else {
-                    mapData = unionize(
+                    mapData = safeUnion(
                         turf.featureCollection([
                             ...mapData.features,
                             correctPolygon,
@@ -988,14 +988,14 @@ async function selectionProcess(
                 );
 
                 if (question.data.hiderCloser) {
-                    mapData = unionize(
+                    mapData = safeUnion(
                         turf.featureCollection([
                             ...mapData.features,
                             holedMask(turf.featureCollection(circles)),
                         ]),
                     );
                 } else {
-                    mapData = unionize(
+                    mapData = safeUnion(
                         turf.featureCollection([
                             ...mapData.features,
                             ...circles,
@@ -1031,14 +1031,14 @@ async function selectionProcess(
                 .map((x) => turf.circle(x.properties.geometry, distance));
 
             if (question.data.hiderCloser) {
-                mapData = unionize(
+                mapData = safeUnion(
                     turf.featureCollection([
                         ...mapData.features,
                         holedMask(turf.featureCollection(circles)),
                     ]),
                 );
             } else {
-                mapData = unionize(
+                mapData = safeUnion(
                     turf.featureCollection([...mapData.features, ...circles]),
                 );
             }
@@ -1076,14 +1076,14 @@ async function selectionProcess(
             );
 
             if (question.data.hiderCloser) {
-                mapData = unionize(
+                mapData = safeUnion(
                     turf.featureCollection([
                         ...mapData.features,
                         holedMask(turf.featureCollection(circles)),
                     ]),
                 );
             } else {
-                mapData = unionize(
+                mapData = safeUnion(
                     turf.featureCollection([...mapData.features, ...circles]),
                 );
             }
