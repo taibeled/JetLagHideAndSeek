@@ -74,55 +74,25 @@ export const determinePlanningPolygon = async (
 export async function adjustMapGeoDataForQuestion(
     question: any,
     mapGeoData: any,
-    masked: boolean,
 ) {
     try {
         switch (question?.id) {
             case "radius":
-                if (masked && !question.data.within) {
-                    return adjustPerRadius(question.data, mapGeoData, true);
-                }
-                if (!masked && question.data.within) {
-                    return adjustPerRadius(question.data, mapGeoData, false);
-                }
-                return mapGeoData;
+                return adjustPerRadius(question.data, mapGeoData);
             case "tentacles":
-                if (masked && question.data.location === false) {
+                if (question.data.location === false) {
                     return adjustPerRadius(
                         { ...question.data, within: false },
                         mapGeoData,
-                        true,
                     );
                 }
-                if (!masked && question.data.location !== false) {
-                    return await adjustPerTentacle(
-                        question.data,
-                        mapGeoData,
-                        false,
-                    );
-                }
-                return mapGeoData;
+                return await adjustPerTentacle(question.data, mapGeoData);
             case "thermometer":
-                if (!masked) {
-                    return adjustPerThermometer(
-                        question.data,
-                        mapGeoData,
-                        false,
-                    );
-                }
-                return mapGeoData;
+                return adjustPerThermometer(question.data, mapGeoData);
             case "matching":
-                return await adjustPerMatching(
-                    question.data,
-                    mapGeoData,
-                    masked,
-                );
+                return await adjustPerMatching(question.data, mapGeoData);
             case "measuring":
-                return await adjustPerMeasuring(
-                    question.data,
-                    mapGeoData,
-                    masked,
-                );
+                return await adjustPerMeasuring(question.data, mapGeoData);
             default:
                 return mapGeoData;
         }
@@ -134,7 +104,6 @@ export async function adjustMapGeoDataForQuestion(
 export async function applyQuestionsToMapGeoData(
     questions: any[],
     mapGeoData: any,
-    masked: boolean,
     planningModeEnabled: boolean,
     planningModeCallback?: (
         polygon: FeatureCollection | Feature,
@@ -156,11 +125,7 @@ export async function applyQuestionsToMapGeoData(
             continue;
         }
 
-        mapGeoData = await adjustMapGeoDataForQuestion(
-            question,
-            mapGeoData,
-            masked,
-        );
+        mapGeoData = await adjustMapGeoDataForQuestion(question, mapGeoData);
         if (mapGeoData.type !== "FeatureCollection") {
             mapGeoData = {
                 type: "FeatureCollection",

@@ -1,14 +1,10 @@
 import * as turf from "@turf/turf";
 
 import { hiderMode } from "@/lib/context";
-import { safeUnion } from "@/maps/geo-utils";
+import { modifyMapData } from "@/maps/geo-utils";
 import type { RadiusQuestion } from "@/maps/schema";
 
-export const adjustPerRadius = (
-    question: RadiusQuestion,
-    mapData: any,
-    masked: boolean,
-) => {
+export const adjustPerRadius = (question: RadiusQuestion, mapData: any) => {
     if (mapData === null) return;
 
     const point = turf.point([question.lng, question.lat]);
@@ -16,22 +12,7 @@ export const adjustPerRadius = (
         units: question.unit,
     });
 
-    if (question.within) {
-        if (masked) {
-            throw new Error("Cannot be masked");
-        }
-
-        return turf.intersect(
-            turf.featureCollection([safeUnion(mapData), circle]),
-        );
-    } else {
-        if (!masked) {
-            throw new Error("Must be masked");
-        }
-        return turf.union(
-            turf.featureCollection([...mapData.features, circle]),
-        );
-    }
+    return modifyMapData(mapData, circle, question.within);
 };
 
 export const hiderifyRadius = (question: RadiusQuestion) => {

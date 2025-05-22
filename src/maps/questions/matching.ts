@@ -24,7 +24,7 @@ import {
     prettifyLocation,
     trainLineNodeFinder,
 } from "@/maps/api";
-import { holedMask, safeUnion } from "@/maps/geo-utils";
+import { holedMask, modifyMapData, safeUnion } from "@/maps/geo-utils";
 import type {
     APILocations,
     HomeGameMatchingQuestions,
@@ -255,15 +255,8 @@ export const determineMatchingBoundary = _.memoize(
 export const adjustPerMatching = async (
     question: MatchingQuestion,
     mapData: any,
-    masked: boolean,
 ) => {
     if (mapData === null) return;
-
-    if (question.same && masked) {
-        throw new Error("Cannot be masked");
-    } else if (!question.same && !masked) {
-        throw new Error("Must be masked");
-    }
 
     const boundary = await determineMatchingBoundary(question);
 
@@ -271,15 +264,7 @@ export const adjustPerMatching = async (
         return mapData;
     }
 
-    if (question.same) {
-        return turf.intersect(
-            turf.featureCollection([safeUnion(mapData), boundary]),
-        );
-    } else {
-        return turf.union(
-            turf.featureCollection([...mapData.features, boundary]),
-        );
-    }
+    return modifyMapData(mapData, boundary, question.same);
 };
 
 export const hiderifyMatching = async (question: MatchingQuestion) => {
@@ -399,19 +384,13 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
     let feature = null;
 
     try {
-        feature = holedMask(
-            (await adjustPerMatching(question, $mapGeoJSON, false))!,
-        );
+        feature = holedMask((await adjustPerMatching(question, $mapGeoJSON))!);
     } catch {
         try {
-            feature = await adjustPerMatching(
-                question,
-                {
-                    type: "FeatureCollection",
-                    features: [holedMask($mapGeoJSON)],
-                },
-                true,
-            );
+            feature = await adjustPerMatching(question, {
+                type: "FeatureCollection",
+                features: [holedMask($mapGeoJSON)],
+            });
         } catch {
             return question;
         }

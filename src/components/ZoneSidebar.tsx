@@ -33,6 +33,7 @@ import {
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
 import {
+    BLANK_GEOJSON,
     findPlacesInZone,
     findPlacesSpecificInZone,
     findTentacleLocations,
@@ -817,28 +818,6 @@ export const ZoneSidebar = () => {
             </SidebarContent>
         </Sidebar>
     );
-};
-
-const BLANK_GEOJSON = {
-    type: "FeatureCollection",
-    features: [
-        {
-            type: "Feature",
-            properties: {},
-            geometry: {
-                type: "Polygon",
-                coordinates: [
-                    [
-                        [-180, -90],
-                        [180, -90],
-                        [180, 90],
-                        [-180, 90],
-                        [-180, -90],
-                    ],
-                ],
-            },
-        },
-    ],
 };
 
 async function selectionProcess(

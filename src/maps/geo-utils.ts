@@ -1,5 +1,12 @@
 import * as turf from "@turf/turf";
-import type { FeatureCollection, MultiPolygon, Polygon } from "geojson";
+import type {
+    Feature,
+    FeatureCollection,
+    MultiPolygon,
+    Polygon,
+} from "geojson";
+
+import { BLANK_GEOJSON } from "./api";
 
 export const safeUnion = (input: FeatureCollection<Polygon | MultiPolygon>) => {
     if (input.features.length === 1) return input.features[0];
@@ -8,28 +15,38 @@ export const safeUnion = (input: FeatureCollection<Polygon | MultiPolygon>) => {
     throw new Error("No features");
 };
 
-export const holedMask = (input: any) => {
-    input = input.features ? safeUnion(input) : input;
-
-    const holes = [];
-
-    if (input.geometry.type === "Polygon") {
-        input = turf.multiPolygon([input.geometry.coordinates]);
-    }
-
-    if (input.geometry.type === "MultiPolygon") {
-        for (const feature of input.geometry.coordinates) {
-            if (feature.length > 1) {
-                holes.push(...feature.slice(1));
-            }
-        }
-    }
-
-    return turf.union(
+export const holedMask = (
+    input:
+        | Feature<Polygon | MultiPolygon>
+        | FeatureCollection<Polygon | MultiPolygon>,
+) => {
+    return turf.difference(
         turf.featureCollection([
-            turf.mask(input),
-            // @ts-expect-error This made sense when I wrote it
-            turf.multiPolygon(holes.map((x) => [x])),
+            BLANK_GEOJSON.features[0] as Feature<Polygon>,
+            "features" in input ? safeUnion(input) : input,
+        ]),
+    );
+};
+
+export const modifyMapData = (
+    mapData: FeatureCollection<Polygon | MultiPolygon>,
+    modifications:
+        | FeatureCollection<Polygon | MultiPolygon>
+        | Feature<Polygon | MultiPolygon>,
+    withinModifications: boolean,
+) => {
+    const safeModifications =
+        "features" in modifications ? safeUnion(modifications) : modifications;
+
+    if (withinModifications) {
+        return turf.intersect(
+            turf.featureCollection([safeUnion(mapData), safeModifications]),
+        );
+    }
+    return turf.intersect(
+        turf.featureCollection([
+            safeUnion(mapData),
+            holedMask(safeModifications)!,
         ]),
     );
 };

@@ -9,12 +9,8 @@ import { geoSpatialVoronoi } from "@/maps/voronoi";
 export const adjustPerTentacle = async (
     question: TentacleQuestion,
     mapData: any,
-    masked: boolean,
 ) => {
     if (mapData === null) return;
-    if (masked) {
-        throw new Error("Cannot be masked");
-    }
     if (question.location === false) {
         throw new Error("Must have a location");
     }

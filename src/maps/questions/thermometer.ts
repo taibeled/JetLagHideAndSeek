@@ -8,12 +8,8 @@ import { geoSpatialVoronoi } from "@/maps/voronoi";
 export const adjustPerThermometer = (
     question: ThermometerQuestion,
     mapData: any,
-    masked: boolean,
 ) => {
     if (mapData === null) return;
-    if (masked) {
-        throw new Error("Cannot be masked");
-    }
 
     const pointA = turf.point([question.lngA, question.latA]);
     const pointB = turf.point([question.lngB, question.latB]);

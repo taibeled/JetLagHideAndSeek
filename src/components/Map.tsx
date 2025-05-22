@@ -152,7 +152,6 @@ export const Map = ({ className }: { className?: string }) => {
             mapGeoData = await applyQuestionsToMapGeoData(
                 $questions,
                 mapGeoData,
-                false,
                 planningModeEnabled.get(),
                 (geoJSONObj, question) => {
                     const geoJSONPlane = geoJSON(geoJSONObj);
@@ -162,27 +161,10 @@ export const Map = ({ className }: { className?: string }) => {
                 },
             );
 
-            let bounds: [[number, number], [number, number]] | undefined;
-
-            if (focus) {
-                const bbox = turf.bbox(mapGeoData as any);
-                bounds = [
-                    [bbox[1], bbox[0]],
-                    [bbox[3], bbox[2]],
-                ];
-            }
-
             mapGeoData = {
                 type: "FeatureCollection",
-                features: [holedMask(mapGeoData)],
+                features: [holedMask(mapGeoData)!],
             };
-
-            mapGeoData = await applyQuestionsToMapGeoData(
-                $questions,
-                mapGeoData,
-                true,
-                planningModeEnabled.get(),
-            );
 
             map.eachLayer((layer: any) => {
                 if (layer.eliminationGeoJSON) {
@@ -198,13 +180,17 @@ export const Map = ({ className }: { className?: string }) => {
 
             questionFinishedMapData.set(mapGeoData);
 
-            if (autoZoom.get()) {
-                if (bounds) {
-                    if (animateMapMovements.get()) {
-                        map.flyToBounds(bounds);
-                    } else {
-                        map.fitBounds(bounds);
-                    }
+            if (autoZoom.get() && focus) {
+                const bbox = turf.bbox(holedMask(mapGeoData) as any);
+                const bounds = [
+                    [bbox[1], bbox[0]],
+                    [bbox[3], bbox[2]],
+                ];
+
+                if (animateMapMovements.get()) {
+                    map.flyToBounds(bounds as any);
+                } else {
+                    map.fitBounds(bounds as any);
                 }
             }
         } catch (error) {

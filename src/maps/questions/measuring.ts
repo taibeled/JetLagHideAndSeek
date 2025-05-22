@@ -24,6 +24,7 @@ import {
     connectToSeparateLines,
     groupObjects,
     holedMask,
+    modifyMapData,
     safeUnion,
 } from "@/maps/geo-utils";
 import type {
@@ -317,24 +318,14 @@ const bufferedDeterminer = _.memoize(
 export const adjustPerMeasuring = async (
     question: MeasuringQuestion,
     mapData: any,
-    masked: boolean,
 ) => {
     if (mapData === null) return;
-    if (masked) throw new Error("Cannot be masked");
 
     const buffer = await bufferedDeterminer(question);
 
     if (buffer === false) return mapData;
 
-    if (question.hiderCloser) {
-        return turf.intersect(
-            turf.featureCollection([safeUnion(mapData), buffer]),
-        );
-    } else {
-        return turf.intersect(
-            turf.featureCollection([safeUnion(mapData), holedMask(buffer)!]),
-        );
-    }
+    return modifyMapData(mapData, buffer, question.hiderCloser);
 };
 
 export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
@@ -436,19 +427,13 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
     let feature = null;
 
     try {
-        feature = holedMask(
-            (await adjustPerMeasuring(question, $mapGeoJSON, false))!,
-        );
+        feature = holedMask((await adjustPerMeasuring(question, $mapGeoJSON))!);
     } catch {
         try {
-            feature = await adjustPerMeasuring(
-                question,
-                {
-                    type: "FeatureCollection",
-                    features: [holedMask($mapGeoJSON)],
-                },
-                true,
-            );
+            feature = await adjustPerMeasuring(question, {
+                type: "FeatureCollection",
+                features: [holedMask($mapGeoJSON)],
+            });
         } catch {
             return question;
         }
