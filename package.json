@@ -35,6 +35,7 @@
         "d3-geo-projection": "^4.0.0",
         "d3-geo-voronoi": "^2.1.0",
         "dom-to-image": "^2.6.0",
+        "dotenv": "^16.5.0",
         "flowbite": "^3.1.2",
         "leaflet": "^1.9.4",
         "leaflet-contextmenu": "^1.4.0",
