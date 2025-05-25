@@ -6,8 +6,8 @@ import {
 } from "./ui/sidebar-l";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select } from "./ui/select";
 import { isLoading } from "@/lib/context";
+import { Button } from "./ui/button";
 
 const parseCoordinatesFromText = (
     text: string,
@@ -100,23 +100,13 @@ export const LatitudeLongitude = ({
                     }}
                     disabled={disabled}
                 />
-                <Select
-                    trigger={{
-                        placeholder: "Direction",
-                        className: "max-w-[55px]",
-                    }}
-                    options={{ north: "N", south: "S" }}
-                    onValueChange={(value) =>
-                        onChange(
-                            value === "north"
-                                ? Math.abs(latitude)
-                                : -Math.abs(latitude),
-                            null,
-                        )
-                    }
-                    value={latitude > 0 ? "north" : "south"}
+                <Button
+                    variant="outline"
+                    onClick={() => onChange(-latitude, null)}
                     disabled={disabled}
-                />
+                >
+                    {latitude > 0 ? "N" : "S"}
+                </Button>
             </SidebarMenuItem>
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Label className="leading-5">{lngLabel}</Label>
@@ -136,27 +126,17 @@ export const LatitudeLongitude = ({
                     }}
                     disabled={disabled}
                 />
-                <Select
-                    trigger={{
-                        placeholder: "Direction",
-                        className: "max-w-[55px]",
-                    }}
-                    options={{ east: "E", west: "W" }}
-                    onValueChange={(value) =>
-                        onChange(
-                            null,
-                            value === "east"
-                                ? Math.abs(longitude)
-                                : -Math.abs(longitude),
-                        )
-                    }
-                    value={longitude > 0 ? "east" : "west"}
+                <Button
+                    variant="outline"
+                    onClick={() => onChange(null, -longitude)}
                     disabled={disabled}
-                />
+                >
+                    {longitude > 0 ? "E" : "W"}
+                </Button>
             </SidebarMenuItem>
             <SidebarMenuItem className="flex gap-2">
                 <SidebarMenuButton
-                    className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-shadow duration-500"
+                    className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-colors duration-500 flex justify-center"
                     onClick={() => {
                         if (!navigator || !navigator.geolocation)
                             return alert("Geolocation not supported");
@@ -198,7 +178,35 @@ export const LatitudeLongitude = ({
                     Current
                 </SidebarMenuButton>
                 <SidebarMenuButton
-                    className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-shadow duration-500"
+                    className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-colors duration-500 flex justify-center"
+                    onClick={() => {
+                        if (!navigator || !navigator.clipboard) {
+                            toast.error(
+                                "Clipboard API not supported in your browser",
+                            );
+                            return;
+                        }
+
+                        toast.promise(
+                            navigator.clipboard.writeText(
+                                `${Math.abs(latitude)}°${latitude > 0 ? "N" : "S"}, ${Math.abs(
+                                    longitude,
+                                )}°${longitude > 0 ? "E" : "W"}`,
+                            ),
+                            {
+                                pending: "Writing to clipboard...",
+                                success: "Coordinates copied!",
+                                error: "An error occurred while copying",
+                            },
+                            { autoClose: 1000 },
+                        );
+                    }}
+                    disabled={disabled}
+                >
+                    Copy
+                </SidebarMenuButton>
+                <SidebarMenuButton
+                    className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-colors duration-500 flex justify-center"
                     onClick={() => {
                         if (!navigator || !navigator.clipboard) {
                             toast.error(
@@ -239,7 +247,7 @@ export const LatitudeLongitude = ({
                     }}
                     disabled={disabled}
                 >
-                    Clipboard
+                    Paste
                 </SidebarMenuButton>
             </SidebarMenuItem>
             {children}

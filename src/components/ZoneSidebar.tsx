@@ -19,6 +19,7 @@ import {
     questions,
     trainStations,
     isLoading,
+    autoZoom,
 } from "../lib/context";
 import { useStore } from "@nanostores/react";
 import { MENU_ITEM_CLASSNAME } from "./ui/sidebar-l";
@@ -436,6 +437,18 @@ export const ZoneSidebar = () => {
                                             label: "Railway Stations Excluding Subways",
                                             value: "[railway=station][subway!=yes]",
                                         },
+                                        {
+                                            label: "Subway Stations",
+                                            value: "[railway=station][subway=yes]",
+                                        },
+                                        {
+                                            label: "Light Rail Stations",
+                                            value: "[railway=station][light_rail=yes]",
+                                        },
+                                        {
+                                            label: "Light Rail Halts",
+                                            value: "[railway=halt][light_rail=yes]",
+                                        },
                                     ]}
                                     onValueChange={
                                         displayHidingZonesOptions.set
@@ -622,6 +635,23 @@ export const ZoneSidebar = () => {
                                         Clear Disabled
                                     </SidebarMenuItem>
                                 )}
+                            {$displayHidingZones && (
+                                <SidebarMenuItem
+                                    className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
+                                    onClick={() => {
+                                        disabledStations.set(
+                                            stations.map(
+                                                (x) =>
+                                                    x.properties.properties.id,
+                                            ),
+                                        );
+                                        removeHidingZones();
+                                    }}
+                                    disabled={$isLoading}
+                                >
+                                    Disable All
+                                </SidebarMenuItem>
+                            )}
                             {$displayHidingZones && (
                                 <Command>
                                     <CommandInput
@@ -870,6 +900,7 @@ async function selectionProcess(
                         locationType: question.data.type,
                         drag: false,
                         color: "black",
+                        collapsed: false,
                     },
                     "Finding matching locations to hiding zone...",
                 );
@@ -1072,10 +1103,12 @@ async function selectionProcess(
 
     showGeoJSON(mapData);
 
-    if (animateMapMovements.get()) {
-        map?.flyToBounds(bounds);
-    } else {
-        map?.fitBounds(bounds);
+    if (autoZoom.get()) {
+        if (animateMapMovements.get()) {
+            map?.flyToBounds(bounds);
+        } else {
+            map?.fitBounds(bounds);
+        }
     }
 
     const element: HTMLDivElement | null = document.querySelector(

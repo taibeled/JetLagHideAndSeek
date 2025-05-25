@@ -15,6 +15,8 @@ import {
     triggerLocalRefresh,
     hidingZone,
     planningModeEnabled,
+    autoZoom,
+    additionalMapGeoLocations,
 } from "@/lib/context";
 import { Button } from "./ui/button";
 import { toast } from "react-toastify";
@@ -49,6 +51,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $defaultUnit = useStore(defaultUnit);
     const $highlightTrainLines = useStore(highlightTrainLines);
     const $animateMapMovements = useStore(animateMapMovements);
+    const $autoZoom = useStore(autoZoom);
     const $hiderMode = useStore(hiderMode);
     const $hidingRadius = useStore(hidingRadius);
     const $autoSave = useStore(autoSave);
@@ -85,6 +88,12 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 mapGeoLocation.set(geojson);
                 mapGeoJSON.set(null);
                 polyGeoJSON.set(null);
+
+                if (geojson.alternateLocations) {
+                    additionalMapGeoLocations.set(geojson.alternateLocations);
+                } else {
+                    additionalMapGeoLocations.set([]);
+                }
             } else {
                 if (geojson.questions) {
                     questions.set(questionsSchema.parse(geojson.questions));
@@ -126,7 +135,38 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
             )}
         >
             {$hiderMode &&  <CardDeckDrawer />}
-
+              <Button
+                className="shadow-md"
+                onClick={() => {
+                    const b64 = btoa(JSON.stringify($hidingZone));
+                    const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}?hz=${b64}`;
+                    // Show platform native share sheet if possible
+                    if (navigator.share) {
+                        navigator
+                            .share({
+                                title: document.title,
+                                url: url,
+                            })
+                            .catch(() =>
+                                toast.error(
+                                    "Failed to share via OS. You may have disabled too many stations.",
+                                ),
+                            );
+                    } else if (!navigator || !navigator.clipboard) {
+                        return toast.error(
+                            `Clipboard not supported. Try manually copying/pasting: ${url}`,
+                            { className: "p-0 w-[1000px]" },
+                        );
+                    } else {
+                        navigator.clipboard.writeText(url);
+                        toast.success("Hiding zone URL copied to clipboard", {
+                            autoClose: 2000,
+                        });
+                    }
+                }}
+            >
+                Share
+            </Button>
             <Drawer
                 open={isInstructionsOpen}
                 onOpenChange={setInstructionsOpen}
@@ -342,6 +382,17 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     checked={$autoSave}
                                     onCheckedChange={() =>
                                         autoSave.set(!$autoSave)
+                                    }
+                                />
+                            </div>
+                            <div className="flex flex-row items-center gap-2">
+                                <label className="text-2xl font-semibold font-poppins">
+                                    Auto zoom?
+                                </label>
+                                <Checkbox
+                                    checked={$autoZoom}
+                                    onCheckedChange={() =>
+                                        autoZoom.set(!$autoZoom)
                                     }
                                 />
                             </div>
