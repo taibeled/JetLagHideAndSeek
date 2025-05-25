@@ -62,6 +62,7 @@ const thermometerQuestionSchema = z.object({
     colorB: iconColorSchema.default(randomColor),
     /** Note that drag is now synonymous with unlocked */
     drag: z.boolean().default(true),
+    collapsed: z.boolean().default(false),
 });
 
 const ordinaryBaseQuestionSchema = z.object({
@@ -76,6 +77,7 @@ const ordinaryBaseQuestionSchema = z.object({
     /** Note that drag is now synonymous with unlocked */
     drag: z.boolean().default(true),
     color: iconColorSchema.default(randomColor),
+    collapsed: z.boolean().default(false),
 });
 
 const radiusQuestionSchema = ordinaryBaseQuestionSchema.extend({
