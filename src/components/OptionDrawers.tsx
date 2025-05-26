@@ -383,7 +383,8 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                                 className="text-blue-500 cursor-pointer"
                                             >
                                                 here.
-                                            </a>
+                                            </a>{" "}
+                                            Don&apos;t worry, it&apos;s free.
                                         </p>
                                     </div>
                                     <Separator className="bg-slate-300 w-[280px]" />{" "}
