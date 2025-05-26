@@ -24,6 +24,7 @@ import {
     polyGeoJSON,
     questionFinishedMapData,
     questions,
+    thunderforestApiKey,
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
@@ -107,6 +108,7 @@ export const Map = ({ className }: { className?: string }) => {
     const $mapGeoLocation = useStore(mapGeoLocation);
     const $questions = useStore(questions);
     const $highlightTrainLines = useStore(highlightTrainLines);
+    const $thunderforestApiKey = useStore(thunderforestApiKey);
     const $hiderMode = useStore(hiderMode);
     const $isLoading = useStore(isLoading);
     const map = useStore(leafletMapContext);
@@ -316,17 +318,20 @@ export const Map = ({ className }: { className?: string }) => {
                     },
                 ]}
             >
-                <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a> and <a href="http://www.thunderforest.com/">Thunderforest</a>'
-                    url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-                    subdomains="abcd"
-                    maxZoom={20} // This technically should be 6, but once the ratelimiting starts this can take over
-                    minZoom={2}
-                    noWrap
-                />
-                {$highlightTrainLines && (
+                {!($highlightTrainLines && $thunderforestApiKey) && (
                     <TileLayer
-                        url="https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=80add02166f6434d8e6dca27b0573474"
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a> and <a href="http://www.thunderforest.com/">Thunderforest</a>'
+                        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                        subdomains="abcd"
+                        maxZoom={20} // This technically should be 6, but once the ratelimiting starts this can take over
+                        minZoom={2}
+                        noWrap
+                    />
+                )}
+                {$highlightTrainLines && $thunderforestApiKey && (
+                    <TileLayer
+                        url={`https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=${$thunderforestApiKey}`}
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a> and <a href="http://www.thunderforest.com/">Thunderforest</a>'
                         maxZoom={22}
                         minZoom={7}
                         noWrap
@@ -354,7 +359,7 @@ export const Map = ({ className }: { className?: string }) => {
                 />
             </MapContainer>
         ),
-        [map, $highlightTrainLines],
+        [map, $highlightTrainLines, $thunderforestApiKey],
     );
 
     useEffect(() => {

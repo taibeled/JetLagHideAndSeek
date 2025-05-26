@@ -28,6 +28,7 @@ import {
     polyGeoJSON,
     questions,
     save,
+    thunderforestApiKey,
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
@@ -44,6 +45,7 @@ import {
     SidebarMenuItem,
 } from "./ui/sidebar-l";
 import { UnitSelect } from "./UnitSelect";
+import { Input } from "./ui/input";
 
 const HIDING_ZONE_URL_PARAM = "hz";
 
@@ -58,6 +60,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $autoSave = useStore(autoSave);
     const $hidingZone = useStore(hidingZone);
     const $planningMode = useStore(planningModeEnabled);
+    const $thunderforestApiKey = useStore(thunderforestApiKey);
     const [isInstructionsOpen, setInstructionsOpen] = useState(false);
     const [isOptionsOpen, setOptionsOpen] = useState(false);
 
@@ -334,6 +337,9 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     }}
                                 />
                             </div>
+                            {$highlightTrainLines && (
+                                <Separator className="bg-slate-300 w-[280px]" />
+                            )}
                             <div className="flex flex-row items-center gap-2">
                                 <label className="text-2xl font-semibold font-poppins">
                                     Highlight train lines?
@@ -341,12 +347,51 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 <Checkbox
                                     checked={$highlightTrainLines}
                                     onCheckedChange={() => {
-                                        highlightTrainLines.set(
-                                            !$highlightTrainLines,
-                                        );
+                                        const willBeEnabled =
+                                            !$highlightTrainLines;
+                                        if (
+                                            willBeEnabled &&
+                                            !$thunderforestApiKey
+                                        ) {
+                                            toast.warn(
+                                                "A Thunderforest API key is required to highlight train lines. Please add one in the options below.",
+                                            );
+                                        }
+                                        highlightTrainLines.set(willBeEnabled);
                                     }}
                                 />
                             </div>
+                            {$highlightTrainLines && (
+                                <>
+                                    <div className="flex flex-col items-center gap-2">
+                                        <Label>Thunderforest API Key</Label>
+                                        <Input
+                                            type="text"
+                                            value={$thunderforestApiKey}
+                                            onChange={(e) =>
+                                                thunderforestApiKey.set(
+                                                    e.target.value,
+                                                )
+                                            }
+                                            placeholder="Enter your Thunderforest API key"
+                                        />
+                                        <p className="text-xs text-gray-500">
+                                            Needed for highlighting train lines.
+                                            Create a key{" "}
+                                            <a
+                                                href="https://manage.thunderforest.com/users/sign_up?price=hobby-project-usd"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-blue-500 cursor-pointer"
+                                            >
+                                                here.
+                                            </a>{" "}
+                                            Don&apos;t worry, it&apos;s free.
+                                        </p>
+                                    </div>
+                                    <Separator className="bg-slate-300 w-[280px]" />{" "}
+                                </>
+                            )}
                             <div className="flex flex-row items-center gap-2">
                                 <label className="text-2xl font-semibold font-poppins">
                                     Enable planning mode?
