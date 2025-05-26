@@ -191,3 +191,12 @@ export const autoZoom = persistentAtom<boolean>("autoZoom", true, {
 });
 
 export const isLoading = atom<boolean>(false);
+
+export const thunderforestApiKey = persistentAtom<string>(
+    "thunderforestApiKey",
+    "",
+    {
+        encode: (value: string) => value,
+        decode: (value: string) => value,
+    },
+);
