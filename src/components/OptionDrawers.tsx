@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/drawer";
 import { Separator } from "./ui/separator";
 import { useStore } from "@nanostores/react";
-import { cn } from "@/lib/utils";
+import { cn, compress, decompress } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { Checkbox } from "./ui/checkbox";
 import { LatitudeLongitude } from "./LatLngPicker";
@@ -46,6 +46,7 @@ import { UnitSelect } from "./UnitSelect";
 import { Input } from "./ui/input";
 
 const HIDING_ZONE_URL_PARAM = "hz";
+const HIDING_ZONE_COMPRESSED_URL_PARAM = "hzc";
 
 export const OptionDrawers = ({ className }: { className?: string }) => {
     useStore(triggerLocalRefresh);
@@ -64,15 +65,32 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
 
     useEffect(() => {
         const params = new URL(window.location.toString()).searchParams;
-        const hidingZone = params.get(HIDING_ZONE_URL_PARAM);
-        if (hidingZone !== null) {
+        const hidingZoneOld = params.get(HIDING_ZONE_URL_PARAM);
+        const hidingZone = params.get(HIDING_ZONE_COMPRESSED_URL_PARAM);
+        if (hidingZoneOld !== null) {
+            // Legacy base64 encoding
             try {
-                loadHidingZone(atob(hidingZone));
+                loadHidingZone(atob(hidingZoneOld));
                 // Remove hiding zone parameter after initial load
                 window.history.replaceState({}, "", window.location.pathname);
             } catch (e) {
                 toast.error(`Invalid hiding zone settings: ${e}`);
             }
+        } else if (hidingZone !== null) {
+            // Modern compressed format
+            decompress(hidingZone).then((data) => {
+                try {
+                    loadHidingZone(data);
+                    // Remove hiding zone parameter after initial load
+                    window.history.replaceState(
+                        {},
+                        "",
+                        window.location.pathname,
+                    );
+                } catch (e) {
+                    toast.error(`Invalid hiding zone settings: ${e}`);
+                }
+            });
         }
     }, []);
 
@@ -138,9 +156,9 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
         >
             <Button
                 className="shadow-md"
-                onClick={() => {
-                    const b64 = btoa(JSON.stringify($hidingZone));
-                    const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}?hz=${b64}`;
+                onClick={async () => {
+                    const b64 = await compress(JSON.stringify($hidingZone));
+                    const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}?${HIDING_ZONE_COMPRESSED_URL_PARAM}=${b64}`;
 
                     // Show platform native share sheet if possible
                     if (navigator.share) {
