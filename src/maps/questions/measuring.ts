@@ -128,10 +128,9 @@ export const determineMeasuringBoundary = async (
                                       )
                                     : [-180, -90, 180, 90],
                             ),
-                            distanceToCoastline,
+                            2,
                             {
-                                units: "miles",
-                                steps: 64,
+                                units: "feet",
                             },
                         )!,
                     ]),
