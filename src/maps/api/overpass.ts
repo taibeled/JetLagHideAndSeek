@@ -1,4 +1,5 @@
 import * as turf from "@turf/turf";
+import type { FeatureCollection, MultiPolygon } from "geojson";
 import _ from "lodash";
 import osmtogeojson from "osmtogeojson";
 
@@ -7,6 +8,7 @@ import {
     mapGeoLocation,
     polyGeoJSON,
 } from "@/lib/context";
+import { safeUnion } from "@/maps/geo-utils";
 
 import { cacheFetch } from "./cache";
 import { LOCATION_FIRST_TAG, OVERPASS_API } from "./constants";
@@ -347,4 +349,56 @@ export const nearestToQuestion = async (
     }
     const questionPoint = turf.point([question.lng, question.lat]);
     return turf.nearestPoint(questionPoint, instances as any);
+};
+
+export const determineMapBoundaries = async () => {
+    const mapGeoDatum = await Promise.all(
+        [
+            {
+                location: mapGeoLocation.get(),
+                added: true,
+                base: true,
+            },
+            ...additionalMapGeoLocations.get(),
+        ].map(async (location) => ({
+            added: location.added,
+            data: await determineGeoJSON(
+                location.location.properties.osm_id.toString(),
+                location.location.properties.osm_type,
+            ),
+        })),
+    );
+
+    let mapGeoData = turf.featureCollection([
+        safeUnion(
+            turf.featureCollection(
+                mapGeoDatum
+                    .filter((x) => x.added)
+                    .flatMap((x) => x.data.features),
+            ) as any,
+        ),
+    ]);
+
+    const differences = mapGeoDatum.filter((x) => !x.added).map((x) => x.data);
+
+    if (differences.length > 0) {
+        mapGeoData = turf.featureCollection([
+            turf.difference(
+                turf.featureCollection([
+                    mapGeoData.features[0],
+                    ...differences.flatMap((x) => x.features),
+                ]),
+            )!,
+        ]);
+    }
+
+    if (turf.coordAll(mapGeoData).length > 10000) {
+        turf.simplify(mapGeoData, {
+            tolerance: 0.0005,
+            highQuality: true,
+            mutate: true,
+        });
+    }
+
+    return turf.combine(mapGeoData) as FeatureCollection<MultiPolygon>;
 };

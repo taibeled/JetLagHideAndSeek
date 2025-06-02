@@ -1,4 +1,5 @@
 import { persistentAtom } from "@nanostores/persistent";
+import type { FeatureCollection, MultiPolygon, Polygon } from "geojson";
 import type { Map } from "leaflet";
 import { atom, computed } from "nanostores";
 
@@ -45,8 +46,12 @@ export const additionalMapGeoLocations = persistentAtom<
     decode: JSON.parse,
 });
 
-export const mapGeoJSON = atom<any>(null);
-export const polyGeoJSON = persistentAtom<any>("polyGeoJSON", null, {
+export const mapGeoJSON = atom<FeatureCollection<
+    Polygon | MultiPolygon
+> | null>(null);
+export const polyGeoJSON = persistentAtom<FeatureCollection<
+    Polygon | MultiPolygon
+> | null>("polyGeoJSON", null, {
     encode: JSON.stringify,
     decode: JSON.parse,
 });

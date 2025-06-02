@@ -21,11 +21,11 @@ import {
     QuestionSpecificLocation,
 } from "@/maps/api";
 import {
+    arcBufferToPoint,
     connectToSeparateLines,
     groupObjects,
     holedMask,
     modifyMapData,
-    safeUnion,
 } from "@/maps/geo-utils";
 import type {
     APILocations,
@@ -85,7 +85,7 @@ const bboxExtension = (
 export const determineMeasuringBoundary = async (
     question: MeasuringQuestion,
 ) => {
-    const bBox = turf.bbox(mapGeoJSON.get());
+    const bBox = turf.bbox(mapGeoJSON.get()!);
 
     switch (question.type) {
         case "highspeed-measure-shinkansen": {
@@ -117,7 +117,7 @@ export const determineMeasuringBoundary = async (
             return [
                 turf.difference(
                     turf.featureCollection([
-                        turf.bboxPolygon(turf.bbox(mapGeoJSON.get())),
+                        turf.bboxPolygon(bBox),
                         turf.buffer(
                             turf.bboxClip(
                                 coastline,
@@ -255,52 +255,11 @@ const bufferedDeterminer = _.memoize(
 
         if (placeData === false || placeData === undefined) return false;
 
-        const questionPoint = turf.point([question.lng, question.lat]);
-
-        let buffer = safeUnion(
-            turf.featureCollection(
-                placeData.map(
-                    (x) =>
-                        turf.buffer(x, 0.001, {
-                            units: "miles",
-                        })!,
-                ),
-            ),
+        return arcBufferToPoint(
+            turf.featureCollection(placeData as any),
+            question.lat,
+            question.lng,
         );
-        let distance = turf.pointToPolygonDistance(questionPoint, buffer, {
-            units: "miles",
-            method: "geodesic",
-        });
-
-        let round = 0;
-        while (Math.abs(distance) > turf.convertLength(5, "feet", "miles")) {
-            round++;
-            console.info(
-                "Measuring buffer off by",
-                distance,
-                "miles after",
-                round,
-                "rounds",
-            );
-            buffer = turf.simplify(
-                turf.buffer(buffer, distance, {
-                    units: "miles",
-                })!,
-                { tolerance: 0.001 },
-            );
-            distance = turf.pointToPolygonDistance(questionPoint, buffer, {
-                units: "miles",
-                method: "geodesic",
-            });
-        }
-
-        console.info(
-            "Measuring buffer off by",
-            turf.convertLength(Math.abs(distance), "miles", "feet"),
-            "ft",
-        );
-
-        return buffer;
     },
     (question) =>
         JSON.stringify({

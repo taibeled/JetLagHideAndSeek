@@ -25,17 +25,17 @@ import {
     hiderifyThermometer,
     thermometerPlanningPolygon,
 } from "./questions/thermometer";
-import type { Question } from "./schema";
+import type { Question, Questions } from "./schema";
 
 export * from "./geo-utils";
 
 export const hiderifyQuestion = async (question: Question) => {
     switch (question.id) {
         case "radius":
-            question.data = hiderifyRadius(question.data);
+            question.data = await hiderifyRadius(question.data);
             break;
         case "thermometer":
-            question.data = hiderifyThermometer(question.data);
+            question.data = await hiderifyThermometer(question.data);
             break;
         case "tentacles":
             question.data = await hiderifyTentacles(question.data);
@@ -78,7 +78,9 @@ export async function adjustMapGeoDataForQuestion(
     try {
         switch (question?.id) {
             case "radius":
-                return adjustPerRadius(question.data, mapGeoData);
+                return await adjustPerRadius(question.data, mapGeoData);
+            case "thermometer":
+                return await adjustPerThermometer(question.data, mapGeoData);
             case "tentacles":
                 if (question.data.location === false) {
                     return adjustPerRadius(
@@ -87,8 +89,6 @@ export async function adjustMapGeoDataForQuestion(
                     );
                 }
                 return await adjustPerTentacle(question.data, mapGeoData);
-            case "thermometer":
-                return adjustPerThermometer(question.data, mapGeoData);
             case "matching":
                 return await adjustPerMatching(question.data, mapGeoData);
             case "measuring":
@@ -102,7 +102,7 @@ export async function adjustMapGeoDataForQuestion(
 }
 
 export async function applyQuestionsToMapGeoData(
-    questions: any[],
+    questions: Questions,
     mapGeoData: any,
     planningModeEnabled: boolean,
     planningModeCallback?: (
@@ -120,12 +120,12 @@ export async function applyQuestionsToMapGeoData(
                 planningModeCallback(planningPolygon, question);
             }
         }
-
         if (planningModeEnabled && question.data.drag) {
             continue;
         }
 
         mapGeoData = await adjustMapGeoDataForQuestion(question, mapGeoData);
+
         if (mapGeoData.type !== "FeatureCollection") {
             mapGeoData = {
                 type: "FeatureCollection",

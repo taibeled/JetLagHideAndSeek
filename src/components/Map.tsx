@@ -4,7 +4,7 @@ import "leaflet-contextmenu";
 
 import { useStore } from "@nanostores/react";
 import * as turf from "@turf/turf";
-import { geoJSON, type Map as LeafletMap } from "leaflet";
+import { geoJSON } from "leaflet";
 import { useEffect, useMemo } from "react";
 import { MapContainer, ScaleControl, TileLayer } from "react-leaflet";
 import { toast } from "react-toastify";
@@ -28,80 +28,14 @@ import {
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
-import { applyQuestionsToMapGeoData, holedMask, safeUnion } from "@/maps";
+import { applyQuestionsToMapGeoData, holedMask } from "@/maps";
 import { hiderifyQuestion } from "@/maps";
-import { clearCache, determineGeoJSON } from "@/maps/api";
+import { clearCache, determineMapBoundaries } from "@/maps/api";
 
 import { DraggableMarkers } from "./DraggableMarkers";
 import { LeafletFullScreenButton } from "./LeafletFullScreenButton";
 import { MapPrint } from "./MapPrint";
 import { PolygonDraw } from "./PolygonDraw";
-
-export const refreshMapData = (screen: boolean = true, map?: LeafletMap) => {
-    const refresh = async () => {
-        const mapGeoDatum = await Promise.all(
-            [
-                { location: mapGeoLocation.get(), added: true, base: true },
-                ...additionalMapGeoLocations.get(),
-            ].map(async (location) => ({
-                added: location.added,
-                data: await determineGeoJSON(
-                    location.location.properties.osm_id.toString(),
-                    location.location.properties.osm_type,
-                ),
-            })),
-        );
-
-        let mapGeoData = turf.featureCollection([
-            safeUnion(
-                turf.featureCollection(
-                    mapGeoDatum
-                        .filter((x) => x.added)
-                        .flatMap((x) => x.data.features),
-                ) as any,
-            ),
-        ]);
-
-        const differences = mapGeoDatum
-            .filter((x) => !x.added)
-            .map((x) => x.data);
-
-        if (differences.length > 0) {
-            mapGeoData = turf.featureCollection([
-                turf.difference(
-                    turf.featureCollection([
-                        mapGeoData.features[0],
-                        ...differences.flatMap((x) => x.features),
-                    ]),
-                )!,
-            ]);
-        }
-
-        if (turf.coordAll(mapGeoData).length > 10000) {
-            turf.simplify(mapGeoData, {
-                tolerance: 0.0005,
-                highQuality: true,
-                mutate: true,
-            });
-        }
-
-        mapGeoJSON.set(mapGeoData);
-
-        if (screen) {
-            if (!map) return;
-            focusMap(map, mapGeoData);
-        }
-
-        return mapGeoData;
-    };
-
-    return toast.promise(
-        refresh().catch((error) => console.log(error)),
-        {
-            error: "Error refreshing map data",
-        },
-    );
-};
 
 export const Map = ({ className }: { className?: string }) => {
     useStore(additionalMapGeoLocations);
@@ -132,7 +66,17 @@ export const Map = ({ className }: { className?: string }) => {
                 mapGeoData = polyGeoData;
                 mapGeoJSON.set(polyGeoData);
             } else {
-                mapGeoData = await refreshMapData(false, map);
+                await toast.promise(
+                    determineMapBoundaries()
+                        .then((x) => {
+                            mapGeoJSON.set(x);
+                            mapGeoData = x;
+                        })
+                        .catch((error) => console.log(error)),
+                    {
+                        error: "Error refreshing map data",
+                    },
+                );
             }
         }
 
@@ -165,7 +109,7 @@ export const Map = ({ className }: { className?: string }) => {
 
             mapGeoData = {
                 type: "FeatureCollection",
-                features: [holedMask(mapGeoData)!],
+                features: [holedMask(mapGeoData!)!],
             };
 
             map.eachLayer((layer: any) => {
@@ -320,7 +264,7 @@ export const Map = ({ className }: { className?: string }) => {
             >
                 {!($highlightTrainLines && $thunderforestApiKey) && (
                     <TileLayer
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a> and <a href="http://www.thunderforest.com/">Thunderforest</a>'
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; &copy; <a href="http://www.thunderforest.com/">Thunderforest</a>; Powered by Esri'
                         url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
                         subdomains="abcd"
                         maxZoom={20} // This technically should be 6, but once the ratelimiting starts this can take over
@@ -331,7 +275,7 @@ export const Map = ({ className }: { className?: string }) => {
                 {$highlightTrainLines && $thunderforestApiKey && (
                     <TileLayer
                         url={`https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=${$thunderforestApiKey}`}
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a> and <a href="http://www.thunderforest.com/">Thunderforest</a>'
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; &copy; <a href="http://www.thunderforest.com/">Thunderforest</a>; Powered by Esri'
                         maxZoom={22}
                         minZoom={7}
                         noWrap
@@ -412,32 +356,4 @@ export const Map = ({ className }: { className?: string }) => {
     }, []);
 
     return displayMap;
-};
-
-export const focusMap = (map: LeafletMap, mapGeoData: any) => {
-    map.eachLayer((layer: any) => {
-        if (layer.eliminationGeoJSON) {
-            // Hopefully only geoJSON layers
-            map.removeLayer(layer);
-        }
-    });
-
-    const g = geoJSON(holedMask(mapGeoData));
-    // @ts-expect-error This is a check such that only this type of layer is removed
-    g.eliminationGeoJSON = true;
-    g.addTo(map);
-
-    const bbox = turf.bbox(mapGeoData as any);
-    const bounds: [[number, number], [number, number]] = [
-        [bbox[1], bbox[0]],
-        [bbox[3], bbox[2]],
-    ];
-
-    if (autoZoom.get()) {
-        if (animateMapMovements.get()) {
-            map.flyToBounds(bounds);
-        } else {
-            map.fitBounds(bounds);
-        }
-    }
 };

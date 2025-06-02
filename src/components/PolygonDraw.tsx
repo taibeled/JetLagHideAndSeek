@@ -2,6 +2,11 @@ import "leaflet-draw/dist/leaflet.draw.css";
 
 import { useStore } from "@nanostores/react";
 import * as turf from "@turf/turf";
+import type {
+    FeatureCollection,
+    MultiPolygon,
+    Polygon as GeoJSONPolygon,
+} from "geojson";
 import * as L from "leaflet";
 import _ from "lodash";
 import { useEffect, useRef, useState } from "react";
@@ -262,7 +267,9 @@ export const PolygonDraw = () => {
             const geoJSONs = Object.values(layers).map((layer: any) =>
                 layer.toGeoJSON(),
             );
-            const geoJSON = turf.featureCollection(geoJSONs);
+            const geoJSON = turf.featureCollection(
+                geoJSONs,
+            ) as FeatureCollection<GeoJSONPolygon | MultiPolygon>;
 
             mapGeoJSON.set(geoJSON);
             polyGeoJSON.set(geoJSON);

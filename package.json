@@ -11,6 +11,7 @@
         "test": "vitest"
     },
     "dependencies": {
+        "@arcgis/core": "^4.32.10",
         "@astrojs/partytown": "^2.1.4",
         "@astrojs/react": "4.2.0",
         "@astrojs/tailwind": "^5.1.5",
@@ -25,6 +26,7 @@
         "@radix-ui/react-separator": "^1.1.7",
         "@radix-ui/react-slot": "^1.1.2",
         "@radix-ui/react-tooltip": "^1.2.6",
+        "@terraformer/arcgis": "^2.1.2",
         "@turf/turf": "^7.2.0",
         "@vite-pwa/astro": "^0.5.0",
         "astro": "^5.7.13",
@@ -64,6 +66,7 @@
         "@types/lodash": "^4.17.15",
         "@types/react": "19.0.8",
         "@types/react-dom": "19.0.3",
+        "@types/terraformer__arcgis": "^2.0.5",
         "eslint": "^9.19.0",
         "eslint-config-prettier": "^10.0.1",
         "eslint-plugin-import-alias": "^1.2.0",

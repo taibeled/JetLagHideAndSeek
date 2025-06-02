@@ -96,7 +96,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
         }
     }, []);
 
-    const loadHidingZone = (hidingZone: typeof $hidingZone) => {
+    const loadHidingZone = (hidingZone: string) => {
         try {
             const geojson = JSON.parse(hidingZone);
 

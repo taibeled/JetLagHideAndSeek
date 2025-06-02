@@ -1,4 +1,3 @@
-
 export const lngLatToText = (coordinates: [number, number]) => {
     /**
      * @param coordinates - Should be in longitude, latitude order
