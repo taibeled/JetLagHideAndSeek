@@ -2,8 +2,8 @@ import * as turf from "@turf/turf";
 
 import { hiderMode } from "@/lib/context";
 import { safeUnion } from "@/maps/geo-utils";
+import { geoSpatialVoronoi } from "@/maps/geo-utils/voronoi";
 import type { ThermometerQuestion } from "@/maps/schema";
-import { geoSpatialVoronoi } from "@/maps/voronoi";
 
 export const adjustPerThermometer = (
     question: ThermometerQuestion,

@@ -25,12 +25,12 @@ import {
     trainLineNodeFinder,
 } from "@/maps/api";
 import { holedMask, modifyMapData, safeUnion } from "@/maps/geo-utils";
+import { geoSpatialVoronoi } from "@/maps/geo-utils";
 import type {
     APILocations,
     HomeGameMatchingQuestions,
     MatchingQuestion,
 } from "@/maps/schema";
-import { geoSpatialVoronoi } from "@/maps/voronoi";
 
 export const findMatchingPlaces = async (question: MatchingQuestion) => {
     switch (question.type) {

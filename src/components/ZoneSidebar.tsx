@@ -42,7 +42,7 @@ import {
     trainLineNodeFinder,
 } from "@/maps/api";
 import { holedMask, lngLatToText, safeUnion } from "@/maps/geo-utils";
-import { geoSpatialVoronoi } from "@/maps/voronoi";
+import { geoSpatialVoronoi } from "@/maps/geo-utils";
 
 import { Checkbox } from "./ui/checkbox";
 import {
