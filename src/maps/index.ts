@@ -32,7 +32,7 @@ export * from "./geo-utils";
 export const hiderifyQuestion = async (question: Question) => {
     switch (question.id) {
         case "radius":
-            question.data = await hiderifyRadius(question.data);
+            question.data = hiderifyRadius(question.data);
             break;
         case "thermometer":
             question.data = await hiderifyThermometer(question.data);

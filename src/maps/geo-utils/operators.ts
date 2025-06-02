@@ -1,3 +1,4 @@
+import * as units from "@arcgis/core/core/units.js";
 import * as geodesicBufferOperator from "@arcgis/core/geometry/operators/geodesicBufferOperator.js";
 import * as geodeticDistanceOperator from "@arcgis/core/geometry/operators/geodeticDistanceOperator.js";
 import Point from "@arcgis/core/geometry/Point.js";
@@ -60,23 +61,19 @@ export const modifyMapData = (
 };
 
 const DEFAULT_BUFFER_UNIT = "miles";
-const DEFAULT_BUFFER_TOLERANCE = turf.convertLength(
-    3,
-    "feet",
-    DEFAULT_BUFFER_UNIT,
-);
 
-export const arcBuffer = (geometry: FeatureCollection, distance: number) => {
+export const arcBuffer = (geometry: FeatureCollection, distance: number, unit: units.LengthUnit & turf.Units = DEFAULT_BUFFER_UNIT) => {
     const arcgisGeometry = geometry.features.map((x) =>
         geometryJsonUtils.fromJSON(geojsonToArcGIS(x.geometry)),
     ) as unionTypes.GeometryUnion[];
 
-    return innateArcBuffer(arcgisGeometry, distance);
+    return innateArcBuffer(arcgisGeometry, distance, unit);
 };
 
 const innateArcBuffer = async (
     arcgisGeometry: unionTypes.GeometryUnion[],
     distance: number,
+    unit: units.LengthUnit & turf.Units = DEFAULT_BUFFER_UNIT
 ) => {
     await geodesicBufferOperator.load();
 
@@ -85,8 +82,12 @@ const innateArcBuffer = async (
         Array(arcgisGeometry.length).fill(distance),
         {
             union: true,
-            unit: DEFAULT_BUFFER_UNIT,
-            maxDeviation: DEFAULT_BUFFER_TOLERANCE,
+            unit: unit,
+            maxDeviation: turf.convertLength(
+                3,
+                "feet",
+                unit,
+            ),
         },
     );
 
