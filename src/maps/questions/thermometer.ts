@@ -62,6 +62,10 @@ export const thermometerPlanningPolygon = (question: ThermometerQuestion) => {
     const voronoi = geoSpatialVoronoi(turf.featureCollection([pointA, pointB]));
 
     return turf.featureCollection(
-        voronoi.features.map((x: any) => turf.polygonToLine(x)),
+        voronoi.features
+            .map((x: any) => turf.polygonToLine(x))
+            .flatMap((line) =>
+                line.type === "FeatureCollection" ? line.features : [line],
+            ),
     );
 };
