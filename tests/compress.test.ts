@@ -1,5 +1,7 @@
-import { compress, decompress } from "../src/lib/utils";
+/* eslint-disable import-alias/import-alias */
 import { expect, test } from "vitest";
+
+import { compress, decompress } from "../src/lib/utils";
 
 test("compress and decompress", async () => {
     const originalString =
