@@ -4,10 +4,13 @@ import { geoMercator } from "d3-geo";
 import { geoProject, geoStitch } from "d3-geo-projection";
 // @ts-expect-error No type declaration
 import { geoVoronoi } from "d3-geo-voronoi";
+import type { FeatureCollection, MultiPolygon, Point, Polygon } from "geojson";
 
 const scaleReference = turf.toMercator(turf.point([180, 90])); // I thought this would yield the same as turf.earthRadius * Math.pi, but it's slightly larger
 
-export const geoSpatialVoronoi = (points: any) => {
+export const geoSpatialVoronoi = (
+    points: FeatureCollection<Point>,
+): FeatureCollection<Polygon | MultiPolygon> => {
     const voronoi = geoVoronoi()(points).polygons();
     const projected = geoProject(
         geoStitch(voronoi),

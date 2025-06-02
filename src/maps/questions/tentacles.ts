@@ -108,17 +108,18 @@ export const tentaclesPlanningPolygon = async (question: TentacleQuestion) => {
     );
 
     const interiorVoronoi = voronoi.features
-        .map((feature: any) => {
-            const polygon = turf.intersect(
-                turf.featureCollection([feature, circle]),
-            );
-            return polygon;
-        })
-        .filter((feature: any) => feature !== null);
+        .map((feature) =>
+            turf.intersect(turf.featureCollection([feature, circle])),
+        )
+        .filter((feature) => feature !== null);
 
     return turf.combine(
         turf.featureCollection(
-            interiorVoronoi.map((x: any) => turf.polygonToLine(x)),
+            interiorVoronoi
+                .map((x: any) => turf.polygonToLine(x))
+                .flatMap((line) =>
+                    line.type === "FeatureCollection" ? line.features : [line],
+                ),
         ),
     );
 };
