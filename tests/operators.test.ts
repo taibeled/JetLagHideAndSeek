@@ -19,16 +19,13 @@ test("voronoi diagram", () => {
         const voronoiIndex = voronoi.features.findIndex((feature) =>
             turf.booleanPointInPolygon(point, feature),
         );
-        const nearestBasePoint = turf.nearestPoint(
-            point,
-            basePoints,
-        );
+        const nearestBasePoint = turf.nearestPoint(point, basePoints);
         const basePointIndex = basePoints.features.findIndex(
             (feature) =>
                 feature.geometry.coordinates[0] ===
-                nearestBasePoint.geometry.coordinates[0] &&
+                    nearestBasePoint.geometry.coordinates[0] &&
                 feature.geometry.coordinates[1] ===
-                nearestBasePoint.geometry.coordinates[1],
+                    nearestBasePoint.geometry.coordinates[1],
         );
 
         if (voronoiIndex === -1) {

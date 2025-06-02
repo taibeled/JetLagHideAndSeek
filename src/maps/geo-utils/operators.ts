@@ -62,7 +62,11 @@ export const modifyMapData = (
 
 const DEFAULT_BUFFER_UNIT = "miles";
 
-export const arcBuffer = (geometry: FeatureCollection, distance: number, unit: units.LengthUnit & turf.Units = DEFAULT_BUFFER_UNIT) => {
+export const arcBuffer = (
+    geometry: FeatureCollection,
+    distance: number,
+    unit: units.LengthUnit & turf.Units = DEFAULT_BUFFER_UNIT,
+) => {
     const arcgisGeometry = geometry.features.map((x) =>
         geometryJsonUtils.fromJSON(geojsonToArcGIS(x.geometry)),
     ) as unionTypes.GeometryUnion[];
@@ -73,7 +77,7 @@ export const arcBuffer = (geometry: FeatureCollection, distance: number, unit: u
 const innateArcBuffer = async (
     arcgisGeometry: unionTypes.GeometryUnion[],
     distance: number,
-    unit: units.LengthUnit & turf.Units = DEFAULT_BUFFER_UNIT
+    unit: units.LengthUnit & turf.Units = DEFAULT_BUFFER_UNIT,
 ) => {
     await geodesicBufferOperator.load();
 
@@ -83,11 +87,7 @@ const innateArcBuffer = async (
         {
             union: true,
             unit: unit,
-            maxDeviation: turf.convertLength(
-                3,
-                "feet",
-                unit,
-            ),
+            maxDeviation: turf.convertLength(3, "feet", unit),
         },
     );
 

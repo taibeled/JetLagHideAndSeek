@@ -2,7 +2,7 @@ import * as turf from "@turf/turf";
 
 import { hiderMode } from "@/lib/context";
 import { findTentacleLocations } from "@/maps/api";
-import { safeUnion } from "@/maps/geo-utils";
+import { arcBuffer, safeUnion } from "@/maps/geo-utils";
 import { geoSpatialVoronoi } from "@/maps/geo-utils";
 import type { TentacleQuestion } from "@/maps/schema";
 
@@ -33,12 +33,10 @@ export const adjustPerTentacle = async (
         return mapData;
     }
 
-    const circle = turf.circle(
-        turf.point([question.lng, question.lat]),
+    const circle = await arcBuffer(
+        turf.featureCollection([turf.point([question.lng, question.lat])]),
         question.radius,
-        {
-            units: question.unit,
-        },
+        question.unit,
     );
 
     return turf.intersect(
@@ -99,12 +97,10 @@ export const tentaclesPlanningPolygon = async (question: TentacleQuestion) => {
             : await findTentacleLocations(question);
 
     const voronoi = geoSpatialVoronoi(points);
-    const circle = turf.circle(
-        turf.point([question.lng, question.lat]),
+    const circle = await arcBuffer(
+        turf.featureCollection([turf.point([question.lng, question.lat])]),
         question.radius,
-        {
-            units: question.unit,
-        },
+        question.unit,
     );
 
     const interiorVoronoi = voronoi.features
