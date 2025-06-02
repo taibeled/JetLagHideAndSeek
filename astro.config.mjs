@@ -1,10 +1,9 @@
 // @ts-check
-import { defineConfig } from "astro/config";
-
+import partytown from "@astrojs/partytown";
 import react from "@astrojs/react";
 import tailwind from "@astrojs/tailwind";
-import partytown from "@astrojs/partytown";
 import AstroPWA from "@vite-pwa/astro";
+import { defineConfig } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
