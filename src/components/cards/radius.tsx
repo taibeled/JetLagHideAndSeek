@@ -98,7 +98,7 @@ export const RadiusQuestionComponent = ({
                     className="grow"
                     type="single"
                     value={data.within ? "inside" : "outside"}
-                    onValueChange={(value) =>
+                    onValueChange={(value: "inside" | "outside") =>
                         questionModified((data.within = value === "inside"))
                     }
                     disabled={!!$hiderMode || !data.drag || $isLoading}

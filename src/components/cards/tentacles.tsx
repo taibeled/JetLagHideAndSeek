@@ -10,7 +10,7 @@ import {
     questions,
     triggerLocalRefresh,
 } from "@/lib/context";
-import { findTentacleLocations, iconColors } from "@/maps/api";
+import { findTentacleLocations } from "@/maps/api";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
 import { Input } from "../ui/input";
 import { Select } from "../ui/select";

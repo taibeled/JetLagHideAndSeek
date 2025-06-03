@@ -1,6 +1,5 @@
 import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
-import { cn } from "@/lib/utils";
 import {
     displayHidingZones,
     drawingQuestionKey,
@@ -10,7 +9,6 @@ import {
     questions,
     triggerLocalRefresh,
 } from "@/lib/context";
-import { iconColors } from "@/maps/api";
 import {
     determineUnionizedStrings,
     matchingQuestionSchema,
@@ -282,7 +280,7 @@ export const MatchingQuestionComponent = ({
                     className="grow"
                     type="single"
                     value={data.same ? "same" : "different"}
-                    onValueChange={(value) =>
+                    onValueChange={(value: "same" | "different") =>
                         questionModified((data.same = value === "same"))
                     }
                     disabled={!!$hiderMode || !data.drag || $isLoading}

@@ -87,12 +87,12 @@ export const LatitudeLongitude = ({
     longitude: number;
     onChange: (lat: number | null, lng: number | null) => void;
     label?: string;
-    colorName?: string;
+    colorName?: keyof typeof iconColors;
     className?: string;
     children?: React.ReactNode;
     disabled?: boolean;
 }) => {
-    const color = iconColors[colorName];
+    const color = colorName ? iconColors[colorName] : "transparent";
 
     return (
         <>

@@ -1,6 +1,5 @@
 import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
-import { cn } from "@/lib/utils";
 import {
     hiderMode,
     questionModified,
@@ -90,7 +89,7 @@ export const ThermometerQuestionComponent = ({
                     className="grow"
                     type="single"
                     value={data.warmer ? "warmer" : "colder"}
-                    onValueChange={(value) =>
+                    onValueChange={(value: "warmer" | "colder") =>
                         questionModified((data.warmer = value === "warmer"))
                     }
                     disabled={!!$hiderMode || !data.drag || $isLoading}

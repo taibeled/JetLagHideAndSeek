@@ -1,6 +1,5 @@
 import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
-import { cn } from "@/lib/utils";
 import {
     displayHidingZones,
     drawingQuestionKey,
@@ -10,7 +9,6 @@ import {
     triggerLocalRefresh,
     isLoading,
 } from "@/lib/context";
-import { iconColors } from "@/maps/api";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
 import { Select } from "../ui/select";
 import { Checkbox } from "../ui/checkbox";
@@ -216,7 +214,7 @@ export const MeasuringQuestionComponent = ({
                     className="grow"
                     type="single"
                     value={data.hiderCloser ? "closer" : "further"}
-                    onValueChange={(value) =>
+                    onValueChange={(value: "closer" | "further") =>
                         questionModified(
                             (data.hiderCloser = value === "closer"),
                         )
