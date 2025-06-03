@@ -1,6 +1,6 @@
 import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 import {
     displayHidingZones,
     drawingQuestionKey,
@@ -9,19 +9,16 @@ import {
     questionModified,
     questions,
     triggerLocalRefresh,
-} from "../../lib/context";
-import { iconColors, prettifyLocation } from "../../maps/api";
-import type { MatchingQuestion, TentacleLocations } from "../../lib/schema";
-import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
+} from "@/lib/context";
+import { iconColors } from "@/maps/api";
 import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "../ui/select";
+    determineUnionizedStrings,
+    matchingQuestionSchema,
+    NO_GROUP,
+    type MatchingQuestion,
+} from "@/lib/schema";
+import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
+import { Select } from "../ui/select";
 import { Checkbox } from "../ui/checkbox";
 import { QuestionCard } from "./base";
 import { determineMatchingBoundary, findMatchingPlaces } from "@/maps/matching";
@@ -63,34 +60,33 @@ export const MatchingQuestionComponent = ({
                 <>
                     <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                         <Select
+                            trigger="OSM Zone"
+                            options={{
+                                3: "OSM Zone 3 (region in Japan)",
+                                4: "OSM Zone 4 (prefecture in Japan)",
+                                5: "OSM Zone 5",
+                                6: "OSM Zone 6",
+                                7: "OSM Zone 7",
+                                8: "OSM Zone 8",
+                                9: "OSM Zone 9",
+                                10: "OSM Zone 10",
+                            }}
                             value={data.cat.adminLevel.toString()}
                             onValueChange={(value) =>
                                 questionModified(
-                                    (data.cat.adminLevel = parseInt(
-                                        value as string,
-                                    ) as 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10),
+                                    (data.cat.adminLevel = parseInt(value) as
+                                        | 3
+                                        | 4
+                                        | 5
+                                        | 6
+                                        | 7
+                                        | 8
+                                        | 9
+                                        | 10),
                                 )
                             }
                             disabled={!data.drag || $isLoading}
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder="OSM Zone" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="3">
-                                    OSM Zone 3 (region in Japan)
-                                </SelectItem>
-                                <SelectItem value="4">
-                                    OSM Zone 4 (prefecture in Japan)
-                                </SelectItem>
-                                <SelectItem value="5">OSM Zone 5</SelectItem>
-                                <SelectItem value="6">OSM Zone 6</SelectItem>
-                                <SelectItem value="7">OSM Zone 7</SelectItem>
-                                <SelectItem value="8">OSM Zone 8</SelectItem>
-                                <SelectItem value="9">OSM Zone 9</SelectItem>
-                                <SelectItem value="10">OSM Zone 10</SelectItem>
-                            </SelectContent>
-                        </Select>
+                        />
                     </SidebarMenuItem>
                     {data.type === "letter-zone" && (
                         <span className="px-2 text-center text-orange-500">
@@ -162,9 +158,61 @@ export const MatchingQuestionComponent = ({
             sub={sub}
             className={className}
             showDeleteButton={showDeleteButton}
+            collapsed={data.collapsed}
+            setCollapsed={(collapsed) => {
+                data.collapsed = collapsed; // Doesn't trigger a re-render so no need for questionModified
+            }}
         >
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
+                    trigger="Matching Type"
+                    options={Object.fromEntries(
+                        matchingQuestionSchema.options
+                            .filter((x) => x.description === NO_GROUP)
+                            .flatMap((x) =>
+                                determineUnionizedStrings(x.shape.type),
+                            )
+                            .map((x) => [(x._def as any).value, x.description]),
+                    )}
+                    groups={matchingQuestionSchema.options
+                        .filter((x) => x.description !== NO_GROUP)
+                        .map((x) => [
+                            x.description,
+                            Object.fromEntries(
+                                determineUnionizedStrings(x.shape.type).map(
+                                    (x) => [
+                                        (x._def as any).value,
+                                        x.description,
+                                    ],
+                                ),
+                            ),
+                        ])
+                        .reduce(
+                            (acc, [key, value]) => {
+                                const values = {
+                                    disabled: !$displayHidingZones,
+                                    options: value,
+                                };
+
+                                if (acc[key]) {
+                                    acc[key].options = {
+                                        ...acc[key].options,
+                                        ...value,
+                                    };
+                                } else {
+                                    acc[key] = values;
+                                }
+
+                                return acc;
+                            },
+                            {} as Record<
+                                string,
+                                {
+                                    disabled: boolean;
+                                    options: Record<string, string>;
+                                }
+                            >,
+                        )}
                     value={data.type}
                     onValueChange={async (value) => {
                         if (value === "custom-zone") {
@@ -200,99 +248,10 @@ export const MatchingQuestionComponent = ({
                         if (!(data as any).cat) {
                             (data as any).cat = { adminLevel: 3 };
                         }
-                        questionModified((data.type = value as any));
+                        questionModified((data.type = value));
                     }}
                     disabled={!data.drag || $isLoading}
-                >
-                    <SelectTrigger>
-                        <SelectValue placeholder="Matching Type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="zone">Zone Question</SelectItem>
-                        <SelectItem value="letter-zone">
-                            Zone Starts With Same Letter Question
-                        </SelectItem>
-                        <SelectItem value="custom-zone">
-                            Custom Zone Question
-                        </SelectItem>
-                        <SelectItem value="airport">
-                            Closest Commercial Airport In Zone Question
-                        </SelectItem>
-                        <SelectItem value="major-city">
-                            Closest Major City (1,000,000+ people) In Zone
-                            Question
-                        </SelectItem>
-                        <SelectItem value="custom-points">
-                            Custom Points Question
-                        </SelectItem>
-                        {(
-                            [
-                                "aquarium",
-                                "zoo",
-                                "theme_park",
-                                "museum",
-                                "hospital",
-                                "cinema",
-                                "library",
-                                "golf_course",
-                                "consulate",
-                                "park",
-                            ] as TentacleLocations[]
-                        ).map((location) => (
-                            <SelectItem
-                                value={location + "-full"}
-                                key={location + "-full"}
-                            >
-                                {prettifyLocation(location)} Question
-                                (Small+Medium Games)
-                            </SelectItem>
-                        ))}
-                        <SelectGroup>
-                            <SelectLabel>Hiding Zone Mode</SelectLabel>
-                            <SelectItem
-                                value="same-first-letter-station"
-                                disabled={!$displayHidingZones}
-                            >
-                                Station Starts With Same Letter Question
-                            </SelectItem>
-                            <SelectItem
-                                value="same-length-station"
-                                disabled={!$displayHidingZones}
-                            >
-                                Station Has Same Length Question
-                            </SelectItem>
-                            <SelectItem
-                                value="same-train-line"
-                                disabled={!$displayHidingZones}
-                            >
-                                Station On Same Train Line Question
-                            </SelectItem>
-                            {(
-                                [
-                                    "aquarium",
-                                    "zoo",
-                                    "theme_park",
-                                    "museum",
-                                    "hospital",
-                                    "cinema",
-                                    "library",
-                                    "golf_course",
-                                    "consulate",
-                                    "park",
-                                ] as TentacleLocations[]
-                            ).map((location) => (
-                                <SelectItem
-                                    value={location}
-                                    key={location}
-                                    disabled={!$displayHidingZones}
-                                >
-                                    {prettifyLocation(location)} Question (Large
-                                    Game)
-                                </SelectItem>
-                            ))}
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
+                />
             </SidebarMenuItem>
             {questionSpecific}
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>

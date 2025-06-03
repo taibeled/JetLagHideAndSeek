@@ -1,14 +1,14 @@
 import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 import {
     hiderMode,
     questionModified,
     questions,
     triggerLocalRefresh,
     isLoading,
-} from "../../lib/context";
-import { iconColors } from "../../maps/api";
+} from "@/lib/context";
+import { iconColors } from "@/maps/api";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
 import { Checkbox } from "../ui/checkbox";
 import { Separator } from "../ui/separator";
@@ -47,6 +47,10 @@ export const ThermometerQuestionComponent = ({
             sub={sub}
             className={className}
             showDeleteButton={showDeleteButton}
+            collapsed={data.collapsed}
+            setCollapsed={(collapsed) => {
+                data.collapsed = collapsed; // Doesn't trigger a re-render so no need for questionModified
+            }}
         >
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <label className="text-2xl font-semibold font-poppins">

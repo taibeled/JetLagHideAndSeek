@@ -38,7 +38,7 @@ type SidebarContextType = {
     toggleSidebar: () => void;
 };
 
-const SidebarContext = atom<SidebarContextType>({
+export const SidebarContext = atom<SidebarContextType>({
     state: "expanded",
     open: true,
     setOpen: () => {},
@@ -210,7 +210,7 @@ const Sidebar = React.forwardRef<
                     <SheetContent
                         data-sidebar="sidebar"
                         data-mobile="true"
-                        className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden z-[1035]"
+                        className="w-full bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden z-[1035]"
                         style={
                             {
                                 "--sidebar-width": SIDEBAR_WIDTH_MOBILE,

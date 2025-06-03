@@ -1,6 +1,6 @@
 import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 import {
     displayHidingZones,
     drawingQuestionKey,
@@ -9,21 +9,18 @@ import {
     questions,
     triggerLocalRefresh,
     isLoading,
-} from "../../lib/context";
-import { iconColors, prettifyLocation } from "../../maps/api";
+} from "@/lib/context";
+import { iconColors } from "@/maps/api";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "../ui/select";
+import { Select } from "../ui/select";
 import { Checkbox } from "../ui/checkbox";
 import { QuestionCard } from "./base";
-import type { MeasuringQuestion, TentacleLocations } from "@/lib/schema";
+import {
+    determineUnionizedStrings,
+    measuringQuestionSchema,
+    NO_GROUP,
+    type MeasuringQuestion,
+} from "@/lib/schema";
 import { determineMeasuringBoundary } from "@/maps/measuring";
 
 export const MeasuringQuestionComponent = ({
@@ -115,9 +112,61 @@ export const MeasuringQuestionComponent = ({
             sub={sub}
             className={className}
             showDeleteButton={showDeleteButton}
+            collapsed={data.collapsed}
+            setCollapsed={(collapsed) => {
+                data.collapsed = collapsed; // Doesn't trigger a re-render so no need for questionModified
+            }}
         >
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
+                    trigger="Measuring Type"
+                    options={Object.fromEntries(
+                        measuringQuestionSchema.options
+                            .filter((x) => x.description === NO_GROUP)
+                            .flatMap((x) =>
+                                determineUnionizedStrings(x.shape.type),
+                            )
+                            .map((x) => [(x._def as any).value, x.description]),
+                    )}
+                    groups={measuringQuestionSchema.options
+                        .filter((x) => x.description !== NO_GROUP)
+                        .map((x) => [
+                            x.description,
+                            Object.fromEntries(
+                                determineUnionizedStrings(x.shape.type).map(
+                                    (x) => [
+                                        (x._def as any).value,
+                                        x.description,
+                                    ],
+                                ),
+                            ),
+                        ])
+                        .reduce(
+                            (acc, [key, value]) => {
+                                const values = {
+                                    disabled: !$displayHidingZones,
+                                    options: value,
+                                };
+
+                                if (acc[key]) {
+                                    acc[key].options = {
+                                        ...acc[key].options,
+                                        ...value,
+                                    };
+                                } else {
+                                    acc[key] = values;
+                                }
+
+                                return acc;
+                            },
+                            {} as Record<
+                                string,
+                                {
+                                    disabled: boolean;
+                                    options: Record<string, string>;
+                                }
+                            >,
+                        )}
                     value={data.type}
                     onValueChange={async (value) => {
                         if (value === "custom-measure") {
@@ -135,98 +184,11 @@ export const MeasuringQuestionComponent = ({
                                 ? boundary
                                 : [];
                         }
-                        data.type = value as any;
+                        data.type = value;
                         questionModified();
                     }}
                     disabled={!data.drag || $isLoading}
-                >
-                    <SelectTrigger>
-                        <SelectValue placeholder="Measuring Type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="coastline">
-                            Coastline Question
-                        </SelectItem>
-                        <SelectItem value="airport">
-                            Commercial Airport In Zone Question
-                        </SelectItem>
-                        <SelectItem value="city">
-                            Major City (1,000,000+ people) Question
-                        </SelectItem>
-                        <SelectItem value="highspeed-measure-shinkansen">
-                            High-Speed Rail Question
-                        </SelectItem>
-                        {(
-                            [
-                                "aquarium",
-                                "zoo",
-                                "theme_park",
-                                "museum",
-                                "hospital",
-                                "cinema",
-                                "library",
-                                "golf_course",
-                                "consulate",
-                                "park",
-                            ] as TentacleLocations[]
-                        ).map((location) => (
-                            <SelectItem
-                                value={location + "-full"}
-                                key={location + "-full"}
-                            >
-                                {prettifyLocation(location)} Question
-                                (Small+Medium Games)
-                            </SelectItem>
-                        ))}
-                        <SelectItem value="custom-measure">
-                            Custom Measuring Question
-                        </SelectItem>
-                        <SelectGroup>
-                            <SelectLabel>Hiding Zone Mode</SelectLabel>
-                            <SelectItem
-                                value="mcdonalds"
-                                disabled={!$displayHidingZones}
-                            >
-                                McDonald&apos;s Question
-                            </SelectItem>
-                            <SelectItem
-                                value="seven11"
-                                disabled={!$displayHidingZones}
-                            >
-                                7-Eleven Question
-                            </SelectItem>
-                            <SelectItem
-                                value="rail-measure"
-                                disabled={!$displayHidingZones}
-                            >
-                                Train Station Question
-                            </SelectItem>
-                            {(
-                                [
-                                    "aquarium",
-                                    "zoo",
-                                    "theme_park",
-                                    "museum",
-                                    "hospital",
-                                    "cinema",
-                                    "library",
-                                    "golf_course",
-                                    "consulate",
-                                    "park",
-                                ] as TentacleLocations[]
-                            ).map((location) => (
-                                <SelectItem
-                                    value={location}
-                                    key={location}
-                                    disabled={!$displayHidingZones}
-                                >
-                                    {prettifyLocation(location)} Question (Large
-                                    Game)
-                                </SelectItem>
-                            ))}
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
+                />
             </SidebarMenuItem>
             {questionSpecific}
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>

@@ -15,6 +15,9 @@ import {
     triggerLocalRefresh,
     hidingZone,
     planningModeEnabled,
+    autoZoom,
+    additionalMapGeoLocations,
+    thunderforestApiKey,
 } from "@/lib/context";
 import { Button } from "./ui/button";
 import { toast } from "react-toastify";
@@ -29,7 +32,7 @@ import {
 } from "@/components/ui/drawer";
 import { Separator } from "./ui/separator";
 import { useStore } from "@nanostores/react";
-import { cn } from "@/lib/utils";
+import { cn, compress, decompress } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { Checkbox } from "./ui/checkbox";
 import { LatitudeLongitude } from "./LatLngPicker";
@@ -40,33 +43,54 @@ import {
 } from "./ui/sidebar-l";
 import { questionsSchema } from "@/lib/schema";
 import { UnitSelect } from "./UnitSelect";
+import { Input } from "./ui/input";
 
 const HIDING_ZONE_URL_PARAM = "hz";
+const HIDING_ZONE_COMPRESSED_URL_PARAM = "hzc";
 
 export const OptionDrawers = ({ className }: { className?: string }) => {
     useStore(triggerLocalRefresh);
     const $defaultUnit = useStore(defaultUnit);
     const $highlightTrainLines = useStore(highlightTrainLines);
     const $animateMapMovements = useStore(animateMapMovements);
+    const $autoZoom = useStore(autoZoom);
     const $hiderMode = useStore(hiderMode);
     const $hidingRadius = useStore(hidingRadius);
     const $autoSave = useStore(autoSave);
     const $hidingZone = useStore(hidingZone);
     const $planningMode = useStore(planningModeEnabled);
+    const $thunderforestApiKey = useStore(thunderforestApiKey);
     const [isInstructionsOpen, setInstructionsOpen] = useState(false);
     const [isOptionsOpen, setOptionsOpen] = useState(false);
 
     useEffect(() => {
         const params = new URL(window.location.toString()).searchParams;
-        const hidingZone = params.get(HIDING_ZONE_URL_PARAM);
-        if (hidingZone !== null) {
+        const hidingZoneOld = params.get(HIDING_ZONE_URL_PARAM);
+        const hidingZone = params.get(HIDING_ZONE_COMPRESSED_URL_PARAM);
+        if (hidingZoneOld !== null) {
+            // Legacy base64 encoding
             try {
-                loadHidingZone(atob(hidingZone));
+                loadHidingZone(atob(hidingZoneOld));
                 // Remove hiding zone parameter after initial load
                 window.history.replaceState({}, "", window.location.pathname);
             } catch (e) {
                 toast.error(`Invalid hiding zone settings: ${e}`);
             }
+        } else if (hidingZone !== null) {
+            // Modern compressed format
+            decompress(hidingZone).then((data) => {
+                try {
+                    loadHidingZone(data);
+                    // Remove hiding zone parameter after initial load
+                    window.history.replaceState(
+                        {},
+                        "",
+                        window.location.pathname,
+                    );
+                } catch (e) {
+                    toast.error(`Invalid hiding zone settings: ${e}`);
+                }
+            });
         }
     }, []);
 
@@ -84,6 +108,12 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 mapGeoLocation.set(geojson);
                 mapGeoJSON.set(null);
                 polyGeoJSON.set(null);
+
+                if (geojson.alternateLocations) {
+                    additionalMapGeoLocations.set(geojson.alternateLocations);
+                } else {
+                    additionalMapGeoLocations.set([]);
+                }
             } else {
                 if (geojson.questions) {
                     questions.set(questionsSchema.parse(geojson.questions));
@@ -126,9 +156,9 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
         >
             <Button
                 className="shadow-md"
-                onClick={() => {
-                    const b64 = btoa(JSON.stringify($hidingZone));
-                    const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}?hz=${b64}`;
+                onClick={async () => {
+                    const b64 = await compress(JSON.stringify($hidingZone));
+                    const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}?${HIDING_ZONE_COMPRESSED_URL_PARAM}=${b64}`;
 
                     // Show platform native share sheet if possible
                     if (navigator.share) {
@@ -137,7 +167,11 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 title: document.title,
                                 url: url,
                             })
-                            .catch(() => toast.error("Failed to share via OS"));
+                            .catch(() =>
+                                toast.error(
+                                    "Failed to share via OS. You may have disabled too many stations.",
+                                ),
+                            );
                     } else if (!navigator || !navigator.clipboard) {
                         return toast.error(
                             `Clipboard not supported. Try manually copying/pasting: ${url}`,
@@ -319,6 +353,9 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     }}
                                 />
                             </div>
+                            {$highlightTrainLines && (
+                                <Separator className="bg-slate-300 w-[280px]" />
+                            )}
                             <div className="flex flex-row items-center gap-2">
                                 <label className="text-2xl font-semibold font-poppins">
                                     Highlight train lines?
@@ -326,12 +363,51 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 <Checkbox
                                     checked={$highlightTrainLines}
                                     onCheckedChange={() => {
-                                        highlightTrainLines.set(
-                                            !$highlightTrainLines,
-                                        );
+                                        const willBeEnabled =
+                                            !$highlightTrainLines;
+                                        if (
+                                            willBeEnabled &&
+                                            !$thunderforestApiKey
+                                        ) {
+                                            toast.warn(
+                                                "A Thunderforest API key is required to highlight train lines. Please add one in the options below.",
+                                            );
+                                        }
+                                        highlightTrainLines.set(willBeEnabled);
                                     }}
                                 />
                             </div>
+                            {$highlightTrainLines && (
+                                <>
+                                    <div className="flex flex-col items-center gap-2">
+                                        <Label>Thunderforest API Key</Label>
+                                        <Input
+                                            type="text"
+                                            value={$thunderforestApiKey}
+                                            onChange={(e) =>
+                                                thunderforestApiKey.set(
+                                                    e.target.value,
+                                                )
+                                            }
+                                            placeholder="Enter your Thunderforest API key"
+                                        />
+                                        <p className="text-xs text-gray-500">
+                                            Needed for highlighting train lines.
+                                            Create a key{" "}
+                                            <a
+                                                href="https://manage.thunderforest.com/users/sign_up?price=hobby-project-usd"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-blue-500 cursor-pointer"
+                                            >
+                                                here.
+                                            </a>{" "}
+                                            Don&apos;t worry, it&apos;s free.
+                                        </p>
+                                    </div>
+                                    <Separator className="bg-slate-300 w-[280px]" />{" "}
+                                </>
+                            )}
                             <div className="flex flex-row items-center gap-2">
                                 <label className="text-2xl font-semibold font-poppins">
                                     Enable planning mode?
@@ -368,6 +444,17 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     checked={$autoSave}
                                     onCheckedChange={() =>
                                         autoSave.set(!$autoSave)
+                                    }
+                                />
+                            </div>
+                            <div className="flex flex-row items-center gap-2">
+                                <label className="text-2xl font-semibold font-poppins">
+                                    Auto zoom?
+                                </label>
+                                <Checkbox
+                                    checked={$autoZoom}
+                                    onCheckedChange={() =>
+                                        autoZoom.set(!$autoZoom)
                                     }
                                 />
                             </div>

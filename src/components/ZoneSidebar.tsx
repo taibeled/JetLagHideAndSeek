@@ -1,6 +1,7 @@
 import {
     Sidebar,
     SidebarContent,
+    SidebarContext,
     SidebarGroup,
     SidebarGroupContent,
     SidebarMenu,
@@ -18,6 +19,7 @@ import {
     questions,
     trainStations,
     isLoading,
+    autoZoom,
 } from "../lib/context";
 import { useStore } from "@nanostores/react";
 import { MENU_ITEM_CLASSNAME } from "./ui/sidebar-l";
@@ -49,15 +51,10 @@ import { toast } from "react-toastify";
 import _ from "lodash";
 import { MultiSelect } from "./ui/multi-select";
 import { Input } from "./ui/input";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { Select } from "@/components/ui/select";
 import { geoSpatialVoronoi } from "@/maps/voronoi";
 import { ScrollToTop } from "./ui/scroll-to-top";
+import { SidebarCloseIcon } from "lucide-react";
 
 let buttonJustClicked = false;
 
@@ -379,7 +376,15 @@ export const ZoneSidebar = () => {
 
     return (
         <Sidebar side="right">
-            <h2 className="ml-4 mt-4 font-poppins text-2xl">Hiding Zone</h2>
+            <div className="flex items-center justify-between">
+                <h2 className="ml-4 mt-4 font-poppins text-2xl">Hiding Zone</h2>
+                <SidebarCloseIcon
+                    className="mr-2 visible md:hidden scale-x-[-1]"
+                    onClick={() => {
+                        SidebarContext.get().setOpenMobile(false);
+                    }}
+                />
+            </div>
             <SidebarContent ref={sidebarRef}>
                 <ScrollToTop element={sidebarRef} minHeight={500} />
                 <SidebarGroup>
@@ -432,6 +437,18 @@ export const ZoneSidebar = () => {
                                             label: "Railway Stations Excluding Subways",
                                             value: "[railway=station][subway!=yes]",
                                         },
+                                        {
+                                            label: "Subway Stations",
+                                            value: "[railway=station][subway=yes]",
+                                        },
+                                        {
+                                            label: "Light Rail Stations",
+                                            value: "[railway=station][light_rail=yes]",
+                                        },
+                                        {
+                                            label: "Light Rail Halts",
+                                            value: "[railway=halt][light_rail=yes]",
+                                        },
                                     ]}
                                     onValueChange={
                                         displayHidingZonesOptions.set
@@ -466,16 +483,12 @@ export const ZoneSidebar = () => {
                                         }}
                                         disabled={$isLoading}
                                     />
-                                    <Select value="miles" disabled>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Unit" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="miles">
-                                                Miles
-                                            </SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    <Select
+                                        trigger="Unit"
+                                        value="miles"
+                                        options={{ miles: "Miles" }}
+                                        disabled
+                                    />
                                 </div>
                             </SidebarMenuItem>
                             {$displayHidingZones && stations.length > 0 && (
@@ -622,6 +635,23 @@ export const ZoneSidebar = () => {
                                         Clear Disabled
                                     </SidebarMenuItem>
                                 )}
+                            {$displayHidingZones && (
+                                <SidebarMenuItem
+                                    className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
+                                    onClick={() => {
+                                        disabledStations.set(
+                                            stations.map(
+                                                (x) =>
+                                                    x.properties.properties.id,
+                                            ),
+                                        );
+                                        removeHidingZones();
+                                    }}
+                                    disabled={$isLoading}
+                                >
+                                    Disable All
+                                </SidebarMenuItem>
+                            )}
                             {$displayHidingZones && (
                                 <Command>
                                     <CommandInput
@@ -870,6 +900,7 @@ async function selectionProcess(
                         locationType: question.data.type,
                         drag: false,
                         color: "black",
+                        collapsed: false,
                     },
                     "Finding matching locations to hiding zone...",
                 );
@@ -1072,10 +1103,12 @@ async function selectionProcess(
 
     showGeoJSON(mapData);
 
-    if (animateMapMovements.get()) {
-        map?.flyToBounds(bounds);
-    } else {
-        map?.fitBounds(bounds);
+    if (autoZoom.get()) {
+        if (animateMapMovements.get()) {
+            map?.flyToBounds(bounds);
+        } else {
+            map?.fitBounds(bounds);
+        }
     }
 
     const element: HTMLDivElement | null = document.querySelector(

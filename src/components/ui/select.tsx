@@ -4,7 +4,70 @@ import { Check, ChevronDown, ChevronUp } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-const Select = SelectPrimitive.Root;
+type Options<T extends string> = Partial<Record<T, string>>;
+const Select = <T extends string>({
+    trigger,
+    options,
+    groups,
+    ...rest
+}: {
+    disabled?: boolean;
+    trigger: string | Record<"className" | "placeholder", string>;
+    options?: Options<T>;
+    groups?: Record<
+        string,
+        { disabled: boolean; options: Options<T> } | Options<T>
+    >;
+    onValueChange?: (value: T) => void;
+    value: T;
+}) => {
+    const { placeholder, className } =
+        typeof trigger == "string" ? { placeholder: trigger } : trigger;
+    const mapObj = <T,>(
+        obj: Partial<Record<string, T>>,
+        fn: (key: string, value: T) => React.ReactNode,
+    ) => Object.entries(obj).map(([k, v]) => fn(k, v!));
+    const Options = ({
+        options,
+        ...rest
+    }: {
+        options: Options<T>;
+        disabled?: boolean;
+    }) =>
+        mapObj(options, (value, children) => (
+            <SelectItem key={value} {...{ ...rest, value, children }} />
+        ));
+    return (
+        <SelectPrimitive.Root {...rest}>
+            <SelectTrigger {...{ className }}>
+                <SelectValue {...{ placeholder }} />
+            </SelectTrigger>
+            <SelectContent>
+                {options && <Options {...{ options }} />}
+                {groups &&
+                    mapObj(groups, (children, optionsOrConfig) => {
+                        return (
+                            <SelectGroup key={children}>
+                                <SelectLabel {...{ children }} />
+                                <Options
+                                    {...("options" in optionsOrConfig &&
+                                    typeof optionsOrConfig.options == "object"
+                                        ? optionsOrConfig
+                                        : {
+                                              options:
+                                                  optionsOrConfig as Record<
+                                                      T,
+                                                      string
+                                                  >,
+                                          })}
+                                />
+                            </SelectGroup>
+                        );
+                    })}
+            </SelectContent>
+        </SelectPrimitive.Root>
+    );
+};
 
 const SelectGroup = SelectPrimitive.Group;
 

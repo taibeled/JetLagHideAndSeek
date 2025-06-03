@@ -1,32 +1,27 @@
 import { Suspense, use } from "react";
 import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
-import { cn } from "../../lib/utils";
+import { cn, mapToObj } from "@/lib/utils";
 import {
     drawingQuestionKey,
     hiderMode,
+    isLoading,
     questionModified,
     questions,
     triggerLocalRefresh,
-    isLoading,
-} from "../../lib/context";
-import { findTentacleLocations, iconColors } from "../../maps/api";
+} from "@/lib/context";
+import { findTentacleLocations, iconColors } from "@/maps/api";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
 import { Input } from "../ui/input";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "../ui/select";
+import { Select } from "../ui/select";
 import { Checkbox } from "../ui/checkbox";
 import { QuestionCard } from "./base";
-import type {
-    TentacleQuestion,
-    TraditionalTentacleQuestion,
+import {
+    determineUnionizedStrings,
+    NO_GROUP,
+    tentacleQuestionSchema,
+    type TentacleQuestion,
+    type TraditionalTentacleQuestion,
 } from "@/lib/schema";
 import { UnitSelect } from "../UnitSelect";
 import * as turf from "@turf/turf";
@@ -62,6 +57,10 @@ export const TentacleQuestionComponent = ({
             sub={sub}
             className={className}
             showDeleteButton={showDeleteButton}
+            collapsed={data.collapsed}
+            setCollapsed={(collapsed) => {
+                data.collapsed = collapsed; // Doesn't trigger a re-render so no need for questionModified
+            }}
         >
             <SidebarMenuItem>
                 <div className={cn(MENU_ITEM_CLASSNAME, "gap-2 flex flex-row")}>
@@ -87,6 +86,30 @@ export const TentacleQuestionComponent = ({
             </SidebarMenuItem>
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
+                    trigger="Location Type"
+                    options={Object.fromEntries(
+                        tentacleQuestionSchema.options
+                            .filter((x) => x.description === NO_GROUP)
+                            .flatMap((x) =>
+                                determineUnionizedStrings(x.shape.locationType),
+                            )
+                            .map((x) => [(x._def as any).value, x.description]),
+                    )}
+                    groups={Object.fromEntries(
+                        tentacleQuestionSchema.options
+                            .filter((x) => x.description !== NO_GROUP)
+                            .map((x) => [
+                                x.description,
+                                Object.fromEntries(
+                                    determineUnionizedStrings(
+                                        x.shape.locationType,
+                                    ).map((x) => [
+                                        (x._def as any).value,
+                                        x.description,
+                                    ]),
+                                ),
+                            ]),
+                    )}
                     value={data.locationType}
                     onValueChange={async (value) => {
                         if (value === "custom") {
@@ -107,36 +130,12 @@ export const TentacleQuestionComponent = ({
                             data.location = false;
                         } else {
                             data.location = false;
-                            data.locationType = value as any;
+                            data.locationType = value;
                         }
                         questionModified();
                     }}
                     disabled={!data.drag || $isLoading}
-                >
-                    <SelectTrigger>
-                        <SelectValue placeholder="Location Type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="custom">Custom Locations</SelectItem>
-                        <SelectGroup>
-                            <SelectLabel>15 Miles (Typically)</SelectLabel>
-                            <SelectItem value="theme_park">
-                                Theme Parks
-                            </SelectItem>
-                            <SelectItem value="zoo">Zoos</SelectItem>
-                            <SelectItem value="aquarium">Aquariums</SelectItem>
-                        </SelectGroup>
-                        <SelectGroup>
-                            <SelectLabel>1 Mile (Typically)</SelectLabel>
-                            <SelectItem value="museum">Museums</SelectItem>
-                            <SelectItem value="hospital">Hospitals</SelectItem>
-                            <SelectItem value="cinema">
-                                Movie Theater
-                            </SelectItem>
-                            <SelectItem value="library">Library</SelectItem>
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
+                />
             </SidebarMenuItem>
             {data.locationType === "custom" && data.drag && (
                 <p className="px-2 mb-1 text-center text-orange-500">
@@ -243,6 +242,14 @@ const TentacleLocationSelector = ({
 
     return (
         <Select
+            trigger="Location"
+            options={{
+                false: "Not Within",
+                ...mapToObj(locations.features, (feature: any) => [
+                    feature.properties.name,
+                    feature.properties.name,
+                ]),
+            }}
             value={data.location ? data.location.properties.name : "false"}
             onValueChange={(value) => {
                 if (value === "false") {
@@ -256,21 +263,6 @@ const TentacleLocationSelector = ({
                 questionModified();
             }}
             disabled={!!$hiderMode || disabled}
-        >
-            <SelectTrigger>
-                <SelectValue placeholder="Location" />
-            </SelectTrigger>
-            <SelectContent>
-                <SelectItem value="false">Not Within</SelectItem>
-                {locations.features.map((feature: any) => (
-                    <SelectItem
-                        key={feature.properties.name}
-                        value={feature.properties.name}
-                    >
-                        {feature.properties.name}
-                    </SelectItem>
-                ))}
-            </SelectContent>
-        </Select>
+        />
     );
 };

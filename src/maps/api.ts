@@ -1,14 +1,21 @@
 import type { LatLngTuple } from "leaflet";
 import osmtogeojson from "osmtogeojson";
 import * as turf from "@turf/turf";
-import { mapGeoLocation, polyGeoJSON } from "@/lib/context";
-import type { Question, TraditionalTentacleQuestion } from "@/lib/schema";
+import {
+    additionalMapGeoLocations,
+    mapGeoLocation,
+    polyGeoJSON,
+} from "@/lib/context";
+import type {
+    EncompassingTentacleQuestionSchema,
+    Question,
+} from "@/lib/schema";
 import _ from "lodash";
 import { toast } from "react-toastify";
 import type {
     HomeGameMatchingQuestions,
     HomeGameMeasuringQuestions,
-    TentacleLocations,
+    APILocations,
 } from "@/lib/schema";
 
 export interface OpenStreetMap {
@@ -98,11 +105,7 @@ export const determineGeoJSON = async (
 };
 
 export const locationFirstTag: {
-    [key in TentacleLocations]:
-        | "amenity"
-        | "tourism"
-        | "leisure"
-        | "diplomatic";
+    [key in APILocations]: "amenity" | "tourism" | "leisure" | "diplomatic";
 } = {
     aquarium: "tourism",
     hospital: "amenity",
@@ -117,7 +120,7 @@ export const locationFirstTag: {
 };
 
 export const findTentacleLocations = async (
-    question: TraditionalTentacleQuestion,
+    question: EncompassingTentacleQuestionSchema,
     text: string = "Determining tentacle locations...",
 ) => {
     const query = `
@@ -375,20 +378,89 @@ ${
 out ${outType};
 `;
     } else {
-        const geoLocation = mapGeoLocation.get();
+        const primaryLocation = mapGeoLocation.get();
+
+        const additionalLocations = additionalMapGeoLocations
+            .get()
+            .filter((entry) => entry.added)
+            .map((entry) => entry.location);
+
+        const allLocations = [primaryLocation, ...additionalLocations];
+
+        const relationToAreaBlocks = allLocations
+            .map((loc, idx) => {
+                const regionVar = `.region${idx}`;
+                return `relation(${loc.properties.osm_id});map_to_area->${regionVar};`;
+            })
+            .join("\n");
+
+        const searchBlocks = allLocations
+            .map((_, idx) => {
+                const regionVar = `area.region${idx}`;
+                const altQueries =
+                    alternatives.length > 0
+                        ? alternatives
+                              .map(
+                                  (alt) => `${searchType}${alt}(${regionVar});`,
+                              )
+                              .join("\n")
+                        : "";
+
+                return `
+            ${searchType}${filter}(${regionVar});
+            ${altQueries}
+          `;
+            })
+            .join("\n");
 
         query = `
-[out:json]${timeoutDuration != 0 ? `[timeout:${timeoutDuration}]` : ""};
-relation(${geoLocation.properties.osm_id});map_to_area->.region;
-(
-${searchType}${filter}(area.region);
-${alternatives.length > 0 ? alternatives.map((alternative) => `${searchType}${alternative}(area.region);`).join("\n") : ""}
-);
-out ${outType};
-`;
+        [out:json]${timeoutDuration !== 0 ? `[timeout:${timeoutDuration}]` : ""};
+        ${relationToAreaBlocks}
+        (
+        ${searchBlocks}
+        );
+        out ${outType};
+        `;
     }
 
-    return await getOverpassData(query, loadingText, CacheType.ZONE_CACHE);
+    const data = await getOverpassData(
+        query,
+        loadingText,
+        CacheType.ZONE_CACHE,
+    );
+
+    const subtractedEntries = additionalMapGeoLocations
+        .get()
+        .filter((e) => !e.added);
+    const subtractedPolygons = subtractedEntries.map((entry) => entry.location);
+
+    if (subtractedPolygons.length > 0 && data && data.elements) {
+        const turfPolys = await Promise.all(
+            subtractedPolygons.map(
+                async (location) =>
+                    turf.combine(
+                        await determineGeoJSON(
+                            location.properties.osm_id.toString(),
+                            location.properties.osm_type,
+                        ),
+                    ).features[0],
+            ),
+        );
+
+        data.elements = data.elements.filter((el: any) => {
+            const lon = el.center ? el.center.lon : el.lon;
+            const lat = el.center ? el.center.lat : el.lat;
+            if (typeof lon !== "number" || typeof lat !== "number")
+                return false;
+            const pt = turf.point([lon, lat]);
+
+            return !turfPolys.some((poly) =>
+                turf.booleanPointInPolygon(pt, poly as any),
+            );
+        });
+    }
+
+    return data;
 };
 
 export const findPlacesSpecificInZone = async (
@@ -490,7 +562,7 @@ export const clearCache = async (cacheType: CacheType = CacheType.CACHE) => {
     }
 };
 
-export const prettifyLocation = (location: TentacleLocations) => {
+export const prettifyLocation = (location: APILocations) => {
     switch (location) {
         case "aquarium":
             return "Aquarium";
@@ -533,6 +605,7 @@ export const nearestToQuestion = async (
                 locationType: question.type,
                 drag: false,
                 color: "black",
+                collapsed: false,
             },
             "Finding matching locations...",
         );

@@ -21,7 +21,7 @@ import { holedMask, unionize } from "./geo-utils";
 import type {
     HomeGameMatchingQuestions,
     MatchingQuestion,
-    TentacleLocations,
+    APILocations,
 } from "@/lib/schema";
 import type {
     Feature,
@@ -75,9 +75,7 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
         case "golf_course-full":
         case "consulate-full":
         case "park-full": {
-            const location = question.type.split(
-                "-full",
-            )[0] as TentacleLocations;
+            const location = question.type.split("-full")[0] as APILocations;
 
             const data = await findPlacesInZone(
                 `[${locationFirstTag[location]}=${location}]`,
@@ -313,6 +311,7 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
             type: (question as HomeGameMatchingQuestions).type,
             drag: false,
             color: "black",
+            collapsed: false,
         });
 
         question.same =
@@ -403,14 +402,18 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
             (await adjustPerMatching(question, $mapGeoJSON, false))!,
         );
     } catch {
-        feature = await adjustPerMatching(
-            question,
-            {
-                type: "FeatureCollection",
-                features: [holedMask($mapGeoJSON)],
-            },
-            true,
-        );
+        try {
+            feature = await adjustPerMatching(
+                question,
+                {
+                    type: "FeatureCollection",
+                    features: [holedMask($mapGeoJSON)],
+                },
+                true,
+            );
+        } catch {
+            return question;
+        }
     }
 
     if (feature === null || feature === undefined) return question;
