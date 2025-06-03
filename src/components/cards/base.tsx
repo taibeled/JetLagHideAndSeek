@@ -88,96 +88,98 @@ export const QuestionCard = ({
                         )}
                     >
                         <SidebarMenu>{children}</SidebarMenu>
-                    </SidebarGroupContent>
-                </div>
-
-                <div className="flex gap-2 pt-2 px-2 justify-center">
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <Button variant="outline" size="sm">
-                                <VscShare />
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle className="text-2xl">
-                                    Share this Question!
-                                </DialogTitle>
-                                <DialogDescription>
-                                    Below you can access the JSON representing
-                                    the question. Send this to another player
-                                    for them to copy. They can then click
-                                    &ldquo;Paste Question&rdquo; at the bottom
-                                    of the &ldquo;Questions&rdquo; sidebar.
-                                </DialogDescription>
-                            </DialogHeader>
-                            <textarea
-                                className="w-full h-[300px] bg-slate-900 text-white rounded-md p-2"
-                                readOnly
-                                value={JSON.stringify(
-                                    $questions.find(
-                                        (q) => q.key === questionKey,
-                                    ),
-                                    null,
-                                    4,
-                                )}
-                            ></textarea>
-                        </DialogContent>
-                    </Dialog>
-                    {showDeleteButton && (
-                        <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Button variant="outline" size="sm">
-                                    <VscTrash />
+                        <div className="flex gap-2 pt-2 px-2 justify-center">
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button variant="outline" size="sm">
+                                        <VscShare />
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle className="text-2xl">
+                                            Share this Question!
+                                        </DialogTitle>
+                                        <DialogDescription>
+                                            Below you can access the JSON
+                                            representing the question. Send this
+                                            to another player for them to copy.
+                                            They can then click &ldquo;Paste
+                                            Question&rdquo; at the bottom of the
+                                            &ldquo;Questions&rdquo; sidebar.
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <textarea
+                                        className="w-full h-[300px] bg-slate-900 text-white rounded-md p-2"
+                                        readOnly
+                                        value={JSON.stringify(
+                                            $questions.find(
+                                                (q) => q.key === questionKey,
+                                            ),
+                                            null,
+                                            4,
+                                        )}
+                                    ></textarea>
+                                </DialogContent>
+                            </Dialog>
+                            {showDeleteButton && (
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button variant="outline" size="sm">
+                                            <VscTrash />
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>
+                                                Are you absolutely sure?
+                                            </AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This action cannot be undone.
+                                                This will permanently delete the
+                                                question.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>
+                                                Cancel
+                                            </AlertDialogCancel>
+                                            <AlertDialogAction
+                                                onClick={() => {
+                                                    questions.set([]);
+                                                }}
+                                            >
+                                                Delete All Questions
+                                            </AlertDialogAction>
+                                            <AlertDialogAction
+                                                onClick={() => {
+                                                    questions.set(
+                                                        $questions.filter(
+                                                            (q) =>
+                                                                q.key !==
+                                                                questionKey,
+                                                        ),
+                                                    );
+                                                }}
+                                                className="mb-2 sm:mb-0"
+                                            >
+                                                Delete Question
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            )}
+                            {locked !== undefined && (
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setLocked!(!locked)}
+                                >
+                                    {locked ? <LockIcon /> : <UnlockIcon />}
                                 </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>
-                                        Are you absolutely sure?
-                                    </AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        This action cannot be undone. This will
-                                        permanently delete the question.
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>
-                                        Cancel
-                                    </AlertDialogCancel>
-                                    <AlertDialogAction
-                                        onClick={() => {
-                                            questions.set([]);
-                                        }}
-                                    >
-                                        Delete All Questions
-                                    </AlertDialogAction>
-                                    <AlertDialogAction
-                                        onClick={() => {
-                                            questions.set(
-                                                $questions.filter(
-                                                    (q) =>
-                                                        q.key !== questionKey,
-                                                ),
-                                            );
-                                        }}
-                                        className="mb-2 sm:mb-0"
-                                    >
-                                        Delete Question
-                                    </AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
-                    )}
-                    {locked !== undefined && (
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setLocked!(!locked)}
-                        >
-                            {locked ? <LockIcon /> : <UnlockIcon />}
-                        </Button>
-                    )}
+                            )}
+                        </div>
+                    </SidebarGroupContent>
                 </div>
             </SidebarGroup>
             <Separator className="h-1" />

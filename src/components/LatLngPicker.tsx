@@ -138,7 +138,9 @@ export const LatitudeLongitude = ({
                         </DialogTrigger>
                         <DialogContent>
                             <DialogHeader>
-                                <DialogTitle className="text-2xl">Update {label}</DialogTitle>
+                                <DialogTitle className="text-2xl">
+                                    Update {label}
+                                </DialogTitle>
                             </DialogHeader>
                             <div className="flex gap-2 items-center">
                                 <Label>Latitude</Label>
