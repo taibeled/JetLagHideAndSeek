@@ -8,12 +8,10 @@ import {
     triggerLocalRefresh,
     isLoading,
 } from "@/lib/context";
-import { iconColors } from "@/maps/api";
-import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
-import { Checkbox } from "../ui/checkbox";
-import { Separator } from "../ui/separator";
 import { QuestionCard } from "./base";
 import type { ThermometerQuestion } from "@/lib/schema";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
+import { Label } from "../ui/label";
 
 export const ThermometerQuestionComponent = ({
     data,
@@ -51,44 +49,14 @@ export const ThermometerQuestionComponent = ({
             setCollapsed={(collapsed) => {
                 data.collapsed = collapsed; // Doesn't trigger a re-render so no need for questionModified
             }}
+            locked={!data.drag}
+            setLocked={(locked) => questionModified((data.drag = !locked))}
         >
-            <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
-                <label className="text-2xl font-semibold font-poppins">
-                    Warmer
-                </label>
-                <Checkbox
-                    disabled={!!$hiderMode || !data.drag || $isLoading}
-                    checked={data.warmer}
-                    onCheckedChange={(checked) =>
-                        questionModified((data.warmer = checked as boolean))
-                    }
-                />
-            </SidebarMenuItem>
-            <SidebarMenuItem
-                className={cn(
-                    MENU_ITEM_CLASSNAME,
-                    "text-xl font-semibold font-poppins",
-                )}
-                style={{
-                    backgroundColor: iconColors[data.colorA],
-                    color: data.colorA === "gold" ? "black" : undefined,
-                }}
-            >
-                Color start (lock{" "}
-                <Checkbox
-                    checked={!data.drag}
-                    disabled={$isLoading}
-                    onCheckedChange={(checked) =>
-                        questionModified((data.drag = !checked as boolean))
-                    }
-                />
-                )
-            </SidebarMenuItem>
             <LatitudeLongitude
                 latitude={data.latA}
                 longitude={data.lngA}
-                latLabel="Latitude Start"
-                lngLabel="Longitude Start"
+                label="Start"
+                colorName={data.colorA}
                 onChange={(lat, lng) => {
                     if (lat !== null) {
                         data.latA = lat;
@@ -100,24 +68,11 @@ export const ThermometerQuestionComponent = ({
                 }}
                 disabled={!data.drag || $isLoading}
             />
-            <Separator className="my-2" />
-            <SidebarMenuItem
-                className={cn(
-                    MENU_ITEM_CLASSNAME,
-                    "text-xl font-semibold font-poppins",
-                )}
-                style={{
-                    backgroundColor: iconColors[data.colorB],
-                    color: data.colorB === "gold" ? "black" : undefined,
-                }}
-            >
-                Color end
-            </SidebarMenuItem>
             <LatitudeLongitude
                 latitude={data.latB}
                 longitude={data.lngB}
-                latLabel="Latitude End"
-                lngLabel="Longitude End"
+                label="End"
+                colorName={data.colorB}
                 onChange={(lat, lng) => {
                     if (lat !== null) {
                         data.latB = lat;
@@ -129,6 +84,23 @@ export const ThermometerQuestionComponent = ({
                 }}
                 disabled={!data.drag || $isLoading}
             />
+            <div className="flex gap-2 items-center p-2">
+                <Label className="font-semibold text-lg">Result</Label>
+                <ToggleGroup
+                    className="grow"
+                    type="single"
+                    value={data.warmer ? "warmer" : "colder"}
+                    onValueChange={(value) =>
+                        questionModified((data.warmer = value === "warmer"))
+                    }
+                    disabled={!!$hiderMode || !data.drag || $isLoading}
+                >
+                    <ToggleGroupItem color="red" value="colder">
+                        Colder
+                    </ToggleGroupItem>
+                    <ToggleGroupItem value="warmer">Warmer</ToggleGroupItem>
+                </ToggleGroup>
+            </div>
         </QuestionCard>
     );
 };

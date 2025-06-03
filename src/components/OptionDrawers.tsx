@@ -510,8 +510,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                                 );
                                             }
                                         }}
-                                        latLabel="Hider Latitude"
-                                        lngLabel="Hider Longitude"
+                                        label="Hider Location"
                                     />
                                     {!autoSave && (
                                         <SidebarMenuItem>

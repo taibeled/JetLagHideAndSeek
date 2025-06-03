@@ -99,8 +99,7 @@ const ColoredMarker = ({
                                             longitude ?? $hiderMode.longitude,
                                     });
                                 }}
-                                latLabel="Hider Latitude"
-                                lngLabel="Hider Longitude"
+                                label="Hider Location"
                             />
                         </SidebarMenu>
                     </>

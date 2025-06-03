@@ -23,6 +23,8 @@ import { Checkbox } from "../ui/checkbox";
 import { QuestionCard } from "./base";
 import { determineMatchingBoundary, findMatchingPlaces } from "@/maps/matching";
 import { toast } from "react-toastify";
+import { Label } from "@/components/ui/label.tsx";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
 
 export const MatchingQuestionComponent = ({
     data,
@@ -162,6 +164,8 @@ export const MatchingQuestionComponent = ({
             setCollapsed={(collapsed) => {
                 data.collapsed = collapsed; // Doesn't trigger a re-render so no need for questionModified
             }}
+            locked={!data.drag}
+            setLocked={(locked) => questionModified((data.drag = !locked))}
         >
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
@@ -254,48 +258,12 @@ export const MatchingQuestionComponent = ({
                 />
             </SidebarMenuItem>
             {questionSpecific}
-            <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
-                <label className="text-2xl font-semibold font-poppins">
-                    Same
-                </label>
-                <Checkbox
-                    disabled={!!$hiderMode || !data.drag || $isLoading}
-                    checked={data.same}
-                    onCheckedChange={(checked) =>
-                        questionModified((data.same = checked as boolean))
-                    }
-                />
-            </SidebarMenuItem>
-            <SidebarMenuItem
-                className={cn(
-                    MENU_ITEM_CLASSNAME,
-                    "text-2xl font-semibold font-poppins",
-                    data.type === "custom-zone" && "capitalize",
-                )}
-                style={
-                    data.type === "custom-zone"
-                        ? {}
-                        : {
-                              backgroundColor: iconColors[data.color],
-                              color:
-                                  data.color === "gold" ? "black" : undefined,
-                          }
-                }
-            >
-                {data.type !== "custom-zone" && "Color ("} lock{" "}
-                <Checkbox
-                    checked={!data.drag}
-                    disabled={$isLoading}
-                    onCheckedChange={(checked) =>
-                        questionModified((data.drag = !checked as boolean))
-                    }
-                />
-                {data.type !== "custom-zone" && ")"}
-            </SidebarMenuItem>
+
             {data.type !== "custom-zone" && (
                 <LatitudeLongitude
                     latitude={data.lat}
                     longitude={data.lng}
+                    colorName={data.color}
                     onChange={(lat, lng) => {
                         if (lat !== null) {
                             data.lat = lat;
@@ -308,6 +276,23 @@ export const MatchingQuestionComponent = ({
                     disabled={!data.drag || $isLoading}
                 />
             )}
+            <div className="flex gap-2 items-center p-2">
+                <Label className="font-semibold text-lg">Result</Label>
+                <ToggleGroup
+                    className="grow"
+                    type="single"
+                    value={data.same ? "same" : "different"}
+                    onValueChange={(value) =>
+                        questionModified((data.same = value === "same"))
+                    }
+                    disabled={!!$hiderMode || !data.drag || $isLoading}
+                >
+                    <ToggleGroupItem value="different">
+                        Different
+                    </ToggleGroupItem>
+                    <ToggleGroupItem value="same">Same</ToggleGroupItem>
+                </ToggleGroup>
+            </div>
         </QuestionCard>
     );
 };
