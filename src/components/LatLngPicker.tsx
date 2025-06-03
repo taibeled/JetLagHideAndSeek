@@ -111,7 +111,7 @@ export const LatitudeLongitude = ({
                     <div className="text-2xl font-semibold font-poppins">
                         {label}
                     </div>
-                    <div className="tabular-nums text-right text-sm">
+                    <div className="tabular-nums text-right text-sm font-oxygen">
                         <div>
                             {Math.abs(latitude).toFixed(5)}
                             {"° "}
@@ -125,7 +125,7 @@ export const LatitudeLongitude = ({
                     </div>
                 </div>
 
-                <div className="flex justify-between gap-2">
+                <div className="flex justify-between gap-2 *:max-w-12 *:w-[20%]">
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button
@@ -138,7 +138,7 @@ export const LatitudeLongitude = ({
                         </DialogTrigger>
                         <DialogContent>
                             <DialogHeader>
-                                <DialogTitle>Update {label}</DialogTitle>
+                                <DialogTitle className="text-2xl">Update {label}</DialogTitle>
                             </DialogHeader>
                             <div className="flex gap-2 items-center">
                                 <Label>Latitude</Label>

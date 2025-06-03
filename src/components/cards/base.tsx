@@ -91,7 +91,7 @@ export const QuestionCard = ({
                     </SidebarGroupContent>
                 </div>
 
-                <div className="flex gap-2 pt-2 px-2">
+                <div className="flex gap-2 pt-2 px-2 justify-center">
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button variant="outline" size="sm">
