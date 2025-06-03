@@ -128,7 +128,11 @@ export const LatitudeLongitude = ({
                 <div className="flex justify-between gap-2">
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button disabled={disabled} variant="outline">
+                            <Button
+                                disabled={disabled}
+                                variant="outline"
+                                title="Edit coordinates"
+                            >
                                 <EditIcon />
                             </Button>
                         </DialogTrigger>
@@ -242,6 +246,7 @@ export const LatitudeLongitude = ({
                             );
                         }}
                         disabled={disabled}
+                        title="Paste coordinates from clipboard"
                     >
                         <ClipboardPasteIcon />
                     </Button>
@@ -284,6 +289,7 @@ export const LatitudeLongitude = ({
                             );
                         }}
                         disabled={disabled}
+                        title="Set to current location"
                     >
                         <LocateIcon />
                     </Button>
@@ -311,6 +317,7 @@ export const LatitudeLongitude = ({
                                 { autoClose: 1000 },
                             );
                         }}
+                        title="Copy coordinates to clipboard"
                     >
                         <ClipboardCopyIcon />
                     </Button>
