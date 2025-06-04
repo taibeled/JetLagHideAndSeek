@@ -201,7 +201,11 @@ out geom;
     return geo.features?.[0];
 };
 
-export const geocode = async (address: string, language: string) => {
+export const geocode = async (
+    address: string,
+    language: string,
+    filter: boolean = true,
+) => {
     const features = (
         await (
             await fetch(`${GEOCODER_API}?lang=${language}&q=${address}`)
@@ -223,19 +227,28 @@ export const geocode = async (address: string, language: string) => {
 
     return _.uniqBy(
         features.filter((feature) => {
-            return feature.properties.osm_type === "R";
+            return filter ? feature.properties.osm_type === "R" : true;
         }),
         (feature) => feature.properties.osm_id,
     );
 };
 
 export const determineName = (feature: OpenStreetMap) => {
-    if (feature.properties.state) {
-        return `${feature.properties.name}, ${feature.properties.state}, ${feature.properties.country}`;
-    } else if (feature.properties.country) {
-        return `${feature.properties.name}, ${feature.properties.country}`;
+    const props = feature.properties;
+    if (props.osm_type === "R") {
+        const parts = [props.name, props.state, props.country].filter(Boolean);
+        return parts.join(", ");
     } else {
-        return feature.properties.name;
+        const parts = [
+            (props as any).housenumber
+                ? `${(props as any).housenumber} ${(props as any).street}`
+                : (props as any).street,
+            (props as any).city,
+            (props as any).county,
+            props.state,
+            props.country,
+        ].filter(Boolean);
+        return parts.join(", ");
     }
 };
 

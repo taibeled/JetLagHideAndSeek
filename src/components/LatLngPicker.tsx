@@ -21,6 +21,17 @@ import {
 } from "./ui/dialog";
 import { iconColors } from "@/maps/api.ts";
 import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
+import {
+    Command,
+    CommandInput,
+    CommandList,
+    CommandEmpty,
+    CommandGroup,
+    CommandItem,
+} from "@/components/ui/command";
+import { useDebounce } from "@/hooks/useDebounce";
+import { geocode, determineName } from "@/maps/api";
 
 const parseCoordinatesFromText = (
     text: string,
@@ -85,60 +96,117 @@ const LatLngEditForm = ({
     longitude: number;
     onChange: (lat: number | null, lng: number | null) => void;
     disabled?: boolean;
-}) => (
-    <>
-        <div className="flex gap-2 items-center">
-            <Label>Latitude</Label>
-            <Input
-                type="number"
-                value={Math.abs(latitude)}
-                min={0}
-                max={90}
-                onChange={(e) => {
-                    if (isNaN(parseFloat(e.target.value))) return;
-                    onChange(
-                        parseFloat(e.target.value) *
-                            (latitude !== 0 ? Math.sign(latitude) : -1),
-                        null,
-                    );
-                }}
-                disabled={disabled}
-            />
-            <Button
-                variant="outline"
-                onClick={() => onChange(-latitude, null)}
-                disabled={disabled}
-            >
-                {latitude > 0 ? "N" : "S"}
-            </Button>
-        </div>
-        <div className="flex gap-2 items-center">
-            <Label>Longitude</Label>
-            <Input
-                type="number"
-                value={Math.abs(longitude)}
-                min={0}
-                max={180}
-                onChange={(e) => {
-                    if (isNaN(parseFloat(e.target.value))) return;
-                    onChange(
-                        null,
-                        parseFloat(e.target.value) *
-                            (longitude !== 0 ? Math.sign(longitude) : -1),
-                    );
-                }}
-                disabled={disabled}
-            />
-            <Button
-                variant="outline"
-                onClick={() => onChange(null, -longitude)}
-                disabled={disabled}
-            >
-                {longitude > 0 ? "E" : "W"}
-            </Button>
-        </div>
-    </>
-);
+}) => {
+    const [inputValue, setInputValue] = useState("");
+    const debouncedValue = useDebounce<string>(inputValue);
+    const [results, setResults] = useState<any[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
+
+    useEffect(() => {
+        if (debouncedValue === "") {
+            setResults([]);
+            return;
+        } else {
+            setLoading(true);
+            setResults([]);
+            geocode(debouncedValue, "en", false)
+                .then((x) => {
+                    setResults(x);
+                    setLoading(false);
+                })
+                .catch(() => {
+                    setError(true);
+                    setLoading(false);
+                });
+        }
+    }, [debouncedValue]);
+
+    return (
+        <>
+            <Command shouldFilter={false}>
+                <CommandInput
+                    placeholder="Search place..."
+                    onKeyUp={(x) => setInputValue(x.currentTarget.value)}
+                    disabled={disabled}
+                />
+                <CommandList>
+                    <CommandEmpty>
+                        {loading
+                            ? "Loading..."
+                            : error
+                              ? "Error loading places."
+                              : "No locations found."}
+                    </CommandEmpty>
+                    <CommandGroup>
+                        {results.map((result) => (
+                            <CommandItem
+                                key={`${result.properties.osm_id}${result.properties.name}`}
+                                onSelect={() => {
+                                    const coords = result.geometry.coordinates;
+                                    onChange(coords[0], coords[1]);
+                                }}
+                                className="cursor-pointer"
+                            >
+                                {determineName(result)}
+                            </CommandItem>
+                        ))}
+                    </CommandGroup>
+                </CommandList>
+            </Command>
+            <div className="flex gap-2 items-center">
+                <Label>Latitude</Label>
+                <Input
+                    type="number"
+                    value={Math.abs(latitude)}
+                    min={0}
+                    max={90}
+                    onChange={(e) => {
+                        if (isNaN(parseFloat(e.target.value))) return;
+                        onChange(
+                            parseFloat(e.target.value) *
+                                (latitude !== 0 ? Math.sign(latitude) : -1),
+                            null,
+                        );
+                    }}
+                    disabled={disabled}
+                />
+                <Button
+                    variant="outline"
+                    onClick={() => onChange(-latitude, null)}
+                    disabled={disabled}
+                >
+                    {latitude > 0 ? "N" : "S"}
+                </Button>
+            </div>
+            <div className="flex gap-2 items-center">
+                <Label>Longitude</Label>
+                <Input
+                    type="number"
+                    value={Math.abs(longitude)}
+                    min={0}
+                    max={180}
+                    onChange={(e) => {
+                        if (isNaN(parseFloat(e.target.value))) return;
+                        onChange(
+                            null,
+                            parseFloat(e.target.value) *
+                                (longitude !== 0 ? Math.sign(longitude) : -1),
+                        );
+                    }}
+                    disabled={disabled}
+                />
+                <Button
+                    variant="outline"
+                    onClick={() => onChange(null, -longitude)}
+                    disabled={disabled}
+                >
+                    {longitude > 0 ? "E" : "W"}
+                </Button>
+            </div>
+        </>
+    );
+};
 
 export const LatitudeLongitude = ({
     latitude,
