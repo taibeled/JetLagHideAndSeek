@@ -493,6 +493,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     <LatitudeLongitude
                                         latitude={$hiderMode.latitude}
                                         longitude={$hiderMode.longitude}
+                                        inlineEdit
                                         onChange={(latitude, longitude) => {
                                             $hiderMode.latitude =
                                                 latitude ?? $hiderMode.latitude;

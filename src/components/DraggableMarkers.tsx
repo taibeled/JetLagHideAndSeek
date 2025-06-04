@@ -91,6 +91,7 @@ const ColoredMarker = ({
                             <LatitudeLongitude
                                 latitude={$hiderMode.latitude}
                                 longitude={$hiderMode.longitude}
+                                inlineEdit
                                 onChange={(latitude, longitude) => {
                                     hiderMode.set({
                                         latitude:

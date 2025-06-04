@@ -20,6 +20,7 @@ import {
     DialogTrigger,
 } from "./ui/dialog";
 import { iconColors } from "@/maps/api.ts";
+import { cn } from "@/lib/utils";
 
 const parseCoordinatesFromText = (
     text: string,
@@ -74,6 +75,71 @@ const parseCoordinatesFromText = (
     return { lat: null, lng: null };
 };
 
+const LatLngEditForm = ({
+    latitude,
+    longitude,
+    onChange,
+    disabled,
+}: {
+    latitude: number;
+    longitude: number;
+    onChange: (lat: number | null, lng: number | null) => void;
+    disabled?: boolean;
+}) => (
+    <>
+        <div className="flex gap-2 items-center">
+            <Label>Latitude</Label>
+            <Input
+                type="number"
+                value={Math.abs(latitude)}
+                min={0}
+                max={90}
+                onChange={(e) => {
+                    if (isNaN(parseFloat(e.target.value))) return;
+                    onChange(
+                        parseFloat(e.target.value) *
+                            (latitude !== 0 ? Math.sign(latitude) : -1),
+                        null,
+                    );
+                }}
+                disabled={disabled}
+            />
+            <Button
+                variant="outline"
+                onClick={() => onChange(-latitude, null)}
+                disabled={disabled}
+            >
+                {latitude > 0 ? "N" : "S"}
+            </Button>
+        </div>
+        <div className="flex gap-2 items-center">
+            <Label>Longitude</Label>
+            <Input
+                type="number"
+                value={Math.abs(longitude)}
+                min={0}
+                max={180}
+                onChange={(e) => {
+                    if (isNaN(parseFloat(e.target.value))) return;
+                    onChange(
+                        null,
+                        parseFloat(e.target.value) *
+                            (longitude !== 0 ? Math.sign(longitude) : -1),
+                    );
+                }}
+                disabled={disabled}
+            />
+            <Button
+                variant="outline"
+                onClick={() => onChange(null, -longitude)}
+                disabled={disabled}
+            >
+                {longitude > 0 ? "E" : "W"}
+            </Button>
+        </div>
+    </>
+);
+
 export const LatitudeLongitude = ({
     latitude,
     longitude,
@@ -82,6 +148,7 @@ export const LatitudeLongitude = ({
     colorName,
     children,
     disabled,
+    inlineEdit = false,
 }: {
     latitude: number;
     longitude: number;
@@ -91,6 +158,7 @@ export const LatitudeLongitude = ({
     className?: string;
     children?: React.ReactNode;
     disabled?: boolean;
+    inlineEdit?: boolean;
 }) => {
     const color = colorName ? iconColors[colorName] : "transparent";
 
@@ -102,227 +170,199 @@ export const LatitudeLongitude = ({
                     backgroundColor: color,
                 }}
             >
+                {!inlineEdit && (
+                    <div
+                        className="flex justify-between items-center"
+                        style={{
+                            color: colorName === "gold" ? "black" : undefined,
+                        }}
+                    >
+                        <div className="text-2xl font-semibold font-poppins">
+                            {label}
+                        </div>
+                        <div className="tabular-nums text-right text-sm font-oxygen">
+                            <div>
+                                {Math.abs(latitude).toFixed(5)}
+                                {"° "}
+                                {latitude > 0 ? "N" : "S"}
+                            </div>
+                            <div>
+                                {Math.abs(longitude).toFixed(5)}
+                                {"° "}
+                                {longitude > 0 ? "E" : "W"}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 <div
-                    className="flex justify-between items-center"
-                    style={{
-                        color: colorName === "gold" ? "black" : undefined,
-                    }}
+                    className={cn(
+                        !inlineEdit &&
+                            "flex justify-between gap-2 *:max-w-12 *:w-[20%]",
+                    )}
                 >
-                    <div className="text-2xl font-semibold font-poppins">
-                        {label}
-                    </div>
-                    <div className="tabular-nums text-right text-sm font-oxygen">
-                        <div>
-                            {Math.abs(latitude).toFixed(5)}
-                            {"° "}
-                            {latitude > 0 ? "N" : "S"}
-                        </div>
-                        <div>
-                            {Math.abs(longitude).toFixed(5)}
-                            {"° "}
-                            {longitude > 0 ? "E" : "W"}
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex justify-between gap-2 *:max-w-12 *:w-[20%]">
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <Button
+                    {inlineEdit ? (
+                        <div className="flex flex-col gap-2 w-full mb-2">
+                            <LatLngEditForm
+                                latitude={latitude}
+                                longitude={longitude}
+                                onChange={onChange}
                                 disabled={disabled}
-                                variant="outline"
-                                title="Edit coordinates"
-                            >
-                                <EditIcon />
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle className="text-2xl">
-                                    Update {label}
-                                </DialogTitle>
-                            </DialogHeader>
-                            <div className="flex gap-2 items-center">
-                                <Label>Latitude</Label>
-                                <Input
-                                    type="number"
-                                    value={Math.abs(latitude)}
-                                    min={0}
-                                    max={90}
-                                    onChange={(e) => {
-                                        if (isNaN(parseFloat(e.target.value)))
-                                            return;
-
-                                        onChange(
-                                            parseFloat(e.target.value) *
-                                                (latitude !== 0
-                                                    ? Math.sign(latitude)
-                                                    : -1),
-                                            null,
-                                        );
-                                    }}
+                            />
+                        </div>
+                    ) : (
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button
+                                    disabled={disabled}
+                                    variant="outline"
+                                    title="Edit coordinates"
+                                >
+                                    <EditIcon />
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle className="text-2xl">
+                                        Update {label}
+                                    </DialogTitle>
+                                </DialogHeader>
+                                <LatLngEditForm
+                                    latitude={latitude}
+                                    longitude={longitude}
+                                    onChange={onChange}
                                     disabled={disabled}
                                 />
-                                <Button
-                                    variant="outline"
-                                    onClick={() => onChange(-latitude, null)}
-                                    disabled={disabled}
-                                >
-                                    {latitude > 0 ? "N" : "S"}
-                                </Button>
-                            </div>
-                            <div className="flex gap-2 items-center">
-                                <Label>Longitude</Label>
-                                <Input
-                                    type="number"
-                                    value={Math.abs(longitude)}
-                                    min={0}
-                                    max={180}
-                                    onChange={(e) => {
-                                        if (isNaN(parseFloat(e.target.value)))
-                                            return;
+                                <DialogFooter>
+                                    <DialogClose asChild>
+                                        <Button>Done</Button>
+                                    </DialogClose>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
+                    )}
+                    <div className={inlineEdit ? "flex justify-center gap-2" : "contents"}>
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                if (!navigator || !navigator.geolocation)
+                                    return alert("Geolocation not supported");
 
-                                        onChange(
-                                            null,
-                                            parseFloat(e.target.value) *
-                                                (longitude !== 0
-                                                    ? Math.sign(longitude)
-                                                    : -1),
-                                        );
-                                    }}
-                                    disabled={disabled}
-                                />
-                                <Button
-                                    variant="outline"
-                                    onClick={() => onChange(null, -longitude)}
-                                    disabled={disabled}
-                                >
-                                    {longitude > 0 ? "E" : "W"}
-                                </Button>
-                            </div>
-                            <DialogFooter>
-                                <DialogClose asChild>
-                                    <Button>Done</Button>
-                                </DialogClose>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
-                    <Button
-                        variant="outline"
-                        onClick={() => {
-                            if (!navigator || !navigator.geolocation)
-                                return alert("Geolocation not supported");
+                                isLoading.set(true);
 
-                            isLoading.set(true);
-
-                            toast.promise(
-                                new Promise<GeolocationPosition>(
-                                    (resolve, reject) => {
-                                        navigator.geolocation.getCurrentPosition(
-                                            resolve,
-                                            reject,
-                                            {
-                                                maximumAge: 0,
-                                                enableHighAccuracy: true,
-                                            },
-                                        );
+                                toast.promise(
+                                    new Promise<GeolocationPosition>(
+                                        (resolve, reject) => {
+                                            navigator.geolocation.getCurrentPosition(
+                                                resolve,
+                                                reject,
+                                                {
+                                                    maximumAge: 0,
+                                                    enableHighAccuracy: true,
+                                                },
+                                            );
+                                        },
+                                    )
+                                        .then((position) => {
+                                            onChange(
+                                                position.coords.latitude,
+                                                position.coords.longitude,
+                                            );
+                                        })
+                                        .finally(() => {
+                                            isLoading.set(false);
+                                        }),
+                                    {
+                                        pending: "Fetching location",
+                                        success: "Location fetched",
+                                        error: "Could not fetch location",
                                     },
-                                )
-                                    .then((position) => {
-                                        onChange(
-                                            position.coords.latitude,
-                                            position.coords.longitude,
-                                        );
-                                    })
-                                    .finally(() => {
-                                        isLoading.set(false);
-                                    }),
-                                {
-                                    pending: "Fetching location",
-                                    success: "Location fetched",
-                                    error: "Could not fetch location",
-                                },
-                                { autoClose: 500 },
-                            );
-                        }}
-                        disabled={disabled}
-                        title="Set to current location"
-                    >
-                        <LocateIcon />
-                    </Button>
-                    <Button
-                        variant="outline"
-                        onClick={() => {
-                            if (!navigator || !navigator.clipboard) {
-                                toast.error(
-                                    "Clipboard API not supported in your browser",
+                                    { autoClose: 500 },
                                 );
-                                return;
-                            }
+                            }}
+                            disabled={disabled}
+                            title="Set to current location"
+                        >
+                            <LocateIcon />
+                        </Button>
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                if (!navigator || !navigator.clipboard) {
+                                    toast.error(
+                                        "Clipboard API not supported in your browser",
+                                    );
+                                    return;
+                                }
 
-                            isLoading.set(true);
+                                isLoading.set(true);
 
-                            toast.promise(
-                                navigator.clipboard
-                                    .readText()
-                                    .then((text) => {
-                                        const coords =
-                                            parseCoordinatesFromText(text);
-                                        if (
-                                            coords.lat !== null &&
-                                            coords.lng !== null
-                                        ) {
-                                            onChange(coords.lat, coords.lng);
-                                            return;
-                                        }
-                                        throw new Error(
-                                            "Could not find coordinates in clipboard content",
-                                        );
-                                    })
-                                    .finally(() => {
-                                        isLoading.set(false);
-                                    }),
-                                {
-                                    pending: "Reading from clipboard",
-                                    success: "Coordinates set from clipboard",
-                                    error: "No valid coordinates found in clipboard",
-                                },
-                                { autoClose: 1000 },
-                            );
-                        }}
-                        disabled={disabled}
-                        title="Paste coordinates from clipboard"
-                    >
-                        <ClipboardPasteIcon />
-                    </Button>
-                    <Button
-                        variant="outline"
-                        onClick={() => {
-                            if (!navigator || !navigator.clipboard) {
-                                toast.error(
-                                    "Clipboard API not supported in your browser",
+                                toast.promise(
+                                    navigator.clipboard
+                                        .readText()
+                                        .then((text) => {
+                                            const coords =
+                                                parseCoordinatesFromText(text);
+                                            if (
+                                                coords.lat !== null &&
+                                                coords.lng !== null
+                                            ) {
+                                                onChange(
+                                                    coords.lat,
+                                                    coords.lng,
+                                                );
+                                                return;
+                                            }
+                                            throw new Error(
+                                                "Could not find coordinates in clipboard content",
+                                            );
+                                        })
+                                        .finally(() => {
+                                            isLoading.set(false);
+                                        }),
+                                    {
+                                        pending: "Reading from clipboard",
+                                        success:
+                                            "Coordinates set from clipboard",
+                                        error: "No valid coordinates found in clipboard",
+                                    },
+                                    { autoClose: 1000 },
                                 );
-                                return;
-                            }
+                            }}
+                            disabled={disabled}
+                            title="Paste coordinates from clipboard"
+                        >
+                            <ClipboardPasteIcon />
+                        </Button>
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                if (!navigator || !navigator.clipboard) {
+                                    toast.error(
+                                        "Clipboard API not supported in your browser",
+                                    );
+                                    return;
+                                }
 
-                            toast.promise(
-                                navigator.clipboard.writeText(
-                                    `${Math.abs(latitude)}°${latitude > 0 ? "N" : "S"}, ${Math.abs(
-                                        longitude,
-                                    )}°${longitude > 0 ? "E" : "W"}`,
-                                ),
-                                {
-                                    pending: "Writing to clipboard...",
-                                    success: "Coordinates copied!",
-                                    error: "An error occurred while copying",
-                                },
-                                { autoClose: 1000 },
-                            );
-                        }}
-                        title="Copy coordinates to clipboard"
-                    >
-                        <ClipboardCopyIcon />
-                    </Button>
+                                toast.promise(
+                                    navigator.clipboard.writeText(
+                                        `${Math.abs(latitude)}°${latitude > 0 ? "N" : "S"}, ${Math.abs(
+                                            longitude,
+                                        )}°${longitude > 0 ? "E" : "W"}`,
+                                    ),
+                                    {
+                                        pending: "Writing to clipboard...",
+                                        success: "Coordinates copied!",
+                                        error: "An error occurred while copying",
+                                    },
+                                    { autoClose: 1000 },
+                                );
+                            }}
+                            title="Copy coordinates to clipboard"
+                        >
+                            <ClipboardCopyIcon />
+                        </Button>
+                    </div>
                 </div>
             </SidebarMenuItem>
             {children}
