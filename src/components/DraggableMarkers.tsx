@@ -20,6 +20,7 @@ import {
 } from "./QuestionCards";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useState } from "react";
+import { Button } from "./ui/button";
 import { SidebarMenu } from "./ui/sidebar-l";
 import { LatitudeLongitude } from "./LatLngPicker";
 
@@ -157,7 +158,17 @@ const ColoredMarker = ({
                                 return null;
                         }
                     })}
-
+                {questionKey === -1 && (
+                    <Button // If it's the hider mode marker
+                        onClick={() => {
+                            hiderMode.set(false);
+                        }}
+                        variant="destructive"
+                        className="font-semibold font-poppins"
+                    >
+                        Disable
+                    </Button>
+                )}
                 {!$autoSave && (
                     <button
                         onClick={save}
