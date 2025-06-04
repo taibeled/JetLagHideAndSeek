@@ -38,7 +38,6 @@ export const QuestionCard = ({
     className,
     label,
     sub,
-    showDeleteButton,
     collapsed,
     locked,
     setLocked,
@@ -49,7 +48,6 @@ export const QuestionCard = ({
     className?: string;
     label?: string;
     sub?: string;
-    showDeleteButton?: boolean;
     collapsed?: boolean;
     locked?: boolean;
     setLocked?: (locked: boolean) => void;
@@ -122,53 +120,51 @@ export const QuestionCard = ({
                                     ></textarea>
                                 </DialogContent>
                             </Dialog>
-                            {showDeleteButton && (
-                                <AlertDialog>
-                                    <AlertDialogTrigger asChild>
-                                        <Button variant="outline" size="sm">
-                                            <VscTrash />
-                                        </Button>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent>
-                                        <AlertDialogHeader>
-                                            <AlertDialogTitle>
-                                                Are you absolutely sure?
-                                            </AlertDialogTitle>
-                                            <AlertDialogDescription>
-                                                This action cannot be undone.
-                                                This will permanently delete the
-                                                question.
-                                            </AlertDialogDescription>
-                                        </AlertDialogHeader>
-                                        <AlertDialogFooter>
-                                            <AlertDialogCancel>
-                                                Cancel
-                                            </AlertDialogCancel>
-                                            <AlertDialogAction
-                                                onClick={() => {
-                                                    questions.set([]);
-                                                }}
-                                            >
-                                                Delete All Questions
-                                            </AlertDialogAction>
-                                            <AlertDialogAction
-                                                onClick={() => {
-                                                    questions.set(
-                                                        $questions.filter(
-                                                            (q) =>
-                                                                q.key !==
-                                                                questionKey,
-                                                        ),
-                                                    );
-                                                }}
-                                                className="mb-2 sm:mb-0"
-                                            >
-                                                Delete Question
-                                            </AlertDialogAction>
-                                        </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                </AlertDialog>
-                            )}
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button variant="outline" size="sm">
+                                        <VscTrash />
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>
+                                            Are you absolutely sure?
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This action cannot be undone. This
+                                            will permanently delete the
+                                            question.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>
+                                            Cancel
+                                        </AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={() => {
+                                                questions.set([]);
+                                            }}
+                                        >
+                                            Delete All Questions
+                                        </AlertDialogAction>
+                                        <AlertDialogAction
+                                            onClick={() => {
+                                                questions.set(
+                                                    $questions.filter(
+                                                        (q) =>
+                                                            q.key !==
+                                                            questionKey,
+                                                    ),
+                                                );
+                                            }}
+                                            className="mb-2 sm:mb-0"
+                                        >
+                                            Delete Question
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
                             {locked !== undefined && (
                                 <Button
                                     variant="outline"

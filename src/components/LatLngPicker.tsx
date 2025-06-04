@@ -198,7 +198,7 @@ export const LatitudeLongitude = ({
                 <div
                     className={cn(
                         !inlineEdit &&
-                            "flex justify-between gap-2 *:max-w-12 *:w-[20%]",
+                            "flex justify-center gap-2 *:max-w-12 *:w-[20%]",
                     )}
                 >
                     {inlineEdit ? (
@@ -241,7 +241,13 @@ export const LatitudeLongitude = ({
                             </DialogContent>
                         </Dialog>
                     )}
-                    <div className={inlineEdit ? "flex justify-center gap-2" : "contents"}>
+                    <div
+                        className={
+                            inlineEdit
+                                ? "flex justify-center gap-2"
+                                : "contents"
+                        }
+                    >
                         <Button
                             variant="outline"
                             onClick={() => {

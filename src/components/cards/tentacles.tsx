@@ -31,13 +31,11 @@ export const TentacleQuestionComponent = ({
     questionKey,
     sub,
     className,
-    showDeleteButton = true,
 }: {
     data: TentacleQuestion;
     questionKey: number;
     sub?: string;
     className?: string;
-    showDeleteButton?: boolean;
 }) => {
     const $questions = useStore(questions);
     const $drawingQuestionKey = useStore(drawingQuestionKey);
@@ -56,7 +54,6 @@ export const TentacleQuestionComponent = ({
             label={label}
             sub={sub}
             className={className}
-            showDeleteButton={showDeleteButton}
             collapsed={data.collapsed}
             setCollapsed={(collapsed) => {
                 data.collapsed = collapsed; // Doesn't trigger a re-render so no need for questionModified

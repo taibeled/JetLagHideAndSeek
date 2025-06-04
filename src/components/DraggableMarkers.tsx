@@ -20,7 +20,6 @@ import {
 } from "./QuestionCards";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useState } from "react";
-import { Button } from "./ui/button";
 import { SidebarMenu } from "./ui/sidebar-l";
 import { LatitudeLongitude } from "./LatLngPicker";
 
@@ -116,7 +115,6 @@ const ColoredMarker = ({
                                         data={q.data}
                                         questionKey={q.key}
                                         sub={sub}
-                                        showDeleteButton={false}
                                     />
                                 );
                             case "tentacles":
@@ -126,7 +124,6 @@ const ColoredMarker = ({
                                         data={q.data}
                                         questionKey={q.key}
                                         sub={sub}
-                                        showDeleteButton={false}
                                     />
                                 );
                             case "thermometer":
@@ -136,7 +133,6 @@ const ColoredMarker = ({
                                         data={q.data}
                                         questionKey={q.key}
                                         sub={sub}
-                                        showDeleteButton={false}
                                     />
                                 );
                             case "matching":
@@ -146,7 +142,6 @@ const ColoredMarker = ({
                                         data={q.data}
                                         questionKey={q.key}
                                         sub={sub}
-                                        showDeleteButton={false}
                                     />
                                 );
                             case "measuring":
@@ -156,7 +151,6 @@ const ColoredMarker = ({
                                         data={q.data}
                                         questionKey={q.key}
                                         sub={sub}
-                                        showDeleteButton={false}
                                     />
                                 );
                             default:
@@ -164,21 +158,6 @@ const ColoredMarker = ({
                         }
                     })}
 
-                <Button
-                    onClick={() => {
-                        if (questionKey === -1) {
-                            hiderMode.set(false);
-                        } else {
-                            questions.set(
-                                $questions.filter((q) => q.key !== questionKey),
-                            );
-                        }
-                    }}
-                    variant="destructive"
-                    className="font-semibold font-poppins"
-                >
-                    {questionKey === -1 ? "Disable" : "Delete"}
-                </Button>
                 {!$autoSave && (
                     <button
                         onClick={save}
