@@ -97,7 +97,7 @@ export const LatitudeLongitude = ({
     return (
         <>
             <SidebarMenuItem
-                className="p-2 rounded-md space-y-1"
+                className="p-2 rounded-md space-y-1 mt-2"
                 style={{
                     backgroundColor: color,
                 }}
@@ -210,6 +210,49 @@ export const LatitudeLongitude = ({
                     <Button
                         variant="outline"
                         onClick={() => {
+                            if (!navigator || !navigator.geolocation)
+                                return alert("Geolocation not supported");
+
+                            isLoading.set(true);
+
+                            toast.promise(
+                                new Promise<GeolocationPosition>(
+                                    (resolve, reject) => {
+                                        navigator.geolocation.getCurrentPosition(
+                                            resolve,
+                                            reject,
+                                            {
+                                                maximumAge: 0,
+                                                enableHighAccuracy: true,
+                                            },
+                                        );
+                                    },
+                                )
+                                    .then((position) => {
+                                        onChange(
+                                            position.coords.latitude,
+                                            position.coords.longitude,
+                                        );
+                                    })
+                                    .finally(() => {
+                                        isLoading.set(false);
+                                    }),
+                                {
+                                    pending: "Fetching location",
+                                    success: "Location fetched",
+                                    error: "Could not fetch location",
+                                },
+                                { autoClose: 500 },
+                            );
+                        }}
+                        disabled={disabled}
+                        title="Set to current location"
+                    >
+                        <LocateIcon />
+                    </Button>
+                    <Button
+                        variant="outline"
+                        onClick={() => {
                             if (!navigator || !navigator.clipboard) {
                                 toast.error(
                                     "Clipboard API not supported in your browser",
@@ -251,49 +294,6 @@ export const LatitudeLongitude = ({
                         title="Paste coordinates from clipboard"
                     >
                         <ClipboardPasteIcon />
-                    </Button>
-                    <Button
-                        variant="outline"
-                        onClick={() => {
-                            if (!navigator || !navigator.geolocation)
-                                return alert("Geolocation not supported");
-
-                            isLoading.set(true);
-
-                            toast.promise(
-                                new Promise<GeolocationPosition>(
-                                    (resolve, reject) => {
-                                        navigator.geolocation.getCurrentPosition(
-                                            resolve,
-                                            reject,
-                                            {
-                                                maximumAge: 0,
-                                                enableHighAccuracy: true,
-                                            },
-                                        );
-                                    },
-                                )
-                                    .then((position) => {
-                                        onChange(
-                                            position.coords.latitude,
-                                            position.coords.longitude,
-                                        );
-                                    })
-                                    .finally(() => {
-                                        isLoading.set(false);
-                                    }),
-                                {
-                                    pending: "Fetching location",
-                                    success: "Location fetched",
-                                    error: "Could not fetch location",
-                                },
-                                { autoClose: 500 },
-                            );
-                        }}
-                        disabled={disabled}
-                        title="Set to current location"
-                    >
-                        <LocateIcon />
                     </Button>
                     <Button
                         variant="outline"
