@@ -18,6 +18,7 @@ import {
     autoZoom,
     additionalMapGeoLocations,
     thunderforestApiKey,
+    displayHidingZonesOptions,
 } from "@/lib/context";
 import { Button } from "./ui/button";
 import { toast } from "react-toastify";
@@ -137,6 +138,12 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
 
             if (geojson.hidingRadius !== null) {
                 hidingRadius.set(geojson.hidingRadius);
+            }
+
+            if (geojson.zoneOptions) {
+                displayHidingZonesOptions.set(
+                    geojson.zoneOptions ?? [],
+                );
             }
 
             toast.success("Hiding zone loaded successfully", {
