@@ -141,9 +141,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
             }
 
             if (geojson.zoneOptions) {
-                displayHidingZonesOptions.set(
-                    geojson.zoneOptions ?? [],
-                );
+                displayHidingZonesOptions.set(geojson.zoneOptions ?? []);
             }
 
             toast.success("Hiding zone loaded successfully", {

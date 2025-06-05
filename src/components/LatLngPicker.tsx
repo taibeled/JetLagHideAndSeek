@@ -155,7 +155,7 @@ const LatLngEditForm = ({
                 </CommandList>
             </Command>
             <div className="flex gap-2 items-center">
-                <Label>Latitude</Label>
+                <Label className="min-w-16">Latitude</Label>
                 <Input
                     type="number"
                     value={Math.abs(latitude)}
@@ -180,7 +180,7 @@ const LatLngEditForm = ({
                 </Button>
             </div>
             <div className="flex gap-2 items-center">
-                <Label>Longitude</Label>
+                <Label className="min-w-16">Longitude</Label>
                 <Input
                     type="number"
                     value={Math.abs(longitude)}

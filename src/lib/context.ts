@@ -153,7 +153,7 @@ export const hidingZone = computed(
         additionalMapGeoLocations,
         disabledStations,
         hidingRadius,
-        displayHidingZonesOptions
+        displayHidingZonesOptions,
     ],
     (q, geo, loc, altLoc, disabledStations, radius, zoneOptions) => {
         if (geo !== null) {
