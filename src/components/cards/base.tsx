@@ -76,7 +76,10 @@ export const QuestionCard = ({
                     >
                         <VscChevronDown />
                     </button>
-                    <SidebarGroupLabel className="ml-8 mr-8">
+                    <SidebarGroupLabel
+                        className="ml-8 mr-8 cursor-pointer"
+                        onClick={toggleCollapse}
+                    >
                         {label} {sub && `(${sub})`}
                     </SidebarGroupLabel>
                     <SidebarGroupContent
