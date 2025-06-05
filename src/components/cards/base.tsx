@@ -2,7 +2,7 @@ import { VscChevronDown, VscShare, VscTrash } from "react-icons/vsc";
 import { useState } from "react";
 import { useStore } from "@nanostores/react";
 import { cn } from "@/lib/utils";
-import { questions } from "@/lib/context";
+import { isLoading, questions } from "@/lib/context";
 import {
     SidebarGroup,
     SidebarGroupContent,
@@ -55,6 +55,7 @@ export const QuestionCard = ({
 }) => {
     const [isCollapsed, setIsCollapsed] = useState(collapsed ?? false);
     const $questions = useStore(questions);
+    const $isLoading = useStore(isLoading);
 
     const toggleCollapse = () => {
         if (setCollapsed) {
@@ -125,7 +126,11 @@ export const QuestionCard = ({
                             </Dialog>
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <Button variant="outline" size="sm">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        disabled={$isLoading}
+                                    >
                                         <VscTrash />
                                     </Button>
                                 </AlertDialogTrigger>
@@ -173,6 +178,7 @@ export const QuestionCard = ({
                                     variant="outline"
                                     size="sm"
                                     onClick={() => setLocked!(!locked)}
+                                    disabled={$isLoading}
                                 >
                                     {locked ? <LockIcon /> : <UnlockIcon />}
                                 </Button>

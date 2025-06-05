@@ -11,6 +11,7 @@ import { QuestionCard } from "./base";
 import type { ThermometerQuestion } from "@/lib/schema";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
 import { Label } from "../ui/label";
+import { cn } from "@/lib/utils";
 
 export const ThermometerQuestionComponent = ({
     data,
@@ -81,7 +82,14 @@ export const ThermometerQuestionComponent = ({
                 disabled={!data.drag || $isLoading}
             />
             <div className="flex gap-2 items-center p-2">
-                <Label className="font-semibold text-lg">Result</Label>
+                <Label
+                    className={cn(
+                        "font-semibold text-lg",
+                        $isLoading && "text-muted-foreground",
+                    )}
+                >
+                    Result
+                </Label>
                 <ToggleGroup
                     className="grow"
                     type="single"

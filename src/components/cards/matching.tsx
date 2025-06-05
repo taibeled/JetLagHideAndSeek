@@ -23,6 +23,7 @@ import { determineMatchingBoundary, findMatchingPlaces } from "@/maps/matching";
 import { toast } from "react-toastify";
 import { Label } from "@/components/ui/label.tsx";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
+import { cn } from "@/lib/utils";
 
 export const MatchingQuestionComponent = ({
     data,
@@ -272,7 +273,14 @@ export const MatchingQuestionComponent = ({
                 />
             )}
             <div className="flex gap-2 items-center p-2">
-                <Label className="font-semibold text-lg">Result</Label>
+                <Label
+                    className={cn(
+                        "font-semibold text-lg",
+                        $isLoading && "text-muted-foreground",
+                    )}
+                >
+                    Result
+                </Label>
                 <ToggleGroup
                     className="grow"
                     type="single"

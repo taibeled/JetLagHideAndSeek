@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/command";
 import { useDebounce } from "@/hooks/useDebounce";
 import { geocode, determineName } from "@/maps/api";
+import { useStore } from "@nanostores/react";
 
 const parseCoordinatesFromText = (
     text: string,
@@ -228,19 +229,24 @@ export const LatitudeLongitude = ({
     disabled?: boolean;
     inlineEdit?: boolean;
 }) => {
+    const $isLoading = useStore(isLoading);
+
     const color = colorName ? iconColors[colorName] : "transparent";
 
     return (
         <>
             <SidebarMenuItem
-                className="p-2 rounded-md space-y-1 mt-2"
                 style={{
                     backgroundColor: color,
                 }}
+                className={cn("p-2 rounded-md space-y-1 mt-2", $isLoading && "brightness-50")}
             >
                 {!inlineEdit && (
                     <div
-                        className="flex justify-between items-center"
+                        className={cn(
+                            "flex justify-between items-center",
+                            $isLoading && "opacity-50",
+                        )}
                         style={{
                             color: colorName === "gold" ? "black" : undefined,
                         }}
