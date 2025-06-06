@@ -1,13 +1,38 @@
 import { toast } from "react-toastify";
-import {
-    MENU_ITEM_CLASSNAME,
-    SidebarMenuButton,
-    SidebarMenuItem,
-} from "./ui/sidebar-l";
+import { SidebarMenuItem } from "./ui/sidebar-l";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { isLoading } from "@/lib/context";
 import { Button } from "./ui/button";
+import {
+    ClipboardCopyIcon,
+    ClipboardPasteIcon,
+    EditIcon,
+    LocateIcon,
+} from "lucide-react";
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "./ui/dialog";
+import { iconColors } from "@/maps/api.ts";
+import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
+import {
+    Command,
+    CommandInput,
+    CommandList,
+    CommandEmpty,
+    CommandGroup,
+    CommandItem,
+} from "@/components/ui/command";
+import { useDebounce } from "@/hooks/useDebounce";
+import { geocode, determineName } from "@/maps/api";
+import { useStore } from "@nanostores/react";
 
 const parseCoordinatesFromText = (
     text: string,
@@ -62,28 +87,76 @@ const parseCoordinatesFromText = (
     return { lat: null, lng: null };
 };
 
-export const LatitudeLongitude = ({
+const LatLngEditForm = ({
     latitude,
     longitude,
     onChange,
-    latLabel = "Latitude",
-    lngLabel = "Longitude",
-    children,
     disabled,
 }: {
     latitude: number;
     longitude: number;
     onChange: (lat: number | null, lng: number | null) => void;
-    latLabel?: string;
-    lngLabel?: string;
-    className?: string;
-    children?: React.ReactNode;
     disabled?: boolean;
 }) => {
+    const [inputValue, setInputValue] = useState("");
+    const debouncedValue = useDebounce<string>(inputValue);
+    const [results, setResults] = useState<any[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
+
+    useEffect(() => {
+        if (debouncedValue === "") {
+            setResults([]);
+            return;
+        } else {
+            setLoading(true);
+            setResults([]);
+            geocode(debouncedValue, "en", false)
+                .then((x) => {
+                    setResults(x);
+                    setLoading(false);
+                })
+                .catch(() => {
+                    setError(true);
+                    setLoading(false);
+                });
+        }
+    }, [debouncedValue]);
+
     return (
         <>
-            <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
-                <Label className="leading-5">{latLabel}</Label>
+            <Command shouldFilter={false}>
+                <CommandInput
+                    placeholder="Search place..."
+                    onKeyUp={(x) => setInputValue(x.currentTarget.value)}
+                    disabled={disabled}
+                />
+                <CommandList>
+                    <CommandEmpty>
+                        {loading
+                            ? "Loading..."
+                            : error
+                              ? "Error loading places."
+                              : "No locations found."}
+                    </CommandEmpty>
+                    <CommandGroup>
+                        {results.map((result) => (
+                            <CommandItem
+                                key={`${result.properties.osm_id}${result.properties.name}`}
+                                onSelect={() => {
+                                    const coords = result.geometry.coordinates;
+                                    onChange(coords[0], coords[1]);
+                                }}
+                                className="cursor-pointer"
+                            >
+                                {determineName(result)}
+                            </CommandItem>
+                        ))}
+                    </CommandGroup>
+                </CommandList>
+            </Command>
+            <div className="flex gap-2 items-center">
+                <Label className="min-w-16">Latitude</Label>
                 <Input
                     type="number"
                     value={Math.abs(latitude)}
@@ -91,7 +164,6 @@ export const LatitudeLongitude = ({
                     max={90}
                     onChange={(e) => {
                         if (isNaN(parseFloat(e.target.value))) return;
-
                         onChange(
                             parseFloat(e.target.value) *
                                 (latitude !== 0 ? Math.sign(latitude) : -1),
@@ -107,9 +179,9 @@ export const LatitudeLongitude = ({
                 >
                     {latitude > 0 ? "N" : "S"}
                 </Button>
-            </SidebarMenuItem>
-            <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
-                <Label className="leading-5">{lngLabel}</Label>
+            </div>
+            <div className="flex gap-2 items-center">
+                <Label className="min-w-16">Longitude</Label>
                 <Input
                     type="number"
                     value={Math.abs(longitude)}
@@ -117,7 +189,6 @@ export const LatitudeLongitude = ({
                     max={180}
                     onChange={(e) => {
                         if (isNaN(parseFloat(e.target.value))) return;
-
                         onChange(
                             null,
                             parseFloat(e.target.value) *
@@ -133,122 +204,246 @@ export const LatitudeLongitude = ({
                 >
                     {longitude > 0 ? "E" : "W"}
                 </Button>
-            </SidebarMenuItem>
-            <SidebarMenuItem className="flex gap-2">
-                <SidebarMenuButton
-                    className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-colors duration-500 flex justify-center"
-                    onClick={() => {
-                        if (!navigator || !navigator.geolocation)
-                            return alert("Geolocation not supported");
+            </div>
+        </>
+    );
+};
 
-                        isLoading.set(true);
+export const LatitudeLongitude = ({
+    latitude,
+    longitude,
+    onChange,
+    label = "Location",
+    colorName,
+    children,
+    disabled,
+    inlineEdit = false,
+}: {
+    latitude: number;
+    longitude: number;
+    onChange: (lat: number | null, lng: number | null) => void;
+    label?: string;
+    colorName?: keyof typeof iconColors;
+    className?: string;
+    children?: React.ReactNode;
+    disabled?: boolean;
+    inlineEdit?: boolean;
+}) => {
+    const $isLoading = useStore(isLoading);
 
-                        toast.promise(
-                            new Promise<GeolocationPosition>(
-                                (resolve, reject) => {
-                                    navigator.geolocation.getCurrentPosition(
-                                        resolve,
-                                        reject,
-                                        {
-                                            maximumAge: 0,
-                                            enableHighAccuracy: true,
+    const color = colorName ? iconColors[colorName] : "transparent";
+
+    return (
+        <>
+            <SidebarMenuItem
+                style={{
+                    backgroundColor: color,
+                }}
+                className={cn("p-2 rounded-md space-y-1 mt-2", $isLoading && "brightness-50")}
+            >
+                {!inlineEdit && (
+                    <div
+                        className={cn(
+                            "flex justify-between items-center",
+                            $isLoading && "opacity-50",
+                        )}
+                        style={{
+                            color: colorName === "gold" ? "black" : undefined,
+                        }}
+                    >
+                        <div className="text-2xl font-semibold font-poppins">
+                            {label}
+                        </div>
+                        <div className="tabular-nums text-right text-sm font-oxygen">
+                            <div>
+                                {Math.abs(latitude).toFixed(5)}
+                                {"° "}
+                                {latitude > 0 ? "N" : "S"}
+                            </div>
+                            <div>
+                                {Math.abs(longitude).toFixed(5)}
+                                {"° "}
+                                {longitude > 0 ? "E" : "W"}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                <div
+                    className={cn(
+                        !inlineEdit &&
+                            "flex justify-center gap-2 *:max-w-12 *:w-[20%]",
+                    )}
+                >
+                    {inlineEdit ? (
+                        <div className="flex flex-col gap-2 w-full mb-2">
+                            <LatLngEditForm
+                                latitude={latitude}
+                                longitude={longitude}
+                                onChange={onChange}
+                                disabled={disabled}
+                            />
+                        </div>
+                    ) : (
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button
+                                    disabled={disabled}
+                                    variant="outline"
+                                    title="Edit coordinates"
+                                >
+                                    <EditIcon />
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle className="text-2xl">
+                                        Update {label}
+                                    </DialogTitle>
+                                </DialogHeader>
+                                <LatLngEditForm
+                                    latitude={latitude}
+                                    longitude={longitude}
+                                    onChange={onChange}
+                                    disabled={disabled}
+                                />
+                                <DialogFooter>
+                                    <DialogClose asChild>
+                                        <Button>Done</Button>
+                                    </DialogClose>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
+                    )}
+                    <div
+                        className={
+                            inlineEdit
+                                ? "flex justify-center gap-2"
+                                : "contents"
+                        }
+                    >
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                if (!navigator || !navigator.geolocation)
+                                    return alert("Geolocation not supported");
+
+                                isLoading.set(true);
+
+                                toast.promise(
+                                    new Promise<GeolocationPosition>(
+                                        (resolve, reject) => {
+                                            navigator.geolocation.getCurrentPosition(
+                                                resolve,
+                                                reject,
+                                                {
+                                                    maximumAge: 0,
+                                                    enableHighAccuracy: true,
+                                                },
+                                            );
                                         },
+                                    )
+                                        .then((position) => {
+                                            onChange(
+                                                position.coords.latitude,
+                                                position.coords.longitude,
+                                            );
+                                        })
+                                        .finally(() => {
+                                            isLoading.set(false);
+                                        }),
+                                    {
+                                        pending: "Fetching location",
+                                        success: "Location fetched",
+                                        error: "Could not fetch location",
+                                    },
+                                    { autoClose: 500 },
+                                );
+                            }}
+                            disabled={disabled}
+                            title="Set to current location"
+                        >
+                            <LocateIcon />
+                        </Button>
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                if (!navigator || !navigator.clipboard) {
+                                    toast.error(
+                                        "Clipboard API not supported in your browser",
                                     );
-                                },
-                            )
-                                .then((position) => {
-                                    onChange(
-                                        position.coords.latitude,
-                                        position.coords.longitude,
+                                    return;
+                                }
+
+                                isLoading.set(true);
+
+                                toast.promise(
+                                    navigator.clipboard
+                                        .readText()
+                                        .then((text) => {
+                                            const coords =
+                                                parseCoordinatesFromText(text);
+                                            if (
+                                                coords.lat !== null &&
+                                                coords.lng !== null
+                                            ) {
+                                                onChange(
+                                                    coords.lat,
+                                                    coords.lng,
+                                                );
+                                                return;
+                                            }
+                                            throw new Error(
+                                                "Could not find coordinates in clipboard content",
+                                            );
+                                        })
+                                        .finally(() => {
+                                            isLoading.set(false);
+                                        }),
+                                    {
+                                        pending: "Reading from clipboard",
+                                        success:
+                                            "Coordinates set from clipboard",
+                                        error: "No valid coordinates found in clipboard",
+                                    },
+                                    { autoClose: 1000 },
+                                );
+                            }}
+                            disabled={disabled}
+                            title="Paste coordinates from clipboard"
+                        >
+                            <ClipboardPasteIcon />
+                        </Button>
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                if (!navigator || !navigator.clipboard) {
+                                    toast.error(
+                                        "Clipboard API not supported in your browser",
                                     );
-                                })
-                                .finally(() => {
-                                    isLoading.set(false);
-                                }),
-                            {
-                                pending: "Fetching location",
-                                success: "Location fetched",
-                                error: "Could not fetch location",
-                            },
-                            { autoClose: 500 },
-                        );
-                    }}
-                    disabled={disabled}
-                >
-                    Current
-                </SidebarMenuButton>
-                <SidebarMenuButton
-                    className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-colors duration-500 flex justify-center"
-                    onClick={() => {
-                        if (!navigator || !navigator.clipboard) {
-                            toast.error(
-                                "Clipboard API not supported in your browser",
-                            );
-                            return;
-                        }
+                                    return;
+                                }
 
-                        toast.promise(
-                            navigator.clipboard.writeText(
-                                `${Math.abs(latitude)}°${latitude > 0 ? "N" : "S"}, ${Math.abs(
-                                    longitude,
-                                )}°${longitude > 0 ? "E" : "W"}`,
-                            ),
-                            {
-                                pending: "Writing to clipboard...",
-                                success: "Coordinates copied!",
-                                error: "An error occurred while copying",
-                            },
-                            { autoClose: 1000 },
-                        );
-                    }}
-                    disabled={disabled}
-                >
-                    Copy
-                </SidebarMenuButton>
-                <SidebarMenuButton
-                    className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-colors duration-500 flex justify-center"
-                    onClick={() => {
-                        if (!navigator || !navigator.clipboard) {
-                            toast.error(
-                                "Clipboard API not supported in your browser",
-                            );
-                            return;
-                        }
-
-                        isLoading.set(true);
-
-                        toast.promise(
-                            navigator.clipboard
-                                .readText()
-                                .then((text) => {
-                                    const coords =
-                                        parseCoordinatesFromText(text);
-                                    if (
-                                        coords.lat !== null &&
-                                        coords.lng !== null
-                                    ) {
-                                        onChange(coords.lat, coords.lng);
-                                        return;
-                                    }
-                                    throw new Error(
-                                        "Could not find coordinates in clipboard content",
-                                    );
-                                })
-                                .finally(() => {
-                                    isLoading.set(false);
-                                }),
-                            {
-                                pending: "Reading from clipboard",
-                                success: "Coordinates set from clipboard",
-                                error: "No valid coordinates found in clipboard",
-                            },
-                            { autoClose: 1000 },
-                        );
-                    }}
-                    disabled={disabled}
-                >
-                    Paste
-                </SidebarMenuButton>
+                                toast.promise(
+                                    navigator.clipboard.writeText(
+                                        `${Math.abs(latitude)}°${latitude > 0 ? "N" : "S"}, ${Math.abs(
+                                            longitude,
+                                        )}°${longitude > 0 ? "E" : "W"}`,
+                                    ),
+                                    {
+                                        pending: "Writing to clipboard...",
+                                        success: "Coordinates copied!",
+                                        error: "An error occurred while copying",
+                                    },
+                                    { autoClose: 1000 },
+                                );
+                            }}
+                            title="Copy coordinates to clipboard"
+                        >
+                            <ClipboardCopyIcon />
+                        </Button>
+                    </div>
+                </div>
             </SidebarMenuItem>
             {children}
         </>

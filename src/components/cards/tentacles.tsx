@@ -10,7 +10,7 @@ import {
     questions,
     triggerLocalRefresh,
 } from "@/lib/context";
-import { findTentacleLocations, iconColors } from "@/maps/api";
+import { findTentacleLocations } from "@/maps/api";
 import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
 import { Input } from "../ui/input";
 import { Select } from "../ui/select";
@@ -31,13 +31,11 @@ export const TentacleQuestionComponent = ({
     questionKey,
     sub,
     className,
-    showDeleteButton = true,
 }: {
     data: TentacleQuestion;
     questionKey: number;
     sub?: string;
     className?: string;
-    showDeleteButton?: boolean;
 }) => {
     const $questions = useStore(questions);
     const $drawingQuestionKey = useStore(drawingQuestionKey);
@@ -56,11 +54,12 @@ export const TentacleQuestionComponent = ({
             label={label}
             sub={sub}
             className={className}
-            showDeleteButton={showDeleteButton}
             collapsed={data.collapsed}
             setCollapsed={(collapsed) => {
                 data.collapsed = collapsed; // Doesn't trigger a re-render so no need for questionModified
             }}
+            locked={!data.drag}
+            setLocked={(locked) => questionModified((data.drag = !locked))}
         >
             <SidebarMenuItem>
                 <div className={cn(MENU_ITEM_CLASSNAME, "gap-2 flex flex-row")}>
@@ -155,29 +154,10 @@ export const TentacleQuestionComponent = ({
                     and use the buttons at the bottom left of the map.
                 </p>
             )}
-            <SidebarMenuItem
-                className={cn(
-                    MENU_ITEM_CLASSNAME,
-                    "text-2xl font-semibold font-poppins",
-                )}
-                style={{
-                    backgroundColor: iconColors[data.color],
-                    color: data.color === "gold" ? "black" : undefined,
-                }}
-            >
-                Color (lock{" "}
-                <Checkbox
-                    checked={!data.drag}
-                    disabled={$isLoading}
-                    onCheckedChange={(checked) =>
-                        questionModified((data.drag = !checked as boolean))
-                    }
-                />
-                )
-            </SidebarMenuItem>
             <LatitudeLongitude
                 latitude={data.lat}
                 longitude={data.lng}
+                colorName={data.color}
                 onChange={(lat, lng) => {
                     if (lat !== null) {
                         data.lat = lat;

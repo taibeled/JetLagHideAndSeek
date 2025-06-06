@@ -141,9 +141,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
             }
 
             if (geojson.zoneOptions) {
-                displayHidingZonesOptions.set(
-                    geojson.zoneOptions ?? [],
-                );
+                displayHidingZonesOptions.set(geojson.zoneOptions ?? []);
             }
 
             toast.success("Hiding zone loaded successfully", {
@@ -500,6 +498,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     <LatitudeLongitude
                                         latitude={$hiderMode.latitude}
                                         longitude={$hiderMode.longitude}
+                                        inlineEdit
                                         onChange={(latitude, longitude) => {
                                             $hiderMode.latitude =
                                                 latitude ?? $hiderMode.latitude;
@@ -517,8 +516,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                                 );
                                             }
                                         }}
-                                        latLabel="Hider Latitude"
-                                        lngLabel="Hider Longitude"
+                                        label="Hider Location"
                                     />
                                     {!autoSave && (
                                         <SidebarMenuItem>
