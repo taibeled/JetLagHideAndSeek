@@ -33,13 +33,11 @@ export const MeasuringQuestionComponent = ({
     questionKey,
     sub,
     className,
-    showDeleteButton = true,
 }: {
     data: MeasuringQuestion;
     questionKey: number;
     sub?: string;
     className?: string;
-    showDeleteButton?: boolean;
 }) => {
     useStore(triggerLocalRefresh);
     const $hiderMode = useStore(hiderMode);
@@ -116,11 +114,12 @@ export const MeasuringQuestionComponent = ({
             label={label}
             sub={sub}
             className={className}
-            showDeleteButton={showDeleteButton}
             collapsed={data.collapsed}
             setCollapsed={(collapsed) => {
                 data.collapsed = collapsed; // Doesn't trigger a re-render so no need for questionModified
             }}
+            locked={!data.drag}
+            setLocked={(locked) => questionModified((data.drag = !locked))}
         >
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
@@ -196,43 +195,10 @@ export const MeasuringQuestionComponent = ({
                 />
             </SidebarMenuItem>
             {questionSpecific}
-            <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
-                <label className="text-2xl font-semibold font-poppins">
-                    Hider Closer
-                </label>
-                <Checkbox
-                    disabled={!!$hiderMode || !data.drag || $isLoading}
-                    checked={data.hiderCloser}
-                    onCheckedChange={(checked) =>
-                        questionModified(
-                            (data.hiderCloser = checked as boolean),
-                        )
-                    }
-                />
-            </SidebarMenuItem>
-            <SidebarMenuItem
-                className={cn(
-                    MENU_ITEM_CLASSNAME,
-                    "text-2xl font-semibold font-poppins",
-                )}
-                style={{
-                    backgroundColor: ICON_COLORS[data.color],
-                    color: data.color === "gold" ? "black" : undefined,
-                }}
-            >
-                Color (lock{" "}
-                <Checkbox
-                    checked={!data.drag}
-                    disabled={$isLoading}
-                    onCheckedChange={(checked) =>
-                        questionModified((data.drag = !checked as boolean))
-                    }
-                />
-                )
-            </SidebarMenuItem>
             <LatitudeLongitude
                 latitude={data.lat}
                 longitude={data.lng}
+                colorName={data.color}
                 onChange={(lat, lng) => {
                     if (lat !== null) {
                         data.lat = lat;
@@ -244,6 +210,34 @@ export const MeasuringQuestionComponent = ({
                 }}
                 disabled={!data.drag || $isLoading}
             />
+            <div className="flex gap-2 items-center p-2">
+                <Label
+                    className={cn(
+                        "font-semibold text-lg",
+                        $isLoading && "text-muted-foreground",
+                    )}
+                >
+                    Result
+                </Label>
+                <ToggleGroup
+                    className="grow"
+                    type="single"
+                    value={data.hiderCloser ? "closer" : "further"}
+                    onValueChange={(value: "closer" | "further") =>
+                        questionModified(
+                            (data.hiderCloser = value === "closer"),
+                        )
+                    }
+                    disabled={!!$hiderMode || !data.drag || $isLoading}
+                >
+                    <ToggleGroupItem value="further">
+                        Hider Further
+                    </ToggleGroupItem>
+                    <ToggleGroupItem value="closer">
+                        Hider Closer
+                    </ToggleGroupItem>
+                </ToggleGroup>
+            </div>
         </QuestionCard>
     );
 };

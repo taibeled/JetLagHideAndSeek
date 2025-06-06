@@ -1,4 +1,5 @@
 import { useStore } from "@nanostores/react";
+<<<<<<< HEAD
 import { useState } from "react";
 import { VscChevronDown, VscShare, VscTrash } from "react-icons/vsc";
 
@@ -37,8 +38,9 @@ export const QuestionCard = ({
     className,
     label,
     sub,
-    showDeleteButton,
     collapsed,
+    locked,
+    setLocked,
     setCollapsed,
 }: {
     children: React.ReactNode;
@@ -46,12 +48,14 @@ export const QuestionCard = ({
     className?: string;
     label?: string;
     sub?: string;
-    showDeleteButton?: boolean;
     collapsed?: boolean;
+    locked?: boolean;
+    setLocked?: (locked: boolean) => void;
     setCollapsed?: (collapsed: boolean) => void;
 }) => {
     const [isCollapsed, setIsCollapsed] = useState(collapsed ?? false);
     const $questions = useStore(questions);
+    const $isLoading = useStore(isLoading);
 
     const toggleCollapse = () => {
         if (setCollapsed) {
@@ -64,42 +68,71 @@ export const QuestionCard = ({
         <>
             <SidebarGroup className={className}>
                 <div className="relative">
-                    <div className="absolute top-2 right-2 flex gap-2 justify-end text-white">
-                        <Dialog>
-                            <DialogTrigger>
-                                <VscShare />
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle className="text-2xl">
-                                        Share this Question!
-                                    </DialogTitle>
-                                    <DialogDescription>
-                                        Below you can access the JSON
-                                        representing the question. Send this to
-                                        another player for them to copy. They
-                                        can then click &ldquo;Paste
-                                        Question&rdquo; at the bottom of the
-                                        &ldquo;Questions&rdquo; sidebar.
-                                    </DialogDescription>
-                                </DialogHeader>
-                                <textarea
-                                    className="w-full h-[300px] bg-slate-900 text-white rounded-md p-2"
-                                    readOnly
-                                    value={JSON.stringify(
-                                        $questions.find(
-                                            (q) => q.key === questionKey,
-                                        ),
-                                        null,
-                                        4,
-                                    )}
-                                ></textarea>
-                            </DialogContent>
-                        </Dialog>
-                        {showDeleteButton && (
+                    <button
+                        onClick={toggleCollapse}
+                        className={cn(
+                            "absolute top-2 left-2 text-white border rounded-md transition-all duration-500",
+                            isCollapsed && "-rotate-90",
+                        )}
+                    >
+                        <VscChevronDown />
+                    </button>
+                    <SidebarGroupLabel
+                        className="ml-8 mr-8 cursor-pointer"
+                        onClick={toggleCollapse}
+                    >
+                        {label} {sub && `(${sub})`}
+                    </SidebarGroupLabel>
+                    <SidebarGroupContent
+                        className={cn(
+                            "overflow-hidden transition-all duration-1000 max-h-[100rem]", // 100rem is arbitrary
+                            isCollapsed && "max-h-0",
+                        )}
+                    >
+                        <SidebarMenu>{children}</SidebarMenu>
+                        <div className="flex gap-2 pt-2 px-2 justify-center">
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button variant="outline" size="sm">
+                                        <VscShare />
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle className="text-2xl">
+                                            Share this Question!
+                                        </DialogTitle>
+                                        <DialogDescription>
+                                            Below you can access the JSON
+                                            representing the question. Send this
+                                            to another player for them to copy.
+                                            They can then click &ldquo;Paste
+                                            Question&rdquo; at the bottom of the
+                                            &ldquo;Questions&rdquo; sidebar.
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <textarea
+                                        className="w-full h-[300px] bg-slate-900 text-white rounded-md p-2"
+                                        readOnly
+                                        value={JSON.stringify(
+                                            $questions.find(
+                                                (q) => q.key === questionKey,
+                                            ),
+                                            null,
+                                            4,
+                                        )}
+                                    ></textarea>
+                                </DialogContent>
+                            </Dialog>
                             <AlertDialog>
-                                <AlertDialogTrigger>
-                                    <VscTrash />
+                                <AlertDialogTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        disabled={$isLoading}
+                                    >
+                                        <VscTrash />
+                                    </Button>
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>
                                     <AlertDialogHeader>
@@ -140,27 +173,17 @@ export const QuestionCard = ({
                                     </AlertDialogFooter>
                                 </AlertDialogContent>
                             </AlertDialog>
-                        )}
-                    </div>
-                    <button
-                        onClick={toggleCollapse}
-                        className={cn(
-                            "absolute top-2 left-2 text-white border rounded-md transition-all duration-500",
-                            isCollapsed && "-rotate-90",
-                        )}
-                    >
-                        <VscChevronDown />
-                    </button>
-                    <SidebarGroupLabel className="ml-8 mr-8">
-                        {label} {sub && `(${sub})`}
-                    </SidebarGroupLabel>
-                    <SidebarGroupContent
-                        className={cn(
-                            "overflow-hidden transition-all duration-1000 max-h-[100rem]", // 100rem is arbitrary
-                            isCollapsed && "max-h-0",
-                        )}
-                    >
-                        <SidebarMenu>{children}</SidebarMenu>
+                            {locked !== undefined && (
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setLocked!(!locked)}
+                                    disabled={$isLoading}
+                                >
+                                    {locked ? <LockIcon /> : <UnlockIcon />}
+                                </Button>
+                            )}
+                        </div>
                     </SidebarGroupContent>
                 </div>
             </SidebarGroup>

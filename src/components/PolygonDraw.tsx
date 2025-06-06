@@ -91,6 +91,7 @@ const TentacleMarker = ({
                         <LatitudeLongitude
                             latitude={point.geometry.coordinates[1]}
                             longitude={point.geometry.coordinates[0]}
+                            inlineEdit
                             onChange={(lat, lng) => {
                                 if (lat) {
                                     point.geometry.coordinates[1] = lat;
@@ -148,6 +149,7 @@ const MatchingPointMarker = ({
                         <LatitudeLongitude
                             latitude={point.geometry.coordinates[1]}
                             longitude={point.geometry.coordinates[0]}
+                            inlineEdit
                             onChange={(lat, lng) => {
                                 if (lat) {
                                     point.geometry.coordinates[1] = lat;
@@ -205,6 +207,7 @@ const MeasuringPointMarker = ({
                         <LatitudeLongitude
                             latitude={point.geometry.coordinates[1]}
                             longitude={point.geometry.coordinates[0]}
+                            inlineEdit
                             onChange={(lat, lng) => {
                                 if (lat) {
                                     point.geometry.coordinates[1] = lat;

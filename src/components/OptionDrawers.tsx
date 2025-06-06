@@ -1,5 +1,31 @@
+<<<<<<< HEAD
 import { useStore } from "@nanostores/react";
 import { useEffect, useState } from "react";
+=======
+import {
+    animateMapMovements,
+    autoSave,
+    defaultUnit,
+    hiderMode,
+    hidingRadius,
+    highlightTrainLines,
+    leafletMapContext,
+    mapGeoJSON,
+    mapGeoLocation,
+    polyGeoJSON,
+    questions,
+    disabledStations,
+    save,
+    triggerLocalRefresh,
+    hidingZone,
+    planningModeEnabled,
+    autoZoom,
+    additionalMapGeoLocations,
+    thunderforestApiKey,
+    displayHidingZonesOptions,
+} from "@/lib/context";
+import { Button } from "./ui/button";
+>>>>>>> master
 import { toast } from "react-toastify";
 
 import {
@@ -139,6 +165,10 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
 
             if (geojson.hidingRadius !== null) {
                 hidingRadius.set(geojson.hidingRadius);
+            }
+
+            if (geojson.zoneOptions) {
+                displayHidingZonesOptions.set(geojson.zoneOptions ?? []);
             }
 
             toast.success("Hiding zone loaded successfully", {
@@ -495,6 +525,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     <LatitudeLongitude
                                         latitude={$hiderMode.latitude}
                                         longitude={$hiderMode.longitude}
+                                        inlineEdit
                                         onChange={(latitude, longitude) => {
                                             $hiderMode.latitude =
                                                 latitude ?? $hiderMode.latitude;
@@ -512,8 +543,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                                 );
                                             }
                                         }}
-                                        latLabel="Hider Latitude"
-                                        lngLabel="Hider Longitude"
+                                        label="Hider Location"
                                     />
                                     {!autoSave && (
                                         <SidebarMenuItem>

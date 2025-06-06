@@ -93,6 +93,7 @@ const ColoredMarker = ({
                             <LatitudeLongitude
                                 latitude={$hiderMode.latitude}
                                 longitude={$hiderMode.longitude}
+                                inlineEdit
                                 onChange={(latitude, longitude) => {
                                     hiderMode.set({
                                         latitude:
@@ -101,8 +102,7 @@ const ColoredMarker = ({
                                             longitude ?? $hiderMode.longitude,
                                     });
                                 }}
-                                latLabel="Hider Latitude"
-                                lngLabel="Hider Longitude"
+                                label="Hider Location"
                             />
                         </SidebarMenu>
                     </>
@@ -118,7 +118,6 @@ const ColoredMarker = ({
                                         data={q.data}
                                         questionKey={q.key}
                                         sub={sub}
-                                        showDeleteButton={false}
                                     />
                                 );
                             case "tentacles":
@@ -128,7 +127,6 @@ const ColoredMarker = ({
                                         data={q.data}
                                         questionKey={q.key}
                                         sub={sub}
-                                        showDeleteButton={false}
                                     />
                                 );
                             case "thermometer":
@@ -138,7 +136,6 @@ const ColoredMarker = ({
                                         data={q.data}
                                         questionKey={q.key}
                                         sub={sub}
-                                        showDeleteButton={false}
                                     />
                                 );
                             case "matching":
@@ -148,7 +145,6 @@ const ColoredMarker = ({
                                         data={q.data}
                                         questionKey={q.key}
                                         sub={sub}
-                                        showDeleteButton={false}
                                     />
                                 );
                             case "measuring":
@@ -158,29 +154,23 @@ const ColoredMarker = ({
                                         data={q.data}
                                         questionKey={q.key}
                                         sub={sub}
-                                        showDeleteButton={false}
                                     />
                                 );
                             default:
                                 return null;
                         }
                     })}
-
-                <Button
-                    onClick={() => {
-                        if (questionKey === -1) {
+                {questionKey === -1 && (
+                    <Button // If it's the hider mode marker
+                        onClick={() => {
                             hiderMode.set(false);
-                        } else {
-                            questions.set(
-                                $questions.filter((q) => q.key !== questionKey),
-                            );
-                        }
-                    }}
-                    variant="destructive"
-                    className="font-semibold font-poppins"
-                >
-                    {questionKey === -1 ? "Disable" : "Delete"}
-                </Button>
+                        }}
+                        variant="destructive"
+                        className="font-semibold font-poppins"
+                    >
+                        Disable
+                    </Button>
+                )}
                 {!$autoSave && (
                     <button
                         onClick={save}

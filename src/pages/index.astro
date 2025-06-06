@@ -18,7 +18,7 @@ import { OptionDrawers } from "@/components/OptionDrawers";
 <Layout className="bg-jetlag">
     <SidebarProviderL client:load>
         <SidebarProviderR client:load defaultOpen={false}>
-            <QuestionSidebar client:load />
+            <QuestionSidebar client:only />
             <main class="flex flex-col flex-grow group">
                 <div
                     class="flex justify-center"
@@ -39,7 +39,7 @@ import { OptionDrawers } from "@/components/OptionDrawers";
                             class="flex flex-shrink max-w-fit z-[1030] absolute left-4 right-0 m-auto group-[.fullscreen]:hidden"
                         >
                             <PlacePicker
-                                client:load
+                                client:only
                                 className="m-4 overflow-hidden"
                             />
                         </div>
