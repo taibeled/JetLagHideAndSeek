@@ -1,12 +1,13 @@
 import { useStore } from "@nanostores/react";
 
 import { LatitudeLongitude } from "@/components/LatLngPicker";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
     MENU_ITEM_CLASSNAME,
     SidebarMenuItem,
 } from "@/components/ui/sidebar-l";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { UnitSelect } from "@/components/UnitSelect";
 import {
     hiderMode,
@@ -16,7 +17,6 @@ import {
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
-import { ICON_COLORS } from "@/maps/api";
 import type { RadiusQuestion } from "@/maps/schema";
 
 import { QuestionCard } from "./base";

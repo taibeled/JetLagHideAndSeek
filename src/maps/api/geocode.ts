@@ -4,7 +4,11 @@ import { GEOCODER_API } from "./constants";
 import { convertToLatLong } from "./geo";
 import type { OpenStreetMap } from "./types";
 
-export const geocode = async (address: string, language: string) => {
+export const geocode = async (
+    address: string,
+    language: string,
+    filter: boolean = true,
+) => {
     const features = (
         await (
             await fetch(`${GEOCODER_API}?lang=${language}&q=${address}`)
@@ -26,7 +30,7 @@ export const geocode = async (address: string, language: string) => {
 
     return _.uniqBy(
         features.filter((feature) => {
-            return feature.properties.osm_type === "R";
+            return filter ? feature.properties.osm_type === "R" : true;
         }),
         (feature) => feature.properties.osm_id,
     );

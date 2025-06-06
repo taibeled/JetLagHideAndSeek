@@ -1,12 +1,8 @@
 import { useStore } from "@nanostores/react";
 
 import { LatitudeLongitude } from "@/components/LatLngPicker";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Separator } from "@/components/ui/separator";
-import {
-    MENU_ITEM_CLASSNAME,
-    SidebarMenuItem,
-} from "@/components/ui/sidebar-l";
+import { Label } from "@/components/ui/label";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
     hiderMode,
     isLoading,
@@ -15,7 +11,6 @@ import {
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
-import { ICON_COLORS } from "@/maps/api";
 import type { ThermometerQuestion } from "@/maps/schema";
 
 import { QuestionCard } from "./base";

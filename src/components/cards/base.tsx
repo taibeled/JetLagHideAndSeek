@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/react";
-<<<<<<< HEAD
+import { LockIcon, UnlockIcon } from "lucide-react";
 import { useState } from "react";
 import { VscChevronDown, VscShare, VscTrash } from "react-icons/vsc";
 
@@ -14,6 +14,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -29,7 +30,7 @@ import {
     SidebarGroupLabel,
     SidebarMenu,
 } from "@/components/ui/sidebar-l";
-import { questions } from "@/lib/context";
+import { isLoading, questions } from "@/lib/context";
 import { cn } from "@/lib/utils";
 
 export const QuestionCard = ({

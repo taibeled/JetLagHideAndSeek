@@ -1,15 +1,39 @@
+import { useStore } from "@nanostores/react";
+import {
+    ClipboardCopyIcon,
+    ClipboardPasteIcon,
+    EditIcon,
+    LocateIcon,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useDebounce } from "@/hooks/useDebounce";
 import { isLoading } from "@/lib/context";
+import { cn } from "@/lib/utils";
+import { determineName, geocode, ICON_COLORS } from "@/maps/api";
 
 import { Button } from "./ui/button";
 import {
-    MENU_ITEM_CLASSNAME,
-    SidebarMenuButton,
-    SidebarMenuItem,
-} from "./ui/sidebar-l";
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "./ui/command";
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "./ui/dialog";
+import { SidebarMenuItem } from "./ui/sidebar-l";
 
 const parseCoordinatesFromText = (
     text: string,
@@ -200,7 +224,7 @@ export const LatitudeLongitude = ({
     longitude: number;
     onChange: (lat: number | null, lng: number | null) => void;
     label?: string;
-    colorName?: keyof typeof iconColors;
+    colorName?: keyof typeof ICON_COLORS;
     className?: string;
     children?: React.ReactNode;
     disabled?: boolean;
@@ -208,7 +232,7 @@ export const LatitudeLongitude = ({
 }) => {
     const $isLoading = useStore(isLoading);
 
-    const color = colorName ? iconColors[colorName] : "transparent";
+    const color = colorName ? ICON_COLORS[colorName] : "transparent";
 
     return (
         <>
@@ -216,7 +240,10 @@ export const LatitudeLongitude = ({
                 style={{
                     backgroundColor: color,
                 }}
-                className={cn("p-2 rounded-md space-y-1 mt-2", $isLoading && "brightness-50")}
+                className={cn(
+                    "p-2 rounded-md space-y-1 mt-2",
+                    $isLoading && "brightness-50",
+                )}
             >
                 {!inlineEdit && (
                     <div

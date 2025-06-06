@@ -121,66 +121,6 @@ out geom;
     return geo.features?.[0];
 };
 
-export const geocode = async (
-    address: string,
-    language: string,
-    filter: boolean = true,
-) => {
-    const features = (
-        await (
-            await fetch(`${GEOCODER_API}?lang=${language}&q=${address}`)
-        ).json()
-    ).features as OpenStreetMap[];
-
-    features.forEach((feature) => {
-        feature.geometry.coordinates = convertToLatLong(
-            feature.geometry.coordinates as number[],
-        );
-        if (!feature.properties.extent) return;
-        feature.properties.extent = [
-            feature.properties.extent[1],
-            feature.properties.extent[0],
-            feature.properties.extent[3],
-            feature.properties.extent[2],
-        ];
-    });
-
-    return _.uniqBy(
-        features.filter((feature) => {
-            return filter ? feature.properties.osm_type === "R" : true;
-        }),
-        (feature) => feature.properties.osm_id,
-    );
-};
-
-export const determineName = (feature: OpenStreetMap) => {
-    const props = feature.properties;
-    if (props.osm_type === "R") {
-        const parts = [props.name, props.state, props.country].filter(Boolean);
-        return parts.join(", ");
-    } else {
-        const parts = [
-            (props as any).housenumber
-                ? `${(props as any).housenumber} ${(props as any).street}`
-                : (props as any).street,
-            (props as any).city,
-            (props as any).county,
-            props.state,
-            props.country,
-        ].filter(Boolean);
-        return parts.join(", ");
-    }
-};
-
-export const convertToLongLat = (coordinates: LatLngTuple): number[] => {
-    return [coordinates[1], coordinates[0]];
-};
-
-export const convertToLatLong = (coordinates: number[]): LatLngTuple => {
-    return [coordinates[1], coordinates[0]];
-};
-
->>>>>>> master:src/maps/api.ts
 export const fetchCoastline = async () => {
     const response = await cacheFetch(
         import.meta.env.BASE_URL + "/coastline50.geojson",

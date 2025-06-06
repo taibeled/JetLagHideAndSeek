@@ -36,11 +36,20 @@ export const prettifyLocation = (location: APILocations) => {
 };
 
 export const determineName = (feature: OpenStreetMap) => {
-    if (feature.properties.state) {
-        return `${feature.properties.name}, ${feature.properties.state}, ${feature.properties.country}`;
-    } else if (feature.properties.country) {
-        return `${feature.properties.name}, ${feature.properties.country}`;
+    const props = feature.properties;
+    if (props.osm_type === "R") {
+        const parts = [props.name, props.state, props.country].filter(Boolean);
+        return parts.join(", ");
     } else {
-        return feature.properties.name;
+        const parts = [
+            (props as any).housenumber
+                ? `${(props as any).housenumber} ${(props as any).street}`
+                : (props as any).street,
+            (props as any).city,
+            (props as any).county,
+            props.state,
+            props.country,
+        ].filter(Boolean);
+        return parts.join(", ");
     }
 };

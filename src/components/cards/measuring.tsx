@@ -1,4 +1,5 @@
 import { useStore } from "@nanostores/react";
+import { Label } from "@radix-ui/react-label";
 
 import { LatitudeLongitude } from "@/components/LatLngPicker";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -7,6 +8,7 @@ import {
     MENU_ITEM_CLASSNAME,
     SidebarMenuItem,
 } from "@/components/ui/sidebar-l";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
     displayHidingZones,
     drawingQuestionKey,
@@ -17,7 +19,6 @@ import {
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
-import { ICON_COLORS } from "@/maps/api";
 import { determineMeasuringBoundary } from "@/maps/questions/measuring";
 import {
     determineUnionizedStrings,
