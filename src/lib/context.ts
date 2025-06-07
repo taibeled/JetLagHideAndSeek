@@ -1,15 +1,17 @@
-import { atom, computed } from "nanostores";
 import { persistentAtom } from "@nanostores/persistent";
-import { type OpenStreetMap } from "../maps/api";
+import type { FeatureCollection, MultiPolygon, Polygon } from "geojson";
 import type { Map } from "leaflet";
+import { atom, computed } from "nanostores";
+
+import { type AdditionalMapGeoLocations, type OpenStreetMap } from "@/maps/api";
 import {
-    questionSchema,
-    questionsSchema,
     type DeepPartial,
     type Question,
     type Questions,
+    questionSchema,
+    questionsSchema,
     type Units,
-} from "./schema";
+} from "@/maps/schema";
 
 export const mapGeoLocation = persistentAtom<OpenStreetMap>(
     "mapGeoLocation",
@@ -37,12 +39,6 @@ export const mapGeoLocation = persistentAtom<OpenStreetMap>(
     },
 );
 
-interface AdditionalMapGeoLocations {
-    added: boolean;
-    location: OpenStreetMap;
-    base: boolean;
-}
-
 export const additionalMapGeoLocations = persistentAtom<
     AdditionalMapGeoLocations[]
 >("additionalMapGeoLocations", [], {
@@ -50,8 +46,12 @@ export const additionalMapGeoLocations = persistentAtom<
     decode: JSON.parse,
 });
 
-export const mapGeoJSON = atom<any>(null);
-export const polyGeoJSON = persistentAtom<any>("polyGeoJSON", null, {
+export const mapGeoJSON = atom<FeatureCollection<
+    Polygon | MultiPolygon
+> | null>(null);
+export const polyGeoJSON = persistentAtom<FeatureCollection<
+    Polygon | MultiPolygon
+> | null>("polyGeoJSON", null, {
     encode: JSON.stringify,
     decode: JSON.parse,
 });

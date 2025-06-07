@@ -1,28 +1,33 @@
-import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
+import { Label } from "@radix-ui/react-label";
+
+import { LatitudeLongitude } from "@/components/LatLngPicker";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Select } from "@/components/ui/select";
+import {
+    MENU_ITEM_CLASSNAME,
+    SidebarMenuItem,
+} from "@/components/ui/sidebar-l";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
     displayHidingZones,
     drawingQuestionKey,
     hiderMode,
+    isLoading,
     questionModified,
     questions,
     triggerLocalRefresh,
-    isLoading,
 } from "@/lib/context";
-import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
-import { Select } from "../ui/select";
-import { Checkbox } from "../ui/checkbox";
-import { QuestionCard } from "./base";
+import { cn } from "@/lib/utils";
+import { determineMeasuringBoundary } from "@/maps/questions/measuring";
 import {
     determineUnionizedStrings,
+    type MeasuringQuestion,
     measuringQuestionSchema,
     NO_GROUP,
-    type MeasuringQuestion,
-} from "@/lib/schema";
-import { determineMeasuringBoundary } from "@/maps/measuring";
-import { Label } from "@/components/ui/label.tsx";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
-import { cn } from "@/lib/utils";
+} from "@/maps/schema";
+
+import { QuestionCard } from "./base";
 
 export const MeasuringQuestionComponent = ({
     data,

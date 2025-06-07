@@ -1,18 +1,15 @@
-import { hiderMode } from "@/lib/context";
 import * as turf from "@turf/turf";
-import { geoSpatialVoronoi } from "./voronoi";
-import { unionize } from "./geo-utils";
-import type { ThermometerQuestion } from "@/lib/schema";
+
+import { hiderMode } from "@/lib/context";
+import { safeUnion } from "@/maps/geo-utils";
+import { geoSpatialVoronoi } from "@/maps/geo-utils/voronoi";
+import type { ThermometerQuestion } from "@/maps/schema";
 
 export const adjustPerThermometer = (
     question: ThermometerQuestion,
     mapData: any,
-    masked: boolean,
 ) => {
     if (mapData === null) return;
-    if (masked) {
-        throw new Error("Cannot be masked");
-    }
 
     const pointA = turf.point([question.lngA, question.latA]);
     const pointB = turf.point([question.lngB, question.latB]);
@@ -21,11 +18,11 @@ export const adjustPerThermometer = (
 
     if (question.warmer) {
         return turf.intersect(
-            turf.featureCollection([unionize(mapData), voronoi.features[1]]),
+            turf.featureCollection([safeUnion(mapData), voronoi.features[1]]),
         );
     } else {
         return turf.intersect(
-            turf.featureCollection([unionize(mapData), voronoi.features[0]]),
+            turf.featureCollection([safeUnion(mapData), voronoi.features[0]]),
         );
     }
 };
@@ -65,6 +62,10 @@ export const thermometerPlanningPolygon = (question: ThermometerQuestion) => {
     const voronoi = geoSpatialVoronoi(turf.featureCollection([pointA, pointB]));
 
     return turf.featureCollection(
-        voronoi.features.map((x: any) => turf.polygonToLine(x)),
+        voronoi.features
+            .map((x: any) => turf.polygonToLine(x))
+            .flatMap((line) =>
+                line.type === "FeatureCollection" ? line.features : [line],
+            ),
     );
 };

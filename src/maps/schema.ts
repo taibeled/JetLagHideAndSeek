@@ -1,5 +1,6 @@
-import { iconColors } from "@/maps/api";
 import { z } from "zod";
+
+import { ICON_COLORS } from "./api/constants";
 
 export const NO_GROUP = "NO_GROUP";
 
@@ -36,8 +37,8 @@ const iconColorSchema = z.union([
 ]);
 
 const randomColor = () =>
-    Object.keys(iconColors)[
-        Math.floor(Math.random() * Object.keys(iconColors).length)
+    Object.keys(ICON_COLORS)[
+        Math.floor(Math.random() * Object.keys(ICON_COLORS).length)
     ] as z.infer<typeof iconColorSchema>;
 
 const thermometerQuestionSchema = z.object({

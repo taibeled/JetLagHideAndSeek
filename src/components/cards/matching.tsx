@@ -1,5 +1,15 @@
-import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
+import { toast } from "react-toastify";
+
+import { LatitudeLongitude } from "@/components/LatLngPicker";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
+import {
+    MENU_ITEM_CLASSNAME,
+    SidebarMenuItem,
+} from "@/components/ui/sidebar-l";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
     displayHidingZones,
     drawingQuestionKey,
@@ -9,21 +19,19 @@ import {
     questions,
     triggerLocalRefresh,
 } from "@/lib/context";
+import { cn } from "@/lib/utils";
+import {
+    determineMatchingBoundary,
+    findMatchingPlaces,
+} from "@/maps/questions/matching";
 import {
     determineUnionizedStrings,
+    type MatchingQuestion,
     matchingQuestionSchema,
     NO_GROUP,
-    type MatchingQuestion,
-} from "@/lib/schema";
-import { MENU_ITEM_CLASSNAME, SidebarMenuItem } from "../ui/sidebar-l";
-import { Select } from "../ui/select";
-import { Checkbox } from "../ui/checkbox";
+} from "@/maps/schema";
+
 import { QuestionCard } from "./base";
-import { determineMatchingBoundary, findMatchingPlaces } from "@/maps/matching";
-import { toast } from "react-toastify";
-import { Label } from "@/components/ui/label.tsx";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
-import { cn } from "@/lib/utils";
 
 export const MatchingQuestionComponent = ({
     data,

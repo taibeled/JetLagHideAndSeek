@@ -1,15 +1,9 @@
-import {
-    fetchCoastline,
-    findPlacesInZone,
-    findPlacesSpecificInZone,
-    locationFirstTag,
-    nearestToQuestion,
-    prettifyLocation,
-    QuestionSpecificLocation,
-} from "./api";
 import * as turf from "@turf/turf";
-import _ from "lodash";
 import type { Feature, MultiPolygon } from "geojson";
+import _ from "lodash";
+import osmtogeojson from "osmtogeojson";
+import { toast } from "react-toastify";
+
 import {
     hiderMode,
     mapGeoJSON,
@@ -18,18 +12,26 @@ import {
     trainStations,
 } from "@/lib/context";
 import {
+    fetchCoastline,
+    findPlacesInZone,
+    findPlacesSpecificInZone,
+    LOCATION_FIRST_TAG,
+    nearestToQuestion,
+    prettifyLocation,
+    QuestionSpecificLocation,
+} from "@/maps/api";
+import {
+    arcBufferToPoint,
+    connectToSeparateLines,
     groupObjects,
     holedMask,
-    connectToSeparateLines,
-    unionize,
-} from "./geo-utils";
-import osmtogeojson from "osmtogeojson";
+    modifyMapData,
+} from "@/maps/geo-utils";
 import type {
-    MeasuringQuestion,
-    HomeGameMeasuringQuestions,
     APILocations,
-} from "@/lib/schema";
-import { toast } from "react-toastify";
+    HomeGameMeasuringQuestions,
+    MeasuringQuestion,
+} from "@/maps/schema";
 
 const highSpeedBase = _.memoize(
     (features: Feature[]) => {
@@ -83,7 +85,7 @@ const bboxExtension = (
 export const determineMeasuringBoundary = async (
     question: MeasuringQuestion,
 ) => {
-    const bBox = turf.bbox(mapGeoJSON.get());
+    const bBox = turf.bbox(mapGeoJSON.get()!);
 
     switch (question.type) {
         case "highspeed-measure-shinkansen": {
@@ -115,7 +117,7 @@ export const determineMeasuringBoundary = async (
             return [
                 turf.difference(
                     turf.featureCollection([
-                        turf.bboxPolygon(turf.bbox(mapGeoJSON.get())),
+                        turf.bboxPolygon(bBox),
                         turf.buffer(
                             turf.bboxClip(
                                 coastline,
@@ -188,7 +190,7 @@ export const determineMeasuringBoundary = async (
             const location = question.type.split("-full")[0] as APILocations;
 
             const data = await findPlacesInZone(
-                `[${locationFirstTag[location]}=${location}]`,
+                `[${LOCATION_FIRST_TAG[location]}=${location}]`,
                 `Finding ${prettifyLocation(location).toLowerCase()}s...`,
                 "nwr",
                 "center",
@@ -254,52 +256,11 @@ const bufferedDeterminer = _.memoize(
 
         if (placeData === false || placeData === undefined) return false;
 
-        const questionPoint = turf.point([question.lng, question.lat]);
-
-        let buffer = unionize(
-            turf.featureCollection(
-                placeData.map(
-                    (x) =>
-                        turf.buffer(x, 0.001, {
-                            units: "miles",
-                        })!,
-                ),
-            ),
+        return arcBufferToPoint(
+            turf.featureCollection(placeData as any),
+            question.lat,
+            question.lng,
         );
-        let distance = turf.pointToPolygonDistance(questionPoint, buffer, {
-            units: "miles",
-            method: "geodesic",
-        });
-
-        let round = 0;
-        while (Math.abs(distance) > turf.convertLength(5, "feet", "miles")) {
-            round++;
-            console.info(
-                "Measuring buffer off by",
-                distance,
-                "miles after",
-                round,
-                "rounds",
-            );
-            buffer = turf.simplify(
-                turf.buffer(buffer, distance, {
-                    units: "miles",
-                })!,
-                { tolerance: 0.001 },
-            );
-            distance = turf.pointToPolygonDistance(questionPoint, buffer, {
-                units: "miles",
-                method: "geodesic",
-            });
-        }
-
-        console.info(
-            "Measuring buffer off by",
-            turf.convertLength(Math.abs(distance), "miles", "feet"),
-            "ft",
-        );
-
-        return buffer;
     },
     (question) =>
         JSON.stringify({
@@ -316,24 +277,14 @@ const bufferedDeterminer = _.memoize(
 export const adjustPerMeasuring = async (
     question: MeasuringQuestion,
     mapData: any,
-    masked: boolean,
 ) => {
     if (mapData === null) return;
-    if (masked) throw new Error("Cannot be masked");
 
     const buffer = await bufferedDeterminer(question);
 
     if (buffer === false) return mapData;
 
-    if (question.hiderCloser) {
-        return turf.intersect(
-            turf.featureCollection([unionize(mapData), buffer]),
-        );
-    } else {
-        return turf.intersect(
-            turf.featureCollection([unionize(mapData), holedMask(buffer)!]),
-        );
-    }
+    return modifyMapData(mapData, buffer, question.hiderCloser);
 };
 
 export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
@@ -435,19 +386,13 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
     let feature = null;
 
     try {
-        feature = holedMask(
-            (await adjustPerMeasuring(question, $mapGeoJSON, false))!,
-        );
+        feature = holedMask((await adjustPerMeasuring(question, $mapGeoJSON))!);
     } catch {
         try {
-            feature = await adjustPerMeasuring(
-                question,
-                {
-                    type: "FeatureCollection",
-                    features: [holedMask($mapGeoJSON)],
-                },
-                true,
-            );
+            feature = await adjustPerMeasuring(question, {
+                type: "FeatureCollection",
+                features: [holedMask($mapGeoJSON)],
+            });
         } catch {
             return question;
         }

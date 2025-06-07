@@ -1,3 +1,15 @@
+import * as turf from "@turf/turf";
+import type {
+    Feature,
+    FeatureCollection,
+    MultiPolygon,
+    Point,
+    Polygon,
+} from "geojson";
+import _ from "lodash";
+import osmtogeojson from "osmtogeojson";
+import { toast } from "react-toastify";
+
 import {
     hiderMode,
     mapGeoJSON,
@@ -7,29 +19,18 @@ import {
 import {
     findAdminBoundary,
     findPlacesInZone,
-    locationFirstTag,
+    LOCATION_FIRST_TAG,
     nearestToQuestion,
     prettifyLocation,
     trainLineNodeFinder,
-} from "./api";
-import * as turf from "@turf/turf";
-import _ from "lodash";
-import { geoSpatialVoronoi } from "./voronoi";
-import { toast } from "react-toastify";
-import osmtogeojson from "osmtogeojson";
-import { holedMask, unionize } from "./geo-utils";
+} from "@/maps/api";
+import { holedMask, modifyMapData, safeUnion } from "@/maps/geo-utils";
+import { geoSpatialVoronoi } from "@/maps/geo-utils";
 import type {
+    APILocations,
     HomeGameMatchingQuestions,
     MatchingQuestion,
-    APILocations,
-} from "@/lib/schema";
-import type {
-    Feature,
-    FeatureCollection,
-    MultiPolygon,
-    Point,
-    Polygon,
-} from "geojson";
+} from "@/maps/schema";
 
 export const findMatchingPlaces = async (question: MatchingQuestion) => {
     switch (question.type) {
@@ -78,7 +79,7 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
             const location = question.type.split("-full")[0] as APILocations;
 
             const data = await findPlacesInZone(
-                `[${locationFirstTag[location]}=${location}]`,
+                `[${LOCATION_FIRST_TAG[location]}=${location}]`,
                 `Finding ${prettifyLocation(location).toLowerCase()}s...`,
                 "nwr",
                 "center",
@@ -198,7 +199,7 @@ export const determineMatchingBoundary = _.memoize(
                 );
 
                 // It's either simplify or crash. Technically this could be bad if someone's hiding zone was inside multiple zones, but that's unlikely.
-                boundary = unionize(
+                boundary = safeUnion(
                     turf.simplify(boundary, {
                         tolerance: 0.001,
                         highQuality: true,
@@ -254,15 +255,8 @@ export const determineMatchingBoundary = _.memoize(
 export const adjustPerMatching = async (
     question: MatchingQuestion,
     mapData: any,
-    masked: boolean,
 ) => {
     if (mapData === null) return;
-
-    if (question.same && masked) {
-        throw new Error("Cannot be masked");
-    } else if (!question.same && !masked) {
-        throw new Error("Must be masked");
-    }
 
     const boundary = await determineMatchingBoundary(question);
 
@@ -270,15 +264,7 @@ export const adjustPerMatching = async (
         return mapData;
     }
 
-    if (question.same) {
-        return turf.intersect(
-            turf.featureCollection([unionize(mapData), boundary]),
-        );
-    } else {
-        return turf.union(
-            turf.featureCollection([...mapData.features, boundary]),
-        );
-    }
+    return modifyMapData(mapData, boundary, question.same);
 };
 
 export const hiderifyMatching = async (question: MatchingQuestion) => {
@@ -398,19 +384,13 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
     let feature = null;
 
     try {
-        feature = holedMask(
-            (await adjustPerMatching(question, $mapGeoJSON, false))!,
-        );
+        feature = holedMask((await adjustPerMatching(question, $mapGeoJSON))!);
     } catch {
         try {
-            feature = await adjustPerMatching(
-                question,
-                {
-                    type: "FeatureCollection",
-                    features: [holedMask($mapGeoJSON)],
-                },
-                true,
-            );
+            feature = await adjustPerMatching(question, {
+                type: "FeatureCollection",
+                features: [holedMask($mapGeoJSON)],
+            });
         } catch {
             return question;
         }

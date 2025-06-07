@@ -1,17 +1,19 @@
-import { LatitudeLongitude } from "../LatLngPicker";
 import { useStore } from "@nanostores/react";
+
+import { LatitudeLongitude } from "@/components/LatLngPicker";
+import { Label } from "@/components/ui/label";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
     hiderMode,
+    isLoading,
     questionModified,
     questions,
     triggerLocalRefresh,
-    isLoading,
 } from "@/lib/context";
-import { QuestionCard } from "./base";
-import type { ThermometerQuestion } from "@/lib/schema";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
-import { Label } from "../ui/label";
 import { cn } from "@/lib/utils";
+import type { ThermometerQuestion } from "@/maps/schema";
+
+import { QuestionCard } from "./base";
 
 export const ThermometerQuestionComponent = ({
     data,

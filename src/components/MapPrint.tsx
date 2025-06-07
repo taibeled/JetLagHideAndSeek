@@ -1,7 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck This should not be edited
-import L from "leaflet";
 import "leaflet-easyprint";
+
+import L from "leaflet";
 import { useEffect } from "react";
 import { useMap } from "react-leaflet";
 

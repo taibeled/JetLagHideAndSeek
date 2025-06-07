@@ -1,19 +1,16 @@
-import { findTentacleLocations } from "./api";
 import * as turf from "@turf/turf";
+
 import { hiderMode } from "@/lib/context";
-import { geoSpatialVoronoi } from "./voronoi";
-import { unionize } from "./geo-utils";
-import type { TentacleQuestion } from "@/lib/schema";
+import { findTentacleLocations } from "@/maps/api";
+import { arcBuffer, safeUnion } from "@/maps/geo-utils";
+import { geoSpatialVoronoi } from "@/maps/geo-utils";
+import type { TentacleQuestion } from "@/maps/schema";
 
 export const adjustPerTentacle = async (
     question: TentacleQuestion,
     mapData: any,
-    masked: boolean,
 ) => {
     if (mapData === null) return;
-    if (masked) {
-        throw new Error("Cannot be masked");
-    }
     if (question.location === false) {
         throw new Error("Must have a location");
     }
@@ -36,16 +33,14 @@ export const adjustPerTentacle = async (
         return mapData;
     }
 
-    const circle = turf.circle(
-        turf.point([question.lng, question.lat]),
+    const circle = await arcBuffer(
+        turf.featureCollection([turf.point([question.lng, question.lat])]),
         question.radius,
-        {
-            units: question.unit,
-        },
+        question.unit,
     );
 
     return turf.intersect(
-        turf.featureCollection([unionize(mapData), correctPolygon, circle]),
+        turf.featureCollection([safeUnion(mapData), correctPolygon, circle]),
     );
 };
 
@@ -102,26 +97,25 @@ export const tentaclesPlanningPolygon = async (question: TentacleQuestion) => {
             : await findTentacleLocations(question);
 
     const voronoi = geoSpatialVoronoi(points);
-    const circle = turf.circle(
-        turf.point([question.lng, question.lat]),
+    const circle = await arcBuffer(
+        turf.featureCollection([turf.point([question.lng, question.lat])]),
         question.radius,
-        {
-            units: question.unit,
-        },
+        question.unit,
     );
 
     const interiorVoronoi = voronoi.features
-        .map((feature: any) => {
-            const polygon = turf.intersect(
-                turf.featureCollection([feature, circle]),
-            );
-            return polygon;
-        })
-        .filter((feature: any) => feature !== null);
+        .map((feature) =>
+            turf.intersect(turf.featureCollection([feature, circle])),
+        )
+        .filter((feature) => feature !== null);
 
     return turf.combine(
         turf.featureCollection(
-            interiorVoronoi.map((x: any) => turf.polygonToLine(x)),
+            interiorVoronoi
+                .map((x: any) => turf.polygonToLine(x))
+                .flatMap((line) =>
+                    line.type === "FeatureCollection" ? line.features : [line],
+                ),
         ),
     );
 };

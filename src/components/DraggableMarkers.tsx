@@ -1,8 +1,10 @@
-import { Icon, type DragEndEvent } from "leaflet";
-import { Marker } from "react-leaflet";
-import { Fragment } from "react/jsx-runtime";
-import type { iconColors } from "../maps/api";
 import { useStore } from "@nanostores/react";
+import { type DragEndEvent, Icon } from "leaflet";
+import { useState } from "react";
+import { Fragment } from "react/jsx-runtime";
+import { Marker } from "react-leaflet";
+
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
     autoSave,
     hiderMode,
@@ -10,19 +12,19 @@ import {
     questions,
     save,
     triggerLocalRefresh,
-} from "../lib/context";
+} from "@/lib/context";
+import type { ICON_COLORS } from "@/maps/api";
+
+import { LatitudeLongitude } from "./LatLngPicker";
 import {
-    RadiusQuestionComponent,
-    ThermometerQuestionComponent,
-    TentacleQuestionComponent,
     MatchingQuestionComponent,
     MeasuringQuestionComponent,
+    RadiusQuestionComponent,
+    TentacleQuestionComponent,
+    ThermometerQuestionComponent,
 } from "./QuestionCards";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { useState } from "react";
 import { Button } from "./ui/button";
 import { SidebarMenu } from "./ui/sidebar-l";
-import { LatitudeLongitude } from "./LatLngPicker";
 
 let isDragging = false;
 
@@ -37,7 +39,7 @@ const ColoredMarker = ({
     onChange: (event: DragEndEvent) => void;
     latitude: number;
     longitude: number;
-    color: keyof typeof iconColors;
+    color: keyof typeof ICON_COLORS;
     questionKey: number;
     sub?: string;
 }) => {
