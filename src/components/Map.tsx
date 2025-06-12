@@ -277,7 +277,7 @@ export const Map = ({ className }: { className?: string }) => {
                         url={`https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=${$thunderforestApiKey}`}
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; &copy; <a href="http://www.thunderforest.com/">Thunderforest</a>; Powered by Esri and Turf.js'
                         maxZoom={22}
-                        minZoom={7}
+                        minZoom={2}
                         noWrap
                     />
                 )}
