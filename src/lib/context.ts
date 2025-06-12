@@ -203,3 +203,5 @@ export const thunderforestApiKey = persistentAtom<string>(
         decode: (value: string) => value,
     },
 );
+
+export const pastebinApiKey = persistentAtom<string>("pastebinApiKey", "");

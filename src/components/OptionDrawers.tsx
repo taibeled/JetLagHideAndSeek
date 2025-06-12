@@ -25,6 +25,7 @@ import {
     leafletMapContext,
     mapGeoJSON,
     mapGeoLocation,
+    pastebinApiKey,
     planningModeEnabled,
     polyGeoJSON,
     questions,
@@ -32,7 +33,13 @@ import {
     thunderforestApiKey,
     triggerLocalRefresh,
 } from "@/lib/context";
-import { cn, compress, decompress } from "@/lib/utils";
+import {
+    cn,
+    compress,
+    decompress,
+    fetchFromPastebin,
+    uploadToPastebin,
+} from "@/lib/utils";
 import { questionsSchema } from "@/maps/schema";
 
 import { LatitudeLongitude } from "./LatLngPicker";
@@ -63,13 +70,18 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $hidingZone = useStore(hidingZone);
     const $planningMode = useStore(planningModeEnabled);
     const $thunderforestApiKey = useStore(thunderforestApiKey);
+    const $pastebinApiKey = useStore(pastebinApiKey);
     const [isInstructionsOpen, setInstructionsOpen] = useState(false);
     const [isOptionsOpen, setOptionsOpen] = useState(false);
 
     useEffect(() => {
         const params = new URL(window.location.toString()).searchParams;
         const hidingZoneOld = params.get(HIDING_ZONE_URL_PARAM);
-        const hidingZone = params.get(HIDING_ZONE_COMPRESSED_URL_PARAM);
+        const hidingZoneCompressed = params.get(
+            HIDING_ZONE_COMPRESSED_URL_PARAM,
+        );
+        const pastebinId = params.get("pb");
+
         if (hidingZoneOld !== null) {
             // Legacy base64 encoding
             try {
@@ -79,9 +91,9 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
             } catch (e) {
                 toast.error(`Invalid hiding zone settings: ${e}`);
             }
-        } else if (hidingZone !== null) {
+        } else if (hidingZoneCompressed !== null) {
             // Modern compressed format
-            decompress(hidingZone).then((data) => {
+            decompress(hidingZoneCompressed).then((data) => {
                 try {
                     loadHidingZone(data);
                     // Remove hiding zone parameter after initial load
@@ -94,6 +106,30 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                     toast.error(`Invalid hiding zone settings: ${e}`);
                 }
             });
+        } else if (pastebinId !== null) {
+            fetchFromPastebin(pastebinId)
+                .then((data) => {
+                    try {
+                        loadHidingZone(data);
+                        // Remove pb parameter after initial load
+                        window.history.replaceState(
+                            {},
+                            "",
+                            window.location.pathname,
+                        );
+                        toast.success(
+                            "Successfully loaded data from Pastebin link!",
+                        );
+                    } catch (e) {
+                        toast.error(`Invalid data from Pastebin: ${e}`);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Failed to fetch from Pastebin:", error);
+                    toast.error(
+                        `Failed to load from Pastebin: ${error.message}`,
+                    );
+                });
         }
     }, []);
 
@@ -164,28 +200,69 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
             <Button
                 className="shadow-md"
                 onClick={async () => {
-                    const b64 = await compress(JSON.stringify($hidingZone));
-                    const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}?${HIDING_ZONE_COMPRESSED_URL_PARAM}=${b64}`;
+                    const hidingZoneString = JSON.stringify($hidingZone);
+                    let compressedData;
+                    try {
+                        compressedData = await compress(hidingZoneString);
+                    } catch (error) {
+                        console.error("Compression failed:", error);
+                        toast.error(`Failed to prepare data for sharing`);
+                        return;
+                    }
+
+                    const baseUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
+                    let shareUrl = `${baseUrl}?${HIDING_ZONE_COMPRESSED_URL_PARAM}=${compressedData}`;
+
+                    if (shareUrl.length > 2000) {
+                        if (!$pastebinApiKey) {
+                            toast.error(
+                                "Data is too large for a URL. Please enter a Pastebin API key in Options to share via Pastebin.",
+                            );
+                            return;
+                        }
+                        try {
+                            toast.info(
+                                "Data is large, attempting to share via Pastebin...",
+                            );
+                            const pastebinUrl = await uploadToPastebin(
+                                $pastebinApiKey,
+                                hidingZoneString,
+                            );
+                            const pasteId = pastebinUrl.substring(
+                                pastebinUrl.lastIndexOf("/") + 1,
+                            );
+                            shareUrl = `${baseUrl}?pb=${pasteId}`;
+                            toast.success(
+                                "Successfully uploaded to Pastebin! URL is ready to be shared.",
+                            );
+                        } catch (error) {
+                            console.error("Pastebin upload failed:", error);
+                            toast.error(
+                                `Pastebin upload failed. Please check your API key and try again.`,
+                            );
+                            return;
+                        }
+                    }
 
                     // Show platform native share sheet if possible
                     if (navigator.share) {
                         navigator
                             .share({
                                 title: document.title,
-                                url: url,
+                                url: shareUrl,
                             })
                             .catch(() =>
                                 toast.error(
-                                    "Failed to share via OS. You may have disabled too many stations.",
+                                    "Failed to share via OS. If data is very large, ensure Pastebin settings are correct.",
                                 ),
                             );
                     } else if (!navigator || !navigator.clipboard) {
                         return toast.error(
-                            `Clipboard not supported. Try manually copying/pasting: ${url}`,
+                            `Clipboard not supported. Try manually copying/pasting: ${shareUrl}`,
                             { className: "p-0 w-[1000px]" },
                         );
                     } else {
-                        navigator.clipboard.writeText(url);
+                        navigator.clipboard.writeText(shareUrl);
                         toast.success("Hiding zone URL copied to clipboard", {
                             autoClose: 2000,
                         });
@@ -415,6 +492,32 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     <Separator className="bg-slate-300 w-[280px]" />{" "}
                                 </>
                             )}
+                            <Separator className="bg-slate-300 w-[280px]" />
+                            <div className="flex flex-col items-center gap-2">
+                                <Label>Pastebin API Key</Label>
+                                <Input
+                                    type="text"
+                                    value={$pastebinApiKey}
+                                    onChange={(e) =>
+                                        pastebinApiKey.set(e.target.value)
+                                    }
+                                    placeholder="Enter your Pastebin API key"
+                                />
+                                <p className="text-xs text-gray-500">
+                                    Needed for sharing large game data. Create a
+                                    key{" "}
+                                    <a
+                                        href="https://pastebin.com/doc_api"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-500 cursor-pointer"
+                                    >
+                                        here
+                                    </a>
+                                    .
+                                </p>
+                            </div>
+                            <Separator className="bg-slate-300 w-[280px]" />
                             <div className="flex flex-row items-center gap-2">
                                 <label className="text-2xl font-semibold font-poppins">
                                     Enable planning mode?
