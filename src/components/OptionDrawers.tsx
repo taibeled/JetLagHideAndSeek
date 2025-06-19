@@ -59,6 +59,7 @@ import { UnitSelect } from "./UnitSelect";
 
 const HIDING_ZONE_URL_PARAM = "hz";
 const HIDING_ZONE_COMPRESSED_URL_PARAM = "hzc";
+const PASTEBIN_URL_PARAM = "pb";
 
 export const OptionDrawers = ({ className }: { className?: string }) => {
     useStore(triggerLocalRefresh);
@@ -84,7 +85,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
         const hidingZoneCompressed = params.get(
             HIDING_ZONE_COMPRESSED_URL_PARAM,
         );
-        const pastebinId = params.get("pb");
+        const pastebinId = params.get(PASTEBIN_URL_PARAM);
 
         if (hidingZoneOld !== null) {
             // Legacy base64 encoding
@@ -233,7 +234,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                             const pasteId = pastebinUrl.substring(
                                 pastebinUrl.lastIndexOf("/") + 1,
                             );
-                            shareUrl = `${baseUrl}?pb=${pasteId}`;
+                            shareUrl = `${baseUrl}?${PASTEBIN_URL_PARAM}=${pasteId}`;
                             toast.success(
                                 "Successfully uploaded to Pastebin! URL is ready to be shared.",
                             );
