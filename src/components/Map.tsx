@@ -4,7 +4,7 @@ import "leaflet-contextmenu";
 
 import { useStore } from "@nanostores/react";
 import * as turf from "@turf/turf";
-import { geoJSON } from "leaflet";
+import * as L from "leaflet";
 import { useEffect, useMemo } from "react";
 import { MapContainer, ScaleControl, TileLayer } from "react-leaflet";
 import { toast } from "react-toastify";
@@ -14,6 +14,7 @@ import {
     addQuestion,
     animateMapMovements,
     autoZoom,
+    followMe,
     hiderMode,
     highlightTrainLines,
     isLoading,
@@ -45,7 +46,17 @@ export const Map = ({ className }: { className?: string }) => {
     const $thunderforestApiKey = useStore(thunderforestApiKey);
     const $hiderMode = useStore(hiderMode);
     const $isLoading = useStore(isLoading);
+    const $followMe = useStore(followMe);
     const map = useStore(leafletMapContext);
+
+    const followMeMarkerRef = useMemo(
+        () => ({ current: null as L.Marker | null }),
+        [],
+    );
+    const geoWatchIdRef = useMemo(
+        () => ({ current: null as number | null }),
+        [],
+    );
 
     const refreshQuestions = async (focus: boolean = false) => {
         if (!map) return;
@@ -100,7 +111,7 @@ export const Map = ({ className }: { className?: string }) => {
                 mapGeoData,
                 planningModeEnabled.get(),
                 (geoJSONObj, question) => {
-                    const geoJSONPlane = geoJSON(geoJSONObj);
+                    const geoJSONPlane = L.geoJSON(geoJSONObj);
                     // @ts-expect-error This is a check such that only this type of layer is removed
                     geoJSONPlane.questionKey = question.key;
                     geoJSONPlane.addTo(map);
@@ -119,7 +130,7 @@ export const Map = ({ className }: { className?: string }) => {
                 }
             });
 
-            const g = geoJSON(mapGeoData);
+            const g = L.geoJSON(mapGeoData);
             // @ts-expect-error This is a check such that only this type of layer is removed
             g.eliminationGeoJSON = true;
             g.addTo(map);
@@ -354,6 +365,60 @@ export const Map = ({ className }: { className?: string }) => {
             );
         };
     }, []);
+
+    useEffect(() => {
+        if (!map) return;
+        if (!$followMe) {
+            if (followMeMarkerRef.current) {
+                map.removeLayer(followMeMarkerRef.current);
+                followMeMarkerRef.current = null;
+            }
+            if (geoWatchIdRef.current !== null) {
+                navigator.geolocation.clearWatch(geoWatchIdRef.current);
+                geoWatchIdRef.current = null;
+            }
+            return;
+        }
+
+        geoWatchIdRef.current = navigator.geolocation.watchPosition(
+            (pos) => {
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+                if (followMeMarkerRef.current) {
+                    followMeMarkerRef.current.setLatLng([lat, lng]);
+                } else {
+                    const marker = L.marker([lat, lng], {
+                        icon: L.divIcon({
+                            html: `<div class="text-blue-700 bg-white rounded-full border-2 border-blue-700 shadow w-5 h-5 flex items-center justify-center"><svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="#2A81CB" opacity="0.5"/><circle cx="8" cy="8" r="3" fill="#2A81CB"/></svg></div>`,
+                            className: "",
+                        }),
+                        zIndexOffset: 1000,
+                    });
+                    marker.addTo(map);
+                    followMeMarkerRef.current = marker;
+                }
+
+                if ($hiderMode !== false && $followMe) {
+                    hiderMode.set({ latitude: lat, longitude: lng });
+                }
+            },
+            () => {
+                toast.error("Unable to access your location.");
+                followMe.set(false);
+            },
+            { enableHighAccuracy: true, maximumAge: 10000, timeout: 20000 },
+        );
+        return () => {
+            if (followMeMarkerRef.current) {
+                map.removeLayer(followMeMarkerRef.current);
+                followMeMarkerRef.current = null;
+            }
+            if (geoWatchIdRef.current !== null) {
+                navigator.geolocation.clearWatch(geoWatchIdRef.current);
+                geoWatchIdRef.current = null;
+            }
+        };
+    }, [$followMe, map]);
 
     return displayMap;
 };

@@ -18,6 +18,7 @@ import {
     defaultUnit,
     disabledStations,
     displayHidingZonesOptions,
+    followMe,
     hiderMode,
     hidingRadius,
     hidingZone,
@@ -63,6 +64,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $hidingZone = useStore(hidingZone);
     const $planningMode = useStore(planningModeEnabled);
     const $thunderforestApiKey = useStore(thunderforestApiKey);
+    const $followMe = useStore(followMe);
     const [isInstructionsOpen, setInstructionsOpen] = useState(false);
     const [isOptionsOpen, setOptionsOpen] = useState(false);
 
@@ -462,6 +464,17 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     checked={$autoZoom}
                                     onCheckedChange={() =>
                                         autoZoom.set(!$autoZoom)
+                                    }
+                                />
+                            </div>
+                            <div className="flex flex-row items-center gap-2">
+                                <label className="text-2xl font-semibold font-poppins">
+                                    Follow Me (GPS)?
+                                </label>
+                                <Checkbox
+                                    checked={$followMe}
+                                    onCheckedChange={() =>
+                                        followMe.set(!$followMe)
                                     }
                                 />
                             </div>
