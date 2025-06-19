@@ -160,6 +160,7 @@ const LatLngEditForm = ({
                 <Label className="min-w-16">Latitude</Label>
                 <Input
                     type="number"
+                    inputMode="decimal"
                     value={Math.abs(latitude)}
                     min={0}
                     max={90}
@@ -185,6 +186,7 @@ const LatLngEditForm = ({
                 <Label className="min-w-16">Longitude</Label>
                 <Input
                     type="number"
+                    inputMode="decimal"
                     value={Math.abs(longitude)}
                     min={0}
                     max={180}
