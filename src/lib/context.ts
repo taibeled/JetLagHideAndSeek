@@ -209,3 +209,11 @@ export const followMe = persistentAtom<boolean>("followMe", false, {
 });
 
 export const pastebinApiKey = persistentAtom<string>("pastebinApiKey", "");
+export const alwaysUsePastebin = persistentAtom<boolean>(
+    "alwaysUsePastebin",
+    false,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);

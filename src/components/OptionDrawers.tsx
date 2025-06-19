@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/drawer";
 import {
     additionalMapGeoLocations,
+    alwaysUsePastebin,
     animateMapMovements,
     autoSave,
     autoZoom,
@@ -72,6 +73,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $planningMode = useStore(planningModeEnabled);
     const $thunderforestApiKey = useStore(thunderforestApiKey);
     const $pastebinApiKey = useStore(pastebinApiKey);
+    const $alwaysUsePastebin = useStore(alwaysUsePastebin);
     const $followMe = useStore(followMe);
     const [isInstructionsOpen, setInstructionsOpen] = useState(false);
     const [isOptionsOpen, setOptionsOpen] = useState(false);
@@ -215,17 +217,15 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                     const baseUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
                     let shareUrl = `${baseUrl}?${HIDING_ZONE_COMPRESSED_URL_PARAM}=${compressedData}`;
 
-                    if (shareUrl.length > 2000) {
+                    if ($alwaysUsePastebin || shareUrl.length > 2000) {
                         if (!$pastebinApiKey) {
                             toast.error(
-                                "Data is too large for a URL. Please enter a Pastebin API key in Options to share via Pastebin.",
+                                "Data is too large for a URL or Pastebin is forced. Please enter a Pastebin API key in Options to share via Pastebin.",
                             );
                             return;
                         }
                         try {
-                            toast.info(
-                                "Data is large, attempting to share via Pastebin...",
-                            );
+                            toast.info("Data is being shared via Pastebin...");
                             const pastebinUrl = await uploadToPastebin(
                                 $pastebinApiKey,
                                 hidingZoneString,
@@ -520,6 +520,19 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 </p>
                             </div>
                             <Separator className="bg-slate-300 w-[280px]" />
+                            <div className="flex flex-row items-center gap-2">
+                                <label className="text-2xl font-semibold font-poppins">
+                                    Force Pastebin for sharing?
+                                </label>
+                                <Checkbox
+                                    checked={$alwaysUsePastebin}
+                                    onCheckedChange={() =>
+                                        alwaysUsePastebin.set(
+                                            !$alwaysUsePastebin,
+                                        )
+                                    }
+                                />
+                            </div>
                             <div className="flex flex-row items-center gap-2">
                                 <label className="text-2xl font-semibold font-poppins">
                                     Enable planning mode?
