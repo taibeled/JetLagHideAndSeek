@@ -398,7 +398,8 @@ export const Map = ({ className }: { className?: string }) => {
                     followMeMarkerRef.current = marker;
                 }
 
-                if ($hiderMode !== false && $followMe) {
+                // Local values cannot be used here, as then disabling hider mode while follow me is active won't work.
+                if (hiderMode.get() !== false && followMe.get()) {
                     hiderMode.set({ latitude: lat, longitude: lng });
                 }
             },
