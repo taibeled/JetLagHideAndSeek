@@ -207,3 +207,5 @@ export const followMe = persistentAtom<boolean>("followMe", false, {
     encode: JSON.stringify,
     decode: JSON.parse,
 });
+
+export const pastebinApiKey = persistentAtom<string>("pastebinApiKey", "");
