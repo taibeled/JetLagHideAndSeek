@@ -397,11 +397,6 @@ export const Map = ({ className }: { className?: string }) => {
                     marker.addTo(map);
                     followMeMarkerRef.current = marker;
                 }
-
-                // Local values cannot be used here, as then disabling hider mode while follow me is active won't work.
-                if (hiderMode.get() !== false && followMe.get()) {
-                    hiderMode.set({ latitude: lat, longitude: lng });
-                }
             },
             () => {
                 toast.error("Unable to access your location.");
