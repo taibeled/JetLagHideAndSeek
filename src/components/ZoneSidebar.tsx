@@ -478,7 +478,7 @@ export const ZoneSidebar = () => {
                                     <Input
                                         type="number"
                                         className="rounded-md p-2 w-16"
-                                        defaultValue={$hidingRadius}
+                                        value={$hidingRadius}
                                         onChange={(e) => {
                                             hidingRadius.set(
                                                 parseFloat(e.target.value),
