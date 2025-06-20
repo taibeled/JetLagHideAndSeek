@@ -19,6 +19,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
+import { useDebounce } from "@/hooks/useDebounce";
 import { cn } from "@/lib/utils";
 
 /**
@@ -109,6 +110,12 @@ interface MultiSelectProps
      * Optional, can be used to add custom styles.
      */
     className?: string;
+
+    /**
+     * Debounce time in milliseconds for onValueChange callback.
+     * Optional, defaults to 500ms.
+     */
+    debounce?: number;
 }
 
 export const MultiSelect = React.forwardRef<
@@ -126,15 +133,20 @@ export const MultiSelect = React.forwardRef<
             maxCount = 3,
             modalPopover = false,
             className,
+            debounce = 500,
             ...props
         },
         ref,
     ) => {
-        const [selectedValues, setSelectedValues] =
-            React.useState<string[]>(defaultValue);
+        const [selectedValues, setSelectedValues] = React.useState<string[]>(defaultValue);
         const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [isAnimating, setIsAnimating] = React.useState(false);
+
+        const debouncedSelectedValues = useDebounce(selectedValues, debounce);
+        React.useEffect(() => {
+            onValueChange(debouncedSelectedValues);
+        }, [debouncedSelectedValues]);
 
         const handleInputKeyDown = (
             event: React.KeyboardEvent<HTMLInputElement>,
@@ -148,7 +160,6 @@ export const MultiSelect = React.forwardRef<
                 const newSelectedValues = [...selectedValues];
                 newSelectedValues.pop();
                 setSelectedValues(newSelectedValues);
-                onValueChange(newSelectedValues);
             }
         };
 
@@ -157,12 +168,10 @@ export const MultiSelect = React.forwardRef<
                 ? selectedValues.filter((value) => value !== option)
                 : [...selectedValues, option];
             setSelectedValues(newSelectedValues);
-            onValueChange(newSelectedValues);
         };
 
         const handleClear = () => {
             setSelectedValues([]);
-            onValueChange([]);
         };
 
         const handleTogglePopover = () => {
@@ -172,7 +181,6 @@ export const MultiSelect = React.forwardRef<
         const clearExtraOptions = () => {
             const newSelectedValues = selectedValues.slice(0, maxCount);
             setSelectedValues(newSelectedValues);
-            onValueChange(newSelectedValues);
         };
 
         const toggleAll = () => {
@@ -181,7 +189,6 @@ export const MultiSelect = React.forwardRef<
             } else {
                 const allValues = options.map((option) => option.value);
                 setSelectedValues(allValues);
-                onValueChange(allValues);
             }
         };
 
