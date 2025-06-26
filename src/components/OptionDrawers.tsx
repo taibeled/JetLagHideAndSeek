@@ -269,6 +269,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                         });
                     }
                 }}
+                data-tutorial-id="share-questions-button"
             >
                 Share
             </Button>
@@ -282,7 +283,12 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
             </Button>
             <Drawer open={isOptionsOpen} onOpenChange={setOptionsOpen}>
                 <DrawerTrigger className="w-24" asChild>
-                    <Button className="w-24 shadow-md">Options</Button>
+                    <Button
+                        className="w-24 shadow-md"
+                        data-tutorial-id="option-questions-button"
+                    >
+                        Options
+                    </Button>
                 </DrawerTrigger>
                 <DrawerContent>
                     <div className="flex flex-col items-center gap-4 mb-4">

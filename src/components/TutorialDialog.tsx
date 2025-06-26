@@ -13,12 +13,15 @@ import { Button } from "@/components/ui/button";
 import { showTutorial, tutorialStep } from "@/lib/context";
 import { cn } from "@/lib/utils";
 
+import { RadiusQuestionComponent } from "./QuestionCards";
+import { SidebarGroup, SidebarMenu } from "./ui/sidebar-l";
+
 interface TutorialStep {
     title: string;
     content: ReactNode;
-    image?: string;
     targetSelector?: string; // CSS selector for the element to highlight
     position?: "top" | "bottom" | "center"; // Where to position the dialog relative to target
+    isDescription?: boolean;
 }
 
 const tutorialSteps: TutorialStep[] = [
@@ -62,14 +65,14 @@ const tutorialSteps: TutorialStep[] = [
     {
         title: "Setting Your Location (continued)",
         content: (
-            <span className="max-h-[200px] md:h-auto overflow-y-scroll md:overflow-y-auto block">
+            <>
                 In this menu, you can determine the location that you will play
                 the game in. To start, search for a location and click it. Then,
                 it will be added to the map. You can also change it to subtract
                 from the map by clicking the + button next to the location. If
                 you want to remove a location, click the X button next to it.
                 Coordinate this with other players.
-            </span>
+            </>
         ),
         targetSelector: '[data-tutorial-id="place-picker-content"]',
         position: "bottom",
@@ -77,11 +80,11 @@ const tutorialSteps: TutorialStep[] = [
     {
         title: "Setting Your Location (continued 2)",
         content: (
-            <span className="max-h-[200px] md:h-auto overflow-y-scroll md:overflow-y-auto block">
+            <>
                 In addition to using preset locations, you can also draw the
                 bounds with polygons. We will get to sharing this with other
                 players later.
-            </span>
+            </>
         ),
         targetSelector: ".leaflet-draw-draw-polygon",
         position: "top",
@@ -89,16 +92,130 @@ const tutorialSteps: TutorialStep[] = [
     {
         title: "Adding Questions",
         content: (
-            <span className="max-h-[200px] md:h-auto overflow-y-scroll md:overflow-y-auto block">
+            <>
                 Once you have coordinated the location with other players, you
                 can start the game. First, you need to add questions. One of the
-                ways of doing this is by opening the question sidebar and
-                clicking the highlighted button. Proceed to the next step for it
-                to be clicked automatically.
-            </span>
+                ways of doing this is by opening the question sidebar. To do
+                that, click the highlighted button. Proceed to the next step for
+                it to be clicked automatically.
+            </>
         ),
         targetSelector: '[data-tutorial-id="left-sidebar-trigger"]',
         position: "bottom",
+    },
+    {
+        title: "Adding Questions (continued)",
+        content: (
+            <>
+                Having opened the sidebar, you can now add questions by clicking
+                one of the highlighted buttons.
+            </>
+        ),
+        targetSelector: '[data-tutorial-id="add-questions-buttons"]',
+        position: "top",
+    },
+    {
+        title: "Question Properties",
+        content: (
+            <>
+                Below is a sample question.{" "}
+                <strong>Do not modify anything in it now.</strong> However, in
+                your game, you will be able to modify the size of the radius,
+                the units, the location, and whether the hider is within the
+                radius or outside of it. Similar functions exist for all other
+                question types (excluding photos for obvious reasons). In total,
+                this tool has implemented 48 different unique questions!
+                <SidebarGroup className="text-foreground">
+                    <SidebarMenu>
+                        <RadiusQuestionComponent
+                            questionKey={Math.random()}
+                            data={{
+                                collapsed: false,
+                                drag: true,
+                                lat: Math.random() * 180 - 90,
+                                lng: Math.random() * 360 - 180,
+                                radius: 10,
+                                unit: "miles",
+                                color: "blue",
+                                within: false,
+                            }}
+                        />
+                    </SidebarMenu>
+                </SidebarGroup>
+            </>
+        ),
+        isDescription: false,
+        position: "center",
+    },
+    {
+        title: "Sharing Questions",
+        content: (
+            <>
+                Once you have decided on either the location or the questions,
+                you can share them with other players by clicking the
+                highlighted button. This will generate a link that you can send
+                to other players. They can then open the link to see all aspects
+                of the game state.
+            </>
+        ),
+        targetSelector: '[data-tutorial-id="share-questions-button"]',
+        position: "top",
+    },
+    {
+        title: "Options",
+        content: (
+            <>
+                This tool also has many options that you can configure. One of
+                the most important ones is &ldquo;Hider Mode&rdquo;. If you
+                enable it, the hider will be asked to enter their location. All
+                questions will then automatically be answered accordingly.{" "}
+                <strong>
+                    A neat trick is to have the seekers share the link with the
+                    questions they are to ask and then have the hider open that
+                    link while in Hider Mode. Then, they can share their new
+                    state with the seekers, automatically answering all of the
+                    questions.
+                </strong>{" "}
+                Don&apos;t worry, the hider&apos;s location will not be shared
+                with the seekers through this route.
+                <br />
+                There are many more options, most of which are rather
+                self-explanatory.
+            </>
+        ),
+        targetSelector: '[data-tutorial-id="option-questions-button"]',
+        position: "top",
+    },
+    {
+        title: "Enjoy!",
+        content: (
+            <>
+                You are now ready to play the game! If you have any questions,
+                feel free to{" "}
+                <a
+                    href="https://github.com/taibeled/JetLagHideAndSeek/issues"
+                    className="text-blue-500 cursor-pointer"
+                    target="_blank"
+                    rel="noreferrer"
+                >
+                    post an issue on GitHub.
+                </a>{" "}
+                I&apos;d love to hear your feedback and suggestions for
+                improvements. One final pitch, if you want to support the, as of
+                writing this, 11,421 lines of code comprising this project,
+                please consider{" "}
+                <a
+                    href="https://github.com/taibeled/JetLagHideAndSeek"
+                    className="text-blue-500 cursor-pointer"
+                    target="_blank"
+                    rel="noreferrer"
+                >
+                    leaving a free GitHub star.
+                </a>{" "}
+                Thank you!
+            </>
+        ),
+        position: "center",
     },
 ];
 
@@ -202,7 +319,6 @@ export const TutorialDialog = () => {
             const maxWidth = isMobile ? window.innerWidth - 40 : 680;
 
             dialogElement.style.maxWidth = `${maxWidth}px`;
-            dialogElement.style.maxHeight = "90vh";
             dialogElement.style.width = "auto";
             dialogElement.style.height = "auto";
 
@@ -409,10 +525,10 @@ export const TutorialDialog = () => {
                     ref={dialogRef}
                     className={cn(
                         "fixed z-[10000] grid w-full gap-4 border bg-background p-4 md:p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:rounded-lg",
-                        "max-h-[90vh] overflow-y-auto tutorial-dialog",
+                        "!max-h-[50vh] overflow-y-auto tutorial-dialog",
                         // Only apply default center positioning for non-targeted steps
                         !currentTutorialStep.targetSelector &&
-                            "left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]",
+                            "left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] !max-h-[90vh]",
                     )}
                     style={{
                         maxWidth: "min(680px, calc(100vw - 40px))",
@@ -443,20 +559,17 @@ export const TutorialDialog = () => {
                         </div>
                     </AlertDialogHeader>
 
-                    <AlertDialogDescription className="text-base leading-relaxed whitespace-pre-line">
-                        {currentTutorialStep.content}
-                    </AlertDialogDescription>
-
-                    {currentTutorialStep.image && (
-                        <div className="flex justify-center py-4">
-                            <img
-                                src={currentTutorialStep.image}
-                                alt={currentTutorialStep.title}
-                                className="max-w-full h-auto rounded-lg border"
-                            />
+                    {(currentTutorialStep.isDescription ?? true) ? (
+                        <AlertDialogDescription className="text-base leading-relaxed whitespace-pre-line">
+                            {currentTutorialStep.content}
+                        </AlertDialogDescription>
+                    ) : (
+                        <div className="text-base leading-relaxed whitespace-pre-line text-muted-foreground">
+                            {currentTutorialStep.content}
                         </div>
                     )}
-                    <div className="flex flex-col md:flex-row gap-y-2 justify-between items-center pt-4">
+
+                    <div className="flex flex-col gap-y-2 justify-between items-center pt-4">
                         <div className="flex items-center space-x-2">
                             <Button
                                 variant="outline"
@@ -468,10 +581,9 @@ export const TutorialDialog = () => {
                             <div className="hidden md:block text-xs text-muted-foreground">
                                 Use arrow keys to navigate
                             </div>
-                        </div>
-
-                        <div className="text-sm text-muted-foreground">
-                            {$tutorialStep + 1} of {tutorialSteps.length}
+                            <div className="text-sm text-muted-foreground">
+                                {$tutorialStep + 1} of {tutorialSteps.length}
+                            </div>
                         </div>
 
                         <div className="flex items-center space-x-2">
