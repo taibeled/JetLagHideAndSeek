@@ -138,7 +138,8 @@ export const MultiSelect = React.forwardRef<
         },
         ref,
     ) => {
-        const [selectedValues, setSelectedValues] = React.useState<string[]>(defaultValue);
+        const [selectedValues, setSelectedValues] =
+            React.useState<string[]>(defaultValue);
         const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [isAnimating, setIsAnimating] = React.useState(false);

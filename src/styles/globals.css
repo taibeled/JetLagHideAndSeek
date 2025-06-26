@@ -132,3 +132,51 @@ div.leaflet-control-attribution.leaflet-control {
         @apply bg-background text-foreground;
     }
 }
+
+/* Tutorial overlay animations */
+@keyframes breathe {
+    0%,
+    100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(1.02);
+    }
+}
+
+@keyframes tutorialPulse {
+    0%,
+    100% {
+        border-color: rgba(59, 130, 246, 0.8);
+        box-shadow:
+            0 0 0 4px rgba(59, 130, 246, 0.8),
+            0 0 0 8px rgba(59, 130, 246, 0.4),
+            0 0 0 9999px rgba(0, 0, 0, 0.6),
+            0 0 20px rgba(59, 130, 246, 0.6);
+    }
+    50% {
+        border-color: rgba(59, 130, 246, 1);
+        box-shadow:
+            0 0 0 6px rgba(59, 130, 246, 1),
+            0 0 0 12px rgba(59, 130, 246, 0.6),
+            0 0 0 9999px rgba(0, 0, 0, 0.6),
+            0 0 40px rgba(59, 130, 246, 0.8);
+    }
+}
+
+/* Add pulsing class */
+.tutorial-highlight-pulse {
+    animation: tutorialPulse 2s infinite ease-in-out;
+}
+
+/* Smooth transitions for tutorial dialog positioning */
+.tutorial-dialog {
+    transition: all 0.3s ease-out;
+}
+
+/* Override default dialog positioning when tutorial is active */
+[data-tutorial-active="true"] [role="dialog"] {
+    position: fixed !important;
+}
