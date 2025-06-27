@@ -84,7 +84,7 @@ export const PlacePicker = ({
     }, [debouncedValue]);
 
     return (
-        <Popover open={useTutorialStep(open, [2])} onOpenChange={setOpen}>
+        <Popover open={useTutorialStep(open, [3])} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button
                     variant="outline"
