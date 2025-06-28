@@ -47,10 +47,10 @@ const tutorialSteps: TutorialStep[] = [
                 variations found in the game!
                 <br />
                 <br />
-                If you&apos;re already familiar with the basics, feel free to
-                <strong>skip this tutorial by scrolling down</strong>. However, this guide covers advanced features
-                you might not know about. To support this free tool, please
-                consider{" "}
+                If you&apos;re already familiar with the basics, feel free to{" "}
+                <strong>skip this tutorial by scrolling down</strong>. However,
+                this guide covers advanced features you might not know about. To
+                support this free tool, please consider{" "}
                 <a
                     href="https://github.com/taibeled/JetLagHideAndSeek"
                     className="text-blue-500 cursor-pointer"
