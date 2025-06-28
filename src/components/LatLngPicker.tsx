@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useDebounce } from "@/hooks/useDebounce";
 import { isLoading } from "@/lib/context";
-import { cn } from "@/lib/utils";
+import { cn, normalizeDecimalInput } from "@/lib/utils";
 import { determineName, geocode, ICON_COLORS } from "@/maps/api";
 
 import { Button } from "./ui/button";
@@ -165,9 +165,9 @@ const LatLngEditForm = ({
                     min={0}
                     max={90}
                     onChange={(e) => {
-                        if (isNaN(parseFloat(e.target.value))) return;
+                        if (isNaN(normalizeDecimalInput(e.target.value))) return;
                         onChange(
-                            parseFloat(e.target.value) *
+                            normalizeDecimalInput(e.target.value) *
                                 (latitude !== 0 ? Math.sign(latitude) : -1),
                             null,
                         );
@@ -191,10 +191,10 @@ const LatLngEditForm = ({
                     min={0}
                     max={180}
                     onChange={(e) => {
-                        if (isNaN(parseFloat(e.target.value))) return;
+                        if (isNaN(normalizeDecimalInput(e.target.value))) return;
                         onChange(
                             null,
-                            parseFloat(e.target.value) *
+                            normalizeDecimalInput(e.target.value) *
                                 (longitude !== 0 ? Math.sign(longitude) : -1),
                         );
                     }}

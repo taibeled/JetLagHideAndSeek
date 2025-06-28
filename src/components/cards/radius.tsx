@@ -16,7 +16,7 @@ import {
     questions,
     triggerLocalRefresh,
 } from "@/lib/context";
-import { cn } from "@/lib/utils";
+import { cn, normalizeDecimalInput } from "@/lib/utils";
 import type { RadiusQuestion } from "@/maps/schema";
 
 import { QuestionCard } from "./base";
@@ -67,7 +67,7 @@ export const RadiusQuestionComponent = ({
                         disabled={!data.drag || $isLoading}
                         onChange={(e) =>
                             questionModified(
-                                (data.radius = parseFloat(e.target.value)),
+                                (data.radius = normalizeDecimalInput(e.target.value)),
                             )
                         }
                     />
