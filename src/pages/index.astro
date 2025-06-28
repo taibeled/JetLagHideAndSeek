@@ -13,6 +13,7 @@ import {
 import { QuestionSidebar } from "@/components/QuestionSidebar";
 import { ZoneSidebar } from "@/components/ZoneSidebar";
 import { OptionDrawers } from "@/components/OptionDrawers";
+import { TutorialDialog } from "@/components/TutorialDialog";
 ---
 
 <Layout className="bg-jetlag">
@@ -27,6 +28,7 @@ import { OptionDrawers } from "@/components/OptionDrawers";
                     <div class="w-full h-full relative">
                         <div
                             class="absolute top-[72px] md:top-2 left-2 z-[1030] group-[.fullscreen]:hidden"
+                            data-tutorial-id="left-sidebar-trigger"
                         >
                             <SidebarTriggerL client:load />
                         </div>
@@ -56,6 +58,7 @@ import { OptionDrawers } from "@/components/OptionDrawers";
                 </div>
             </main>
             <ZoneSidebar client:only />
+            <TutorialDialog client:only />
         </SidebarProviderR>
     </SidebarProviderL>
 </Layout>

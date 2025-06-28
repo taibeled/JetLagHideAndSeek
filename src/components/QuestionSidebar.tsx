@@ -98,7 +98,7 @@ export const QuestionSidebar = () => {
             </SidebarContent>
             <SidebarGroup>
                 <SidebarGroupContent>
-                    <SidebarMenu>
+                    <SidebarMenu data-tutorial-id="add-questions-buttons">
                         <SidebarMenuItem>
                             <SidebarMenuButton
                                 onClick={() => {
