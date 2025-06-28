@@ -48,7 +48,7 @@ const tutorialSteps: TutorialStep[] = [
                 <br />
                 <br />
                 If you&apos;re already familiar with the basics, feel free to
-                skip this tutorial. However, this guide covers advanced features
+                <strong>skip this tutorial by scrolling down</strong>. However, this guide covers advanced features
                 you might not know about. To support this free tool, please
                 consider{" "}
                 <a
