@@ -196,12 +196,23 @@ const tutorialSteps: TutorialStep[] = [
         position: "bottom",
     },
     {
-        title: "Question Creation Interface",
+        title: "Question Creation Interface (Part 1)",
         content: (
             <>
                 This sidebar is your question command center. Each button
-                creates a different question type. Here are the sample
-                questions:
+                creates a different question type. Proceed to the next step to
+                learn about each question type in detail.
+                {/* Scrolling does not function for the tutorial when the sidebar dialog is open. */}
+            </>
+        ),
+        targetSelector: '[data-tutorial-id="add-questions-buttons"]',
+        position: "top",
+    },
+    {
+        title: "Question Creation Interface (Part 2)",
+        content: (
+            <>
+                Here are the sample questions:
                 <br />
                 <br />
                 <strong>1. RADIUS:</strong> &ldquo;Is the hider within X
@@ -235,8 +246,7 @@ const tutorialSteps: TutorialStep[] = [
                 auto-save is disabled, allowing manual saves
             </>
         ),
-        targetSelector: '[data-tutorial-id="add-questions-buttons"]',
-        position: "top",
+        position: "center",
     },
     {
         title: "Radius Questions: The Foundation",
