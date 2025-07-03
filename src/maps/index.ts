@@ -30,22 +30,24 @@ import type { Question, Questions } from "./schema";
 export * from "./geo-utils";
 
 export const hiderifyQuestion = async (question: Question) => {
-    switch (question.id) {
-        case "radius":
-            question.data = hiderifyRadius(question.data);
-            break;
-        case "thermometer":
-            question.data = await hiderifyThermometer(question.data);
-            break;
-        case "tentacles":
-            question.data = await hiderifyTentacles(question.data);
-            break;
-        case "matching":
-            question.data = await hiderifyMatching(question.data);
-            break;
-        case "measuring":
-            question.data = await hiderifyMeasuring(question.data);
-            break;
+    if (question.data.drag) {
+        switch (question.id) {
+            case "radius":
+                question.data = hiderifyRadius(question.data);
+                break;
+            case "thermometer":
+                question.data = await hiderifyThermometer(question.data);
+                break;
+            case "tentacles":
+                question.data = await hiderifyTentacles(question.data);
+                break;
+            case "matching":
+                question.data = await hiderifyMatching(question.data);
+                break;
+            case "measuring":
+                question.data = await hiderifyMeasuring(question.data);
+                break;
+        }
     }
 
     return question;
