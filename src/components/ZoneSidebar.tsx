@@ -7,7 +7,6 @@ import osmtogeojson from "osmtogeojson";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
-import { Select } from "@/components/ui/select";
 import {
     Sidebar,
     SidebarContent,
@@ -24,6 +23,7 @@ import {
     displayHidingZones,
     displayHidingZonesOptions,
     hidingRadius,
+    hidingRadiusUnits,
     isLoading,
     leafletMapContext,
     planningModeEnabled,
@@ -58,6 +58,7 @@ import { Label } from "./ui/label";
 import { MultiSelect } from "./ui/multi-select";
 import { ScrollToTop } from "./ui/scroll-to-top";
 import { MENU_ITEM_CLASSNAME } from "./ui/sidebar-l";
+import { UnitSelect } from "./UnitSelect";
 
 let buttonJustClicked = false;
 
@@ -66,6 +67,7 @@ export const ZoneSidebar = () => {
     const $questionFinishedMapData = useStore(questionFinishedMapData);
     const $displayHidingZonesOptions = useStore(displayHidingZonesOptions);
     const $hidingRadius = useStore(hidingRadius);
+    const $hidingRadiusUnits = useStore(hidingRadiusUnits);
     const $isLoading = useStore(isLoading);
     const map = useStore(leafletMapContext);
     const stations = useStore(trainStations);
@@ -190,7 +192,7 @@ export const ZoneSidebar = () => {
                     const center = turf.getCoord(place);
                     const circle = turf.circle(center, radius, {
                         steps: 32,
-                        units: "miles", // As per the rules
+                        units: $hidingRadiusUnits,
                         properties: place,
                     });
 
@@ -486,11 +488,12 @@ export const ZoneSidebar = () => {
                                         }}
                                         disabled={$isLoading}
                                     />
-                                    <Select
-                                        trigger="Unit"
-                                        value="miles"
-                                        options={{ miles: "Miles" }}
-                                        disabled
+                                    <UnitSelect
+                                        unit={$hidingRadiusUnits}
+                                        disabled={$isLoading}
+                                        onChange={(unit) => {
+                                            hidingRadiusUnits.set(unit);
+                                        }}
                                     />
                                 </div>
                             </SidebarMenuItem>
