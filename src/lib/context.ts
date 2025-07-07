@@ -123,6 +123,14 @@ export const hidingRadius = persistentAtom<number>("hidingRadius", 0.5, {
     encode: JSON.stringify,
     decode: JSON.parse,
 });
+export const hidingRadiusUnits = persistentAtom<Units>(
+    "hidingRadiusUnits",
+    "miles",
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
 export const disabledStations = persistentAtom<string[]>(
     "disabledStations",
     [],
