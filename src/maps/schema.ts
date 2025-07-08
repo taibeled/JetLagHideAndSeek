@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { ICON_COLORS } from "./api/constants";
+import { defaultUnit } from "@/lib/context";
 
 export const NO_GROUP = "NO_GROUP";
 
@@ -81,9 +82,17 @@ const ordinaryBaseQuestionSchema = z.object({
     collapsed: z.boolean().default(false),
 });
 
+const getDefaultUnit = () => {
+    try {
+        return defaultUnit.get();
+    } catch {
+        return "miles";
+    }
+}
+
 const radiusQuestionSchema = ordinaryBaseQuestionSchema.extend({
     radius: z.number().min(0, "You cannot have a negative radius").default(50),
-    unit: unitsSchema.default("miles"),
+    unit: unitsSchema.default(getDefaultUnit),
     within: z.boolean().default(true),
 });
 
@@ -110,7 +119,7 @@ const apiLocationSchema = z.union([
 
 const baseTentacleQuestionSchema = ordinaryBaseQuestionSchema.extend({
     radius: z.number().min(0, "You cannot have a negative radius").default(15),
-    unit: unitsSchema.default("miles"),
+    unit: unitsSchema.default(getDefaultUnit),
     location: z
         .union([
             z.object({
