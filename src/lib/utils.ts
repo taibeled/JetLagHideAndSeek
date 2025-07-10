@@ -10,6 +10,11 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
+export const normalizeDecimalInput = (value: string): number => {
+    const normalizedValue = value.replace(",", ".");
+    return parseFloat(normalizedValue);
+};
+
 export const mapToObj = <T, K extends string, V>(
     arr: T[],
     fn: (item: T) => [K, V],
