@@ -161,15 +161,17 @@ export const hidingZone = computed(
         additionalMapGeoLocations,
         disabledStations,
         hidingRadius,
+        hidingRadiusUnits,
         displayHidingZonesOptions,
     ],
-    (q, geo, loc, altLoc, disabledStations, radius, zoneOptions) => {
+    (q, geo, loc, altLoc, disabledStations, radius, hidingRadiusUnits, zoneOptions) => {
         if (geo !== null) {
             return {
                 ...geo,
                 questions: q,
                 disabledStations: disabledStations,
                 hidingRadius: radius,
+                hidingRadiusUnits,
                 zoneOptions: zoneOptions,
             };
         } else {
@@ -180,6 +182,7 @@ export const hidingZone = computed(
                 ...$loc,
                 disabledStations: disabledStations,
                 hidingRadius: radius,
+                hidingRadiusUnits,
                 alternateLocations: structuredClone(altLoc),
                 zoneOptions: zoneOptions,
             };
