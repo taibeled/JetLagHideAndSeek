@@ -40,6 +40,7 @@ import {
     compress,
     decompress,
     fetchFromPastebin,
+    shareOrFallback,
     uploadToPastebin,
 } from "@/lib/utils";
 import { questionsSchema } from "@/maps/schema";
@@ -246,28 +247,24 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                     }
 
                     // Show platform native share sheet if possible
-                    if (navigator.share) {
-                        navigator
-                            .share({
-                                title: document.title,
-                                url: shareUrl,
-                            })
-                            .catch(() =>
-                                toast.error(
-                                    "Failed to share via OS. If data is very large, ensure Pastebin settings are correct.",
-                                ),
+                    await shareOrFallback(shareUrl).then((result) => {
+                        console.log(`result ${result}`);
+                        if (result === false) {
+                            return toast.error(
+                                `Clipboard not supported. Try manually copying/pasting: ${shareUrl}`,
+                                { className: "p-0 w-[1000px]" },
                             );
-                    } else if (!navigator || !navigator.clipboard) {
-                        return toast.error(
-                            `Clipboard not supported. Try manually copying/pasting: ${shareUrl}`,
-                            { className: "p-0 w-[1000px]" },
-                        );
-                    } else {
-                        navigator.clipboard.writeText(shareUrl);
-                        toast.success("Hiding zone URL copied to clipboard", {
-                            autoClose: 2000,
-                        });
-                    }
+                        }
+
+                        if (result === "clipboard") {
+                            toast.success(
+                                "Hiding zone URL copied to clipboard",
+                                {
+                                    autoClose: 2000,
+                                },
+                            );
+                        }
+                    });
                 }}
                 data-tutorial-id="share-questions-button"
             >
