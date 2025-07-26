@@ -191,7 +191,7 @@ export const determineMeasuringBoundary = async (
 
             const data = await findPlacesInZone(
                 `[${LOCATION_FIRST_TAG[location]}=${location}]`,
-                `Finding ${prettifyLocation(location).toLowerCase()}s...`,
+                `Finding ${prettifyLocation(location, true).toLowerCase()}...`,
                 "nwr",
                 "center",
                 [],
@@ -202,7 +202,8 @@ export const determineMeasuringBoundary = async (
                 toast.error(
                     `Error finding ${prettifyLocation(
                         location,
-                    ).toLowerCase()}s. Please enable hiding zone mode and switch to the Large Game variation of this question.`,
+                        true,
+                    ).toLowerCase()}. Please enable hiding zone mode and switch to the Large Game variation of this question.`,
                 );
                 return [turf.multiPolygon([])];
             }
@@ -211,7 +212,8 @@ export const determineMeasuringBoundary = async (
                 toast.error(
                     `Too many ${prettifyLocation(
                         location,
-                    ).toLowerCase()}s found (${data.elements.length}). Please enable hiding zone mode and switch to the Large Game variation of this question.`,
+                        true,
+                    ).toLowerCase()} found (${data.elements.length}). Please enable hiding zone mode and switch to the Large Game variation of this question.`,
                 );
                 return [turf.multiPolygon([])];
             }

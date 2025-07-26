@@ -10,7 +10,19 @@ export const convertToLatLong = (coordinates: number[]): LatLngTuple => {
     return [coordinates[1], coordinates[0]];
 };
 
-export const prettifyLocation = (location: APILocations) => {
+export const prettifyLocation = (
+    location: APILocations,
+    plural: boolean = false,
+): string => {
+    if (plural) {
+        switch (location) {
+            case "library":
+                return "Libraries";
+            default:
+                return prettifyLocation(location) + "s";
+        }
+    }
+
     switch (location) {
         case "aquarium":
             return "Aquarium";
