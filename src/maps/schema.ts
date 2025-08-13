@@ -184,49 +184,53 @@ const baseMatchingQuestionSchema = ordinaryBaseQuestionSchema.extend({
 });
 
 const ordinaryMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
-    type: z.union([
-        z.literal("airport").describe("Commercial Airport In Zone Question"),
-        z
-            .literal("major-city")
-            .describe("Major City (1,000,000+ people) In Zone Question"),
-        z
-            .literal("aquarium-full")
-            .describe("Aquarium Question (Small+Medium Games)"),
-        z.literal("zoo-full").describe("Zoo Question (Small+Medium Games)"),
-        z
-            .literal("theme_park-full")
-            .describe("Theme Park Question (Small+Medium Games)"),
-        z
-            .literal("museum-full")
-            .describe("Museum Question (Small+Medium Games)"),
-        z
-            .literal("hospital-full")
-            .describe("Hospital Question (Small+Medium Games)"),
-        z
-            .literal("cinema-full")
-            .describe("Cinema Question (Small+Medium Games)"),
-        z
-            .literal("library-full")
-            .describe("Library Question (Small+Medium Games)"),
-        z
-            .literal("golf_course-full")
-            .describe("Golf Course Question (Small+Medium Games)"),
-        z
-            .literal("consulate-full")
-            .describe("Foreign Consulate Question (Small+Medium Games)"),
-        z.literal("park-full").describe("Park Question (Small+Medium Games)"),
-    ]),
+    type: z
+        .union([
+            z
+                .literal("airport")
+                .describe("Commercial Airport In Zone Question"),
+            z
+                .literal("major-city")
+                .describe("Major City (1,000,000+ people) In Zone Question"),
+            z
+                .literal("aquarium-full")
+                .describe("Aquarium Question (Small+Medium Games)"),
+            z.literal("zoo-full").describe("Zoo Question (Small+Medium Games)"),
+            z
+                .literal("theme_park-full")
+                .describe("Theme Park Question (Small+Medium Games)"),
+            z
+                .literal("museum-full")
+                .describe("Museum Question (Small+Medium Games)"),
+            z
+                .literal("hospital-full")
+                .describe("Hospital Question (Small+Medium Games)"),
+            z
+                .literal("cinema-full")
+                .describe("Cinema Question (Small+Medium Games)"),
+            z
+                .literal("library-full")
+                .describe("Library Question (Small+Medium Games)"),
+            z
+                .literal("golf_course-full")
+                .describe("Golf Course Question (Small+Medium Games)"),
+            z
+                .literal("consulate-full")
+                .describe("Foreign Consulate Question (Small+Medium Games)"),
+            z
+                .literal("park-full")
+                .describe("Park Question (Small+Medium Games)"),
+        ])
+        .default("airport"),
 });
 
 const zoneMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
-    type: z
-        .union([
-            z.literal("zone").describe("Zone Question"),
-            z
-                .literal("letter-zone")
-                .describe("Zone Starts With Same Letter Question"),
-        ])
-        .default("zone"),
+    type: z.union([
+        z.literal("zone").describe("Zone Question"),
+        z
+            .literal("letter-zone")
+            .describe("Zone Starts With Same Letter Question"),
+    ]),
     cat: z
         .object({
             adminLevel: z.union([
