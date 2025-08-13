@@ -1,6 +1,6 @@
 import { useStore } from "@nanostores/react";
 import { LockIcon, UnlockIcon } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { VscChevronDown, VscShare, VscTrash } from "react-icons/vsc";
 
 import {
@@ -57,6 +57,7 @@ export const QuestionCard = ({
     const [isCollapsed, setIsCollapsed] = useState(collapsed ?? false);
     const $questions = useStore(questions);
     const $isLoading = useStore(isLoading);
+    const copyButtonRef = useRef<HTMLButtonElement>(null);
 
     const toggleCollapse = () => {
         if (setCollapsed) {
@@ -112,6 +113,68 @@ export const QuestionCard = ({
                                             &ldquo;Questions&rdquo; sidebar.
                                         </DialogDescription>
                                     </DialogHeader>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="mb-2 sm:mb-0 transition-colors"
+                                        ref={copyButtonRef}
+                                        onClick={() => {
+                                            navigator.clipboard
+                                                .writeText(
+                                                    JSON.stringify(
+                                                        $questions.find(
+                                                            (q) =>
+                                                                q.key ===
+                                                                questionKey,
+                                                        ),
+                                                        null,
+                                                        4,
+                                                    ),
+                                                )
+                                                .then(() => {
+                                                    if (copyButtonRef.current) {
+                                                        copyButtonRef.current.textContent =
+                                                            "Copied!";
+                                                        copyButtonRef.current.classList.add(
+                                                            "bg-green-500",
+                                                        );
+                                                        setTimeout(() => {
+                                                            if (
+                                                                copyButtonRef.current
+                                                            ) {
+                                                                copyButtonRef.current.textContent =
+                                                                    "Copy to Clipboard";
+                                                                copyButtonRef.current.classList.remove(
+                                                                    "bg-green-500",
+                                                                );
+                                                            }
+                                                        }, 2000);
+                                                    }
+                                                })
+                                                .catch(() => {
+                                                    if (copyButtonRef.current) {
+                                                        copyButtonRef.current.textContent =
+                                                            "Failed to Copy";
+                                                        copyButtonRef.current.classList.add(
+                                                            "bg-red-500",
+                                                        );
+                                                        setTimeout(() => {
+                                                            if (
+                                                                copyButtonRef.current
+                                                            ) {
+                                                                copyButtonRef.current.textContent =
+                                                                    "Copy to Clipboard";
+                                                                copyButtonRef.current.classList.remove(
+                                                                    "bg-red-500",
+                                                                );
+                                                            }
+                                                        }, 2000);
+                                                    }
+                                                });
+                                        }}
+                                    >
+                                        Copy to Clipboard
+                                    </Button>
                                     <textarea
                                         className="w-full h-[300px] bg-slate-900 text-white rounded-md p-2"
                                         readOnly
