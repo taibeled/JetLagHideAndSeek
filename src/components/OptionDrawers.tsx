@@ -397,6 +397,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                         <Input
                                             type="text"
                                             value={$thunderforestApiKey}
+                                            id="thunderforestApiKey"
                                             onChange={(e) =>
                                                 thunderforestApiKey.set(
                                                     e.target.value,
@@ -427,6 +428,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 <Input
                                     type="text"
                                     value={$pastebinApiKey}
+                                    id="pastebinApiKey"
                                     onChange={(e) =>
                                         pastebinApiKey.set(e.target.value)
                                     }
