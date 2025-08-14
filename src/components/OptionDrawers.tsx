@@ -15,6 +15,7 @@ import {
     animateMapMovements,
     autoSave,
     autoZoom,
+    customInitPreference,
     defaultUnit,
     disabledStations,
     displayHidingZonesOptions,
@@ -50,6 +51,7 @@ import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import { Select } from "./ui/select";
 import { Separator } from "./ui/separator";
 import {
     SidebarMenu,
@@ -76,6 +78,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $pastebinApiKey = useStore(pastebinApiKey);
     const $alwaysUsePastebin = useStore(alwaysUsePastebin);
     const $followMe = useStore(followMe);
+    const $customInitPref = useStore(customInitPreference);
     const [isOptionsOpen, setOptionsOpen] = useState(false);
 
     useEffect(() => {
@@ -334,6 +337,20 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                             <UnitSelect
                                 unit={$defaultUnit}
                                 onChange={defaultUnit.set}
+                            />
+                            <Separator className="bg-slate-300 w-[280px]" />
+                            <Label>New Custom Question Defaults</Label>
+                            <Select
+                                trigger="New custom default"
+                                options={{
+                                    ask: "Ask each time",
+                                    blank: "Start blank",
+                                    prefill: "Copy from current",
+                                }}
+                                value={$customInitPref}
+                                onValueChange={(v) =>
+                                    customInitPreference.set(v as any)
+                                }
                             />
                             <Separator className="bg-slate-300 w-[280px]" />
                             <div className="flex flex-row items-center gap-2">

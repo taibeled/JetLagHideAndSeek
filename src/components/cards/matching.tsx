@@ -1,6 +1,8 @@
 import { useStore } from "@nanostores/react";
+import * as React from "react";
 import { toast } from "react-toastify";
 
+import CustomInitDialog from "@/components/CustomInitDialog";
 import { LatitudeLongitude } from "@/components/LatLngPicker";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -11,6 +13,7 @@ import {
 } from "@/components/ui/sidebar-l";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
+    customInitPreference,
     displayHidingZones,
     drawingQuestionKey,
     hiderMode,
@@ -50,6 +53,11 @@ export const MatchingQuestionComponent = ({
     const $displayHidingZones = useStore(displayHidingZones);
     const $drawingQuestionKey = useStore(drawingQuestionKey);
     const $isLoading = useStore(isLoading);
+    const $customInitPref = useStore(customInitPreference);
+    const [customDialogOpen, setCustomDialogOpen] = React.useState(false);
+    const [pendingCustomType, setPendingCustomType] = React.useState<
+        "custom-zone" | "custom-points" | null
+    >(null);
     const label = `Matching
     ${
         $questions
@@ -171,6 +179,53 @@ export const MatchingQuestionComponent = ({
             locked={!data.drag}
             setLocked={(locked) => questionModified((data.drag = !locked))}
         >
+            <CustomInitDialog
+                open={customDialogOpen}
+                onOpenChange={setCustomDialogOpen}
+                onBlank={async () => {
+                    if (!pendingCustomType) return;
+                    if (pendingCustomType === "custom-zone") {
+                        (data as any).geo = undefined;
+                        toast.info("Please draw the zone on the map.");
+                    } else {
+                        (data as any).geo = [];
+                        toast.info("Please draw the points on the map.");
+                    }
+                    data.type = pendingCustomType;
+                    questionModified();
+                    setCustomDialogOpen(false);
+                }}
+                onPrefill={async () => {
+                    if (!pendingCustomType) return;
+                    if (pendingCustomType === "custom-zone") {
+                        (data as any).geo =
+                            await determineMatchingBoundary(data);
+                    } else {
+                        if (
+                            data.type === "airport" ||
+                            data.type === "major-city" ||
+                            data.type === "aquarium-full" ||
+                            data.type === "zoo-full" ||
+                            data.type === "theme_park-full" ||
+                            data.type === "museum-full" ||
+                            data.type === "hospital-full" ||
+                            data.type === "cinema-full" ||
+                            data.type === "library-full" ||
+                            data.type === "golf_course-full" ||
+                            data.type === "consulate-full" ||
+                            data.type === "park-full"
+                        ) {
+                            (data as any).geo = await findMatchingPlaces(data);
+                        } else {
+                            (data as any).geo = [];
+                            toast.info("Please draw the points on the map.");
+                        }
+                    }
+                    data.type = pendingCustomType;
+                    questionModified();
+                    setCustomDialogOpen(false);
+                }}
+            />
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
                     trigger="Matching Type"
@@ -223,33 +278,63 @@ export const MatchingQuestionComponent = ({
                         )}
                     value={data.type}
                     onValueChange={async (value) => {
-                        if (value === "custom-zone") {
-                            (data as any).geo =
-                                await determineMatchingBoundary(data);
-                        }
-                        if (value === "custom-points") {
-                            if (
-                                data.type === "airport" ||
-                                data.type === "major-city" ||
-                                data.type === "aquarium-full" ||
-                                data.type === "zoo-full" ||
-                                data.type === "theme_park-full" ||
-                                data.type === "museum-full" ||
-                                data.type === "hospital-full" ||
-                                data.type === "cinema-full" ||
-                                data.type === "library-full" ||
-                                data.type === "golf_course-full" ||
-                                data.type === "consulate-full" ||
-                                data.type === "park-full"
-                            ) {
-                                (data as any).geo =
-                                    await findMatchingPlaces(data);
-                            } else {
-                                (data as any).geo = [];
-                                toast.info(
-                                    "Please draw the points on the map.",
-                                );
+                        if (
+                            value === "custom-zone" ||
+                            value === "custom-points"
+                        ) {
+                            if ($customInitPref === "ask") {
+                                setPendingCustomType(value);
+                                setCustomDialogOpen(true);
+                                return;
                             }
+                            // Apply preference without dialog
+                            if ($customInitPref === "blank") {
+                                if (value === "custom-zone") {
+                                    (data as any).geo = undefined;
+                                    toast.info(
+                                        "Please draw the zone on the map.",
+                                    );
+                                } else {
+                                    (data as any).geo = [];
+                                    toast.info(
+                                        "Please draw the points on the map.",
+                                    );
+                                }
+                            } else if ($customInitPref === "prefill") {
+                                if (value === "custom-zone") {
+                                    (data as any).geo =
+                                        await determineMatchingBoundary(data);
+                                } else {
+                                    if (
+                                        data.type === "airport" ||
+                                        data.type === "major-city" ||
+                                        data.type === "aquarium-full" ||
+                                        data.type === "zoo-full" ||
+                                        data.type === "theme_park-full" ||
+                                        data.type === "museum-full" ||
+                                        data.type === "hospital-full" ||
+                                        data.type === "cinema-full" ||
+                                        data.type === "library-full" ||
+                                        data.type === "golf_course-full" ||
+                                        data.type === "consulate-full" ||
+                                        data.type === "park-full"
+                                    ) {
+                                        (data as any).geo =
+                                            await findMatchingPlaces(data);
+                                    } else {
+                                        (data as any).geo = [];
+                                        toast.info(
+                                            "Please draw the points on the map.",
+                                        );
+                                    }
+                                }
+                            }
+                            // The category should be defined such that no error is thrown if this is a zone question.
+                            if (!(data as any).cat) {
+                                (data as any).cat = { adminLevel: 3 };
+                            }
+                            questionModified((data.type = value));
+                            return;
                         }
 
                         // The category should be defined such that no error is thrown if this is a zone question.
