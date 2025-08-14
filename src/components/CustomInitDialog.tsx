@@ -47,8 +47,8 @@ export const CustomInitDialog: React.FC<Props> = ({
                 <DialogHeader>
                     <DialogTitle>New Custom Question</DialogTitle>
                     <DialogDescription>
-                        Do you want the new question to start blank, or copy what
-                        the current question contains?
+                        Do you want the new question to start blank, or copy
+                        what the current question contains?
                     </DialogDescription>
                 </DialogHeader>
                 <div className="flex items-center gap-2">
