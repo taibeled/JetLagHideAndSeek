@@ -3,7 +3,11 @@ import type { FeatureCollection, MultiPolygon, Polygon } from "geojson";
 import type { Map } from "leaflet";
 import { atom, computed } from "nanostores";
 
-import { type AdditionalMapGeoLocations, type OpenStreetMap } from "@/maps/api";
+import type {
+    AdditionalMapGeoLocations,
+    CustomStation,
+    OpenStreetMap,
+} from "@/maps/api";
 import {
     type DeepPartial,
     type Question,
@@ -111,6 +115,22 @@ export const displayHidingZonesOptions = persistentAtom<string[]>(
 );
 export const questionFinishedMapData = atom<any>(null);
 export const trainStations = atom<any[]>([]);
+export const useCustomStations = persistentAtom<boolean>(
+    "useCustomStations",
+    false,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
+export const customStations = persistentAtom<CustomStation[]>(
+    "customStations",
+    [],
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
 export const animateMapMovements = persistentAtom<boolean>(
     "animateMapMovements",
     false,
@@ -163,6 +183,8 @@ export const hidingZone = computed(
         hidingRadius,
         hidingRadiusUnits,
         displayHidingZonesOptions,
+        useCustomStations,
+        customStations,
     ],
     (
         q,
@@ -173,6 +195,8 @@ export const hidingZone = computed(
         radius,
         hidingRadiusUnits,
         zoneOptions,
+        useCustom,
+        $customStations,
     ) => {
         if (geo !== null) {
             return {
@@ -182,6 +206,8 @@ export const hidingZone = computed(
                 hidingRadius: radius,
                 hidingRadiusUnits,
                 zoneOptions: zoneOptions,
+                useCustomStations: useCustom,
+                customStations: $customStations,
             };
         } else {
             const $loc = structuredClone(loc);
@@ -194,6 +220,8 @@ export const hidingZone = computed(
                 hidingRadiusUnits,
                 alternateLocations: structuredClone(altLoc),
                 zoneOptions: zoneOptions,
+                useCustomStations: useCustom,
+                customStations: $customStations,
             };
         }
     },

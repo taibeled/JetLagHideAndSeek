@@ -19,6 +19,7 @@ import {
 import {
     animateMapMovements,
     autoZoom,
+    customStations as customStationsAtom,
     disabledStations,
     displayHidingZones,
     displayHidingZonesOptions,
@@ -30,6 +31,7 @@ import {
     questionFinishedMapData,
     questions,
     trainStations,
+    useCustomStations as useCustomStationsAtom,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
 import {
@@ -41,6 +43,14 @@ import {
     QuestionSpecificLocation,
     trainLineNodeFinder,
 } from "@/maps/api";
+import {
+    normalizeToStationFeatures,
+    parseCustomStationsFromText,
+} from "@/maps/api";
+
+function _previewText(count: number) {
+    return `${count} custom station${count === 1 ? "" : "s"} imported`;
+}
 import { holedMask, lngLatToText, safeUnion } from "@/maps/geo-utils";
 import { geoSpatialVoronoi } from "@/maps/geo-utils";
 
@@ -72,9 +82,12 @@ export const ZoneSidebar = () => {
     const map = useStore(leafletMapContext);
     const stations = useStore(trainStations);
     const $disabledStations = useStore(disabledStations);
+    const useCustomStations = useStore(useCustomStationsAtom);
+    const $customStations = useStore(customStationsAtom);
     const [commandValue, setCommandValue] = useState<string>("");
     const setStations = trainStations.set;
     const sidebarRef = useRef<HTMLDivElement>(null);
+    const [importUrl, setImportUrl] = useState("");
 
     const removeHidingZones = () => {
         if (!map) return;
@@ -170,15 +183,32 @@ export const ZoneSidebar = () => {
                 return;
             }
 
-            const places = osmtogeojson(
-                await findPlacesInZone(
-                    $displayHidingZonesOptions[0],
-                    "Finding stations. This may take a while. Do not press any buttons while this is processing. Don't worry, it will be cached.",
-                    "nwr",
-                    "center",
-                    $displayHidingZonesOptions.slice(1),
-                ),
-            ).features;
+            let places: any[] = [];
+
+            if (useCustomStations && $customStations.length > 0) {
+                places = normalizeToStationFeatures(
+                    $customStations,
+                ).features.map((f) => ({
+                    type: "Feature",
+                    geometry: f.geometry,
+                    properties: {
+                        id:
+                            f.properties?.id ??
+                            `${(f.geometry as any).coordinates[1]},${(f.geometry as any).coordinates[0]}`,
+                        name: f.properties?.name,
+                    },
+                }));
+            } else {
+                places = osmtogeojson(
+                    await findPlacesInZone(
+                        $displayHidingZonesOptions[0],
+                        "Finding stations. This may take a while. Do not press any buttons while this is processing. Don't worry, it will be cached.",
+                        "nwr",
+                        "center",
+                        $displayHidingZonesOptions.slice(1),
+                    ),
+                ).features;
+            }
 
             const unionized = safeUnion(
                 turf.simplify($questionFinishedMapData, {
@@ -226,30 +256,37 @@ export const ZoneSidebar = () => {
                     );
 
                     if (question.data.type === "same-train-line") {
-                        const nodes = await trainLineNodeFinder(
-                            nearestTrainStation.properties.id,
-                        );
-
-                        if (nodes.length === 0) {
+                        if (useCustomStations) {
                             toast.warning(
-                                `No train line found for ${
-                                    nearestTrainStation.properties["name:en"] ||
-                                    nearestTrainStation.properties.name
-                                }`,
+                                "'Same train line' is not supported with custom station lists; skipping this filter.",
                             );
-                            continue;
                         } else {
-                            circles = circles.filter((circle: any) => {
-                                const id = parseInt(
-                                    circle.properties.properties.id.split(
-                                        "/",
-                                    )[1],
-                                );
+                            const nodes = await trainLineNodeFinder(
+                                nearestTrainStation.properties.id,
+                            );
 
-                                return question.data.same
-                                    ? nodes.includes(id)
-                                    : !nodes.includes(id);
-                            });
+                            if (nodes.length === 0) {
+                                toast.warning(
+                                    `No train line found for ${
+                                        nearestTrainStation.properties[
+                                            "name:en"
+                                        ] || nearestTrainStation.properties.name
+                                    }`,
+                                );
+                                continue;
+                            } else {
+                                circles = circles.filter((circle: any) => {
+                                    const id = parseInt(
+                                        circle.properties.properties.id.split(
+                                            "/",
+                                        )[1],
+                                    );
+
+                                    return question.data.same
+                                        ? nodes.includes(id)
+                                        : !nodes.includes(id);
+                                });
+                            }
                         }
                     }
 
@@ -381,6 +418,8 @@ export const ZoneSidebar = () => {
         $displayHidingZones,
         $displayHidingZonesOptions,
         $hidingRadius,
+        useCustomStations,
+        $customStations,
     ]);
 
     return (
@@ -419,6 +458,152 @@ export const ZoneSidebar = () => {
                                 Warning: This feature can drastically slow down
                                 your device.
                             </SidebarMenuItem>
+                            <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                                <div className="flex flex-row items-center justify-between w-full">
+                                    <Label className="font-semibold font-poppins">
+                                        Use custom station list?
+                                    </Label>
+                                    <Checkbox
+                                        checked={useCustomStations}
+                                        onCheckedChange={(v) =>
+                                            useCustomStationsAtom.set(!!v)
+                                        }
+                                        disabled={$isLoading}
+                                    />
+                                </div>
+                            </SidebarMenuItem>
+                            {useCustomStations && (
+                                <>
+                                    <SidebarMenuItem
+                                        className={MENU_ITEM_CLASSNAME}
+                                    >
+                                        <div className="flex flex-col gap-2 w-full">
+                                            <Label className="font-semibold font-poppins">
+                                                Import stations from URL (CSV,
+                                                GeoJSON, KML)
+                                            </Label>
+                                            <div className="flex gap-2">
+                                                <Input
+                                                    placeholder="https://..."
+                                                    value={importUrl}
+                                                    onChange={(e) =>
+                                                        setImportUrl(
+                                                            e.target.value,
+                                                        )
+                                                    }
+                                                    disabled={$isLoading}
+                                                />
+                                                <button
+                                                    className="bg-blue-600 text-white px-3 rounded-md"
+                                                    disabled={$isLoading}
+                                                    onClick={async () => {
+                                                        if (!importUrl) return;
+                                                        try {
+                                                            const res =
+                                                                await fetch(
+                                                                    importUrl,
+                                                                );
+                                                            const contentType =
+                                                                res.headers.get(
+                                                                    "content-type",
+                                                                ) || undefined;
+                                                            const text =
+                                                                await res.text();
+                                                            const parsed =
+                                                                parseCustomStationsFromText(
+                                                                    text,
+                                                                    contentType ||
+                                                                        undefined,
+                                                                );
+                                                            if (
+                                                                parsed.length ===
+                                                                0
+                                                            ) {
+                                                                toast.error(
+                                                                    "No stations found in provided URL",
+                                                                );
+                                                                return;
+                                                            }
+                                                            customStationsAtom.set(
+                                                                parsed,
+                                                            );
+                                                            toast.success(
+                                                                `Imported ${parsed.length} stations`,
+                                                            );
+                                                        } catch (e: any) {
+                                                            toast.error(
+                                                                `Failed to import from URL: ${e.message || e}`,
+                                                            );
+                                                        }
+                                                    }}
+                                                >
+                                                    Import
+                                                </button>
+                                            </div>
+                                            <div>
+                                                <input
+                                                    type="file"
+                                                    accept=".csv,.json,.geojson,.kml,application/json,application/vnd.google-earth.kml+xml,text/csv,application/vnd.google-apps.kml+xml,application/xml,text/xml"
+                                                    onChange={async (e) => {
+                                                        const file =
+                                                            e.target.files?.[0];
+                                                        if (!file) return;
+                                                        try {
+                                                            const text =
+                                                                await file.text();
+                                                            const parsed =
+                                                                parseCustomStationsFromText(
+                                                                    text,
+                                                                    file.type,
+                                                                );
+                                                            if (
+                                                                parsed.length ===
+                                                                0
+                                                            ) {
+                                                                toast.error(
+                                                                    "No stations found in uploaded file",
+                                                                );
+                                                                return;
+                                                            }
+                                                            customStationsAtom.set(
+                                                                parsed,
+                                                            );
+                                                            toast.success(
+                                                                `Imported ${parsed.length} stations`,
+                                                            );
+                                                        } catch (e: any) {
+                                                            toast.error(
+                                                                `Failed to import file: ${e.message || e}`,
+                                                            );
+                                                        }
+                                                    }}
+                                                />
+                                            </div>
+                                            {$customStations.length > 0 && (
+                                                <div className="text-sm text-gray-600">
+                                                    {_previewText(
+                                                        $customStations.length,
+                                                    )}
+                                                </div>
+                                            )}
+                                            {$customStations.length > 0 && (
+                                                <div className="flex gap-2">
+                                                    <button
+                                                        className="bg-slate-600 text-white px-3 rounded-md"
+                                                        onClick={() =>
+                                                            customStationsAtom.set(
+                                                                [],
+                                                            )
+                                                        }
+                                                    >
+                                                        Clear Imported
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </SidebarMenuItem>
+                                </>
+                            )}
                             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                                 <MultiSelect
                                     options={[
@@ -468,7 +653,7 @@ export const ZoneSidebar = () => {
                                     maxCount={3}
                                     modalPopover
                                     className="!bg-popover bg-opacity-100"
-                                    disabled={$isLoading}
+                                    disabled={$isLoading || useCustomStations}
                                 />
                             </SidebarMenuItem>
                             <SidebarMenuItem>
@@ -592,38 +777,43 @@ export const ZoneSidebar = () => {
                                     disabled={$isLoading}
                                 >
                                     Current:{" "}
-                                    <a
-                                        href={`https://www.openstreetmap.org/${
-                                            stations.find(
-                                                (x) =>
-                                                    x.properties.properties
-                                                        .id === commandValue,
-                                            ).properties.properties.id
-                                        }`}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="text-blue-500"
-                                    >
-                                        {stations.find(
+                                    {(() => {
+                                        const selected = stations.find(
                                             (x) =>
                                                 x.properties.properties.id ===
                                                 commandValue,
-                                        ).properties.properties["name:en"] ||
-                                            stations.find(
-                                                (x) =>
-                                                    x.properties.properties
-                                                        .id === commandValue,
-                                            ).properties.properties.name ||
+                                        );
+                                        const displayName =
+                                            selected?.properties.properties[
+                                                "name:en"
+                                            ] ||
+                                            selected?.properties.properties
+                                                .name ||
                                             lngLatToText(
-                                                stations.find(
-                                                    (x) =>
-                                                        x.properties.properties
-                                                            .id ===
-                                                        commandValue,
-                                                ).properties.geometry
+                                                selected?.properties.geometry
                                                     .coordinates,
-                                            )}
-                                    </a>
+                                            );
+                                        const id = selected?.properties
+                                            .properties.id as string;
+                                        const coords = selected?.properties
+                                            .geometry.coordinates as [
+                                            number,
+                                            number,
+                                        ];
+                                        const href = id?.includes("/")
+                                            ? `https://www.openstreetmap.org/${id}`
+                                            : `https://www.openstreetmap.org/?mlat=${coords[1]}&mlon=${coords[0]}#map=17/${coords[1]}/${coords[0]}`;
+                                        return (
+                                            <a
+                                                href={href}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="text-blue-500"
+                                            >
+                                                {displayName}
+                                            </a>
+                                        );
+                                    })()}
                                 </SidebarMenuItem>
                             )}
                             {$displayHidingZones &&

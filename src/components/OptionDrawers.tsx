@@ -16,6 +16,7 @@ import {
     autoSave,
     autoZoom,
     customInitPreference,
+    customStations,
     defaultUnit,
     disabledStations,
     displayHidingZonesOptions,
@@ -35,6 +36,7 @@ import {
     showTutorial,
     thunderforestApiKey,
     triggerLocalRefresh,
+    useCustomStations,
 } from "@/lib/context";
 import {
     cn,
@@ -187,6 +189,17 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
 
             if (geojson.zoneOptions) {
                 displayHidingZonesOptions.set(geojson.zoneOptions ?? []);
+            }
+
+            if (typeof geojson.useCustomStations === "boolean") {
+                useCustomStations.set(geojson.useCustomStations);
+            }
+
+            if (
+                geojson.customStations &&
+                geojson.customStations.constructor === Array
+            ) {
+                customStations.set(geojson.customStations);
             }
 
             toast.success("Hiding zone loaded successfully", {
