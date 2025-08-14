@@ -1,7 +1,5 @@
 import { useStore } from "@nanostores/react";
-import * as turf from "@turf/turf";
 import { SidebarCloseIcon } from "lucide-react";
-import { toast } from "react-toastify";
 
 import {
     Sidebar,
@@ -14,15 +12,14 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar-l";
 import {
-    addQuestion,
     autoSave,
     isLoading,
-    leafletMapContext,
     questions,
     save,
     triggerLocalRefresh,
 } from "@/lib/context";
 
+import { AddQuestionDialog } from "./AddQuestionDialog";
 import {
     MatchingQuestionComponent,
     MeasuringQuestionComponent,
@@ -100,152 +97,22 @@ export const QuestionSidebar = () => {
                 <SidebarGroupContent>
                     <SidebarMenu data-tutorial-id="add-questions-buttons">
                         <SidebarMenuItem>
-                            <SidebarMenuButton
-                                onClick={() => {
-                                    const map = leafletMapContext.get();
-                                    if (!map) return;
-
-                                    const center = map.getCenter();
-
-                                    addQuestion({
-                                        id: "radius",
-                                        data: {
-                                            lat: center.lat,
-                                            lng: center.lng,
-                                        },
-                                    });
-                                }}
-                                disabled={$isLoading}
-                            >
-                                Add Radius
-                            </SidebarMenuButton>
+                            <AddQuestionDialog>
+                                <SidebarMenuButton disabled={$isLoading}>
+                                    Add Question
+                                </SidebarMenuButton>
+                            </AddQuestionDialog>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
-                            <SidebarMenuButton
-                                onClick={() => {
-                                    const map = leafletMapContext.get();
-                                    if (!map) return;
-
-                                    const center = map.getCenter();
-
-                                    const destination = turf.destination(
-                                        [center.lng, center.lat],
-                                        5,
-                                        90,
-                                        {
-                                            units: "miles",
-                                        },
-                                    );
-
-                                    addQuestion({
-                                        id: "thermometer",
-                                        data: {
-                                            latA: center.lat,
-                                            lngB: center.lng,
-                                            latB: destination.geometry
-                                                .coordinates[1],
-                                            lngA: destination.geometry
-                                                .coordinates[0],
-                                        },
-                                    });
-                                }}
-                                disabled={$isLoading}
+                            <a
+                                href="https://forms.gle/N4M8D24VNhBHa5iM7"
+                                target="_blank"
+                                rel="noopener noreferrer"
                             >
-                                Add Thermometer
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton
-                                onClick={() => {
-                                    const map = leafletMapContext.get();
-                                    if (!map) return;
-
-                                    const center = map.getCenter();
-
-                                    addQuestion({
-                                        id: "tentacles",
-                                        data: {
-                                            lat: center.lat,
-                                            lng: center.lng,
-                                        },
-                                    });
-                                }}
-                                disabled={$isLoading}
-                            >
-                                Add Tentacles
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton
-                                onClick={() => {
-                                    const map = leafletMapContext.get();
-                                    if (!map) return;
-
-                                    const center = map.getCenter();
-
-                                    addQuestion({
-                                        id: "matching",
-                                        data: {
-                                            lat: center.lat,
-                                            lng: center.lng,
-                                        },
-                                    });
-                                }}
-                                disabled={$isLoading}
-                            >
-                                Add Matching
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton
-                                onClick={() => {
-                                    const map = leafletMapContext.get();
-                                    if (!map) return;
-
-                                    const center = map.getCenter();
-
-                                    addQuestion({
-                                        id: "measuring",
-                                        data: {
-                                            lat: center.lat,
-                                            lng: center.lng,
-                                        },
-                                    });
-                                }}
-                                disabled={$isLoading}
-                            >
-                                Add Measuring
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton
-                                onClick={() => {
-                                    if (!navigator || !navigator.clipboard) {
-                                        toast.error(
-                                            "Clipboard API not supported in your browser",
-                                        );
-                                        return;
-                                    }
-
-                                    toast.promise(
-                                        navigator.clipboard
-                                            .readText()
-                                            .then((text) => {
-                                                addQuestion(JSON.parse(text));
-                                            }),
-                                        {
-                                            pending: "Reading from clipboard",
-                                            success:
-                                                "Question added from clipboard!",
-                                            error: "No valid question found in clipboard",
-                                        },
-                                        { autoClose: 1000 },
-                                    );
-                                }}
-                                disabled={$isLoading}
-                            >
-                                Paste Question
-                            </SidebarMenuButton>
+                                <SidebarMenuButton className="bg-emerald-600 transition-colors">
+                                    Feedback!
+                                </SidebarMenuButton>
+                            </a>
                         </SidebarMenuItem>
                         {!$autoSave && (
                             <SidebarMenuItem>
