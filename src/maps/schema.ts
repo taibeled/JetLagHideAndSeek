@@ -181,6 +181,7 @@ export const tentacleQuestionSchema = z.union([
 
 const baseMatchingQuestionSchema = ordinaryBaseQuestionSchema.extend({
     same: z.boolean().default(true),
+    lengthComparison: z.enum(["shorter", "longer", "same"]).optional(),
 });
 
 const ordinaryMatchingQuestionSchema = baseMatchingQuestionSchema.extend({

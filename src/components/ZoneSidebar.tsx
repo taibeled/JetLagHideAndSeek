@@ -275,18 +275,22 @@ export const ZoneSidebar = () => {
                                 : name[0].toUpperCase() !== letter;
                         });
                     } else if (question.data.type === "same-length-station") {
-                        const length = englishName.length;
+                        const seekerLength = englishName.length;
+                        const comparison = question.data.lengthComparison;
 
                         circles = circles.filter((circle: any) => {
                             const name =
                                 circle.properties.properties["name:en"] ||
                                 circle.properties.properties.name;
-
                             if (!name) return false;
-
-                            return question.data.same
-                                ? name.length === length
-                                : name.length !== length;
+                            if (comparison === "same") {
+                                return name.length === seekerLength;
+                            } else if (comparison === "shorter") {
+                                return name.length < seekerLength;
+                            } else if (comparison === "longer") {
+                                return name.length > seekerLength;
+                            }
+                            return false;
                         });
                     }
                 }

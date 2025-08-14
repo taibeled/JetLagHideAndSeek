@@ -371,9 +371,11 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
             }
         } else if (question.type === "same-length-station") {
             if (hiderEnglishName.length === seekerEnglishName.length) {
-                question.same = true;
+                question.lengthComparison = "same";
+            } else if (hiderEnglishName.length < seekerEnglishName.length) {
+                question.lengthComparison = "shorter";
             } else {
-                question.same = false;
+                question.lengthComparison = "longer";
             }
         }
 
