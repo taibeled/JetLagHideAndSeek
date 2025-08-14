@@ -1,6 +1,5 @@
 import { useStore } from "@nanostores/react";
 import * as React from "react";
-import { useEffect } from "react";
 import { toast } from "react-toastify";
 
 import CustomInitDialog from "@/components/CustomInitDialog";
