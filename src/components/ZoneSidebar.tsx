@@ -54,6 +54,7 @@ function _previewText(count: number) {
 import { holedMask, lngLatToText, safeUnion } from "@/maps/geo-utils";
 import { geoSpatialVoronoi } from "@/maps/geo-utils";
 
+import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import {
     Command,
@@ -541,7 +542,7 @@ export const ZoneSidebar = () => {
                                                 </button>
                                             </div>
                                             <div>
-                                                <input
+                                                <Input
                                                     type="file"
                                                     accept=".csv,.json,.geojson,.kml,application/json,application/vnd.google-earth.kml+xml,text/csv,application/vnd.google-apps.kml+xml,application/xml,text/xml"
                                                     onChange={async (e) => {
@@ -580,7 +581,7 @@ export const ZoneSidebar = () => {
                                                 />
                                             </div>
                                             {$customStations.length > 0 && (
-                                                <div className="text-sm text-gray-600">
+                                                <div className="text-sm text-gray-300">
                                                     {_previewText(
                                                         $customStations.length,
                                                     )}
@@ -588,8 +589,9 @@ export const ZoneSidebar = () => {
                                             )}
                                             {$customStations.length > 0 && (
                                                 <div className="flex gap-2">
-                                                    <button
-                                                        className="bg-slate-600 text-white px-3 rounded-md"
+                                                    <Button
+                                                        variant="secondary"
+                                                        className="scale-[90%]"
                                                         onClick={() =>
                                                             customStationsAtom.set(
                                                                 [],
@@ -597,7 +599,7 @@ export const ZoneSidebar = () => {
                                                         }
                                                     >
                                                         Clear Imported
-                                                    </button>
+                                                    </Button>
                                                 </div>
                                             )}
                                         </div>
