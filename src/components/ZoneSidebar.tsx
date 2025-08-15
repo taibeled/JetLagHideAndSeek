@@ -479,9 +479,10 @@ export const ZoneSidebar = () => {
                                         className={MENU_ITEM_CLASSNAME}
                                     >
                                         <div className="flex flex-col gap-2 w-full">
-                                            <Label className="font-semibold font-poppins">
+                                            <Label className="font-semibold font-poppins leading-5">
                                                 Import stations from URL (CSV,
-                                                GeoJSON, KML)
+                                                GeoJSON, KML). This must be a
+                                                raw file link.
                                             </Label>
                                             <div className="flex gap-2">
                                                 <Input
@@ -545,9 +546,10 @@ export const ZoneSidebar = () => {
                                                 <Input
                                                     type="file"
                                                     accept=".csv,.json,.geojson,.kml,application/json,application/vnd.google-earth.kml+xml,text/csv,application/vnd.google-apps.kml+xml,application/xml,text/xml"
-                                                    onChange={async (e) => {
-                                                        const file =
-                                                            e.target.files?.[0];
+                                                    onInput={async (e) => {
+                                                        const file = (
+                                                            e.target as HTMLInputElement
+                                                        ).files?.[0];
                                                         if (!file) return;
                                                         try {
                                                             const text =
@@ -590,8 +592,7 @@ export const ZoneSidebar = () => {
                                             {$customStations.length > 0 && (
                                                 <div className="flex gap-2">
                                                     <Button
-                                                        variant="secondary"
-                                                        className="scale-[90%]"
+                                                        className="w-full"
                                                         onClick={() =>
                                                             customStationsAtom.set(
                                                                 [],
