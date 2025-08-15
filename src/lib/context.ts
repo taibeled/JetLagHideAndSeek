@@ -193,7 +193,7 @@ export const hidingZone = computed(
         displayHidingZonesOptions,
         useCustomStations,
         customStations,
-    includeDefaultStations,
+        includeDefaultStations,
     ],
     (
         q,
@@ -204,9 +204,9 @@ export const hidingZone = computed(
         radius,
         hidingRadiusUnits,
         zoneOptions,
-    useCustom,
-    $customStations,
-    includeDefault,
+        useCustom,
+        $customStations,
+        includeDefault,
     ) => {
         if (geo !== null) {
             return {

@@ -203,9 +203,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 customStations.set(geojson.customStations);
             }
 
-            if (
-                typeof geojson.includeDefaultStations === "boolean"
-            ) {
+            if (typeof geojson.includeDefaultStations === "boolean") {
                 includeDefaultStations.set(geojson.includeDefaultStations);
             }
 

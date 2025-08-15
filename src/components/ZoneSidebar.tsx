@@ -46,7 +46,12 @@ import {
     QuestionSpecificLocation,
     trainLineNodeFinder,
 } from "@/maps/api";
-import { geoSpatialVoronoi, holedMask, lngLatToText, safeUnion } from "@/maps/geo-utils";
+import {
+    geoSpatialVoronoi,
+    holedMask,
+    lngLatToText,
+    safeUnion,
+} from "@/maps/geo-utils";
 
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
@@ -188,7 +193,9 @@ export const ZoneSidebar = () => {
 
             if (!needsDefault) {
                 // Custom only
-                places = normalizeToStationFeatures($customStations).features.map((f) => ({
+                places = normalizeToStationFeatures(
+                    $customStations,
+                ).features.map((f) => ({
                     type: "Feature",
                     geometry: f.geometry,
                     properties: {
@@ -210,8 +217,14 @@ export const ZoneSidebar = () => {
                     ),
                 ).features;
 
-                if (useCustomStations && $customStations.length > 0 && includeDefaultStations) {
-                    const customFeatures = normalizeToStationFeatures($customStations).features.map((f) => ({
+                if (
+                    useCustomStations &&
+                    $customStations.length > 0 &&
+                    includeDefaultStations
+                ) {
+                    const customFeatures = normalizeToStationFeatures(
+                        $customStations,
+                    ).features.map((f) => ({
                         type: "Feature",
                         geometry: f.geometry,
                         properties: {
@@ -225,9 +238,10 @@ export const ZoneSidebar = () => {
                     const merged: any[] = [];
                     const add = (feat: any) => {
                         const id = feat.properties.id as string | undefined;
-                        const key = id && id.includes("/")
-                            ? `id:${id}`
-                            : `pt:${feat.geometry.coordinates[1]},${feat.geometry.coordinates[0]}`;
+                        const key =
+                            id && id.includes("/")
+                                ? `id:${id}`
+                                : `pt:${feat.geometry.coordinates[1]},${feat.geometry.coordinates[0]}`;
                         if (!seen.has(key)) {
                             seen.add(key);
                             merged.push(feat);
@@ -291,7 +305,9 @@ export const ZoneSidebar = () => {
                                 "'Same train line' isn't supported with custom-only station lists; skipping this filter.",
                             );
                         } else {
-                            const nid = nearestTrainStation.properties.id as string | undefined;
+                            const nid = nearestTrainStation.properties.id as
+                                | string
+                                | undefined;
                             if (!nid || !nid.includes("/")) {
                                 toast.warning(
                                     "Nearest station has no OSM id; skipping 'same train line' filter.",
@@ -312,8 +328,10 @@ export const ZoneSidebar = () => {
                                 continue;
                             } else {
                                 circles = circles.filter((circle: any) => {
-                                    const idProp = circle.properties.properties.id as string;
-                                    if (!idProp || !idProp.includes("/")) return false;
+                                    const idProp = circle.properties.properties
+                                        .id as string;
+                                    if (!idProp || !idProp.includes("/"))
+                                        return false;
                                     const id = parseInt(idProp.split("/")[1]);
 
                                     return question.data.same
@@ -582,40 +600,94 @@ export const ZoneSidebar = () => {
                                                     multiple
                                                     accept=".csv,.json,.geojson,.kml,application/json,application/vnd.google-earth.kml+xml,text/csv,application/vnd.google-apps.kml+xml,application/xml,text/xml"
                                                     onInput={async (e) => {
-                                                        const files = (e.target as HTMLInputElement).files;
-                                                        if (!files || files.length === 0) return;
+                                                        const files = (
+                                                            e.target as HTMLInputElement
+                                                        ).files;
+                                                        if (
+                                                            !files ||
+                                                            files.length === 0
+                                                        )
+                                                            return;
                                                         try {
-                                                            const all: any[] = [];
-                                                            for (const file of Array.from(files)) {
-                                                                const text = await file.text();
-                                                                const parsed = parseCustomStationsFromText(text, file.type);
-                                                                all.push(...parsed);
+                                                            const all: any[] =
+                                                                [];
+                                                            for (const file of Array.from(
+                                                                files,
+                                                            )) {
+                                                                const text =
+                                                                    await file.text();
+                                                                const parsed =
+                                                                    parseCustomStationsFromText(
+                                                                        text,
+                                                                        file.type,
+                                                                    );
+                                                                all.push(
+                                                                    ...parsed,
+                                                                );
                                                             }
-                                                            if (all.length === 0) {
-                                                                toast.error("No stations found in uploaded files");
+                                                            if (
+                                                                all.length === 0
+                                                            ) {
+                                                                toast.error(
+                                                                    "No stations found in uploaded files",
+                                                                );
                                                                 return;
                                                             }
-                                                            const byKey = new Map<string, any>();
+                                                            const byKey =
+                                                                new Map<
+                                                                    string,
+                                                                    any
+                                                                >();
                                                             for (const s of all) {
-                                                                const key = s.id && s.id.includes("/") ? `id:${s.id}` : `pt:${s.lat},${s.lng}`;
-                                                                if (!byKey.has(key)) byKey.set(key, s);
+                                                                const key =
+                                                                    s.id &&
+                                                                    s.id.includes(
+                                                                        "/",
+                                                                    )
+                                                                        ? `id:${s.id}`
+                                                                        : `pt:${s.lat},${s.lng}`;
+                                                                if (
+                                                                    !byKey.has(
+                                                                        key,
+                                                                    )
+                                                                )
+                                                                    byKey.set(
+                                                                        key,
+                                                                        s,
+                                                                    );
                                                             }
-                                                            const unique = Array.from(byKey.values());
-                                                            customStationsAtom.set(unique);
-                                                            toast.success(`Imported ${unique.length} stations`);
+                                                            const unique =
+                                                                Array.from(
+                                                                    byKey.values(),
+                                                                );
+                                                            customStationsAtom.set(
+                                                                unique,
+                                                            );
+                                                            toast.success(
+                                                                `Imported ${unique.length} stations`,
+                                                            );
                                                         } catch (e: any) {
-                                                            toast.error(`Failed to import files: ${e.message || e}`);
+                                                            toast.error(
+                                                                `Failed to import files: ${e.message || e}`,
+                                                            );
                                                         }
                                                     }}
                                                 />
                                             </div>
                                             <div className="flex flex-row items-center justify-between w-full">
                                                 <Label className="font-semibold font-poppins">
-                                                    Include default stations with custom list?
+                                                    Include default stations
+                                                    with custom list?
                                                 </Label>
                                                 <Checkbox
-                                                    checked={includeDefaultStations}
-                                                    onCheckedChange={(v) => includeDefaultStationsAtom.set(!!v)}
+                                                    checked={
+                                                        includeDefaultStations
+                                                    }
+                                                    onCheckedChange={(v) =>
+                                                        includeDefaultStationsAtom.set(
+                                                            !!v,
+                                                        )
+                                                    }
                                                     disabled={$isLoading}
                                                 />
                                             </div>
@@ -695,7 +767,8 @@ export const ZoneSidebar = () => {
                                     className="!bg-popover bg-opacity-100"
                                     disabled={
                                         $isLoading ||
-                                        (useCustomStations && !includeDefaultStations)
+                                        (useCustomStations &&
+                                            !includeDefaultStations)
                                     }
                                 />
                             </SidebarMenuItem>
