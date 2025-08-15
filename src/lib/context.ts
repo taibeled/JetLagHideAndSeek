@@ -131,6 +131,14 @@ export const customStations = persistentAtom<CustomStation[]>(
         decode: JSON.parse,
     },
 );
+export const includeDefaultStations = persistentAtom<boolean>(
+    "includeDefaultStations",
+    false,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
 export const animateMapMovements = persistentAtom<boolean>(
     "animateMapMovements",
     false,
@@ -185,6 +193,7 @@ export const hidingZone = computed(
         displayHidingZonesOptions,
         useCustomStations,
         customStations,
+    includeDefaultStations,
     ],
     (
         q,
@@ -195,8 +204,9 @@ export const hidingZone = computed(
         radius,
         hidingRadiusUnits,
         zoneOptions,
-        useCustom,
-        $customStations,
+    useCustom,
+    $customStations,
+    includeDefault,
     ) => {
         if (geo !== null) {
             return {
@@ -208,6 +218,7 @@ export const hidingZone = computed(
                 zoneOptions: zoneOptions,
                 useCustomStations: useCustom,
                 customStations: $customStations,
+                includeDefaultStations: includeDefault,
             };
         } else {
             const $loc = structuredClone(loc);
@@ -222,6 +233,7 @@ export const hidingZone = computed(
                 zoneOptions: zoneOptions,
                 useCustomStations: useCustom,
                 customStations: $customStations,
+                includeDefaultStations: includeDefault,
             };
         }
     },

@@ -25,6 +25,7 @@ import {
     displayHidingZonesOptions,
     hidingRadius,
     hidingRadiusUnits,
+    includeDefaultStations as includeDefaultStationsAtom,
     isLoading,
     leafletMapContext,
     planningModeEnabled,
@@ -40,19 +41,12 @@ import {
     findPlacesSpecificInZone,
     findTentacleLocations,
     nearestToQuestion,
+    normalizeToStationFeatures,
+    parseCustomStationsFromText,
     QuestionSpecificLocation,
     trainLineNodeFinder,
 } from "@/maps/api";
-import {
-    normalizeToStationFeatures,
-    parseCustomStationsFromText,
-} from "@/maps/api";
-
-function _previewText(count: number) {
-    return `${count} custom station${count === 1 ? "" : "s"} imported`;
-}
-import { holedMask, lngLatToText, safeUnion } from "@/maps/geo-utils";
-import { geoSpatialVoronoi } from "@/maps/geo-utils";
+import { geoSpatialVoronoi, holedMask, lngLatToText, safeUnion } from "@/maps/geo-utils";
 
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
@@ -71,6 +65,10 @@ import { ScrollToTop } from "./ui/scroll-to-top";
 import { MENU_ITEM_CLASSNAME } from "./ui/sidebar-l";
 import { UnitSelect } from "./UnitSelect";
 
+function _previewText(count: number) {
+    return `${count} custom station${count === 1 ? "" : "s"} imported`;
+}
+
 let buttonJustClicked = false;
 
 export const ZoneSidebar = () => {
@@ -84,6 +82,7 @@ export const ZoneSidebar = () => {
     const stations = useStore(trainStations);
     const $disabledStations = useStore(disabledStations);
     const useCustomStations = useStore(useCustomStationsAtom);
+    const includeDefaultStations = useStore(includeDefaultStationsAtom);
     const $customStations = useStore(customStationsAtom);
     const [commandValue, setCommandValue] = useState<string>("");
     const setStations = trainStations.set;
@@ -178,7 +177,8 @@ export const ZoneSidebar = () => {
         const initializeHidingZones = async () => {
             isLoading.set(true);
 
-            if ($displayHidingZonesOptions.length === 0) {
+            const needsDefault = !useCustomStations || includeDefaultStations;
+            if (needsDefault && $displayHidingZonesOptions.length === 0) {
                 toast.error("At least one place type must be selected");
                 isLoading.set(false);
                 return;
@@ -186,20 +186,20 @@ export const ZoneSidebar = () => {
 
             let places: any[] = [];
 
-            if (useCustomStations && $customStations.length > 0) {
-                places = normalizeToStationFeatures(
-                    $customStations,
-                ).features.map((f) => ({
+            if (!needsDefault) {
+                // Custom only
+                places = normalizeToStationFeatures($customStations).features.map((f) => ({
                     type: "Feature",
                     geometry: f.geometry,
                     properties: {
                         id:
-                            f.properties?.id ??
+                            f.properties?.id ||
                             `${(f.geometry as any).coordinates[1]},${(f.geometry as any).coordinates[0]}`,
                         name: f.properties?.name,
                     },
                 }));
             } else {
+                // Fetch default, optionally merge custom
                 places = osmtogeojson(
                     await findPlacesInZone(
                         $displayHidingZonesOptions[0],
@@ -209,6 +209,34 @@ export const ZoneSidebar = () => {
                         $displayHidingZonesOptions.slice(1),
                     ),
                 ).features;
+
+                if (useCustomStations && $customStations.length > 0 && includeDefaultStations) {
+                    const customFeatures = normalizeToStationFeatures($customStations).features.map((f) => ({
+                        type: "Feature",
+                        geometry: f.geometry,
+                        properties: {
+                            id:
+                                f.properties?.id ||
+                                `${(f.geometry as any).coordinates[1]},${(f.geometry as any).coordinates[0]}`,
+                            name: f.properties?.name,
+                        },
+                    }));
+                    const seen = new Set<string>();
+                    const merged: any[] = [];
+                    const add = (feat: any) => {
+                        const id = feat.properties.id as string | undefined;
+                        const key = id && id.includes("/")
+                            ? `id:${id}`
+                            : `pt:${feat.geometry.coordinates[1]},${feat.geometry.coordinates[0]}`;
+                        if (!seen.has(key)) {
+                            seen.add(key);
+                            merged.push(feat);
+                        }
+                    };
+                    places.forEach(add);
+                    customFeatures.forEach(add);
+                    places = merged;
+                }
             }
 
             const unionized = safeUnion(
@@ -257,14 +285,21 @@ export const ZoneSidebar = () => {
                     );
 
                     if (question.data.type === "same-train-line") {
-                        if (useCustomStations) {
+                        // Custom-only lists don't have reliable OSM IDs
+                        if (useCustomStations && !includeDefaultStations) {
                             toast.warning(
-                                "'Same train line' is not supported with custom station lists; skipping this filter.",
+                                "'Same train line' isn't supported with custom-only station lists; skipping this filter.",
                             );
                         } else {
-                            const nodes = await trainLineNodeFinder(
-                                nearestTrainStation.properties.id,
-                            );
+                            const nid = nearestTrainStation.properties.id as string | undefined;
+                            if (!nid || !nid.includes("/")) {
+                                toast.warning(
+                                    "Nearest station has no OSM id; skipping 'same train line' filter.",
+                                );
+                                continue;
+                            }
+
+                            const nodes = await trainLineNodeFinder(nid);
 
                             if (nodes.length === 0) {
                                 toast.warning(
@@ -277,11 +312,9 @@ export const ZoneSidebar = () => {
                                 continue;
                             } else {
                                 circles = circles.filter((circle: any) => {
-                                    const id = parseInt(
-                                        circle.properties.properties.id.split(
-                                            "/",
-                                        )[1],
-                                    );
+                                    const idProp = circle.properties.properties.id as string;
+                                    if (!idProp || !idProp.includes("/")) return false;
+                                    const id = parseInt(idProp.split("/")[1]);
 
                                     return question.data.same
                                         ? nodes.includes(id)
@@ -420,6 +453,7 @@ export const ZoneSidebar = () => {
         $displayHidingZonesOptions,
         $hidingRadius,
         useCustomStations,
+        includeDefaultStations,
         $customStations,
     ]);
 
@@ -545,41 +579,44 @@ export const ZoneSidebar = () => {
                                             <div>
                                                 <Input
                                                     type="file"
+                                                    multiple
                                                     accept=".csv,.json,.geojson,.kml,application/json,application/vnd.google-earth.kml+xml,text/csv,application/vnd.google-apps.kml+xml,application/xml,text/xml"
                                                     onInput={async (e) => {
-                                                        const file = (
-                                                            e.target as HTMLInputElement
-                                                        ).files?.[0];
-                                                        if (!file) return;
+                                                        const files = (e.target as HTMLInputElement).files;
+                                                        if (!files || files.length === 0) return;
                                                         try {
-                                                            const text =
-                                                                await file.text();
-                                                            const parsed =
-                                                                parseCustomStationsFromText(
-                                                                    text,
-                                                                    file.type,
-                                                                );
-                                                            if (
-                                                                parsed.length ===
-                                                                0
-                                                            ) {
-                                                                toast.error(
-                                                                    "No stations found in uploaded file",
-                                                                );
+                                                            const all: any[] = [];
+                                                            for (const file of Array.from(files)) {
+                                                                const text = await file.text();
+                                                                const parsed = parseCustomStationsFromText(text, file.type);
+                                                                all.push(...parsed);
+                                                            }
+                                                            if (all.length === 0) {
+                                                                toast.error("No stations found in uploaded files");
                                                                 return;
                                                             }
-                                                            customStationsAtom.set(
-                                                                parsed,
-                                                            );
-                                                            toast.success(
-                                                                `Imported ${parsed.length} stations`,
-                                                            );
+                                                            const byKey = new Map<string, any>();
+                                                            for (const s of all) {
+                                                                const key = s.id && s.id.includes("/") ? `id:${s.id}` : `pt:${s.lat},${s.lng}`;
+                                                                if (!byKey.has(key)) byKey.set(key, s);
+                                                            }
+                                                            const unique = Array.from(byKey.values());
+                                                            customStationsAtom.set(unique);
+                                                            toast.success(`Imported ${unique.length} stations`);
                                                         } catch (e: any) {
-                                                            toast.error(
-                                                                `Failed to import file: ${e.message || e}`,
-                                                            );
+                                                            toast.error(`Failed to import files: ${e.message || e}`);
                                                         }
                                                     }}
+                                                />
+                                            </div>
+                                            <div className="flex flex-row items-center justify-between w-full">
+                                                <Label className="font-semibold font-poppins">
+                                                    Include default stations with custom list?
+                                                </Label>
+                                                <Checkbox
+                                                    checked={includeDefaultStations}
+                                                    onCheckedChange={(v) => includeDefaultStationsAtom.set(!!v)}
+                                                    disabled={$isLoading}
                                                 />
                                             </div>
                                             {$customStations.length > 0 && (
@@ -656,7 +693,10 @@ export const ZoneSidebar = () => {
                                     maxCount={3}
                                     modalPopover
                                     className="!bg-popover bg-opacity-100"
-                                    disabled={$isLoading || useCustomStations}
+                                    disabled={
+                                        $isLoading ||
+                                        (useCustomStations && !includeDefaultStations)
+                                    }
                                 />
                             </SidebarMenuItem>
                             <SidebarMenuItem>

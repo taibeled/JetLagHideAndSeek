@@ -25,6 +25,7 @@ import {
     hidingRadius,
     hidingZone,
     highlightTrainLines,
+    includeDefaultStations,
     leafletMapContext,
     mapGeoJSON,
     mapGeoLocation,
@@ -200,6 +201,12 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 geojson.customStations.constructor === Array
             ) {
                 customStations.set(geojson.customStations);
+            }
+
+            if (
+                typeof geojson.includeDefaultStations === "boolean"
+            ) {
+                includeDefaultStations.set(geojson.includeDefaultStations);
             }
 
             toast.success("Hiding zone loaded successfully", {
