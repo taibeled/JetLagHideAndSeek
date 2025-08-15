@@ -383,7 +383,12 @@ export const ZoneSidebar = () => {
         $hidingRadius,
     ]);
 
-    const _stationLabels = stations.map((s) => s.properties.properties["name:en"] || s.properties.properties.name || lngLatToText(s.properties.geometry.coordinates));
+    const _stationLabels = stations.map(
+        (s) =>
+            s.properties.properties["name:en"] ||
+            s.properties.properties.name ||
+            lngLatToText(s.properties.geometry.coordinates),
+    );
     const _stationCounts: Record<string, number> = {};
     _stationLabels.forEach((l) => {
         _stationCounts[l] = (_stationCounts[l] || 0) + 1;
@@ -397,7 +402,8 @@ export const ZoneSidebar = () => {
             s.properties.properties.name ||
             lngLatToText(s.properties.geometry.coordinates);
         const idx = (_stationIndex[name] = (_stationIndex[name] || 0) + 1);
-        _stationLabelById[id] = _stationCounts[name] > 1 ? `${name} (${idx})` : name;
+        _stationLabelById[id] =
+            _stationCounts[name] > 1 ? `${name} (${idx})` : name;
     });
 
     return (
@@ -621,16 +627,20 @@ export const ZoneSidebar = () => {
                                         rel="noreferrer"
                                         className="text-blue-500"
                                     >
-                                        {_stationLabelById[stations.find(
-                                            (x) =>
-                                                x.properties.properties.id ===
-                                                commandValue,
-                                        ).properties.properties.id] ||
+                                        {_stationLabelById[
                                             stations.find(
                                                 (x) =>
                                                     x.properties.properties
                                                         .id === commandValue,
-                                            ).properties.properties["name:en"] ||
+                                            ).properties.properties.id
+                                        ] ||
+                                            stations.find(
+                                                (x) =>
+                                                    x.properties.properties
+                                                        .id === commandValue,
+                                            ).properties.properties[
+                                                "name:en"
+                                            ] ||
                                             stations.find(
                                                 (x) =>
                                                     x.properties.properties
@@ -642,7 +652,8 @@ export const ZoneSidebar = () => {
                                                         x.properties.properties
                                                             .id ===
                                                         commandValue,
-                                                ).properties.geometry.coordinates,
+                                                ).properties.geometry
+                                                    .coordinates,
                                             )}
                                     </a>
                                 </SidebarMenuItem>
@@ -780,11 +791,20 @@ export const ZoneSidebar = () => {
                                                     }}
                                                     disabled={$isLoading}
                                                 >
-                                                    {_stationLabelById[station.properties.properties.id] ||
-                                                        station.properties.properties["name:en"] ||
-                                                        station.properties.properties.name ||
+                                                    {_stationLabelById[
+                                                        station.properties
+                                                            .properties.id
+                                                    ] ||
+                                                        station.properties
+                                                            .properties[
+                                                            "name:en"
+                                                        ] ||
+                                                        station.properties
+                                                            .properties.name ||
                                                         lngLatToText(
-                                                            station.properties.geometry.coordinates,
+                                                            station.properties
+                                                                .geometry
+                                                                .coordinates,
                                                         )}
                                                     <button
                                                         onClick={async () => {

@@ -300,8 +300,11 @@ export const PlacePicker = ({
                                 >
                                     {(() => {
                                         const _label = determineName(result);
-                                        const _num = (_placeSeen[_label] = (_placeSeen[_label] || 0) + 1);
-                                        return _placeLabelCounts[_label] > 1 ? `${_label} (${_num})` : _label;
+                                        const _num = (_placeSeen[_label] =
+                                            (_placeSeen[_label] || 0) + 1);
+                                        return _placeLabelCounts[_label] > 1
+                                            ? `${_label} (${_num})`
+                                            : _label;
                                     })()}
                                 </CommandItem>
                             ))}

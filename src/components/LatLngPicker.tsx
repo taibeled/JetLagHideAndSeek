@@ -167,7 +167,10 @@ const LatLngEditForm = ({
                             >
                                 {(() => {
                                     const _key = `${result.properties.osm_id}${result.properties.name}`;
-                                    return _latlngLabelByKey[_key] || determineName(result);
+                                    return (
+                                        _latlngLabelByKey[_key] ||
+                                        determineName(result)
+                                    );
                                 })()}
                             </CommandItem>
                         ))}
