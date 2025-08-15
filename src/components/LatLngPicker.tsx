@@ -124,6 +124,21 @@ const LatLngEditForm = ({
         }
     }, [debouncedValue]);
 
+    const _latlngLabels = results.map((r) => determineName(r));
+    const _latlngLabelCounts: Record<string, number> = {};
+    _latlngLabels.forEach((l) => {
+        _latlngLabelCounts[l] = (_latlngLabelCounts[l] || 0) + 1;
+    });
+    const _latlngLabelByKey: Record<string, string> = {};
+    const _latlngOcc: Record<string, number> = {};
+    results.forEach((r) => {
+        const key = `${r.properties.osm_id}${r.properties.name}`;
+        const lbl = determineName(r);
+        const idx = (_latlngOcc[lbl] = (_latlngOcc[lbl] || 0) + 1);
+        _latlngLabelByKey[key] =
+            _latlngLabelCounts[lbl] > 1 ? `${lbl} (${idx})` : lbl;
+    });
+
     return (
         <>
             <Command shouldFilter={false}>
@@ -150,7 +165,10 @@ const LatLngEditForm = ({
                                 }}
                                 className="cursor-pointer"
                             >
-                                {determineName(result)}
+                                {(() => {
+                                    const _key = `${result.properties.osm_id}${result.properties.name}`;
+                                    return _latlngLabelByKey[_key] || determineName(result);
+                                })()}
                             </CommandItem>
                         ))}
                     </CommandGroup>

@@ -83,6 +83,13 @@ export const PlacePicker = ({
         }
     }, [debouncedValue]);
 
+    const _placeLabels = results.map((r) => determineName(r));
+    const _placeLabelCounts: Record<string, number> = {};
+    _placeLabels.forEach((l) => {
+        _placeLabelCounts[l] = (_placeLabelCounts[l] || 0) + 1;
+    });
+    const _placeSeen: Record<string, number> = {};
+
     return (
         <Popover open={useTutorialStep(open, [3])} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
@@ -291,7 +298,11 @@ export const PlacePicker = ({
                                     }}
                                     className="cursor-pointer"
                                 >
-                                    {determineName(result)}
+                                    {(() => {
+                                        const _label = determineName(result);
+                                        const _num = (_placeSeen[_label] = (_placeSeen[_label] || 0) + 1);
+                                        return _placeLabelCounts[_label] > 1 ? `${_label} (${_num})` : _label;
+                                    })()}
                                 </CommandItem>
                             ))}
                         </CommandGroup>

@@ -193,6 +193,19 @@ export const MultiSelect = React.forwardRef<
             }
         };
 
+        const _optLabels = options.map((o) => o.label);
+        const _optCounts: Record<string, number> = {};
+        _optLabels.forEach((l) => {
+            _optCounts[l] = (_optCounts[l] || 0) + 1;
+        });
+        const _optIndex: Record<string, number> = {};
+        const _optLabelByValue: Record<string, string> = {};
+        options.forEach((o) => {
+            const idx = (_optIndex[o.label] = (_optIndex[o.label] || 0) + 1);
+            _optLabelByValue[o.value] =
+                _optCounts[o.label] > 1 ? `${o.label} (${idx})` : o.label;
+        });
+
         return (
             <Popover
                 open={isPopoverOpen}
@@ -357,7 +370,7 @@ export const MultiSelect = React.forwardRef<
                                             {option.icon && (
                                                 <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
                                             )}
-                                            <span>{option.label}</span>
+                                            <span>{_optLabelByValue[option.value] || option.label}</span>
                                         </CommandItem>
                                     );
                                 })}
