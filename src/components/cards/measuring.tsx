@@ -4,6 +4,7 @@ import * as React from "react";
 
 import CustomInitDialog from "@/components/CustomInitDialog";
 import { LatitudeLongitude } from "@/components/LatLngPicker";
+import PresetsDialog from "@/components/PresetsDialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select } from "@/components/ui/select";
 import {
@@ -93,22 +94,30 @@ export const MeasuringQuestionComponent = ({
         case "custom-measure":
             if (data.drag) {
                 questionSpecific = (
-                    <p className="px-2 mb-1 text-center text-orange-500">
-                        To modify the measuring question, enable it:
-                        <Checkbox
-                            className="mx-1 my-1"
-                            checked={$drawingQuestionKey === questionKey}
-                            onCheckedChange={(checked) => {
-                                if (checked) {
-                                    drawingQuestionKey.set(questionKey);
-                                } else {
-                                    drawingQuestionKey.set(-1);
-                                }
-                            }}
-                            disabled={!data.drag || $isLoading}
-                        />
-                        and use the buttons at the bottom left of the map.
-                    </p>
+                    <>
+                        <p className="px-2 mb-1 text-center text-orange-500">
+                            To modify the measuring question, enable it:
+                            <Checkbox
+                                className="mx-1 my-1"
+                                checked={$drawingQuestionKey === questionKey}
+                                onCheckedChange={(checked) => {
+                                    if (checked) {
+                                        drawingQuestionKey.set(questionKey);
+                                    } else {
+                                        drawingQuestionKey.set(-1);
+                                    }
+                                }}
+                                disabled={!data.drag || $isLoading}
+                            />
+                            and use the buttons at the bottom left of the map.
+                        </p>
+                        <div className="flex justify-center mb-2">
+                            <PresetsDialog
+                                data={data}
+                                presetTypeHint={data.type}
+                            />
+                        </div>
+                    </>
                 );
             }
             break;
