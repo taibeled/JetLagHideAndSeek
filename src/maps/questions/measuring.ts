@@ -93,7 +93,7 @@ export const determineMeasuringBoundary = async (
                 await findPlacesInZone(
                     "[highspeed=yes]",
                     "Finding high-speed lines...",
-                    "way",
+                    "nwr",
                     "geom",
                 ),
             ).features;
