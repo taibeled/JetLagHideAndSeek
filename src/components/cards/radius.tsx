@@ -16,7 +16,7 @@ import {
     questions,
     triggerLocalRefresh,
 } from "@/lib/context";
-import { cn } from "@/lib/utils";
+import { cn, normalizeDecimalInput } from "@/lib/utils";
 import type { RadiusQuestion } from "@/maps/schema";
 
 import { QuestionCard } from "./base";
@@ -61,12 +61,13 @@ export const RadiusQuestionComponent = ({
                 <div className={cn(MENU_ITEM_CLASSNAME, "gap-2 flex flex-row")}>
                     <Input
                         type="number"
+                        inputMode="decimal"
                         className="rounded-md p-2 w-16"
                         value={data.radius}
                         disabled={!data.drag || $isLoading}
                         onChange={(e) =>
                             questionModified(
-                                (data.radius = parseFloat(e.target.value)),
+                                (data.radius = normalizeDecimalInput(e.target.value)),
                             )
                         }
                     />

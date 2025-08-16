@@ -31,7 +31,7 @@ import {
     questions,
     trainStations,
 } from "@/lib/context";
-import { cn } from "@/lib/utils";
+import { cn, normalizeDecimalInput } from "@/lib/utils";
 import {
     BLANK_GEOJSON,
     findPlacesInZone,
@@ -514,11 +514,12 @@ export const ZoneSidebar = () => {
                                 >
                                     <Input
                                         type="number"
+                                        inputMode="decimal"
                                         className="rounded-md p-2 w-16"
                                         value={$hidingRadius}
                                         onChange={(e) => {
                                             hidingRadius.set(
-                                                parseFloat(e.target.value),
+                                                normalizeDecimalInput(e.target.value),
                                             );
                                         }}
                                         disabled={$isLoading}
