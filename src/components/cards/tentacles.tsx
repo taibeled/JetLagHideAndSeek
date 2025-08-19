@@ -3,6 +3,7 @@ import * as turf from "@turf/turf";
 import { Suspense, use } from "react";
 
 import { LatitudeLongitude } from "@/components/LatLngPicker";
+import PresetsDialog from "@/components/PresetsDialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -142,22 +143,30 @@ export const TentacleQuestionComponent = ({
                 />
             </SidebarMenuItem>
             {data.locationType === "custom" && data.drag && (
-                <p className="px-2 mb-1 text-center text-orange-500">
-                    To modify tentacle locations, enable it:
-                    <Checkbox
-                        className="mx-1 my-1"
-                        checked={$drawingQuestionKey === questionKey}
-                        onCheckedChange={(checked) => {
-                            if (checked) {
-                                drawingQuestionKey.set(questionKey);
-                            } else {
-                                drawingQuestionKey.set(-1);
-                            }
-                        }}
-                        disabled={!data.drag || $isLoading}
-                    />
-                    and use the buttons at the bottom left of the map.
-                </p>
+                <>
+                    <p className="px-2 mb-1 text-center text-orange-500">
+                        To modify tentacle locations, enable it:
+                        <Checkbox
+                            className="mx-1 my-1"
+                            checked={$drawingQuestionKey === questionKey}
+                            onCheckedChange={(checked) => {
+                                if (checked) {
+                                    drawingQuestionKey.set(questionKey);
+                                } else {
+                                    drawingQuestionKey.set(-1);
+                                }
+                            }}
+                            disabled={!data.drag || $isLoading}
+                        />
+                        and use the buttons at the bottom left of the map.
+                    </p>
+                    <div className="flex justify-center mb-2">
+                        <PresetsDialog
+                            data={data}
+                            presetTypeHint="custom-tentacles"
+                        />
+                    </div>
+                </>
             )}
             <LatitudeLongitude
                 latitude={data.lat}
@@ -225,12 +234,55 @@ const TentacleLocationSelector = ({
     const $hiderMode = useStore(hiderMode);
     const locations = use(promise);
 
+    // Filter locations to only those within the radius of the primary location
+    const filteredFeatures = (() => {
+        if (
+            data.lat === null ||
+            data.lng === null ||
+            data.radius === undefined ||
+            data.radius === null
+        ) {
+            return locations.features;
+        }
+
+        const center = turf.point([data.lng, data.lat]);
+
+        return locations.features.filter((feature: any) => {
+            const coords =
+                feature?.geometry?.coordinates ??
+                (feature?.properties?.lon && feature?.properties?.lat
+                    ? [feature.properties.lon, feature.properties.lat]
+                    : null);
+
+            if (!coords) return false;
+
+            const pt = turf.point(coords);
+            const dist = turf.distance(center, pt, { units: data.unit });
+
+            return dist <= data.radius;
+        });
+    })();
+
+    // If the currently selected location is no longer within radius, clear it.
+    const _selectedLocationName = data.location
+        ? data.location.properties?.name
+        : null;
+    if (
+        _selectedLocationName &&
+        !filteredFeatures.find(
+            (f: any) => f.properties.name === _selectedLocationName,
+        )
+    ) {
+        data.location = false;
+        questionModified();
+    }
+
     return (
         <Select
             trigger="Location"
             options={{
                 false: "Not Within",
-                ...mapToObj(locations.features, (feature: any) => [
+                ...mapToObj(filteredFeatures, (feature: any) => [
                     feature.properties.name,
                     feature.properties.name,
                 ]),
@@ -240,7 +292,7 @@ const TentacleLocationSelector = ({
                 if (value === "false") {
                     data.location = false;
                 } else {
-                    data.location = locations.features.find(
+                    data.location = filteredFeatures.find(
                         (feature: any) => feature.properties.name === value,
                     );
                 }

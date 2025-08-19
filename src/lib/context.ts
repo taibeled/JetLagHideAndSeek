@@ -3,7 +3,11 @@ import type { FeatureCollection, MultiPolygon, Polygon } from "geojson";
 import type { Map } from "leaflet";
 import { atom, computed } from "nanostores";
 
-import { type AdditionalMapGeoLocations, type OpenStreetMap } from "@/maps/api";
+import type {
+    AdditionalMapGeoLocations,
+    CustomStation,
+    OpenStreetMap,
+} from "@/maps/api";
 import {
     type DeepPartial,
     type Question,
@@ -111,6 +115,30 @@ export const displayHidingZonesOptions = persistentAtom<string[]>(
 );
 export const questionFinishedMapData = atom<any>(null);
 export const trainStations = atom<any[]>([]);
+export const useCustomStations = persistentAtom<boolean>(
+    "useCustomStations",
+    false,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
+export const customStations = persistentAtom<CustomStation[]>(
+    "customStations",
+    [],
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
+export const includeDefaultStations = persistentAtom<boolean>(
+    "includeDefaultStations",
+    false,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
 export const animateMapMovements = persistentAtom<boolean>(
     "animateMapMovements",
     false,
@@ -152,7 +180,56 @@ export const save = () => {
     }
 };
 
-// Exported hiding zone that can be loaded from clipboard or URL
+/* Presets for custom questions (savable / sharable / editable) */
+export type CustomPreset = {
+    id: string;
+    name: string;
+    type: string;
+    data: any;
+    createdAt: string;
+};
+
+export const customPresets = persistentAtom<CustomPreset[]>(
+    "customPresets",
+    [],
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
+
+export const saveCustomPreset = (
+    preset: Omit<CustomPreset, "id" | "createdAt">,
+) => {
+    const id =
+        typeof crypto !== "undefined" &&
+        typeof (crypto as any).randomUUID === "function"
+            ? (crypto as any).randomUUID()
+            : String(Date.now());
+    const p: CustomPreset = {
+        ...preset,
+        id,
+        createdAt: new Date().toISOString(),
+    };
+    customPresets.set([...customPresets.get(), p]);
+    return p;
+};
+
+export const updateCustomPreset = (
+    id: string,
+    updates: Partial<CustomPreset>,
+) => {
+    customPresets.set(
+        customPresets
+            .get()
+            .map((p) => (p.id === id ? { ...p, ...updates } : p)),
+    );
+};
+
+export const deleteCustomPreset = (id: string) => {
+    customPresets.set(customPresets.get().filter((p) => p.id !== id));
+};
+
 export const hidingZone = computed(
     [
         questions,
@@ -163,6 +240,10 @@ export const hidingZone = computed(
         hidingRadius,
         hidingRadiusUnits,
         displayHidingZonesOptions,
+        useCustomStations,
+        customStations,
+        includeDefaultStations,
+        customPresets,
     ],
     (
         q,
@@ -173,6 +254,10 @@ export const hidingZone = computed(
         radius,
         hidingRadiusUnits,
         zoneOptions,
+        useCustom,
+        $customStations,
+        includeDefault,
+        presets,
     ) => {
         if (geo !== null) {
             return {
@@ -182,6 +267,10 @@ export const hidingZone = computed(
                 hidingRadius: radius,
                 hidingRadiusUnits,
                 zoneOptions: zoneOptions,
+                useCustomStations: useCustom,
+                customStations: $customStations,
+                includeDefaultStations: includeDefault,
+                presets: structuredClone(presets),
             };
         } else {
             const $loc = structuredClone(loc);
@@ -194,6 +283,10 @@ export const hidingZone = computed(
                 hidingRadiusUnits,
                 alternateLocations: structuredClone(altLoc),
                 zoneOptions: zoneOptions,
+                useCustomStations: useCustom,
+                customStations: $customStations,
+                includeDefaultStations: includeDefault,
+                presets: structuredClone(presets),
             };
         }
     },

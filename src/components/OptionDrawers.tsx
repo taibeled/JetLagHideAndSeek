@@ -16,6 +16,8 @@ import {
     autoSave,
     autoZoom,
     customInitPreference,
+    customPresets,
+    customStations,
     defaultUnit,
     disabledStations,
     displayHidingZonesOptions,
@@ -24,6 +26,7 @@ import {
     hidingRadius,
     hidingZone,
     highlightTrainLines,
+    includeDefaultStations,
     leafletMapContext,
     mapGeoJSON,
     mapGeoLocation,
@@ -35,6 +38,7 @@ import {
     showTutorial,
     thunderforestApiKey,
     triggerLocalRefresh,
+    useCustomStations,
 } from "@/lib/context";
 import {
     cn,
@@ -174,6 +178,37 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 }
             }
 
+            const incomingPresets =
+                geojson.presets ?? geojson.properties?.presets;
+            if (incomingPresets && Array.isArray(incomingPresets)) {
+                try {
+                    const normalized = (incomingPresets as any[])
+                        .filter((p) => p && p.data)
+                        .map((p) => {
+                            return {
+                                id:
+                                    p.id ??
+                                    (typeof crypto !== "undefined" &&
+                                    typeof (crypto as any).randomUUID ===
+                                        "function"
+                                        ? (crypto as any).randomUUID()
+                                        : String(Date.now()) + Math.random()),
+                                name: p.name ?? "Imported preset",
+                                type: p.type ?? "custom",
+                                data: p.data,
+                                createdAt:
+                                    p.createdAt ?? new Date().toISOString(),
+                            };
+                        });
+                    if (normalized.length > 0) {
+                        customPresets.set(normalized);
+                        toast.info(`Imported ${normalized.length} preset(s)`);
+                    }
+                } catch (err) {
+                    console.warn("Failed to import presets", err);
+                }
+            }
+
             if (
                 geojson.disabledStations !== null &&
                 geojson.disabledStations.constructor === Array
@@ -187,6 +222,21 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
 
             if (geojson.zoneOptions) {
                 displayHidingZonesOptions.set(geojson.zoneOptions ?? []);
+            }
+
+            if (typeof geojson.useCustomStations === "boolean") {
+                useCustomStations.set(geojson.useCustomStations);
+            }
+
+            if (
+                geojson.customStations &&
+                geojson.customStations.constructor === Array
+            ) {
+                customStations.set(geojson.customStations);
+            }
+
+            if (typeof geojson.includeDefaultStations === "boolean") {
+                includeDefaultStations.set(geojson.includeDefaultStations);
             }
 
             toast.success("Hiding zone loaded successfully", {
