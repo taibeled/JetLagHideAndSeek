@@ -5,6 +5,7 @@ import { Suspense, use } from "react";
 import { LatitudeLongitude } from "@/components/LatLngPicker";
 import PresetsDialog from "@/components/PresetsDialog";
 import { Checkbox } from "@/components/ui/checkbox";
+import { FriendlyNameInput } from "@/components/ui/display-name";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import {
@@ -17,7 +18,6 @@ import {
     hiderMode,
     isLoading,
     questionModified,
-    questions,
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn, mapToObj } from "@/lib/utils";
@@ -43,21 +43,15 @@ export const TentacleQuestionComponent = ({
     sub?: string;
     className?: string;
 }) => {
-    const $questions = useStore(questions);
     const $drawingQuestionKey = useStore(drawingQuestionKey);
     const $isLoading = useStore(isLoading);
-    const label = `Tentacles
-    ${
-        $questions
-            .filter((q) => q.id === "tentacles")
-            .map((q) => q.key)
-            .indexOf(questionKey) + 1
-    }`;
+    let label = `${data.locationType} Tentacles`;
 
     return (
         <QuestionCard
             questionKey={questionKey}
             label={label}
+            friendlyName={data.friendlyName}
             sub={sub}
             className={className}
             collapsed={data.collapsed}
@@ -67,6 +61,15 @@ export const TentacleQuestionComponent = ({
             locked={!data.drag}
             setLocked={(locked) => questionModified((data.drag = !locked))}
         >
+            <FriendlyNameInput
+                defaultDisplayName={label}
+                data={data}
+                isLoading={$isLoading}
+                onChange={(newVal) => {
+                    data.friendlyName = newVal;
+                    questionModified(data);
+                }}
+            />
             <SidebarMenuItem>
                 <div className={cn(MENU_ITEM_CLASSNAME, "gap-2 flex flex-row")}>
                     <Input
@@ -138,6 +141,7 @@ export const TentacleQuestionComponent = ({
                             data.locationType = value;
                         }
                         questionModified();
+                        label = `${data.locationType} Tentacles`;
                     }}
                     disabled={!data.drag || $isLoading}
                 />
