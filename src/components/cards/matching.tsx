@@ -6,6 +6,7 @@ import CustomInitDialog from "@/components/CustomInitDialog";
 import { LatitudeLongitude } from "@/components/LatLngPicker";
 import PresetsDialog from "@/components/PresetsDialog";
 import { Checkbox } from "@/components/ui/checkbox";
+import { FriendlyNameInput } from "@/components/ui/display-name";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import {
@@ -20,7 +21,6 @@ import {
     hiderMode,
     isLoading,
     questionModified,
-    questions,
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
@@ -50,7 +50,6 @@ export const MatchingQuestionComponent = ({
 }) => {
     useStore(triggerLocalRefresh);
     const $hiderMode = useStore(hiderMode);
-    const $questions = useStore(questions);
     const $displayHidingZones = useStore(displayHidingZones);
     const $drawingQuestionKey = useStore(drawingQuestionKey);
     const $isLoading = useStore(isLoading);
@@ -59,13 +58,7 @@ export const MatchingQuestionComponent = ({
     const [pendingCustomType, setPendingCustomType] = React.useState<
         "custom-zone" | "custom-points" | null
     >(null);
-    const label = `Matching
-    ${
-        $questions
-            .filter((q) => q.id === "matching")
-            .map((q) => q.key)
-            .indexOf(questionKey) + 1
-    }`;
+    let label = `Matching ${data.type}?`;
 
     let questionSpecific = <></>;
 
@@ -179,6 +172,7 @@ export const MatchingQuestionComponent = ({
         <QuestionCard
             questionKey={questionKey}
             label={label}
+            friendlyName={data.friendlyName}
             sub={sub}
             className={className}
             collapsed={data.collapsed}
@@ -232,7 +226,17 @@ export const MatchingQuestionComponent = ({
                     }
                     data.type = pendingCustomType;
                     questionModified();
+                    label = `Matching ${data.type}?`;
                     setCustomDialogOpen(false);
+                }}
+            />
+            <FriendlyNameInput
+                defaultDisplayName={label}
+                data={data}
+                isLoading={$isLoading}
+                onChange={(newVal) => {
+                    data.friendlyName = newVal;
+                    questionModified(data);
                 }}
             />
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
@@ -343,6 +347,7 @@ export const MatchingQuestionComponent = ({
                                 (data as any).cat = { adminLevel: 3 };
                             }
                             questionModified((data.type = value));
+                            label = `Matching ${data.type}?`;
                             return;
                         }
 

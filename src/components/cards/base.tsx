@@ -38,6 +38,7 @@ export const QuestionCard = ({
     questionKey,
     className,
     label,
+    friendlyName,
     sub,
     collapsed,
     locked,
@@ -48,6 +49,7 @@ export const QuestionCard = ({
     questionKey: number;
     className?: string;
     label?: string;
+    friendlyName?: string;
     sub?: string;
     collapsed?: boolean;
     locked?: boolean;
@@ -66,6 +68,11 @@ export const QuestionCard = ({
         setIsCollapsed((prevState) => !prevState);
     };
 
+    let displayLabel = label;
+    if (friendlyName != null && friendlyName !== "") {
+        displayLabel = friendlyName;
+    }
+
     return (
         <>
             <SidebarGroup className={className}>
@@ -83,7 +90,7 @@ export const QuestionCard = ({
                         className="ml-8 mr-8 cursor-pointer"
                         onClick={toggleCollapse}
                     >
-                        {label} {sub && `(${sub})`}
+                        {displayLabel} {sub && `(${sub})`}
                     </SidebarGroupLabel>
                     <SidebarGroupContent
                         className={cn(

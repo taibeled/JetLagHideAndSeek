@@ -66,6 +66,7 @@ const thermometerQuestionSchema = z.object({
     /** Note that drag is now synonymous with unlocked */
     drag: z.boolean().default(true),
     collapsed: z.boolean().default(false),
+    friendlyName: z.string().optional(),
 });
 
 const ordinaryBaseQuestionSchema = z.object({
@@ -81,6 +82,7 @@ const ordinaryBaseQuestionSchema = z.object({
     drag: z.boolean().default(true),
     color: iconColorSchema.default(randomColor),
     collapsed: z.boolean().default(false),
+    friendlyName: z.string().optional(),
 });
 
 const getDefaultUnit = () => {
