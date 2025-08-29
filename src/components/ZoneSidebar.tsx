@@ -33,6 +33,7 @@ import {
     questions,
     trainStations,
     useCustomStations as useCustomStationsAtom,
+    removeDuplicates as removeDuplicatesAtom,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
 import {
@@ -87,6 +88,7 @@ export const ZoneSidebar = () => {
     const stations = useStore(trainStations);
     const $disabledStations = useStore(disabledStations);
     const useCustomStations = useStore(useCustomStationsAtom);
+    const removeDuplicates = useStore(removeDuplicatesAtom);
     const includeDefaultStations = useStore(includeDefaultStationsAtom);
     const $customStations = useStore(customStationsAtom);
     const [commandValue, setCommandValue] = useState<string>("");
@@ -251,6 +253,45 @@ export const ZoneSidebar = () => {
                     customFeatures.forEach(add);
                     places = merged;
                 }
+            }
+
+            if (removeDuplicates){
+                console.log("Removing duplicate places... Total: " + places.length);
+                
+                const grouped = new Map<string, any[]>();
+                  // 1. Group by name
+                places.forEach((place) => {
+                    const name = place.properties.name;
+                    if (!grouped.has(name)) {
+                    grouped.set(name, []);
+                    }
+                    grouped.get(name)!.push(place);
+                });
+
+                // 2. Compute central point per group
+                const merged: any[] = [];
+                grouped.forEach((group, name) => {
+                    const avgLng =
+                    group.reduce((sum, p) => sum + p.geometry.coordinates[0], 0) /
+                    group.length;
+                    const avgLat =
+                    group.reduce((sum, p) => sum + p.geometry.coordinates[1], 0) /
+                    group.length;
+
+                    merged.push({
+                    ...group[0], // copy other fields from the first feature
+                    geometry: {
+                        type: "Point",
+                        coordinates: [avgLng, avgLat],
+                    },
+                    });
+                });
+
+                places = merged;
+
+                console.log("Removed duplicated places... After: " + merged.length);
+            } else {
+                console.log("Not removing any duplicated stations...")
             }
 
             const unionized = safeUnion(
@@ -520,6 +561,20 @@ export const ZoneSidebar = () => {
                                         checked={useCustomStations}
                                         onCheckedChange={(v) =>
                                             useCustomStationsAtom.set(!!v)
+                                        }
+                                        disabled={$isLoading}
+                                    />
+                                </div>
+                            </SidebarMenuItem>
+                            <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                                <div className="flex flex-row items-center justify-between w-full">
+                                    <Label className="font-semibold font-poppins">
+                                        Remove duplicates?
+                                    </Label>
+                                    <Checkbox
+                                        checked={removeDuplicates}
+                                        onCheckedChange={(v) =>
+                                            removeDuplicatesAtom.set(!!v)
                                         }
                                         disabled={$isLoading}
                                     />
