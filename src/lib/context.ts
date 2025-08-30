@@ -131,13 +131,13 @@ export const customStations = persistentAtom<CustomStation[]>(
         decode: JSON.parse,
     },
 );
-export const removeDuplicates = persistentAtom<boolean>(
+export const mergeDuplicates = persistentAtom<boolean>(
     "removeDuplicates",
     false,
     {
         encode: JSON.stringify,
         decode: JSON.parse,
-    }, 
+    },
 );
 export const includeDefaultStations = persistentAtom<boolean>(
     "includeDefaultStations",
