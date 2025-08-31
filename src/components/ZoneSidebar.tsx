@@ -28,6 +28,7 @@ import {
     includeDefaultStations as includeDefaultStationsAtom,
     isLoading,
     leafletMapContext,
+    mergeDuplicates as mergeDuplicatesAtom,
     planningModeEnabled,
     questionFinishedMapData,
     questions,
@@ -50,6 +51,7 @@ import {
     geoSpatialVoronoi,
     holedMask,
     lngLatToText,
+    mergeDuplicateStation,
     safeUnion,
 } from "@/maps/geo-utils";
 
@@ -87,6 +89,7 @@ export const ZoneSidebar = () => {
     const stations = useStore(trainStations);
     const $disabledStations = useStore(disabledStations);
     const useCustomStations = useStore(useCustomStationsAtom);
+    const mergeDuplicates = useStore(mergeDuplicatesAtom);
     const includeDefaultStations = useStore(includeDefaultStationsAtom);
     const $customStations = useStore(customStationsAtom);
     const [commandValue, setCommandValue] = useState<string>("");
@@ -251,6 +254,11 @@ export const ZoneSidebar = () => {
                     customFeatures.forEach(add);
                     places = merged;
                 }
+            }
+
+            // merge duplicate stations if selected
+            if (mergeDuplicates) {
+                places = mergeDuplicateStation(places);
             }
 
             const unionized = safeUnion(
@@ -473,6 +481,7 @@ export const ZoneSidebar = () => {
         useCustomStations,
         includeDefaultStations,
         $customStations,
+        mergeDuplicates,
     ]);
 
     return (
@@ -520,6 +529,20 @@ export const ZoneSidebar = () => {
                                         checked={useCustomStations}
                                         onCheckedChange={(v) =>
                                             useCustomStationsAtom.set(!!v)
+                                        }
+                                        disabled={$isLoading}
+                                    />
+                                </div>
+                            </SidebarMenuItem>
+                            <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                                <div className="flex flex-row items-center justify-between w-full">
+                                    <Label className="font-semibold font-poppins">
+                                        Merge duplicated stations?
+                                    </Label>
+                                    <Checkbox
+                                        checked={mergeDuplicates}
+                                        onCheckedChange={(v) =>
+                                            mergeDuplicatesAtom.set(!!v)
                                         }
                                         disabled={$isLoading}
                                     />
