@@ -1,6 +1,7 @@
 import { useStore } from "@nanostores/react";
 
 import { LatitudeLongitude } from "@/components/LatLngPicker";
+import { FriendlyNameInput } from "@/components/ui/display-name";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -13,7 +14,6 @@ import {
     hiderMode,
     isLoading,
     questionModified,
-    questions,
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
@@ -34,20 +34,14 @@ export const RadiusQuestionComponent = ({
 }) => {
     useStore(triggerLocalRefresh);
     const $hiderMode = useStore(hiderMode);
-    const $questions = useStore(questions);
     const $isLoading = useStore(isLoading);
-    const label = `Radius
-    ${
-        $questions
-            .filter((q) => q.id === "radius")
-            .map((q) => q.key)
-            .indexOf(questionKey) + 1
-    }`;
+    let label = `${data.radius} ${data.unit} radius`;
 
     return (
         <QuestionCard
             questionKey={questionKey}
             label={label}
+            friendlyName={data.friendlyName}
             sub={sub}
             className={className}
             collapsed={data.collapsed}
@@ -57,6 +51,15 @@ export const RadiusQuestionComponent = ({
             locked={!data.drag}
             setLocked={(locked) => questionModified((data.drag = !locked))}
         >
+            <FriendlyNameInput
+                defaultDisplayName={label}
+                data={data}
+                isLoading={$isLoading}
+                onChange={(newVal) => {
+                    data.friendlyName = newVal;
+                    questionModified(data);
+                }}
+            />
             <SidebarMenuItem>
                 <div className={cn(MENU_ITEM_CLASSNAME, "gap-2 flex flex-row")}>
                     <Input
@@ -64,18 +67,20 @@ export const RadiusQuestionComponent = ({
                         className="rounded-md p-2 w-16"
                         value={data.radius}
                         disabled={!data.drag || $isLoading}
-                        onChange={(e) =>
+                        onChange={(e) => {
                             questionModified(
                                 (data.radius = parseFloat(e.target.value)),
-                            )
-                        }
+                            );
+                            label = `${data.radius} ${data.unit} radius`;
+                        }}
                     />
                     <UnitSelect
                         unit={data.unit}
                         disabled={!data.drag || $isLoading}
-                        onChange={(unit) =>
-                            questionModified((data.unit = unit))
-                        }
+                        onChange={(unit) => {
+                            questionModified((data.unit = unit));
+                            label = `${data.radius} ${data.unit} radius`;
+                        }}
                     />
                 </div>
             </SidebarMenuItem>
