@@ -763,6 +763,14 @@ export const ZoneSidebar = () => {
                                             value: "[highway=bus_stop]",
                                         },
                                         {
+                                            label: "Ferry Terminals",
+                                            value: "[amenity=ferry_terminal]",
+                                        },
+                                        {
+                                            label: "Ferry Platforms (public transport)",
+                                            value: "[public_transport=platform][platform=ferry]",
+                                        },
+                                        {
                                             label: "Railway Stations Excluding Subways",
                                             value: "[railway=station][subway!=yes]",
                                         },
