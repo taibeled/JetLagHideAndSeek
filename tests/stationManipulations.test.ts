@@ -16,8 +16,10 @@ describe("mergeDuplicateStation", () => {
                 properties: { name: "Station East" },
             },
         ];
+        const radius = 10000; // super wide radius to ensure all locations are in
+        const units: turf.Units = "kilometers";
 
-        const result = mergeDuplicateStation(places);
+        const result = mergeDuplicateStation(places, radius, units);
         expect(result).toHaveLength(1);
         expect(result[0].geometry.coordinates).toEqual([121, 11]); // average
     });
@@ -35,8 +37,10 @@ describe("mergeDuplicateStation", () => {
                 properties: { name: "Station West" },
             },
         ];
+        const radius = 10000; // super wide radius to ensure all locations are in
+        const units: turf.Units = "kilometers";
 
-        const result = mergeDuplicateStation(places);
+        const result = mergeDuplicateStation(places, radius, units);
         expect(result).toHaveLength(1);
         expect(result[0].geometry.coordinates).toEqual([-81, 24]);
     });
@@ -54,8 +58,10 @@ describe("mergeDuplicateStation", () => {
                 properties: { name: "Station South" },
             },
         ];
+        const radius = 10000; // super wide radius to ensure all locations are in
+        const units: turf.Units = "kilometers";
 
-        const result = mergeDuplicateStation(places);
+        const result = mergeDuplicateStation(places, radius, units);
         expect(result).toHaveLength(1);
         expect(result[0].geometry.coordinates).toEqual([31, -21]);
     });
@@ -78,8 +84,10 @@ describe("mergeDuplicateStation", () => {
                 properties: { name: "Station Multi" },
             },
         ];
+        const radius = 10000; // super wide radius to ensure all locations are in
+        const units: turf.Units = "kilometers";
 
-        const result = mergeDuplicateStation(places);
+        const result = mergeDuplicateStation(places, radius, units);
         expect(result).toHaveLength(1);
         expect(result[0].geometry.coordinates).toEqual([20, 20]); // average of 10,20,30
     });
@@ -102,8 +110,10 @@ describe("mergeDuplicateStation", () => {
                 properties: { name: "Unique C" },
             },
         ];
+        const radius = 10000; // super wide radius to ensure all locations are in
+        const units: turf.Units = "kilometers";
 
-        const result = mergeDuplicateStation(places);
+        const result = mergeDuplicateStation(places, radius, units);
         expect(result).toHaveLength(3);
 
         // Make sure the coordinates are preserved exactly
@@ -112,6 +122,65 @@ describe("mergeDuplicateStation", () => {
             [20, -30],
             [-40, 60],
         ]);
+    });
+
+    it("returns 3 individual zones when 6 Jan van Galenstraat stations are added, where only 2 stations share the actual zone", () => {
+        const places = [
+            {
+                // West station 1:      https://www.openstreetmap.org/node/3306520727
+                geometry: {
+                    type: "Point",
+                    coordinates: [4.8350051, 52.3732337],
+                },
+                properties: { name: "Jan van Galenstraat" },
+            },
+            {
+                // West station 2:      https://www.openstreetmap.org/node/434662863
+                geometry: {
+                    type: "Point",
+                    coordinates: [4.8359077, 52.3730297],
+                },
+                properties: { name: "Jan van Galenstraat" },
+            },
+            {
+                // Center station 1:    https://www.openstreetmap.org/node/434700014
+                geometry: {
+                    type: "Point",
+                    coordinates: [4.8485891, 52.3733319],
+                },
+                properties: { name: "Jan van Galenstraat" },
+            },
+            {
+                // Center station 2:    https://www.openstreetmap.org/node/3300515588
+                geometry: {
+                    type: "Point",
+                    coordinates: [4.8487242, 52.3729826],
+                },
+                properties: { name: "Jan van Galenstraat" },
+            },
+            {
+                // East station 1:      https://www.openstreetmap.org/node/434397634
+                geometry: {
+                    type: "Point",
+                    coordinates: [4.8584711, 52.3751323],
+                },
+                properties: { name: "Jan van Galenstraat" },
+            },
+            {
+                // East station 2:      https://www.openstreetmap.org/node/434397635
+                geometry: {
+                    type: "Point",
+                    coordinates: [4.8586427, 52.3743002],
+                },
+                properties: { name: "Jan van Galenstraat" },
+            },
+        ];
+        const radius = 0.5;
+        const units: turf.Units = "kilometers";
+
+        const result = mergeDuplicateStation(places, radius, units);
+        // We expect 3 stations, because the 3 pairs are very far apart
+        expect(result).toHaveLength(3);
     });
 });
 
@@ -123,11 +192,11 @@ describe("checkIfStationsShareZones", () => {
     it("returns true that Jan van Galenstraat subway station and nearby tram station share zones with km as unit", () => {
         // Subway station:      https://www.openstreetmap.org/node/250224485
         const station1: Location = {
-            coordinates: [52.3726582, 4.8352937],
+            coordinates: [4.8352937, 52.3726582],
         };
         // Nearby tram station: https://www.openstreetmap.org/node/3306520727
         const station2: Location = {
-            coordinates: [52.3732337, 4.8350051],
+            coordinates: [4.8350051, 52.3732337],
         };
         const radius: number = 0.5; //km
         const units: turf.Units = "kilometers";
@@ -143,11 +212,11 @@ describe("checkIfStationsShareZones", () => {
     it("returns false that Jan van Galenstraat subway station and far away tram station share zones with km as unit", () => {
         // Subway station:      https://www.openstreetmap.org/node/250224485
         const station1: Location = {
-            coordinates: [52.3726582, 4.8352937],
+            coordinates: [4.8352937, 52.3726582],
         };
         // Far away tram station: https://www.openstreetmap.org/node/3300515588
         const station2: Location = {
-            coordinates: [52.3729826, 4.8487242],
+            coordinates: [4.8487242, 52.3729826],
         };
         const radius: number = 0.5; //km
         const units: turf.Units = "kilometers";
@@ -163,11 +232,11 @@ describe("checkIfStationsShareZones", () => {
     it("returns false that Jan van Galenstraat subway station and far away tram station share zones with miles as unit", () => {
         // Subway station:      https://www.openstreetmap.org/node/250224485
         const station1: Location = {
-            coordinates: [52.3726582, 4.8352937],
+            coordinates: [4.8352937, 52.3726582],
         };
         // Far away tram station: https://www.openstreetmap.org/node/3300515588
         const station2: Location = {
-            coordinates: [52.3729826, 4.8487242],
+            coordinates: [4.8487242, 52.3729826],
         };
         const radius: number = 0.5; //km
         const units: turf.Units = "miles";

@@ -258,7 +258,11 @@ export const ZoneSidebar = () => {
 
             // merge duplicate stations if selected
             if (mergeDuplicates) {
-                places = mergeDuplicateStation(places);
+                places = mergeDuplicateStation(
+                    places,
+                    $hidingRadius,
+                    $hidingRadiusUnits,
+                );
             }
 
             const unionized = safeUnion(
