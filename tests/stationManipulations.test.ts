@@ -114,3 +114,69 @@ describe("mergeDuplicateStation", () => {
         ]);
     });
 });
+
+import { checkIfStationsShareZones } from "../src/maps/geo-utils/stationManipulations";
+import type { Location } from "../src/maps/geo-utils/stationManipulations";
+import * as turf from "@turf/turf";
+
+describe("checkIfStationsShareZones", () => {
+    it("returns true that Jan van Galenstraat subway station and nearby tram station share zones with km as unit", () => {
+        // Subway station:      https://www.openstreetmap.org/node/250224485
+        const station1: Location = {
+            coordinates: [52.3726582, 4.8352937],
+        };
+        // Nearby tram station: https://www.openstreetmap.org/node/3306520727
+        const station2: Location = {
+            coordinates: [52.3732337, 4.8350051],
+        };
+        const radius: number = 0.5; //km
+        const units: turf.Units = "kilometers";
+        const result = checkIfStationsShareZones(
+            station1,
+            station2,
+            radius,
+            units,
+        );
+        expect(result).true;
+    });
+
+    it("returns false that Jan van Galenstraat subway station and far away tram station share zones with km as unit", () => {
+        // Subway station:      https://www.openstreetmap.org/node/250224485
+        const station1: Location = {
+            coordinates: [52.3726582, 4.8352937],
+        };
+        // Far away tram station: https://www.openstreetmap.org/node/3300515588
+        const station2: Location = {
+            coordinates: [52.3729826, 4.8487242],
+        };
+        const radius: number = 0.5; //km
+        const units: turf.Units = "kilometers";
+        const result = checkIfStationsShareZones(
+            station1,
+            station2,
+            radius,
+            units,
+        );
+        expect(result).false;
+    });
+
+    it("returns false that Jan van Galenstraat subway station and far away tram station share zones with miles as unit", () => {
+        // Subway station:      https://www.openstreetmap.org/node/250224485
+        const station1: Location = {
+            coordinates: [52.3726582, 4.8352937],
+        };
+        // Far away tram station: https://www.openstreetmap.org/node/3300515588
+        const station2: Location = {
+            coordinates: [52.3729826, 4.8487242],
+        };
+        const radius: number = 0.5; //km
+        const units: turf.Units = "miles";
+        const result = checkIfStationsShareZones(
+            station1,
+            station2,
+            radius,
+            units,
+        );
+        expect(result).false;
+    });
+});
