@@ -105,12 +105,12 @@ export const QuestionSidebar = () => {
                         </SidebarMenuItem>
                         <SidebarMenuItem>
                             <a
-                                href="https://forms.gle/N4M8D24VNhBHa5iM7"
+                                href="https://docs.google.com/forms/d/e/1FAIpQLSeuuAhIqx6K9dSxLbFTWOxNf_tMjQoSuBgxyNyWAV_btYtj8g/viewform?usp=header"
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
                                 <SidebarMenuButton className="bg-emerald-600 transition-colors">
-                                    Feedback!
+                                    Developer Interest
                                 </SidebarMenuButton>
                             </a>
                         </SidebarMenuItem>
