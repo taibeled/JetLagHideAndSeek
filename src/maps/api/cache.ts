@@ -29,24 +29,34 @@ export const cacheFetch = async (
         const cache = await determineCache(cacheType);
 
         const cachedResponse = await cache.match(url);
-        if (cachedResponse) return cachedResponse;
+        if (cachedResponse) {
+            if (!cachedResponse.ok) {
+                await cache.delete(url);
+            } else {
+                return cachedResponse;
+            }
+        }
+
+        const fetchAndMaybeCache = async () => {
+            const response = await fetch(url);
+            if (response.ok) {
+                await cache.put(url, response.clone());
+            } else {
+                await cache.delete(url);
+            }
+            return response;
+        };
 
         if (loadingText) {
             return toast.promise(
-                async () => {
-                    const response = await fetch(url);
-                    await cache.put(url, response.clone());
-                    return response;
-                },
+                fetchAndMaybeCache,
                 {
                     pending: loadingText,
                 },
             );
         }
 
-        const response = await fetch(url);
-        await cache.put(url, response.clone());
-        return response;
+        return await fetchAndMaybeCache();
     } catch (e) {
         console.log(e); // Probably a caches not supported error
 
