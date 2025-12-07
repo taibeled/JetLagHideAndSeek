@@ -135,6 +135,7 @@ A great deal of appreciation goes out to these individuals who have helped to cr
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/azyritedev"><img src="https://avatars.githubusercontent.com/u/206858676?v=4?s=100" width="100px;" alt="azyrite"/><br /><sub><b>azyrite</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=azyritedev" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://metamoof.net/"><img src="https://avatars.githubusercontent.com/u/805751?v=4?s=100" width="100px;" alt="Giles Antonio Radford"/><br /><sub><b>Giles Antonio Radford</b></sub></a><br /><a href="#ideas-metamoof" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/madjayem"><img src="https://avatars.githubusercontent.com/u/71520186?v=4?s=100" width="100px;" alt="madjayem"/><br /><sub><b>madjayem</b></sub></a><br /><a href="#ideas-madjayem" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/palimer6"><img src="https://avatars.githubusercontent.com/u/26436548?v=4?s=100" width="100px;" alt="palimer6"/><br /><sub><b>palimer6</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/issues?q=author%3Apalimer6" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
