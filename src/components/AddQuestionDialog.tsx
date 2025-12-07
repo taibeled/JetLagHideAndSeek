@@ -96,7 +96,17 @@ export const AddQuestionDialog = ({
             await toast.promise(
                 navigator.clipboard
                     .readText()
-                    .then((text) => addQuestion(JSON.parse(text))),
+                    .then((text) => {
+                        const parsed = JSON.parse(text);
+                        const question =
+                            parsed &&
+                            typeof parsed === "object" &&
+                            !Array.isArray(parsed)
+                                ? { ...parsed, key: Math.random() }
+                                : parsed;
+
+                        return addQuestion(question);
+                    }),
                 {
                     pending: "Reading from clipboard",
                     success: "Question added from clipboard!",
