@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
 import {
@@ -24,6 +24,7 @@ import {
     followMe,
     hiderMode,
     hidingRadius,
+    hidingRadiusUnits,
     hidingZone,
     highlightTrainLines,
     includeDefaultStations,
@@ -83,7 +84,24 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $alwaysUsePastebin = useStore(alwaysUsePastebin);
     const $followMe = useStore(followMe);
     const $customInitPref = useStore(customInitPreference);
+    const lastDefaultUnit = useRef($defaultUnit);
+    const hasSyncedInitialUnit = useRef(false);
     const [isOptionsOpen, setOptionsOpen] = useState(false);
+
+    useEffect(() => {
+        const currentDefault = $defaultUnit;
+
+        if (!hasSyncedInitialUnit.current) {
+            hasSyncedInitialUnit.current = true;
+            if (hidingRadiusUnits.get() !== currentDefault) {
+                hidingRadiusUnits.set(currentDefault);
+            }
+        } else if (lastDefaultUnit.current !== currentDefault) {
+            hidingRadiusUnits.set(currentDefault);
+        }
+
+        lastDefaultUnit.current = currentDefault;
+    }, [$defaultUnit]);
 
     useEffect(() => {
         const params = new URL(window.location.toString()).searchParams;
