@@ -38,35 +38,53 @@ const iconColorSchema = z.union([
     z.literal("violet"),
 ]);
 
-const randomColor = () =>
-    Object.keys(ICON_COLORS)[
-        Math.floor(Math.random() * Object.keys(ICON_COLORS).length)
-    ] as z.infer<typeof iconColorSchema>;
+type IconColor = z.infer<typeof iconColorSchema>;
 
-const thermometerQuestionSchema = z.object({
-    latA: z
-        .number()
-        .min(-90, "Latitude must not overlap with the poles")
-        .max(90, "Latitude must not overlap with the poles"),
-    lngA: z
-        .number()
-        .min(-180, "Longitude must not overlap with the antemeridian")
-        .max(180, "Longitude must not overlap with the antemeridian"),
-    latB: z
-        .number()
-        .min(-90, "Latitude must not overlap with the poles")
-        .max(90, "Latitude must not overlap with the poles"),
-    lngB: z
-        .number()
-        .min(-180, "Longitude must not overlap with the antemeridian")
-        .max(180, "Longitude must not overlap with the antemeridian"),
-    warmer: z.boolean().default(true),
-    colorA: iconColorSchema.default(randomColor),
-    colorB: iconColorSchema.default(randomColor),
-    /** Note that drag is now synonymous with unlocked */
-    drag: z.boolean().default(true),
-    collapsed: z.boolean().default(false),
-});
+const randomColor = () =>
+    (Object.keys(ICON_COLORS) as IconColor[])[
+        Math.floor(Math.random() * Object.keys(ICON_COLORS).length)
+    ];
+
+const randomColorExcluding = (excluded: IconColor[] = []) => {
+    const options = (Object.keys(ICON_COLORS) as IconColor[]).filter(
+        (color) => !excluded.includes(color),
+    );
+
+    return options[Math.floor(Math.random() * options.length)];
+};
+
+const thermometerQuestionSchema = z
+    .object({
+        latA: z
+            .number()
+            .min(-90, "Latitude must not overlap with the poles")
+            .max(90, "Latitude must not overlap with the poles"),
+        lngA: z
+            .number()
+            .min(-180, "Longitude must not overlap with the antemeridian")
+            .max(180, "Longitude must not overlap with the antemeridian"),
+        latB: z
+            .number()
+            .min(-90, "Latitude must not overlap with the poles")
+            .max(90, "Latitude must not overlap with the poles"),
+        lngB: z
+            .number()
+            .min(-180, "Longitude must not overlap with the antemeridian")
+            .max(180, "Longitude must not overlap with the antemeridian"),
+        warmer: z.boolean().default(true),
+        colorA: iconColorSchema.default(() => randomColorExcluding(["green"])),
+        colorB: iconColorSchema.default(() => randomColorExcluding(["green"])),
+        /** Note that drag is now synonymous with unlocked */
+        drag: z.boolean().default(true),
+        collapsed: z.boolean().default(false),
+    })
+    .transform((question) => {
+        if (question.colorA === question.colorB) {
+            question.colorB = "green";
+        }
+
+        return question;
+    });
 
 const ordinaryBaseQuestionSchema = z.object({
     lat: z
