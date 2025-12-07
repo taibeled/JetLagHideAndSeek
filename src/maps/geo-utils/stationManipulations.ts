@@ -22,11 +22,12 @@ export function mergeDuplicateStation(
         } else {
             // group already exist, need to check all groups and all members if their zones are shared
             let placeAdded = false;
-            for (const group of grouped) {  // check all groups
+            for (const group of grouped) {
+                // check all groups
                 const groupValues = group[1];
 
                 // if the name matches the first group members name, check all members
-                if (groupValues[0].properties.name == name) {   
+                if (groupValues[0].properties.name == name) {
                     let shareZones: boolean = false;
                     for (const groupPlace of groupValues) {
                         const station1: Location = {
@@ -62,7 +63,7 @@ export function mergeDuplicateStation(
                 const matches = Array.from(grouped.entries()).filter(
                     ([key]) => typeof key === "string" && key.includes(name),
                 );
-                const lastGroup = matches.at(-1);   // last group has the latest index
+                const lastGroup = matches.at(-1); // last group has the latest index
                 let lastKey = "0";
                 if (lastGroup) {
                     lastKey = lastGroup[0];

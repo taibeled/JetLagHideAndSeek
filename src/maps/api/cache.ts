@@ -48,12 +48,9 @@ export const cacheFetch = async (
         };
 
         if (loadingText) {
-            return toast.promise(
-                fetchAndMaybeCache,
-                {
-                    pending: loadingText,
-                },
-            );
+            return toast.promise(fetchAndMaybeCache, {
+                pending: loadingText,
+            });
         }
 
         return await fetchAndMaybeCache();

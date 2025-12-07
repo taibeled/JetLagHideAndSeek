@@ -745,7 +745,7 @@ export const ZoneSidebar = () => {
                             )}
                             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                                 <MultiSelect
-                                    options={[ 
+                                    options={[
                                         {
                                             label: "Railway Stations",
                                             value: "[railway=station]",
