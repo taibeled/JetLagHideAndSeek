@@ -103,17 +103,6 @@ export const QuestionSidebar = () => {
                                 </SidebarMenuButton>
                             </AddQuestionDialog>
                         </SidebarMenuItem>
-                        <SidebarMenuItem>
-                            <a
-                                href="https://docs.google.com/forms/d/e/1FAIpQLSeuuAhIqx6K9dSxLbFTWOxNf_tMjQoSuBgxyNyWAV_btYtj8g/viewform?usp=header"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                <SidebarMenuButton className="bg-emerald-600 transition-colors">
-                                    Developer Interest
-                                </SidebarMenuButton>
-                            </a>
-                        </SidebarMenuItem>
                         {!$autoSave && (
                             <SidebarMenuItem>
                                 <SidebarMenuButton

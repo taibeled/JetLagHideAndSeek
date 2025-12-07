@@ -1,7 +1,5 @@
 # Jet Lag The Game: Hide and Seek Map Generator
 
-  > Since you're on GitHub, I'm assuming that you're a developer. I'm currently working on evolving this project with some new features, and am looking for other developers who would be willing to work on this open source project. If you're interested, please fill out this [form](https://docs.google.com/forms/d/e/1FAIpQLSeuuAhIqx6K9dSxLbFTWOxNf_tMjQoSuBgxyNyWAV_btYtj8g/viewform?usp=header). Thank you!
-
 A tool to trivially generate interactive maps for viewing hiding possibilities in Jet Lag The Game's Hide and Seek. So far, the following questions have been implemented (see https://github.com/taibeled/JetLagHideAndSeek/issues/9 for more):
 
 - Radius
