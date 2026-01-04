@@ -110,7 +110,7 @@ export const QuestionSidebar = () => {
                                 rel="noopener noreferrer"
                             >
                                 <SidebarMenuButton className="bg-emerald-600 transition-colors">
-                                    Star this on GitHub! It's free :)
+                                    Star this on GitHub! It&apos;s free :)
                                 </SidebarMenuButton>
                             </a>
                         </SidebarMenuItem>
