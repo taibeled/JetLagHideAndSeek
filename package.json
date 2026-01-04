@@ -78,5 +78,8 @@
         "prettier": "3.5.3",
         "typescript-eslint": "^8.24.0",
         "vitest": "^3.1.4"
+    },
+    "engines": {
+        "node": "<25"
     }
 }

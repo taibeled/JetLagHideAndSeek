@@ -71,7 +71,7 @@ Even if you're not a programmer, you can still help by further documenting the u
 
 ## Developer Workflow
 
-To develop this website, you need to have [git](https://git-scm.com/downloads) and [pnpm](https://pnpm.io/installation) installed. You should then start by cloning this repository and entering the directory:
+To develop this website, you need to have [git](https://git-scm.com/downloads), [Node.js](https://nodejs.org/) (version 24 or earlier), and [pnpm](https://pnpm.io/installation) installed. You should then start by cloning this repository and entering the directory:
 
 ```bash
 git clone https://github.com/taibeled/JetLagHideAndSeek.git
