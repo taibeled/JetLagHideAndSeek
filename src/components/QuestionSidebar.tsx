@@ -103,6 +103,17 @@ export const QuestionSidebar = () => {
                                 </SidebarMenuButton>
                             </AddQuestionDialog>
                         </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <a
+                                href="https://github.com/taibeled/JetLagHideAndSeek"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <SidebarMenuButton className="bg-emerald-600 transition-colors">
+                                    Star this on GitHub! It's free :)
+                                </SidebarMenuButton>
+                            </a>
+                        </SidebarMenuItem>
                         {!$autoSave && (
                             <SidebarMenuItem>
                                 <SidebarMenuButton
