@@ -9,6 +9,8 @@ const determinePermanentCache = _.memoize(() =>
     caches.open(CacheType.PERMANENT_CACHE),
 );
 
+const inFlightFetches = new Map<string, Promise<Response>>();
+
 export const determineCache = async (cacheType: CacheType) => {
     switch (cacheType) {
         case CacheType.CACHE:
@@ -33,8 +35,15 @@ export const cacheFetch = async (
             if (!cachedResponse.ok) {
                 await cache.delete(url);
             } else {
-                return cachedResponse;
+                return cachedResponse.clone();
             }
+        }
+
+        const inflightKey = `${cacheType}:${url}`;
+        const existingFetch = inFlightFetches.get(inflightKey);
+        if (existingFetch) {
+            const response = await existingFetch;
+            return response.clone();
         }
 
         const fetchAndMaybeCache = async () => {
@@ -47,13 +56,20 @@ export const cacheFetch = async (
             return response;
         };
 
-        if (loadingText) {
-            return toast.promise(fetchAndMaybeCache, {
-                pending: loadingText,
-            });
-        }
+        const fetchPromise = fetchAndMaybeCache();
+        inFlightFetches.set(inflightKey, fetchPromise);
 
-        return await fetchAndMaybeCache();
+        try {
+            const response = await (loadingText
+                ? toast.promise(fetchPromise, {
+                      pending: loadingText,
+                  })
+                : fetchPromise);
+
+            return response.clone();
+        } finally {
+            inFlightFetches.delete(inflightKey);
+        }
     } catch (e) {
         console.log(e); // Probably a caches not supported error
 
