@@ -78,7 +78,7 @@ export const MatchingQuestionComponent = ({
                         <Select
                             trigger="OSM Zone"
                             options={{
-                                2: "Country",
+                                2: "OSM Zone 2 (Country)",
                                 3: "OSM Zone 3 (region in Japan)",
                                 4: "OSM Zone 4 (prefecture in Japan)",
                                 5: "OSM Zone 5",
@@ -92,6 +92,7 @@ export const MatchingQuestionComponent = ({
                             onValueChange={(value) =>
                                 questionModified(
                                     (data.cat.adminLevel = parseInt(value) as
+                                        | 2
                                         | 3
                                         | 4
                                         | 5
