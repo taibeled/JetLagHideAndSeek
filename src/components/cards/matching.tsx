@@ -78,6 +78,7 @@ export const MatchingQuestionComponent = ({
                         <Select
                             trigger="OSM Zone"
                             options={{
+                                2: "Country",
                                 3: "OSM Zone 3 (region in Japan)",
                                 4: "OSM Zone 4 (prefecture in Japan)",
                                 5: "OSM Zone 5",

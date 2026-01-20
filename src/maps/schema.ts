@@ -253,6 +253,7 @@ const zoneMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
     cat: z
         .object({
             adminLevel: z.union([
+                z.literal(2),
                 z.literal(3),
                 z.literal(4),
                 z.literal(5),

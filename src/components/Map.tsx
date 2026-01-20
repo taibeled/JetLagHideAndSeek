@@ -244,6 +244,23 @@ export const Map = ({ className }: { className?: string }) => {
                         },
                     },
                     {
+                        text: "Exclude Country",
+                        callback: (e: any) => {
+                            addQuestion({
+                                id: "matching",
+                                data: {
+                                    lat: e.latlng.lat,
+                                    lng: e.latlng.lng,
+                                    same: false,
+                                    cat: {
+                                        adminLevel: 2
+                                    },
+                                    type: "zone"
+                                },
+                            })
+                        }
+                    },
+                    {
                         text: "Copy Coordinates",
                         callback: (e: any) => {
                             if (!navigator || !navigator.clipboard) {
