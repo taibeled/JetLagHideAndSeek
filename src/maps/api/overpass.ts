@@ -108,7 +108,7 @@ out center;
 export const findAdminBoundary = async (
     latitude: number,
     longitude: number,
-    adminLevel: 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10,
+    adminLevel: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10,
 ) => {
     const query = `
 [out:json];
