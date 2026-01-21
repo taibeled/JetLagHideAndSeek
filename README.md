@@ -140,6 +140,7 @@ A great deal of appreciation goes out to these individuals who have helped to cr
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/fahmisack"><img src="https://avatars.githubusercontent.com/u/241826952?v=4?s=100" width="100px;" alt="fahmisack"/><br /><sub><b>fahmisack</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/issues?q=author%3Afahmisack" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://matchatea.dev"><img src="https://avatars.githubusercontent.com/u/46655509?v=4?s=100" width="100px;" alt="Issac Liu"/><br /><sub><b>Issac Liu</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/issues?q=author%3ACamuise" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/KyleRosenberg"><img src="https://avatars.githubusercontent.com/u/5465361?v=4?s=100" width="100px;" alt="Kyle"/><br /><sub><b>Kyle</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=KyleRosenberg" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
