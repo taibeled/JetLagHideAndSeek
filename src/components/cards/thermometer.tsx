@@ -15,6 +15,30 @@ import type { ThermometerQuestion } from "@/maps/schema";
 
 import { QuestionCard } from "./base";
 
+/* ---- distance helpers ---- */
+const toRadians = (deg: number) => (deg * Math.PI) / 180;
+
+const distanceMiles = (
+    lat1: number,
+    lng1: number,
+    lat2: number,
+    lng2: number,
+) => {
+    const R = 3958.8; // Earth radius in miles
+    const dLat = toRadians(lat2 - lat1);
+    const dLng = toRadians(lng2 - lng1);
+
+    const a =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos(toRadians(lat1)) *
+            Math.cos(toRadians(lat2)) *
+            Math.sin(dLng / 2) ** 2;
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+};
+/* -------------------------- */
+
 export const ThermometerQuestionComponent = ({
     data,
     questionKey,
@@ -38,6 +62,17 @@ export const ThermometerQuestionComponent = ({
             .indexOf(questionKey) + 1
     }`;
 
+    const hasCoords =
+        data.latA !== null &&
+        data.lngA !== null &&
+        data.latB !== null &&
+        data.lngB !== null;
+
+    const distance =
+        hasCoords
+            ? distanceMiles(data.latA, data.lngA, data.latB, data.lngB)
+            : null;
+
     return (
         <QuestionCard
             questionKey={questionKey}
@@ -46,7 +81,7 @@ export const ThermometerQuestionComponent = ({
             className={className}
             collapsed={data.collapsed}
             setCollapsed={(collapsed) => {
-                data.collapsed = collapsed; // Doesn't trigger a re-render so no need for questionModified
+                data.collapsed = collapsed;
             }}
             locked={!data.drag}
             setLocked={(locked) => questionModified((data.drag = !locked))}
@@ -83,6 +118,16 @@ export const ThermometerQuestionComponent = ({
                 }}
                 disabled={!data.drag || $isLoading}
             />
+
+            {distance !== null && (
+                <div className="px-2 text-sm text-muted-foreground">
+                    Distance:{" "}
+                    <span className="font-medium text-foreground">
+                        {distance.toFixed(2)} miles
+                    </span>
+                </div>
+            )}
+
             <div className="flex gap-2 items-center p-2">
                 <Label
                     className={cn(
