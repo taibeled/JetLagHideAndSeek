@@ -127,7 +127,6 @@ export const ThermometerQuestionComponent = ({
                 }}
                 disabled={!data.drag || $isLoading}
             />
-
             {distance !== null && (
                 <div className="px-2 text-sm text-muted-foreground">
                     Distance:{" "}
