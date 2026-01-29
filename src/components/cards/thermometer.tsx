@@ -131,8 +131,9 @@ export const ThermometerQuestionComponent = ({
                 <div className="px-2 text-sm text-muted-foreground">
                     Distance:{" "}
                     <span className="font-medium text-foreground">
-                        {distance.toFixed(2)} miles /{" "}
-                        {distanceInKm?.toFixed(2)} km
+                        {distance.toFixed(2)} Miles /{" "}
+                        {distanceInKm?.toFixed(2)} KM /{" "} 
+                        {distanceInKm !== null && Math.round(distanceInKm * 1000)} Meters
                     </span>
                 </div>
             )}
