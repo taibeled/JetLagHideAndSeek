@@ -37,6 +37,13 @@ const distanceMiles = (
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
 };
+
+// Conversion factor
+const milesToKm = 1.60934;
+
+const distanceKm = (miles: number) => {
+    return miles * milesToKm;
+};
 /* -------------------------- */
 
 export const ThermometerQuestionComponent = ({
@@ -72,6 +79,8 @@ export const ThermometerQuestionComponent = ({
         hasCoords
             ? distanceMiles(data.latA, data.lngA, data.latB, data.lngB)
             : null;
+
+    const distanceInKm = distance !== null ? distanceKm(distance) : null;
 
     return (
         <QuestionCard
@@ -123,7 +132,8 @@ export const ThermometerQuestionComponent = ({
                 <div className="px-2 text-sm text-muted-foreground">
                     Distance:{" "}
                     <span className="font-medium text-foreground">
-                        {distance.toFixed(2)} miles
+                        {distance.toFixed(2)} miles /{" "}
+                        {distanceInKm?.toFixed(2)} km
                     </span>
                 </div>
             )}
