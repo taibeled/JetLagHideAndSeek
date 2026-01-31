@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/react";
-
+import { defaultUnit } from "@/lib/context";
 import { LatitudeLongitude } from "@/components/LatLngPicker";
 import { Label } from "@/components/ui/label";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -15,36 +15,16 @@ import type { ThermometerQuestion } from "@/maps/schema";
 
 import { QuestionCard } from "./base";
 
-/* ---- distance helpers ---- */
-const toRadians = (deg: number) => (deg * Math.PI) / 180;
+/* ---- distance helpers (turf) ---- */
+import distance from "@turf/distance";
+import { point } from "@turf/helpers";
+/* -------------------------------- */
 
-const distanceMiles = (
-    lat1: number,
-    lng1: number,
-    lat2: number,
-    lng2: number,
-) => {
-    const R = 3958.8; // Earth radius in miles
-    const dLat = toRadians(lat2 - lat1);
-    const dLng = toRadians(lng2 - lng1);
+const VALID_UNITS = ["miles", "kilometers", "meters"] as const;
+type ValidUnit = (typeof VALID_UNITS)[number];
 
-    const a =
-        Math.sin(dLat / 2) ** 2 +
-        Math.cos(toRadians(lat1)) *
-            Math.cos(toRadians(lat2)) *
-            Math.sin(dLng / 2) ** 2;
-
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
-};
-
-// Conversion factor
-const milesToKm = 1.60934;
-
-const distanceKm = (miles: number) => {
-    return miles * milesToKm;
-};
-/* -------------------------- */
+const normalizeUnit = (unit: string): ValidUnit =>
+    VALID_UNITS.includes(unit as ValidUnit) ? (unit as ValidUnit) : "miles";
 
 export const ThermometerQuestionComponent = ({
     data,
@@ -61,6 +41,11 @@ export const ThermometerQuestionComponent = ({
     const $hiderMode = useStore(hiderMode);
     const $questions = useStore(questions);
     const $isLoading = useStore(isLoading);
+
+    // normalize external string into something turf accepts
+    const $defaultUnit = useStore(defaultUnit);
+    const DISTANCE_UNIT = normalizeUnit($defaultUnit ?? "miles");
+
     const label = `Thermometer
     ${
         $questions
@@ -75,12 +60,20 @@ export const ThermometerQuestionComponent = ({
         data.latB !== null &&
         data.lngB !== null;
 
-    const distance =
-        hasCoords
-            ? distanceMiles(data.latA, data.lngA, data.latB, data.lngB)
-            : null;
+    const distanceValue = hasCoords
+        ? distance(
+              point([data.lngA!, data.latA!]),
+              point([data.lngB!, data.latB!]),
+              { units: DISTANCE_UNIT }
+          )
+        : null;
 
-    const distanceInKm = distance !== null ? distanceKm(distance) : null;
+    const unitLabel =
+        DISTANCE_UNIT === "meters"
+            ? "Meters"
+            : DISTANCE_UNIT === "kilometers"
+            ? "KM"
+            : "Miles";
 
     return (
         <QuestionCard
@@ -101,39 +94,31 @@ export const ThermometerQuestionComponent = ({
                 label="Start"
                 colorName={data.colorA}
                 onChange={(lat, lng) => {
-                    if (lat !== null) {
-                        data.latA = lat;
-                    }
-                    if (lng !== null) {
-                        data.lngA = lng;
-                    }
+                    if (lat !== null) data.latA = lat;
+                    if (lng !== null) data.lngA = lng;
                     questionModified();
                 }}
                 disabled={!data.drag || $isLoading}
             />
+
             <LatitudeLongitude
                 latitude={data.latB}
                 longitude={data.lngB}
                 label="End"
                 colorName={data.colorB}
                 onChange={(lat, lng) => {
-                    if (lat !== null) {
-                        data.latB = lat;
-                    }
-                    if (lng !== null) {
-                        data.lngB = lng;
-                    }
+                    if (lat !== null) data.latB = lat;
+                    if (lng !== null) data.lngB = lng;
                     questionModified();
                 }}
                 disabled={!data.drag || $isLoading}
             />
-            {distance !== null && (
+
+            {distanceValue !== null && (
                 <div className="px-2 text-sm text-muted-foreground">
                     Distance:{" "}
                     <span className="font-medium text-foreground">
-                        {distance.toFixed(2)} Miles /{" "}
-                        {distanceInKm?.toFixed(2)} KM /{" "} 
-                        {distanceInKm !== null && Math.round(distanceInKm * 1000)} Meters
+                        {distanceValue.toFixed(3)} {unitLabel}
                     </span>
                 </div>
             )}
