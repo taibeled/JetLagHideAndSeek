@@ -101,7 +101,7 @@ const ordinaryBaseQuestionSchema = z.object({
     collapsed: z.boolean().default(false),
 });
 
-export const getDefaultUnit = () => {
+const getDefaultUnit = () => {
     try {
         return defaultUnit.get();
     } catch {
