@@ -69,6 +69,7 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
         case "aquarium-full":
         case "zoo-full":
         case "theme_park-full":
+        case "peak-full":
         case "museum-full":
         case "hospital-full":
         case "cinema-full":
@@ -125,6 +126,7 @@ export const determineMatchingBoundary = _.memoize(
             case "aquarium":
             case "zoo":
             case "theme_park":
+            case "peak":
             case "museum":
             case "hospital":
             case "cinema":
@@ -216,6 +218,7 @@ export const determineMatchingBoundary = _.memoize(
             case "aquarium-full":
             case "zoo-full":
             case "theme_park-full":
+            case "peak-full":
             case "museum-full":
             case "hospital-full":
             case "cinema-full":
@@ -280,6 +283,7 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
             "aquarium",
             "zoo",
             "theme_park",
+            "peak",
             "museum",
             "hospital",
             "cinema",

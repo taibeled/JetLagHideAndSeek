@@ -28,6 +28,8 @@ export const prettifyLocation = (
             return "Aquarium";
         case "hospital":
             return "Hospital";
+        case "peak":
+            return "Mountain";
         case "museum":
             return "Museum";
         case "theme_park":
