@@ -30,6 +30,7 @@
         "@tailwindcss/vite": "^4.1.18",
         "@terraformer/arcgis": "^2.1.2",
         "@turf/turf": "^7.3.3",
+        "@xmldom/xmldom": "^0.8.11",
         "astro": "^5.17.1",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
@@ -81,5 +82,10 @@
     },
     "engines": {
         "node": "<25"
+    },
+    "pnpm": {
+        "overrides": {
+            "@xmldom/xmldom": ">=0.8.4"
+        }
     }
 }
