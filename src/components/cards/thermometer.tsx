@@ -1,8 +1,10 @@
 import { useStore } from "@nanostores/react";
-import { defaultUnit } from "@/lib/context";
+import { distance, point } from "@turf/turf";
+
 import { LatitudeLongitude } from "@/components/LatLngPicker";
 import { Label } from "@/components/ui/label";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { defaultUnit } from "@/lib/context";
 import {
     hiderMode,
     isLoading,
@@ -14,17 +16,6 @@ import { cn } from "@/lib/utils";
 import type { ThermometerQuestion } from "@/maps/schema";
 
 import { QuestionCard } from "./base";
-
-/* ---- distance helpers (turf) ---- */
-import distance from "@turf/distance";
-import { point } from "@turf/helpers";
-/* -------------------------------- */
-
-const VALID_UNITS = ["miles", "kilometers", "meters"] as const;
-type ValidUnit = (typeof VALID_UNITS)[number];
-
-const normalizeUnit = (unit: string): ValidUnit =>
-    VALID_UNITS.includes(unit as ValidUnit) ? (unit as ValidUnit) : "miles";
 
 export const ThermometerQuestionComponent = ({
     data,
@@ -42,9 +33,8 @@ export const ThermometerQuestionComponent = ({
     const $questions = useStore(questions);
     const $isLoading = useStore(isLoading);
 
-    // normalize external string into something turf accepts
     const $defaultUnit = useStore(defaultUnit);
-    const DISTANCE_UNIT = normalizeUnit($defaultUnit ?? "miles");
+    const DISTANCE_UNIT = $defaultUnit ?? "miles";
 
     const label = `Thermometer
     ${
@@ -64,7 +54,7 @@ export const ThermometerQuestionComponent = ({
         ? distance(
               point([data.lngA!, data.latA!]),
               point([data.lngB!, data.latB!]),
-              { units: DISTANCE_UNIT }
+              { units: DISTANCE_UNIT },
           )
         : null;
 
@@ -72,8 +62,8 @@ export const ThermometerQuestionComponent = ({
         DISTANCE_UNIT === "meters"
             ? "Meters"
             : DISTANCE_UNIT === "kilometers"
-            ? "KM"
-            : "Miles";
+              ? "KM"
+              : "Miles";
 
     return (
         <QuestionCard
