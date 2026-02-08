@@ -80,7 +80,7 @@ const TentacleMarker = ({
             <DialogContent>
                 <div className="flex flex-col gap-2">
                     <Input
-                        className="text-center !text-2xl font-bold font-poppins mt-3"
+                        className="text-center text-2xl! font-bold font-poppins mt-3"
                         value={point.properties?.name}
                         onChange={(e) => {
                             point.properties.name = e.target.value;

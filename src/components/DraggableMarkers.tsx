@@ -83,7 +83,7 @@ const ColoredMarker = ({
                     },
                 }}
             />
-            <DialogContent className="!bg-[hsl(var(--sidebar-background))] !text-white">
+            <DialogContent className="bg-[hsl(var(--sidebar-background))]! text-white!">
                 {questionKey === -1 && $hiderMode !== false && (
                     <>
                         <h2 className="text-center text-2xl font-bold font-poppins">

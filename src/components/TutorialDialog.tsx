@@ -842,7 +842,7 @@ const TutorialOverlay = ({
     const padding = 12;
 
     return (
-        <div className="fixed inset-0 z-[9999] pointer-events-none">
+        <div className="fixed inset-0 z-9999 pointer-events-none">
             {highlightedElement && rect ? (
                 <div>
                     <div
@@ -865,7 +865,7 @@ const TutorialOverlay = ({
                         }}
                     >
                         <div
-                            className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-400/20 to-purple-400/20"
+                            className="absolute inset-0 rounded-lg bg-linear-to-r from-blue-400/20 to-purple-400/20"
                             style={{
                                 animation: "breathe 3s infinite ease-in-out",
                             }}
@@ -1115,11 +1115,11 @@ export const TutorialDialog = () => {
                 <AlertDialogPrimitive.AlertDialogContent
                     ref={dialogRef}
                     className={cn(
-                        "fixed z-[10000] grid w-full gap-4 border bg-background p-4 md:p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:rounded-lg",
-                        "!max-h-[50vh] overflow-y-auto tutorial-dialog",
+                        "fixed z-10000 grid w-full gap-4 border bg-background p-4 md:p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:rounded-lg",
+                        "max-h-[50vh]! overflow-y-auto tutorial-dialog",
                         // Only apply default center positioning for non-targeted steps
                         !currentTutorialStep.targetSelector &&
-                            "left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] !max-h-[90vh]",
+                            "left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] max-h-[90vh]!",
                     )}
                     style={{
                         maxWidth: "min(680px, calc(100vw - 40px))",
