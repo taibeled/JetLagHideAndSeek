@@ -128,6 +128,7 @@ export const MatchingQuestionComponent = ({
             break;
         case "aquarium":
         case "hospital":
+        case "peak":
         case "museum":
         case "theme_park":
         case "zoo":
@@ -218,6 +219,7 @@ export const MatchingQuestionComponent = ({
                             data.type === "aquarium-full" ||
                             data.type === "zoo-full" ||
                             data.type === "theme_park-full" ||
+                            data.type === "peak-full" ||
                             data.type === "museum-full" ||
                             data.type === "hospital-full" ||
                             data.type === "cinema-full" ||
@@ -322,6 +324,7 @@ export const MatchingQuestionComponent = ({
                                         data.type === "aquarium-full" ||
                                         data.type === "zoo-full" ||
                                         data.type === "theme_park-full" ||
+                                        data.type === "peak-full" ||
                                         data.type === "museum-full" ||
                                         data.type === "hospital-full" ||
                                         data.type === "cinema-full" ||

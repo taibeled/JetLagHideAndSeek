@@ -21,6 +21,7 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
     - Same nearest zoo
     - Same nearest aquarium
     - Same nearest golf course
+    - Same nearest mountain
     - Same nearest museum
     - Same nearest movie theater
     - Same nearest hospital
@@ -40,6 +41,7 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
     - Distance to zoo
     - Distance to aquarium
     - Distance to golf course
+    - Distance to mountain
     - Distance to museum
     - Distance to movie theater
     - Distance to hospital

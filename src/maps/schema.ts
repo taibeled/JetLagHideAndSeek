@@ -219,6 +219,9 @@ const ordinaryMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
                 .literal("theme_park-full")
                 .describe("Theme Park Question (Small+Medium Games)"),
             z
+                .literal("peak-full")
+                .describe("Mountain Question (Small+Medium Games)"),
+            z
                 .literal("museum-full")
                 .describe("Museum Question (Small+Medium Games)"),
             z
@@ -272,6 +275,7 @@ const homeGameMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
         z.literal("aquarium").describe("Aquarium Question"),
         z.literal("zoo").describe("Zoo Question"),
         z.literal("theme_park").describe("Theme Park Question"),
+        z.literal("peak").describe("Mountain Question"),
         z.literal("museum").describe("Museum Question"),
         z.literal("hospital").describe("Hospital Question"),
         z.literal("cinema").describe("Cinema Question"),
@@ -337,6 +341,9 @@ const ordinaryMeasuringQuestionSchema = baseMeasuringQuestionSchema.extend({
                 .literal("theme_park-full")
                 .describe("Theme Park Question (Small+Medium Games)"),
             z
+                .literal("peak-full")
+                .describe("Mountain Question (Small+Medium Games)"),
+            z
                 .literal("museum-full")
                 .describe("Museum Question (Small+Medium Games)"),
             z
@@ -374,6 +381,7 @@ const homeGameMeasuringQuestionsSchema = baseMeasuringQuestionSchema.extend({
         z.literal("aquarium").describe("Aquarium Question"),
         z.literal("zoo").describe("Zoo Question"),
         z.literal("theme_park").describe("Theme Park Question"),
+        z.literal("peak").describe("Mountain Question"),
         z.literal("museum").describe("Museum Question"),
         z.literal("hospital").describe("Hospital Question"),
         z.literal("cinema").describe("Cinema Question"),
