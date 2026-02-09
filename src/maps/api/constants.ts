@@ -19,10 +19,16 @@ export const ICON_COLORS = {
 };
 
 export const LOCATION_FIRST_TAG: {
-    [key in APILocations]: "amenity" | "tourism" | "leisure" | "diplomatic";
+    [key in APILocations]:
+        | "amenity"
+        | "tourism"
+        | "leisure"
+        | "diplomatic"
+        | "natural";
 } = {
     aquarium: "tourism",
     hospital: "amenity",
+    peak: "natural",
     museum: "tourism",
     theme_park: "tourism",
     zoo: "tourism",

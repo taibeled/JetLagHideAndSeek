@@ -1,8 +1,10 @@
 import { useStore } from "@nanostores/react";
+import { distance, point } from "@turf/turf";
 
 import { LatitudeLongitude } from "@/components/LatLngPicker";
 import { Label } from "@/components/ui/label";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { defaultUnit } from "@/lib/context";
 import {
     hiderMode,
     isLoading,
@@ -30,6 +32,10 @@ export const ThermometerQuestionComponent = ({
     const $hiderMode = useStore(hiderMode);
     const $questions = useStore(questions);
     const $isLoading = useStore(isLoading);
+
+    const $defaultUnit = useStore(defaultUnit);
+    const DISTANCE_UNIT = $defaultUnit ?? "miles";
+
     const label = `Thermometer
     ${
         $questions
@@ -37,6 +43,27 @@ export const ThermometerQuestionComponent = ({
             .map((q) => q.key)
             .indexOf(questionKey) + 1
     }`;
+
+    const hasCoords =
+        data.latA !== null &&
+        data.lngA !== null &&
+        data.latB !== null &&
+        data.lngB !== null;
+
+    const distanceValue = hasCoords
+        ? distance(
+              point([data.lngA!, data.latA!]),
+              point([data.lngB!, data.latB!]),
+              { units: DISTANCE_UNIT },
+          )
+        : null;
+
+    const unitLabel =
+        DISTANCE_UNIT === "meters"
+            ? "Meters"
+            : DISTANCE_UNIT === "kilometers"
+              ? "KM"
+              : "Miles";
 
     return (
         <QuestionCard
@@ -46,7 +73,7 @@ export const ThermometerQuestionComponent = ({
             className={className}
             collapsed={data.collapsed}
             setCollapsed={(collapsed) => {
-                data.collapsed = collapsed; // Doesn't trigger a re-render so no need for questionModified
+                data.collapsed = collapsed;
             }}
             locked={!data.drag}
             setLocked={(locked) => questionModified((data.drag = !locked))}
@@ -57,32 +84,35 @@ export const ThermometerQuestionComponent = ({
                 label="Start"
                 colorName={data.colorA}
                 onChange={(lat, lng) => {
-                    if (lat !== null) {
-                        data.latA = lat;
-                    }
-                    if (lng !== null) {
-                        data.lngA = lng;
-                    }
+                    if (lat !== null) data.latA = lat;
+                    if (lng !== null) data.lngA = lng;
                     questionModified();
                 }}
                 disabled={!data.drag || $isLoading}
             />
+
             <LatitudeLongitude
                 latitude={data.latB}
                 longitude={data.lngB}
                 label="End"
                 colorName={data.colorB}
                 onChange={(lat, lng) => {
-                    if (lat !== null) {
-                        data.latB = lat;
-                    }
-                    if (lng !== null) {
-                        data.lngB = lng;
-                    }
+                    if (lat !== null) data.latB = lat;
+                    if (lng !== null) data.lngB = lng;
                     questionModified();
                 }}
                 disabled={!data.drag || $isLoading}
             />
+
+            {distanceValue !== null && (
+                <div className="px-2 text-sm text-muted-foreground">
+                    Distance:{" "}
+                    <span className="font-medium text-foreground">
+                        {distanceValue.toFixed(3)} {unitLabel}
+                    </span>
+                </div>
+            )}
+
             <div className="flex gap-2 items-center p-2">
                 <Label
                     className={cn(

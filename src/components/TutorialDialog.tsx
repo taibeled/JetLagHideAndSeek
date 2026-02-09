@@ -454,7 +454,7 @@ const tutorialSteps: TutorialStep[] = [
                 also exist that function with Hiding Zone Mode for larger
                 games):
                 <br />• Aquariums, Zoos, Theme Parks
-                <br />• Museums, Hospitals, Cinemas
+                <br />• Mountains, Museums, Hospitals, Cinemas
                 <br />• Libraries, Golf Courses, Foreign Consulates, Parks
                 <br />
                 <br />
@@ -518,8 +518,8 @@ const tutorialSteps: TutorialStep[] = [
                 <br />
                 Same location types as Matching questions but focused on
                 distance rather than categorization:
-                <br />• Aquariums, Zoos, Theme Parks, Museums
-                <br />• Hospitals, Cinemas, Libraries
+                <br />• Aquariums, Zoos, Theme Parks, Mountains,
+                <br />• Museums, Hospitals, Cinemas, Libraries
                 <br />• Golf Courses, Foreign Consulates, Parks
                 <br />
                 <br />
@@ -716,7 +716,8 @@ const tutorialSteps: TutorialStep[] = [
                 <strong>Points of Interest:</strong>
                 <br />• Museums, hospitals, cinemas: Urban bias in coverage
                 <br />• Theme parks, zoos: Major attractions well-represented
-                <br />• Libraries, golf courses: Completeness varies by region
+                <br />• Libraries, golf courses, mountains: Completeness varies
+                by region
                 <br />• Always verify critical locations for your specific area
                 <br />
                 <br />

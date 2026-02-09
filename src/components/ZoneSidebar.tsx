@@ -1210,6 +1210,7 @@ async function selectionProcess(
             (question.data.type === "aquarium" ||
                 question.data.type === "zoo" ||
                 question.data.type === "theme_park" ||
+                question.data.type === "peak" ||
                 question.data.type === "museum" ||
                 question.data.type === "hospital" ||
                 question.data.type === "cinema" ||

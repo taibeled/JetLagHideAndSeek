@@ -21,6 +21,7 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
     - Same nearest zoo
     - Same nearest aquarium
     - Same nearest golf course
+    - Same nearest mountain
     - Same nearest museum
     - Same nearest movie theater
     - Same nearest hospital
@@ -40,6 +41,7 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
     - Distance to zoo
     - Distance to aquarium
     - Distance to golf course
+    - Distance to mountain
     - Distance to museum
     - Distance to movie theater
     - Distance to hospital
@@ -141,6 +143,8 @@ A great deal of appreciation goes out to these individuals who have helped to cr
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/fahmisack"><img src="https://avatars.githubusercontent.com/u/241826952?v=4?s=100" width="100px;" alt="fahmisack"/><br /><sub><b>fahmisack</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/issues?q=author%3Afahmisack" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://matchatea.dev"><img src="https://avatars.githubusercontent.com/u/46655509?v=4?s=100" width="100px;" alt="Issac Liu"/><br /><sub><b>Issac Liu</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/issues?q=author%3ACamuise" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/KyleRosenberg"><img src="https://avatars.githubusercontent.com/u/5465361?v=4?s=100" width="100px;" alt="Kyle"/><br /><sub><b>Kyle</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=KyleRosenberg" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/MoellJ"><img src="https://avatars.githubusercontent.com/u/42173084?v=4?s=100" width="100px;" alt="Jannik Möll"/><br /><sub><b>Jannik Möll</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=MoellJ" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Dew2118"><img src="https://avatars.githubusercontent.com/u/50415635?v=4?s=100" width="100px;" alt="Dew2118"/><br /><sub><b>Dew2118</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=Dew2118" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

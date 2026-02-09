@@ -253,12 +253,12 @@ export const Map = ({ className }: { className?: string }) => {
                                     lng: e.latlng.lng,
                                     same: false,
                                     cat: {
-                                        adminLevel: 2
+                                        adminLevel: 2,
                                     },
-                                    type: "zone"
+                                    type: "zone",
                                 },
-                            })
-                        }
+                            });
+                        },
                     },
                     {
                         text: "Copy Coordinates",
