@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@xmldom/xmldom': '>=0.8.4'
+  '@xmldom/xmldom': '>=0.8.11'
 
 importers:
 
@@ -69,7 +69,7 @@ importers:
         specifier: ^7.3.4
         version: 7.3.4
       '@xmldom/xmldom':
-        specifier: ^0.8.11
+        specifier: '>=0.8.11'
         version: 0.8.11
       astro:
         specifier: ^5.17.1
