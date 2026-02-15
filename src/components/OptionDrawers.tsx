@@ -268,7 +268,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     return (
         <div
             className={cn(
-                "flex justify-end gap-2 max-[412px]:mb-4! max-[340px]:flex-col",
+                "flex justify-end gap-2 max-[412px]:!mb-4 max-[340px]:flex-col",
                 className,
             )}
         >
