@@ -20,25 +20,25 @@ import { TutorialDialog } from "@/components/TutorialDialog";
     <SidebarProviderL client:load>
         <SidebarProviderR client:load defaultOpen={false}>
             <QuestionSidebar client:only />
-            <main class="flex flex-col flex-grow group">
+            <main class="flex flex-col grow group">
                 <div
                     class="flex justify-center"
                     id="map-modal-dialog-container-leaflet"
                 >
                     <div class="w-full h-full relative">
                         <div
-                            class="absolute top-[72px] md:top-2 left-2 z-[1030] group-[.fullscreen]:hidden"
+                            class="absolute top-[72px] md:top-2 left-2 z-1030 group-[.fullscreen]:hidden"
                             data-tutorial-id="left-sidebar-trigger"
                         >
                             <SidebarTriggerL client:load />
                         </div>
                         <div
-                            class="absolute top-[72px] md:top-2 right-2 z-[1030] group-[.fullscreen]:hidden"
+                            class="absolute top-[72px] md:top-2 right-2 z-1030 group-[.fullscreen]:hidden"
                         >
                             <SidebarTriggerR client:load />
                         </div>
                         <div
-                            class="flex flex-shrink max-w-fit z-[1030] absolute left-4 right-0 m-auto group-[.fullscreen]:hidden"
+                            class="flex shrink max-w-fit z-1030 absolute left-4 right-0 m-auto group-[.fullscreen]:hidden"
                         >
                             <PlacePicker
                                 client:only
@@ -46,7 +46,7 @@ import { TutorialDialog } from "@/components/TutorialDialog";
                             />
                         </div>
                         <div
-                            class="bottom-5 right-2 mx-auto mb-2 w-fit absolute z-[1030] group-[.fullscreen]:hidden"
+                            class="bottom-5 right-2 mx-auto mb-2 w-fit absolute z-1030 group-[.fullscreen]:hidden"
                         >
                             <OptionDrawers client:load />
                         </div>
