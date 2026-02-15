@@ -406,7 +406,7 @@ export const Map = ({ className }: { className?: string }) => {
                 } else {
                     const marker = L.marker([lat, lng], {
                         icon: L.divIcon({
-                            html: `<div class="text-blue-700 bg-white rounded-full border-2 border-blue-700 shadow-sm w-5 h-5 flex items-center justify-center"><svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="#2A81CB" opacity="0.5"/><circle cx="8" cy="8" r="3" fill="#2A81CB"/></svg></div>`,
+                            html: `<div class="text-blue-700 bg-white rounded-full border-2 border-blue-700 shadow w-5 h-5 flex items-center justify-center"><svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="#2A81CB" opacity="0.5"/><circle cx="8" cy="8" r="3" fill="#2A81CB"/></svg></div>`,
                             className: "",
                         }),
                         zIndexOffset: 1000,

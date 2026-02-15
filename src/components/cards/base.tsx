@@ -87,7 +87,7 @@ export const QuestionCard = ({
                     </SidebarGroupLabel>
                     <SidebarGroupContent
                         className={cn(
-                            "overflow-hidden transition-all duration-1000 max-h-400", // 100rem is arbitrary
+                            "overflow-hidden transition-all duration-1000 max-h-[100rem]", // 100rem is arbitrary
                             isCollapsed && "max-h-0",
                         )}
                     >
