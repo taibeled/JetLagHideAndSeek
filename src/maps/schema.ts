@@ -132,6 +132,7 @@ const apiLocationSchema = z.union([
     z.literal("golf_course"),
     z.literal("consulate"),
     z.literal("park"),
+    z.literal("peak"),
     tentacleLocationsFifteen,
     tentacleLocationsOne,
 ]);
