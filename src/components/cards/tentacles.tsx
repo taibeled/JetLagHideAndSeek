@@ -20,7 +20,7 @@ import {
     questions,
     triggerLocalRefresh,
 } from "@/lib/context";
-import { cn, mapToObj } from "@/lib/utils";
+import { cn, mapToObj, normalizeDecimalInput } from "@/lib/utils";
 import { findTentacleLocations } from "@/maps/api";
 import {
     determineUnionizedStrings,
@@ -71,11 +71,12 @@ export const TentacleQuestionComponent = ({
                 <div className={cn(MENU_ITEM_CLASSNAME, "gap-2 flex flex-row")}>
                     <Input
                         type="number"
+                        inputMode="decimal"
                         className="rounded-md p-2 w-16"
                         value={data.radius}
                         onChange={(e) =>
                             questionModified(
-                                (data.radius = parseFloat(e.target.value)),
+                                (data.radius = normalizeDecimalInput(e.target.value)),
                             )
                         }
                         disabled={!data.drag || $isLoading}
