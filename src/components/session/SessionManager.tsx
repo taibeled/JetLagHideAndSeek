@@ -21,9 +21,7 @@ import {
     pendingRole,
     sessionCode,
     sessionParticipant,
-    wsStatus,
 } from "@/lib/session-context";
-import { useSessionWebSocket } from "@/hooks/useSessionWebSocket";
 import { SessionQuestionPanel } from "./SessionQuestionPanel";
 
 type View = "idle" | "create" | "join" | "active";
@@ -32,8 +30,6 @@ export function SessionManager() {
     const tr = useT();
     const participant = useStore(sessionParticipant);
     const code = useStore(sessionCode);
-    const status = useStore(wsStatus);
-    const session = useStore(currentSession);
 
     const [view, setView] = useState<View>(() => {
         if (participant && code) return "active";
@@ -48,20 +44,6 @@ export function SessionManager() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [copied, setCopied] = useState(false);
-
-    // Activate WS connection once in a session
-    useSessionWebSocket(
-        participant && code
-            ? {
-                  code,
-                  token: participant.token,
-                  onSync: () => {
-                      if (view !== "active") setView("active");
-                  },
-              }
-            : // Provide dummy values when not in a session – hook will no-op
-              { code: "", token: "" },
-    );
 
     async function handleCreate() {
         if (!displayName.trim()) return;
@@ -122,6 +104,14 @@ export function SessionManager() {
 
     // ── Active session bar ─────────────────────────────────────────────────────
     if (view === "active" && participant && code) {
+        // Seeker: only the question config panel (no session info bar)
+        if (participant.role === "seeker") {
+            return <SessionQuestionPanel />;
+        }
+
+        // Hider: session info — sheet is collapsed in BottomSheetPanel when in session,
+        // so this branch is only reached transiently. Full hider UI lives in
+        // QuestionPickerSheet (opened via the FRAGEN button).
         return (
             <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2 flex-wrap">
@@ -136,21 +126,6 @@ export function SessionManager() {
                     {copied && (
                         <span className="text-xs text-green-600">{tr("session.copied")}</span>
                     )}
-                    <span
-                        className={`ml-auto text-xs px-1.5 py-0.5 rounded ${
-                            status === "connected"
-                                ? "bg-green-100 text-green-700"
-                                : status === "connecting"
-                                  ? "bg-yellow-100 text-yellow-700"
-                                  : "bg-red-100 text-red-700"
-                        }`}
-                    >
-                        {status === "connected"
-                            ? tr("session.connected")
-                            : status === "connecting"
-                              ? tr("session.connecting")
-                              : tr("session.disconnected")}
-                    </span>
                     <Button
                         variant="ghost"
                         size="sm"
@@ -162,14 +137,6 @@ export function SessionManager() {
                         {tr("session.leave")}
                     </Button>
                 </div>
-                <div className="text-xs text-muted-foreground">
-                    {tr("session.youAre")}{" "}
-                    <span className="font-semibold">
-                        {participant.role === "hider" ? tr("session.hider") : tr("session.seeker")}
-                    </span>{" "}
-                    · {participant.displayName}
-                </div>
-                <SessionQuestionPanel />
             </div>
         );
     }

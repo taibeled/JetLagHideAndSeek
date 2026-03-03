@@ -72,8 +72,8 @@ const thermometerQuestionSchema = z
             .min(-180, "Longitude must not overlap with the antemeridian")
             .max(180, "Longitude must not overlap with the antemeridian"),
         warmer: z.boolean().default(true),
-        colorA: iconColorSchema.default(() => randomColorExcluding(["green"])),
-        colorB: iconColorSchema.default(() => randomColorExcluding(["green"])),
+        colorA: iconColorSchema.default("blue"),
+        colorB: iconColorSchema.default("red"),
         /** Note that drag is now synonymous with unlocked */
         drag: z.boolean().default(true),
         collapsed: z.boolean().default(false),

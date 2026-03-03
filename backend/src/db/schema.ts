@@ -37,7 +37,7 @@ export const questions = sqliteTable("questions", {
         .references(() => participants.id),
     type: text("type").notNull(),
     data: text("data").notNull(), // JSON
-    status: text("status", { enum: ["pending", "answered"] })
+    status: text("status", { enum: ["pending", "answered", "expired"] })
         .notNull()
         .default("pending"),
     answerData: text("answer_data"), // JSON, set when answered
@@ -45,6 +45,8 @@ export const questions = sqliteTable("questions", {
         .notNull()
         .default(sql`(datetime('now'))`),
     answeredAt: text("answered_at"),
+    /** ISO8601 timestamp after which the question expires (set at creation, 5 min window). */
+    deadline: text("deadline"),
 });
 
 /**

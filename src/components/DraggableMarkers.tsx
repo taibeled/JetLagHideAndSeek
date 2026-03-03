@@ -1,6 +1,6 @@
 import { useStore } from "@nanostores/react";
 import * as turf from "@turf/turf";
-import { type DragEndEvent, Icon } from "leaflet";
+import { type DragEndEvent, divIcon, Icon } from "leaflet";
 import { useState } from "react";
 import { Fragment } from "react/jsx-runtime";
 import { Circle, Marker, Polyline } from "react-leaflet";
@@ -30,6 +30,21 @@ import { Button } from "./ui/button";
 import { SidebarMenu } from "./ui/sidebar-l";
 
 let isDragging = false;
+
+// ── Hider marker — red circle with glow ring (Figma node 1:8) ────────────────
+const HIDER_ICON = divIcon({
+    className: "",
+    html: `<div style="
+        width:20px;height:20px;
+        background:#E8323A;
+        border-radius:50%;
+        border:3px solid #fff;
+        box-shadow:0 0 0 4px rgba(232,50,58,0.35),0 2px 8px rgba(0,0,0,0.5);
+        box-sizing:border-box;
+    "></div>`,
+    iconSize: [20, 20],
+    iconAnchor: [10, 10],
+});
 
 // ── Seeker question helpers ───────────────────────────────────────────────────
 
@@ -67,6 +82,7 @@ const ColoredMarker = ({
     questionKey,
     sub = "",
     draggable: isDraggableProp = true,
+    customIcon,
 }: {
     onChange: (event: DragEndEvent) => void;
     latitude: number;
@@ -76,6 +92,8 @@ const ColoredMarker = ({
     sub?: string;
     /** Whether the marker can be dragged. Defaults to true. */
     draggable?: boolean;
+    /** Optional override icon (e.g. custom divIcon). Takes precedence over color. */
+    customIcon?: ReturnType<typeof divIcon>;
 }) => {
     const $questions = useStore(questions);
     const $hiderMode = useStore(hiderMode);
@@ -87,7 +105,9 @@ const ColoredMarker = ({
             <Marker
                 position={[latitude, longitude]}
                 icon={
-                    color
+                    customIcon
+                        ? customIcon
+                        : color
                         ? new Icon({
                               iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`,
                               shadowUrl:
@@ -235,6 +255,7 @@ export const DraggableMarkers = () => {
             {$hiderMode !== false && (
                 <ColoredMarker
                     color="green"
+                    customIcon={HIDER_ICON}
                     key="hider"
                     sub="Hider Location"
                     questionKey={-1}
@@ -264,18 +285,53 @@ export const DraggableMarkers = () => {
                         const loc = extractQuestionCenter(sq);
                         if (!loc) return null;
                         const d = sq.data as any;
+                        const isThermo = sq.type === "thermometer";
+                        const hasBothPoints =
+                            isThermo &&
+                            typeof d?.latA === "number" &&
+                            typeof d?.lngA === "number" &&
+                            typeof d?.latB === "number" &&
+                            typeof d?.lngB === "number";
+                        const midLat = hasBothPoints ? (d.latA + d.latB) / 2 : 0;
+                        const midLng = hasBothPoints ? (d.lngA + d.lngB) / 2 : 0;
                         return (
                             <Fragment key={"sq-" + sq.id}>
-                                {/* Blue pin at question center */}
-                                <ColoredMarker
-                                    color="blue"
-                                    sub={QUESTION_LABELS[sq.type] ?? sq.type}
-                                    questionKey={-2}
-                                    latitude={loc.lat}
-                                    longitude={loc.lng}
-                                    draggable={false}
-                                    onChange={() => {}}
-                                />
+                                {/* Thermometer: blue pin at A (cold/start), red pin at B (warm/end) */}
+                                {isThermo ? (
+                                    <>
+                                        <ColoredMarker
+                                            color="blue"
+                                            sub="❄️ Kalt (Start)"
+                                            questionKey={-2}
+                                            latitude={loc.lat}
+                                            longitude={loc.lng}
+                                            draggable={false}
+                                            onChange={() => {}}
+                                        />
+                                        {hasBothPoints && (
+                                            <ColoredMarker
+                                                color="red"
+                                                sub="🔥 Warm (Ziel)"
+                                                questionKey={-2}
+                                                latitude={d.latB}
+                                                longitude={d.lngB}
+                                                draggable={false}
+                                                onChange={() => {}}
+                                            />
+                                        )}
+                                    </>
+                                ) : (
+                                    /* All other question types: one blue pin at center */
+                                    <ColoredMarker
+                                        color="blue"
+                                        sub={QUESTION_LABELS[sq.type] ?? sq.type}
+                                        questionKey={-2}
+                                        latitude={loc.lat}
+                                        longitude={loc.lng}
+                                        draggable={false}
+                                        onChange={() => {}}
+                                    />
+                                )}
                                 {/* Radius / Tentacles: show the radius circle outline */}
                                 {(sq.type === "radius" || sq.type === "tentacles") &&
                                     typeof d?.radius === "number" && (
@@ -294,24 +350,33 @@ export const DraggableMarkers = () => {
                                             }}
                                         />
                                     )}
-                                {/* Thermometer: show a line between point A and point B */}
-                                {sq.type === "thermometer" &&
-                                    typeof d?.latA === "number" &&
-                                    typeof d?.lngA === "number" &&
-                                    typeof d?.latB === "number" &&
-                                    typeof d?.lngB === "number" && (
+                                {/* Thermometer: two-tone dashed line (blue A→mid, red mid→B) */}
+                                {hasBothPoints && (
+                                    <>
                                         <Polyline
                                             positions={[
                                                 [d.latA, d.lngA],
-                                                [d.latB, d.lngB],
+                                                [midLat, midLng],
                                             ]}
                                             pathOptions={{
                                                 color: "#2A81CB",
-                                                weight: 2,
+                                                weight: 3,
                                                 dashArray: "6 4",
                                             }}
                                         />
-                                    )}
+                                        <Polyline
+                                            positions={[
+                                                [midLat, midLng],
+                                                [d.latB, d.lngB],
+                                            ]}
+                                            pathOptions={{
+                                                color: "#CB2B3E",
+                                                weight: 3,
+                                                dashArray: "6 4",
+                                            }}
+                                        />
+                                    </>
+                                )}
                             </Fragment>
                         );
                     })}

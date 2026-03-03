@@ -13,6 +13,7 @@ import { CheckCircle, ChevronDown, Clock, MapPin, Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
+import * as L from "leaflet";
 import * as turf from "@turf/turf";
 
 import { Button } from "@/components/ui/button";
@@ -31,7 +32,6 @@ import {
 } from "@/components/ui/dialog";
 import {
     addQuestion as addLocalQuestion,
-    defaultUnit,
     hiderMode,
     isLoading,
     leafletMapContext,
@@ -47,8 +47,52 @@ import {
     sessionQuestions,
     thermometerGpsTracking,
 } from "@/lib/session-context";
+import { pendingPickerType, pickerOpen } from "@/lib/bottom-sheet-state";
 import type { SessionQuestion } from "@hideandseek/shared";
 import { locale, t, useT, type TranslationKey } from "@/i18n";
+
+// ── Voronoi helper for thermometer answer overlay ──────────────────────────────
+
+/**
+ * Returns [coldPolygon, warmPolygon] as [lat,lng][] arrays representing the
+ * two Voronoi half-planes separated by the perpendicular bisector of A–B.
+ * coldPolygon = region closer to A (index 0), warmPolygon = region closer to B (index 1).
+ * Returns null when A === B (degenerate case).
+ */
+function computeThermometerVoronoi(
+    latA: number, lngA: number,
+    latB: number, lngB: number,
+): [[number, number][], [number, number][]] | null {
+    if (latA === latB && lngA === lngB) return null;
+    try {
+        const midLat = (latA + latB) / 2;
+        const midLng = (lngA + lngB) / 2;
+        const span = Math.max(Math.abs(latA - latB), Math.abs(lngA - lngB), 0.05);
+        const pad = span * 3 + 1.5;
+        const bbox = [midLng - pad, midLat - pad, midLng + pad, midLat + pad] as [number, number, number, number];
+        const pts = turf.featureCollection([turf.point([lngA, latA]), turf.point([lngB, latB])]);
+        const voronoi = turf.voronoi(pts, { bbox });
+        if (!voronoi || voronoi.features.length < 2) return null;
+        const toLatLng = (f: any): [number, number][] =>
+            (f.geometry.coordinates[0] as [number, number][]).map(([lng, lat]) => [lat, lng] as [number, number]);
+        return [toLatLng(voronoi.features[0]), toLatLng(voronoi.features[1])];
+    } catch {
+        return null;
+    }
+}
+
+// ── Lateness helper ───────────────────────────────────────────────────────────
+
+/**
+ * Returns a human-readable "X min zu spät" / "Xs zu spät" string.
+ * `ms` must be > 0.
+ */
+function formatLateness(ms: number): string {
+    const secs = Math.floor(ms / 1000);
+    if (secs < 60) return `${secs}s zu spät`;
+    const mins = Math.round(secs / 60);
+    return `${mins} min zu spät`;
+}
 
 // ── Translation-backed label helpers ─────────────────────────────────────────
 
@@ -327,21 +371,15 @@ export function SessionQuestionPanel() {
     const $hiderMode = useStore(hiderMode);
     const $isLoading = useStore(isLoading);
     const $localQuestions = useStore(questions_atom);
-    const $defaultUnit = useStore(defaultUnit);
     const $gpsTracking = useStore(thermometerGpsTracking);
     const [sendingType, setSendingType] = useState<string | null>(null);
-    /** Active thermometer GPS setup dialog: { selectedKm: null | number } | null */
-    const [thermometerSetup, setThermometerSetup] = useState<{
-        selectedKm: number | null;
-        loadingGps: boolean;
-        errorMsg: string | null;
-    } | null>(null);
     /**
      * Key of the locally-added question that is staged but not yet sent.
      * Stored in a global atom so it survives the sidebar Sheet unmounting
      * on mobile (when the user closes the panel to look at the map).
      */
     const pendingLocalKey = useStore(pendingDraftKey);
+    const $pendingPickerType = useStore(pendingPickerType);
 
     // ── Hider answer state ──────────────────────────────────────────────────
     /** The session question currently being answered (preview mode) */
@@ -353,10 +391,42 @@ export function SessionQuestionPanel() {
     );
     /** The last fully computed answerData – sent when Hider clicks "Antwort senden" */
     const latestAnswerDataRef = useRef<unknown>(null);
+    /** Tracks which question ID has already received the "deadline passed" toast to avoid duplicates */
+    const lateNotifiedIdRef = useRef<string | null>(null);
+    /** Leaflet polygons showing the Voronoi half-planes while the hider answers a thermometer question */
+    const answerColdPolygonRef = useRef<L.Polygon | null>(null);
+    const answerWarmPolygonRef = useRef<L.Polygon | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const [loadingGPS, setLoadingGPS] = useState(false);
     /** Show GPS-vs-manual dialog when the hider starts answering without a pin */
     const [showLocationDialog, setShowLocationDialog] = useState(false);
+
+    // ── React to question type selected in QuestionPickerSheet ──────────────
+    useEffect(() => {
+        if ($pendingPickerType === null) return;
+        pendingPickerType.set(null);
+        stageQuestion($pendingPickerType);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [$pendingPickerType]);
+
+    // ── Notify hider when the question being answered expires ───────────────
+    // (We no longer cancel — late answers are still accepted by the server.)
+    useEffect(() => {
+        if (!pendingAnswerSq) {
+            lateNotifiedIdRef.current = null;
+            return;
+        }
+        const updated = sqList.find((q) => q.id === pendingAnswerSq.id);
+        if (
+            updated &&
+            updated.status === "expired" &&
+            lateNotifiedIdRef.current !== pendingAnswerSq.id
+        ) {
+            lateNotifiedIdRef.current = pendingAnswerSq.id;
+            toast.warning(tr("sqp.deadlinePassedLate"));
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [sqList, pendingAnswerSq?.id]);
 
     // ── Live preview: recompute whenever hiderMode or pending question changes
     useEffect(() => {
@@ -370,7 +440,9 @@ export function SessionQuestionPanel() {
         hiderifyQuestion({
             id: pendingAnswerSq.type,
             key: 0,
-            data: pendingAnswerSq.data,
+            // Merge drag: true so hiderifyQuestion always runs the hider-side computation,
+            // even for questions created before drag was explicitly set in the seeker's config.
+            data: { ...(pendingAnswerSq.data as object), drag: true },
         } as any)
             .then((answered) => {
                 if (cancelled) return;
@@ -389,6 +461,66 @@ export function SessionQuestionPanel() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [$hiderMode, pendingAnswerSq]);
 
+    // ── Map overlay: show Voronoi half-planes while hider answers a thermometer question
+    // The cold polygon (A-side, blue) and warm polygon (B-side, red) are rendered on the
+    // Leaflet map and highlight based on the hider's current pin position.
+    useEffect(() => {
+        const currentMap = leafletMapContext.get();
+
+        // Clean up existing polygons
+        if (answerColdPolygonRef.current) {
+            currentMap?.removeLayer(answerColdPolygonRef.current);
+            answerColdPolygonRef.current = null;
+        }
+        if (answerWarmPolygonRef.current) {
+            currentMap?.removeLayer(answerWarmPolygonRef.current);
+            answerWarmPolygonRef.current = null;
+        }
+
+        if (!currentMap || !pendingAnswerSq || pendingAnswerSq.type !== "thermometer" || $hiderMode === false) return;
+
+        const d = pendingAnswerSq.data as Record<string, unknown>;
+        const latA = typeof d.latA === "number" ? d.latA : null;
+        const lngA = typeof d.lngA === "number" ? d.lngA : null;
+        const latB = typeof d.latB === "number" ? d.latB : null;
+        const lngB = typeof d.lngB === "number" ? d.lngB : null;
+        if (latA === null || lngA === null || latB === null || lngB === null) return;
+
+        const voronoi = computeThermometerVoronoi(latA, lngA, latB, lngB);
+        if (!voronoi) return;
+
+        const [coldCoords, warmCoords] = voronoi;
+        const isWarmer = previewResult?.positive ?? null;
+        // While computing (isWarmer === null), show both halves at medium opacity
+        // so the bisector boundary is clearly visible.
+        const noneSelected = isWarmer === null;
+
+        // Cold polygon — A-side, blue — highlighted when hider is on the colder (closer-to-A) side
+        answerColdPolygonRef.current = L.polygon(coldCoords, {
+            color:       "#1a3a6b",
+            fillColor:   "#1a3a6b",
+            fillOpacity: isWarmer === false ? 0.40 : noneSelected ? 0.18 : 0.05,
+            weight:      isWarmer === false ? 2.0  : noneSelected ? 1.5  : 0.5,
+            opacity:     isWarmer === false ? 0.8  : noneSelected ? 0.5  : 0.15,
+        }).addTo(currentMap);
+
+        // Warm polygon — B-side, red — highlighted when hider is on the warmer (closer-to-B) side
+        answerWarmPolygonRef.current = L.polygon(warmCoords, {
+            color:       "#c0392b",
+            fillColor:   "#c0392b",
+            fillOpacity: isWarmer === true ? 0.40 : noneSelected ? 0.18 : 0.05,
+            weight:      isWarmer === true ? 2.0  : noneSelected ? 1.5  : 0.5,
+            opacity:     isWarmer === true ? 0.8  : noneSelected ? 0.5  : 0.15,
+        }).addTo(currentMap);
+
+        return () => {
+            const m = leafletMapContext.get();
+            if (answerColdPolygonRef.current) { m?.removeLayer(answerColdPolygonRef.current); answerColdPolygonRef.current = null; }
+            if (answerWarmPolygonRef.current) { m?.removeLayer(answerWarmPolygonRef.current); answerWarmPolygonRef.current = null; }
+        };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pendingAnswerSq, $hiderMode, previewResult]);
+
     if (!participant || !code) return null;
 
     const isHider = participant.role === "hider";
@@ -403,12 +535,6 @@ export function SessionQuestionPanel() {
     }
 
     function stageQuestion(type: string) {
-        // Thermometer: show GPS-setup dialog first instead of staging directly
-        if (type === "thermometer") {
-            setThermometerSetup({ selectedKm: null, loadingGps: false, errorMsg: null });
-            return;
-        }
-
         const map = leafletMapContext.get();
         if (!map) return;
         const center = map.getCenter();
@@ -423,66 +549,6 @@ export function SessionQuestionPanel() {
         }
 
         stageQuestionWithData(type, questionData);
-    }
-
-    // ── Seeker: GPS thermometer start ─────────────────────────────────────────
-    async function startGpsTracking(targetKm: number) {
-        setThermometerSetup((s) => s ? { ...s, loadingGps: true, errorMsg: null } : s);
-        try {
-            const pos = await new Promise<GeolocationPosition>((resolve, reject) =>
-                navigator.geolocation.getCurrentPosition(resolve, reject, {
-                    enableHighAccuracy: true,
-                    timeout: 15_000,
-                }),
-            );
-            const { latitude: lat, longitude: lng } = pos.coords;
-
-            // Stage thermometer with GPS start as A; B = 100 m east (placeholder, updated when done)
-            const dest = turf.destination([lng, lat], 0.1, 90, { units: "kilometers" });
-            stageQuestionWithData("thermometer", {
-                latA: lat,
-                lngA: lng,
-                latB: dest.geometry.coordinates[1],
-                lngB: dest.geometry.coordinates[0],
-            });
-
-            // Kick off tracking (ThermometerGpsLayer picks this up)
-            thermometerGpsTracking.set({
-                questionKey: pendingDraftKey.get()!,
-                targetKm,
-                startLat: lat,
-                startLng: lng,
-                currentLat: lat,
-                currentLng: lng,
-                traveled: 0,
-                lastMoveTime: Date.now(),
-                accuracy: pos.coords.accuracy ?? null,
-                signalLost: false,
-            });
-
-            setThermometerSetup(null);
-            // Close sidebar so the user can see the map + overlay
-            SidebarContext.get().setOpenMobile(false);
-        } catch {
-            setThermometerSetup((s) =>
-                s ? { ...s, loadingGps: false, errorMsg: t("sqp.gpsUnavailable", locale.get()) } : s,
-            );
-        }
-    }
-
-    // ── Seeker: manual thermometer (classic flow) ─────────────────────────────
-    function stageThermometerManual() {
-        const map = leafletMapContext.get();
-        if (!map) return;
-        const center = map.getCenter();
-        const dest = turf.destination([center.lng, center.lat], 5, 90, { units: "miles" });
-        stageQuestionWithData("thermometer", {
-            latA: center.lat,
-            lngA: center.lng,
-            latB: dest.geometry.coordinates[1],
-            lngB: dest.geometry.coordinates[0],
-        });
-        setThermometerSetup(null);
     }
 
     // ── Seeker: step 2 – send the staged question to the hider ───────────────
@@ -604,104 +670,8 @@ export function SessionQuestionPanel() {
             : null;
 
     if (!isHider) {
-        // ── Distance chips for GPS thermometer setup ──────────────────────────
-        const isMetric = $defaultUnit !== "miles";
-        const distanceChips: { label: string; km: number }[] = isMetric
-            ? [
-                { label: "1 km",  km: 1  },
-                { label: "3 km",  km: 3  },
-                { label: "8 km",  km: 8  },
-                { label: "25 km", km: 25 },
-                { label: "80 km", km: 80 },
-              ]
-            : [
-                { label: "½ mi", km: 0.80  },
-                { label: "5 mi", km: 8.05  },
-                { label: "15 mi", km: 24.14 },
-                { label: "50 mi", km: 80.47 },
-              ];
-
         return (
             <div className="flex flex-col gap-3 mt-2">
-                {/* ── Section header */}
-                <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: "#067BC2" }}>
-                    {tr("sqp.askQuestion")}
-                </p>
-
-                {/* ── Thermometer GPS setup card ──────────────────────────── */}
-                {thermometerSetup !== null && (
-                    <div className="rounded-md p-3 flex flex-col gap-2" style={{ backgroundColor: "#067BC2" }}>
-                        <p className="text-sm font-bold text-white">🌡️ Thermometer konfigurieren</p>
-
-                        {/* Distance chips */}
-                        <p className="text-xs text-white/80">Zieldistanz:</p>
-                        <div className="flex flex-wrap gap-1.5">
-                            {distanceChips.map((chip) => (
-                                <button
-                                    key={chip.km}
-                                    type="button"
-                                    onClick={() =>
-                                        setThermometerSetup((s) =>
-                                            s ? { ...s, selectedKm: chip.km } : s,
-                                        )
-                                    }
-                                    className="px-3 py-1 rounded-full text-xs font-bold transition-colors"
-                                    style={
-                                        thermometerSetup.selectedKm === chip.km
-                                            ? { backgroundColor: "#ECC30B", color: "#000" }
-                                            : { backgroundColor: "rgba(255,255,255,0.15)", color: "#fff" }
-                                    }
-                                >
-                                    {chip.label}
-                                </button>
-                            ))}
-                        </div>
-
-                        {/* Error message */}
-                        {thermometerSetup.errorMsg && (
-                            <p className="text-xs text-red-200">{thermometerSetup.errorMsg}</p>
-                        )}
-
-                        {/* Action buttons */}
-                        <div className="flex flex-col gap-1 mt-1">
-                            <Button
-                                size="sm"
-                                disabled={
-                                    thermometerSetup.selectedKm === null ||
-                                    thermometerSetup.loadingGps
-                                }
-                                onClick={() =>
-                                    thermometerSetup.selectedKm !== null &&
-                                    startGpsTracking(thermometerSetup.selectedKm)
-                                }
-                                className="border-0 font-bold disabled:opacity-40"
-                                style={{ backgroundColor: "#ECC30B", color: "#000" }}
-                            >
-                                {thermometerSetup.loadingGps ? "GPS wird geladen…" : "🛰️ GPS-Tracking starten"}
-                            </Button>
-                            <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={stageThermometerManual}
-                                disabled={thermometerSetup.loadingGps}
-                                className="border-0 font-medium disabled:opacity-40"
-                                style={{ backgroundColor: "rgba(255,255,255,0.15)", color: "#fff" }}
-                            >
-                                Manuell
-                            </Button>
-                            <button
-                                type="button"
-                                onClick={() => setThermometerSetup(null)}
-                                disabled={thermometerSetup.loadingGps}
-                                className="text-xs underline font-medium disabled:opacity-40"
-                                style={{ color: "#84BCDA" }}
-                            >
-                                Abbrechen
-                            </button>
-                        </div>
-                    </div>
-                )}
-
                 {/* ── GPS tracking active indicator ────────────────────────── */}
                 {$gpsTracking !== null &&
                     $gpsTracking.questionKey === pendingLocalKey && (
@@ -716,28 +686,6 @@ export function SessionQuestionPanel() {
                     </div>
                 )}
 
-                {/* ── Question-type buttons (hidden while setup shown) ─────── */}
-                {thermometerSetup === null && (
-                    <div className="flex flex-wrap gap-1.5">
-                        {["radius", "thermometer", "tentacles", "matching", "measuring"].map((type) => (
-                            <Button
-                                key={type}
-                                size="sm"
-                                disabled={
-                                    sendingType !== null ||
-                                    $isLoading ||
-                                    pendingLocalKey !== null ||
-                                    $gpsTracking !== null
-                                }
-                                onClick={() => stageQuestion(type)}
-                                className="text-white border-0 disabled:opacity-40"
-                                style={{ backgroundColor: "#067BC2" }}
-                            >
-                                {getQuestionLabel(type)}
-                            </Button>
-                        ))}
-                    </div>
-                )}
 
                 <QuestionList
                     questions={sqList}
@@ -888,7 +836,7 @@ export function SessionQuestionPanel() {
             )}
 
             <QuestionList
-                questions={sqList}
+                questions={sqList.filter((q) => q.status !== "answered")}
                 isHider={true}
                 onAnswer={startAnswering}
                 pendingAnswerId={pendingAnswerSq?.id ?? null}
@@ -946,9 +894,68 @@ function PendingQuestionConfig({ question }: { question: ReturnType<typeof quest
     }
 }
 
+// ── Countdown timer component ─────────────────────────────────────────────────
+
+/**
+ * Displays a live MM:SS countdown derived from an ISO8601 deadline string.
+ * Colour transitions: white → orange (< 60 s) → red+pulse (< 10 s).
+ * Shows "Zeit abgelaufen" once the timer reaches zero.
+ */
+function QuestionCountdown({ deadline }: { deadline: string }) {
+    const tr = useT();
+
+    function getRemainingMs(): number {
+        return new Date(deadline).getTime() - Date.now();
+    }
+
+    const [remainingMs, setRemainingMs] = useState<number>(getRemainingMs);
+
+    useEffect(() => {
+        // Sync immediately in case of mount delay
+        setRemainingMs(getRemainingMs());
+
+        const interval = setInterval(() => {
+            const ms = getRemainingMs();
+            setRemainingMs(ms);
+            if (ms <= 0) clearInterval(interval);
+        }, 1000);
+
+        return () => clearInterval(interval);
+    // deadline is stable (ISO string) so no dep needed
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [deadline]);
+
+    if (remainingMs <= 0) {
+        return (
+            <span className="text-xs font-bold" style={{ color: "#D56062" }}>
+                ⏰ {tr("sqp.timeExpired")}
+            </span>
+        );
+    }
+
+    const totalSec = Math.ceil(remainingMs / 1000);
+    const minutes = Math.floor(totalSec / 60);
+    const seconds = totalSec % 60;
+    const formatted = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+
+    const isRed = remainingMs < 10_000;
+    const isOrange = !isRed && remainingMs < 60_000;
+
+    const color = isRed ? "#D56062" : isOrange ? "#F37748" : "rgba(255,255,255,0.85)";
+
+    return (
+        <span
+            className={`text-xs font-bold tabular-nums${isRed ? " animate-pulse" : ""}`}
+            style={{ color }}
+        >
+            ⏱ {formatted}
+        </span>
+    );
+}
+
 // ── Shared question list ─────────────────────────────────────────────────────
 
-function QuestionList({
+export function QuestionList({
     questions,
     isHider,
     onAnswer,
@@ -977,6 +984,10 @@ function QuestionList({
 
     const hasAnyQuestion = questions.length > 0 || !!pendingLocalQuestion;
 
+    // Only the newest pending question is "active" and gets a countdown.
+    const activePendingId =
+        [...questions].reverse().find((q) => q.status === "pending")?.id ?? null;
+
     if (!hasAnyQuestion) {
         return (
             <p className="text-xs text-muted-foreground italic">
@@ -987,11 +998,6 @@ function QuestionList({
 
     return (
         <div className="flex flex-col gap-2">
-            {/* Section header */}
-            <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: "#067BC2" }}>
-                {tr("sqp.questions")} ({questions.length + (pendingLocalQuestion ? 1 : 0)})
-            </p>
-
             {/* ── State A: staged local question (Seeker only, not yet sent) ─── */}
             {pendingLocalQuestion && (
                 <div className="rounded-md p-2 text-sm flex flex-col gap-2"
@@ -1001,15 +1007,21 @@ function QuestionList({
                         <Send className="h-4 w-4 shrink-0 text-white" />
                         <span className="font-bold flex-1 min-w-0 text-white">
                             {getQuestionLabel(pendingLocalQuestion.id)}
-                            <span className="ml-2 text-xs font-normal" style={{ color: "#84BCDA" }}>
-                                {tr("sqp.configure")}
-                            </span>
+                            {/* Only show "konfigurieren" for types that still need inline setup */}
+                            {(pendingLocalQuestion.id === "matching" || pendingLocalQuestion.id === "measuring") && (
+                                <span className="ml-2 text-xs font-normal" style={{ color: "#84BCDA" }}>
+                                    {tr("sqp.configure")}
+                                </span>
+                            )}
                         </span>
                     </div>
-                    {/* Inline config UI — editable, white background for form readability */}
-                    <div className="rounded-md p-2" style={{ backgroundColor: "rgba(255,255,255,0.12)" }}>
-                        <PendingQuestionConfig question={pendingLocalQuestion} />
-                    </div>
+                    {/* Inline config UI — only for types without a dedicated picker (matching, measuring).
+                        Thermometer, radius and tentacles are fully configured before staging. */}
+                    {(pendingLocalQuestion.id === "matching" || pendingLocalQuestion.id === "measuring") && (
+                        <div className="rounded-md p-2" style={{ backgroundColor: "rgba(255,255,255,0.12)" }}>
+                            <PendingQuestionConfig question={pendingLocalQuestion} />
+                        </div>
+                    )}
                     {/* Action buttons */}
                     <div className="flex flex-col items-start gap-1">
                         <Button
@@ -1039,14 +1051,32 @@ function QuestionList({
                 </div>
             )}
 
-            {/* ── States B + C: sent session questions ─────────────────────── */}
+            {/* ── States B / C / D: sent session questions ──────────────── */}
             {[...questions].reverse().map((sq) => {
                 const shortDesc = describeQuestion(sq.type, sq.data as any, sq.answerData as any);
                 const isExpanded = expandedId === sq.id;
                 const isAnswered = sq.status === "answered";
-                // State C (answered): solid #84BCDA; State B (pending): solid #F37748
-                const bgColor = isAnswered ? "#84BCDA" : "#F37748";
-                const accentColor = isAnswered ? "#067BC2" : "#ECC30B";
+                const isExpired = sq.status === "expired";
+                const isPending = sq.status === "pending";
+                const isActive = sq.id === activePendingId;
+
+                // State C (answered): #84BCDA; State D (expired): dark grey; State B (pending): #F37748
+                const bgColor = isAnswered ? "#84BCDA" : isExpired ? "#6b7280" : "#F37748";
+                const accentColor = isAnswered ? "#067BC2" : isExpired ? "#d1d5db" : "#ECC30B";
+
+                const statusLabel = isAnswered
+                    ? tr("sqp.answered")
+                    : isExpired
+                        ? tr("sqp.expired")
+                        : tr("sqp.pending");
+
+                // Lateness: how many seconds/minutes after the deadline was the question answered?
+                const lateMs =
+                    isAnswered && sq.answeredAt && sq.deadline
+                        ? new Date(sq.answeredAt).getTime() - new Date(sq.deadline).getTime()
+                        : 0;
+                const lateLabel = lateMs > 0 ? formatLateness(lateMs) : null;
+
                 return (
                     <div
                         key={sq.id}
@@ -1068,13 +1098,18 @@ function QuestionList({
                             <span className="font-semibold flex-1 min-w-0 text-white">
                                 {getQuestionLabel(sq.type)}
                                 <span className="ml-2 text-xs font-normal" style={{ color: accentColor }}>
-                                    {isAnswered ? tr("sqp.answered") : tr("sqp.pending")}
+                                    {statusLabel}
                                 </span>
+                                {lateLabel && (
+                                    <span className="ml-2 text-xs font-normal" style={{ color: "#F59E0B" }}>
+                                        {lateLabel}
+                                    </span>
+                                )}
                             </span>
                             <ChevronDown
                                 className={`h-3 w-3 transition-transform shrink-0 text-white ${isExpanded ? "rotate-180" : ""}`}
                             />
-                            {isHider && sq.status === "pending" && onAnswer && (
+                            {isHider && (isPending || isExpired) && onAnswer && (
                                 <Button
                                     size="sm"
                                     disabled={pendingAnswerId === sq.id}
@@ -1096,6 +1131,20 @@ function QuestionList({
                         {shortDesc && (
                             <p className="text-xs mt-0.5 ml-6 leading-snug text-white/80">
                                 {shortDesc}
+                            </p>
+                        )}
+
+                        {/* ── Countdown: only on the active (newest pending) question ── */}
+                        {isActive && sq.deadline && (
+                            <div className="mt-1 ml-6">
+                                <QuestionCountdown deadline={sq.deadline} />
+                            </div>
+                        )}
+
+                        {/* ── Expired notice ── */}
+                        {isExpired && (
+                            <p className="text-xs mt-1 ml-6 font-medium" style={{ color: "#d1d5db" }}>
+                                ⏰ {tr("sqp.countdownExpired")}
                             </p>
                         )}
 

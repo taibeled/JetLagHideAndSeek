@@ -31,6 +31,11 @@ export type ServerToClientEvent =
           participantId: string;
       }
     | {
+          /** Broadcast when a pending question's deadline passes (authoritative expiry signal). */
+          type: "question_expired";
+          questionId: string;
+      }
+    | {
           /** Sent immediately after connection to sync current state */
           type: "sync";
           questions: SessionQuestion[];

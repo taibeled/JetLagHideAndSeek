@@ -44,10 +44,11 @@ export function toSessionQuestion(row: DbQuestion) {
         createdByParticipantId: row.createdByParticipantId,
         type: row.type,
         data: JSON.parse(row.data),
-        status: row.status as "pending" | "answered",
+        status: row.status as "pending" | "answered" | "expired",
         answerData: row.answerData ? JSON.parse(row.answerData) : undefined,
         createdAt: row.createdAt,
         answeredAt: row.answeredAt ?? undefined,
+        deadline: row.deadline ?? undefined,
     };
 }
 
@@ -157,6 +158,11 @@ export function createSessionsRouter(db: Db): Hono {
             return c.json({ error: "displayName is required" }, 400);
         }
 
+        const role = body.role ?? "seeker";
+        if (role !== "hider" && role !== "seeker") {
+            return c.json({ error: "invalid role" }, 400);
+        }
+
         const sessionRow = await db.query.sessions.findFirst({
             where: eq(schema.sessions.code, code),
         });
@@ -174,7 +180,7 @@ export function createSessionsRouter(db: Db): Hono {
         await db.insert(schema.participants).values({
             id: participantId,
             sessionId: sessionRow.id,
-            role: "seeker",
+            role,
             token,
             displayName: body.displayName.trim(),
         });
@@ -183,7 +189,7 @@ export function createSessionsRouter(db: Db): Hono {
         wsManager.broadcast(code, {
             type: "participant_joined",
             participantId,
-            role: "seeker",
+            role,
             displayName: body.displayName.trim(),
         });
 
@@ -192,7 +198,7 @@ export function createSessionsRouter(db: Db): Hono {
             participant: {
                 id: participantId,
                 sessionId: sessionRow.id,
-                role: "seeker",
+                role,
                 displayName: body.displayName.trim(),
                 joinedAt: new Date().toISOString(),
                 token,

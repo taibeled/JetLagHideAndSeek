@@ -22,6 +22,7 @@ import {
     questions,
     save,
 } from "@/lib/context";
+import { sessionParticipant } from "@/lib/session-context";
 import { CacheType, clearCache } from "@/maps/api";
 import { lngLatToText } from "@/maps/geo-utils";
 import type {
@@ -239,6 +240,7 @@ const MeasuringPointMarker = ({
 export const PolygonDraw = () => {
     const $drawingQuestionKey = useStore(drawingQuestionKey);
     const $questions = useStore(questions);
+    const $participant = useStore(sessionParticipant);
 
     const featureRef = useRef<any | null>(null);
 
@@ -478,33 +480,35 @@ export const PolygonDraw = () => {
                         fill={false}
                     />
                 ))}
-            <EditControl
-                position="bottomleft"
-                draw={{
-                    rectangle: false,
-                    circle: false,
-                    circlemarker: false,
-                    marker:
-                        question?.id === "tentacles" ||
-                        (question?.id === "matching" &&
-                            question.data.type === "custom-points") ||
-                        question?.id === "measuring"
-                            ? true
-                            : false,
-                    polyline: question?.id === "measuring",
-                    polygon:
-                        question?.id === "tentacles" ||
-                        (question?.id === "matching" &&
-                            question.data.type === "custom-points")
-                            ? false
-                            : {
-                                  shapeOptions: { fillOpacity: 0 },
-                              },
-                }}
-                onCreated={onChange}
-                onEdited={onChange}
-                onDeleted={onChange}
-            />
+            {!$participant ? (
+                <EditControl
+                    position="bottomleft"
+                    draw={{
+                        rectangle: false,
+                        circle: false,
+                        circlemarker: false,
+                        marker:
+                            question?.id === "tentacles" ||
+                            (question?.id === "matching" &&
+                                question.data.type === "custom-points") ||
+                            question?.id === "measuring"
+                                ? true
+                                : false,
+                        polyline: question?.id === "measuring",
+                        polygon:
+                            question?.id === "tentacles" ||
+                            (question?.id === "matching" &&
+                                question.data.type === "custom-points")
+                                ? false
+                                : {
+                                      shapeOptions: { fillOpacity: 0 },
+                                  },
+                    }}
+                    onCreated={onChange}
+                    onEdited={onChange}
+                    onDeleted={onChange}
+                />
+            ) : null}
         </FeatureGroup>
     );
 };

@@ -6,7 +6,7 @@ import { useStore } from "@nanostores/react";
 import * as turf from "@turf/turf";
 import * as L from "leaflet";
 import { useEffect, useMemo } from "react";
-import { MapContainer, ScaleControl, TileLayer } from "react-leaflet";
+import { MapContainer, ScaleControl, TileLayer, useMapEvents } from "react-leaflet";
 import { toast } from "react-toastify";
 
 import {
@@ -34,11 +34,27 @@ import { applyQuestionsToMapGeoData, holedMask } from "@/maps";
 import { hiderifyQuestion } from "@/maps";
 import { clearCache, determineMapBoundaries } from "@/maps/api";
 
+import { bottomSheetState } from "@/lib/bottom-sheet-state";
 import { DraggableMarkers } from "./DraggableMarkers";
 import { LeafletFullScreenButton } from "./LeafletFullScreenButton";
 import { MapPrint } from "./MapPrint";
 import { PolygonDraw } from "./PolygonDraw";
 import { ThermometerGpsLayer } from "./ThermometerGpsLayer";
+
+/**
+ * Collapses the bottom sheet when the user left-clicks on the map.
+ * Must be rendered inside a <MapContainer> to use useMapEvents.
+ */
+function MapClickHandler() {
+    useMapEvents({
+        click: () => {
+            if (bottomSheetState.get() !== "collapsed") {
+                bottomSheetState.set("collapsed");
+            }
+        },
+    });
+    return null;
+}
 
 export const Map = ({ className }: { className?: string }) => {
     useStore(additionalMapGeoLocations);
@@ -344,6 +360,7 @@ export const Map = ({ className }: { className?: string }) => {
                         noWrap
                     />
                 )}
+                <MapClickHandler />
                 <DraggableMarkers />
                 <ThermometerGpsLayer />
                 <div className="leaflet-top leaflet-right">

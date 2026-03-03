@@ -253,35 +253,50 @@ export function ThermometerGpsLayer() {
                             )}
                         </div>
 
+                        {/* Cold → Warm point labels */}
+                        <div className="flex justify-between text-xs mb-2">
+                            <span
+                                className="font-semibold px-1.5 py-0.5 rounded"
+                                style={{ backgroundColor: "#2A81CB", color: "#fff" }}
+                            >
+                                ❄️ Kalt (Start)
+                            </span>
+                            <span
+                                className="font-semibold px-1.5 py-0.5 rounded"
+                                style={{ backgroundColor: "#CB2B3E", color: "#fff" }}
+                            >
+                                🔥 Warm (Ziel)
+                            </span>
+                        </div>
+
                         {/* Distance progress */}
                         <div className="flex flex-col gap-0.5 mb-2">
                             <div className="flex justify-between">
-                                <span style={{ color: "#84BCDA" }}>Ziel</span>
+                                <span style={{ color: "#84BCDA" }}>Zieldistanz</span>
                                 <span className="font-semibold">{fmtKm(targetKm)}</span>
                             </div>
                             <div className="flex justify-between">
-                                <span style={{ color: "#84BCDA" }}>Zurück</span>
+                                <span style={{ color: "#84BCDA" }}>Zurückgelegt</span>
                                 <span className="font-semibold">{fmtKm(traveled)}</span>
                             </div>
                             <div className="flex justify-between">
-                                <span style={{ color: "#84BCDA" }}>Noch</span>
+                                <span style={{ color: "#84BCDA" }}>Verbleibend</span>
                                 <span className="font-bold" style={{ color: "#ECC30B" }}>
                                     {fmtKm(remaining)}
                                 </span>
                             </div>
                         </div>
 
-                        {/* Progress bar */}
+                        {/* Progress bar: blue → red gradient */}
                         <div
-                            className="rounded-full mb-2"
+                            className="rounded-full mb-2 overflow-hidden"
                             style={{ height: 6, backgroundColor: "rgba(255,255,255,0.2)" }}
                         >
                             <div
-                                className="rounded-full"
+                                className="rounded-full h-full"
                                 style={{
-                                    height: 6,
                                     width: `${Math.min(100, (traveled / targetKm) * 100).toFixed(1)}%`,
-                                    backgroundColor: "#ECC30B",
+                                    background: "linear-gradient(to right, #2A81CB, #CB2B3E)",
                                     transition: "width 0.5s ease",
                                 }}
                             />

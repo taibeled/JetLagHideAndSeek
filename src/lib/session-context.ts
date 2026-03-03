@@ -44,6 +44,13 @@ export const sessionCode = persistentAtom<string | null>(
     { encode: JSON.stringify, decode: JSON.parse },
 );
 
+/** Spielgröße, die der Nutzer beim Onboarding gewählt hat (S/M/L). */
+export const gameSize = persistentAtom<"S" | "M" | "L" | null>(
+    "game_size",
+    null,
+    { encode: JSON.stringify, decode: JSON.parse },
+);
+
 // ── In-memory ─────────────────────────────────────────────────────────────────
 
 /** Full session object (refreshed from server or synced via WS) */
@@ -138,6 +145,7 @@ export function leaveSession(): void {
     hiderAreaConfirmed.set(false);
     pendingDraftKey.set(null);
     thermometerGpsTracking.set(null);
+    gameSize.set(null);
 
     // ── Map cache – fully clear all session-specific cached data ──────────
     clearCache(CacheType.CACHE);
@@ -202,19 +210,15 @@ export function upsertSessionQuestion(question: SessionQuestion): void {
 export function applyServerMapLocation(location: MapLocation): void {
     if (!location.osmFeature) return;
 
-    const newOsmId = (location.osmFeature as any)?.properties?.osm_id;
-    const currentOsmId = (mapGeoLocation.get() as any)?.properties?.osm_id;
-
     // Clear the cached boundary so the map re-fetches with the new zones.
     mapGeoJSON.set(null);
 
-    // If the primary zone changed, there may be an in-flight Overpass fetch for
-    // the OLD zone holding isLoading = true.  Resetting it here lets the
-    // upcoming mapGeoLocation.set() trigger refreshQuestions immediately
-    // instead of having to wait (5–30 s) for the stale fetch to finish.
-    if (newOsmId !== currentOsmId) {
-        isLoading.set(false);
-    }
+    // Always reset isLoading so the upcoming mapGeoLocation.set() triggers
+    // refreshQuestions immediately, even when the zone osm_id hasn't changed
+    // (e.g. seeker rejoins the same area, or WS sync fires for an unchanged zone).
+    // Any in-flight Overpass fetch is safely discarded by the race-condition guard
+    // inside refreshQuestions (it compares currentOsmId vs osmIdAtStart).
+    isLoading.set(false);
 
     // Restore additional zones saved by the hider; clear if none present
     // so the seeker doesn't inherit stale areas from their own localStorage.

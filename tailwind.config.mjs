@@ -6,6 +6,20 @@ export default {
     	extend: {
     		colors: {
     			jetlag: '#1F2F3F',
+    			hs: {
+    				primary: 'var(--hs-primary)',
+    				dark:    'var(--hs-dark)',
+    				light:   'var(--hs-light)',
+    				accent:  'var(--hs-accent)',
+    				card:    'var(--hs-card)',
+    			},
+    			color: {
+    				dark:    'var(--color-dark)',
+    				panel:   'var(--color-panel)',
+    				primary: 'var(--color-primary)',
+    				light:   'var(--color-light)',
+    				overlay: 'var(--color-overlay)',
+    			},
     			background: 'hsl(var(--background))',
     			foreground: 'hsl(var(--foreground))',
     			card: {

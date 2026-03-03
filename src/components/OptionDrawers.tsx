@@ -52,6 +52,8 @@ import {
 import { questionsSchema } from "@/maps/schema";
 import { locale, t, useT, type Locale } from "@/i18n";
 
+import { Settings } from "lucide-react";
+
 import { LatitudeLongitude } from "./LatLngPicker";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
@@ -70,7 +72,21 @@ const HIDING_ZONE_URL_PARAM = "hz";
 const HIDING_ZONE_COMPRESSED_URL_PARAM = "hzc";
 const PASTEBIN_URL_PARAM = "pb";
 
-export const OptionDrawers = ({ className }: { className?: string }) => {
+interface OptionDrawersProps {
+    className?: string;
+    /** Controlled open state — if provided, the component becomes controlled */
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
+    /** Set to false to hide the built-in trigger button (use when trigger is external) */
+    showTrigger?: boolean;
+}
+
+export const OptionDrawers = ({
+    className,
+    open: controlledOpen,
+    onOpenChange: controlledOnOpenChange,
+    showTrigger = true,
+}: OptionDrawersProps) => {
     useStore(triggerLocalRefresh);
     const tr = useT();
     const $defaultUnit = useStore(defaultUnit);
@@ -88,8 +104,14 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $customInitPref = useStore(customInitPreference);
     const lastDefaultUnit = useRef($defaultUnit);
     const hasSyncedInitialUnit = useRef(false);
-    const [isOptionsOpen, setOptionsOpen] = useState(false);
+    const [internalOpen, setInternalOpen] = useState(false);
     const [hasOpenSelect, setHasOpenSelect] = useState(false);
+
+    // Support both controlled and uncontrolled modes
+    const isOptionsOpen = controlledOpen !== undefined ? controlledOpen : internalOpen;
+    const setOptionsOpen = controlledOnOpenChange !== undefined
+        ? controlledOnOpenChange
+        : setInternalOpen;
 
     useEffect(() => {
         const currentDefault = $defaultUnit;
@@ -272,7 +294,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
             )}
         >
             <Button
-                className="shadow-md"
+                className="shadow-md hidden"
                 onClick={async () => {
                     const hidingZoneString = JSON.stringify($hidingZone);
                     let compressedData;
@@ -349,14 +371,17 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 {tr("options.tutorial")}
             </Button> */}
             <Drawer open={isOptionsOpen} onOpenChange={setOptionsOpen}>
-                <DrawerTrigger className="w-24" asChild>
-                    <Button
-                        className="w-24 shadow-md"
-                        data-tutorial-id="option-questions-button"
-                    >
-                        {tr("options.title")}
-                    </Button>
-                </DrawerTrigger>
+                {showTrigger && (
+                    <DrawerTrigger asChild>
+                        <Button
+                            className="shadow-md w-10 h-10 p-0"
+                            data-tutorial-id="option-questions-button"
+                            aria-label={tr("options.title")}
+                        >
+                            <Settings className="h-5 w-5" />
+                        </Button>
+                    </DrawerTrigger>
+                )}
                 <DrawerContent onPointerDownOutside={(e) => { if (hasOpenSelect) e.preventDefault(); }}>
                     <div className="flex flex-col items-center gap-4 mb-4">
                         <DrawerHeader>

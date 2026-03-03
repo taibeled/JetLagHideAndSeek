@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Hide & Seek Design Tokens ───────────────────────────────────────────── */
+:root {
+    /* Legacy aliases — kept for backwards-compat */
+    --hs-primary: #E8323A;
+    --hs-dark:    #1E1E2A;
+    --hs-light:   #F5F5F0;
+    --hs-accent:  #F5A623;
+    --hs-card:    #2A2A3A;
+
+    /* Figma tokens (xYgSekOBnv0Msa6HSJeqDz, Node 1:2) */
+    --color-dark:    #1E1E2A;
+    --color-panel:   #2A2A3A;
+    --color-primary: #E8323A;
+    --color-light:   #FFFFFF;
+    --color-overlay: rgba(30,30,42,0.75);
+    --radius-default: 8px;
+    --radius-pill:    10px;
+}
+
 html,
 body {
     margin: 0;
@@ -21,6 +40,32 @@ body {
 
 div.leaflet-control-attribution.leaflet-control {
     z-index: 751;
+}
+
+/* ── Leaflet Zoom Controls — dark theme (Figma node 1:16) ────────────────── */
+.leaflet-bar {
+    border: none !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+}
+.leaflet-bar a {
+    background: var(--color-dark) !important;
+    color: #fff !important;
+    border: none !important;
+    width: 32px !important;
+    height: 32px !important;
+    line-height: 32px !important;
+    border-radius: var(--radius-default) !important;
+    margin: 0 !important;
+}
+.leaflet-bar a:first-child,
+.leaflet-bar a:last-child {
+    border-radius: var(--radius-default) !important;
+}
+.leaflet-bar a:hover {
+    background: var(--color-panel) !important;
 }
 
 @layer base {
@@ -102,17 +147,17 @@ div.leaflet-control-attribution.leaflet-control {
         .leaflet-control-container
         .leaflet-top.leaflet-left
         .leaflet-control {
-        @apply !mt-[104px] md:!mt-[40px];
+        @apply !mt-[8px];
     }
 
     main:not(.fullscreen)
         .leaflet-top
         .leaflet-control:not(.leaflet-control-easyPrint) {
-        @apply !mt-[104px] md:!mt-[40px];
+        @apply !mt-[8px];
     }
 
     div.leaflet-top div.leaflet-control-easyPrint {
-        @apply !mt-[140px] md:!mt-[74px];
+        @apply !mt-[44px];
     }
 
     main.fullscreen div.leaflet-control-easyPrint {
@@ -130,6 +175,18 @@ div.leaflet-control-attribution.leaflet-control {
     }
     body {
         @apply bg-background text-foreground;
+    }
+}
+
+/* ── Bottom Sheet ─────────────────────────────────────────────────────────── */
+/* Desktop: center the sheet and limit its width */
+@media (min-width: 768px) {
+    .hs-bottom-sheet {
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 480px;
     }
 }
 

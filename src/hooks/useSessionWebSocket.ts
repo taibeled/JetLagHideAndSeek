@@ -74,6 +74,20 @@ export function useSessionWebSocket({ code, token, onSync }: Options): void {
                         upsertSessionQuestion(event.question);
                         break;
 
+                    case "question_expired": {
+                        // Mark the question as expired in local state.
+                        // The deadline is already stored on the question; this event
+                        // is the authoritative server signal that the deadline passed.
+                        const current = sessionQuestions.get();
+                        const idx = current.findIndex((q) => q.id === event.questionId);
+                        if (idx !== -1 && current[idx].status === "pending") {
+                            const updated = [...current];
+                            updated[idx] = { ...updated[idx], status: "expired" };
+                            sessionQuestions.set(updated);
+                        }
+                        break;
+                    }
+
                     case "map_location_updated":
                         // The hider is the source of map updates via REST PATCH.
                         // The backend broadcasts to all participants (including

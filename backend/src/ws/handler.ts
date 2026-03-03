@@ -1,11 +1,69 @@
 import type { ClientToServerEvent } from "@hideandseek/shared";
-import { eq } from "drizzle-orm";
+import { QUESTION_DEADLINE_MS } from "@hideandseek/shared";
+import { and, eq } from "drizzle-orm";
 import type { WSContext } from "hono/ws";
 import { nanoid } from "nanoid";
 
 import { db, schema } from "../db/index.js";
 import { toSessionQuestion } from "../routes/sessions.js";
 import { type ConnectedClient, wsManager } from "./manager.js";
+
+// ── In-memory expiry timer registry ──────────────────────────────────────────
+// Maps questionId → NodeJS timer handle.  Cleared when a question is answered.
+const expiryTimers = new Map<string, ReturnType<typeof setTimeout>>();
+
+/**
+ * Schedule a server-side expiry broadcast for a question.
+ * When the deadline passes the question is marked 'expired' in the DB and
+ * a `question_expired` event is broadcast to all session participants.
+ */
+function scheduleExpiry(
+    questionId: string,
+    sessionCode: string,
+    sessionId: string,
+    deadlineMs: number,
+): void {
+    const delay = Math.max(0, deadlineMs - Date.now());
+    const timer = setTimeout(async () => {
+        expiryTimers.delete(questionId);
+
+        // Mark as expired in DB only if the question is still pending.
+        // The conditional WHERE prevents overwriting an answer that arrived
+        // in the narrow window between the timer firing and this DB write.
+        await db
+            .update(schema.questions)
+            .set({ status: "expired" })
+            .where(
+                and(
+                    eq(schema.questions.id, questionId),
+                    eq(schema.questions.status, "pending"),
+                ),
+            );
+
+        // Re-read to make sure it was actually pending (not answered in the meantime)
+        const row = await db.query.questions.findFirst({
+            where: eq(schema.questions.id, questionId),
+        });
+        if (!row || row.status !== "expired") return; // was answered before timer fired
+
+        const event = {
+            type: "question_expired" as const,
+            questionId,
+        };
+        wsManager.broadcast(sessionCode, event);
+        void wsManager.persistEvent(db, sessionId, null, event);
+    }, delay);
+
+    expiryTimers.set(questionId, timer);
+}
+
+function cancelExpiry(questionId: string): void {
+    const timer = expiryTimers.get(questionId);
+    if (timer !== undefined) {
+        clearTimeout(timer);
+        expiryTimers.delete(questionId);
+    }
+}
 
 /**
  * Called when a new WebSocket connection is established.
@@ -117,6 +175,8 @@ export async function handleWsMessage(
             if (!sessionRow || sessionRow.status === "finished") return;
 
             const questionId = nanoid();
+            const deadline = new Date(Date.now() + QUESTION_DEADLINE_MS).toISOString();
+
             await db.insert(schema.questions).values({
                 id: questionId,
                 sessionId: sessionRow.id,
@@ -124,6 +184,7 @@ export async function handleWsMessage(
                 type: event.questionType,
                 data: JSON.stringify(event.data),
                 status: "pending",
+                deadline,
             });
 
             const questionRow = (await db.query.questions.findFirst({
@@ -136,6 +197,8 @@ export async function handleWsMessage(
             };
             wsManager.broadcast(code, questionAddedEvent);
             void wsManager.persistEvent(db, client.sessionId, client.participantId, questionAddedEvent);
+
+            scheduleExpiry(questionId, code, client.sessionId, new Date(deadline).getTime());
             break;
         }
 
@@ -145,7 +208,8 @@ export async function handleWsMessage(
             const questionRow = await db.query.questions.findFirst({
                 where: eq(schema.questions.id, event.questionId),
             });
-            if (!questionRow || questionRow.status === "answered") return;
+            // Allow answering both "pending" and "expired" questions (late answers are allowed).
+            if (!questionRow || (questionRow.status !== "pending" && questionRow.status !== "expired")) return;
             if (questionRow.sessionId !== (await getSessionId(code))) return;
 
             const answeredAt = new Date().toISOString();
@@ -161,6 +225,9 @@ export async function handleWsMessage(
             const updatedRow = (await db.query.questions.findFirst({
                 where: eq(schema.questions.id, event.questionId),
             }))!;
+
+            // Cancel the expiry timer now that the question is answered
+            cancelExpiry(event.questionId);
 
             const questionAnsweredEvent = {
                 type: "question_answered" as const,

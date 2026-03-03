@@ -4,6 +4,7 @@ import type {
     AnswerQuestionRequest,
     AnswerQuestionResponse,
 } from "@hideandseek/shared";
+import { QUESTION_DEADLINE_MS } from "@hideandseek/shared";
 import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { nanoid } from "nanoid";
@@ -44,6 +45,7 @@ export function createQuestionsRouter(db: Db): Hono {
         }
 
         const questionId = nanoid();
+        const deadline = new Date(Date.now() + QUESTION_DEADLINE_MS).toISOString();
 
         await db.insert(schema.questions).values({
             id: questionId,
@@ -52,6 +54,7 @@ export function createQuestionsRouter(db: Db): Hono {
             type: body.type,
             data: JSON.stringify(body.data),
             status: "pending",
+            deadline,
         });
 
         const questionRow = (await db.query.questions.findFirst({
@@ -84,6 +87,7 @@ export function createQuestionsRouter(db: Db): Hono {
         if (questionRow.status === "answered") {
             return c.json({ error: "Question already answered" }, 409);
         }
+        // Expired questions can still be answered late — no 410 guard here.
 
         const participant = await resolveParticipant(db, questionRow.sessionId, token);
         if (!participant) return c.json({ error: "Invalid token" }, 403);

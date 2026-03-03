@@ -5,7 +5,7 @@ import { PlacePicker } from "@/components/PlacePicker";
 import { additionalMapGeoLocations, mapGeoLocation } from "@/lib/context";
 import { hiderAreaConfirmed, pendingRole } from "@/lib/session-context";
 
-export function HiderAreaSearch() {
+export function HiderAreaSearch({ onBack }: { onBack?: () => void } = {}) {
     const tr = useT();
 
     function handleConfirm() {
@@ -44,7 +44,7 @@ export function HiderAreaSearch() {
             </Button>
             <button
                 className="text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground transition-colors"
-                onClick={() => pendingRole.set(null)}
+                onClick={() => onBack ? onBack() : pendingRole.set(null)}
             >
                 {tr("area.back")}
             </button>

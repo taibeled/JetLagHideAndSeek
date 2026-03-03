@@ -1,6 +1,7 @@
 /**
- * Creates all tables if they don't exist yet.
- * Run once on first deploy: pnpm db:migrate
+ * Creates all tables if they don't exist yet, and applies incremental migrations
+ * for existing databases.  Safe to run multiple times (idempotent).
+ * Run on first deploy and after every schema change: pnpm db:migrate
  */
 import Database from "better-sqlite3";
 
@@ -9,6 +10,8 @@ const sqlite = new Database(DB_PATH);
 
 sqlite.pragma("journal_mode = WAL");
 sqlite.pragma("foreign_keys = ON");
+
+// ── Initial schema (new databases) ───────────────────────────────────────────
 
 sqlite.exec(`
 CREATE TABLE IF NOT EXISTS sessions (
@@ -37,10 +40,11 @@ CREATE TABLE IF NOT EXISTS questions (
     type                     TEXT NOT NULL,
     data                     TEXT NOT NULL,
     status                   TEXT NOT NULL DEFAULT 'pending'
-                                 CHECK(status IN ('pending','answered')),
+                                 CHECK(status IN ('pending','answered','expired')),
     answer_data              TEXT,
     created_at               TEXT NOT NULL DEFAULT (datetime('now')),
-    answered_at              TEXT
+    answered_at              TEXT,
+    deadline                 TEXT
 );
 
 CREATE TABLE IF NOT EXISTS ws_events (
@@ -59,6 +63,54 @@ CREATE INDEX IF NOT EXISTS idx_sessions_code        ON sessions(code);
 CREATE INDEX IF NOT EXISTS idx_ws_events_session    ON ws_events(session_id);
 CREATE INDEX IF NOT EXISTS idx_ws_events_type       ON ws_events(session_id, event_type);
 `);
+
+// ── Migration v2: deadline column + 'expired' status ─────────────────────────
+// Check whether the deadline column already exists. If not, recreate the
+// questions table so the status CHECK constraint also gets updated.
+// Foreign-key enforcement is temporarily disabled during the recreation.
+
+const cols = (sqlite.pragma("table_info(questions)") as { name: string }[]).map(
+    (r) => r.name,
+);
+
+if (!cols.includes("deadline")) {
+    console.log("Applying migration v2: questions deadline + expired status…");
+    sqlite.pragma("foreign_keys = OFF");
+    sqlite.exec(`
+        BEGIN;
+
+        CREATE TABLE questions_v2 (
+            id                        TEXT PRIMARY KEY,
+            session_id                TEXT NOT NULL REFERENCES sessions(id) ON DELETE CASCADE,
+            created_by_participant_id TEXT NOT NULL REFERENCES participants(id),
+            type                      TEXT NOT NULL,
+            data                      TEXT NOT NULL,
+            status                    TEXT NOT NULL DEFAULT 'pending'
+                                          CHECK(status IN ('pending','answered','expired')),
+            answer_data               TEXT,
+            created_at                TEXT NOT NULL DEFAULT (datetime('now')),
+            answered_at               TEXT,
+            deadline                  TEXT
+        );
+
+        INSERT INTO questions_v2
+            (id, session_id, created_by_participant_id, type, data, status,
+             answer_data, created_at, answered_at, deadline)
+        SELECT
+            id, session_id, created_by_participant_id, type, data, status,
+            answer_data, created_at, answered_at, NULL
+        FROM questions;
+
+        DROP TABLE questions;
+        ALTER TABLE questions_v2 RENAME TO questions;
+
+        CREATE INDEX IF NOT EXISTS idx_questions_session ON questions(session_id);
+
+        COMMIT;
+    `);
+    sqlite.pragma("foreign_keys = ON");
+    console.log("Migration v2 applied.");
+}
 
 console.log("Database migrated successfully:", DB_PATH);
 sqlite.close();

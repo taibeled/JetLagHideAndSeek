@@ -55,7 +55,10 @@ export interface ParticipantWithToken extends Participant {
 
 // ── Question ──────────────────────────────────────────────────────────────────
 
-export const questionStatusSchema = z.enum(["pending", "answered"]);
+/** Duration in milliseconds before an unanswered question expires (5 minutes). */
+export const QUESTION_DEADLINE_MS = 5 * 60 * 1000;
+
+export const questionStatusSchema = z.enum(["pending", "answered", "expired"]);
 export type QuestionStatus = z.infer<typeof questionStatusSchema>;
 
 /**
@@ -76,6 +79,8 @@ export interface SessionQuestion {
     answerData?: unknown;
     createdAt: string;
     answeredAt?: string;
+    /** ISO8601 deadline after which the question expires. Set server-side at creation time. */
+    deadline?: string;
 }
 
 // ── HTTP request / response bodies ───────────────────────────────────────────
@@ -92,6 +97,7 @@ export interface CreateSessionResponse {
 
 export interface JoinSessionRequest {
     displayName: string;
+    role?: "hider" | "seeker";
 }
 
 export interface JoinSessionResponse {
