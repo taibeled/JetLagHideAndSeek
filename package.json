@@ -12,8 +12,9 @@
         "test": "vitest",
         "test:backend": "BACKEND_URL=http://localhost:3001 pnpm --filter @hideandseek/backend test",
         "test:all": "pnpm test:backend && pnpm test",
+        "shared:build": "pnpm --filter @hideandseek/shared build",
         "backend:dev": "pnpm --filter @hideandseek/backend dev",
-        "backend:build": "pnpm --filter @hideandseek/backend build",
+        "backend:build": "pnpm shared:build && pnpm --filter @hideandseek/backend build",
         "backend:migrate": "pnpm --filter @hideandseek/backend db:migrate",
         "backend:start": "pnpm --filter @hideandseek/backend start"
     },

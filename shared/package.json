@@ -2,8 +2,14 @@
     "name": "@hideandseek/shared",
     "version": "0.0.1",
     "type": "module",
+    "scripts": {
+        "build": "tsc"
+    },
     "exports": {
-        ".": "./src/index.ts"
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
     },
     "dependencies": {
         "zod": "^3.25.28"
