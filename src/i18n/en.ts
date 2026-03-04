@@ -259,7 +259,7 @@ export const en: Record<TranslationKey, string> = {
     "sqp.pending": "Pending",
     "sqp.expired": "Expired",
     "sqp.timeExpired": "Time expired",
-    "sqp.countdownExpired": "Time's up – no more answers allowed",
+    "sqp.countdownExpired": "Time's up – late answer still accepted",
     "sqp.deadlinePassedLate": "Deadline passed – late answer still accepted",
     "sqp.prepareAnswer": "Prepare Answer",
     "sqp.useGps": "Use GPS",

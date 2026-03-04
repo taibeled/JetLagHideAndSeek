@@ -258,7 +258,7 @@ export const de = {
     "sqp.pending": "Ausstehend",
     "sqp.expired": "Abgelaufen",
     "sqp.timeExpired": "Zeit abgelaufen",
-    "sqp.countdownExpired": "Zeit abgelaufen – keine Antwort mehr möglich",
+    "sqp.countdownExpired": "Zeit abgelaufen – Antwort trotzdem noch möglich",
     "sqp.deadlinePassedLate": "Zeitlimit überschritten – Antwort trotzdem noch möglich",
     "sqp.prepareAnswer": "Antwort vorbereiten",
     "sqp.useGps": "GPS verwenden",

@@ -17,7 +17,7 @@ const expiryTimers = new Map<string, ReturnType<typeof setTimeout>>();
  * When the deadline passes the question is marked 'expired' in the DB and
  * a `question_expired` event is broadcast to all session participants.
  */
-function scheduleExpiry(
+export function scheduleExpiry(
     questionId: string,
     sessionCode: string,
     sessionId: string,

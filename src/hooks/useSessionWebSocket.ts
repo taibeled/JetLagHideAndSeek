@@ -59,8 +59,22 @@ export function useSessionWebSocket({ code, token, onSync }: Options): void {
                 }
 
                 switch (event.type) {
-                    case "sync":
-                        sessionQuestions.set(event.questions);
+                    case "sync": {
+                        // Client-side fallback: if the server missed expiring a
+                        // question (e.g. after a restart), locally mark past-deadline
+                        // pending questions as expired so the UI is correct.
+                        const now = Date.now();
+                        const patchedQuestions = event.questions.map((q) => {
+                            if (
+                                q.status === "pending" &&
+                                q.deadline &&
+                                new Date(q.deadline).getTime() <= now
+                            ) {
+                                return { ...q, status: "expired" as const };
+                            }
+                            return q;
+                        });
+                        sessionQuestions.set(patchedQuestions);
                         seekerCount.set(event.seekerCount);
                         hiderConnected.set(event.hiderConnected);
                         if (event.mapLocation) {
@@ -68,6 +82,7 @@ export function useSessionWebSocket({ code, token, onSync }: Options): void {
                         }
                         onSync?.();
                         break;
+                    }
 
                     case "question_added":
                     case "question_answered":
