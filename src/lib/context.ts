@@ -350,3 +350,28 @@ export const customInitPreference = persistentAtom<"ask" | "blank" | "prefill">(
         decode: JSON.parse,
     },
 );
+
+// ── New settings (Settings redesign) ─────────────────────────────────────────
+
+export const soundEnabled = persistentAtom<boolean>("soundEnabled", true, {
+    encode: JSON.stringify,
+    decode: JSON.parse,
+});
+
+export const notificationsEnabled = persistentAtom<boolean>(
+    "notificationsEnabled",
+    false,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
+
+export const offlineMapsEnabled = persistentAtom<boolean>(
+    "offlineMapsEnabled",
+    false,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);

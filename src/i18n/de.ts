@@ -490,6 +490,31 @@ export const de = {
     "picker.questionDesc.matching": "Vergleicht Merkmale eures Standorts mit dem des Hiders",
     "picker.questionDesc.measuring": "Hider misst Distanzen und Strecken von einem Objekt.",
     "picker.questionDesc.photo": "Der Hider fotografiert ein markantes Objekt in seiner Nähe",
+
+    // ── Einstellungen (Settings redesign) ───────────────────────────────────
+    "settings.title": "Einstellungen",
+    "settings.tabGeneral": "Allgemein",
+    "settings.tabAdvanced": "Erweitert",
+    "settings.language": "Sprache",
+    "settings.languageDesc": "Bevorzugte Anzeigesprache",
+    "settings.copyZone": "Versteckzone kopieren",
+    "settings.copyZoneDesc": "Zone in Zwischenablage speichern",
+    "settings.copyButton": "Kopieren",
+    "settings.pasteZone": "Versteckzone einfügen",
+    "settings.pasteZoneDesc": "Zone aus Zwischenablage laden",
+    "settings.pasteButton": "Einfügen",
+    "settings.defaultUnit": "Standardeinheit",
+    "settings.defaultUnitDesc": "Maßeinheit für Entfernungen",
+    "settings.autoZoom": "Automatisch zoomen",
+    "settings.autoZoomDesc": "Karte automatisch an Position anpassen",
+    "settings.useLocation": "Standort verwenden",
+    "settings.useLocationDesc": "GPS für Positionsbestimmung aktivieren",
+    "settings.sound": "Ton",
+    "settings.soundDesc": "Soundeffekte abspielen",
+    "settings.notifications": "Benachrichtigungen",
+    "settings.notificationsDesc": "Hinweise bei Spielereignissen",
+    "settings.offlineMaps": "Offline-Karten",
+    "settings.offlineMapsDesc": "Karten für Offline-Nutzung speichern",
 } as const;
 
 export type Translations = typeof de;
