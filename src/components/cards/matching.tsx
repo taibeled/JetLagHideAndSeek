@@ -24,6 +24,7 @@ import {
     questions,
     triggerLocalRefresh,
 } from "@/lib/context";
+import { gameSize } from "@/lib/session-context";
 import { cn } from "@/lib/utils";
 import {
     determineMatchingBoundary,
@@ -58,6 +59,7 @@ export const MatchingQuestionComponent = ({
     const $drawingQuestionKey = useStore(drawingQuestionKey);
     const $isLoading = useStore(isLoading);
     const $customInitPref = useStore(customInitPreference);
+    const $gameSize = useStore(gameSize);
     const tr = useT();
     const [customDialogOpen, setCustomDialogOpen] = React.useState(false);
     const [pendingCustomType, setPendingCustomType] = React.useState<
@@ -247,6 +249,10 @@ export const MatchingQuestionComponent = ({
                             .flatMap((x) =>
                                 determineUnionizedStrings(x.shape.type),
                             )
+                            .filter((x) =>
+                                // Hide "(Small+Medium Games)" sub-types when playing Large
+                                !($gameSize === "L" && x.description?.includes("(Small+Medium Games)")),
+                            )
                             .map((x) => [(x._def as any).value, x.description]),
                     )}
                     groups={matchingQuestionSchema.options
@@ -264,6 +270,9 @@ export const MatchingQuestionComponent = ({
                         ])
                         .reduce(
                             (acc, [key, value]) => {
+                                // Hide "Hiding Zone Mode" group for Small/Medium games
+                                if (($gameSize === "S" || $gameSize === "M") && key === "Hiding Zone Mode") return acc;
+
                                 const values = {
                                     disabled: !$displayHidingZones,
                                     options: value,

@@ -23,6 +23,7 @@ import {
     questions,
     triggerLocalRefresh,
 } from "@/lib/context";
+import { gameSize } from "@/lib/session-context";
 import { cn } from "@/lib/utils";
 import { determineMeasuringBoundary } from "@/maps/questions/measuring";
 import {
@@ -54,6 +55,7 @@ export const MeasuringQuestionComponent = ({
     const $drawingQuestionKey = useStore(drawingQuestionKey);
     const $isLoading = useStore(isLoading);
     const $customInitPref = useStore(customInitPreference);
+    const $gameSize = useStore(gameSize);
     const [customDialogOpen, setCustomDialogOpen] = React.useState(false);
     const tr = useT();
     const label = `Measuring
@@ -177,6 +179,10 @@ export const MeasuringQuestionComponent = ({
                             .flatMap((x) =>
                                 determineUnionizedStrings(x.shape.type),
                             )
+                            .filter((x) =>
+                                // Hide "(Small+Medium Games)" sub-types when playing Large
+                                !($gameSize === "L" && x.description?.includes("(Small+Medium Games)")),
+                            )
                             .map((x) => [(x._def as any).value, x.description]),
                     )}
                     groups={measuringQuestionSchema.options
@@ -194,6 +200,9 @@ export const MeasuringQuestionComponent = ({
                         ])
                         .reduce(
                             (acc, [key, value]) => {
+                                // Hide "Hiding Zone Mode" group for Small/Medium games
+                                if (($gameSize === "S" || $gameSize === "M") && key === "Hiding Zone Mode") return acc;
+
                                 const values = {
                                     disabled: !$displayHidingZones,
                                     options: value,
