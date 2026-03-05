@@ -1,13 +1,17 @@
 /**
  * TentaclesConfig — Tentacle question configuration screen.
  *
- * - Dropdown: Ortstyp (Zoo / Aquarium / Museum / Krankenhaus etc.)
- * - Radius chips: 1 · 3 · 8 · 25 km (tentacles-specific smaller values)
- * - Live map preview: radius circle + POI pins from Overpass API
- * - Footer: POI count note · "Frage stellen" · Abbrechen
+ * Two modes (same pattern as RadiusConfig):
+ *   "gps"    — Category dropdown + distance chips + "GPS-Standort setzen" (default)
+ *   "manual" — ConfigCard (red, "Mein Standort") with CoordPicker + category + chips
+ *
+ * Live map preview: radius circle + POI pins from Overpass API
+ * Footer GPS:    "Frage stellen" · "Manuell" · Abbrechen
+ * Footer Manual: "Frage stellen" · Abbrechen (= Zurück zu GPS)
  */
 import { useStore } from "@nanostores/react";
 import * as L from "leaflet";
+import { MapPin, Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { bottomSheetState, pickerOpen } from "@/lib/bottom-sheet-state";
@@ -25,7 +29,6 @@ import { PickerFooter } from "./PickerFooter";
 import { PickerHeader, type WsStatus } from "./PickerHeader";
 
 // ── Category definitions ───────────────────────────────────────────────────────
-// Only types supported by tentacleQuestionSchema (Fifteen + One sub-schemas).
 
 type Category = {
     type: string;
@@ -45,6 +48,7 @@ const CATEGORIES: Category[] = [
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
+type Mode = "gps" | "manual";
 type Chip = { label: string; value: number; unit: "kilometers" | "miles" };
 type FetchState = "idle" | "loading" | "done" | "error";
 type Poi = { lat: number; lng: number; name: string };
@@ -53,6 +57,44 @@ type Poi = { lat: number; lng: number; name: string };
 
 function toMeters(value: number, unit: "kilometers" | "miles"): number {
     return unit === "miles" ? value * 1609.34 : value * 1000;
+}
+
+function formatCoord(lat: number, lng: number): string {
+    const latDir = lat >= 0 ? "N" : "S";
+    const lngDir = lng >= 0 ? "E" : "W";
+    return `${Math.abs(lat).toFixed(4)}° ${latDir}, ${Math.abs(lng).toFixed(4)}° ${lngDir}`;
+}
+
+function parseClipboardCoords(text: string): { lat: number; lng: number } | null {
+    const t = text.trim();
+    const simple = t.match(/^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/);
+    if (simple) {
+        const lat = parseFloat(simple[1]);
+        const lng = parseFloat(simple[2]);
+        if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) return { lat, lng };
+    }
+    const degree = t.match(/^(-?\d+(?:\.\d+)?)\s*°?\s*[NSns]?\s+(-?\d+(?:\.\d+)?)\s*°?\s*[EWew]?$/);
+    if (degree) {
+        const lat = parseFloat(degree[1]);
+        const lng = parseFloat(degree[2]);
+        if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) return { lat, lng };
+    }
+    return null;
+}
+
+async function searchPhoton(query: string): Promise<{ lat: number; lng: number; name: string }[]> {
+    if (!query.trim()) return [];
+    const resp = await fetch(
+        `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=5`,
+    );
+    const data = await resp.json();
+    return (data.features ?? []).map((f: any) => ({
+        lat: f.geometry.coordinates[1],
+        lng: f.geometry.coordinates[0],
+        name: [f.properties.name, f.properties.city, f.properties.country]
+            .filter(Boolean)
+            .join(", "),
+    }));
 }
 
 async function fetchOverpassPois(
@@ -70,7 +112,6 @@ async function fetchOverpassPois(
         `way["${key}"="${value}"](around:${r},${lat},${lng});` +
         `relation["${key}"="${value}"](around:${r},${lat},${lng}););out center;`;
 
-    // Use the shared overpassFetch utility with automatic endpoint fallback
     const { overpassFetch } = await import("@/maps/api/overpass-fetch");
     const data = await overpassFetch(query, { timeoutMs: 25_000, signal });
 
@@ -90,7 +131,6 @@ export interface TentaclesConfigProps {
     onBack: () => void;
     onSettings: () => void;
     onClose: () => void;
-    /** Called after a question has been successfully staged, so the parent can reset to the category list. */
     onDone?: () => void;
 }
 
@@ -98,23 +138,40 @@ export function TentaclesConfig({ wsStatus, onBack, onSettings, onClose, onDone 
     const $defaultUnit = useStore(defaultUnit);
     const isMetric = $defaultUnit !== "miles";
 
-    // Seeker center — fixed at component mount (map centre)
+    const [mode, setMode] = useState<Mode>("gps");
+
+    // ── Center coordinate (reactive — GPS or manual can update) ─────────────
     const mapInst = leafletMapContext.get();
     const rawCenter = mapInst?.getCenter() ?? { lat: 51.1, lng: 10.4 };
-    const centerRef = useRef({ lat: rawCenter.lat, lng: rawCenter.lng });
-    const { lat: centerLat, lng: centerLng } = centerRef.current;
+    const [centerLat, setCenterLat] = useState(rawCenter.lat);
+    const [centerLng, setCenterLng] = useState(rawCenter.lng);
 
+    // ── GPS mode state ──────────────────────────────────────────────────────
+    const [gpsLoading, setGpsLoading] = useState(false);
+    const [gpsError, setGpsError] = useState<string | null>(null);
+
+    // ── Manual mode state ───────────────────────────────────────────────────
+    const [latStr, setLatStr] = useState(rawCenter.lat.toFixed(6));
+    const [lngStr, setLngStr] = useState(rawCenter.lng.toFixed(6));
+    const [searchQuery, setSearchQuery] = useState("");
+    const [searchResults, setSearchResults] = useState<{ lat: number; lng: number; name: string }[]>([]);
+    const [searchLoading, setSearchLoading] = useState(false);
+    const [manualGpsLoading, setManualGpsLoading] = useState(false);
+    const [coordError, setCoordError] = useState<string | null>(null);
+    const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    // ── Shared state ────────────────────────────────────────────────────────
     const [category, setCategory] = useState<string>("hospital");
     const [selectedChip, setSelectedChip] = useState<Chip | null>(null);
     const [pois, setPois] = useState<Poi[]>([]);
     const [fetchState, setFetchState] = useState<FetchState>("idle");
     const [submitting, setSubmitting] = useState(false);
 
-    // Leaflet layer refs (imperatively managed)
+    // Leaflet layer refs
     const circleRef = useRef<L.Circle | null>(null);
     const markersRef = useRef<L.CircleMarker[]>([]);
 
-    // Distance chips — tentacles uses smaller values than radius/thermometer
+    // Distance chips
     const chips: Chip[] = isMetric
         ? [
             { label: "1 km",  value: 1,  unit: "kilometers" },
@@ -170,7 +227,7 @@ export function TentaclesConfig({ wsStatus, onBack, onSettings, onClose, onDone 
         );
     }
 
-    // ── Fetch POIs when category or chip changes ───────────────────────────────
+    // ── Fetch POIs when category, chip, or center changes ──────────────────
 
     useEffect(() => {
         if (!selectedChip) {
@@ -199,12 +256,107 @@ export function TentaclesConfig({ wsStatus, onBack, onSettings, onClose, onDone 
 
         return () => { controller.abort(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [category, selectedChip]);
+    }, [category, selectedChip, centerLat, centerLng]);
 
     // Cleanup all map layers on unmount
     useEffect(() => () => { clearMapLayers(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    // ── Stage and submit ───────────────────────────────────────────────────────
+    // ── GPS: fetch current position ─────────────────────────────────────────
+
+    async function handleFetchGps() {
+        setGpsLoading(true);
+        setGpsError(null);
+        try {
+            const pos = await new Promise<GeolocationPosition>((resolve, reject) =>
+                navigator.geolocation.getCurrentPosition(resolve, reject, {
+                    enableHighAccuracy: true,
+                    timeout: 15_000,
+                }),
+            );
+            setCenterLat(pos.coords.latitude);
+            setCenterLng(pos.coords.longitude);
+        } catch {
+            setGpsError("GPS nicht verfügbar. Bitte Berechtigungen prüfen.");
+        } finally {
+            setGpsLoading(false);
+        }
+    }
+
+    // ── Manual mode: coord handlers ─────────────────────────────────────────
+
+    function setPosition(newLat: number, newLng: number) {
+        setCenterLat(newLat);
+        setCenterLng(newLng);
+        setLatStr(newLat.toFixed(6));
+        setLngStr(newLng.toFixed(6));
+    }
+
+    function applyLatStr(s: string) {
+        setLatStr(s);
+        const v = parseFloat(s);
+        if (!isNaN(v) && v >= -90 && v <= 90) setCenterLat(v);
+    }
+
+    function applyLngStr(s: string) {
+        setLngStr(s);
+        const v = parseFloat(s);
+        if (!isNaN(v) && v >= -180 && v <= 180) setCenterLng(v);
+    }
+
+    function handleSearchChange(q: string) {
+        setSearchQuery(q);
+        setSearchResults([]);
+        if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+        if (!q.trim()) return;
+        searchTimeoutRef.current = setTimeout(async () => {
+            setSearchLoading(true);
+            try {
+                setSearchResults(await searchPhoton(q));
+            } catch {
+                // silently ignore
+            } finally {
+                setSearchLoading(false);
+            }
+        }, 400);
+    }
+
+    function selectResult(r: { lat: number; lng: number }) {
+        setPosition(r.lat, r.lng);
+        setSearchQuery("");
+        setSearchResults([]);
+    }
+
+    async function fetchManualGps() {
+        setManualGpsLoading(true);
+        setCoordError(null);
+        try {
+            const pos = await new Promise<GeolocationPosition>((resolve, reject) =>
+                navigator.geolocation.getCurrentPosition(resolve, reject, {
+                    enableHighAccuracy: true,
+                    timeout: 10_000,
+                }),
+            );
+            setPosition(pos.coords.latitude, pos.coords.longitude);
+        } catch {
+            setCoordError("GPS nicht verfügbar");
+        } finally {
+            setManualGpsLoading(false);
+        }
+    }
+
+    async function pasteClipboard() {
+        setCoordError(null);
+        try {
+            const text = await navigator.clipboard.readText();
+            const coords = parseClipboardCoords(text);
+            if (!coords) { setCoordError("Ungültige Koordinaten"); return; }
+            setPosition(coords.lat, coords.lng);
+        } catch {
+            setCoordError("Zwischenablage nicht verfügbar");
+        }
+    }
+
+    // ── Submit ──────────────────────────────────────────────────────────────
 
     async function handleSubmit() {
         const code = sessionCode.get();
@@ -222,7 +374,6 @@ export function TentaclesConfig({ wsStatus, onBack, onSettings, onClose, onDone 
         setSubmitting(true);
         try {
             await addQuestion(code, participant.token, { type: "tentacles", data });
-            // Stage locally only after confirmed send
             addLocalQuestion({ id: "tentacles" as any, data });
             const added = [...questions_atom.get()].reverse().find((q) => q.id === "tentacles");
             if (added) pendingDraftKey.set(added.key as number);
@@ -251,7 +402,7 @@ export function TentaclesConfig({ wsStatus, onBack, onSettings, onClose, onDone 
         return undefined;
     }
 
-    // ── Render ─────────────────────────────────────────────────────────────────
+    // ── Styles ─────────────────────────────────────────────────────────────────
 
     const selectStyle: React.CSSProperties = {
         background: "#1E1E2A",
@@ -280,6 +431,21 @@ export function TentaclesConfig({ wsStatus, onBack, onSettings, onClose, onDone 
         textTransform: "uppercase",
     };
 
+    const inputStyle: React.CSSProperties = {
+        background: "rgba(255,255,255,0.06)",
+        border: "1px solid rgba(255,255,255,0.1)",
+        borderRadius: 8,
+        color: "#fff",
+        fontSize: "13px",
+        padding: "8px 10px",
+        outline: "none",
+        width: "100%",
+        boxSizing: "border-box",
+        fontFamily: "inherit",
+    };
+
+    // ── Render ─────────────────────────────────────────────────────────────────
+
     return (
         <>
             <PickerHeader
@@ -299,6 +465,182 @@ export function TentaclesConfig({ wsStatus, onBack, onSettings, onClose, onDone 
                 scrollbarColor: "var(--color-primary) transparent",
             }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+
+                    {/* ── GPS mode: location button ──────────────────────── */}
+                    {mode === "gps" && (
+                        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                            <span style={sectionLabel}>Standort</span>
+                            <button
+                                type="button"
+                                onClick={handleFetchGps}
+                                disabled={gpsLoading}
+                                style={{
+                                    padding: "12px 16px",
+                                    borderRadius: 10,
+                                    border: "1px solid rgba(255,255,255,0.12)",
+                                    cursor: gpsLoading ? "wait" : "pointer",
+                                    fontSize: "14px",
+                                    fontWeight: 600,
+                                    fontFamily: "Poppins, sans-serif",
+                                    background: "#1E1E2A",
+                                    color: "#fff",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 8,
+                                    width: "100%",
+                                    textAlign: "left",
+                                }}
+                            >
+                                <MapPin size={16} color="var(--color-primary)" />
+                                {gpsLoading ? "GPS wird geladen…" : `📍 GPS-Standort setzen`}
+                            </button>
+                            <span style={{ color: "#6B7280", fontSize: "12px" }}>
+                                Aktuell: {formatCoord(centerLat, centerLng)}
+                            </span>
+                            {gpsError && (
+                                <span style={{ color: "#FCA5A5", fontSize: "12px" }}>{gpsError}</span>
+                            )}
+                        </div>
+                    )}
+
+                    {/* ── Manual mode: coordinate input ──────────────────── */}
+                    {mode === "manual" && (
+                        <ConfigCard accentColor="red" title="Mein Standort">
+                            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+
+                                <span style={{ color: "#fff", fontSize: "13px", fontWeight: 600, fontFamily: "monospace" }}>
+                                    {formatCoord(centerLat, centerLng)}
+                                </span>
+
+                                {/* Place search */}
+                                <div style={{ position: "relative" }}>
+                                    <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+                                        <Search size={14} color="#6B7280" style={{ position: "absolute", left: 10, pointerEvents: "none" }} />
+                                        <input
+                                            type="text"
+                                            placeholder="Ort suchen…"
+                                            value={searchQuery}
+                                            onChange={(e) => handleSearchChange(e.target.value)}
+                                            style={{ ...inputStyle, paddingLeft: 32 }}
+                                        />
+                                    </div>
+                                    {(searchResults.length > 0 || searchLoading) && (
+                                        <div style={{
+                                            position: "absolute",
+                                            top: "100%",
+                                            left: 0,
+                                            right: 0,
+                                            marginTop: 4,
+                                            background: "#1E1E2A",
+                                            border: "1px solid rgba(255,255,255,0.1)",
+                                            borderRadius: 8,
+                                            zIndex: 10,
+                                            maxHeight: 180,
+                                            overflowY: "auto",
+                                        }}>
+                                            {searchLoading && (
+                                                <div style={{ padding: "10px 12px", color: "#6B7280", fontSize: "12px" }}>
+                                                    Suche läuft…
+                                                </div>
+                                            )}
+                                            {searchResults.map((r, i) => (
+                                                <button
+                                                    key={i}
+                                                    type="button"
+                                                    onClick={() => selectResult(r)}
+                                                    style={{
+                                                        display: "block",
+                                                        width: "100%",
+                                                        textAlign: "left",
+                                                        background: "none",
+                                                        border: "none",
+                                                        borderBottom: i < searchResults.length - 1 ? "1px solid rgba(255,255,255,0.06)" : "none",
+                                                        padding: "10px 12px",
+                                                        color: "#fff",
+                                                        fontSize: "13px",
+                                                        cursor: "pointer",
+                                                    }}
+                                                >
+                                                    {r.name || formatCoord(r.lat, r.lng)}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Lat / Lng inputs */}
+                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                                    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                                        <label style={{ color: "#6B7280", fontSize: "11px", fontWeight: 600, letterSpacing: "0.06em" }}>
+                                            BREITE
+                                        </label>
+                                        <input
+                                            type="number"
+                                            value={latStr}
+                                            onChange={(e) => applyLatStr(e.target.value)}
+                                            step="0.000001"
+                                            style={inputStyle}
+                                        />
+                                    </div>
+                                    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                                        <label style={{ color: "#6B7280", fontSize: "11px", fontWeight: 600, letterSpacing: "0.06em" }}>
+                                            LÄNGE
+                                        </label>
+                                        <input
+                                            type="number"
+                                            value={lngStr}
+                                            onChange={(e) => applyLngStr(e.target.value)}
+                                            step="0.000001"
+                                            style={inputStyle}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* GPS + Clipboard */}
+                                <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                                    <button
+                                        type="button"
+                                        onClick={fetchManualGps}
+                                        disabled={manualGpsLoading}
+                                        style={{
+                                            background: "none",
+                                            border: "none",
+                                            cursor: manualGpsLoading ? "wait" : "pointer",
+                                            color: "var(--color-primary)",
+                                            fontSize: "12px",
+                                            fontWeight: 600,
+                                            padding: 0,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: 4,
+                                        }}
+                                    >
+                                        <MapPin size={12} />
+                                        {manualGpsLoading ? "GPS…" : "GPS"}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={pasteClipboard}
+                                        style={{
+                                            background: "none",
+                                            border: "none",
+                                            cursor: "pointer",
+                                            color: "var(--color-primary)",
+                                            fontSize: "12px",
+                                            fontWeight: 600,
+                                            padding: 0,
+                                        }}
+                                    >
+                                        Aus Zwischenablage
+                                    </button>
+                                </div>
+
+                                {coordError && (
+                                    <span style={{ color: "#FCA5A5", fontSize: "12px" }}>{coordError}</span>
+                                )}
+                            </div>
+                        </ConfigCard>
+                    )}
 
                     {/* ── Category dropdown ──────────────────────────────── */}
                     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -365,14 +707,33 @@ export function TentaclesConfig({ wsStatus, onBack, onSettings, onClose, onDone 
                 </div>
             </div>
 
-            <PickerFooter
-                primaryLabel={submitting ? "Wird gesendet…" : "Frage stellen"}
-                primaryDisabled={!selectedChip || fetchState === "loading" || submitting}
-                onPrimary={handleSubmit}
-                onCancel={onBack}
-                cancelDisabled={submitting}
-                note={getFooterNote()}
-            />
+            {/* ── Footer GPS ─────────────────────────────────────────────── */}
+            {mode === "gps" && (
+                <PickerFooter
+                    primaryLabel={submitting ? "Wird gesendet…" : "Frage stellen"}
+                    primaryDisabled={!selectedChip || fetchState === "loading" || submitting}
+                    onPrimary={handleSubmit}
+                    secondaryLabel="Manuell"
+                    secondaryDisabled={submitting}
+                    onSecondary={() => setMode("manual")}
+                    onCancel={onBack}
+                    cancelDisabled={submitting}
+                    note={getFooterNote()}
+                />
+            )}
+
+            {/* ── Footer Manual ───────────────────────────────────────────── */}
+            {mode === "manual" && (
+                <PickerFooter
+                    primaryLabel={submitting ? "Wird gesendet…" : "Frage stellen"}
+                    primaryDisabled={!selectedChip || fetchState === "loading" || submitting}
+                    onPrimary={handleSubmit}
+                    onCancel={() => setMode("gps")}
+                    cancelLabel="Zurück zu GPS"
+                    cancelDisabled={submitting}
+                    note={getFooterNote()}
+                />
+            )}
         </>
     );
 }
