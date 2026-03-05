@@ -30,6 +30,9 @@ import type { Question, Questions } from "./schema";
 export * from "./geo-utils";
 
 export const hiderifyQuestion = async (question: Question) => {
+    // Photo questions have no geo computation — pass through unchanged.
+    if (question.id === "photo") return question;
+
     if (question.data.drag) {
         switch (question.id) {
             case "radius":

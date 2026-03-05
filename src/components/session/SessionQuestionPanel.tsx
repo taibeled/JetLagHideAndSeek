@@ -171,6 +171,10 @@ function describeQuestion(
             const typeLabel = getMeasTypeLabel(data.type ?? "");
             return `${dir} ${typeLabel}`;
         }
+        case "photo": {
+            const photoTypeKey = `photoType.${data.photoType}` as TranslationKey;
+            return `📸 ${t(photoTypeKey, loc) ?? data.photoType}`;
+        }
         default:
             return null;
     }
@@ -238,6 +242,14 @@ function QuestionDetails({
                 text: `${t("sqp.detailVerwaltungsebene", loc)} ${d.cat.adminLevel}`,
             });
         }
+    }
+
+    // Photo: Titel + Regeln
+    if (sq.type === "photo" && d.photoType) {
+        const titleKey = `photoType.${d.photoType}` as TranslationKey;
+        const rulesKey = `photoRules.${d.photoType}` as TranslationKey;
+        rows.push({ icon: "📸", text: t(titleKey, loc) ?? d.photoType });
+        rows.push({ icon: "📋", text: t(rulesKey, loc) ?? "" });
     }
 
     // ── Antwort des Hiders (answerData) ──────────────────────────────────────
@@ -357,6 +369,11 @@ function extractPreviewLabel(
                 };
             }
             break;
+        case "photo":
+            return {
+                label: `📸 ${t("photo.confirmed" as TranslationKey, loc)}`,
+                positive: true,
+            };
     }
     return null;
 }
@@ -430,6 +447,10 @@ export function SessionQuestionPanel() {
 
     // ── Live preview: recompute whenever hiderMode or pending question changes
     useEffect(() => {
+        // Photo questions have no geo computation — previewResult and
+        // latestAnswerDataRef are already set in startAnswering().
+        if (pendingAnswerSq?.type === "photo") return;
+
         if (!pendingAnswerSq || $hiderMode === false) {
             setPreviewResult(null);
             latestAnswerDataRef.current = null;
@@ -585,6 +606,16 @@ export function SessionQuestionPanel() {
 
     // ── Hider: enter preview mode for a question ────────────────────────────
     function startAnswering(sq: SessionQuestion) {
+        if (sq.type === "photo") {
+            // Photo questions skip GPS entirely — go straight to confirmation
+            setPendingAnswerSq(sq);
+            setPreviewResult({
+                label: `📸 ${t("photo.confirmed" as TranslationKey, locale.get())}`,
+                positive: true,
+            });
+            latestAnswerDataRef.current = { confirmed: true };
+            return;
+        }
         setPendingAnswerSq(sq);
         setPreviewResult(null);
         latestAnswerDataRef.current = null;
@@ -770,7 +801,50 @@ export function SessionQuestionPanel() {
             </div>
 
             {/* ── Active answer preview panel ─────────────────────────────── */}
-            {pendingAnswerSq && (
+            {pendingAnswerSq && pendingAnswerSq.type === "photo" && (
+                /* Photo-specific answer panel — no GPS, no pin, just confirm */
+                <div className="rounded-md p-3 flex flex-col gap-2" style={{ backgroundColor: "#067BC2" }}>
+                    <p className="text-sm font-bold text-white">
+                        📸 {getQuestionLabel(pendingAnswerSq.type)}{" "}
+                        – {tr("sqp.prepareAnswer")}
+                    </p>
+
+                    {/* Challenge title + rules */}
+                    <div className="rounded px-3 py-2" style={{ backgroundColor: "rgba(255,255,255,0.10)" }}>
+                        <p className="text-sm font-bold text-white">
+                            {t(`photoType.${(pendingAnswerSq.data as any)?.photoType}` as TranslationKey, locale.get())}
+                        </p>
+                        <p className="text-xs mt-1 text-white/80">
+                            {t(`photoRules.${(pendingAnswerSq.data as any)?.photoType}` as TranslationKey, locale.get())}
+                        </p>
+                    </div>
+
+                    {/* Action buttons */}
+                    <div className="flex flex-col items-start gap-1 mt-1">
+                        <Button
+                            size="sm"
+                            disabled={submitting}
+                            onClick={submitAnswer}
+                            className="border-0 font-bold disabled:opacity-40"
+                            style={{ backgroundColor: "#ECC30B", color: "#000" }}
+                        >
+                            {submitting
+                                ? tr("sqp.sending")
+                                : `📸 ${t("photo.confirm" as TranslationKey, locale.get())}`}
+                        </Button>
+                        <button
+                            type="button"
+                            onClick={cancelAnswering}
+                            disabled={submitting}
+                            className="text-xs underline font-medium disabled:opacity-40"
+                            style={{ color: "#84BCDA" }}
+                        >
+                            {tr("sqp.cancel")}
+                        </button>
+                    </div>
+                </div>
+            )}
+            {pendingAnswerSq && pendingAnswerSq.type !== "photo" && (
                 <div className="rounded-md p-3 flex flex-col gap-2" style={{ backgroundColor: "#067BC2" }}>
                     <p className="text-sm font-bold text-white">
                         {getQuestionLabel(pendingAnswerSq.type)}{" "}
@@ -889,6 +963,8 @@ function PendingQuestionConfig({ question }: { question: ReturnType<typeof quest
                     embedded
                 />
             );
+        case "photo":
+            return null; // Photo questions are sent directly from PhotoConfig — no inline config
         default:
             return null;
     }

@@ -1,6 +1,17 @@
 import type { APILocations } from "@/maps/schema";
 
 export const OVERPASS_API = "https://overpass-api.de/api/interpreter";
+
+/**
+ * Fallback Overpass API endpoints.  The primary server (overpass-api.de) is
+ * sometimes overloaded or unreachable.  We try them in order; the first
+ * successful response wins.
+ */
+export const OVERPASS_ENDPOINTS: string[] = [
+    "https://overpass-api.de/api/interpreter",
+    "https://overpass.kumi.systems/api/interpreter",
+    "https://overpass.private.coffee/api/interpreter",
+];
 export const GEOCODER_API = "https://photon.komoot.io/api/";
 export const PASTEBIN_API_POST_URL =
     "https://cors-anywhere.com/https://pastebin.com/api/api_post.php";

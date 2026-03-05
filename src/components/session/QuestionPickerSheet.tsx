@@ -32,6 +32,7 @@ import { OptionDrawers } from "@/components/OptionDrawers";
 import { PickerHeader } from "./picker/PickerHeader";
 import { RadiusConfig } from "./picker/RadiusConfig";
 import { QuestionList, SessionQuestionPanel } from "./SessionQuestionPanel";
+import { PhotoConfig } from "./picker/PhotoConfig";
 import { TentaclesConfig } from "./picker/TentaclesConfig";
 import { ThermometerConfig } from "./picker/ThermometerConfig";
 
@@ -49,7 +50,7 @@ const CATEGORIES: CategoryDef[] = [
     { type: "tentacles",   sizes: ["S", "M", "L"] },
     { type: "matching",    sizes: ["M", "L"] },
     { type: "measuring",   sizes: ["S", "M", "L"] },
-    { type: "photo",       sizes: ["S", "M", "L"], disabled: true },
+    { type: "photo",       sizes: ["S", "M", "L"] },
 ];
 
 // ── Main component ────────────────────────────────────────────────────────────
@@ -94,7 +95,7 @@ export function QuestionPickerSheet() {
     }
 
     function handleSelectType(type: string) {
-        if (type === "thermometer" || type === "radius" || type === "tentacles") {
+        if (type === "thermometer" || type === "radius" || type === "tentacles" || type === "photo") {
             setSelectedType(type);
             return;
         }
@@ -153,6 +154,17 @@ export function QuestionPickerSheet() {
                 {/* ── Thermometer config sub-view ────────────────────────── */}
                 {selectedType === "thermometer" && (
                     <ThermometerConfig
+                        wsStatus={$wsStatus}
+                        onBack={goBack}
+                        onSettings={() => setOptionsOpen(true)}
+                        onClose={closePicker}
+                        onDone={handleSubmitDone}
+                    />
+                )}
+
+                {/* ── Photo config sub-view ────────────────────────────── */}
+                {selectedType === "photo" && (
+                    <PhotoConfig
                         wsStatus={$wsStatus}
                         onBack={goBack}
                         onSettings={() => setOptionsOpen(true)}
@@ -331,9 +343,7 @@ function CategoryCard({
     const [hovered, setHovered] = useState(false);
     const isDisabled = !!cat.disabled;
 
-    const label = cat.type === "photo"
-        ? tr("picker.photo")
-        : tr(`questionType.${cat.type}` as any);
+    const label = tr(`questionType.${cat.type}` as any);
     const desc = tr(descKey as any);
 
     return (

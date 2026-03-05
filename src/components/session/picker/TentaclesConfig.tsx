@@ -65,16 +65,14 @@ async function fetchOverpassPois(
     const { key, value } = cat.osm;
     const r = Math.round(radiusM);
     const query =
-        `[out:json][timeout:15];` +
+        `[out:json][timeout:25];` +
         `(node["${key}"="${value}"](around:${r},${lat},${lng});` +
         `way["${key}"="${value}"](around:${r},${lat},${lng});` +
         `relation["${key}"="${value}"](around:${r},${lat},${lng}););out center;`;
 
-    const resp = await fetch(
-        `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`,
-        { signal },
-    );
-    const data = await resp.json();
+    // Use the shared overpassFetch utility with automatic endpoint fallback
+    const { overpassFetch } = await import("@/maps/api/overpass-fetch");
+    const data = await overpassFetch(query, { timeoutMs: 25_000, signal });
 
     return (data.elements ?? [])
         .map((el: any) => ({
@@ -244,7 +242,7 @@ export function TentaclesConfig({ wsStatus, onBack, onSettings, onClose, onDone 
     function getFooterNote(): string | undefined {
         if (!selectedChip) return undefined;
         if (fetchState === "loading") return "POIs werden geladen…";
-        if (fetchState === "error")   return "Overpass-API nicht erreichbar";
+        if (fetchState === "error")   return "Overpass-API nicht erreichbar — bitte erneut versuchen";
         if (fetchState === "done") {
             return pois.length === 0
                 ? `Keine ${selectedCategory.label} in diesem Radius`

@@ -405,6 +405,15 @@ export const measuringQuestionSchema = z.union([
     homeGameMeasuringQuestionsSchema.describe("Hiding Zone Mode"),
 ]);
 
+// ── Photo question ──────────────────────────────────────────────────────────
+// Includes optional `drag` / `collapsed` to satisfy code that reads
+// `question.data.drag` on the Question union without narrowing by `id`.
+export const photoQuestionSchema = z.object({
+    photoType: z.string(),
+    drag: z.boolean().optional(),
+    collapsed: z.boolean().optional(),
+});
+
 export const questionSchema = z.union([
     z.object({
         id: z.literal("radius"),
@@ -431,6 +440,11 @@ export const questionSchema = z.union([
         key: z.number().default(Math.random),
         data: matchingQuestionSchema,
     }),
+    z.object({
+        id: z.literal("photo"),
+        key: z.number().default(Math.random),
+        data: photoQuestionSchema,
+    }),
 ]);
 
 export const questionsSchema = z.array(questionSchema);
@@ -452,6 +466,7 @@ export type CustomMeasuringQuestion = z.infer<
     typeof customMeasuringQuestionSchema
 >;
 export type MeasuringQuestion = z.infer<typeof measuringQuestionSchema>;
+export type PhotoQuestion = z.infer<typeof photoQuestionSchema>;
 export type HomeGameMeasuringQuestions = z.infer<
     typeof homeGameMeasuringQuestionsSchema
 >;
