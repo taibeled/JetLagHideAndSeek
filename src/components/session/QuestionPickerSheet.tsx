@@ -34,6 +34,7 @@ import { RadiusConfig } from "./picker/RadiusConfig";
 import { QuestionList, SessionQuestionPanel } from "./SessionQuestionPanel";
 import { PhotoConfig } from "./picker/PhotoConfig";
 import { TentaclesConfig } from "./picker/TentaclesConfig";
+import { MatchingConfig } from "./picker/MatchingConfig";
 import { ThermometerConfig } from "./picker/ThermometerConfig";
 
 // ── Category definitions ──────────────────────────────────────────────────────
@@ -95,7 +96,7 @@ export function QuestionPickerSheet() {
     }
 
     function handleSelectType(type: string) {
-        if (type === "thermometer" || type === "radius" || type === "tentacles" || type === "photo") {
+        if (type === "thermometer" || type === "radius" || type === "tentacles" || type === "photo" || type === "matching") {
             setSelectedType(type);
             return;
         }
@@ -154,6 +155,17 @@ export function QuestionPickerSheet() {
                 {/* ── Thermometer config sub-view ────────────────────────── */}
                 {selectedType === "thermometer" && (
                     <ThermometerConfig
+                        wsStatus={$wsStatus}
+                        onBack={goBack}
+                        onSettings={() => setOptionsOpen(true)}
+                        onClose={closePicker}
+                        onDone={handleSubmitDone}
+                    />
+                )}
+
+                {/* ── Matching config sub-view ──────────────────────────── */}
+                {selectedType === "matching" && (
+                    <MatchingConfig
                         wsStatus={$wsStatus}
                         onBack={goBack}
                         onSettings={() => setOptionsOpen(true)}
