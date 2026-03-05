@@ -142,6 +142,40 @@ out geom;
     return geo.features?.[0];
 };
 
+/**
+ * Find all administrative boundary levels that exist at a given point.
+ *
+ * Uses the Overpass `is_in()` query to discover which admin boundaries
+ * contain the point.  Returns an array sorted by level, each entry carrying
+ * the admin_level number and the zone's localised name.
+ *
+ * Only `out tags` is requested (no geometry) so the response is small and fast.
+ */
+export async function findAdminLevelsAt(
+    lat: number,
+    lng: number,
+): Promise<{ level: number; name: string }[]> {
+    const query = `
+[out:json][timeout:15];
+is_in(${lat},${lng})->.a;
+rel(pivot.a)["boundary"="administrative"]["admin_level"];
+out tags;`;
+    const data = await getOverpassData(query, "Verwaltungszonen laden…");
+    const results: { level: number; name: string }[] = [];
+    for (const el of data.elements ?? []) {
+        const lvl = parseInt(el.tags?.admin_level);
+        const name = el.tags?.["name:de"] ?? el.tags?.name ?? "";
+        if (!isNaN(lvl) && lvl >= 2 && lvl <= 10) {
+            results.push({ level: lvl, name });
+        }
+    }
+    results.sort((a, b) => a.level - b.level);
+    // De-duplicate: keep only the first entry per level
+    return results.filter(
+        (r, i, arr) => arr.findIndex((x) => x.level === r.level) === i,
+    );
+}
+
 export const fetchCoastline = async () => {
     const response = await cacheFetch(
         import.meta.env.BASE_URL + "/coastline50.geojson",

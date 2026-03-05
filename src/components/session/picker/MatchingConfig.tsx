@@ -14,6 +14,7 @@ import { LocateFixed, MapPin, Navigation, Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
+import { findAdminBoundary, findAdminLevelsAt } from "@/maps/api/overpass";
 import { bottomSheetState, pickerOpen } from "@/lib/bottom-sheet-state";
 import {
     addQuestion as addLocalQuestion,
@@ -169,16 +170,19 @@ function renderPreview(
     matchType: string,
     same: boolean,
     adminLevel: number,
+    zoneName: string | null,
 ): React.ReactNode {
     const label = getMatchLabel(matchType);
 
     if (matchType === "zone") {
-        if (same) return <>Bist du in derselben <Hl>{label}</Hl> (Stufe {adminLevel}) wie ich?</>;
-        return <>Bist du in einer anderen <Hl>{label}</Hl> (Stufe {adminLevel}) als ich?</>;
+        const zoneLabel = zoneName ? `${zoneName} (Stufe ${adminLevel})` : `Zone (Stufe ${adminLevel})`;
+        if (same) return <>Bist du in derselben <Hl>{zoneLabel}</Hl> wie ich?</>;
+        return <>Bist du in einer anderen <Hl>{zoneLabel}</Hl> als ich?</>;
     }
     if (matchType === "letter-zone") {
-        if (same) return <>Beginnt der Name deiner <Hl>Zone</Hl> (Stufe {adminLevel}) mit demselben Buchstaben wie meiner?</>;
-        return <>Beginnt der Name deiner <Hl>Zone</Hl> (Stufe {adminLevel}) mit einem anderen Buchstaben als meiner?</>;
+        const zoneLabel = zoneName ? `${zoneName} (Stufe ${adminLevel})` : `Zone (Stufe ${adminLevel})`;
+        if (same) return <>Beginnt der Name deiner <Hl>{zoneLabel}</Hl> mit demselben Buchstaben wie meiner?</>;
+        return <>Beginnt der Name deiner <Hl>{zoneLabel}</Hl> mit einem anderen Buchstaben als meiner?</>;
     }
     if (matchType === "same-first-letter-station") {
         if (same) return <>Beginnt der Name deines nächsten <Hl>Bahnhofs</Hl> mit demselben Buchstaben wie meiner?</>;
@@ -289,6 +293,8 @@ export function MatchingConfig({
     const [matchType, setMatchType] = useState("airport");
     const [same, setSame] = useState(true);
     const [adminLevel, setAdminLevel] = useState(3);
+    const [adminLevels, setAdminLevels] = useState<{ level: number; name: string }[]>([]);
+    const [adminLevelsLoading, setAdminLevelsLoading] = useState(false);
 
     // ── Center coordinate ────────────────────────────────────────────────────
     const mapInst = leafletMapContext.get();
@@ -321,9 +327,13 @@ export function MatchingConfig({
     // ── Submit state ─────────────────────────────────────────────────────────
     const [submitting, setSubmitting] = useState(false);
 
+    // ── Zone preview state ──────────────────────────────────────────────────
+    const [zonePreviewLoading, setZonePreviewLoading] = useState(false);
+
     // ── Leaflet refs ─────────────────────────────────────────────────────────
     const markerRef = useRef<L.CircleMarker | null>(null);
     const nearestMarkerRef = useRef<L.CircleMarker | null>(null);
+    const zoneLayerRef = useRef<L.GeoJSON | null>(null);
 
     // ── Filter match types by game size ──────────────────────────────────────
     const filteredTypes = MATCH_TYPES.filter((mt) => {
@@ -361,9 +371,32 @@ export function MatchingConfig({
         if (!m) return;
         if (markerRef.current) m.removeLayer(markerRef.current);
         if (nearestMarkerRef.current) m.removeLayer(nearestMarkerRef.current);
+        if (zoneLayerRef.current) m.removeLayer(zoneLayerRef.current);
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    // ── Clear "find nearest" result when type or position changes ─────────────
+    // ── Fetch available admin levels when zone type is selected ──────────────
+    useEffect(() => {
+        if (matchType !== "zone" && matchType !== "letter-zone") return;
+        setAdminLevelsLoading(true);
+        const timer = setTimeout(async () => {
+            try {
+                const levels = await findAdminLevelsAt(centerLat, centerLng);
+                setAdminLevels(levels);
+                // Auto-select first level if current selection is not available
+                if (levels.length > 0 && !levels.some((l) => l.level === adminLevel)) {
+                    setAdminLevel(levels[0].level);
+                }
+            } catch {
+                setAdminLevels([]); // Fallback: empty → hardcoded dropdown
+            } finally {
+                setAdminLevelsLoading(false);
+            }
+        }, 500);
+        return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [matchType, centerLat, centerLng]);
+
+    // ── Clear "find nearest" result + zone preview when type or position changes
     useEffect(() => {
         setNearestResult(null);
         const m = leafletMapContext.get();
@@ -371,8 +404,25 @@ export function MatchingConfig({
             m.removeLayer(nearestMarkerRef.current);
             nearestMarkerRef.current = null;
         }
+        if (zoneLayerRef.current && m) {
+            m.removeLayer(zoneLayerRef.current);
+            zoneLayerRef.current = null;
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [matchType, centerLat, centerLng]);
+
+    // ── Update zone layer color when same/different changes ──────────────────
+    useEffect(() => {
+        if (!zoneLayerRef.current) return;
+        const color = same ? "#22C55E" : "#E8323A";
+        zoneLayerRef.current.setStyle({
+            color,
+            fillColor: color,
+            fillOpacity: same ? 0.15 : 0.10,
+            weight: 2,
+            dashArray: same ? undefined : "6 4",
+        });
+    }, [same]);
 
     // ── GPS fetch ────────────────────────────────────────────────────────────
     async function fetchGps() {
@@ -513,6 +563,46 @@ export function MatchingConfig({
         }
     }
 
+    // ── Zone preview on map ─────────────────────────────────────────────────
+    function drawZoneOnMap(feature: any) {
+        const m = leafletMapContext.get();
+        if (!m) return;
+        if (zoneLayerRef.current) m.removeLayer(zoneLayerRef.current);
+
+        const color = same ? "#22C55E" : "#E8323A";
+        zoneLayerRef.current = L.geoJSON(feature, {
+            style: {
+                color,
+                fillColor: color,
+                fillOpacity: same ? 0.15 : 0.10,
+                weight: 2,
+                dashArray: same ? undefined : "6 4",
+            },
+        }).addTo(m);
+
+        m.fitBounds(zoneLayerRef.current.getBounds(), { padding: [30, 30] });
+    }
+
+    async function handleZonePreview() {
+        setZonePreviewLoading(true);
+        try {
+            const feature = await findAdminBoundary(
+                centerLat,
+                centerLng,
+                adminLevel as 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10,
+            );
+            if (!feature) {
+                toast.info("Keine Zone für diese Stufe gefunden.");
+                return;
+            }
+            drawZoneOnMap(feature);
+        } catch {
+            toast.error("Zone konnte nicht geladen werden.");
+        } finally {
+            setZonePreviewLoading(false);
+        }
+    }
+
     // ── Submit ───────────────────────────────────────────────────────────────
     async function handleSubmit() {
         const code = sessionCode.get();
@@ -555,6 +645,7 @@ export function MatchingConfig({
 
     // ── Derived ──────────────────────────────────────────────────────────────
     const canFindNearest = matchType in TYPE_TO_OSM;
+    const selectedZoneName = adminLevels.find((al) => al.level === adminLevel)?.name ?? null;
 
     // ── Render ───────────────────────────────────────────────────────────────
     return (
@@ -608,61 +699,38 @@ export function MatchingConfig({
                     {(matchType === "zone" || matchType === "letter-zone") && (
                         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                             <span style={sectionLabel}>Admin-Stufe</span>
-                            <select
-                                value={adminLevel}
-                                onChange={(e) => setAdminLevel(parseInt(e.target.value))}
-                                style={selectStyle}
-                            >
-                                {[2, 3, 4, 5, 6, 7, 8, 9, 10].map((lvl) => (
-                                    <option key={lvl} value={lvl}>
-                                        {t(`osmZone.${lvl}` as TranslationKey, locale.get()) ?? `Stufe ${lvl}`}
-                                    </option>
-                                ))}
-                            </select>
+                            {adminLevelsLoading ? (
+                                <span style={{ color: "#6B7280", fontSize: "13px", padding: "12px 0" }}>
+                                    Zonen werden geladen…
+                                </span>
+                            ) : adminLevels.length > 0 ? (
+                                <select
+                                    value={adminLevel}
+                                    onChange={(e) => setAdminLevel(parseInt(e.target.value))}
+                                    style={selectStyle}
+                                >
+                                    {adminLevels.map((al) => (
+                                        <option key={al.level} value={al.level}>
+                                            Stufe {al.level} — {al.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            ) : (
+                                /* Fallback: hardcoded levels when API fails */
+                                <select
+                                    value={adminLevel}
+                                    onChange={(e) => setAdminLevel(parseInt(e.target.value))}
+                                    style={selectStyle}
+                                >
+                                    {[2, 3, 4, 5, 6, 7, 8, 9, 10].map((lvl) => (
+                                        <option key={lvl} value={lvl}>
+                                            {t(`osmZone.${lvl}` as TranslationKey, locale.get()) ?? `Stufe ${lvl}`}
+                                        </option>
+                                    ))}
+                                </select>
+                            )}
                         </div>
                     )}
-
-                    {/* ── Same / Different toggle ─────────────────────────── */}
-                    <div style={{ display: "flex", gap: 8 }}>
-                        <button
-                            type="button"
-                            onClick={() => setSame(true)}
-                            style={{
-                                flex: 1,
-                                padding: "8px 14px",
-                                borderRadius: 999,
-                                border: "none",
-                                cursor: "pointer",
-                                fontSize: "13px",
-                                fontWeight: 700,
-                                fontFamily: "Poppins, sans-serif",
-                                transition: "background 0.15s, color 0.15s",
-                                background: same ? "#22C55E" : "#2A2A3A",
-                                color: same ? "#fff" : "#99A1AF",
-                            }}
-                        >
-                            ✅ Gleich
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setSame(false)}
-                            style={{
-                                flex: 1,
-                                padding: "8px 14px",
-                                borderRadius: 999,
-                                border: "none",
-                                cursor: "pointer",
-                                fontSize: "13px",
-                                fontWeight: 700,
-                                fontFamily: "Poppins, sans-serif",
-                                transition: "background 0.15s, color 0.15s",
-                                background: !same ? "#E8323A" : "#2A2A3A",
-                                color: !same ? "#fff" : "#99A1AF",
-                            }}
-                        >
-                            ❌ Anders
-                        </button>
-                    </div>
 
                     {/* ── Dein Standort ────────────────────────────────────── */}
                     <ConfigCard accentColor="red">
@@ -834,8 +902,74 @@ export function MatchingConfig({
                     {/* ── Fragevorschau ────────────────────────────────────── */}
                     <ConfigCard accentColor="green" title="Fragevorschau">
                         <p style={{ margin: 0, color: "#E5E7EB", fontSize: "14px", lineHeight: 1.55 }}>
-                            {renderPreview(matchType, same, adminLevel)}
+                            {renderPreview(matchType, same, adminLevel, selectedZoneName)}
                         </p>
+
+                        {/* Compact same/different pills */}
+                        <div style={{ display: "flex", gap: 6, marginTop: 2 }}>
+                            <button
+                                type="button"
+                                onClick={() => setSame(true)}
+                                style={{
+                                    padding: "6px 12px",
+                                    borderRadius: 999,
+                                    border: same
+                                        ? "1px solid rgba(34,197,94,0.4)"
+                                        : "1px solid rgba(255,255,255,0.1)",
+                                    cursor: "pointer",
+                                    fontSize: "12px",
+                                    fontWeight: 600,
+                                    background: same ? "rgba(34,197,94,0.2)" : "transparent",
+                                    color: same ? "#22C55E" : "#6B7280",
+                                    transition: "all 0.15s",
+                                }}
+                            >
+                                ✅ Gleich
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setSame(false)}
+                                style={{
+                                    padding: "6px 12px",
+                                    borderRadius: 999,
+                                    border: !same
+                                        ? "1px solid rgba(232,50,58,0.4)"
+                                        : "1px solid rgba(255,255,255,0.1)",
+                                    cursor: "pointer",
+                                    fontSize: "12px",
+                                    fontWeight: 600,
+                                    background: !same ? "rgba(232,50,58,0.2)" : "transparent",
+                                    color: !same ? "#E8323A" : "#6B7280",
+                                    transition: "all 0.15s",
+                                }}
+                            >
+                                ❌ Anders
+                            </button>
+                        </div>
+
+                        {/* Zone map preview button (only for zone/letter-zone) */}
+                        {(matchType === "zone" || matchType === "letter-zone") && (
+                            <button
+                                type="button"
+                                onClick={handleZonePreview}
+                                disabled={zonePreviewLoading}
+                                style={{
+                                    background: "none",
+                                    border: "none",
+                                    cursor: zonePreviewLoading ? "wait" : "pointer",
+                                    color: "#22C55E",
+                                    fontSize: "12px",
+                                    fontWeight: 600,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 4,
+                                    padding: 0,
+                                    marginTop: 2,
+                                }}
+                            >
+                                🗺️ {zonePreviewLoading ? "Zone wird geladen…" : "Vorschau auf der Karte"}
+                            </button>
+                        )}
                     </ConfigCard>
 
                     {/* ── Find nearest button ──────────────────────────────── */}
