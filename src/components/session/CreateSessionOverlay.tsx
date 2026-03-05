@@ -146,6 +146,10 @@ export function CreateSessionOverlay() {
         setError(null);
         try {
             if (isJoinFlow) {
+                // Reset stale gameSize from a previous session so every
+                // category is visible until the backend syncs the real value.
+                gameSizeAtom.set(null);
+
                 const code = joinCode.toUpperCase();
                 const result = await joinSession(code, { displayName: displayName.trim(), role });
                 const sessionData = await getSession(code);

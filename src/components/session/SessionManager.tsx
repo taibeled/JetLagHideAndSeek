@@ -17,6 +17,7 @@ import {
     applyServerMapLocation,
     buildMapLocationFromContext,
     currentSession,
+    gameSize as gameSizeAtom,
     leaveSession,
     pendingRole,
     sessionCode,
@@ -72,6 +73,8 @@ export function SessionManager() {
         setLoading(true);
         setError(null);
         try {
+            // Reset stale gameSize from a previous session
+            gameSizeAtom.set(null);
             const normalized = joinCode.trim().toUpperCase();
             const [res, full] = await Promise.all([
                 joinSession(normalized, { displayName: displayName.trim() }),
