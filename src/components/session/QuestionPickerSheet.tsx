@@ -10,6 +10,7 @@
  *   "radius"      → RadiusConfig (GPS + manual modes)
  *   "tentacles"   → TentaclesConfig (category dropdown + radius chips + POI preview)
  *   "thermometer" → ThermometerConfig (GPS + manual modes)
+ *   "measuring"   → MeasuringConfig (type dropdown + GPS + distance + preview)
  *   all others    → sets pendingPickerType → SessionQuestionPanel picks it up
  *
  * Visibility: controlled by the pickerOpen atom.
@@ -35,6 +36,7 @@ import { QuestionList, SessionQuestionPanel } from "./SessionQuestionPanel";
 import { PhotoConfig } from "./picker/PhotoConfig";
 import { TentaclesConfig } from "./picker/TentaclesConfig";
 import { MatchingConfig } from "./picker/MatchingConfig";
+import { MeasuringConfig } from "./picker/MeasuringConfig";
 import { ThermometerConfig } from "./picker/ThermometerConfig";
 
 // ── Category definitions ──────────────────────────────────────────────────────
@@ -96,7 +98,7 @@ export function QuestionPickerSheet() {
     }
 
     function handleSelectType(type: string) {
-        if (type === "thermometer" || type === "radius" || type === "tentacles" || type === "photo" || type === "matching") {
+        if (type === "thermometer" || type === "radius" || type === "tentacles" || type === "photo" || type === "matching" || type === "measuring") {
             setSelectedType(type);
             return;
         }
@@ -166,6 +168,17 @@ export function QuestionPickerSheet() {
                 {/* ── Matching config sub-view ──────────────────────────── */}
                 {selectedType === "matching" && (
                     <MatchingConfig
+                        wsStatus={$wsStatus}
+                        onBack={goBack}
+                        onSettings={() => setOptionsOpen(true)}
+                        onClose={closePicker}
+                        onDone={handleSubmitDone}
+                    />
+                )}
+
+                {/* ── Measuring config sub-view ───────────────────────── */}
+                {selectedType === "measuring" && (
+                    <MeasuringConfig
                         wsStatus={$wsStatus}
                         onBack={goBack}
                         onSettings={() => setOptionsOpen(true)}

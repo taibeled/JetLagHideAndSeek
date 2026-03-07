@@ -99,6 +99,10 @@ const ordinaryBaseQuestionSchema = z.object({
     drag: z.boolean().default(true),
     color: iconColorSchema.default(randomColor),
     collapsed: z.boolean().default(false),
+    /** Pre-computed GeoJSON result from the hider's answer, used as a
+     *  reliable fallback so the map restriction survives page reloads
+     *  without re-querying the Overpass API. */
+    computedGeoJSON: z.any().optional(),
 });
 
 const getDefaultUnit = () => {

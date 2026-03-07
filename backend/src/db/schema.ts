@@ -41,6 +41,7 @@ export const questions = sqliteTable("questions", {
         .notNull()
         .default("pending"),
     answerData: text("answer_data"), // JSON, set when answered
+    answeredByParticipantId: text("answered_by_participant_id"),
     createdAt: text("created_at")
         .notNull()
         .default(sql`(datetime('now'))`),

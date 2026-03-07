@@ -37,7 +37,24 @@ function toSession(row: Session) {
     };
 }
 
-export function toSessionQuestion(row: DbQuestion) {
+/**
+ * Build a Map<participantId, displayName> for all participants in a session.
+ * Used to denormalise display names onto SessionQuestion objects.
+ */
+export async function buildParticipantsMap(
+    db: Db,
+    sessionId: string,
+): Promise<Map<string, string>> {
+    const rows = await db.query.participants.findMany({
+        where: eq(schema.participants.sessionId, sessionId),
+    });
+    return new Map(rows.map((r) => [r.id, r.displayName]));
+}
+
+export function toSessionQuestion(
+    row: DbQuestion,
+    participantsMap?: Map<string, string>,
+) {
     return {
         id: row.id,
         sessionId: row.sessionId,
@@ -49,6 +66,11 @@ export function toSessionQuestion(row: DbQuestion) {
         createdAt: row.createdAt,
         answeredAt: row.answeredAt ?? undefined,
         deadline: row.deadline ?? undefined,
+        answeredByParticipantId: row.answeredByParticipantId ?? undefined,
+        createdByDisplayName: participantsMap?.get(row.createdByParticipantId),
+        answeredByDisplayName: row.answeredByParticipantId
+            ? participantsMap?.get(row.answeredByParticipantId)
+            : undefined,
     };
 }
 
@@ -138,9 +160,11 @@ export function createSessionsRouter(db: Db): Hono {
             orderBy: (q, { asc }) => [asc(q.createdAt)],
         });
 
+        const pMap = await buildParticipantsMap(db, sessionRow.id);
+
         const response: GetSessionResponse = {
             session: toSession(sessionRow),
-            questions: questionRows.map(toSessionQuestion),
+            questions: questionRows.map((r) => toSessionQuestion(r, pMap)),
             seekerCount: wsManager.seekerCount(code),
             hiderConnected: wsManager.hiderConnected(code),
         };

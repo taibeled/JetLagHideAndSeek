@@ -20,10 +20,14 @@ import { CacheType } from "@/maps/api/types";
 // bleeding into a subsequent HiderAreaSearch session.
 import {
     additionalMapGeoLocations,
+    animateMapMovements,
+    autoZoom,
     hiderMode,
     isLoading,
+    leafletMapContext,
     mapGeoJSON,
     mapGeoLocation,
+    polyGeoJSON,
     questionModified,
     questions,
 } from "@/lib/context";
@@ -160,8 +164,9 @@ export function leaveSession(): void {
     questions.set([]);
     questionModified();
 
-    // Clear the computed map overlay
+    // Clear the computed map overlay (in-memory + persistent cache)
     mapGeoJSON.set(null);
+    polyGeoJSON.set(null);
 
     // Clear additional zones selected by the hider
     additionalMapGeoLocations.set([]);
@@ -210,8 +215,12 @@ export function upsertSessionQuestion(question: SessionQuestion): void {
 export function applyServerMapLocation(location: MapLocation): void {
     if (!location.osmFeature) return;
 
-    // Clear the cached boundary so the map re-fetches with the new zones.
+    // Clear BOTH boundary caches so the map re-fetches with the new zones.
+    // mapGeoJSON is the in-memory cache; polyGeoJSON is the persistent cache
+    // that survives page reloads.  Without clearing polyGeoJSON the map would
+    // reuse a stale boundary from a previous session/location.
     mapGeoJSON.set(null);
+    polyGeoJSON.set(null);
 
     // Always reset isLoading so the upcoming mapGeoLocation.set() triggers
     // refreshQuestions immediately, even when the zone osm_id hasn't changed
@@ -237,6 +246,23 @@ export function applyServerMapLocation(location: MapLocation): void {
     // Set primary zone last so the mapGeoLocation change triggers
     // refreshQuestions after additionals are already in place.
     mapGeoLocation.set(location.osmFeature as any);
+
+    // Immediately zoom the map to the new area for instant visual feedback,
+    // even before the Overpass boundary fetch completes.  The osmFeature's
+    // `extent` property carries [north, west, south, east] bounds.
+    const extent = (location.osmFeature as any)?.properties?.extent;
+    const map = leafletMapContext.get();
+    if (map && extent && autoZoom.get()) {
+        const bounds: [[number, number], [number, number]] = [
+            [extent[2], extent[1]],  // south-west
+            [extent[0], extent[3]],  // north-east
+        ];
+        if (animateMapMovements.get()) {
+            map.flyToBounds(bounds);
+        } else {
+            map.fitBounds(bounds);
+        }
+    }
 }
 
 /**

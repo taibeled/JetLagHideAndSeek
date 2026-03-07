@@ -112,5 +112,15 @@ if (!cols.includes("deadline")) {
     console.log("Migration v2 applied.");
 }
 
+// ── Migration v3: answered_by_participant_id column ──────────────────────────
+
+if (!cols.includes("answered_by_participant_id")) {
+    console.log("Applying migration v3: questions answered_by_participant_id…");
+    sqlite.exec(`
+        ALTER TABLE questions ADD COLUMN answered_by_participant_id TEXT;
+    `);
+    console.log("Migration v3 applied.");
+}
+
 console.log("Database migrated successfully:", DB_PATH);
 sqlite.close();

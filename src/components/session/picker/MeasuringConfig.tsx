@@ -1,12 +1,12 @@
 /**
- * MatchingConfig — Matching question configuration screen.
+ * MeasuringConfig — Measuring question configuration screen.
  *
- * Two modes (same pattern as TentaclesConfig):
- *   "gps"    — Category dropdown + GPS-based Standort + Fragevorschau (default)
+ * Two modes (same pattern as MatchingConfig):
+ *   "gps"    — Category dropdown + GPS-based Standort + distance + Fragevorschau (default)
  *   "manual" — Same layout but with manual coordinate input inside the location card
  *
- * Footer GPS:    "Frage senden" · Abbrechen
- * Footer Manual: "Frage senden" · Zurück zu GPS
+ * Footer GPS:    "Frage stellen" · Abbrechen
+ * Footer Manual: "Frage stellen" · Zurück zu GPS
  */
 import { useStore } from "@nanostores/react";
 import * as L from "leaflet";
@@ -14,11 +14,8 @@ import { LocateFixed, MapPin, Navigation, Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
-import { findAdminBoundary, findAdminLevelsAt } from "@/maps/api/overpass";
 import { bottomSheetState, pickerOpen } from "@/lib/bottom-sheet-state";
-import {
-    leafletMapContext,
-} from "@/lib/context";
+import { leafletMapContext } from "@/lib/context";
 import { addQuestion } from "@/lib/session-api";
 import {
     gameSize,
@@ -30,9 +27,9 @@ import { ConfigCard } from "./ConfigCard";
 import { PickerFooter } from "./PickerFooter";
 import { PickerHeader, type WsStatus } from "./PickerHeader";
 
-// ── Matching type definitions ────────────────────────────────────────────────
+// ── Measuring type definitions ──────────────────────────────────────────────
 
-type MatchTypeDef = {
+type MeasTypeDef = {
     value: string;
     /** Only for Small+Medium games (the "-full" variants) */
     smOnly?: boolean;
@@ -40,12 +37,12 @@ type MatchTypeDef = {
     group?: string;
 };
 
-const MATCH_TYPES: MatchTypeDef[] = [
+const MEAS_TYPES: MeasTypeDef[] = [
     // Standard (all sizes, no group)
+    { value: "coastline" },
     { value: "airport" },
-    { value: "major-city" },
-    { value: "zone" },
-    { value: "letter-zone" },
+    { value: "city" },
+    { value: "highspeed-measure-shinkansen" },
     // S/M full variants (no group, hidden when L)
     { value: "aquarium-full", smOnly: true },
     { value: "zoo-full", smOnly: true },
@@ -58,10 +55,10 @@ const MATCH_TYPES: MatchTypeDef[] = [
     { value: "golf_course-full", smOnly: true },
     { value: "consulate-full", smOnly: true },
     { value: "park-full", smOnly: true },
-    // Hiding Zone Mode — Station types
-    { value: "same-first-letter-station", group: "Versteckzonen-Modus" },
-    { value: "same-length-station", group: "Versteckzonen-Modus" },
-    { value: "same-train-line", group: "Versteckzonen-Modus" },
+    // Hiding Zone Mode — Store chains
+    { value: "mcdonalds", group: "Versteckzonen-Modus" },
+    { value: "seven11", group: "Versteckzonen-Modus" },
+    { value: "rail-measure", group: "Versteckzonen-Modus" },
     // Hiding Zone Mode — POI types
     { value: "aquarium", group: "Versteckzonen-Modus" },
     { value: "zoo", group: "Versteckzonen-Modus" },
@@ -77,39 +74,41 @@ const MATCH_TYPES: MatchTypeDef[] = [
 ];
 
 // OSM tag mapping for "find nearest" Overpass queries
-const TYPE_TO_OSM: Record<string, { key: string; value: string }> = {
-    airport: { key: "aeroway", value: "aerodrome" },
-    aquarium: { key: "tourism", value: "aquarium" },
-    "aquarium-full": { key: "tourism", value: "aquarium" },
-    zoo: { key: "tourism", value: "zoo" },
-    "zoo-full": { key: "tourism", value: "zoo" },
-    theme_park: { key: "tourism", value: "theme_park" },
-    "theme_park-full": { key: "tourism", value: "theme_park" },
-    peak: { key: "natural", value: "peak" },
-    "peak-full": { key: "natural", value: "peak" },
-    museum: { key: "tourism", value: "museum" },
-    "museum-full": { key: "tourism", value: "museum" },
-    hospital: { key: "amenity", value: "hospital" },
-    "hospital-full": { key: "amenity", value: "hospital" },
-    cinema: { key: "amenity", value: "cinema" },
-    "cinema-full": { key: "amenity", value: "cinema" },
-    library: { key: "amenity", value: "library" },
-    "library-full": { key: "amenity", value: "library" },
-    golf_course: { key: "leisure", value: "golf_course" },
-    "golf_course-full": { key: "leisure", value: "golf_course" },
-    consulate: { key: "office", value: "diplomatic" },
-    "consulate-full": { key: "office", value: "diplomatic" },
-    park: { key: "leisure", value: "park" },
-    "park-full": { key: "leisure", value: "park" },
-    "same-first-letter-station": { key: "railway", value: "station" },
-    "same-length-station": { key: "railway", value: "station" },
-    "same-train-line": { key: "railway", value: "station" },
+const TYPE_TO_OSM: Record<string, { key: string; value: string; extra?: string }> = {
+    airport:                       { key: "aeroway", value: "aerodrome" },
+    city:                          { key: "place", value: "city" },
+    "highspeed-measure-shinkansen":{ key: "railway", value: "station" },
+    aquarium:                      { key: "tourism", value: "aquarium" },
+    "aquarium-full":               { key: "tourism", value: "aquarium" },
+    zoo:                           { key: "tourism", value: "zoo" },
+    "zoo-full":                    { key: "tourism", value: "zoo" },
+    theme_park:                    { key: "tourism", value: "theme_park" },
+    "theme_park-full":             { key: "tourism", value: "theme_park" },
+    peak:                          { key: "natural", value: "peak" },
+    "peak-full":                   { key: "natural", value: "peak" },
+    museum:                        { key: "tourism", value: "museum" },
+    "museum-full":                 { key: "tourism", value: "museum" },
+    hospital:                      { key: "amenity", value: "hospital" },
+    "hospital-full":               { key: "amenity", value: "hospital" },
+    cinema:                        { key: "amenity", value: "cinema" },
+    "cinema-full":                 { key: "amenity", value: "cinema" },
+    library:                       { key: "amenity", value: "library" },
+    "library-full":                { key: "amenity", value: "library" },
+    golf_course:                   { key: "leisure", value: "golf_course" },
+    "golf_course-full":            { key: "leisure", value: "golf_course" },
+    consulate:                     { key: "office", value: "diplomatic" },
+    "consulate-full":              { key: "office", value: "diplomatic" },
+    park:                          { key: "leisure", value: "park" },
+    "park-full":                   { key: "leisure", value: "park" },
+    mcdonalds:                     { key: "amenity", value: "fast_food", extra: `["name"~"McDonald"]` },
+    seven11:                       { key: "shop", value: "convenience", extra: `["name"~"7.Eleven|Seven.Eleven"]` },
+    "rail-measure":                { key: "railway", value: "station" },
 };
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
-function getMatchLabel(type: string): string {
-    const key = `matchType.${type}` as TranslationKey;
+function getMeasLabel(type: string): string {
+    const key = `measType.${type}` as TranslationKey;
     return t(key, locale.get()) ?? type;
 }
 
@@ -159,56 +158,31 @@ async function searchPhoton(query: string): Promise<{ lat: number; lng: number; 
 
 // ── Question preview with highlighted keywords ───────────────────────────────
 
-function Hl({ children }: { children: React.ReactNode }) {
+function HlGreen({ children }: { children: React.ReactNode }) {
     return <span style={{ color: "#22C55E", fontWeight: 700 }}>{children}</span>;
 }
 
-function renderPreview(
-    matchType: string,
-    same: boolean,
-    adminLevel: number,
-    zoneName: string | null,
-): React.ReactNode {
-    const label = getMatchLabel(matchType);
-
-    if (matchType === "zone") {
-        const zoneLabel = zoneName ? `${zoneName} (Stufe ${adminLevel})` : `Zone (Stufe ${adminLevel})`;
-        if (same) return <>Bist du in derselben <Hl>{zoneLabel}</Hl> wie ich?</>;
-        return <>Bist du in einer anderen <Hl>{zoneLabel}</Hl> als ich?</>;
-    }
-    if (matchType === "letter-zone") {
-        const zoneLabel = zoneName ? `${zoneName} (Stufe ${adminLevel})` : `Zone (Stufe ${adminLevel})`;
-        if (same) return <>Beginnt der Name deiner <Hl>{zoneLabel}</Hl> mit demselben Buchstaben wie meiner?</>;
-        return <>Beginnt der Name deiner <Hl>{zoneLabel}</Hl> mit einem anderen Buchstaben als meiner?</>;
-    }
-    if (matchType === "same-first-letter-station") {
-        if (same) return <>Beginnt der Name deines nächsten <Hl>Bahnhofs</Hl> mit demselben Buchstaben wie meiner?</>;
-        return <>Beginnt der Name deines nächsten <Hl>Bahnhofs</Hl> mit einem anderen Buchstaben als meiner?</>;
-    }
-    if (matchType === "same-length-station") {
-        if (same) return <>Hat der Name deines nächsten <Hl>Bahnhofs</Hl> die gleiche Länge wie meiner?</>;
-        return <>Hat der Name deines nächsten <Hl>Bahnhofs</Hl> eine andere Länge als meiner?</>;
-    }
-    if (matchType === "same-train-line") {
-        if (same) return <>Liegt dein nächster <Hl>Bahnhof</Hl> an derselben Zugstrecke wie meiner?</>;
-        return <>Liegt dein nächster <Hl>Bahnhof</Hl> an einer anderen Zugstrecke als meiner?</>;
-    }
-    // Default: nearest X
-    if (same) {
-        return <>Ist die nächstgelegene <Hl>{label}</Hl> zu dir dieselbe wie die nächstgelegene <Hl>{label}</Hl> zu mir?</>;
-    }
-    return <>Ist die nächstgelegene <Hl>{label}</Hl> zu dir eine andere als die nächstgelegene <Hl>{label}</Hl> zu mir?</>;
+function HlRed({ children }: { children: React.ReactNode }) {
+    return <span style={{ color: "#E8323A", fontWeight: 700 }}>{children}</span>;
 }
 
-function getInfoHint(matchType: string): string {
-    const label = getMatchLabel(matchType);
-    if (matchType === "zone" || matchType === "letter-zone") {
-        return `Der Hider prüft, ob er in derselben ${label} ist wie du. Ein Match grenzt das Suchgebiet stark ein!`;
+function renderPreview(measType: string): React.ReactNode {
+    const label = getMeasLabel(measType);
+
+    if (measType === "coastline") {
+        return (
+            <>
+                Bist du <HlGreen>näher</HlGreen> oder <HlRed>weiter</HlRed> von der nächsten{" "}
+                <HlRed>{label}</HlRed> entfernt als ich?
+            </>
+        );
     }
-    if (matchType.includes("station") || matchType === "same-train-line") {
-        return `Der Hider vergleicht seinen nächsten Bahnhof mit deinem. Ein Match bedeutet eine starke Eingrenzung!`;
-    }
-    return `Der Hider vergleicht seine nächstgelegene ${label} mit deiner. Ein Match bedeutet eine starke Eingrenzung!`;
+    return (
+        <>
+            Bist du <HlGreen>näher</HlGreen> oder <HlRed>weiter</HlRed> vom nächsten{" "}
+            <HlRed>{label}</HlRed> entfernt als ich?
+        </>
+    );
 }
 
 // ── Styles ───────────────────────────────────────────────────────────────────
@@ -269,7 +243,7 @@ const greenLink: React.CSSProperties = {
 
 // ── Main component ──────────────────────────────────────────────────────────
 
-export interface MatchingConfigProps {
+export interface MeasuringConfigProps {
     wsStatus: WsStatus;
     onBack: () => void;
     onSettings: () => void;
@@ -277,21 +251,17 @@ export interface MatchingConfigProps {
     onDone?: () => void;
 }
 
-export function MatchingConfig({
+export function MeasuringConfig({
     wsStatus,
     onBack,
     onSettings,
     onClose,
     onDone,
-}: MatchingConfigProps) {
+}: MeasuringConfigProps) {
     const $gameSize = useStore(gameSize);
 
     const [mode, setMode] = useState<"gps" | "manual">("gps");
-    const [matchType, setMatchType] = useState("airport");
-    const [same, setSame] = useState(true);
-    const [adminLevel, setAdminLevel] = useState(3);
-    const [adminLevels, setAdminLevels] = useState<{ level: number; name: string }[]>([]);
-    const [adminLevelsLoading, setAdminLevelsLoading] = useState(false);
+    const [measType, setMeasType] = useState("airport");
 
     // ── Center coordinate ────────────────────────────────────────────────────
     const mapInst = leafletMapContext.get();
@@ -324,16 +294,12 @@ export function MatchingConfig({
     // ── Submit state ─────────────────────────────────────────────────────────
     const [submitting, setSubmitting] = useState(false);
 
-    // ── Zone preview state ──────────────────────────────────────────────────
-    const [zonePreviewLoading, setZonePreviewLoading] = useState(false);
-
     // ── Leaflet refs ─────────────────────────────────────────────────────────
     const markerRef = useRef<L.CircleMarker | null>(null);
     const nearestMarkerRef = useRef<L.CircleMarker | null>(null);
-    const zoneLayerRef = useRef<L.GeoJSON | null>(null);
 
-    // ── Filter match types by game size ──────────────────────────────────────
-    const filteredTypes = MATCH_TYPES.filter((mt) => {
+    // ── Filter measuring types by game size ──────────────────────────────────
+    const filteredTypes = MEAS_TYPES.filter((mt) => {
         if ($gameSize === "L" && mt.smOnly) return false;
         return true;
     });
@@ -368,32 +334,9 @@ export function MatchingConfig({
         if (!m) return;
         if (markerRef.current) m.removeLayer(markerRef.current);
         if (nearestMarkerRef.current) m.removeLayer(nearestMarkerRef.current);
-        if (zoneLayerRef.current) m.removeLayer(zoneLayerRef.current);
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    // ── Fetch available admin levels when zone type is selected ──────────────
-    useEffect(() => {
-        if (matchType !== "zone" && matchType !== "letter-zone") return;
-        setAdminLevelsLoading(true);
-        const timer = setTimeout(async () => {
-            try {
-                const levels = await findAdminLevelsAt(centerLat, centerLng);
-                setAdminLevels(levels);
-                // Auto-select first level if current selection is not available
-                if (levels.length > 0 && !levels.some((l) => l.level === adminLevel)) {
-                    setAdminLevel(levels[0].level);
-                }
-            } catch {
-                setAdminLevels([]); // Fallback: empty → hardcoded dropdown
-            } finally {
-                setAdminLevelsLoading(false);
-            }
-        }, 500);
-        return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [matchType, centerLat, centerLng]);
-
-    // ── Clear "find nearest" result + zone preview when type or position changes
+    // ── Clear "find nearest" result when type or position changes ─────────────
     useEffect(() => {
         setNearestResult(null);
         const m = leafletMapContext.get();
@@ -401,25 +344,8 @@ export function MatchingConfig({
             m.removeLayer(nearestMarkerRef.current);
             nearestMarkerRef.current = null;
         }
-        if (zoneLayerRef.current && m) {
-            m.removeLayer(zoneLayerRef.current);
-            zoneLayerRef.current = null;
-        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [matchType, centerLat, centerLng]);
-
-    // ── Update zone layer color when same/different changes ──────────────────
-    useEffect(() => {
-        if (!zoneLayerRef.current) return;
-        const color = same ? "#22C55E" : "#E8323A";
-        zoneLayerRef.current.setStyle({
-            color,
-            fillColor: color,
-            fillOpacity: same ? 0.15 : 0.10,
-            weight: 2,
-            dashArray: same ? undefined : "6 4",
-        });
-    }, [same]);
+    }, [measType, centerLat, centerLng]);
 
     // ── GPS fetch ────────────────────────────────────────────────────────────
     async function fetchGps() {
@@ -497,19 +423,26 @@ export function MatchingConfig({
 
     // ── Find nearest POI via Overpass ─────────────────────────────────────────
     async function handleFindNearest() {
-        const osm = TYPE_TO_OSM[matchType];
-        if (!osm) return;
+        const osm = TYPE_TO_OSM[measType];
+        if (!osm) {
+            // Coastline: use a different query
+            if (measType === "coastline") {
+                await handleFindNearestCoastline();
+            }
+            return;
+        }
 
         setNearestLoading(true);
         setNearestResult(null);
         try {
             const radiusM = 50_000;
-            const { key, value } = osm;
+            const { key, value, extra } = osm;
+            const filter = extra ?? "";
             const query =
                 `[out:json][timeout:25];` +
-                `(node["${key}"="${value}"](around:${radiusM},${centerLat},${centerLng});` +
-                `way["${key}"="${value}"](around:${radiusM},${centerLat},${centerLng});` +
-                `relation["${key}"="${value}"](around:${radiusM},${centerLat},${centerLng}););out center;`;
+                `(node["${key}"="${value}"]${filter}(around:${radiusM},${centerLat},${centerLng});` +
+                `way["${key}"="${value}"]${filter}(around:${radiusM},${centerLat},${centerLng});` +
+                `relation["${key}"="${value}"]${filter}(around:${radiusM},${centerLat},${centerLng}););out center;`;
 
             const { overpassFetch } = await import("@/maps/api/overpass-fetch");
             const data = await overpassFetch(query, { timeoutMs: 25_000 });
@@ -560,43 +493,62 @@ export function MatchingConfig({
         }
     }
 
-    // ── Zone preview on map ─────────────────────────────────────────────────
-    function drawZoneOnMap(feature: any) {
-        const m = leafletMapContext.get();
-        if (!m) return;
-        if (zoneLayerRef.current) m.removeLayer(zoneLayerRef.current);
-
-        const color = same ? "#22C55E" : "#E8323A";
-        zoneLayerRef.current = L.geoJSON(feature, {
-            style: {
-                color,
-                fillColor: color,
-                fillOpacity: same ? 0.15 : 0.10,
-                weight: 2,
-                dashArray: same ? undefined : "6 4",
-            },
-        }).addTo(m);
-
-        m.fitBounds(zoneLayerRef.current.getBounds(), { padding: [30, 30] });
-    }
-
-    async function handleZonePreview() {
-        setZonePreviewLoading(true);
+    async function handleFindNearestCoastline() {
+        setNearestLoading(true);
+        setNearestResult(null);
         try {
-            const feature = await findAdminBoundary(
-                centerLat,
-                centerLng,
-                adminLevel as 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10,
-            );
-            if (!feature) {
-                toast.info("Keine Zone für diese Stufe gefunden.");
+            const query =
+                `[out:json][timeout:25];` +
+                `way["natural"="coastline"](around:100000,${centerLat},${centerLng});out geom;`;
+
+            const { overpassFetch } = await import("@/maps/api/overpass-fetch");
+            const data = await overpassFetch(query, { timeoutMs: 25_000 });
+
+            if (!data.elements?.length) {
+                toast.info("Keine Küste im Umkreis von 100 km gefunden.");
+                setNearestLoading(false);
                 return;
             }
-            drawZoneOnMap(feature);
+
+            // Find nearest point on all coastline ways
+            let bestDist = Infinity;
+            let bestLat = 0;
+            let bestLng = 0;
+            for (const el of data.elements) {
+                if (!el.geometry) continue;
+                for (const pt of el.geometry) {
+                    const d = haversineKm(centerLat, centerLng, pt.lat, pt.lon);
+                    if (d < bestDist) {
+                        bestDist = d;
+                        bestLat = pt.lat;
+                        bestLng = pt.lon;
+                    }
+                }
+            }
+
+            if (bestDist === Infinity) {
+                toast.info("Keine Küste im Umkreis gefunden.");
+                setNearestLoading(false);
+                return;
+            }
+
+            setNearestResult({ name: "Küstenpunkt", lat: bestLat, lng: bestLng, dist: bestDist });
+
+            const m = leafletMapContext.get();
+            if (m) {
+                if (nearestMarkerRef.current) m.removeLayer(nearestMarkerRef.current);
+                nearestMarkerRef.current = L.circleMarker([bestLat, bestLng], {
+                    radius: 8,
+                    color: "#E8323A",
+                    fillColor: "#E8323A",
+                    fillOpacity: 0.85,
+                    weight: 2,
+                }).addTo(m).bindPopup("Nächster Küstenpunkt");
+            }
         } catch {
-            toast.error("Zone konnte nicht geladen werden.");
+            toast.error("Overpass-API nicht erreichbar.");
         } finally {
-            setZonePreviewLoading(false);
+            setNearestLoading(false);
         }
     }
 
@@ -609,23 +561,13 @@ export function MatchingConfig({
         const data: Record<string, unknown> = {
             lat: centerLat,
             lng: centerLng,
-            type: matchType,
-            same,
+            type: measType,
+            hiderCloser: true,
         };
-
-        // Add admin level + zone name for zone types
-        if (matchType === "zone" || matchType === "letter-zone") {
-            data.cat = { adminLevel, zoneName: selectedZoneName };
-        }
-
-        // Add length comparison for station length type
-        if (matchType === "same-length-station") {
-            data.lengthComparison = "same";
-        }
 
         setSubmitting(true);
         try {
-            await addQuestion(code, participant.token, { type: "matching", data });
+            await addQuestion(code, participant.token, { type: "measuring", data });
             setSubmitting(false);
             onDone?.();
             pickerOpen.set(false);
@@ -637,14 +579,13 @@ export function MatchingConfig({
     }
 
     // ── Derived ──────────────────────────────────────────────────────────────
-    const canFindNearest = matchType in TYPE_TO_OSM;
-    const selectedZoneName = adminLevels.find((al) => al.level === adminLevel)?.name ?? null;
+    const canFindNearest = measType in TYPE_TO_OSM || measType === "coastline";
 
     // ── Render ───────────────────────────────────────────────────────────────
     return (
         <>
             <PickerHeader
-                title="Matching konfigurieren"
+                title="📏 Measuring"
                 wsStatus={wsStatus}
                 onBack={onBack}
                 onSettings={onSettings}
@@ -661,17 +602,17 @@ export function MatchingConfig({
             }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
 
-                    {/* ── Kategorie dropdown ──────────────────────────────── */}
+                    {/* ── Fragetyp dropdown ──────────────────────────────── */}
                     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                        <span style={sectionLabel}>Kategorie</span>
+                        <span style={sectionLabel}>Fragetyp</span>
                         <select
-                            value={matchType}
-                            onChange={(e) => setMatchType(e.target.value)}
+                            value={measType}
+                            onChange={(e) => setMeasType(e.target.value)}
                             style={selectStyle}
                         >
                             {ungrouped.map((mt) => (
                                 <option key={mt.value} value={mt.value}>
-                                    {getMatchLabel(mt.value)}
+                                    {getMeasLabel(mt.value)}
                                 </option>
                             ))}
                             {groups.map((groupName) => (
@@ -680,7 +621,7 @@ export function MatchingConfig({
                                         .filter((mt) => mt.group === groupName)
                                         .map((mt) => (
                                             <option key={mt.value} value={mt.value}>
-                                                {getMatchLabel(mt.value)}
+                                                {getMeasLabel(mt.value)}
                                             </option>
                                         ))}
                                 </optgroup>
@@ -688,50 +629,13 @@ export function MatchingConfig({
                         </select>
                     </div>
 
-                    {/* ── Admin level for zone types ──────────────────────── */}
-                    {(matchType === "zone" || matchType === "letter-zone") && (
-                        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                            <span style={sectionLabel}>Admin-Stufe</span>
-                            {adminLevelsLoading ? (
-                                <span style={{ color: "#6B7280", fontSize: "13px", padding: "12px 0" }}>
-                                    Zonen werden geladen…
-                                </span>
-                            ) : adminLevels.length > 0 ? (
-                                <select
-                                    value={adminLevel}
-                                    onChange={(e) => setAdminLevel(parseInt(e.target.value))}
-                                    style={selectStyle}
-                                >
-                                    {adminLevels.map((al) => (
-                                        <option key={al.level} value={al.level}>
-                                            Stufe {al.level} — {al.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            ) : (
-                                /* Fallback: hardcoded levels when API fails */
-                                <select
-                                    value={adminLevel}
-                                    onChange={(e) => setAdminLevel(parseInt(e.target.value))}
-                                    style={selectStyle}
-                                >
-                                    {[2, 3, 4, 5, 6, 7, 8, 9, 10].map((lvl) => (
-                                        <option key={lvl} value={lvl}>
-                                            {t(`osmZone.${lvl}` as TranslationKey, locale.get()) ?? `Stufe ${lvl}`}
-                                        </option>
-                                    ))}
-                                </select>
-                            )}
-                        </div>
-                    )}
-
-                    {/* ── Dein Standort ────────────────────────────────────── */}
-                    <ConfigCard accentColor="red">
+                    {/* ── Dein Standort (Seeker) ──────────────────────────── */}
+                    <ConfigCard accentColor="green">
                         {/* Card header with icon */}
                         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                             <LocateFixed size={18} color="#fff" />
                             <span style={{ color: "#fff", fontSize: "16px", fontWeight: 700 }}>
-                                Dein Standort
+                                Dein Standort (Seeker)
                             </span>
                         </div>
 
@@ -892,80 +796,47 @@ export function MatchingConfig({
                         )}
                     </ConfigCard>
 
-                    {/* ── Fragevorschau ────────────────────────────────────── */}
-                    <ConfigCard accentColor="green" title="Fragevorschau">
-                        <p style={{ margin: 0, color: "#E5E7EB", fontSize: "14px", lineHeight: 1.55 }}>
-                            {renderPreview(matchType, same, adminLevel, selectedZoneName)}
-                        </p>
-
-                        {/* Compact same/different pills */}
-                        <div style={{ display: "flex", gap: 6, marginTop: 2 }}>
-                            <button
-                                type="button"
-                                onClick={() => setSame(true)}
-                                style={{
-                                    padding: "6px 12px",
-                                    borderRadius: 999,
-                                    border: same
-                                        ? "1px solid rgba(34,197,94,0.4)"
-                                        : "1px solid rgba(255,255,255,0.1)",
-                                    cursor: "pointer",
-                                    fontSize: "12px",
-                                    fontWeight: 600,
-                                    background: same ? "rgba(34,197,94,0.2)" : "transparent",
-                                    color: same ? "#22C55E" : "#6B7280",
-                                    transition: "all 0.15s",
-                                }}
-                            >
-                                ✅ Gleich
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setSame(false)}
-                                style={{
-                                    padding: "6px 12px",
-                                    borderRadius: 999,
-                                    border: !same
-                                        ? "1px solid rgba(232,50,58,0.4)"
-                                        : "1px solid rgba(255,255,255,0.1)",
-                                    cursor: "pointer",
-                                    fontSize: "12px",
-                                    fontWeight: 600,
-                                    background: !same ? "rgba(232,50,58,0.2)" : "transparent",
-                                    color: !same ? "#E8323A" : "#6B7280",
-                                    transition: "all 0.15s",
-                                }}
-                            >
-                                ❌ Anders
-                            </button>
+                    {/* ── Distance to reference point ─────────────────────── */}
+                    {nearestResult && (
+                        <div style={{
+                            background: "#2A2A3A",
+                            borderRadius: 12,
+                            border: "1px solid rgba(255,255,255,0.08)",
+                            padding: "14px 16px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                        }}>
+                            <span style={{
+                                color: "#99A1AF",
+                                fontSize: "11px",
+                                fontWeight: 700,
+                                letterSpacing: "0.08em",
+                                textTransform: "uppercase",
+                            }}>
+                                Deine Distanz zum Referenzpunkt
+                            </span>
+                            <span style={{
+                                color: "#fff",
+                                fontSize: "22px",
+                                fontWeight: 800,
+                                fontFamily: "Poppins, sans-serif",
+                            }}>
+                                {nearestResult.dist < 1
+                                    ? `${Math.round(nearestResult.dist * 1000)} m`
+                                    : `${nearestResult.dist.toFixed(1)} km`}
+                            </span>
                         </div>
+                    )}
 
-                        {/* Zone map preview button (only for zone/letter-zone) */}
-                        {(matchType === "zone" || matchType === "letter-zone") && (
-                            <button
-                                type="button"
-                                onClick={handleZonePreview}
-                                disabled={zonePreviewLoading}
-                                style={{
-                                    background: "none",
-                                    border: "none",
-                                    cursor: zonePreviewLoading ? "wait" : "pointer",
-                                    color: "#22C55E",
-                                    fontSize: "12px",
-                                    fontWeight: 600,
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 4,
-                                    padding: 0,
-                                    marginTop: 2,
-                                }}
-                            >
-                                🗺️ {zonePreviewLoading ? "Zone wird geladen…" : "Vorschau auf der Karte"}
-                            </button>
-                        )}
+                    {/* ── Fragevorschau ────────────────────────────────────── */}
+                    <ConfigCard accentColor="red" title="FRAGEVORSCHAU">
+                        <p style={{ margin: 0, color: "#E5E7EB", fontSize: "14px", lineHeight: 1.55 }}>
+                            {renderPreview(measType)}
+                        </p>
                     </ConfigCard>
 
-                    {/* ── Find nearest button ──────────────────────────────── */}
+                    {/* ── Show on map button ───────────────────────────────── */}
                     {canFindNearest && (
                         <button
                             type="button"
@@ -974,7 +845,7 @@ export function MatchingConfig({
                             style={{
                                 padding: "14px 16px",
                                 borderRadius: 10,
-                                border: "2px solid #22C55E",
+                                border: "2px solid #E8323A",
                                 background: "transparent",
                                 color: "#fff",
                                 fontSize: "14px",
@@ -988,26 +859,26 @@ export function MatchingConfig({
                                 width: "100%",
                             }}
                         >
-                            <LocateFixed size={16} color="#22C55E" />
+                            <LocateFixed size={16} color="#E8323A" />
                             {nearestLoading
                                 ? "Wird gesucht…"
-                                : `Zeige mir meine nächstgelegene ${getMatchLabel(matchType)}`}
+                                : `${getMeasLabel(measType)} auf Karte anzeigen`}
                         </button>
                     )}
 
-                    {/* Find nearest result */}
+                    {/* Find nearest result detail */}
                     {nearestResult && (
                         <div style={{
-                            background: "rgba(34,197,94,0.08)",
-                            border: "1px solid rgba(34,197,94,0.25)",
+                            background: "rgba(232,50,58,0.08)",
+                            border: "1px solid rgba(232,50,58,0.25)",
                             borderRadius: 10,
                             padding: "12px 14px",
                             display: "flex",
                             flexDirection: "column",
                             gap: 4,
                         }}>
-                            <span style={{ color: "#22C55E", fontSize: "14px", fontWeight: 700 }}>
-                                📍 {nearestResult.name}
+                            <span style={{ color: "#E8323A", fontSize: "14px", fontWeight: 700 }}>
+                                {nearestResult.name}
                             </span>
                             <span style={{ color: "#99A1AF", fontSize: "12px" }}>
                                 {nearestResult.dist < 1
@@ -1016,25 +887,13 @@ export function MatchingConfig({
                             </span>
                         </div>
                     )}
-
-                    {/* ── Info hint ────────────────────────────────────────── */}
-                    <div style={{
-                        background: "#2A2A3A",
-                        borderRadius: 10,
-                        padding: "12px 14px",
-                        fontSize: "13px",
-                        color: "#99A1AF",
-                        lineHeight: 1.5,
-                    }}>
-                        💡 {getInfoHint(matchType)}
-                    </div>
                 </div>
             </div>
 
             {/* ── Footer ──────────────────────────────────────────────── */}
             {mode === "gps" ? (
                 <PickerFooter
-                    primaryLabel={submitting ? "Wird gesendet…" : "Frage senden  ✈"}
+                    primaryLabel={submitting ? "Wird gesendet…" : "Frage stellen  ✈"}
                     primaryDisabled={submitting}
                     onPrimary={handleSubmit}
                     onCancel={onBack}
@@ -1042,7 +901,7 @@ export function MatchingConfig({
                 />
             ) : (
                 <PickerFooter
-                    primaryLabel={submitting ? "Wird gesendet…" : "Frage senden  ✈"}
+                    primaryLabel={submitting ? "Wird gesendet…" : "Frage stellen  ✈"}
                     primaryDisabled={submitting}
                     onPrimary={handleSubmit}
                     onCancel={() => setMode("gps")}

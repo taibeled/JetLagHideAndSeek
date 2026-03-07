@@ -49,13 +49,24 @@ export const adjustPerTentacle = async (
         throw new Error("Must have a location");
     }
 
-    const rawPoints =
-        question.locationType === "custom"
-            ? turf.featureCollection(question.places)
+    // When the question has been answered, the POI list used for the Voronoi
+    // computation is stored in `places` (saved by hiderifyTentacles).  Use it
+    // directly so the Seeker doesn't need a redundant Overpass query that might
+    // fail due to rate-limiting or return different results.
+    const hasResolvedPlaces =
+        question.locationType !== "custom" &&
+        Array.isArray(question.places) &&
+        question.places.length > 0;
+
+    const rawPoints = hasResolvedPlaces
+        ? turf.featureCollection(question.places!)
+        : question.locationType === "custom"
+            ? turf.featureCollection(question.places!)
             : await findTentacleLocations(question);
 
-    const points =
-        question.locationType === "custom"
+    const points = hasResolvedPlaces
+        ? rawPoints
+        : question.locationType === "custom"
             ? filterPointsWithinRadius(
                   rawPoints,
                   question.lng,
@@ -84,9 +95,11 @@ export const adjustPerTentacle = async (
         question.unit,
     );
 
-    return turf.intersect(
+    const result = turf.intersect(
         turf.featureCollection([safeUnion(mapData), correctPolygon, circle]),
     );
+
+    return result;
 };
 
 export const hiderifyTentacles = async (question: TentacleQuestion) => {
@@ -110,6 +123,12 @@ export const hiderifyTentacles = async (question: TentacleQuestion) => {
                   question.unit,
               )
             : rawPoints;
+
+    // Persist the resolved POI list so that downstream consumers (the
+    // Seeker's adjustPerTentacle) can reuse it without re-querying Overpass.
+    // This prevents rate-limiting (HTTP 429) and guarantees both roles
+    // compute the same Voronoi diagram from identical POI data.
+    question.places = points.features;
 
     const voronoi = geoSpatialVoronoi(points);
 

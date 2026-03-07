@@ -661,8 +661,6 @@ export function ThermometerConfig({ wsStatus, onBack, onSettings, onClose, onDon
         setSubmitting(true);
         try {
             await addQuestion(code, participant.token, { type: "thermometer", data });
-            stageQuestionWithData("thermometer", data);
-            pendingDraftKey.set(null);
             setSubmitting(false);
             onDone?.();
             pickerOpen.set(false);

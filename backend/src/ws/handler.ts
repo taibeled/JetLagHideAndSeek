@@ -5,7 +5,7 @@ import type { WSContext } from "hono/ws";
 import { nanoid } from "nanoid";
 
 import { db, schema } from "../db/index.js";
-import { toSessionQuestion } from "../routes/sessions.js";
+import { buildParticipantsMap, toSessionQuestion } from "../routes/sessions.js";
 import { type ConnectedClient, wsManager } from "./manager.js";
 
 // ── In-memory expiry timer registry ──────────────────────────────────────────
@@ -127,10 +127,12 @@ export async function handleWsOpen(
         orderBy: (q, { asc }) => [asc(q.createdAt)],
     });
 
+    const pMap = await buildParticipantsMap(db, sessionRow.id);
+
     ws.send(
         JSON.stringify({
             type: "sync",
-            questions: questionRows.map(toSessionQuestion),
+            questions: questionRows.map((r) => toSessionQuestion(r, pMap)),
             mapLocation: sessionRow.mapLocation
                 ? JSON.parse(sessionRow.mapLocation)
                 : null,
@@ -191,9 +193,10 @@ export async function handleWsMessage(
                 where: eq(schema.questions.id, questionId),
             }))!;
 
+            const addPMap = await buildParticipantsMap(db, sessionRow.id);
             const questionAddedEvent = {
                 type: "question_added" as const,
-                question: toSessionQuestion(questionRow),
+                question: toSessionQuestion(questionRow, addPMap),
             };
             wsManager.broadcast(code, questionAddedEvent);
             void wsManager.persistEvent(db, client.sessionId, client.participantId, questionAddedEvent);
@@ -219,6 +222,7 @@ export async function handleWsMessage(
                     status: "answered",
                     answerData: JSON.stringify(event.answerData),
                     answeredAt,
+                    answeredByParticipantId: client.participantId,
                 })
                 .where(eq(schema.questions.id, event.questionId));
 
@@ -229,9 +233,10 @@ export async function handleWsMessage(
             // Cancel the expiry timer now that the question is answered
             cancelExpiry(event.questionId);
 
+            const ansPMap = await buildParticipantsMap(db, client.sessionId);
             const questionAnsweredEvent = {
                 type: "question_answered" as const,
-                question: toSessionQuestion(updatedRow),
+                question: toSessionQuestion(updatedRow, ansPMap),
             };
             wsManager.broadcast(code, questionAnsweredEvent);
             void wsManager.persistEvent(db, client.sessionId, client.participantId, questionAnsweredEvent);

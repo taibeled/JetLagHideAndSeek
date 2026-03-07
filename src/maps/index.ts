@@ -1,5 +1,7 @@
+import * as turf from "@turf/turf";
 import type { Feature, FeatureCollection } from "geojson";
 
+import { safeUnion } from "./geo-utils";
 import {
     adjustPerMatching,
     hiderifyMatching,
@@ -80,6 +82,30 @@ export async function adjustMapGeoDataForQuestion(
     question: any,
     mapGeoData: any,
 ) {
+    // Shortcut: if the hider's answer includes a pre-computed GeoJSON
+    // result, intersect it with the current map boundary directly.
+    // This avoids re-querying Overpass (which may fail or return different
+    // data) and guarantees the restriction survives page reloads.
+    if (question?.data?.computedGeoJSON) {
+        try {
+            const precomputed = question.data.computedGeoJSON;
+            const feature =
+                precomputed.type === "FeatureCollection"
+                    ? safeUnion(precomputed)
+                    : precomputed;
+            if (feature) {
+                const result = turf.intersect(
+                    turf.featureCollection([safeUnion(mapGeoData), feature]),
+                );
+                if (result) {
+                    return { type: "FeatureCollection", features: [result] };
+                }
+            }
+        } catch {
+            // Fall through to the regular per-type logic
+        }
+    }
+
     try {
         switch (question?.id) {
             case "radius":
@@ -101,7 +127,11 @@ export async function adjustMapGeoDataForQuestion(
             default:
                 return mapGeoData;
         }
-    } catch {
+    } catch (err) {
+        console.error(
+            `[adjustMapGeoDataForQuestion] Failed for question type="${question?.id}":`,
+            err,
+        );
         return mapGeoData;
     }
 }
@@ -130,6 +160,12 @@ export async function applyQuestionsToMapGeoData(
         }
 
         mapGeoData = await adjustMapGeoDataForQuestion(question, mapGeoData);
+
+        if (mapGeoData == null) {
+            console.error("[applyQuestions] adjustMapGeoDataForQuestion returned null/undefined for", question?.id);
+            // Can't continue — bail out with whatever we had
+            return { type: "FeatureCollection", features: [] };
+        }
 
         if (mapGeoData.type !== "FeatureCollection") {
             mapGeoData = {

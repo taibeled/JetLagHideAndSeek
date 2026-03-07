@@ -14,6 +14,7 @@ import { OptionDrawers } from "@/components/OptionDrawers";
 import { sessionCode, sessionParticipant } from "@/lib/session-context";
 import { bottomSheetState, pickerOpen } from "@/lib/bottom-sheet-state";
 import { useSessionMapSync } from "@/hooks/useSessionMapSync";
+import { useSessionInit } from "@/hooks/useSessionInit";
 import { useMapLocationSync } from "@/hooks/useMapLocationSync";
 import { useSessionWebSocket } from "@/hooks/useSessionWebSocket";
 
@@ -26,6 +27,7 @@ export const BottomSheetPanel = () => {
     const tr = useT();
 
     useSessionMapSync();
+    useSessionInit();
     useMapLocationSync();
 
     const $participant = useStore(sessionParticipant);

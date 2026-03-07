@@ -37,7 +37,12 @@ export function createApp(db: Db): Hono {
                     "http://localhost:4321",
                     "http://localhost:3000",
                 ];
-                return allowed.includes(origin) ? origin : allowed[0];
+                if (allowed.includes(origin)) return origin;
+                // Allow local network access (e.g. phone on same WiFi)
+                if (/^https?:\/\/(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+|127\.\d+\.\d+\.\d+)(:\d+)?$/.test(origin)) {
+                    return origin;
+                }
+                return allowed[0];
             },
             allowMethods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
             allowHeaders: ["Content-Type", "x-participant-token"],

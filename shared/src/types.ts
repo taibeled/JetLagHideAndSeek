@@ -81,6 +81,12 @@ export interface SessionQuestion {
     answeredAt?: string;
     /** ISO8601 deadline after which the question expires. Set server-side at creation time. */
     deadline?: string;
+    /** Participant who answered the question (hider) */
+    answeredByParticipantId?: string;
+    /** Display name of the participant who created the question */
+    createdByDisplayName?: string;
+    /** Display name of the participant who answered the question */
+    answeredByDisplayName?: string;
 }
 
 // ── HTTP request / response bodies ───────────────────────────────────────────

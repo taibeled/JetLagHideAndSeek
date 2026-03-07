@@ -35,10 +35,11 @@ import {
     hiderMode,
     isLoading,
     leafletMapContext,
+    mapGeoJSON,
     questions as questions_atom,
 } from "@/lib/context";
 import { SidebarContext } from "@/components/ui/sidebar-l-context";
-import { hiderifyQuestion } from "@/maps";
+import { adjustMapGeoDataForQuestion, hiderifyQuestion } from "@/maps";
 import { addQuestion, answerQuestion } from "@/lib/session-api";
 import {
     pendingDraftKey,
@@ -94,6 +95,12 @@ function formatLateness(ms: number): string {
     return `${mins} min zu spät`;
 }
 
+/** Format an ISO8601 timestamp as "HH:MM" in the user's local timezone. */
+function formatTime(iso: string): string {
+    const d = new Date(iso);
+    return d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+}
+
 // ── Translation-backed label helpers ─────────────────────────────────────────
 
 function getQuestionLabel(type: string): string {
@@ -119,6 +126,19 @@ function getMatchTypeLabel(type: string): string {
 function getUnitLabel(unit: string): string {
     const key = `unit.${unit}` as TranslationKey;
     return t(key, locale.get()) ?? unit;
+}
+
+/** Emoji icon per question type for card headers */
+function getQuestionIcon(type: string): string {
+    switch (type) {
+        case "radius": return "🎯";
+        case "thermometer": return "🌡️";
+        case "tentacles": return "🐙";
+        case "matching": return "🔄";
+        case "measuring": return "📏";
+        case "photo": return "📸";
+        default: return "❓";
+    }
 }
 
 // ── Kurztext-Beschreibung je Fragetyp ─────────────────────────────────────────
@@ -161,6 +181,10 @@ function describeQuestion(
         case "matching": {
             const dir = data.same === false ? t("sqp.descOther", loc) : t("sqp.descSame", loc);
             const typeLabel = getMatchTypeLabel(data.type ?? "");
+            // For zone types, append the zone name and admin level
+            if ((data.type === "zone" || data.type === "letter-zone") && data.cat?.zoneName) {
+                return `${dir} ${typeLabel}: ${data.cat.zoneName} (Stufe ${data.cat.adminLevel})`;
+            }
             return `${dir} ${typeLabel}`;
         }
         case "measuring": {
@@ -186,7 +210,13 @@ function QuestionDetails({
     sq,
     answered = false,
 }: {
-    sq: { type: string; data: unknown; status: string; answerData?: unknown };
+    sq: {
+        type: string; data: unknown; status: string; answerData?: unknown;
+        createdAt?: string;
+        answeredAt?: string;
+        createdByDisplayName?: string;
+        answeredByDisplayName?: string;
+    };
     answered?: boolean;
 }) {
     const d = sq.data as any;
@@ -194,6 +224,18 @@ function QuestionDetails({
     if (!d) return null;
 
     const rows: { icon: string; text: string }[] = [];
+
+    // ── Timestamps + Autor ────────────────────────────────────────────────
+    if (sq.createdAt) {
+        const time = formatTime(sq.createdAt);
+        const by = sq.createdByDisplayName ? ` von ${sq.createdByDisplayName}` : "";
+        rows.push({ icon: "🕐", text: `Gestellt um ${time}${by}` });
+    }
+    if (sq.answeredAt) {
+        const time = formatTime(sq.answeredAt);
+        const by = sq.answeredByDisplayName ? ` von ${sq.answeredByDisplayName}` : "";
+        rows.push({ icon: "✏️", text: `Beantwortet um ${time}${by}` });
+    }
 
     // Koordinaten (Hauptpunkt)
     if (typeof d.lat === "number" && typeof d.lng === "number") {
@@ -235,11 +277,14 @@ function QuestionDetails({
                 ? getMatchTypeLabel(d.type)
                 : getMeasTypeLabel(d.type);
         rows.push({ icon: "🔎", text: `${t("sqp.detailTyp", loc)} ${label}` });
-        // Admin-Level bei Zone
+        // Admin-Level + Zonenname bei Zone
         if (d.cat?.adminLevel != null) {
+            const zoneText = d.cat.zoneName
+                ? `${d.cat.zoneName} (Stufe ${d.cat.adminLevel})`
+                : `${t("sqp.detailVerwaltungsebene", loc)} ${d.cat.adminLevel}`;
             rows.push({
                 icon: "🗺️",
-                text: `${t("sqp.detailVerwaltungsebene", loc)} ${d.cat.adminLevel}`,
+                text: zoneText,
             });
         }
     }
@@ -465,9 +510,30 @@ export function SessionQuestionPanel() {
             // even for questions created before drag was explicitly set in the seeker's config.
             data: { ...(pendingAnswerSq.data as object), drag: true },
         } as any)
-            .then((answered) => {
+            .then(async (answered) => {
                 if (cancelled) return;
-                latestAnswerDataRef.current = answered.data;
+
+                // Pre-compute the resulting GeoJSON so the map restriction
+                // survives page reloads without re-querying Overpass.
+                let computedGeoJSON: unknown = undefined;
+                const currentMapData = mapGeoJSON.get();
+                if (currentMapData) {
+                    try {
+                        const result = await adjustMapGeoDataForQuestion(
+                            { id: pendingAnswerSq.type, data: { ...answered.data, drag: false } },
+                            currentMapData,
+                        );
+                        if (result && !cancelled) {
+                            computedGeoJSON = result;
+                        }
+                    } catch { /* best-effort: regular Overpass path used as fallback */ }
+                }
+
+                if (cancelled) return;
+                latestAnswerDataRef.current = {
+                    ...answered.data,
+                    ...(computedGeoJSON !== undefined ? { computedGeoJSON } : {}),
+                };
                 setPreviewResult(
                     extractPreviewLabel(pendingAnswerSq.type, answered.data),
                 );
@@ -774,146 +840,21 @@ export function SessionQuestionPanel() {
                     </div>
                 </DialogContent>
             </Dialog>
-            {/* GPS / Pin status bar */}
-            <div className="flex items-center gap-2 flex-wrap rounded-md px-2 py-1.5" style={{ backgroundColor: "#84BCDA" }}>
-                <MapPin className="h-4 w-4 shrink-0 text-white" />
-                {$hiderMode && typeof $hiderMode === "object" ? (
-                    <>
-                        <span className="text-xs font-medium text-white">
-                            GPS:{" "}
-                            {$hiderMode.latitude.toFixed(4)},{" "}
-                            {$hiderMode.longitude.toFixed(4)}
-                        </span>
-                        <button
-                            type="button"
-                            className="ml-auto text-xs underline font-medium"
-                            style={{ color: "#D56062" }}
-                            onClick={() => hiderMode.set(false)}
-                        >
-                            {tr("sqp.removePin")}
-                        </button>
-                    </>
-                ) : (
-                    <span className="text-xs text-white/80">
-                        {tr("sqp.noPinSet")}
-                    </span>
-                )}
-            </div>
-
-            {/* ── Active answer preview panel ─────────────────────────────── */}
-            {pendingAnswerSq && pendingAnswerSq.type === "photo" && (
-                /* Photo-specific answer panel — no GPS, no pin, just confirm */
-                <div className="rounded-md p-3 flex flex-col gap-2" style={{ backgroundColor: "#067BC2" }}>
-                    <p className="text-sm font-bold text-white">
-                        📸 {getQuestionLabel(pendingAnswerSq.type)}{" "}
-                        – {tr("sqp.prepareAnswer")}
-                    </p>
-
-                    {/* Challenge title + rules */}
-                    <div className="rounded px-3 py-2" style={{ backgroundColor: "rgba(255,255,255,0.10)" }}>
-                        <p className="text-sm font-bold text-white">
-                            {t(`photoType.${(pendingAnswerSq.data as any)?.photoType}` as TranslationKey, locale.get())}
-                        </p>
-                        <p className="text-xs mt-1 text-white/80">
-                            {t(`photoRules.${(pendingAnswerSq.data as any)?.photoType}` as TranslationKey, locale.get())}
-                        </p>
-                    </div>
-
-                    {/* Action buttons */}
-                    <div className="flex flex-col items-start gap-1 mt-1">
-                        <Button
-                            size="sm"
-                            disabled={submitting}
-                            onClick={submitAnswer}
-                            className="border-0 font-bold disabled:opacity-40"
-                            style={{ backgroundColor: "#ECC30B", color: "#000" }}
-                        >
-                            {submitting
-                                ? tr("sqp.sending")
-                                : `📸 ${t("photo.confirm" as TranslationKey, locale.get())}`}
-                        </Button>
-                        <button
-                            type="button"
-                            onClick={cancelAnswering}
-                            disabled={submitting}
-                            className="text-xs underline font-medium disabled:opacity-40"
-                            style={{ color: "#84BCDA" }}
-                        >
-                            {tr("sqp.cancel")}
-                        </button>
-                    </div>
-                </div>
-            )}
-            {pendingAnswerSq && pendingAnswerSq.type !== "photo" && (
-                <div className="rounded-md p-3 flex flex-col gap-2" style={{ backgroundColor: "#067BC2" }}>
-                    <p className="text-sm font-bold text-white">
-                        {getQuestionLabel(pendingAnswerSq.type)}{" "}
-                        – {tr("sqp.prepareAnswer")}
-                    </p>
-
-                    {/* GPS button */}
-                    <Button
-                        size="sm"
-                        disabled={loadingGPS}
-                        onClick={loadGPS}
-                        className="self-start border-0 font-bold disabled:opacity-40"
-                        style={{ backgroundColor: "#84BCDA", color: "#fff" }}
-                    >
-                        {loadingGPS ? tr("sqp.loadingGps") : `📍 ${tr("sqp.useGpsShort")}`}
-                    </Button>
-
-                    {/* Live preview */}
-                    {$hiderMode === false ? (
-                        <p className="text-xs text-white/70">
-                            {tr("sqp.setPinHint")}
-                        </p>
-                    ) : previewResult ? (
-                        <div
-                            className="rounded px-3 py-2 text-sm font-bold text-white"
-                            style={{ backgroundColor: previewResult.positive ? "#ECC30B" : "#D56062",
-                                     color: previewResult.positive ? "#000" : "#fff" }}
-                        >
-                            {previewResult.label}
-                        </div>
-                    ) : (
-                        <p className="text-xs text-white/70">
-                            {tr("sqp.computing")}
-                        </p>
-                    )}
-
-                    {/* Action buttons */}
-                    <div className="flex flex-col items-start gap-1 mt-1">
-                        <Button
-                            size="sm"
-                            disabled={
-                                submitting ||
-                                !latestAnswerDataRef.current ||
-                                $hiderMode === false
-                            }
-                            onClick={submitAnswer}
-                            className="border-0 font-bold disabled:opacity-40"
-                            style={{ backgroundColor: "#ECC30B", color: "#000" }}
-                        >
-                            {submitting ? tr("sqp.sending") : tr("sqp.sendAnswer")}
-                        </Button>
-                        <button
-                            type="button"
-                            onClick={cancelAnswering}
-                            disabled={submitting}
-                            className="text-xs underline font-medium disabled:opacity-40"
-                            style={{ color: "#84BCDA" }}
-                        >
-                            {tr("sqp.cancel")}
-                        </button>
-                    </div>
-                </div>
-            )}
 
             <QuestionList
-                questions={sqList.filter((q) => q.status !== "answered")}
+                questions={sqList.filter((sq) => sq.status !== "answered")}
                 isHider={true}
                 onAnswer={startAnswering}
                 pendingAnswerId={pendingAnswerSq?.id ?? null}
+                hiderMode={$hiderMode}
+                previewResult={previewResult}
+                submitting={submitting}
+                loadingGPS={loadingGPS}
+                onLoadGPS={loadGPS}
+                onPlaceManualPin={placeManualPin}
+                onSubmitAnswer={submitAnswer}
+                onCancelAnswering={cancelAnswering}
+                pendingAnswerType={pendingAnswerSq?.type ?? null}
             />
         </div>
     );
@@ -1040,6 +981,16 @@ export function QuestionList({
     sendingType,
     onCancelPending,
     onSendPending,
+    // Hider inline answer props
+    hiderMode: $hiderMode,
+    previewResult,
+    submitting,
+    loadingGPS,
+    onLoadGPS,
+    onPlaceManualPin,
+    onSubmitAnswer,
+    onCancelAnswering,
+    pendingAnswerType,
 }: {
     questions: SessionQuestion[];
     isHider: boolean;
@@ -1054,6 +1005,16 @@ export function QuestionList({
     onCancelPending?: () => void;
     /** Seeker only: send staged question */
     onSendPending?: () => void;
+    // ── Hider inline answer UI props ──
+    hiderMode?: { latitude: number; longitude: number } | false;
+    previewResult?: PreviewResult | null;
+    submitting?: boolean;
+    loadingGPS?: boolean;
+    onLoadGPS?: () => void;
+    onPlaceManualPin?: () => void;
+    onSubmitAnswer?: () => void;
+    onCancelAnswering?: () => void;
+    pendingAnswerType?: string | null;
 }) {
     const tr = useT();
     const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -1071,6 +1032,55 @@ export function QuestionList({
             </p>
         );
     }
+
+    // ── Inline styles ──────────────────────────────────────────────────────
+    const coordInputStyle: React.CSSProperties = {
+        background: "rgba(255,255,255,0.06)",
+        border: "1px solid rgba(255,255,255,0.1)",
+        borderRadius: 8,
+        color: "#fff",
+        fontSize: "13px",
+        padding: "8px 10px",
+        fontFamily: "inherit",
+        width: "100%",
+        boxSizing: "border-box" as const,
+    };
+    const coordLabelStyle: React.CSSProperties = {
+        fontSize: "12px",
+        fontWeight: 600,
+        color: "#E5E7EB",
+        marginBottom: 4,
+        display: "block",
+    };
+    const actionLinkStyle: React.CSSProperties = {
+        color: "#22C55E",
+        fontSize: "12px",
+        fontWeight: 600,
+        background: "none",
+        border: "none",
+        cursor: "pointer",
+        textAlign: "left" as const,
+        padding: 0,
+        fontFamily: "inherit",
+    };
+    const submitBtnStyle: React.CSSProperties = {
+        background: "#E8323A",
+        color: "#fff",
+        border: "none",
+        borderRadius: 10,
+        padding: "14px",
+        fontWeight: 800,
+        fontSize: "15px",
+        fontFamily: "Poppins, sans-serif",
+        width: "100%",
+        cursor: "pointer",
+        opacity: 1,
+    };
+    const submitBtnDisabledStyle: React.CSSProperties = {
+        ...submitBtnStyle,
+        opacity: 0.4,
+        cursor: "not-allowed",
+    };
 
     return (
         <div className="flex flex-col gap-2">
@@ -1135,16 +1145,32 @@ export function QuestionList({
                 const isExpired = sq.status === "expired";
                 const isPending = sq.status === "pending";
                 const isActive = sq.id === activePendingId;
+                const isBeingAnswered = isHider && pendingAnswerId === sq.id;
 
-                // State C (answered): #84BCDA; State D (expired): dark grey; State B (pending): #F37748
-                const bgColor = isAnswered ? "#84BCDA" : isExpired ? "#6b7280" : "#F37748";
-                const accentColor = isAnswered ? "#067BC2" : isExpired ? "#d1d5db" : "#ECC30B";
+                // ── ConfigCard-style accent colors ──
+                const accentBorder = isBeingAnswered
+                    ? "#22C55E"
+                    : isAnswered
+                        ? "#067BC2"
+                        : isExpired
+                            ? "#6B7280"
+                            : "#F59E0B";
 
-                const statusLabel = isAnswered
-                    ? tr("sqp.answered")
-                    : isExpired
-                        ? tr("sqp.expired")
-                        : tr("sqp.pending");
+                const badgeColor = isBeingAnswered
+                    ? "#22C55E"
+                    : isAnswered
+                        ? "#067BC2"
+                        : isExpired
+                            ? "#6B7280"
+                            : "#F59E0B";
+
+                const statusLabel = isBeingAnswered
+                    ? tr("sqp.inProgress")
+                    : isAnswered
+                        ? tr("sqp.answered")
+                        : isExpired
+                            ? tr("sqp.expired")
+                            : tr("sqp.pending");
 
                 // Lateness: how many seconds/minutes after the deadline was the question answered?
                 const lateMs =
@@ -1153,86 +1179,324 @@ export function QuestionList({
                         : 0;
                 const lateLabel = lateMs > 0 ? formatLateness(lateMs) : null;
 
+                const qData = sq.data as any;
+
                 return (
                     <div
                         key={sq.id}
-                        className="rounded-md p-2 text-sm"
-                        style={{ backgroundColor: bgColor }}
+                        style={{
+                            background: "#2A2A3A",
+                            borderRadius: 12,
+                            borderLeft: `4px solid ${accentBorder}`,
+                            padding: "14px 16px",
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 10,
+                        }}
                     >
-                        {/* ── Header row: icon + label + chevron + action button ── */}
+                        {/* ── Header row: icon + label + status badge pill ── */}
                         <div
                             className="flex items-center gap-2 cursor-pointer select-none"
                             onClick={() =>
                                 setExpandedId(isExpanded ? null : sq.id)
                             }
                         >
-                            {isAnswered ? (
-                                <CheckCircle className="h-4 w-4 shrink-0 text-white" />
-                            ) : (
-                                <Clock className="h-4 w-4 shrink-0 text-white" />
-                            )}
-                            <span className="font-semibold flex-1 min-w-0 text-white">
+                            <span style={{ fontSize: "16px", lineHeight: 1 }}>
+                                {getQuestionIcon(sq.type)}
+                            </span>
+                            <span style={{
+                                fontWeight: 700,
+                                flex: 1,
+                                minWidth: 0,
+                                color: "#fff",
+                                fontSize: "14px",
+                            }}>
                                 {getQuestionLabel(sq.type)}
-                                <span className="ml-2 text-xs font-normal" style={{ color: accentColor }}>
-                                    {statusLabel}
-                                </span>
-                                {lateLabel && (
-                                    <span className="ml-2 text-xs font-normal" style={{ color: "#F59E0B" }}>
-                                        {lateLabel}
-                                    </span>
-                                )}
+                            </span>
+                            <span style={{
+                                fontSize: "11px",
+                                fontWeight: 600,
+                                padding: "3px 10px",
+                                borderRadius: 999,
+                                background: `${badgeColor}22`,
+                                color: badgeColor,
+                                whiteSpace: "nowrap",
+                            }}>
+                                {statusLabel}
                             </span>
                             <ChevronDown
-                                className={`h-3 w-3 transition-transform shrink-0 text-white ${isExpanded ? "rotate-180" : ""}`}
+                                className={`transition-transform shrink-0 ${isExpanded ? "rotate-180" : ""}`}
+                                style={{ width: 14, height: 14, color: "#99A1AF" }}
                             />
-                            {isHider && (isPending || isExpired) && onAnswer && (
-                                <Button
-                                    size="sm"
-                                    disabled={pendingAnswerId === sq.id}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        onAnswer(sq);
-                                    }}
-                                    className="border-0 font-bold disabled:opacity-40"
-                                    style={{ backgroundColor: "#ECC30B", color: "#000" }}
-                                >
-                                    {pendingAnswerId === sq.id
-                                        ? tr("sqp.inProgress")
-                                        : tr("sqp.answer")}
-                                </Button>
-                            )}
                         </div>
 
-                        {/* ── Short description (always visible) ── */}
-                        {shortDesc && (
-                            <p className="text-xs mt-0.5 ml-6 leading-snug text-white/80">
+                        {/* ── Short description ── */}
+                        {shortDesc && !isBeingAnswered && (
+                            <p style={{ margin: 0, fontSize: "12px", color: "#99A1AF", lineHeight: 1.4 }}>
                                 {shortDesc}
                             </p>
                         )}
 
                         {/* ── Countdown: only on the active (newest pending) question ── */}
-                        {isActive && sq.deadline && (
-                            <div className="mt-1 ml-6">
-                                <QuestionCountdown deadline={sq.deadline} />
-                            </div>
+                        {(isActive || isBeingAnswered) && sq.deadline && (
+                            <QuestionCountdown deadline={sq.deadline} />
                         )}
 
                         {/* ── Expired notice ── */}
-                        {isExpired && (
-                            <p className="text-xs mt-1 ml-6 font-medium" style={{ color: "#d1d5db" }}>
+                        {isExpired && !isBeingAnswered && (
+                            <p style={{ margin: 0, fontSize: "12px", fontWeight: 500, color: "#6B7280" }}>
                                 ⏰ {tr("sqp.countdownExpired")}
                             </p>
                         )}
 
+                        {/* ── Late label ── */}
+                        {lateLabel && (
+                            <p style={{ margin: 0, fontSize: "11px", fontWeight: 500, color: "#F59E0B" }}>
+                                {lateLabel}
+                            </p>
+                        )}
+
+                        {/* ── Hider answer button (when NOT already answering) ── */}
+                        {isHider && (isPending || isExpired) && !isBeingAnswered && onAnswer && (
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onAnswer(sq);
+                                }}
+                                style={{
+                                    background: "#E8323A",
+                                    color: "#fff",
+                                    border: "none",
+                                    borderRadius: 10,
+                                    padding: "12px",
+                                    fontWeight: 800,
+                                    fontSize: "14px",
+                                    fontFamily: "Poppins, sans-serif",
+                                    width: "100%",
+                                    cursor: "pointer",
+                                }}
+                            >
+                                {tr("sqp.answer")}
+                            </button>
+                        )}
+
+                        {/* ══════════════════════════════════════════════════════════
+                            ── INLINE ANSWER UI (Hider, when answering this question)
+                            ══════════════════════════════════════════════════════════ */}
+                        {isBeingAnswered && sq.type === "photo" && (
+                            <>
+                                {/* Photo: sub-card with challenge info */}
+                                <div style={{
+                                    background: "#1E1E2A",
+                                    borderRadius: 8,
+                                    padding: "10px 12px",
+                                    border: "1px solid rgba(255,255,255,0.08)",
+                                }}>
+                                    <p style={{ margin: 0, fontWeight: 700, color: "#fff", fontSize: "14px" }}>
+                                        📸 {t(`photoType.${qData?.photoType}` as TranslationKey, locale.get())}
+                                    </p>
+                                    <p style={{ margin: "4px 0 0", color: "#99A1AF", fontSize: "12px", lineHeight: 1.4 }}>
+                                        {t(`photoRules.${qData?.photoType}` as TranslationKey, locale.get())}
+                                    </p>
+                                </div>
+
+                                {/* Confirm button */}
+                                <button
+                                    type="button"
+                                    disabled={submitting}
+                                    onClick={onSubmitAnswer}
+                                    style={{
+                                        background: "#22C55E",
+                                        color: "#fff",
+                                        border: "none",
+                                        borderRadius: 10,
+                                        padding: "14px",
+                                        fontWeight: 800,
+                                        fontSize: "15px",
+                                        fontFamily: "Poppins, sans-serif",
+                                        width: "100%",
+                                        cursor: submitting ? "not-allowed" : "pointer",
+                                        opacity: submitting ? 0.4 : 1,
+                                    }}
+                                >
+                                    {submitting
+                                        ? tr("sqp.sending")
+                                        : `📸 ${t("photo.confirm" as TranslationKey, locale.get())}`}
+                                </button>
+
+                                {/* Cancel */}
+                                <button
+                                    type="button"
+                                    onClick={onCancelAnswering}
+                                    disabled={submitting}
+                                    style={{
+                                        ...actionLinkStyle,
+                                        color: "#99A1AF",
+                                        textDecoration: "underline",
+                                        opacity: submitting ? 0.4 : 1,
+                                    }}
+                                >
+                                    {tr("sqp.cancel")}
+                                </button>
+                            </>
+                        )}
+
+                        {isBeingAnswered && sq.type !== "photo" && (
+                            <>
+                                {/* Sub-card: question description */}
+                                <div style={{
+                                    background: "#1E1E2A",
+                                    borderRadius: 8,
+                                    padding: "10px 12px",
+                                    border: "1px solid rgba(255,255,255,0.08)",
+                                }}>
+                                    <p style={{ margin: 0, fontWeight: 700, color: "#fff", fontSize: "14px", display: "flex", alignItems: "center", gap: 6 }}>
+                                        <span style={{ color: "#E8323A" }}>📍</span>
+                                        {(() => {
+                                            // Show type-specific label
+                                            if (sq.type === "matching") {
+                                                const matchLabel = getMatchTypeLabel(qData?.type ?? "");
+                                                return matchLabel;
+                                            }
+                                            if (sq.type === "tentacles") {
+                                                return getLocTypeLabel(qData?.locationType ?? "");
+                                            }
+                                            return getQuestionLabel(sq.type);
+                                        })()}
+                                    </p>
+                                    <p style={{ margin: "4px 0 0", color: "#99A1AF", fontSize: "12px", lineHeight: 1.4 }}>
+                                        {shortDesc}
+                                    </p>
+                                </div>
+
+                                {/* GPS coordinates (when pin is set) */}
+                                {$hiderMode && typeof $hiderMode === "object" && (
+                                    <div style={{ display: "flex", gap: 12 }}>
+                                        <div style={{ flex: 1 }}>
+                                            <label style={coordLabelStyle}>Breitengrad</label>
+                                            <input
+                                                type="text"
+                                                readOnly
+                                                value={$hiderMode.latitude.toFixed(6)}
+                                                style={coordInputStyle}
+                                            />
+                                        </div>
+                                        <div style={{ flex: 1 }}>
+                                            <label style={coordLabelStyle}>Längengrad</label>
+                                            <input
+                                                type="text"
+                                                readOnly
+                                                value={$hiderMode.longitude.toFixed(6)}
+                                                style={coordInputStyle}
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Action links */}
+                                <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                                    <button
+                                        type="button"
+                                        onClick={onLoadGPS}
+                                        disabled={loadingGPS}
+                                        style={{
+                                            ...actionLinkStyle,
+                                            opacity: loadingGPS ? 0.5 : 1,
+                                        }}
+                                    >
+                                        → {loadingGPS ? tr("sqp.loadingGps") : "GPS aktualisieren"}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={onPlaceManualPin}
+                                        style={actionLinkStyle}
+                                    >
+                                        → Standort manuell eingeben
+                                    </button>
+                                </div>
+
+                                {/* Preview result */}
+                                {$hiderMode === false ? (
+                                    <p style={{ margin: 0, fontSize: "12px", color: "#6B7280" }}>
+                                        {tr("sqp.setPinHint")}
+                                    </p>
+                                ) : previewResult ? (
+                                    <div style={{
+                                        background: previewResult.positive
+                                            ? "rgba(34,197,94,0.15)"
+                                            : "rgba(232,50,58,0.15)",
+                                        border: `1px solid ${previewResult.positive ? "#22C55E" : "#E8323A"}`,
+                                        borderRadius: 8,
+                                        padding: "8px 12px",
+                                    }}>
+                                        <span style={{
+                                            color: previewResult.positive ? "#22C55E" : "#E8323A",
+                                            fontWeight: 700,
+                                            fontSize: "13px",
+                                        }}>
+                                            {previewResult.label}
+                                        </span>
+                                    </div>
+                                ) : (
+                                    <p style={{ margin: 0, fontSize: "12px", color: "#6B7280" }}>
+                                        {tr("sqp.computing")}
+                                    </p>
+                                )}
+
+                                {/* Submit button */}
+                                <button
+                                    type="button"
+                                    disabled={
+                                        submitting ||
+                                        !previewResult ||
+                                        $hiderMode === false
+                                    }
+                                    onClick={onSubmitAnswer}
+                                    style={
+                                        (submitting || !previewResult || $hiderMode === false)
+                                            ? submitBtnDisabledStyle
+                                            : submitBtnStyle
+                                    }
+                                >
+                                    {submitting ? tr("sqp.sending") : tr("sqp.sendAnswer")}
+                                </button>
+
+                                {/* Cancel */}
+                                <button
+                                    type="button"
+                                    onClick={onCancelAnswering}
+                                    disabled={submitting}
+                                    style={{
+                                        ...actionLinkStyle,
+                                        color: "#99A1AF",
+                                        textDecoration: "underline",
+                                        opacity: submitting ? 0.4 : 1,
+                                        textAlign: "center",
+                                        width: "100%",
+                                    }}
+                                >
+                                    {tr("sqp.cancel")}
+                                </button>
+                            </>
+                        )}
+
                         {/* ── Expanded details (text only – no config UI) ── */}
-                        {isExpanded && (
-                            <div className="mt-2 ml-6 pt-2 border-t border-white/30">
+                        {isExpanded && !isBeingAnswered && (
+                            <div style={{
+                                paddingTop: 8,
+                                borderTop: "1px solid rgba(255,255,255,0.1)",
+                            }}>
                                 <QuestionDetails
                                     sq={{
                                         type: sq.type,
                                         data: sq.data,
                                         status: sq.status,
                                         answerData: sq.answerData,
+                                        createdAt: sq.createdAt,
+                                        answeredAt: sq.answeredAt,
+                                        createdByDisplayName: sq.createdByDisplayName,
+                                        answeredByDisplayName: sq.answeredByDisplayName,
                                     }}
                                     answered={isAnswered}
                                 />

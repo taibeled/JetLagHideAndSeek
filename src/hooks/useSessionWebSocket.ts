@@ -12,10 +12,18 @@ import {
     wsStatus,
 } from "@/lib/session-context";
 
+function getDefaultWsUrl(): string {
+    if (typeof window !== "undefined") {
+        const proto = window.location.protocol === "https:" ? "wss:" : "ws:";
+        return `${proto}//${window.location.host}`;
+    }
+    return "ws://localhost:3001";
+}
+
 const BASE_WS_URL =
     (typeof import.meta !== "undefined" &&
         (import.meta as any).env?.PUBLIC_BACKEND_WS_URL) ||
-    "ws://localhost:3001";
+    getDefaultWsUrl();
 
 interface Options {
     code: string;

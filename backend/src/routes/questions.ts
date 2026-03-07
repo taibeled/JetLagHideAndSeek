@@ -12,7 +12,7 @@ import { nanoid } from "nanoid";
 import { schema } from "../db/schema.js";
 import type { Db } from "../db/types.js";
 import { wsManager } from "../ws/manager.js";
-import { toSessionQuestion } from "./sessions.js";
+import { buildParticipantsMap, toSessionQuestion } from "./sessions.js";
 
 /** Create the questions router, injecting the database instance. */
 export function createQuestionsRouter(db: Db): Hono {
@@ -61,7 +61,8 @@ export function createQuestionsRouter(db: Db): Hono {
             where: eq(schema.questions.id, questionId),
         }))!;
 
-        const question = toSessionQuestion(questionRow);
+        const pMap = await buildParticipantsMap(db, sessionRow.id);
+        const question = toSessionQuestion(questionRow, pMap);
 
         // Broadcast to everyone (including the hider who needs to answer)
         wsManager.broadcast(code, {
@@ -109,6 +110,7 @@ export function createQuestionsRouter(db: Db): Hono {
                 status: "answered",
                 answerData: JSON.stringify(body.answerData),
                 answeredAt,
+                answeredByParticipantId: participant.id,
             })
             .where(eq(schema.questions.id, questionId));
 
@@ -116,7 +118,8 @@ export function createQuestionsRouter(db: Db): Hono {
             where: eq(schema.questions.id, questionId),
         }))!;
 
-        const question = toSessionQuestion(updatedRow);
+        const pMap = await buildParticipantsMap(db, questionRow.sessionId);
+        const question = toSessionQuestion(updatedRow, pMap);
 
         // Fetch the session code for broadcasting
         const sessionRow = await db.query.sessions.findFirst({
@@ -153,7 +156,8 @@ export function createQuestionsRouter(db: Db): Hono {
             orderBy: (q, { asc }) => [asc(q.createdAt)],
         });
 
-        return c.json({ questions: questionRows.map(toSessionQuestion) });
+        const pMap = await buildParticipantsMap(db, sessionRow.id);
+        return c.json({ questions: questionRows.map((r) => toSessionQuestion(r, pMap)) });
     });
 
     return router;

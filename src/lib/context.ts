@@ -318,7 +318,7 @@ export const isLoading = atom<boolean>(false);
 
 export const thunderforestApiKey = persistentAtom<string>(
     "thunderforestApiKey",
-    "",
+    "c6f2f3ed98c54c04acfd3165a2b324b3",
     {
         encode: (value: string) => value,
         decode: (value: string) => value,

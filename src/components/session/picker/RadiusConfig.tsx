@@ -299,8 +299,6 @@ export function RadiusConfig({ wsStatus, onBack, onSettings, onClose, onDone }: 
         setSubmitting(true);
         try {
             await addQuestion(code, participant.token, { type: "radius", data });
-            stageRadius(lat, lng);
-            pendingDraftKey.set(null);
             setSubmitting(false);
             onDone?.();
             pickerOpen.set(false);

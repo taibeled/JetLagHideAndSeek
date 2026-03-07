@@ -16,13 +16,11 @@ import { useEffect, useRef, useState } from "react";
 
 import { bottomSheetState, pickerOpen } from "@/lib/bottom-sheet-state";
 import {
-    addQuestion as addLocalQuestion,
     defaultUnit,
     leafletMapContext,
-    questions as questions_atom,
 } from "@/lib/context";
 import { addQuestion } from "@/lib/session-api";
-import { pendingDraftKey, sessionCode, sessionParticipant } from "@/lib/session-context";
+import { sessionCode, sessionParticipant } from "@/lib/session-context";
 import { toast } from "react-toastify";
 import { ConfigCard } from "./ConfigCard";
 import { PickerFooter } from "./PickerFooter";
@@ -374,10 +372,6 @@ export function TentaclesConfig({ wsStatus, onBack, onSettings, onClose, onDone 
         setSubmitting(true);
         try {
             await addQuestion(code, participant.token, { type: "tentacles", data });
-            addLocalQuestion({ id: "tentacles" as any, data });
-            const added = [...questions_atom.get()].reverse().find((q) => q.id === "tentacles");
-            if (added) pendingDraftKey.set(added.key as number);
-            pendingDraftKey.set(null);
             setSubmitting(false);
             onDone?.();
             pickerOpen.set(false);

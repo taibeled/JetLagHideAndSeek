@@ -12,7 +12,7 @@
  */
 
 import * as turf from "@turf/turf";
-import type { Feature, FeatureCollection, MultiPolygon, Polygon } from "geojson";
+import type { Feature, FeatureCollection, MultiPolygon, Point, Polygon } from "geojson";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
 // ── @arcgis/core mocken ───────────────────────────────────────────────────────
@@ -105,7 +105,7 @@ const makeSmallRect = (): Feature<Polygon> =>
 /** Prüft ob ein Punkt in einem Feature liegt */
 function pointInResult(
     result: Feature<Polygon | MultiPolygon> | null | undefined,
-    pt: Feature<turf.helpers.Point>,
+    pt: Feature<Point>,
 ): boolean {
     if (!result) return false;
     return turf.booleanPointInPolygon(pt, result);
@@ -114,7 +114,7 @@ function pointInResult(
 /** Prüft ob ein Punkt in irgendeinem Feature einer FeatureCollection liegt */
 function pointInFeatures(
     result: FeatureCollection | Feature | null | undefined,
-    pt: Feature<turf.helpers.Point>,
+    pt: Feature<Point>,
 ): boolean {
     if (!result) return false;
     const features =
