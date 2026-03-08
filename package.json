@@ -61,6 +61,9 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.25.1",
+        "@testing-library/jest-dom": "^6.9.1",
+        "@testing-library/react": "^16.3.2",
+        "@testing-library/user-event": "^14.6.1",
         "@types/d3-geo": "^3.1.0",
         "@types/geojson": "^7946.0.16",
         "@types/leaflet": "^1.9.16",
@@ -75,6 +78,7 @@
         "eslint-plugin-react": "^7.37.4",
         "eslint-plugin-simple-import-sort": "^12.1.1",
         "globals": "^16.0.0",
+        "jsdom": "^28.1.0",
         "prettier": "3.5.3",
         "typescript-eslint": "^8.24.0",
         "vitest": "^3.1.4"
