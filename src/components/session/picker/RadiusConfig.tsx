@@ -99,6 +99,7 @@ export function RadiusConfig({ wsStatus, onBack, onSettings, onClose, onDone }: 
     const [selectedChip, setSelectedChip] = useState<Chip | null>(null);
     const [loadingGps, setLoadingGps] = useState(false);
     const [gpsError, setGpsError] = useState<string | null>(null);
+    const [gpsCoords, setGpsCoords] = useState<{ lat: number; lng: number } | null>(null);
 
     // Manual mode state — initialise from map centre
     const map = leafletMapContext.get();
@@ -114,7 +115,7 @@ export function RadiusConfig({ wsStatus, onBack, onSettings, onClose, onDone }: 
     const [coordError, setCoordError] = useState<string | null>(null);
     const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    // Live preview circle (manual mode only)
+    // Live preview circle (manual mode + GPS preview)
     const circleRef = useRef<L.Circle | null>(null);
 
     // Distance chips
@@ -133,11 +134,16 @@ export function RadiusConfig({ wsStatus, onBack, onSettings, onClose, onDone }: 
             { label: "50 mi", value: 50,   unit: "miles" },
           ];
 
-    // ── Live preview circle (manual mode) ─────────────────────────────────────
+    // ── Live preview circle (manual mode + GPS preview) ────────────────────────
 
     useEffect(() => {
-        if (mode !== "manual") {
-            // Clean up any circle when leaving manual mode
+        // Determine which coordinates to use for the circle
+        const circleLat = mode === "manual" ? lat : gpsCoords?.lat;
+        const circleLng = mode === "manual" ? lng : gpsCoords?.lng;
+        const shouldDraw = (mode === "manual" || (mode === "gps" && gpsCoords !== null)) && circleLat != null && circleLng != null;
+
+        if (!shouldDraw) {
+            // Clean up any circle when there's nothing to preview
             if (circleRef.current) {
                 leafletMapContext.get()?.removeLayer(circleRef.current);
                 circleRef.current = null;
@@ -155,7 +161,7 @@ export function RadiusConfig({ wsStatus, onBack, onSettings, onClose, onDone }: 
 
         if (selectedChip) {
             const radiusM = toMeters(selectedChip.value, selectedChip.unit);
-            const circle = L.circle([lat, lng], {
+            const circle = L.circle([circleLat, circleLng], {
                 radius: radiusM,
                 color: "#E8323A",
                 fillColor: "#E8323A",
@@ -165,6 +171,11 @@ export function RadiusConfig({ wsStatus, onBack, onSettings, onClose, onDone }: 
             });
             circle.addTo(currentMap);
             circleRef.current = circle;
+
+            // In GPS preview, fly to the circle so the user can see it
+            if (mode === "gps" && gpsCoords) {
+                currentMap.flyTo([circleLat, circleLng], currentMap.getZoom(), { duration: 0.5 });
+            }
         }
 
         return () => {
@@ -173,7 +184,7 @@ export function RadiusConfig({ wsStatus, onBack, onSettings, onClose, onDone }: 
                 circleRef.current = null;
             }
         };
-    }, [mode, lat, lng, selectedChip]);
+    }, [mode, lat, lng, selectedChip, gpsCoords]);
 
     // ── Stage helper ───────────────────────────────────────────────────────────
 
@@ -206,14 +217,24 @@ export function RadiusConfig({ wsStatus, onBack, onSettings, onClose, onDone }: 
                     timeout: 15_000,
                 }),
             );
-            stageRadius(pos.coords.latitude, pos.coords.longitude);
-            onDone?.();
-            pickerOpen.set(false);
-            bottomSheetState.set("collapsed");
+            setGpsCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+            setLoadingGps(false);
         } catch {
             setLoadingGps(false);
             setGpsError("GPS nicht verfügbar. Bitte Berechtigungen prüfen.");
         }
+    }
+
+    function handleConfirmGps() {
+        if (!gpsCoords) return;
+        stageRadius(gpsCoords.lat, gpsCoords.lng);
+        onDone?.();
+        pickerOpen.set(false);
+        bottomSheetState.set("collapsed");
+    }
+
+    function handleResetGps() {
+        setGpsCoords(null);
     }
 
     // ── Manual mode: coord handlers ────────────────────────────────────────────
@@ -390,6 +411,22 @@ export function RadiusConfig({ wsStatus, onBack, onSettings, onClose, onDone }: 
                 {mode === "gps" && (
                     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                         <ChipRow />
+                        {gpsCoords && (
+                            <div style={{
+                                background: "rgba(232,50,58,0.08)",
+                                border: "1px solid rgba(232,50,58,0.25)",
+                                borderRadius: 10,
+                                padding: "10px 14px",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 8,
+                            }}>
+                                <MapPin size={14} color="#E8323A" />
+                                <span style={{ color: "#fff", fontSize: "13px", fontWeight: 600, fontFamily: "monospace" }}>
+                                    {formatCoord(gpsCoords.lat, gpsCoords.lng)}
+                                </span>
+                            </div>
+                        )}
                         {gpsError && (
                             <p style={{ color: "#FCA5A5", fontSize: "13px", margin: 0 }}>
                                 {gpsError}
@@ -543,7 +580,7 @@ export function RadiusConfig({ wsStatus, onBack, onSettings, onClose, onDone }: 
             </div>
 
             {/* ── Footer GPS ─────────────────────────────────────────────────── */}
-            {mode === "gps" && (
+            {mode === "gps" && !gpsCoords && (
                 <PickerFooter
                     primaryLabel={loadingGps ? "GPS wird geladen…" : "🏁 GPS-Tracking starten"}
                     primaryDisabled={!selectedChip || loadingGps}
@@ -553,6 +590,17 @@ export function RadiusConfig({ wsStatus, onBack, onSettings, onClose, onDone }: 
                     onSecondary={() => setMode("manual")}
                     onCancel={onBack}
                     cancelDisabled={loadingGps}
+                />
+            )}
+
+            {/* ── Footer GPS preview ──────────────────────────────────────────── */}
+            {mode === "gps" && gpsCoords && (
+                <PickerFooter
+                    primaryLabel="🎯 Radar starten"
+                    primaryDisabled={false}
+                    onPrimary={handleConfirmGps}
+                    onCancel={handleResetGps}
+                    cancelLabel="Zurück"
                 />
             )}
 
