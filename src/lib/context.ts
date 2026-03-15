@@ -1,13 +1,14 @@
 import { persistentAtom } from "@nanostores/persistent";
 import type { FeatureCollection, MultiPolygon, Polygon } from "geojson";
 import type { Map } from "leaflet";
-import { atom, computed } from "nanostores";
+import { atom, computed, onSet } from "nanostores";
 
 import type {
     AdditionalMapGeoLocations,
     CustomStation,
     OpenStreetMap,
 } from "@/maps/api";
+import { extractStationLabel } from "@/maps/geo-utils";
 import {
     type DeepPartial,
     type Question,
@@ -106,7 +107,16 @@ export const displayHidingZonesOptions = persistentAtom<string[]>(
     },
 );
 export const questionFinishedMapData = atom<any>(null);
+
 export const trainStations = atom<any[]>([]);
+onSet(trainStations, ({ newValue }) => {
+    newValue.sort((a, b) => {
+        const aName = (extractStationLabel(a.properties) || "") as string;
+        const bName = (extractStationLabel(b.properties) || "") as string;
+        return aName.localeCompare(bName);
+    });
+});
+
 export const useCustomStations = persistentAtom<boolean>(
     "useCustomStations",
     false,
@@ -197,6 +207,9 @@ export const customPresets = persistentAtom<CustomPreset[]>(
         decode: JSON.parse,
     },
 );
+onSet(customPresets, ({ newValue }) => {
+    newValue.sort((a, b) => a.name.localeCompare(b.name));
+});
 
 export const saveCustomPreset = (
     preset: Omit<CustomPreset, "id" | "createdAt">,

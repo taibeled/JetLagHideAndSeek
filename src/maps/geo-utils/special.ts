@@ -5,6 +5,13 @@ export const lngLatToText = (coordinates: [number, number]) => {
     return `${Math.abs(coordinates[1])}°${coordinates[1] > 0 ? "N" : "S"}, ${Math.abs(coordinates[0])}°${coordinates[0] > 0 ? "E" : "W"}`;
 };
 
+export const extractStationName = (stationPoint: any) =>
+    stationPoint.properties["name:en"] || stationPoint.properties.name;
+
+export const extractStationLabel = (stationPoint: any) =>
+    extractStationName(stationPoint) ||
+    lngLatToText(stationPoint.geometry.coordinates);
+
 export const groupObjects = (objects: any[]): any[][] => {
     const filteredObjects = objects.filter(
         (obj) =>

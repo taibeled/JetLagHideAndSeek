@@ -48,6 +48,8 @@ import {
     trainLineNodeFinder,
 } from "@/maps/api";
 import {
+    extractStationLabel,
+    extractStationName,
     geoSpatialVoronoi,
     holedMask,
     lngLatToText,
@@ -93,6 +95,8 @@ export const ZoneSidebar = () => {
     const includeDefaultStations = useStore(includeDefaultStationsAtom);
     const $customStations = useStore(customStationsAtom);
     const [commandValue, setCommandValue] = useState<string>("");
+    const [stationSearch, setStationSearch] = useState<string>("");
+    const isStationSearchActive = stationSearch.trim().length > 0;
     const setStations = trainStations.set;
     const sidebarRef = useRef<HTMLDivElement>(null);
     const [importUrl, setImportUrl] = useState("");
@@ -160,9 +164,7 @@ export const ZoneSidebar = () => {
 
                 marker.bindPopup(
                     `<b>${
-                        geoJsonPoint.properties["name:en"] ||
-                        geoJsonPoint.properties.name ||
-                        "No Name Found"
+                        extractStationName(geoJsonPoint) || "No Name Found"
                     } (${lngLatToText(
                         geoJsonPoint.geometry.coordinates as [number, number],
                     )})</b>`,
@@ -331,11 +333,9 @@ export const ZoneSidebar = () => {
 
                             if (nodes.length === 0) {
                                 toast.warning(
-                                    `No train line found for ${
-                                        nearestTrainStation.properties[
-                                            "name:en"
-                                        ] || nearestTrainStation.properties.name
-                                    }`,
+                                    `No train line found for ${extractStationName(
+                                        nearestTrainStation,
+                                    )}`,
                                 );
                                 continue;
                             } else {
@@ -354,9 +354,7 @@ export const ZoneSidebar = () => {
                         }
                     }
 
-                    const englishName =
-                        nearestTrainStation.properties["name:en"] ||
-                        nearestTrainStation.properties.name;
+                    const englishName = extractStationName(nearestTrainStation);
 
                     if (!englishName)
                         return toast.error("No English name found");
@@ -365,10 +363,7 @@ export const ZoneSidebar = () => {
                         const letter = englishName[0].toUpperCase();
 
                         circles = circles.filter((circle: any) => {
-                            const name =
-                                circle.properties.properties["name:en"] ||
-                                circle.properties.properties.name;
-
+                            const name = extractStationName(circle.properties);
                             if (!name) return false;
 
                             return question.data.same
@@ -380,10 +375,9 @@ export const ZoneSidebar = () => {
                         const comparison = question.data.lengthComparison;
 
                         circles = circles.filter((circle: any) => {
-                            const name =
-                                circle.properties.properties["name:en"] ||
-                                circle.properties.properties.name;
+                            const name = extractStationName(circle.properties);
                             if (!name) return false;
+
                             if (comparison === "same") {
                                 return name.length === seekerLength;
                             } else if (comparison === "shorter") {
@@ -942,16 +936,9 @@ export const ZoneSidebar = () => {
                                                 x.properties.properties.id ===
                                                 commandValue,
                                         );
-                                        const displayName =
-                                            selected?.properties.properties[
-                                                "name:en"
-                                            ] ||
-                                            selected?.properties.properties
-                                                .name ||
-                                            lngLatToText(
-                                                selected?.properties.geometry
-                                                    .coordinates,
-                                            );
+                                        const displayName = extractStationLabel(
+                                            selected?.properties,
+                                        );
                                         const id = selected?.properties
                                             .properties.id as string;
                                         const coords = selected?.properties
@@ -1012,9 +999,18 @@ export const ZoneSidebar = () => {
                                 </SidebarMenuItem>
                             )}
                             {$displayHidingZones && (
-                                <Command>
+                                <Command
+                                    key={
+                                        isStationSearchActive
+                                            ? "station-search-active"
+                                            : "station-search-idle"
+                                    }
+                                    shouldFilter={isStationSearchActive}
+                                >
                                     <CommandInput
                                         placeholder="Search for a hiding zone..."
+                                        value={stationSearch}
+                                        onValueChange={setStationSearch}
                                         disabled={$isLoading}
                                     />
                                     <CommandList className="max-h-full">
@@ -1108,17 +1104,9 @@ export const ZoneSidebar = () => {
                                                     }}
                                                     disabled={$isLoading}
                                                 >
-                                                    {station.properties
-                                                        .properties[
-                                                        "name:en"
-                                                    ] ||
-                                                        station.properties
-                                                            .properties.name ||
-                                                        lngLatToText(
-                                                            station.properties
-                                                                .geometry
-                                                                .coordinates,
-                                                        )}
+                                                    {extractStationLabel(
+                                                        station.properties,
+                                                    )}
                                                     <button
                                                         onClick={async () => {
                                                             if (!map) return;
