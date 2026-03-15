@@ -95,6 +95,8 @@ export const ZoneSidebar = () => {
     const includeDefaultStations = useStore(includeDefaultStationsAtom);
     const $customStations = useStore(customStationsAtom);
     const [commandValue, setCommandValue] = useState<string>("");
+    const [stationSearch, setStationSearch] = useState<string>("");
+    const isStationSearchActive = stationSearch.trim().length > 0;
     const setStations = trainStations.set;
     const sidebarRef = useRef<HTMLDivElement>(null);
     const [importUrl, setImportUrl] = useState("");
@@ -997,9 +999,18 @@ export const ZoneSidebar = () => {
                                 </SidebarMenuItem>
                             )}
                             {$displayHidingZones && (
-                                <Command>
+                                <Command
+                                    key={
+                                        isStationSearchActive
+                                            ? "station-search-active"
+                                            : "station-search-idle"
+                                    }
+                                    shouldFilter={isStationSearchActive}
+                                >
                                     <CommandInput
                                         placeholder="Search for a hiding zone..."
+                                        value={stationSearch}
+                                        onValueChange={setStationSearch}
                                         disabled={$isLoading}
                                     />
                                     <CommandList className="max-h-full">
