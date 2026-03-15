@@ -215,6 +215,9 @@ export const customPresets = persistentAtom<CustomPreset[]>(
         decode: JSON.parse,
     },
 );
+onSet(customPresets, ({ newValue }) => {
+    newValue.sort((a, b) => a.name.localeCompare(b.name));
+});
 
 export const saveCustomPreset = (
     preset: Omit<CustomPreset, "id" | "createdAt">,
