@@ -78,14 +78,6 @@ export const questionModified = (..._: any[]) => {
 export const leafletMapContext = atom<Map | null>(null);
 
 export const defaultUnit = persistentAtom<Units>("defaultUnit", "miles");
-export const highlightTrainLines = persistentAtom<boolean>(
-    "highlightTrainLines",
-    false,
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
-);
 export const hiderMode = persistentAtom<
     | false
     | {
@@ -316,6 +308,9 @@ export const autoZoom = persistentAtom<boolean>("autoZoom", true, {
 
 export const isLoading = atom<boolean>(false);
 
+export const baseTileLayer = persistentAtom<
+    "voyager" | "light" | "dark" | "transport" | "neighbourhood" | "osmcarto"
+>("baseTileLayer", "voyager");
 export const thunderforestApiKey = persistentAtom<string>(
     "thunderforestApiKey",
     "",
