@@ -15,6 +15,7 @@ import {
     animateMapMovements,
     autoSave,
     autoZoom,
+    baseTileLayer,
     customInitPreference,
     customPresets,
     customStations,
@@ -26,7 +27,6 @@ import {
     hidingRadius,
     hidingRadiusUnits,
     hidingZone,
-    highlightTrainLines,
     includeDefaultStations,
     leafletMapContext,
     mapGeoJSON,
@@ -72,13 +72,13 @@ const PASTEBIN_URL_PARAM = "pb";
 export const OptionDrawers = ({ className }: { className?: string }) => {
     useStore(triggerLocalRefresh);
     const $defaultUnit = useStore(defaultUnit);
-    const $highlightTrainLines = useStore(highlightTrainLines);
     const $animateMapMovements = useStore(animateMapMovements);
     const $autoZoom = useStore(autoZoom);
     const $hiderMode = useStore(hiderMode);
     const $autoSave = useStore(autoSave);
     const $hidingZone = useStore(hidingZone);
     const $planningMode = useStore(planningModeEnabled);
+    const $baseTileLayer = useStore(baseTileLayer);
     const $thunderforestApiKey = useStore(thunderforestApiKey);
     const $pastebinApiKey = useStore(pastebinApiKey);
     const $alwaysUsePastebin = useStore(alwaysUsePastebin);
@@ -421,75 +421,48 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 }
                             />
                             <Separator className="bg-slate-300 w-[280px]" />
-                            <div className="flex flex-row items-center gap-2">
-                                <label className="text-2xl font-semibold font-poppins">
-                                    Animate map movements?
-                                </label>
-                                <Checkbox
-                                    checked={$animateMapMovements}
-                                    onCheckedChange={() => {
-                                        animateMapMovements.set(
-                                            !$animateMapMovements,
-                                        );
-                                    }}
+                            <Label>Base map style</Label>
+                            <Select
+                                trigger="Base map style"
+                                options={{
+                                    voyager: "CARTO Voyager",
+                                    light: "CARTO Light",
+                                    dark: "CARTO Dark",
+                                    transport: "Thunderforest Transport",
+                                    neighbourhood:
+                                        "Thunderforest Neighbourhood",
+                                    osmcarto: "OpenStreetMap Carto",
+                                }}
+                                value={$baseTileLayer}
+                                onValueChange={(v) =>
+                                    baseTileLayer.set(v as any)
+                                }
+                            />
+                            <div className="flex flex-col items-center gap-2">
+                                <Label>Thunderforest API Key</Label>
+                                <Input
+                                    type="text"
+                                    value={$thunderforestApiKey}
+                                    id="thunderforestApiKey"
+                                    onChange={(e) =>
+                                        thunderforestApiKey.set(e.target.value)
+                                    }
+                                    placeholder="Enter your Thunderforest API key"
                                 />
+                                <p className="text-xs text-gray-500">
+                                    Needed for Thunderforest map styles. Create
+                                    a key{" "}
+                                    <a
+                                        href="https://manage.thunderforest.com/users/sign_up?price=hobby-project-usd"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-500 cursor-pointer"
+                                    >
+                                        here.
+                                    </a>{" "}
+                                    Don&apos;t worry, it&apos;s free.
+                                </p>
                             </div>
-                            {$highlightTrainLines && (
-                                <Separator className="bg-slate-300 w-[280px]" />
-                            )}
-                            <div className="flex flex-row items-center gap-2">
-                                <label className="text-2xl font-semibold font-poppins">
-                                    Highlight train lines?
-                                </label>
-                                <Checkbox
-                                    checked={$highlightTrainLines}
-                                    onCheckedChange={() => {
-                                        const willBeEnabled =
-                                            !$highlightTrainLines;
-                                        if (
-                                            willBeEnabled &&
-                                            !$thunderforestApiKey
-                                        ) {
-                                            toast.warn(
-                                                "A Thunderforest API key is required to highlight train lines. Please add one in the options below.",
-                                            );
-                                        }
-                                        highlightTrainLines.set(willBeEnabled);
-                                    }}
-                                />
-                            </div>
-                            {$highlightTrainLines && (
-                                <>
-                                    <div className="flex flex-col items-center gap-2">
-                                        <Label>Thunderforest API Key</Label>
-                                        <Input
-                                            type="text"
-                                            value={$thunderforestApiKey}
-                                            id="thunderforestApiKey"
-                                            onChange={(e) =>
-                                                thunderforestApiKey.set(
-                                                    e.target.value,
-                                                )
-                                            }
-                                            placeholder="Enter your Thunderforest API key"
-                                        />
-                                        <p className="text-xs text-gray-500">
-                                            Needed for highlighting train lines.
-                                            Create a key{" "}
-                                            <a
-                                                href="https://manage.thunderforest.com/users/sign_up?price=hobby-project-usd"
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-blue-500 cursor-pointer"
-                                            >
-                                                here.
-                                            </a>{" "}
-                                            Don&apos;t worry, it&apos;s free.
-                                        </p>
-                                    </div>
-                                    <Separator className="bg-slate-300 w-[280px]" />{" "}
-                                </>
-                            )}
                             <Separator className="bg-slate-300 w-[280px]" />
                             <div className="flex flex-col items-center gap-2">
                                 <Label>Pastebin API Key</Label>
@@ -517,6 +490,19 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 </p>
                             </div>
                             <Separator className="bg-slate-300 w-[280px]" />
+                            <div className="flex flex-row items-center gap-2">
+                                <label className="text-2xl font-semibold font-poppins">
+                                    Animate map movements?
+                                </label>
+                                <Checkbox
+                                    checked={$animateMapMovements}
+                                    onCheckedChange={() => {
+                                        animateMapMovements.set(
+                                            !$animateMapMovements,
+                                        );
+                                    }}
+                                />
+                            </div>
                             <div className="flex flex-row items-center gap-2">
                                 <label className="text-2xl font-semibold font-poppins">
                                     Force Pastebin for sharing?
