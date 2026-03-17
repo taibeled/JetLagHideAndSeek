@@ -525,6 +525,7 @@ export const Map = ({ className }: { className?: string }) => {
             // @ts-expect-error This is a check such that only this type of layer is removed
             overlay.permanentGeoJSON = true;
             overlay.addTo(map);
+            overlay.bringToBack();
         } catch (e) {
             toast.error(`Failed to display GeoJSON overlay: ${e}`);
         }
