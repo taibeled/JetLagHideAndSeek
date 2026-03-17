@@ -260,6 +260,8 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
 
             if (geojson.permanentOverlay) {
                 permanentOverlay.set(geojson.permanentOverlay);
+            } else {
+                permanentOverlay.set(null);
             }
 
             toast.success("Hiding zone loaded successfully", {
