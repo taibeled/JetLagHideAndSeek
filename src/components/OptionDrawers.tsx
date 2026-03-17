@@ -32,6 +32,7 @@ import {
     mapGeoJSON,
     mapGeoLocation,
     pastebinApiKey,
+    permanentOverlay,
     planningModeEnabled,
     polyGeoJSON,
     questions,
@@ -488,6 +489,37 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     </a>
                                     .
                                 </p>
+                            </div>
+                            <Separator className="bg-slate-300 w-[280px]" />
+                            <Label>Permanent Map Overlay</Label>
+                            <div className="flex flex-row max-[330px]:flex-col gap-4">
+                                <Button
+                                    onClick={() => permanentOverlay.set(null)}
+                                >
+                                    Remove
+                                </Button>
+                                <Button
+                                    onClick={async () => {
+                                        if (!navigator || !navigator.clipboard)
+                                            return toast.error(
+                                                "Clipboard not supported",
+                                            );
+
+                                        try {
+                                            const clipboard =
+                                                await navigator.clipboard.readText();
+                                            const geojson =
+                                                JSON.parse(clipboard);
+                                            permanentOverlay.set(geojson);
+                                        } catch (e) {
+                                            toast.error(
+                                                `Invalid GeoJSON overlay: ${e}`,
+                                            );
+                                        }
+                                    }}
+                                >
+                                    Paste GeoJSON
+                                </Button>
                             </div>
                             <Separator className="bg-slate-300 w-[280px]" />
                             <div className="flex flex-row items-center gap-2">

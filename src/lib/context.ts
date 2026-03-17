@@ -50,6 +50,14 @@ export const additionalMapGeoLocations = persistentAtom<
     encode: JSON.stringify,
     decode: JSON.parse,
 });
+export const permanentOverlay = persistentAtom<FeatureCollection | null>(
+    "permanentOverlay",
+    null,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
 
 export const mapGeoJSON = atom<FeatureCollection<
     Polygon | MultiPolygon
