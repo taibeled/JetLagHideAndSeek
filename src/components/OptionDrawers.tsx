@@ -258,6 +258,10 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 includeDefaultStations.set(geojson.includeDefaultStations);
             }
 
+            if (geojson.permanentOverlay) {
+                permanentOverlay.set(geojson.permanentOverlay);
+            }
+
             toast.success("Hiding zone loaded successfully", {
                 autoClose: 2000,
             });

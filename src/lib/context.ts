@@ -265,6 +265,7 @@ export const hidingZone = computed(
         customStations,
         includeDefaultStations,
         customPresets,
+        permanentOverlay,
     ],
     (
         q,
@@ -279,6 +280,7 @@ export const hidingZone = computed(
         $customStations,
         includeDefault,
         presets,
+        $permanentOverlay,
     ) => {
         if (geo !== null) {
             return {
@@ -292,6 +294,7 @@ export const hidingZone = computed(
                 customStations: $customStations,
                 includeDefaultStations: includeDefault,
                 presets: structuredClone(presets),
+                permanentOverlay: $permanentOverlay,
             };
         } else {
             const $loc = structuredClone(loc);
@@ -308,6 +311,7 @@ export const hidingZone = computed(
                 customStations: $customStations,
                 includeDefaultStations: includeDefault,
                 presets: structuredClone(presets),
+                permanentOverlay: $permanentOverlay,
             };
         }
     },
