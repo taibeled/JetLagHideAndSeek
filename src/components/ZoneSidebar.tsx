@@ -45,6 +45,7 @@ import {
     normalizeToStationFeatures,
     parseCustomStationsFromText,
     QuestionSpecificLocation,
+    type StationPlace,
     trainLineNodeFinder,
 } from "@/maps/api";
 import {
@@ -194,7 +195,7 @@ export const ZoneSidebar = () => {
                 return;
             }
 
-            let places: any[] = [];
+            let places: StationPlace[] = [];
 
             if (!needsDefault) {
                 // Custom only
@@ -212,6 +213,7 @@ export const ZoneSidebar = () => {
                 }));
             } else {
                 // Fetch default, optionally merge custom
+                // @ts-expect-error osmtogeojson always defines properties with an "id" string
                 places = osmtogeojson(
                     await findPlacesInZone(
                         $displayHidingZonesOptions[0],
@@ -229,19 +231,22 @@ export const ZoneSidebar = () => {
                 ) {
                     const customFeatures = normalizeToStationFeatures(
                         $customStations,
-                    ).features.map((f) => ({
-                        type: "Feature",
-                        geometry: f.geometry,
-                        properties: {
-                            id:
-                                f.properties?.id ||
-                                `${(f.geometry as any).coordinates[1]},${(f.geometry as any).coordinates[0]}`,
-                            name: f.properties?.name,
-                        },
-                    }));
+                    ).features.map(
+                        (f) =>
+                            ({
+                                type: "Feature",
+                                geometry: f.geometry,
+                                properties: {
+                                    id:
+                                        f.properties?.id ||
+                                        `${f.geometry.coordinates[1]},${f.geometry.coordinates[0]}`,
+                                    name: f.properties?.name,
+                                },
+                            }) as StationPlace,
+                    );
                     const seen = new Set<string>();
-                    const merged: any[] = [];
-                    const add = (feat: any) => {
+                    const merged: StationPlace[] = [];
+                    const add = (feat: StationPlace) => {
                         const id = feat.properties.id as string | undefined;
                         const key =
                             id && id.includes("/")
@@ -274,7 +279,7 @@ export const ZoneSidebar = () => {
             );
 
             let circles = places
-                .map((place: any) => {
+                .map((place) => {
                     const radius = $hidingRadius;
                     const center = turf.getCoord(place);
                     const circle = turf.circle(center, radius, {
@@ -339,9 +344,9 @@ export const ZoneSidebar = () => {
                                 );
                                 continue;
                             } else {
-                                circles = circles.filter((circle: any) => {
-                                    const idProp = circle.properties.properties
-                                        .id as string;
+                                circles = circles.filter((circle) => {
+                                    const idProp =
+                                        circle.properties.properties.id;
                                     if (!idProp || !idProp.includes("/"))
                                         return false;
                                     const id = parseInt(idProp.split("/")[1]);
@@ -362,7 +367,7 @@ export const ZoneSidebar = () => {
                     if (question.data.type === "same-first-letter-station") {
                         const letter = englishName[0].toUpperCase();
 
-                        circles = circles.filter((circle: any) => {
+                        circles = circles.filter((circle) => {
                             const name = extractStationName(circle.properties);
                             if (!name) return false;
 
@@ -374,7 +379,7 @@ export const ZoneSidebar = () => {
                         const seekerLength = englishName.length;
                         const comparison = question.data.lengthComparison;
 
-                        circles = circles.filter((circle: any) => {
+                        circles = circles.filter((circle) => {
                             const name = extractStationName(circle.properties);
                             if (!name) return false;
 
@@ -413,7 +418,7 @@ export const ZoneSidebar = () => {
                         },
                     );
 
-                    circles = circles.filter((circle: any) => {
+                    circles = circles.filter((circle) => {
                         const point = turf.point(
                             turf.getCoord(circle.properties),
                         );

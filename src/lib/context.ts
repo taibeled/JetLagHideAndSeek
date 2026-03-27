@@ -7,6 +7,7 @@ import type {
     AdditionalMapGeoLocations,
     CustomStation,
     OpenStreetMap,
+    StationCircle,
 } from "@/maps/api";
 import { extractStationLabel } from "@/maps/geo-utils";
 import {
@@ -116,7 +117,7 @@ export const displayHidingZonesOptions = persistentAtom<string[]>(
 );
 export const questionFinishedMapData = atom<any>(null);
 
-export const trainStations = atom<any[]>([]);
+export const trainStations = atom<StationCircle[]>([]);
 onSet(trainStations, ({ newValue }) => {
     newValue.sort((a, b) => {
         const aName = (extractStationLabel(a.properties) || "") as string;
