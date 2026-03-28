@@ -2,6 +2,7 @@ import * as turf from "@turf/turf";
 import type { FeatureCollection, MultiPolygon } from "geojson";
 import _ from "lodash";
 import osmtogeojson from "osmtogeojson";
+import { toast } from "react-toastify";
 
 import {
     additionalMapGeoLocations,
@@ -30,6 +31,15 @@ export const getOverpassData = async (
         loadingText,
         cacheType,
     );
+
+    if (!response.ok) {
+        toast.error(
+            `Could not load data from Overpass: ${response.status} ${response.statusText}`,
+            { toastId: "overpass-error" },
+        );
+        return { elements: [] };
+    }
+
     const data = await response.json();
     return data;
 };
