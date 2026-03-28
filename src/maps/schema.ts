@@ -115,6 +115,11 @@ const radiusQuestionSchema = ordinaryBaseQuestionSchema.extend({
     within: z.boolean().default(true),
 });
 
+const streetTraceQuestionSchema = ordinaryBaseQuestionSchema.extend({
+    trace: z.array(z.tuple([z.number(), z.number()])).default([]),
+    source: z.union([z.literal("question"), z.literal("hider")]).default("question"),
+});
+
 const tentacleLocationsFifteen = z.union([
     z.literal("theme_park").describe("Theme Parks"),
     z.literal("zoo").describe("Zoos"),
@@ -431,12 +436,18 @@ export const questionSchema = z.union([
         key: z.number().default(Math.random),
         data: matchingQuestionSchema,
     }),
+    z.object({
+        id: z.literal("street-trace"),
+        key: z.number().default(Math.random),
+        data: streetTraceQuestionSchema,
+    }),
 ]);
 
 export const questionsSchema = z.array(questionSchema);
 
 export type Units = z.infer<typeof unitsSchema>;
 export type RadiusQuestion = z.infer<typeof radiusQuestionSchema>;
+export type StreetTraceQuestion = z.infer<typeof streetTraceQuestionSchema>;
 export type ThermometerQuestion = z.infer<typeof thermometerQuestionSchema>;
 export type TentacleQuestion = z.infer<typeof tentacleQuestionSchema>;
 export type APILocations = z.infer<typeof apiLocationSchema>;

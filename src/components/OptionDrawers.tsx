@@ -29,6 +29,7 @@ import {
     hidingZone,
     includeDefaultStations,
     leafletMapContext,
+    linkHiderToGPS,
     mapGeoJSON,
     mapGeoLocation,
     pastebinApiKey,
@@ -83,6 +84,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $pastebinApiKey = useStore(pastebinApiKey);
     const $alwaysUsePastebin = useStore(alwaysUsePastebin);
     const $followMe = useStore(followMe);
+    const $linkHiderToGPS = useStore(linkHiderToGPS);
     const $customInitPref = useStore(customInitPreference);
     const lastDefaultUnit = useRef($defaultUnit);
     const hasSyncedInitialUnit = useRef(false);
@@ -603,6 +605,32 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                             }
                                         } else {
                                             hiderMode.set(false);
+                                        }
+                                    }}
+                                />
+                            </div>
+                            <div className="flex flex-row items-center gap-2">
+                                <label className="text-2xl font-semibold font-poppins">
+                                    Link Hider To GPS?
+                                </label>
+                                <Checkbox
+                                    checked={$linkHiderToGPS}
+                                    onCheckedChange={() => {
+                                        const next = !$linkHiderToGPS;
+                                        linkHiderToGPS.set(next);
+
+                                        if (next && $hiderMode === false) {
+                                            const $leafletMapContext =
+                                                leafletMapContext.get();
+
+                                            if ($leafletMapContext) {
+                                                const center =
+                                                    $leafletMapContext.getCenter();
+                                                hiderMode.set({
+                                                    latitude: center.lat,
+                                                    longitude: center.lng,
+                                                });
+                                            }
                                         }
                                     }}
                                 />

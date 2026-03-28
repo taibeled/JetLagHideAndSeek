@@ -105,6 +105,31 @@ out center;
     return response;
 };
 
+export const findNearbyStreetNetwork = async (
+    latitude: number,
+    longitude: number,
+    radiusMeters: number = 250,
+) => {
+    const query = `
+[out:json][timeout:25];
+(
+  way(around:${radiusMeters}, ${latitude}, ${longitude})["highway"];
+);
+out geom;
+`;
+
+    const data = await getOverpassData(query, "Finding nearby streets...");
+    const geo = osmtogeojson(data);
+
+    return turf.featureCollection(
+        geo.features.filter(
+            (feature: any) =>
+                feature?.geometry?.type === "LineString" ||
+                feature?.geometry?.type === "MultiLineString",
+        ),
+    );
+};
+
 export const findAdminBoundary = async (
     latitude: number,
     longitude: number,

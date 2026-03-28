@@ -24,6 +24,7 @@ import {
     MatchingQuestionComponent,
     MeasuringQuestionComponent,
     RadiusQuestionComponent,
+    StreetTraceQuestionComponent,
     TentacleQuestionComponent,
     ThermometerQuestionComponent,
 } from "./QuestionCards";
@@ -83,6 +84,14 @@ export const QuestionSidebar = () => {
                         case "measuring":
                             return (
                                 <MeasuringQuestionComponent
+                                    data={question.data}
+                                    key={question.key}
+                                    questionKey={question.key}
+                                />
+                            );
+                        case "street-trace":
+                            return (
+                                <StreetTraceQuestionComponent
                                     data={question.data}
                                     key={question.key}
                                     questionKey={question.key}

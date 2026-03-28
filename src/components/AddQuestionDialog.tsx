@@ -86,6 +86,17 @@ export const AddQuestionDialog = ({
         return true;
     };
 
+    const runAddStreetTrace = () => {
+        const map = leafletMapContext.get();
+        if (!map) return false;
+        const center = map.getCenter();
+        addQuestion({
+            id: "street-trace",
+            data: { lat: center.lat, lng: center.lng },
+        });
+        return true;
+    };
+
     const runPasteQuestion = async () => {
         if (!navigator || !navigator.clipboard) {
             toast.error("Clipboard API not supported in your browser");
@@ -168,6 +179,14 @@ export const AddQuestionDialog = ({
                         disabled={$isLoading}
                     >
                         Add Measuring
+                    </SidebarMenuButton>
+                    <SidebarMenuButton
+                        onClick={() => {
+                            if (runAddStreetTrace()) setOpen(false);
+                        }}
+                        disabled={$isLoading}
+                    >
+                        Add Street Trace
                     </SidebarMenuButton>
                     <SidebarMenuButton
                         onClick={async () => {

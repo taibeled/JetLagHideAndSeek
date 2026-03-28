@@ -20,6 +20,7 @@ import {
     MatchingQuestionComponent,
     MeasuringQuestionComponent,
     RadiusQuestionComponent,
+    StreetTraceQuestionComponent,
     TentacleQuestionComponent,
     ThermometerQuestionComponent,
 } from "./QuestionCards";
@@ -150,6 +151,15 @@ const ColoredMarker = ({
                             case "measuring":
                                 return (
                                     <MeasuringQuestionComponent
+                                        key={q.key}
+                                        data={q.data}
+                                        questionKey={q.key}
+                                        sub={sub}
+                                    />
+                                );
+                            case "street-trace":
+                                return (
+                                    <StreetTraceQuestionComponent
                                         key={q.key}
                                         data={q.data}
                                         questionKey={q.key}

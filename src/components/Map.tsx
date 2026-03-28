@@ -19,6 +19,7 @@ import {
     hiderMode,
     isLoading,
     leafletMapContext,
+    linkHiderToGPS,
     mapGeoJSON,
     mapGeoLocation,
     planningModeEnabled,
@@ -123,6 +124,7 @@ export const Map = ({ className }: { className?: string }) => {
     const $hiderMode = useStore(hiderMode);
     const $isLoading = useStore(isLoading);
     const $followMe = useStore(followMe);
+    const $linkHiderToGPS = useStore(linkHiderToGPS);
     const map = useStore(leafletMapContext);
 
     const followMeMarkerRef = useMemo(
@@ -131,6 +133,10 @@ export const Map = ({ className }: { className?: string }) => {
     );
     const geoWatchIdRef = useMemo(
         () => ({ current: null as number | null }),
+        [],
+    );
+    const lastNonStreetTraceQuestionsRef = useMemo(
+        () => ({ current: "" }),
         [],
     );
 
@@ -395,8 +401,23 @@ export const Map = ({ className }: { className?: string }) => {
     useEffect(() => {
         if (!map) return;
 
-        refreshQuestions(true);
-    }, [$questions, map, $hiderMode]);
+        const nonStreetTraceQuestions = $questions.filter(
+            (question) => question.id !== "street-trace",
+        );
+        const currentSignature = JSON.stringify(nonStreetTraceQuestions);
+        const shouldFocus =
+            lastNonStreetTraceQuestionsRef.current === "" ||
+            lastNonStreetTraceQuestionsRef.current !== currentSignature;
+
+        lastNonStreetTraceQuestionsRef.current = currentSignature;
+        refreshQuestions(shouldFocus);
+    }, [$questions, map]);
+
+    useEffect(() => {
+        if (!map) return;
+
+        refreshQuestions(false);
+    }, [$hiderMode, map]);
 
     useEffect(() => {
         const intervalId = setInterval(async () => {
@@ -443,7 +464,14 @@ export const Map = ({ className }: { className?: string }) => {
 
     useEffect(() => {
         if (!map) return;
-        if (!$followMe) {
+        const shouldWatchPosition = $followMe || $linkHiderToGPS;
+
+        if (!$followMe && followMeMarkerRef.current) {
+            map.removeLayer(followMeMarkerRef.current);
+            followMeMarkerRef.current = null;
+        }
+
+        if (!shouldWatchPosition) {
             if (followMeMarkerRef.current) {
                 map.removeLayer(followMeMarkerRef.current);
                 followMeMarkerRef.current = null;
@@ -459,9 +487,17 @@ export const Map = ({ className }: { className?: string }) => {
             (pos) => {
                 const lat = pos.coords.latitude;
                 const lng = pos.coords.longitude;
-                if (followMeMarkerRef.current) {
+
+                if ($linkHiderToGPS) {
+                    hiderMode.set({
+                        latitude: lat,
+                        longitude: lng,
+                    });
+                }
+
+                if ($followMe && followMeMarkerRef.current) {
                     followMeMarkerRef.current.setLatLng([lat, lng]);
-                } else {
+                } else if ($followMe) {
                     const marker = L.marker([lat, lng], {
                         icon: L.divIcon({
                             html: `<div class="text-blue-700 bg-white rounded-full border-2 border-blue-700 shadow w-5 h-5 flex items-center justify-center"><svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="#2A81CB" opacity="0.5"/><circle cx="8" cy="8" r="3" fill="#2A81CB"/></svg></div>`,
@@ -471,11 +507,15 @@ export const Map = ({ className }: { className?: string }) => {
                     });
                     marker.addTo(map);
                     followMeMarkerRef.current = marker;
+                } else if (followMeMarkerRef.current) {
+                    map.removeLayer(followMeMarkerRef.current);
+                    followMeMarkerRef.current = null;
                 }
             },
             () => {
                 toast.error("Unable to access your location.");
                 followMe.set(false);
+                linkHiderToGPS.set(false);
             },
             { enableHighAccuracy: true, maximumAge: 10000, timeout: 20000 },
         );
@@ -489,7 +529,7 @@ export const Map = ({ className }: { className?: string }) => {
                 geoWatchIdRef.current = null;
             }
         };
-    }, [$followMe, map]);
+    }, [$followMe, $linkHiderToGPS, map]);
 
     return displayMap;
 };

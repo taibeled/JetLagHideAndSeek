@@ -16,6 +16,10 @@ import {
     radiusPlanningPolygon,
 } from "./questions/radius";
 import {
+    adjustPerStreetTrace,
+    hiderifyStreetTrace,
+} from "./questions/streetTrace";
+import {
     adjustPerTentacle,
     hiderifyTentacles,
     tentaclesPlanningPolygon,
@@ -46,6 +50,9 @@ export const hiderifyQuestion = async (question: Question) => {
                 break;
             case "measuring":
                 question.data = await hiderifyMeasuring(question.data);
+                break;
+            case "street-trace":
+                question.data = await hiderifyStreetTrace(question.data);
                 break;
         }
     }
@@ -95,6 +102,8 @@ export async function adjustMapGeoDataForQuestion(
                 return await adjustPerMatching(question.data, mapGeoData);
             case "measuring":
                 return await adjustPerMeasuring(question.data, mapGeoData);
+            case "street-trace":
+                return await adjustPerStreetTrace(question.data, mapGeoData);
             default:
                 return mapGeoData;
         }

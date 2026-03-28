@@ -6,6 +6,70 @@ import {
     PASTEBIN_API_RAW_URL,
 } from "@/maps/api/constants";
 
+const PASTEBIN_PROXY_PREFIXES = [
+    "https://corsproxy.io/?",
+    "https://cors.isomorphic-git.org/",
+];
+
+const withProxyCandidates = (url: string) => [
+    url,
+    ...PASTEBIN_PROXY_PREFIXES.map((prefix) =>
+        prefix.endsWith("?")
+            ? `${prefix}${encodeURIComponent(url)}`
+            : `${prefix}${url}`,
+    ),
+];
+
+const fetchWithTimeout = async (
+    input: RequestInfo | URL,
+    init: RequestInit,
+    timeoutMs = 12000,
+) => {
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+        return await fetch(input, {
+            ...init,
+            signal: controller.signal,
+        });
+    } finally {
+        window.clearTimeout(timeoutId);
+    }
+};
+
+const fetchViaCandidates = async (
+    candidates: string[],
+    init: RequestInit,
+): Promise<Response> => {
+    let lastError: Error | null = null;
+
+    for (const candidate of candidates) {
+        try {
+            const response = await fetchWithTimeout(candidate, init);
+
+            // Treat 5xx as retryable across candidates.
+            if (response.status >= 500) {
+                lastError = new Error(
+                    `HTTP ${response.status} at ${new URL(candidate).host}`,
+                );
+                continue;
+            }
+
+            return response;
+        } catch (error: any) {
+            lastError =
+                error instanceof Error ? error : new Error(String(error));
+        }
+    }
+
+    throw new Error(
+        `All Pastebin endpoints failed${
+            lastError ? `: ${lastError.message}` : ""
+        }`,
+    );
+};
+
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
@@ -70,7 +134,7 @@ export async function uploadToPastebin(
     formData.append("api_paste_private", "1"); // 1 for unlisted
     formData.append("api_paste_expire_date", "N"); // N for never
 
-    const response = await fetch(PASTEBIN_API_POST_URL, {
+    const response = await fetchViaCandidates(withProxyCandidates(PASTEBIN_API_POST_URL), {
         method: "POST",
         body: formData,
     });
@@ -84,7 +148,12 @@ export async function uploadToPastebin(
 }
 
 export async function fetchFromPastebin(pasteId: string): Promise<string> {
-    const response = await fetch(PASTEBIN_API_RAW_URL + pasteId);
+    const response = await fetchViaCandidates(
+        withProxyCandidates(PASTEBIN_API_RAW_URL + pasteId),
+        {
+            method: "GET",
+        },
+    );
 
     if (!response.ok) {
         throw new Error(

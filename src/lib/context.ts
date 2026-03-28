@@ -337,6 +337,11 @@ export const followMe = persistentAtom<boolean>("followMe", false, {
     decode: JSON.parse,
 });
 
+export const linkHiderToGPS = persistentAtom<boolean>("linkHiderToGPS", false, {
+    encode: JSON.stringify,
+    decode: JSON.parse,
+});
+
 export const pastebinApiKey = persistentAtom<string>("pastebinApiKey", "");
 export const alwaysUsePastebin = persistentAtom<boolean>(
     "alwaysUsePastebin",
