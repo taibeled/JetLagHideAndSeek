@@ -1,5 +1,6 @@
 import { useStore } from "@nanostores/react";
 import * as turf from "@turf/turf";
+import type { Feature, FeatureCollection } from "geojson";
 import * as L from "leaflet";
 import _ from "lodash";
 import { SidebarCloseIcon } from "lucide-react";
@@ -23,6 +24,7 @@ import {
     disabledStations,
     displayHidingZones,
     displayHidingZonesOptions,
+    displayHidingZonesStyle,
     hidingRadius,
     hidingRadiusUnits,
     includeDefaultStations as includeDefaultStationsAtom,
@@ -45,6 +47,7 @@ import {
     normalizeToStationFeatures,
     parseCustomStationsFromText,
     QuestionSpecificLocation,
+    type StationCircle,
     type StationPlace,
     trainLineNodeFinder,
 } from "@/maps/api";
@@ -85,6 +88,7 @@ export const ZoneSidebar = () => {
     const $displayHidingZones = useStore(displayHidingZones);
     const $questionFinishedMapData = useStore(questionFinishedMapData);
     const $displayHidingZonesOptions = useStore(displayHidingZonesOptions);
+    const $displayHidingZonesStyle = useStore(displayHidingZonesStyle);
     const $hidingRadius = useStore(hidingRadius);
     const $hidingRadiusUnits = useStore(hidingRadiusUnits);
     const $isLoading = useStore(isLoading);
@@ -95,7 +99,8 @@ export const ZoneSidebar = () => {
     const mergeDuplicates = useStore(mergeDuplicatesAtom);
     const includeDefaultStations = useStore(includeDefaultStationsAtom);
     const $customStations = useStore(customStationsAtom);
-    const [commandValue, setCommandValue] = useState<string>("");
+    const [hidingZoneModeStationID, setHidingZoneModeStationID] =
+        useState<string>("");
     const [stationSearch, setStationSearch] = useState<string>("");
     const isStationSearchActive = stationSearch.trim().length > 0;
     const setStations = trainStations.set;
@@ -133,25 +138,9 @@ export const ZoneSidebar = () => {
                       layer.on("click", async () => {
                           if (!map) return;
 
-                          setCommandValue(feature.properties.properties.id);
-
-                          await selectionProcess(
-                              feature,
-                              map,
-                              stations,
-                              showGeoJSON,
-                              $questionFinishedMapData,
-                              $hidingRadius,
-                          ).catch((error) => {
-                              console.log(error);
-
-                              if (
-                                  document.querySelectorAll(".Toastify__toast")
-                                      .length === 0
-                              ) {
-                                  return toast.error("An error occurred");
-                              }
-                          });
+                          setHidingZoneModeStationID(
+                              feature.properties.properties.id,
+                          );
                       });
                   }
                 : undefined,
@@ -438,42 +427,17 @@ export const ZoneSidebar = () => {
                 }
             }
 
-            setCommandValue("");
-            showGeoJSON(
-                turf.featureCollection(
-                    circles.filter(
-                        (x) =>
-                            !$disabledStations.includes(
-                                x.properties.properties.id,
-                            ),
-                    ),
-                ),
-                true,
-            );
-
             setStations(circles);
             isLoading.set(false);
         };
 
         if ($displayHidingZones && $questionFinishedMapData) {
             initializeHidingZones().catch((error) => {
-                console.log(error);
-
-                if (
-                    document.querySelectorAll(".Toastify__toast").length === 0
-                ) {
-                    isLoading.set(false);
-                    return toast.error("An error occurred");
-                }
-            });
-        }
-
-        if (!$displayHidingZones) {
-            map.eachLayer((layer: any) => {
-                if (layer.hidingZones) {
-                    // Hopefully only geoJSON layers
-                    map.removeLayer(layer);
-                }
+                console.log("Error in hiding zone initialization:", error);
+                toast.error(
+                    "An error occurred during hiding zone initialization",
+                    { toastId: "hiding-zone-initialization-error" },
+                );
             });
         }
     }, [
@@ -485,6 +449,56 @@ export const ZoneSidebar = () => {
         includeDefaultStations,
         $customStations,
         mergeDuplicates,
+    ]);
+
+    useEffect(() => {
+        if (!map || isLoading.get()) return;
+
+        if ($displayHidingZones && hidingZoneModeStationID) {
+            const hiderStation = _.find(
+                stations,
+                (c) => c.properties.properties.id === hidingZoneModeStationID,
+            );
+
+            if (hiderStation !== undefined) {
+                selectionProcess(
+                    hiderStation,
+                    map,
+                    stations,
+                    showGeoJSON,
+                    $questionFinishedMapData,
+                    $hidingRadius,
+                ).catch((error) => {
+                    console.log("Error in hiding zone selection:", error);
+                    toast.error(
+                        "An error occurred during hiding zone selection",
+                        { toastId: "hiding-zone-selection-error" },
+                    );
+                });
+            } else {
+                toast.error("Invalid hiding zone selected", {
+                    toastId: "hiding-zone-selection-error",
+                });
+            }
+        } else if ($displayHidingZones) {
+            const activeStations = stations.filter(
+                (x) => !$disabledStations.includes(x.properties.properties.id),
+            );
+            showGeoJSON(
+                styleStations(activeStations, $displayHidingZonesStyle),
+                $displayHidingZonesStyle === "zones",
+            );
+        } else {
+            removeHidingZones();
+        }
+    }, [
+        $disabledStations,
+        $displayHidingZones,
+        $displayHidingZonesStyle,
+        $hidingRadius,
+        $questionFinishedMapData,
+        hidingZoneModeStationID,
+        stations,
     ]);
 
     return (
@@ -847,7 +861,12 @@ export const ZoneSidebar = () => {
                             {$displayHidingZones && stations.length > 0 && (
                                 <SidebarMenuItem
                                     className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
-                                    onClick={removeHidingZones}
+                                    onClick={() => {
+                                        setHidingZoneModeStationID("");
+                                        displayHidingZonesStyle.set(
+                                            "no-display",
+                                        );
+                                    }}
                                     disabled={$isLoading}
                                 >
                                     No Display
@@ -857,21 +876,8 @@ export const ZoneSidebar = () => {
                                 <SidebarMenuItem
                                     className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
                                     onClick={() => {
-                                        setCommandValue("");
-                                        showGeoJSON(
-                                            turf.featureCollection(
-                                                stations
-                                                    .filter(
-                                                        (x) =>
-                                                            x.properties
-                                                                .properties
-                                                                .id !==
-                                                            commandValue,
-                                                    )
-                                                    .map((x) => x.properties),
-                                            ),
-                                            false,
-                                        );
+                                        setHidingZoneModeStationID("");
+                                        displayHidingZonesStyle.set("stations");
                                     }}
                                     disabled={$isLoading}
                                 >
@@ -882,19 +888,8 @@ export const ZoneSidebar = () => {
                                 <SidebarMenuItem
                                     className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
                                     onClick={() => {
-                                        setCommandValue("");
-                                        showGeoJSON(
-                                            turf.featureCollection(
-                                                stations.filter(
-                                                    (x) =>
-                                                        !$disabledStations.includes(
-                                                            x.properties
-                                                                .properties.id,
-                                                        ),
-                                                ),
-                                            ),
-                                            true,
-                                        );
+                                        setHidingZoneModeStationID("");
+                                        displayHidingZonesStyle.set("zones");
                                     }}
                                     disabled={$isLoading}
                                 >
@@ -905,20 +900,9 @@ export const ZoneSidebar = () => {
                                 <SidebarMenuItem
                                     className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
                                     onClick={() => {
-                                        setCommandValue("");
-                                        showGeoJSON(
-                                            safeUnion(
-                                                turf.featureCollection(
-                                                    stations.filter(
-                                                        (x) =>
-                                                            !$disabledStations.includes(
-                                                                x.properties
-                                                                    .properties
-                                                                    .id,
-                                                            ),
-                                                    ),
-                                                ),
-                                            ),
+                                        setHidingZoneModeStationID("");
+                                        displayHidingZonesStyle.set(
+                                            "no-overlap",
                                         );
                                     }}
                                     disabled={$isLoading}
@@ -926,7 +910,7 @@ export const ZoneSidebar = () => {
                                     No Overlap
                                 </SidebarMenuItem>
                             )}
-                            {$displayHidingZones && commandValue && (
+                            {$displayHidingZones && hidingZoneModeStationID && (
                                 <SidebarMenuItem
                                     className={cn(
                                         MENU_ITEM_CLASSNAME,
@@ -939,7 +923,7 @@ export const ZoneSidebar = () => {
                                         const selected = stations.find(
                                             (x) =>
                                                 x.properties.properties.id ===
-                                                commandValue,
+                                                hidingZoneModeStationID,
                                         );
                                         const displayName = extractStationLabel(
                                             selected?.properties,
@@ -973,13 +957,6 @@ export const ZoneSidebar = () => {
                                         className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
                                         onClick={() => {
                                             disabledStations.set([]);
-
-                                            showGeoJSON(
-                                                turf.featureCollection(
-                                                    stations,
-                                                ),
-                                                true,
-                                            );
                                         }}
                                         disabled={$isLoading}
                                     >
@@ -996,7 +973,6 @@ export const ZoneSidebar = () => {
                                                     x.properties.properties.id,
                                             ),
                                         );
-                                        removeHidingZones();
                                     }}
                                     disabled={$isLoading}
                                 >
@@ -1088,23 +1064,6 @@ export const ZoneSidebar = () => {
                                                             setStations([
                                                                 ...stations,
                                                             ]);
-
-                                                            showGeoJSON(
-                                                                turf.featureCollection(
-                                                                    stations.filter(
-                                                                        (x) =>
-                                                                            !disabledStations
-                                                                                .get()
-                                                                                .includes(
-                                                                                    x
-                                                                                        .properties
-                                                                                        .properties
-                                                                                        .id,
-                                                                                ),
-                                                                    ),
-                                                                ),
-                                                                true,
-                                                            );
                                                         }, 100);
                                                     }}
                                                     disabled={$isLoading}
@@ -1119,36 +1078,12 @@ export const ZoneSidebar = () => {
                                                             buttonJustClicked =
                                                                 true;
 
-                                                            setCommandValue(
+                                                            setHidingZoneModeStationID(
                                                                 station
                                                                     .properties
                                                                     .properties
                                                                     .id,
                                                             );
-
-                                                            await selectionProcess(
-                                                                station,
-                                                                map,
-                                                                stations,
-                                                                showGeoJSON,
-                                                                $questionFinishedMapData,
-                                                                $hidingRadius,
-                                                            ).catch((error) => {
-                                                                console.log(
-                                                                    error,
-                                                                );
-
-                                                                if (
-                                                                    document.querySelectorAll(
-                                                                        ".Toastify__toast",
-                                                                    ).length ===
-                                                                    0
-                                                                ) {
-                                                                    return toast.error(
-                                                                        "An error occurred",
-                                                                    );
-                                                                }
-                                                            });
                                                         }}
                                                         className="bg-slate-600 p-0.5 rounded-md"
                                                         disabled={$isLoading}
@@ -1168,6 +1103,25 @@ export const ZoneSidebar = () => {
         </Sidebar>
     );
 };
+
+function styleStations(
+    circles: StationCircle[],
+    style: string,
+): FeatureCollection | Feature {
+    switch (style) {
+        case "no-display":
+            return { type: "FeatureCollection", features: [] };
+
+        case "no-overlap":
+            return safeUnion(turf.featureCollection(circles));
+
+        case "stations":
+            return turf.featureCollection(circles.map((c) => c.properties));
+
+        default:
+            return turf.featureCollection(circles);
+    }
+}
 
 async function selectionProcess(
     station: any,
