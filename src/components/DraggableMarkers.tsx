@@ -2,15 +2,17 @@ import { useStore } from "@nanostores/react";
 import { type DragEndEvent, Icon } from "leaflet";
 import { useState } from "react";
 import { Fragment } from "react/jsx-runtime";
-import { Marker } from "react-leaflet";
+import { Marker, Polyline } from "react-leaflet";
 
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
     autoSave,
     hiderMode,
+    mapDragInProgress,
     questionModified,
     questions,
     save,
+    suppressNextAutoFocus,
     triggerLocalRefresh,
 } from "@/lib/context";
 import type { ICON_COLORS } from "@/maps/api";
@@ -70,11 +72,14 @@ const ColoredMarker = ({
                 eventHandlers={{
                     dragstart: () => {
                         isDragging = true;
+                        mapDragInProgress.set(true);
                     },
                     dragend: (x) => {
+                        suppressNextAutoFocus.set(true);
                         onChange(x);
                         setTimeout(() => {
                             isDragging = false;
+                            mapDragInProgress.set(false);
                         }, 100);
                     },
                     click: () => {
@@ -258,6 +263,17 @@ export const DraggableMarkers = () => {
                     case "thermometer":
                         return (
                             <Fragment key={question.key}>
+                                <Polyline
+                                    positions={[
+                                        [question.data.latA, question.data.lngA],
+                                        [question.data.latB, question.data.lngB],
+                                    ]}
+                                    pathOptions={{
+                                        color: "#f59e0b",
+                                        weight: 4,
+                                        opacity: 0.75,
+                                    }}
+                                />
                                 <ColoredMarker
                                     color={question.data.colorA}
                                     key={"a" + question.key.toString()}

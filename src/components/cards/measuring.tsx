@@ -32,6 +32,7 @@ import {
 } from "@/maps/schema";
 
 import { QuestionCard } from "./base";
+import { QuestionDebugDetails } from "./debug";
 
 export const MeasuringQuestionComponent = ({
     data,
@@ -257,6 +258,10 @@ export const MeasuringQuestionComponent = ({
                 />
             </SidebarMenuItem>
             {questionSpecific}
+            <QuestionDebugDetails
+                debug={(data as any).debug}
+                showHider={$hiderMode !== false}
+            />
             <LatitudeLongitude
                 latitude={data.lat}
                 longitude={data.lng}
@@ -285,11 +290,20 @@ export const MeasuringQuestionComponent = ({
                     className="grow"
                     type="single"
                     value={data.hiderCloser ? "closer" : "further"}
-                    onValueChange={(value: "closer" | "further") =>
+                    onValueChange={(value: "closer" | "further") => {
                         questionModified(
                             (data.hiderCloser = value === "closer"),
-                        )
-                    }
+                        );
+                        if ((data as any).debug && typeof (data as any).debug === "object") {
+                            (data as any).debug = {
+                                ...(data as any).debug,
+                                detectedResult:
+                                    value === "closer"
+                                        ? "hider closer"
+                                        : "hider further",
+                            };
+                        }
+                    }}
                     disabled={!!$hiderMode || !data.drag || $isLoading}
                 >
                     <ToggleGroupItem value="further">

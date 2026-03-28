@@ -307,6 +307,12 @@ export const refreshStreetTrace = async (question: StreetTraceQuestion) => {
     if ($hiderMode === false) {
         question.trace = [];
         question.source = "question";
+        question.debug = {
+            source: "question",
+            tracePointCount: 0,
+            traceLengthKm: 0,
+            note: "Hider mode disabled",
+        };
         return question;
     }
 
@@ -315,6 +321,26 @@ export const refreshStreetTrace = async (question: StreetTraceQuestion) => {
     ).map((coord) => [coord[0], coord[1]]);
     question.source = "hider";
     question.drag = false;
+
+    const traceLengthKm =
+        question.trace.length >= 2
+            ? turf.length(
+                  turf.lineString(
+                      question.trace.map(
+                          (coord) => [coord[0], coord[1]] as [number, number],
+                      ),
+                  ),
+                  {
+                  units: "kilometers",
+                  },
+              )
+            : 0;
+
+    question.debug = {
+        source: question.source,
+        tracePointCount: question.trace.length,
+        traceLengthKm: Number(traceLengthKm.toFixed(3)),
+    };
 
     return question;
 };

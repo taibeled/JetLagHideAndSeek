@@ -19,11 +19,14 @@ import {
 import {
     findAdminBoundary,
     findPlacesInZone,
+    findPlacesSpecificInZone,
     LOCATION_FIRST_TAG,
     nearestToQuestion,
     prettifyLocation,
-    trainLineNodeFinder,
+    sydneyStationPointsForLineRefs,
+    sydneyRailLineRefsForStation,
 } from "@/maps/api";
+import { QuestionSpecificLocation } from "@/maps/api";
 import { holedMask, modifyMapData, safeUnion } from "@/maps/geo-utils";
 import { geoSpatialVoronoi } from "@/maps/geo-utils";
 import type {
@@ -31,6 +34,42 @@ import type {
     HomeGameMatchingQuestions,
     MatchingQuestion,
 } from "@/maps/schema";
+
+const SYDNEY_MANUAL_SELECTION_EXCLUDED_STATIONS = new Set([
+    "central",
+    "town hall",
+    "st james",
+    "museum",
+    "circular quay",
+]);
+
+const normalizeStationName = (name: string) =>
+    name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, " ")
+        .trim();
+
+const SYDNEY_RAIL_LINE_PATTERN = /(L[1-4]|M1|T[1-5]|T8|T9)/gi;
+
+const parseSydneyLineRefs = (value?: string) => {
+    if (!value) return [] as string[];
+    return _.uniq((value.match(SYDNEY_RAIL_LINE_PATTERN) ?? []).map((line) => line.toUpperCase()));
+};
+
+const stationSydneyLines = (feature: Feature<Point>) => {
+    const props = (feature.properties ?? {}) as Record<string, unknown>;
+    return _.uniq([
+        ...parseSydneyLineRefs(typeof props.route_ref === "string" ? props.route_ref : undefined),
+        ...parseSydneyLineRefs(typeof props.line === "string" ? props.line : undefined),
+        ...parseSydneyLineRefs(typeof props["network:ref"] === "string" ? (props["network:ref"] as string) : undefined),
+        ...parseSydneyLineRefs(typeof props["railway:ref"] === "string" ? (props["railway:ref"] as string) : undefined),
+    ]);
+};
+
+const boundaryName = (boundary: any) =>
+    boundary?.properties?.["name:en"] ??
+    boundary?.properties?.name ??
+    "Unknown";
 
 export const findMatchingPlaces = async (question: MatchingQuestion) => {
     switch (question.type) {
@@ -65,6 +104,18 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
         }
         case "custom-points": {
             return question.geo!;
+        }
+        case "same-nearest-mcdonalds": {
+            const points = await findPlacesSpecificInZone(
+                QuestionSpecificLocation.McDonalds,
+            );
+            return points.features as any;
+        }
+        case "same-nearest-synagogue": {
+            const points = await findPlacesSpecificInZone(
+                QuestionSpecificLocation.Synagogue,
+            );
+            return points.features as any;
         }
         case "aquarium-full":
         case "zoo-full":
@@ -136,8 +187,117 @@ export const determineMatchingBoundary = _.memoize(
             case "park":
             case "same-first-letter-station":
             case "same-length-station":
-            case "same-train-line": {
+            {
                 return false;
+            }
+            case "same-train-line": {
+                const places = osmtogeojson(
+                    await findPlacesInZone(
+                        "[railway=station]",
+                        "Finding train stations. This may take a while. Do not press any buttons while this is processing. Don't worry, it will be cached.",
+                        "node",
+                    ),
+                ) as FeatureCollection<Point>;
+
+                const stationFeatures = places.features.filter(
+                    (feature): feature is Feature<Point> =>
+                        !!feature.geometry && feature.geometry.type === "Point",
+                );
+
+                if (stationFeatures.length === 0) {
+                    return false;
+                }
+
+                const seekerPoint = turf.point([question.lng, question.lat]);
+                const nearestSeekerTrainStation = turf.nearestPoint(
+                    seekerPoint,
+                    places,
+                ) as Feature<Point>;
+
+                let seekerLines = stationSydneyLines(nearestSeekerTrainStation);
+
+                if (
+                    seekerLines.length === 0 &&
+                    typeof nearestSeekerTrainStation.properties?.id === "string"
+                ) {
+                    seekerLines = await sydneyRailLineRefsForStation(
+                        nearestSeekerTrainStation.properties.id,
+                    );
+                }
+
+                const selectedLine =
+                    question.selectedSydneyTrainLine &&
+                    question.selectedSydneyTrainLine !== "AUTO" &&
+                    question.selectedSydneyTrainLine !== "UNSET"
+                        ? question.selectedSydneyTrainLine
+                        : null;
+
+                const activeLines = selectedLine
+                    ? seekerLines.includes(selectedLine)
+                        ? [selectedLine]
+                        : []
+                    : seekerLines;
+
+                if (activeLines.length === 0) {
+                    return false;
+                }
+
+                const points = turf.featureCollection(
+                    stationFeatures.map((feature) => {
+                        const lines = stationSydneyLines(feature);
+                        return turf.point(feature.geometry.coordinates, {
+                            ...(feature.properties ?? {}),
+                            sydneyLines: lines,
+                        });
+                    }),
+                );
+
+                const lineStationPoints = await sydneyStationPointsForLineRefs(
+                    activeLines,
+                );
+                const hasLineStationPoints =
+                    lineStationPoints.features.length > 0;
+
+                const voronoi = geoSpatialVoronoi(points);
+                const selectedPolygons: Feature<Polygon | MultiPolygon>[] = [];
+
+                points.features.forEach((stationPoint) => {
+                    const stationLines = (stationPoint.properties?.sydneyLines ?? []) as string[];
+                    const isNearSelectedLineStation = hasLineStationPoints
+                        ? lineStationPoints.features.some((linePoint) =>
+                              turf.distance(linePoint, stationPoint, {
+                                  units: "kilometers",
+                              }) <= 0.35,
+                          )
+                        : false;
+                    const isOnSelectedLineByTags = stationLines.some((line) =>
+                        activeLines.includes(line),
+                    );
+
+                    if (!isNearSelectedLineStation && !isOnSelectedLineByTags) {
+                        return;
+                    }
+
+                    for (const cell of voronoi.features) {
+                        if (turf.booleanPointInPolygon(stationPoint, cell)) {
+                            selectedPolygons.push(cell);
+                            break;
+                        }
+                    }
+                });
+
+                if (selectedPolygons.length === 0) {
+                    return false;
+                }
+
+                boundary = safeUnion(
+                    turf.featureCollection(
+                        _.uniqBy(selectedPolygons, (feature) =>
+                            JSON.stringify(feature.geometry.coordinates),
+                        ),
+                    ),
+                );
+                break;
             }
             case "custom-zone": {
                 boundary = question.geo;
@@ -153,6 +313,32 @@ export const determineMatchingBoundary = _.memoize(
                 if (!boundary) {
                     toast.error("No boundary found for this zone");
                     throw new Error("No boundary found");
+                }
+                break;
+            }
+            case "suburb-zone": {
+                boundary = await findAdminBoundary(
+                    question.lat,
+                    question.lng,
+                    9,
+                );
+
+                if (!boundary) {
+                    toast.error("No suburb boundary found");
+                    throw new Error("No suburb boundary found");
+                }
+                break;
+            }
+            case "federal-electorate-zone": {
+                boundary = await findAdminBoundary(
+                    question.lat,
+                    question.lng,
+                    6,
+                );
+
+                if (!boundary) {
+                    toast.error("No federal electorate boundary found");
+                    throw new Error("No federal electorate boundary found");
                 }
                 break;
             }
@@ -215,6 +401,8 @@ export const determineMatchingBoundary = _.memoize(
             }
             case "airport":
             case "major-city":
+            case "same-nearest-mcdonalds":
+            case "same-nearest-synagogue":
             case "aquarium-full":
             case "zoo-full":
             case "theme_park-full":
@@ -308,8 +496,148 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
 
         question.same =
             questionNearest.properties.name === hiderNearest.properties.name;
+        question.debug = {
+            seekerNearest:
+                questionNearest.properties?.name ??
+                questionNearest.properties?.["name:en"] ??
+                "Unknown",
+            hiderNearest:
+                hiderNearest.properties?.name ??
+                hiderNearest.properties?.["name:en"] ??
+                "Unknown",
+            detectedResult: question.same ? "same" : "different",
+        };
 
         return question;
+    }
+
+    if (
+        question.type === "same-nearest-mcdonalds" ||
+        question.type === "same-nearest-synagogue"
+    ) {
+        const seekerPoint = turf.point([question.lng, question.lat]);
+        const hiderPoint = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
+
+        const places = await findPlacesSpecificInZone(
+            question.type === "same-nearest-mcdonalds"
+                ? QuestionSpecificLocation.McDonalds
+                : QuestionSpecificLocation.Synagogue,
+        );
+
+        if (!places.features.length) {
+            return question;
+        }
+
+        const seekerNearest = turf.nearestPoint(seekerPoint, places as any) as any;
+        const hiderNearest = turf.nearestPoint(hiderPoint, places as any) as any;
+
+        const seekerId = seekerNearest.properties?.id;
+        const hiderId = hiderNearest.properties?.id;
+
+        if (seekerId && hiderId) {
+            question.same = seekerId === hiderId;
+        } else {
+            const [sLng, sLat] = turf.getCoord(seekerNearest);
+            const [hLng, hLat] = turf.getCoord(hiderNearest);
+            question.same = sLng === hLng && sLat === hLat;
+        }
+
+        question.matchingDebug = {
+            seekerNearest:
+                seekerNearest.properties?.name ??
+                seekerNearest.properties?.id ??
+                "Unknown",
+            hiderNearest:
+                hiderNearest.properties?.name ??
+                hiderNearest.properties?.id ??
+                "Unknown",
+            same: question.same,
+        };
+        question.debug = question.matchingDebug;
+
+        return question;
+    }
+
+    if (
+        question.type === "zone" ||
+        question.type === "letter-zone" ||
+        question.type === "suburb-zone" ||
+        question.type === "federal-electorate-zone"
+    ) {
+        const adminLevel =
+            question.type === "suburb-zone"
+                ? 9
+                : question.type === "federal-electorate-zone"
+                  ? 6
+                  : question.cat.adminLevel;
+
+        const seekerBoundary = await findAdminBoundary(
+            question.lat,
+            question.lng,
+            adminLevel,
+        );
+        const hiderBoundary = await findAdminBoundary(
+            $hiderMode.latitude,
+            $hiderMode.longitude,
+            adminLevel,
+        );
+
+        question.matchingDebug = {
+            adminLevel,
+            seekerDetectedBoundary: boundaryName(seekerBoundary),
+            hiderDetectedBoundary: boundaryName(hiderBoundary),
+        };
+        question.debug = question.matchingDebug;
+    }
+
+    if (question.type === "airport") {
+        const airportData = await findPlacesInZone(
+            '["aeroway"="aerodrome"]["iata"]',
+            "Finding airports...",
+            "nwr",
+            "center",
+        );
+
+        if (airportData.elements?.length) {
+            const airportPoints = turf.featureCollection(
+                airportData.elements.map((x: any) =>
+                    turf.point(
+                        [
+                            x.center ? x.center.lon : x.lon,
+                            x.center ? x.center.lat : x.lat,
+                        ],
+                        {
+                            name: x.tags?.["name:en"] ?? x.tags?.name,
+                            iata: x.tags?.iata,
+                        },
+                    ),
+                ),
+            );
+
+            const seekerNearestAirport = turf.nearestPoint(
+                turf.point([question.lng, question.lat]),
+                airportPoints as any,
+            ) as any;
+            const hiderNearestAirport = turf.nearestPoint(
+                turf.point([$hiderMode.longitude, $hiderMode.latitude]),
+                airportPoints as any,
+            ) as any;
+
+            const seekerName = seekerNearestAirport.properties?.name;
+            const seekerIata = seekerNearestAirport.properties?.iata;
+            const hiderName = hiderNearestAirport.properties?.name;
+            const hiderIata = hiderNearestAirport.properties?.iata;
+
+            question.matchingDebug = {
+                seekerNearestAirport: seekerIata
+                    ? `${seekerName ?? "Unknown"} (${seekerIata})`
+                    : seekerName ?? "Unknown",
+                hiderNearestAirport: hiderIata
+                    ? `${hiderName ?? "Unknown"} (${hiderIata})`
+                    : hiderName ?? "Unknown",
+            };
+            question.debug = question.matchingDebug;
+        }
     }
 
     if (
@@ -338,19 +666,63 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
         );
 
         if (question.type === "same-train-line") {
-            const nodes = await trainLineNodeFinder(
+            const seekerStationName =
+                nearestSeekerTrainStation.properties["name:en"] ||
+                nearestSeekerTrainStation.properties.name ||
+                "Unknown station";
+            const hiderStationName =
+                nearestHiderTrainStation.properties["name:en"] ||
+                nearestHiderTrainStation.properties.name ||
+                "Unknown station";
+
+            const seekerLines = await sydneyRailLineRefsForStation(
                 nearestSeekerTrainStation.properties.id,
             );
-
-            const hiderId = parseInt(
-                nearestHiderTrainStation.properties.id.split("/")[1],
+            const hiderLines = await sydneyRailLineRefsForStation(
+                nearestHiderTrainStation.properties.id,
             );
 
-            if (nodes.includes(hiderId)) {
-                question.same = true;
-            } else {
-                question.same = false;
-            }
+            const manualRequired =
+                seekerLines.length > 1 &&
+                !SYDNEY_MANUAL_SELECTION_EXCLUDED_STATIONS.has(
+                    normalizeStationName(seekerStationName),
+                );
+            const selectedLine =
+                question.selectedSydneyTrainLine &&
+                question.selectedSydneyTrainLine !== "AUTO" &&
+                question.selectedSydneyTrainLine !== "UNSET"
+                    ? question.selectedSydneyTrainLine
+                    : null;
+
+            const effectiveSeekerLines = selectedLine
+                ? seekerLines.includes(selectedLine)
+                    ? [selectedLine]
+                    : []
+                : seekerLines;
+
+            question.same =
+                (!manualRequired || !!selectedLine) &&
+                effectiveSeekerLines.length > 0 &&
+                hiderLines.length > 0 &&
+                effectiveSeekerLines.some((line) => hiderLines.includes(line));
+
+            question.sydneyLineOptions = seekerLines;
+            question.sydneyLineStationName = seekerStationName;
+            question.sydneyLineManualRequired = manualRequired;
+            question.sydneyLineDebug = {
+                seekerStationName,
+                hiderStationName,
+                seekerLines,
+                hiderLines,
+                effectiveSeekerLines,
+                stationCountOnActiveLines: (
+                    await sydneyStationPointsForLineRefs(effectiveSeekerLines)
+                ).features.length,
+                selectedLine: selectedLine ?? "AUTO",
+                manualRequired,
+                same: question.same,
+            };
+            question.debug = question.sydneyLineDebug;
         }
 
         const hiderEnglishName =
@@ -373,6 +745,13 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
             } else {
                 question.same = false;
             }
+            question.debug = {
+                seekerStation: seekerEnglishName,
+                hiderStation: hiderEnglishName,
+                seekerFirstLetter: seekerEnglishName[0].toUpperCase(),
+                hiderFirstLetter: hiderEnglishName[0].toUpperCase(),
+                detectedResult: question.same ? "same" : "different",
+            };
         } else if (question.type === "same-length-station") {
             if (hiderEnglishName.length === seekerEnglishName.length) {
                 question.lengthComparison = "same";
@@ -381,6 +760,13 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
             } else {
                 question.lengthComparison = "longer";
             }
+            question.debug = {
+                seekerStation: seekerEnglishName,
+                hiderStation: hiderEnglishName,
+                seekerLength: seekerEnglishName.length,
+                hiderLength: hiderEnglishName.length,
+                detectedResult: question.lengthComparison,
+            };
         }
 
         return question;

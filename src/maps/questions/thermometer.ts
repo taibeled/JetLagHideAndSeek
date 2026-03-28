@@ -52,6 +52,14 @@ export const hiderifyThermometer = (question: ThermometerQuestion) => {
         question.warmer = false;
     }
 
+    const distanceToA = turf.distance(hiderPoint, pointA, { units: "miles" });
+    const distanceToB = turf.distance(hiderPoint, pointB, { units: "miles" });
+    question.debug = {
+        hiderDistanceToStartMiles: Number(distanceToA.toFixed(3)),
+        hiderDistanceToEndMiles: Number(distanceToB.toFixed(3)),
+        detectedResult: question.warmer ? "warmer" : "colder",
+    };
+
     return question;
 };
 

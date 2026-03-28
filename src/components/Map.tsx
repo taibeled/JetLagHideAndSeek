@@ -20,12 +20,14 @@ import {
     isLoading,
     leafletMapContext,
     linkHiderToGPS,
+    mapDragInProgress,
     mapGeoJSON,
     mapGeoLocation,
     planningModeEnabled,
     polyGeoJSON,
     questionFinishedMapData,
     questions,
+    suppressNextAutoFocus,
     thunderforestApiKey,
     triggerLocalRefresh,
 } from "@/lib/context";
@@ -47,6 +49,7 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; Powered by Esri and Turf.js'
                     url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
                     subdomains="abcd"
+                    referrerPolicy="strict-origin-when-cross-origin"
                     maxZoom={20} // This technically should be 6, but once the ratelimiting starts this can take over
                     minZoom={2}
                     noWrap
@@ -59,6 +62,7 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; Powered by Esri and Turf.js'
                     url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
                     subdomains="abcd"
+                    referrerPolicy="strict-origin-when-cross-origin"
                     maxZoom={20} // This technically should be 6, but once the ratelimiting starts this can take over
                     minZoom={2}
                     noWrap
@@ -71,6 +75,7 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
                     <TileLayer
                         url={`https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=${thunderforestApiKey}`}
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="http://www.thunderforest.com/">Thunderforest</a>; Powered by Esri and Turf.js'
+                        referrerPolicy="strict-origin-when-cross-origin"
                         maxZoom={22}
                         minZoom={2}
                         noWrap
@@ -84,6 +89,7 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
                     <TileLayer
                         url={`https://tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png?apikey=${thunderforestApiKey}`}
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="http://www.thunderforest.com/">Thunderforest</a>; Powered by Esri and Turf.js'
+                        referrerPolicy="strict-origin-when-cross-origin"
                         maxZoom={22}
                         minZoom={2}
                         noWrap
@@ -96,6 +102,7 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; Powered by Esri and Turf.js'
                     url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    referrerPolicy="strict-origin-when-cross-origin"
                     maxZoom={19}
                     minZoom={2}
                     noWrap
@@ -108,6 +115,7 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; Powered by Esri and Turf.js'
             url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
             subdomains="abcd"
+            referrerPolicy="strict-origin-when-cross-origin"
             maxZoom={20} // This technically should be 6, but once the ratelimiting starts this can take over
             minZoom={2}
             noWrap
@@ -125,6 +133,8 @@ export const Map = ({ className }: { className?: string }) => {
     const $isLoading = useStore(isLoading);
     const $followMe = useStore(followMe);
     const $linkHiderToGPS = useStore(linkHiderToGPS);
+    const $mapDragInProgress = useStore(mapDragInProgress);
+    const $suppressNextAutoFocus = useStore(suppressNextAutoFocus);
     const map = useStore(leafletMapContext);
 
     const followMeMarkerRef = useMemo(
@@ -405,13 +415,21 @@ export const Map = ({ className }: { className?: string }) => {
             (question) => question.id !== "street-trace",
         );
         const currentSignature = JSON.stringify(nonStreetTraceQuestions);
-        const shouldFocus =
+        let shouldFocus =
             lastNonStreetTraceQuestionsRef.current === "" ||
             lastNonStreetTraceQuestionsRef.current !== currentSignature;
 
+        if ($mapDragInProgress || $suppressNextAutoFocus) {
+            shouldFocus = false;
+        }
+
         lastNonStreetTraceQuestionsRef.current = currentSignature;
         refreshQuestions(shouldFocus);
-    }, [$questions, map]);
+
+        if ($suppressNextAutoFocus) {
+            suppressNextAutoFocus.set(false);
+        }
+    }, [$questions, map, $mapDragInProgress, $suppressNextAutoFocus]);
 
     useEffect(() => {
         if (!map) return;

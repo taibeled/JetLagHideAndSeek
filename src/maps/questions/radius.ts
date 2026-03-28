@@ -38,6 +38,13 @@ export const hiderifyRadius = (question: RadiusQuestion) => {
         question.within = false;
     }
 
+    question.debug = {
+        radius: question.radius,
+        unit: question.unit,
+        seekerToHiderDistance: Number(distance.toFixed(3)),
+        detectedResult: question.within ? "inside" : "outside",
+    };
+
     return question;
 };
 

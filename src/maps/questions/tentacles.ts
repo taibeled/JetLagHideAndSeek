@@ -121,6 +121,13 @@ export const hiderifyTentacles = async (question: TentacleQuestion) => {
         question.radius
     ) {
         question.location = false;
+        question.debug = {
+            radius: question.radius,
+            unit: question.unit,
+            candidateCount: points.features.length,
+            hiderWithinRadius: false,
+            detectedLocation: "Not Within",
+        };
         return question;
     }
 
@@ -139,10 +146,27 @@ export const hiderifyTentacles = async (question: TentacleQuestion) => {
     );
 
     if (!correctPolygon) {
+        question.debug = {
+            radius: question.radius,
+            unit: question.unit,
+            candidateCount: points.features.length,
+            hiderWithinRadius: true,
+            detectedLocation: "Unknown",
+        };
         return question;
     }
 
     question.location = correctLocation!;
+    question.debug = {
+        radius: question.radius,
+        unit: question.unit,
+        candidateCount: points.features.length,
+        hiderWithinRadius: true,
+        detectedLocation:
+            correctLocation?.properties?.name ??
+            correctLocation?.properties?.["name:en"] ??
+            "Unknown",
+    };
     return question;
 };
 

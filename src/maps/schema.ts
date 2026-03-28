@@ -74,6 +74,7 @@ const thermometerQuestionSchema = z
         warmer: z.boolean().default(true),
         colorA: iconColorSchema.default(() => randomColorExcluding(["green"])),
         colorB: iconColorSchema.default(() => randomColorExcluding(["green"])),
+        debug: z.any().optional(),
         /** Note that drag is now synonymous with unlocked */
         drag: z.boolean().default(true),
         collapsed: z.boolean().default(false),
@@ -97,6 +98,7 @@ const ordinaryBaseQuestionSchema = z.object({
         .max(180, "Longitude must not overlap with the antemeridian"),
     /** Note that drag is now synonymous with unlocked */
     drag: z.boolean().default(true),
+    debug: z.any().optional(),
     color: iconColorSchema.default(randomColor),
     collapsed: z.boolean().default(false),
 });
@@ -206,6 +208,12 @@ export const tentacleQuestionSchema = z.union([
 const baseMatchingQuestionSchema = ordinaryBaseQuestionSchema.extend({
     same: z.boolean().default(true),
     lengthComparison: z.enum(["shorter", "longer", "same"]).optional(),
+    matchingDebug: z.any().optional(),
+    selectedSydneyTrainLine: z.string().default("AUTO"),
+    sydneyLineOptions: z.array(z.string()).optional(),
+    sydneyLineStationName: z.string().optional(),
+    sydneyLineManualRequired: z.boolean().optional(),
+    sydneyLineDebug: z.any().optional(),
 });
 
 const ordinaryMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
@@ -248,16 +256,28 @@ const ordinaryMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
             z
                 .literal("park-full")
                 .describe("Park Question (Small+Medium Games)"),
+            z
+                .literal("suburb-zone")
+                .describe("Same Suburb Question"),
+            z
+                .literal("federal-electorate-zone")
+                .describe("Same Federal Electorate Question"),
+            z
+                .literal("same-nearest-mcdonalds")
+                .describe("Same Nearest McDonald's Question"),
+            z
+                .literal("same-nearest-synagogue")
+                .describe("Same Nearest Synagogue Question"),
         ])
         .default("airport"),
 });
 
 const zoneMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
     type: z.union([
-        z.literal("zone").describe("Zone Question"),
+        z.literal("zone").describe("Exact Same OSM Administrative Area"),
         z
             .literal("letter-zone")
-            .describe("Zone Starts With Same Letter Question"),
+            .describe("Area Name Starts With Same Letter"),
     ]),
     cat: z
         .object({

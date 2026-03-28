@@ -31,6 +31,7 @@ import {
 } from "@/maps/schema";
 
 import { QuestionCard } from "./base";
+import { QuestionDebugDetails } from "./debug";
 
 export const TentacleQuestionComponent = ({
     data,
@@ -142,6 +143,10 @@ export const TentacleQuestionComponent = ({
                     disabled={!data.drag || $isLoading}
                 />
             </SidebarMenuItem>
+            <QuestionDebugDetails
+                debug={(data as any).debug}
+                showHider={$hiderMode !== false}
+            />
             {data.locationType === "custom" && data.drag && (
                 <>
                     <p className="px-2 mb-1 text-center text-orange-500">

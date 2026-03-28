@@ -107,6 +107,8 @@ export const displayHidingZonesOptions = persistentAtom<string[]>(
     },
 );
 export const questionFinishedMapData = atom<any>(null);
+export const mapDragInProgress = atom<boolean>(false);
+export const suppressNextAutoFocus = atom<boolean>(false);
 
 export const trainStations = atom<any[]>([]);
 onSet(trainStations, ({ newValue }) => {

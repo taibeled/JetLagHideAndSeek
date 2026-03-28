@@ -1,5 +1,5 @@
 import * as turf from "@turf/turf";
-import type { FeatureCollection, MultiPolygon } from "geojson";
+import type { FeatureCollection, MultiPolygon, Point } from "geojson";
 import _ from "lodash";
 import osmtogeojson from "osmtogeojson";
 
@@ -207,6 +207,255 @@ out geom;
     return uniqNodes;
 };
 
+const SYDNEY_RAIL_LINE_PATTERN = /(T[1-9]|M1|L[1-4])/gi;
+const SUPPORTED_SYDNEY_RAIL_LINES = new Set([
+    "L1",
+    "L2",
+    "L3",
+    "L4",
+    "M1",
+    "T1",
+    "T2",
+    "T3",
+    "T4",
+    "T5",
+    "T8",
+    "T9",
+]);
+const SYDNEY_MANUAL_SELECTION_EXCLUDED_STATIONS = new Set([
+    "central",
+    "town hall",
+    "st james",
+    "museum",
+    "circular quay",
+]);
+
+const normalizeStationName = (name: string) =>
+    name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, " ")
+        .trim();
+
+const normalizeSydneyRailLineRefs = (value?: string) => {
+    if (!value) return [] as string[];
+
+    const matches = value.match(SYDNEY_RAIL_LINE_PATTERN) ?? [];
+
+    return matches
+        .map((line) => line.toUpperCase())
+        .filter((line) => SUPPORTED_SYDNEY_RAIL_LINES.has(line));
+};
+
+export const sydneyRailLineRefsForStation = async (
+    node: string,
+): Promise<string[]> => {
+    const nodeId = node.split("/")[1];
+    const stationNodeId = parseInt(nodeId, 10);
+
+    if (!Number.isFinite(stationNodeId)) {
+        return [];
+    }
+
+    const stationData = await getOverpassData(
+        `
+[out:json];
+node(${stationNodeId});
+out body;
+`,
+        "Finding station details...",
+    );
+
+    const stationNode = stationData.elements?.find(
+        (element: any) =>
+            element?.type === "node" && element?.id === stationNodeId,
+    );
+
+    if (!stationNode || stationNode.lat === undefined || stationNode.lon === undefined) {
+        return [];
+    }
+
+    const routeData = await getOverpassData(
+        `
+[out:json];
+node(${stationNodeId})->.station;
+(
+    relation(bn.station)["type"="route"]["route"~"^(train|light_rail|subway)$"]["ref"];
+    relation(bn.station)["type"="route_master"]["route_master"~"^(train|light_rail|subway)$"]["ref"];
+
+    way(around.station:180)["railway"="platform"]->.platforms;
+    relation(bw.platforms)["type"="route"]["route"~"^(train|light_rail|subway)$"]["ref"];
+    relation(bw.platforms)["type"="route_master"]["route_master"~"^(train|light_rail|subway)$"]["ref"];
+
+    node(around.station:180)["public_transport"="stop_position"]->.stops;
+    relation(bn.stops)["type"="route"]["route"~"^(train|light_rail|subway)$"]["ref"];
+    relation(bn.stops)["type"="route_master"]["route_master"~"^(train|light_rail|subway)$"]["ref"];
+);
+out tags;
+`,
+        "Finding Sydney rail lines...",
+    );
+
+    const lines = _.uniq(
+        (routeData.elements ?? []).flatMap((element: any) => {
+            const tags = element?.tags ?? {};
+            return _.uniq([
+                ...normalizeSydneyRailLineRefs(tags.ref),
+                ...normalizeSydneyRailLineRefs(tags.short_name),
+                ...normalizeSydneyRailLineRefs(tags.name),
+            ]);
+        }),
+    );
+
+    return lines;
+};
+
+export const nearestSydneyStationLineContext = async (
+    latitude: number,
+    longitude: number,
+) => {
+    const places = osmtogeojson(
+        await findPlacesInZone(
+            "[railway=station]",
+            "Finding train stations. This may take a while. Do not press any buttons while this is processing. Don't worry, it will be cached.",
+            "node",
+        ),
+    ) as FeatureCollection;
+
+    if (!places?.features?.length) {
+        return null;
+    }
+
+    const nearestStation = turf.nearestPoint(
+        turf.point([longitude, latitude]),
+        places as any,
+    ) as any;
+
+    const stationId = nearestStation?.properties?.id;
+
+    if (!stationId || typeof stationId !== "string") {
+        return null;
+    }
+
+    const stationName =
+        nearestStation.properties?.["name:en"] ??
+        nearestStation.properties?.name ??
+        "Unknown station";
+
+    const lines = await sydneyRailLineRefsForStation(stationId);
+    const requiresManualSelection =
+        lines.length > 1 &&
+        !SYDNEY_MANUAL_SELECTION_EXCLUDED_STATIONS.has(
+            normalizeStationName(stationName),
+        );
+
+    return {
+        stationId,
+        stationName,
+        lines,
+        requiresManualSelection,
+    };
+};
+
+export const sydneyStationNodeIdsForLineRefs = async (lineRefs: string[]) => {
+        const refs = _.uniq(
+                lineRefs
+                        .map((ref) => ref.toUpperCase().trim())
+                        .filter((ref) => SUPPORTED_SYDNEY_RAIL_LINES.has(ref)),
+        );
+
+        if (refs.length === 0) {
+                return [] as number[];
+        }
+
+        const refPattern = refs.join("|");
+
+        const data = await getOverpassData(
+                `
+[out:json][timeout:60];
+(
+    relation["type"="route"]["route"~"^(train|light_rail|subway)$"]["ref"~"^(${refPattern})$"];
+)->.directRoutes;
+
+(
+    relation["type"="route_master"]["route_master"~"^(train|light_rail|subway)$"]["ref"~"^(${refPattern})$"];
+)->.masters;
+
+rel(r.masters)["type"="route"]->.masterRoutes;
+
+(
+    .directRoutes;
+    .masterRoutes;
+)->.allRoutes;
+
+(
+    node(r.allRoutes)["railway"~"^(station|halt|tram_stop)$"];
+    node(r.allRoutes)["public_transport"="station"];
+);
+out body;
+`,
+                "Finding stations on selected Sydney line...",
+        );
+
+        return _.uniq(
+                (data.elements ?? [])
+                        .filter((element: any) => element?.type === "node")
+                        .map((element: any) => element.id as number),
+        );
+};
+
+export const sydneyStationPointsForLineRefs = async (lineRefs: string[]) => {
+    const refs = _.uniq(
+        lineRefs
+            .map((ref) => ref.toUpperCase().trim())
+            .filter((ref) => SUPPORTED_SYDNEY_RAIL_LINES.has(ref)),
+    );
+
+    if (refs.length === 0) {
+        return turf.featureCollection([] as any[]) as FeatureCollection<Point>;
+    }
+
+    const refPattern = refs.join("|");
+    const tokenAwareRefPattern = `(^|[^A-Z0-9])(${refPattern})([^A-Z0-9]|$)`;
+
+    const data = await findPlacesInZone(
+        '["railway"~"^(station|halt|tram_stop)$"]["route_ref"~"' +
+            tokenAwareRefPattern +
+            '"]',
+        "Finding stations on selected Sydney line...",
+        "nwr",
+        "center",
+        [
+            '["public_transport"="station"]["route_ref"~"' +
+                tokenAwareRefPattern +
+                '"]',
+            '["railway"~"^(station|halt|tram_stop)$"]["line"~"' +
+                tokenAwareRefPattern +
+                '"]',
+            '["public_transport"="station"]["line"~"' +
+                tokenAwareRefPattern +
+                '"]',
+        ],
+        60,
+    );
+
+    const points = data.elements
+        .map((element: any) => {
+            const lon = element.center?.lon ?? element.lon;
+            const lat = element.center?.lat ?? element.lat;
+            if (typeof lon !== "number" || typeof lat !== "number") {
+                return null;
+            }
+            return turf.point([lon, lat], {
+                ...element.tags,
+                osmType: element.type,
+                osmId: element.id,
+            });
+        })
+        .filter((feature: any) => feature !== null);
+
+    return turf.featureCollection(points) as FeatureCollection<Point>;
+};
+
 export const findPlacesInZone = async (
     filter: string,
     loadingText?: string,
@@ -336,7 +585,10 @@ export const findPlacesSpecificInZone = async (
             `Finding ${
                 location === '["brand:wikidata"="Q38076"]'
                     ? "McDonald's"
-                    : "7-Elevens"
+                    : location ===
+                        '["amenity"="place_of_worship"]["religion"="jewish"]'
+                      ? "Synagogues"
+                      : "7-Elevens"
             }...`,
         )
     ).elements;
@@ -345,7 +597,10 @@ export const findPlacesSpecificInZone = async (
             turf.point([
                 x.center ? x.center.lon : x.lon,
                 x.center ? x.center.lat : x.lat,
-            ]),
+            ], {
+                id: `${x.type}/${x.id}`,
+                name: x.tags?.["name:en"] ?? x.tags?.name,
+            }),
         ),
     );
 };

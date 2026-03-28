@@ -329,6 +329,26 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
             questionNearest.properties.distanceToPoint >
             hiderNearest.properties.distanceToPoint;
 
+        question.debug = {
+            seekerNearest:
+                questionNearest.properties?.name ??
+                questionNearest.properties?.["name:en"] ??
+                "Unknown",
+            seekerDistanceMiles: Number(
+                questionNearest.properties.distanceToPoint.toFixed(3),
+            ),
+            hiderNearest:
+                hiderNearest.properties?.name ??
+                hiderNearest.properties?.["name:en"] ??
+                "Unknown",
+            hiderDistanceMiles: Number(
+                hiderNearest.properties.distanceToPoint.toFixed(3),
+            ),
+            detectedResult: question.hiderCloser
+                ? "hider closer"
+                : "hider further",
+        };
+
         return question;
     }
 
@@ -358,6 +378,16 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
         const hiderDistance = turf.distance(hider, hiderNearest);
 
         question.hiderCloser = hiderDistance < distance;
+        question.debug = {
+            seekerNearestStation:
+                nearestTrainStation.properties?.name ?? "Unknown",
+            seekerDistanceMiles: Number(distance.toFixed(3)),
+            hiderNearestStation: hiderNearest.properties?.name ?? "Unknown",
+            hiderDistanceMiles: Number(hiderDistance.toFixed(3)),
+            detectedResult: question.hiderCloser
+                ? "hider closer"
+                : "hider further",
+        };
     }
 
     if (question.type === "mcdonalds" || question.type === "seven11") {
@@ -382,7 +412,76 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
         });
 
         question.hiderCloser = hiderDistance < distance;
+        question.debug = {
+            seekerNearest:
+                nearest.properties?.name ?? nearest.properties?.id ?? "Unknown",
+            seekerDistanceMiles: Number(distance.toFixed(3)),
+            hiderNearest:
+                hiderNearest.properties?.name ??
+                hiderNearest.properties?.id ??
+                "Unknown",
+            hiderDistanceMiles: Number(hiderDistance.toFixed(3)),
+            detectedResult: question.hiderCloser
+                ? "hider closer"
+                : "hider further",
+        };
         return question;
+    }
+
+    if (question.type === "airport" || question.type === "city") {
+        const elements = (
+            await findPlacesInZone(
+                question.type === "airport"
+                    ? '["aeroway"="aerodrome"]["iata"]'
+                    : '[place=city]["population"~"^[1-9]+[0-9]{6}$"]',
+                question.type === "airport"
+                    ? "Finding airports..."
+                    : "Finding major cities...",
+                "nwr",
+                "center",
+            )
+        ).elements;
+
+        if (elements.length > 0) {
+            const points = turf.featureCollection(
+                elements.map((x: any) =>
+                    turf.point(
+                        [x.center ? x.center.lon : x.lon, x.center ? x.center.lat : x.lat],
+                        {
+                            name: x.tags?.["name:en"] ?? x.tags?.name,
+                            code: x.tags?.iata,
+                        },
+                    ),
+                ),
+            );
+
+            const seeker = turf.point([question.lng, question.lat]);
+            const hider = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
+            const nearest = turf.nearestPoint(seeker, points as any) as any;
+            const hiderNearest = turf.nearestPoint(hider, points as any) as any;
+            const distance = turf.distance(seeker, nearest, { units: "miles" });
+            const hiderDistance = turf.distance(hider, hiderNearest, {
+                units: "miles",
+            });
+
+            question.hiderCloser = hiderDistance < distance;
+            question.debug = {
+                seekerNearest:
+                    nearest.properties?.code
+                        ? `${nearest.properties?.name ?? "Unknown"} (${nearest.properties.code})`
+                        : nearest.properties?.name ?? "Unknown",
+                seekerDistanceMiles: Number(distance.toFixed(3)),
+                hiderNearest:
+                    hiderNearest.properties?.code
+                        ? `${hiderNearest.properties?.name ?? "Unknown"} (${hiderNearest.properties.code})`
+                        : hiderNearest.properties?.name ?? "Unknown",
+                hiderDistanceMiles: Number(hiderDistance.toFixed(3)),
+                detectedResult: question.hiderCloser
+                    ? "hider closer"
+                    : "hider further",
+            };
+            return question;
+        }
     }
 
     const $mapGeoJSON = mapGeoJSON.get();
@@ -410,6 +509,11 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
     if (turf.booleanPointInPolygon(hiderPoint, feature)) {
         question.hiderCloser = !question.hiderCloser;
     }
+
+    question.debug = {
+        method: "boundary-based comparison",
+        detectedResult: question.hiderCloser ? "hider closer" : "hider further",
+    };
 
     return question;
 };

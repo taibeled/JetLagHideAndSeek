@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import type { RadiusQuestion } from "@/maps/schema";
 
 import { QuestionCard } from "./base";
+import { QuestionDebugDetails } from "./debug";
 
 export const RadiusQuestionComponent = ({
     data,
@@ -94,6 +95,10 @@ export const RadiusQuestionComponent = ({
                 }}
                 disabled={!data.drag || $isLoading}
             />
+            <QuestionDebugDetails
+                debug={(data as any).debug}
+                showHider={$hiderMode !== false}
+            />
             <div className="flex gap-2 items-center p-2">
                 <Label
                     className={cn(
@@ -107,9 +112,15 @@ export const RadiusQuestionComponent = ({
                     className="grow"
                     type="single"
                     value={data.within ? "inside" : "outside"}
-                    onValueChange={(value: "inside" | "outside") =>
-                        questionModified((data.within = value === "inside"))
-                    }
+                    onValueChange={(value: "inside" | "outside") => {
+                        questionModified((data.within = value === "inside"));
+                        if ((data as any).debug && typeof (data as any).debug === "object") {
+                            (data as any).debug = {
+                                ...(data as any).debug,
+                                detectedResult: value,
+                            };
+                        }
+                    }}
                     disabled={!!$hiderMode || !data.drag || $isLoading}
                 >
                     <ToggleGroupItem value="outside">Outside</ToggleGroupItem>

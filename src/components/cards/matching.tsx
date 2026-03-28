@@ -24,6 +24,7 @@ import {
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
+import { nearestSydneyStationLineContext } from "@/maps/api";
 import {
     determineMatchingBoundary,
     findMatchingPlaces,
@@ -36,6 +37,7 @@ import {
 } from "@/maps/schema";
 
 import { QuestionCard } from "./base";
+import { QuestionDebugDetails } from "./debug";
 
 export const MatchingQuestionComponent = ({
     data,
@@ -48,6 +50,21 @@ export const MatchingQuestionComponent = ({
     sub?: string;
     className?: string;
 }) => {
+    const SYDNEY_LINE_LABELS: Record<string, string> = {
+        L1: "L1 Dulwich Hill",
+        L2: "L2 Randwick",
+        L3: "L3 Kingsford",
+        L4: "L4 Westmead & Carlingford",
+        M1: "M1 Metro North West & Bankstown",
+        T1: "T1 North Shore & Western",
+        T2: "T2 Inner West & Leppington",
+        T3: "T3 Liverpool & Inner West",
+        T4: "T4 Eastern Suburbs & Illawarra",
+        T5: "T5 Cumberland",
+        T8: "T8 Airport & South",
+        T9: "T9 Northern",
+    };
+
     useStore(triggerLocalRefresh);
     const $hiderMode = useStore(hiderMode);
     const $questions = useStore(questions);
@@ -59,6 +76,24 @@ export const MatchingQuestionComponent = ({
     const [pendingCustomType, setPendingCustomType] = React.useState<
         "custom-zone" | "custom-points" | null
     >(null);
+    const [trainLineContextLoading, setTrainLineContextLoading] =
+        React.useState(false);
+
+    const syncMatchingDebugResult = (result: string) => {
+        if ((data as any).debug && typeof (data as any).debug === "object") {
+            (data as any).debug = {
+                ...(data as any).debug,
+                detectedResult: result,
+            };
+        }
+
+        if (data.matchingDebug && typeof data.matchingDebug === "object") {
+            data.matchingDebug = {
+                ...(data.matchingDebug as Record<string, unknown>),
+                same: result === "same",
+            } as any;
+        }
+    };
     const label = `Matching
     ${
         $questions
@@ -66,6 +101,69 @@ export const MatchingQuestionComponent = ({
             .map((q) => q.key)
             .indexOf(questionKey) + 1
     }`;
+
+    React.useEffect(() => {
+        let cancelled = false;
+
+        if (data.type !== "same-train-line") {
+            setTrainLineContextLoading(false);
+            return;
+        }
+
+        setTrainLineContextLoading(true);
+
+        nearestSydneyStationLineContext(data.lat, data.lng)
+            .then((context) => {
+                if (cancelled) return;
+
+                setTrainLineContextLoading(false);
+
+                if (!context) return;
+
+                const nextOptions = context.lines;
+                const currentOptions = data.sydneyLineOptions ?? [];
+                const selectedLine = data.selectedSydneyTrainLine ?? "AUTO";
+
+                const optionsChanged =
+                    JSON.stringify(currentOptions) !==
+                    JSON.stringify(nextOptions);
+                const stationChanged =
+                    data.sydneyLineStationName !== context.stationName;
+                const manualChanged =
+                    data.sydneyLineManualRequired !==
+                    context.requiresManualSelection;
+
+                if (!optionsChanged && !stationChanged && !manualChanged) {
+                    return;
+                }
+
+                data.sydneyLineOptions = nextOptions;
+                data.sydneyLineStationName = context.stationName;
+                data.sydneyLineManualRequired =
+                    context.requiresManualSelection;
+
+                if (context.requiresManualSelection) {
+                    if (!nextOptions.includes(selectedLine)) {
+                        data.selectedSydneyTrainLine = "UNSET";
+                    }
+                } else if (
+                    selectedLine !== "AUTO" &&
+                    !nextOptions.includes(selectedLine)
+                ) {
+                    data.selectedSydneyTrainLine = "AUTO";
+                }
+
+                questionModified();
+            })
+            .catch(() => {
+                if (cancelled) return;
+                setTrainLineContextLoading(false);
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [data.type, data.lat, data.lng]);
 
     let questionSpecific = <></>;
 
@@ -82,10 +180,10 @@ export const MatchingQuestionComponent = ({
                                 3: "OSM Zone 3 (region in Japan)",
                                 4: "OSM Zone 4 (prefecture in Japan)",
                                 5: "OSM Zone 5",
-                                6: "OSM Zone 6",
+                                6: "OSM Zone 6 (Federal Electorate)",
                                 7: "OSM Zone 7",
                                 8: "OSM Zone 8",
-                                9: "OSM Zone 9",
+                                9: "OSM Zone 9 (Suburb)",
                                 10: "OSM Zone 10",
                             }}
                             value={data.cat.adminLevel.toString()}
@@ -116,14 +214,120 @@ export const MatchingQuestionComponent = ({
                 </>
             );
             break;
-        case "same-train-line":
+        case "suburb-zone":
             questionSpecific = (
                 <span className="px-2 text-center text-orange-500">
-                    Warning: The train line data is based on OpenStreetMap and
-                    may have fewer train stations than expected. If you are
-                    using this tool, ensure that the other players are also
-                    using this tool.
+                    This question uses suburb boundaries (OSM admin level 9).
                 </span>
+            );
+            break;
+        case "federal-electorate-zone":
+            questionSpecific = (
+                <span className="px-2 text-center text-orange-500">
+                    This question uses federal electorate boundaries (OSM admin
+                    level 6).
+                </span>
+            );
+            break;
+        case "same-nearest-mcdonalds":
+        case "same-nearest-synagogue":
+            questionSpecific = (
+                <span className="px-2 text-center text-orange-500">
+                    In hider mode, this is auto-answered by comparing the
+                    nearest location to both players.
+                </span>
+            );
+            break;
+        case "same-train-line":
+            const lineOptions = data.sydneyLineOptions ?? [];
+            const manualRequired = !!data.sydneyLineManualRequired;
+            const selectableLineOptions = manualRequired
+                ? ["UNSET", ...lineOptions]
+                : ["AUTO", ...lineOptions];
+            const safeSelectedLine = selectableLineOptions.includes(
+                data.selectedSydneyTrainLine,
+            )
+                ? data.selectedSydneyTrainLine
+                : selectableLineOptions[0] ?? "AUTO";
+
+            questionSpecific = (
+                <>
+                    <span className="px-2 text-center text-orange-500">
+                        Sydney mode: this checks L1-L4 Light Rail, M1 Metro,
+                        and T1-T5/T8-T9 Train lines.
+                    </span>
+                    <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                        <Select
+                            trigger={
+                                manualRequired
+                                    ? "Select Platform Line (Required)"
+                                    : "Preferred Platform Line"
+                            }
+                            options={Object.fromEntries(
+                                selectableLineOptions.map((line) => [
+                                    line,
+                                    line === "AUTO"
+                                        ? "Auto-detect"
+                                        : line === "UNSET"
+                                          ? "Select platform line"
+                                          : (SYDNEY_LINE_LABELS[line] ?? line),
+                                ]),
+                            )}
+                            value={safeSelectedLine}
+                            onValueChange={(value) =>
+                                questionModified(
+                                    (data.selectedSydneyTrainLine = value),
+                                )
+                            }
+                            disabled={
+                                !data.drag ||
+                                $isLoading ||
+                                trainLineContextLoading ||
+                                selectableLineOptions.length === 0
+                            }
+                        />
+                    </SidebarMenuItem>
+                    {manualRequired && (
+                        <span className="px-2 text-center text-orange-500">
+                            Multiple Sydney lines detected at
+                            {" " +
+                                (data.sydneyLineStationName || "this station")}
+                            . Pick the platform line you are currently on.
+                        </span>
+                    )}
+                    {data.sydneyLineDebug && (
+                        <div className="px-2 text-xs text-muted-foreground">
+                            <div>
+                                Your nearest station: {data.sydneyLineDebug.seekerStationName || "Unknown"}
+                            </div>
+                            <div>
+                                Lines at your station: {(data.sydneyLineDebug.seekerLines || []).join(", ") || "None"}
+                            </div>
+                            {$hiderMode !== false && (
+                                <>
+                                    <div>
+                                        Hider nearest station: {data.sydneyLineDebug.hiderStationName || "Unknown"}
+                                    </div>
+                                    <div>
+                                        Lines at hider station: {(data.sydneyLineDebug.hiderLines || []).join(", ") || "None"}
+                                    </div>
+                                </>
+                            )}
+                            <div>
+                                Active line selection: {data.sydneyLineDebug.selectedLine || "AUTO"}
+                            </div>
+                            <div>
+                                Compared lines: {(data.sydneyLineDebug.effectiveSeekerLines || []).join(", ") || "None"}
+                            </div>
+                            <div>
+                                Stations found on selected line(s): {data.sydneyLineDebug.stationCountOnActiveLines ?? 0}
+                            </div>
+                            <div>
+                                This compares full train lines across the network, not only one station.
+                            </div>
+                        </div>
+                    )}
+                </>
             );
             break;
         case "aquarium":
@@ -367,6 +571,16 @@ export const MatchingQuestionComponent = ({
             </SidebarMenuItem>
             {questionSpecific}
 
+            <QuestionDebugDetails
+                debug={
+                    data.type === "same-train-line"
+                        ? undefined
+                        : (data as any).debug
+                }
+                title="Detection Debug"
+                showHider={$hiderMode !== false}
+            />
+
             {data.type !== "custom-zone" && (
                 <LatitudeLongitude
                     latitude={data.lat}
@@ -419,13 +633,16 @@ export const MatchingQuestionComponent = ({
                                 questionModified(
                                     (data.lengthComparison = value),
                                 );
+                                syncMatchingDebugResult(value);
                             } else if (value === "same") {
                                 questionModified(
                                     (data.lengthComparison = "same"),
                                 );
                                 questionModified((data.same = true));
+                                syncMatchingDebugResult("same");
                             } else if (value === "different") {
                                 questionModified((data.same = false));
+                                syncMatchingDebugResult("different");
                             }
                         }}
                         disabled={!!$hiderMode || !data.drag || $isLoading}
@@ -444,8 +661,10 @@ export const MatchingQuestionComponent = ({
                         onValueChange={(value) => {
                             if (value === "same") {
                                 questionModified((data.same = true));
+                                syncMatchingDebugResult("same");
                             } else if (value === "different") {
                                 questionModified((data.same = false));
+                                syncMatchingDebugResult("different");
                             }
                         }}
                         disabled={!!$hiderMode || !data.drag || $isLoading}

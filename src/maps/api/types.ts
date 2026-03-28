@@ -37,6 +37,7 @@ export interface AdditionalMapGeoLocations {
 export enum QuestionSpecificLocation {
     McDonalds = '["brand:wikidata"="Q38076"]',
     Seven11 = '["brand:wikidata"="Q259340"]',
+    Synagogue = '["amenity"="place_of_worship"]["religion"="jewish"]',
 }
 
 export enum CacheType {
