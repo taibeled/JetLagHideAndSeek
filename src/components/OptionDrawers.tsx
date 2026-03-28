@@ -19,6 +19,7 @@ import {
     customInitPreference,
     customPresets,
     customStations,
+    defaultCustomQuestions,
     defaultUnit,
     disabledStations,
     displayHidingZonesOptions,
@@ -72,6 +73,7 @@ const PASTEBIN_URL_PARAM = "pb";
 
 export const OptionDrawers = ({ className }: { className?: string }) => {
     useStore(triggerLocalRefresh);
+    const $defaultCustomQuestions = useStore(defaultCustomQuestions);
     const $defaultUnit = useStore(defaultUnit);
     const $animateMapMovements = useStore(animateMapMovements);
     const $autoZoom = useStore(autoZoom);
@@ -612,6 +614,19 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     checked={$followMe}
                                     onCheckedChange={() =>
                                         followMe.set(!$followMe)
+                                    }
+                                />
+                            </div>
+                            <div className="flex flex-row items-center gap-2">
+                                <label className="text-2xl font-semibold font-poppins">
+                                    Default to custom questions?
+                                </label>
+                                <Checkbox
+                                    checked={$defaultCustomQuestions}
+                                    onCheckedChange={() =>
+                                        defaultCustomQuestions.set(
+                                            !$defaultCustomQuestions,
+                                        )
                                     }
                                 />
                             </div>
