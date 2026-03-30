@@ -1,6 +1,7 @@
 import { useStore } from "@nanostores/react";
 import * as L from "leaflet";
 import { useEffect, useRef } from "react";
+import * as turf from "@turf/turf";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -65,6 +66,37 @@ const buildTracePath = (
         .join(" ");
 };
 
+const describeTrace = (coordinates: [number, number][]) => {
+    if (coordinates.length < 2) {
+        return {
+            lengthMeters: 0,
+            endpointDistanceMeters: 0,
+        };
+    }
+
+    const lengthMeters =
+        turf.length(
+            turf.lineString(coordinates),
+            {
+                units: "kilometers",
+            },
+        ) * 1000;
+
+    const endpointDistanceMeters =
+        turf.distance(
+            turf.point(coordinates[0]),
+            turf.point(coordinates[coordinates.length - 1]),
+            {
+                units: "kilometers",
+            },
+        ) * 1000;
+
+    return {
+        lengthMeters,
+        endpointDistanceMeters,
+    };
+};
+
 export const StreetTraceQuestionComponent = ({
     data,
     questionKey,
@@ -109,6 +141,7 @@ export const StreetTraceQuestionComponent = ({
     const traceSignature = traceCoordinates
         .map((coord) => `${coord[0].toFixed(7)},${coord[1].toFixed(7)}`)
         .join("|");
+    const traceDetails = describeTrace(traceCoordinates);
 
     const flashTraceOnMap = (coordinates: [number, number][]) => {
         const map = leafletMapContext.get();
@@ -326,6 +359,10 @@ export const StreetTraceQuestionComponent = ({
                             </text>
                         )}
                     </svg>
+                </div>
+                <div className="pt-1 text-xs text-muted-foreground">
+                    To-scale preview. Length: {Math.round(traceDetails.lengthMeters)}m,
+                    end-to-end: {Math.round(traceDetails.endpointDistanceMeters)}m
                 </div>
             </div>
             <div className="px-2 pb-2 flex gap-2">
