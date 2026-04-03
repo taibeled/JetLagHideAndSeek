@@ -1,5 +1,7 @@
 import * as turf from "@turf/turf";
 
+import type { StationPlace } from "@/maps/api";
+
 /**
  * Function to merge duplicates stations into one station, by averaging their longitude and latitude
  * @param places    Array of all unmerged stations
@@ -8,14 +10,14 @@ import * as turf from "@turf/turf";
  * @returns         Array of all merged stations
  */
 export function mergeDuplicateStation(
-    places: any[],
+    places: StationPlace[],
     radius: number,
     units: turf.Units,
-): any[] {
+): StationPlace[] {
     const grouped = new Map<string, any[]>();
     // 1. Group by name
     for (const place of places) {
-        const name = place.properties.name;
+        const name = place.properties.name ?? "";
         // Check if the group already exist, if not add a new group entry.
         if (!grouped.has(name)) {
             grouped.set(name, [place]);

@@ -1,6 +1,10 @@
 import type { Feature, FeatureCollection, GeoJSON, Point } from "geojson";
 
-import type { CustomStation } from "./types";
+import type {
+    CustomStation,
+    StationPlace,
+    StationPlaceProperties,
+} from "./types";
 
 function parseCSV(text: string): CustomStation[] {
     // Expect headers including lat/lng or latitude/longitude; optional name,id
@@ -135,12 +139,14 @@ export function parseCustomStationsFromText(
     return parseCSV(text);
 }
 
-export function normalizeToStationFeatures(stations: CustomStation[]) {
+export function normalizeToStationFeatures(
+    stations: CustomStation[],
+): FeatureCollection<Point, StationPlaceProperties> {
     // Return GeoJSON FeatureCollection of Points carrying properties { id, name }
-    const features: Feature<Point>[] = stations.map((s) => ({
+    const features: StationPlace[] = stations.map((s) => ({
         type: "Feature",
         geometry: { type: "Point", coordinates: [s.lng, s.lat] },
         properties: { id: s.id, name: s.name },
     }));
-    return { type: "FeatureCollection", features } as FeatureCollection<Point>;
+    return { type: "FeatureCollection", features };
 }

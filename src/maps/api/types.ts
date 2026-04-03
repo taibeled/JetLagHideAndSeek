@@ -1,3 +1,4 @@
+import type { Feature, Point, Polygon } from "geojson";
 import type { LatLngTuple } from "leaflet";
 
 import type { Question } from "@/maps/schema";
@@ -51,6 +52,14 @@ export interface CustomStation {
     lat: number;
     lng: number;
 }
+
+export interface StationPlaceProperties {
+    id: string;
+    [key: string]: string | undefined;
+}
+
+export type StationPlace = Feature<Point, StationPlaceProperties>;
+export type StationCircle = Feature<Polygon, StationPlace>;
 
 export type {
     APILocations,
