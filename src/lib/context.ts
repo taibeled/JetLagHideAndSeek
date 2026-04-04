@@ -385,3 +385,12 @@ export const customInitPreference = persistentAtom<"ask" | "blank" | "prefill">(
         decode: JSON.parse,
     },
 );
+
+export const allowGooglePlusCodes = persistentAtom<boolean>(
+    "allowGooglePlusCodes",
+    false,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);

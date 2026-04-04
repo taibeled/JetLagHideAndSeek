@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/drawer";
 import {
     additionalMapGeoLocations,
+    allowGooglePlusCodes,
     alwaysUsePastebin,
     animateMapMovements,
     autoSave,
@@ -74,6 +75,7 @@ const PASTEBIN_URL_PARAM = "pb";
 export const OptionDrawers = ({ className }: { className?: string }) => {
     useStore(triggerLocalRefresh);
     const $defaultCustomQuestions = useStore(defaultCustomQuestions);
+    const $allowGooglePlusCodes = useStore(allowGooglePlusCodes);
     const $defaultUnit = useStore(defaultUnit);
     const $animateMapMovements = useStore(animateMapMovements);
     const $autoZoom = useStore(autoZoom);
@@ -626,6 +628,19 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     onCheckedChange={() =>
                                         defaultCustomQuestions.set(
                                             !$defaultCustomQuestions,
+                                        )
+                                    }
+                                />
+                            </div>
+                            <div className="flex flex-row items-center gap-2">
+                                <label className="text-2xl font-semibold font-poppins">
+                                    Allow Google Plus codes?
+                                </label>
+                                <Checkbox
+                                    checked={$allowGooglePlusCodes}
+                                    onCheckedChange={() =>
+                                        allowGooglePlusCodes.set(
+                                            !$allowGooglePlusCodes,
                                         )
                                     }
                                 />
