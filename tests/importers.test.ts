@@ -62,4 +62,35 @@ describe("parseCustomStationsFromText", () => {
             lng: -122.5,
         });
     });
+
+    it("throws error when name column is missing", () => {
+        const csv = "lat,lng\n-122.4194,-122.4194";
+        expect(() => parseCustomStationsFromText(csv, "text/csv")).toThrowError(
+            /missing required 'name'/i,
+        );
+    });
+
+    it("handles csv with escape sequences cleanly", () => {
+        const csv = "lat,lng\n-122.4194,-122.4194";
+        expect(() => parseCustomStationsFromText(csv, "text/csv")).toThrowError(
+            /missing required 'name'/i,
+        );
+    });
+
+    it("handles multiline quoted fields (RFC 4180)", () => {
+        const csv =
+            'lat,lng,name\n37.7749,-122.4194,"Downtown\nSan Francisco"\n37.784,-122.41,Oakland';
+        const stations = parseCustomStationsFromText(csv, "text/csv");
+        expect(stations.length).toBe(2);
+        expect(stations[0]).toMatchObject({
+            lat: 37.7749,
+            lng: -122.4194,
+            name: "Downtown\nSan Francisco",
+        });
+        expect(stations[1]).toMatchObject({
+            lat: 37.784,
+            lng: -122.41,
+            name: "Oakland",
+        });
+    });
 });
