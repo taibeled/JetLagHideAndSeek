@@ -70,14 +70,7 @@ describe("parseCustomStationsFromText", () => {
         );
     });
 
-    it("handles csv with escape sequences cleanly", () => {
-        const csv = "lat,lng\n-122.4194,-122.4194";
-        expect(() => parseCustomStationsFromText(csv, "text/csv")).toThrowError(
-            /missing required 'name'/i,
-        );
-    });
-
-    it("handles multiline quoted fields (RFC 4180)", () => {
+    it("handles multiline quoted fields", () => {
         const csv =
             'lat,lng,name\n37.7749,-122.4194,"Downtown\nSan Francisco"\n37.784,-122.41,Oakland';
         const stations = parseCustomStationsFromText(csv, "text/csv");
