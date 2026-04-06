@@ -1,4 +1,5 @@
 import type { Feature, FeatureCollection, GeoJSON, Point } from "geojson";
+import Papa from "papaparse";
 
 import type {
     CustomStation,
@@ -7,42 +8,49 @@ import type {
 } from "./types";
 
 function parseCSV(text: string): CustomStation[] {
-    // Expect headers including lat/lng or latitude/longitude; optional name,id
-    const lines = text
-        .split(/\r?\n/)
-        .map((l) => l.trim())
-        .filter(Boolean);
-    if (lines.length === 0) return [];
-    const header = lines[0]
-        .split(/,|\t|;|\|/)
-        .map((h) => h.trim().toLowerCase());
-    const latIdx = header.findIndex((h) => ["lat", "latitude"].includes(h));
-    const lngIdx = header.findIndex((h) =>
+    const { data, errors } = Papa.parse<Record<string, string>>(text, {
+        header: true,
+        skipEmptyLines: true,
+        transformHeader: (h) => h.toLowerCase().trim(),
+    });
+
+    if (errors.length > 0) {
+        throw new Error(`CSV parse error: ${errors[0].message}`);
+    }
+
+    const firstRow = data[0] ?? {};
+    const headers = Object.keys(firstRow);
+
+    const latKey = headers.find((h) => ["lat", "latitude"].includes(h));
+    const lngKey = headers.find((h) =>
         ["lng", "lon", "long", "longitude"].includes(h),
     );
-    const nameIdx = header.findIndex((h) =>
+    const nameKey = headers.find((h) =>
         ["name", "title", "station", "label"].includes(h),
     );
-    const idIdx = header.findIndex((h) =>
+    const idKey = headers.find((h) =>
         ["id", "station_id", "osm_id"].includes(h),
     );
-    const delimiter = lines[0].includes("\t")
-        ? "\t"
-        : lines[0].includes(";")
-          ? ";"
-          : lines[0].includes("|")
-            ? "|"
-            : ",";
+
+    if (!latKey)
+        throw new Error("CSV missing required 'lat' or 'latitude' column");
+    if (!lngKey)
+        throw new Error(
+            "CSV missing required 'lng', 'lon', 'long', or 'longitude' column",
+        );
+    if (!nameKey)
+        throw new Error(
+            "CSV missing required 'name', 'title', 'station', or 'label' column",
+        );
 
     const stations: CustomStation[] = [];
-    for (let i = 1; i < lines.length; i++) {
-        const cols = lines[i].split(delimiter).map((c) => c.trim());
-        if (latIdx < 0 || lngIdx < 0) continue;
-        const lat = parseFloat(cols[latIdx]);
-        const lng = parseFloat(cols[lngIdx]);
+    for (const row of data) {
+        const lat = parseFloat(row[latKey]);
+        const lng = parseFloat(row[lngKey]);
         if (!isFinite(lat) || !isFinite(lng)) continue;
-        const name = nameIdx >= 0 ? cols[nameIdx] : undefined;
-        const id = idIdx >= 0 && cols[idIdx] ? cols[idIdx] : `${lat},${lng}`;
+        const name = row[nameKey];
+        if (!name) continue;
+        const id = idKey && row[idKey] ? row[idKey] : `${lat},${lng}`;
         stations.push({ id, name, lat, lng });
     }
     return stations;
