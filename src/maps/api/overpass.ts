@@ -12,7 +12,7 @@ import {
 import { safeUnion } from "@/maps/geo-utils";
 
 import { cacheFetch } from "./cache";
-import { LOCATION_FIRST_TAG, OVERPASS_API } from "./constants";
+import { LOCATION_FIRST_TAG, OVERPASS_API, OVERPASS_API_FALLBACK } from "./constants";
 import type {
     EncompassingTentacleQuestionSchema,
     HomeGameMatchingQuestions,
@@ -26,11 +26,20 @@ export const getOverpassData = async (
     loadingText?: string,
     cacheType: CacheType = CacheType.CACHE,
 ) => {
-    const response = await cacheFetch(
-        `${OVERPASS_API}?data=${encodeURIComponent(query)}`,
+    const encodedQuery = encodeURIComponent(query);
+    let response = await cacheFetch(
+        `${OVERPASS_API}?data=${encodedQuery}`,
         loadingText,
         cacheType,
     );
+
+    if (!response.ok) {
+        response = await cacheFetch(
+            `${OVERPASS_API_FALLBACK}?data=${encodedQuery}`,
+            loadingText,
+            cacheType,
+        );
+    }
 
     if (!response.ok) {
         toast.error(
