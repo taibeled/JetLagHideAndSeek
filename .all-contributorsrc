@@ -331,6 +331,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "RafDevX",
+      "name": "Rafael Oliveira",
+      "avatar_url": "https://avatars.githubusercontent.com/u/56204853?v=4",
+      "profile": "https://rso.pt",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
