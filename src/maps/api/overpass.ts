@@ -11,8 +11,12 @@ import {
 } from "@/lib/context";
 import { safeUnion } from "@/maps/geo-utils";
 
-import { cacheFetch } from "./cache";
-import { LOCATION_FIRST_TAG, OVERPASS_API, OVERPASS_API_FALLBACK } from "./constants";
+import { cacheFetch, determineCache } from "./cache";
+import {
+    LOCATION_FIRST_TAG,
+    OVERPASS_API,
+    OVERPASS_API_FALLBACK,
+} from "./constants";
 import type {
     EncompassingTentacleQuestionSchema,
     HomeGameMatchingQuestions,
@@ -27,18 +31,23 @@ export const getOverpassData = async (
     cacheType: CacheType = CacheType.CACHE,
 ) => {
     const encodedQuery = encodeURIComponent(query);
-    let response = await cacheFetch(
-        `${OVERPASS_API}?data=${encodedQuery}`,
-        loadingText,
-        cacheType,
-    );
+    const primaryUrl = `${OVERPASS_API}?data=${encodedQuery}`;
+    let response = await cacheFetch(primaryUrl, loadingText, cacheType);
 
     if (!response.ok) {
-        response = await cacheFetch(
-            `${OVERPASS_API_FALLBACK}?data=${encodedQuery}`,
-            loadingText,
-            cacheType,
-        );
+        // Try the fallback, but store the result under the primary URL key so future requests are served from cache without needing to fail-over again.
+        try {
+            const fallbackResponse = await fetch(
+                `${OVERPASS_API_FALLBACK}?data=${encodedQuery}`,
+            );
+            if (fallbackResponse.ok) {
+                const cache = await determineCache(cacheType);
+                await cache.put(primaryUrl, fallbackResponse.clone());
+            }
+            response = fallbackResponse;
+        } catch {
+            /* empty */
+        }
     }
 
     if (!response.ok) {
