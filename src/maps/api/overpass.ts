@@ -37,8 +37,10 @@ export const getOverpassData = async (
     if (!response.ok) {
         // Try the fallback, but store the result under the primary URL key so future requests are served from cache without needing to fail-over again.
         try {
-            const fallbackResponse = await fetch(
+            const fallbackResponse = await cacheFetch(
                 `${OVERPASS_API_FALLBACK}?data=${encodedQuery}`,
+                loadingText,
+                cacheType,
             );
             if (fallbackResponse.ok) {
                 const cache = await determineCache(cacheType);
@@ -46,7 +48,11 @@ export const getOverpassData = async (
             }
             response = fallbackResponse;
         } catch {
-            /* empty */
+            toast.error(
+                `Could not load data from Overpass: ${response.status} ${response.statusText}`,
+                { toastId: "overpass-error" },
+            );
+            return { elements: [] };
         }
     }
 
