@@ -4,6 +4,7 @@ import { twMerge } from "tailwind-merge";
 import {
     PASTEBIN_API_POST_URL,
     PASTEBIN_API_RAW_URL,
+    PASTEBIN_API_RAW_URL_PROXIED,
 } from "@/maps/api/constants";
 
 export function cn(...inputs: ClassValue[]) {
@@ -84,7 +85,14 @@ export async function uploadToPastebin(
 }
 
 export async function fetchFromPastebin(pasteId: string): Promise<string> {
-    const response = await fetch(PASTEBIN_API_RAW_URL + pasteId);
+    let response;
+    try {
+        // prefer querying Pastebin directly since CORS proxy is unreliable
+        response = await fetch(PASTEBIN_API_RAW_URL + pasteId);
+    } catch {
+        // CORS error; happens if the paste is not owned by a Pastebin Pro user
+        response = await fetch(PASTEBIN_API_RAW_URL_PROXIED + pasteId);
+    }
 
     if (!response.ok) {
         throw new Error(
