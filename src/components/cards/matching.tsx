@@ -78,6 +78,9 @@ export const MatchingQuestionComponent = ({
     >(null);
     const [trainLineContextLoading, setTrainLineContextLoading] =
         React.useState(false);
+    const zoneAdminLevelDebounceRef = React.useRef<ReturnType<
+        typeof window.setTimeout
+    > | null>(null);
 
     const syncMatchingDebugResult = (result: string) => {
         if ((data as any).debug && typeof (data as any).debug === "object") {
@@ -165,6 +168,15 @@ export const MatchingQuestionComponent = ({
         };
     }, [data.type, data.lat, data.lng]);
 
+    React.useEffect(() => {
+        return () => {
+            if (zoneAdminLevelDebounceRef.current !== null) {
+                clearTimeout(zoneAdminLevelDebounceRef.current);
+                zoneAdminLevelDebounceRef.current = null;
+            }
+        };
+    }, []);
+
     let questionSpecific = <></>;
 
     switch (data.type) {
@@ -180,27 +192,37 @@ export const MatchingQuestionComponent = ({
                                 3: "OSM Zone 3 (region in Japan)",
                                 4: "OSM Zone 4 (prefecture in Japan)",
                                 5: "OSM Zone 5",
-                                6: "OSM Zone 6 (Federal Electorate)",
+                                6: "OSM Zone 6 (Local Government Area - Sydney)",
                                 7: "OSM Zone 7",
                                 8: "OSM Zone 8",
-                                9: "OSM Zone 9 (Suburb)",
+                                9: "OSM Zone 9 (Suburb in Sydney)",
                                 10: "OSM Zone 10",
                             }}
                             value={data.cat.adminLevel.toString()}
-                            onValueChange={(value) =>
-                                questionModified(
-                                    (data.cat.adminLevel = parseInt(value) as
-                                        | 2
-                                        | 3
-                                        | 4
-                                        | 5
-                                        | 6
-                                        | 7
-                                        | 8
-                                        | 9
-                                        | 10),
-                                )
-                            }
+                            onValueChange={(value) => {
+                                data.cat.adminLevel = parseInt(value) as
+                                    | 2
+                                    | 3
+                                    | 4
+                                    | 5
+                                    | 6
+                                    | 7
+                                    | 8
+                                    | 9
+                                    | 10;
+
+                                if (zoneAdminLevelDebounceRef.current !== null) {
+                                    clearTimeout(zoneAdminLevelDebounceRef.current);
+                                }
+
+                                zoneAdminLevelDebounceRef.current = window.setTimeout(
+                                    () => {
+                                        questionModified();
+                                        zoneAdminLevelDebounceRef.current = null;
+                                    },
+                                    10000,
+                                );
+                            }}
                             disabled={!data.drag || $isLoading}
                         />
                     </SidebarMenuItem>

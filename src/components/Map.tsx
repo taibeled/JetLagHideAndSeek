@@ -147,6 +147,10 @@ export const Map = ({ className }: { className?: string }) => {
         () => ({ current: null as number | null }),
         [],
     );
+    const autoLockNotifiedRef = useMemo(
+        () => ({ current: false }),
+        [],
+    );
     const lastNonStreetTraceQuestionsRef = useMemo(
         () => ({ current: "" }),
         [],
@@ -492,6 +496,7 @@ export const Map = ({ className }: { className?: string }) => {
         }
 
         if (!shouldWatchPosition) {
+            autoLockNotifiedRef.current = false;
             if (followMeMarkerRef.current) {
                 map.removeLayer(followMeMarkerRef.current);
                 followMeMarkerRef.current = null;
@@ -509,6 +514,27 @@ export const Map = ({ className }: { className?: string }) => {
                 const lng = pos.coords.longitude;
 
                 if ($linkHiderToGPS) {
+                    const currentQuestions = questions.get();
+                    if (currentQuestions.some((question) => question.data.drag)) {
+                        questions.set(
+                            currentQuestions.map((question) => ({
+                                ...question,
+                                data: {
+                                    ...question.data,
+                                    drag: false,
+                                },
+                            })),
+                        );
+
+                        if (!autoLockNotifiedRef.current) {
+                            toast.info(
+                                "Questions auto-locked while hider is linked to GPS.",
+                                { autoClose: 2500 },
+                            );
+                            autoLockNotifiedRef.current = true;
+                        }
+                    }
+
                     hiderMode.set({
                         latitude: lat,
                         longitude: lng,
