@@ -82,6 +82,17 @@ export const MatchingQuestionComponent = ({
         typeof window.setTimeout
     > | null>(null);
 
+    const scheduleZoneQuestionRefresh = () => {
+        if (zoneAdminLevelDebounceRef.current !== null) {
+            clearTimeout(zoneAdminLevelDebounceRef.current);
+        }
+
+        zoneAdminLevelDebounceRef.current = window.setTimeout(() => {
+            questionModified();
+            zoneAdminLevelDebounceRef.current = null;
+        }, 10000);
+    };
+
     const syncMatchingDebugResult = (result: string) => {
         if ((data as any).debug && typeof (data as any).debug === "object") {
             (data as any).debug = {
@@ -573,7 +584,8 @@ export const MatchingQuestionComponent = ({
                             if (!(data as any).cat) {
                                 (data as any).cat = { adminLevel: 3 };
                             }
-                            questionModified((data.type = value));
+                            data.type = value;
+                            scheduleZoneQuestionRefresh();
                             return;
                         }
 
@@ -586,7 +598,18 @@ export const MatchingQuestionComponent = ({
                         if (!(data as any).cat) {
                             (data as any).cat = { adminLevel: 3 };
                         }
-                        questionModified((data.type = value));
+                        data.type = value;
+                        if (
+                            value === "zone" ||
+                            value === "letter-zone" ||
+                            value === "suburb-zone" ||
+                            value === "federal-electorate-zone"
+                        ) {
+                            scheduleZoneQuestionRefresh();
+                            return;
+                        }
+
+                        questionModified();
                     }}
                     disabled={!data.drag || $isLoading}
                 />
