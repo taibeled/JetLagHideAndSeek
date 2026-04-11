@@ -59,6 +59,32 @@ export const permanentOverlay = persistentAtom<FeatureCollection | null>(
         decode: JSON.parse,
     },
 );
+const volatilePermanentOverlay = atom<FeatureCollection | null>(null);
+
+export const effectivePermanentOverlay = computed(
+    [volatilePermanentOverlay, permanentOverlay],
+    (volatileOverlay, persistedOverlay) =>
+        volatileOverlay !== null ? volatileOverlay : persistedOverlay,
+);
+
+export const setPermanentOverlay = (
+    overlay: FeatureCollection | null,
+): "persisted" | "volatile" => {
+    if (overlay === null) {
+        volatilePermanentOverlay.set(null);
+        permanentOverlay.set(null);
+        return "persisted";
+    }
+
+    try {
+        permanentOverlay.set(overlay);
+        volatilePermanentOverlay.set(null);
+        return "persisted";
+    } catch {
+        volatilePermanentOverlay.set(overlay);
+        return "volatile";
+    }
+};
 
 export const mapGeoJSON = atom<FeatureCollection<
     Polygon | MultiPolygon
@@ -293,7 +319,7 @@ export const hidingZone = computed(
         mergeDuplicates,
         defaultUnit,
         customPresets,
-        permanentOverlay,
+        effectivePermanentOverlay,
     ],
     (
         q,
@@ -311,7 +337,7 @@ export const hidingZone = computed(
         shouldMergeDuplicates,
         unitDefault,
         presets,
-        $permanentOverlay,
+        $effectivePermanentOverlay,
     ) => {
         if (geo !== null) {
             return {
@@ -328,7 +354,7 @@ export const hidingZone = computed(
                 mergeDuplicates: shouldMergeDuplicates,
                 defaultUnit: unitDefault,
                 presets: structuredClone(presets),
-                permanentOverlay: $permanentOverlay,
+                permanentOverlay: $effectivePermanentOverlay,
             };
         } else {
             const $loc = structuredClone(loc);
@@ -348,7 +374,7 @@ export const hidingZone = computed(
                 mergeDuplicates: shouldMergeDuplicates,
                 defaultUnit: unitDefault,
                 presets: structuredClone(presets),
-                permanentOverlay: $permanentOverlay,
+                permanentOverlay: $effectivePermanentOverlay,
             };
         }
     },

@@ -17,13 +17,13 @@ import {
     baseTileLayer,
     followMe,
     hiderMode,
+    effectivePermanentOverlay,
     isLoading,
     leafletMapContext,
     linkHiderToGPS,
     mapDragInProgress,
     mapGeoJSON,
     mapGeoLocation,
-    permanentOverlay,
     planningModeEnabled,
     polyGeoJSON,
     questionFinishedMapData,
@@ -136,7 +136,7 @@ export const Map = ({ className }: { className?: string }) => {
     const $linkHiderToGPS = useStore(linkHiderToGPS);
     const $mapDragInProgress = useStore(mapDragInProgress);
     const $suppressNextAutoFocus = useStore(suppressNextAutoFocus);
-    const $permanentOverlay = useStore(permanentOverlay);
+    const $permanentOverlay = useStore(effectivePermanentOverlay);
     const map = useStore(leafletMapContext);
 
     const followMeMarkerRef = useMemo(

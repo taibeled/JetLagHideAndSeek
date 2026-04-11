@@ -41,6 +41,7 @@ import {
     polyGeoJSON,
     questions,
     mergeDuplicates,
+    setPermanentOverlay,
     save,
     showTutorial,
     thunderforestApiKey,
@@ -290,9 +291,16 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
             }
 
             if (geojson.permanentOverlay) {
-                permanentOverlay.set(geojson.permanentOverlay);
+                const storageResult = setPermanentOverlay(
+                    geojson.permanentOverlay,
+                );
+                if (storageResult === "volatile") {
+                    toast.info(
+                        "Overlay is large; loaded for this session only.",
+                    );
+                }
             } else {
-                permanentOverlay.set(null);
+                setPermanentOverlay(null);
             }
 
             toast.success("Hiding zone loaded successfully", {
@@ -531,7 +539,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                             <Label>Permanent Map Overlay</Label>
                             <div className="flex flex-row max-[330px]:flex-col gap-4">
                                 <Button
-                                    onClick={() => permanentOverlay.set(null)}
+                                    onClick={() => setPermanentOverlay(null)}
                                 >
                                     Remove
                                 </Button>
@@ -547,7 +555,13 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                                 await navigator.clipboard.readText();
                                             const geojson =
                                                 JSON.parse(clipboard);
-                                            permanentOverlay.set(geojson);
+                                            const storageResult =
+                                                setPermanentOverlay(geojson);
+                                            if (storageResult === "volatile") {
+                                                toast.info(
+                                                    "GeoJSON is too large for browser storage; loaded for this session only.",
+                                                );
+                                            }
                                         } catch (e) {
                                             toast.error(
                                                 `Invalid GeoJSON overlay: ${e}`,
