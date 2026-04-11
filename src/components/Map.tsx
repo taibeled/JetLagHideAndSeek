@@ -151,8 +151,8 @@ export const Map = ({ className }: { className?: string }) => {
         () => ({ current: false }),
         [],
     );
-    const autoLockTimeoutRef = useMemo(
-        () => ({ current: null as ReturnType<typeof window.setTimeout> | null }),
+    const autoLockScheduledRef = useMemo(
+        () => ({ current: false }),
         [],
     );
     const lastNonStreetTraceQuestionsRef = useMemo(
@@ -501,10 +501,7 @@ export const Map = ({ className }: { className?: string }) => {
 
         if (!shouldWatchPosition) {
             autoLockNotifiedRef.current = false;
-            if (autoLockTimeoutRef.current !== null) {
-                clearTimeout(autoLockTimeoutRef.current);
-                autoLockTimeoutRef.current = null;
-            }
+            autoLockScheduledRef.current = false;
             if (followMeMarkerRef.current) {
                 map.removeLayer(followMeMarkerRef.current);
                 followMeMarkerRef.current = null;
@@ -522,38 +519,41 @@ export const Map = ({ className }: { className?: string }) => {
                 const lng = pos.coords.longitude;
 
                 if ($linkHiderToGPS) {
-                    if (autoLockTimeoutRef.current !== null) {
-                        clearTimeout(autoLockTimeoutRef.current);
-                    }
-
-                    autoLockTimeoutRef.current = window.setTimeout(() => {
-                        const currentQuestions = questions.get();
-                        if (currentQuestions.some((question) => question.data.drag)) {
-                            questions.set(
-                                currentQuestions.map((question) => ({
-                                    ...question,
-                                    data: {
-                                        ...question.data,
-                                        drag: false,
-                                    },
-                                })),
-                            );
-
-                            if (!autoLockNotifiedRef.current) {
-                                toast.info(
-                                    "Questions auto-locked after GPS updates settled.",
-                                    { autoClose: 2500 },
-                                );
-                                autoLockNotifiedRef.current = true;
-                            }
-                        }
-                        autoLockTimeoutRef.current = null;
-                    }, 10000);
-
                     hiderMode.set({
                         latitude: lat,
                         longitude: lng,
                     });
+
+                    if (!autoLockScheduledRef.current) {
+                        autoLockScheduledRef.current = true;
+
+                        window.setTimeout(() => {
+                            const currentQuestions = questions.get();
+                            if (
+                                currentQuestions.some(
+                                    (question) => question.data.drag,
+                                )
+                            ) {
+                                questions.set(
+                                    currentQuestions.map((question) => ({
+                                        ...question,
+                                        data: {
+                                            ...question.data,
+                                            drag: false,
+                                        },
+                                    })),
+                                );
+
+                                if (!autoLockNotifiedRef.current) {
+                                    toast.info(
+                                        "Questions auto-locked after the first GPS update.",
+                                        { autoClose: 2500 },
+                                    );
+                                    autoLockNotifiedRef.current = true;
+                                }
+                            }
+                        }, 0);
+                    }
                 }
 
                 if ($followMe && followMeMarkerRef.current) {
@@ -585,10 +585,7 @@ export const Map = ({ className }: { className?: string }) => {
                 map.removeLayer(followMeMarkerRef.current);
                 followMeMarkerRef.current = null;
             }
-            if (autoLockTimeoutRef.current !== null) {
-                clearTimeout(autoLockTimeoutRef.current);
-                autoLockTimeoutRef.current = null;
-            }
+            autoLockScheduledRef.current = false;
             if (geoWatchIdRef.current !== null) {
                 navigator.geolocation.clearWatch(geoWatchIdRef.current);
                 geoWatchIdRef.current = null;

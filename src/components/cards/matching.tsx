@@ -78,20 +78,6 @@ export const MatchingQuestionComponent = ({
     >(null);
     const [trainLineContextLoading, setTrainLineContextLoading] =
         React.useState(false);
-    const zoneAdminLevelDebounceRef = React.useRef<ReturnType<
-        typeof window.setTimeout
-    > | null>(null);
-
-    const scheduleZoneQuestionRefresh = () => {
-        if (zoneAdminLevelDebounceRef.current !== null) {
-            clearTimeout(zoneAdminLevelDebounceRef.current);
-        }
-
-        zoneAdminLevelDebounceRef.current = window.setTimeout(() => {
-            questionModified();
-            zoneAdminLevelDebounceRef.current = null;
-        }, 10000);
-    };
 
     const syncMatchingDebugResult = (result: string) => {
         if ((data as any).debug && typeof (data as any).debug === "object") {
@@ -179,15 +165,6 @@ export const MatchingQuestionComponent = ({
         };
     }, [data.type, data.lat, data.lng]);
 
-    React.useEffect(() => {
-        return () => {
-            if (zoneAdminLevelDebounceRef.current !== null) {
-                clearTimeout(zoneAdminLevelDebounceRef.current);
-                zoneAdminLevelDebounceRef.current = null;
-            }
-        };
-    }, []);
-
     let questionSpecific = <></>;
 
     switch (data.type) {
@@ -221,18 +198,7 @@ export const MatchingQuestionComponent = ({
                                     | 8
                                     | 9
                                     | 10;
-
-                                if (zoneAdminLevelDebounceRef.current !== null) {
-                                    clearTimeout(zoneAdminLevelDebounceRef.current);
-                                }
-
-                                zoneAdminLevelDebounceRef.current = window.setTimeout(
-                                    () => {
-                                        questionModified();
-                                        zoneAdminLevelDebounceRef.current = null;
-                                    },
-                                    10000,
-                                );
+                                questionModified();
                             }}
                             disabled={!data.drag || $isLoading}
                         />
@@ -585,7 +551,7 @@ export const MatchingQuestionComponent = ({
                                 (data as any).cat = { adminLevel: 3 };
                             }
                             data.type = value;
-                            scheduleZoneQuestionRefresh();
+                            questionModified();
                             return;
                         }
 
@@ -599,16 +565,6 @@ export const MatchingQuestionComponent = ({
                             (data as any).cat = { adminLevel: 3 };
                         }
                         data.type = value;
-                        if (
-                            value === "zone" ||
-                            value === "letter-zone" ||
-                            value === "suburb-zone" ||
-                            value === "federal-electorate-zone"
-                        ) {
-                            scheduleZoneQuestionRefresh();
-                            return;
-                        }
-
                         questionModified();
                     }}
                     disabled={!data.drag || $isLoading}
