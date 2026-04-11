@@ -21,11 +21,10 @@ export const determineUnionizedStrings = (
     return [];
 };
 
-const unitsSchema = z.union([
-    z.literal("miles"),
-    z.literal("kilometers"),
-    z.literal("meters"),
-]);
+const unitsSchema = z.preprocess(
+    (value) => (value === "miles" ? "kilometers" : value),
+    z.union([z.literal("kilometers"), z.literal("meters")]),
+);
 
 const iconColorSchema = z.union([
     z.literal("green"),
@@ -107,7 +106,7 @@ const getDefaultUnit = () => {
     try {
         return defaultUnit.get();
     } catch {
-        return "miles";
+        return "kilometers";
     }
 };
 
@@ -201,8 +200,8 @@ const customTentacleQuestionSchema = baseTentacleQuestionSchema.extend({
 
 export const tentacleQuestionSchema = z.union([
     customTentacleQuestionSchema.describe(NO_GROUP),
-    tentacleQuestionSpecificSchemaFifteen.describe("15 Miles (Typically)"),
-    tentacleQuestionSpecificSchemaOne.describe("1 Mile (Typically)"),
+    tentacleQuestionSpecificSchemaFifteen.describe("24 Kilometers (Typically)"),
+    tentacleQuestionSpecificSchemaOne.describe("1.6 Kilometers (Typically)"),
 ]);
 
 const baseMatchingQuestionSchema = ordinaryBaseQuestionSchema.extend({

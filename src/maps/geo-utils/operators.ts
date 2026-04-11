@@ -60,7 +60,7 @@ export const modifyMapData = (
     );
 };
 
-const DEFAULT_BUFFER_UNIT = "miles";
+const DEFAULT_BUFFER_UNIT = "kilometers";
 
 export const arcBuffer = (
     geometry: FeatureCollection,

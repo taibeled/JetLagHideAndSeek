@@ -37,7 +37,7 @@ export const AddQuestionDialog = ({
         if (!map) return false;
         const center = map.getCenter();
         const destination = turf.destination([center.lng, center.lat], 5, 90, {
-            units: "miles",
+            units: "kilometers",
         });
 
         addQuestion({

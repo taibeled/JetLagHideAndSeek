@@ -78,7 +78,19 @@ export const questionModified = (..._: any[]) => {
 
 export const leafletMapContext = atom<Map | null>(null);
 
-export const defaultUnit = persistentAtom<Units>("defaultUnit", "miles");
+const decodeUnit = (value: string): Units => {
+    try {
+        const parsed = JSON.parse(value);
+        return parsed === "miles" ? "kilometers" : parsed;
+    } catch {
+        return "kilometers";
+    }
+};
+
+export const defaultUnit = persistentAtom<Units>("defaultUnit", "kilometers", {
+    encode: JSON.stringify,
+    decode: decodeUnit,
+});
 export const hiderMode = persistentAtom<
     | false
     | {
@@ -165,10 +177,10 @@ export const hidingRadius = persistentAtom<number>("hidingRadius", 0.5, {
 });
 export const hidingRadiusUnits = persistentAtom<Units>(
     "hidingRadiusUnits",
-    "miles",
+    "kilometers",
     {
         encode: JSON.stringify,
-        decode: JSON.parse,
+        decode: decodeUnit,
     },
 );
 export const disabledStations = persistentAtom<string[]>(
@@ -254,10 +266,13 @@ export const hidingZone = computed(
         disabledStations,
         hidingRadius,
         hidingRadiusUnits,
+        displayHidingZones,
         displayHidingZonesOptions,
         useCustomStations,
         customStations,
         includeDefaultStations,
+        mergeDuplicates,
+        defaultUnit,
         customPresets,
     ],
     (
@@ -268,10 +283,13 @@ export const hidingZone = computed(
         disabledStations,
         radius,
         hidingRadiusUnits,
+        shouldDisplayHidingZones,
         zoneOptions,
         useCustom,
         $customStations,
         includeDefault,
+        shouldMergeDuplicates,
+        unitDefault,
         presets,
     ) => {
         if (geo !== null) {
@@ -281,10 +299,13 @@ export const hidingZone = computed(
                 disabledStations: disabledStations,
                 hidingRadius: radius,
                 hidingRadiusUnits,
+                displayHidingZones: shouldDisplayHidingZones,
                 zoneOptions: zoneOptions,
                 useCustomStations: useCustom,
                 customStations: $customStations,
                 includeDefaultStations: includeDefault,
+                mergeDuplicates: shouldMergeDuplicates,
+                defaultUnit: unitDefault,
                 presets: structuredClone(presets),
             };
         } else {
@@ -296,11 +317,14 @@ export const hidingZone = computed(
                 disabledStations: disabledStations,
                 hidingRadius: radius,
                 hidingRadiusUnits,
+                displayHidingZones: shouldDisplayHidingZones,
                 alternateLocations: structuredClone(altLoc),
                 zoneOptions: zoneOptions,
                 useCustomStations: useCustom,
                 customStations: $customStations,
                 includeDefaultStations: includeDefault,
+                mergeDuplicates: shouldMergeDuplicates,
+                defaultUnit: unitDefault,
                 presets: structuredClone(presets),
             };
         }

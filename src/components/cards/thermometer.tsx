@@ -39,7 +39,7 @@ export const ThermometerQuestionComponent = ({
     const [customDistanceKm, setCustomDistanceKm] = useState<string>("1");
 
     const $defaultUnit = useStore(defaultUnit);
-    const DISTANCE_UNIT = $defaultUnit ?? "miles";
+    const DISTANCE_UNIT = $defaultUnit ?? "kilometers";
 
     const label = `Thermometer
     ${
@@ -63,12 +63,7 @@ export const ThermometerQuestionComponent = ({
           )
         : null;
 
-    const unitLabel =
-        DISTANCE_UNIT === "meters"
-            ? "Meters"
-            : DISTANCE_UNIT === "kilometers"
-              ? "KM"
-              : "Miles";
+    const unitLabel = DISTANCE_UNIT === "meters" ? "Meters" : "KM";
 
     const applyDistancePresetKm = (distanceKm: number) => {
         const start = point([data.lngA, data.latA]);

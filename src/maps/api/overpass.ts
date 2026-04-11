@@ -616,7 +616,7 @@ export const nearestToQuestion = async (
                 lat: question.lat,
                 lng: question.lng,
                 radius: radius,
-                unit: "miles",
+                unit: "kilometers",
                 location: false,
                 locationType: question.type,
                 drag: false,

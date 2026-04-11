@@ -21,6 +21,7 @@ import {
     customStations,
     defaultUnit,
     disabledStations,
+    displayHidingZones,
     displayHidingZonesOptions,
     followMe,
     hiderMode,
@@ -36,6 +37,7 @@ import {
     planningModeEnabled,
     polyGeoJSON,
     questions,
+    mergeDuplicates,
     save,
     showTutorial,
     thunderforestApiKey,
@@ -240,6 +242,13 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 hidingRadius.set(geojson.hidingRadius);
             }
 
+            const sharedDisplayHidingZones =
+                geojson.displayHidingZones ??
+                geojson.properties?.displayHidingZones;
+            if (typeof sharedDisplayHidingZones === "boolean") {
+                displayHidingZones.set(sharedDisplayHidingZones);
+            }
+
             if (geojson.zoneOptions) {
                 displayHidingZonesOptions.set(geojson.zoneOptions ?? []);
             }
@@ -257,6 +266,21 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
 
             if (typeof geojson.includeDefaultStations === "boolean") {
                 includeDefaultStations.set(geojson.includeDefaultStations);
+            }
+
+            const sharedMergeDuplicates =
+                geojson.mergeDuplicates ?? geojson.properties?.mergeDuplicates;
+            if (typeof sharedMergeDuplicates === "boolean") {
+                mergeDuplicates.set(sharedMergeDuplicates);
+            }
+
+            const sharedDefaultUnit =
+                geojson.defaultUnit ?? geojson.properties?.defaultUnit;
+            if (
+                sharedDefaultUnit === "kilometers" ||
+                sharedDefaultUnit === "meters"
+            ) {
+                defaultUnit.set(sharedDefaultUnit);
             }
 
             toast.success("Hiding zone loaded successfully", {

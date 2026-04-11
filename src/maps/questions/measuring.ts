@@ -67,7 +67,7 @@ const bboxExtension = (
 ): [number, number, number, number] => {
     const buffered = turf.bbox(
         turf.buffer(turf.bboxPolygon(bBox), Math.abs(distance), {
-            units: "miles",
+            units: "kilometers",
         })!,
     );
 
@@ -109,7 +109,7 @@ export const determineMeasuringBoundary = async (
                 turf.point([question.lng, question.lat]),
                 coastline,
                 {
-                    units: "miles",
+                    units: "kilometers",
                     method: "geodesic",
                 },
             );
@@ -130,7 +130,7 @@ export const determineMeasuringBoundary = async (
                             ),
                             distanceToCoastline,
                             {
-                                units: "miles",
+                                units: "kilometers",
                                 steps: 64,
                             },
                         )!,
@@ -401,14 +401,14 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
         const nearest = turf.nearestPoint(seeker, points as any);
 
         const distance = turf.distance(seeker, nearest, {
-            units: "miles",
+            units: "kilometers",
         });
 
         const hider = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
         const hiderNearest = turf.nearestPoint(hider, points as any);
 
         const hiderDistance = turf.distance(hider, hiderNearest, {
-            units: "miles",
+            units: "kilometers",
         });
 
         question.hiderCloser = hiderDistance < distance;
@@ -459,9 +459,9 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
             const hider = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
             const nearest = turf.nearestPoint(seeker, points as any) as any;
             const hiderNearest = turf.nearestPoint(hider, points as any) as any;
-            const distance = turf.distance(seeker, nearest, { units: "miles" });
+            const distance = turf.distance(seeker, nearest, { units: "kilometers" });
             const hiderDistance = turf.distance(hider, hiderNearest, {
-                units: "miles",
+                units: "kilometers",
             });
 
             question.hiderCloser = hiderDistance < distance;
