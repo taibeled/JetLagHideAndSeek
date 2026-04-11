@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/drawer";
 import {
     additionalMapGeoLocations,
+    allowGooglePlusCodes,
     alwaysUsePastebin,
     animateMapMovements,
     autoSave,
@@ -19,6 +20,7 @@ import {
     customInitPreference,
     customPresets,
     customStations,
+    defaultCustomQuestions,
     defaultUnit,
     disabledStations,
     displayHidingZones,
@@ -34,6 +36,7 @@ import {
     mapGeoJSON,
     mapGeoLocation,
     pastebinApiKey,
+    permanentOverlay,
     planningModeEnabled,
     polyGeoJSON,
     questions,
@@ -74,6 +77,8 @@ const PASTEBIN_URL_PARAM = "pb";
 
 export const OptionDrawers = ({ className }: { className?: string }) => {
     useStore(triggerLocalRefresh);
+    const $defaultCustomQuestions = useStore(defaultCustomQuestions);
+    const $allowGooglePlusCodes = useStore(allowGooglePlusCodes);
     const $defaultUnit = useStore(defaultUnit);
     const $animateMapMovements = useStore(animateMapMovements);
     const $autoZoom = useStore(autoZoom);
@@ -282,6 +287,10 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 sharedDefaultUnit === "meters"
             ) {
                 defaultUnit.set(sharedDefaultUnit);
+            if (geojson.permanentOverlay) {
+                permanentOverlay.set(geojson.permanentOverlay);
+            } else {
+                permanentOverlay.set(null);
             }
 
             toast.success("Hiding zone loaded successfully", {
@@ -517,6 +526,37 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                 </p>
                             </div>
                             <Separator className="bg-slate-300 w-[280px]" />
+                            <Label>Permanent Map Overlay</Label>
+                            <div className="flex flex-row max-[330px]:flex-col gap-4">
+                                <Button
+                                    onClick={() => permanentOverlay.set(null)}
+                                >
+                                    Remove
+                                </Button>
+                                <Button
+                                    onClick={async () => {
+                                        if (!navigator || !navigator.clipboard)
+                                            return toast.error(
+                                                "Clipboard not supported",
+                                            );
+
+                                        try {
+                                            const clipboard =
+                                                await navigator.clipboard.readText();
+                                            const geojson =
+                                                JSON.parse(clipboard);
+                                            permanentOverlay.set(geojson);
+                                        } catch (e) {
+                                            toast.error(
+                                                `Invalid GeoJSON overlay: ${e}`,
+                                            );
+                                        }
+                                    }}
+                                >
+                                    Paste GeoJSON
+                                </Button>
+                            </div>
+                            <Separator className="bg-slate-300 w-[280px]" />
                             <div className="flex flex-row items-center gap-2">
                                 <label className="text-2xl font-semibold font-poppins">
                                     Animate map movements?
@@ -601,6 +641,32 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     checked={$followMe}
                                     onCheckedChange={() =>
                                         followMe.set(!$followMe)
+                                    }
+                                />
+                            </div>
+                            <div className="flex flex-row items-center gap-2">
+                                <label className="text-2xl font-semibold font-poppins">
+                                    Default to custom questions?
+                                </label>
+                                <Checkbox
+                                    checked={$defaultCustomQuestions}
+                                    onCheckedChange={() =>
+                                        defaultCustomQuestions.set(
+                                            !$defaultCustomQuestions,
+                                        )
+                                    }
+                                />
+                            </div>
+                            <div className="flex flex-row items-center gap-2">
+                                <label className="text-2xl font-semibold font-poppins">
+                                    Allow Google Plus codes?
+                                </label>
+                                <Checkbox
+                                    checked={$allowGooglePlusCodes}
+                                    onCheckedChange={() =>
+                                        allowGooglePlusCodes.set(
+                                            !$allowGooglePlusCodes,
+                                        )
                                     }
                                 />
                             </div>

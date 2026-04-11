@@ -2,6 +2,7 @@ import * as turf from "@turf/turf";
 import type { FeatureCollection, MultiPolygon, Point } from "geojson";
 import _ from "lodash";
 import osmtogeojson from "osmtogeojson";
+import { toast } from "react-toastify";
 
 import {
     additionalMapGeoLocations,
@@ -10,8 +11,12 @@ import {
 } from "@/lib/context";
 import { safeUnion } from "@/maps/geo-utils";
 
-import { cacheFetch } from "./cache";
-import { LOCATION_FIRST_TAG, OVERPASS_API } from "./constants";
+import { cacheFetch, determineCache } from "./cache";
+import {
+    LOCATION_FIRST_TAG,
+    OVERPASS_API,
+    OVERPASS_API_FALLBACK,
+} from "./constants";
 import type {
     EncompassingTentacleQuestionSchema,
     HomeGameMatchingQuestions,
@@ -25,11 +30,40 @@ export const getOverpassData = async (
     loadingText?: string,
     cacheType: CacheType = CacheType.CACHE,
 ) => {
-    const response = await cacheFetch(
-        `${OVERPASS_API}?data=${encodeURIComponent(query)}`,
-        loadingText,
-        cacheType,
-    );
+    const encodedQuery = encodeURIComponent(query);
+    const primaryUrl = `${OVERPASS_API}?data=${encodedQuery}`;
+    let response = await cacheFetch(primaryUrl, loadingText, cacheType);
+
+    if (!response.ok) {
+        // Try the fallback, but store the result under the primary URL key so future requests are served from cache without needing to fail-over again.
+        try {
+            const fallbackResponse = await cacheFetch(
+                `${OVERPASS_API_FALLBACK}?data=${encodedQuery}`,
+                loadingText,
+                cacheType,
+            );
+            if (fallbackResponse.ok) {
+                const cache = await determineCache(cacheType);
+                await cache.put(primaryUrl, fallbackResponse.clone());
+            }
+            response = fallbackResponse;
+        } catch {
+            toast.error(
+                `Could not load data from Overpass: ${response.status} ${response.statusText}`,
+                { toastId: "overpass-error" },
+            );
+            return { elements: [] };
+        }
+    }
+
+    if (!response.ok) {
+        toast.error(
+            `Could not load data from Overpass: ${response.status} ${response.statusText}`,
+            { toastId: "overpass-error" },
+        );
+        return { elements: [] };
+    }
+
     const data = await response.json();
     return data;
 };

@@ -363,7 +363,7 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
 
         const nearestTrainStation = turf.nearestPoint(
             location,
-            turf.featureCollection(stations.map((x) => x.properties.geometry)),
+            turf.featureCollection(stations.map((x) => x.properties)),
         );
 
         const distance = turf.distance(location, nearestTrainStation);
@@ -372,7 +372,7 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
 
         const hiderNearest = turf.nearestPoint(
             hider,
-            turf.featureCollection(stations.map((x) => x.properties.geometry)),
+            turf.featureCollection(stations.map((x) => x.properties)),
         );
 
         const hiderDistance = turf.distance(hider, hiderNearest);

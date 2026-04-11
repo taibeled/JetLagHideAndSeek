@@ -4,16 +4,16 @@ import { mergeDuplicateStation } from "../src/maps/geo-utils/stationManipulation
 
 describe("mergeDuplicateStation", () => {
     it("merges duplicates in the eastern hemisphere", () => {
-        const places = [
+        const places: StationPlace[] = [
             {
                 type: "Feature",
                 geometry: { type: "Point", coordinates: [120, 10] },
-                properties: { name: "Station East" },
+                properties: { id: "1", name: "Station East" },
             },
             {
                 type: "Feature",
                 geometry: { type: "Point", coordinates: [122, 12] },
-                properties: { name: "Station East" },
+                properties: { id: "2", name: "Station East" },
             },
         ];
         const radius = 10000; // super wide radius to ensure all locations are in
@@ -25,16 +25,16 @@ describe("mergeDuplicateStation", () => {
     });
 
     it("merges duplicates in the western hemisphere", () => {
-        const places = [
+        const places: StationPlace[] = [
             {
                 type: "Feature",
                 geometry: { type: "Point", coordinates: [-80, 25] },
-                properties: { name: "Station West" },
+                properties: { id: "1", name: "Station West" },
             },
             {
                 type: "Feature",
                 geometry: { type: "Point", coordinates: [-82, 23] },
-                properties: { name: "Station West" },
+                properties: { id: "2", name: "Station West" },
             },
         ];
         const radius = 10000; // super wide radius to ensure all locations are in
@@ -46,16 +46,16 @@ describe("mergeDuplicateStation", () => {
     });
 
     it("merges duplicates in the southern hemisphere", () => {
-        const places = [
+        const places: StationPlace[] = [
             {
                 type: "Feature",
                 geometry: { type: "Point", coordinates: [30, -20] },
-                properties: { name: "Station South" },
+                properties: { id: "1", name: "Station South" },
             },
             {
                 type: "Feature",
                 geometry: { type: "Point", coordinates: [32, -22] },
-                properties: { name: "Station South" },
+                properties: { id: "2", name: "Station South" },
             },
         ];
         const radius = 10000; // super wide radius to ensure all locations are in
@@ -67,21 +67,21 @@ describe("mergeDuplicateStation", () => {
     });
 
     it("handles 3 or more duplicates", () => {
-        const places = [
+        const places: StationPlace[] = [
             {
                 type: "Feature",
                 geometry: { type: "Point", coordinates: [10, 10] },
-                properties: { name: "Station Multi" },
+                properties: { id: "1", name: "Station Multi" },
             },
             {
                 type: "Feature",
                 geometry: { type: "Point", coordinates: [20, 20] },
-                properties: { name: "Station Multi" },
+                properties: { id: "2", name: "Station Multi" },
             },
             {
                 type: "Feature",
                 geometry: { type: "Point", coordinates: [30, 30] },
-                properties: { name: "Station Multi" },
+                properties: { id: "3", name: "Station Multi" },
             },
         ];
         const radius = 10000; // super wide radius to ensure all locations are in
@@ -93,21 +93,21 @@ describe("mergeDuplicateStation", () => {
     });
 
     it("returns all places unchanged when all names are unique", () => {
-        const places = [
+        const places: StationPlace[] = [
             {
                 type: "Feature",
                 geometry: { type: "Point", coordinates: [10, 50] },
-                properties: { name: "Unique A" },
+                properties: { id: "A", name: "Unique A" },
             },
             {
                 type: "Feature",
                 geometry: { type: "Point", coordinates: [20, -30] },
-                properties: { name: "Unique B" },
+                properties: { id: "B", name: "Unique B" },
             },
             {
                 type: "Feature",
                 geometry: { type: "Point", coordinates: [-40, 60] },
-                properties: { name: "Unique C" },
+                properties: { id: "C", name: "Unique C" },
             },
         ];
         const radius = 10000; // super wide radius to ensure all locations are in
@@ -125,54 +125,78 @@ describe("mergeDuplicateStation", () => {
     });
 
     it("returns 3 individual zones when 6 Jan van Galenstraat stations are added, where only 2 stations share the actual zone", () => {
-        const places = [
+        const places: StationPlace[] = [
             {
                 // West station 1:      https://www.openstreetmap.org/node/3306520727
+                type: "Feature",
                 geometry: {
                     type: "Point",
                     coordinates: [4.8350051, 52.3732337],
                 },
-                properties: { name: "Jan van Galenstraat" },
+                properties: {
+                    id: "node/3306520727",
+                    name: "Jan van Galenstraat",
+                },
             },
             {
                 // West station 2:      https://www.openstreetmap.org/node/434662863
+                type: "Feature",
                 geometry: {
                     type: "Point",
                     coordinates: [4.8359077, 52.3730297],
                 },
-                properties: { name: "Jan van Galenstraat" },
+                properties: {
+                    id: "node/434662863",
+                    name: "Jan van Galenstraat",
+                },
             },
             {
                 // Center station 1:    https://www.openstreetmap.org/node/434700014
+                type: "Feature",
                 geometry: {
                     type: "Point",
                     coordinates: [4.8485891, 52.3733319],
                 },
-                properties: { name: "Jan van Galenstraat" },
+                properties: {
+                    id: "node/434700014",
+                    name: "Jan van Galenstraat",
+                },
             },
             {
                 // Center station 2:    https://www.openstreetmap.org/node/3300515588
+                type: "Feature",
                 geometry: {
                     type: "Point",
                     coordinates: [4.8487242, 52.3729826],
                 },
-                properties: { name: "Jan van Galenstraat" },
+                properties: {
+                    id: "node/3300515588",
+                    name: "Jan van Galenstraat",
+                },
             },
             {
                 // East station 1:      https://www.openstreetmap.org/node/434397634
+                type: "Feature",
                 geometry: {
                     type: "Point",
                     coordinates: [4.8584711, 52.3751323],
                 },
-                properties: { name: "Jan van Galenstraat" },
+                properties: {
+                    id: "node/434397634",
+                    name: "Jan van Galenstraat",
+                },
             },
             {
                 // East station 2:      https://www.openstreetmap.org/node/434397635
+                type: "Feature",
                 geometry: {
                     type: "Point",
                     coordinates: [4.8586427, 52.3743002],
                 },
-                properties: { name: "Jan van Galenstraat" },
+                properties: {
+                    id: "node/434397635",
+                    name: "Jan van Galenstraat",
+                },
             },
         ];
         const radius = 0.5;
@@ -187,6 +211,7 @@ describe("mergeDuplicateStation", () => {
 import { checkIfStationsShareZones } from "../src/maps/geo-utils/stationManipulations";
 import type { Location } from "../src/maps/geo-utils/stationManipulations";
 import * as turf from "@turf/turf";
+import type { StationPlace } from "@/maps/api";
 
 describe("checkIfStationsShareZones", () => {
     it("returns true that Jan van Galenstraat subway station and nearby tram station share zones with km as unit", () => {

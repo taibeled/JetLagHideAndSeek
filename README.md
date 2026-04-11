@@ -146,6 +146,10 @@ A great deal of appreciation goes out to these individuals who have helped to cr
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/MoellJ"><img src="https://avatars.githubusercontent.com/u/42173084?v=4?s=100" width="100px;" alt="Jannik Möll"/><br /><sub><b>Jannik Möll</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=MoellJ" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Dew2118"><img src="https://avatars.githubusercontent.com/u/50415635?v=4?s=100" width="100px;" alt="Dew2118"/><br /><sub><b>Dew2118</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=Dew2118" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://mkuran.pl"><img src="https://avatars.githubusercontent.com/u/16469272?v=4?s=100" width="100px;" alt="Mikołaj Kuranowski"/><br /><sub><b>Mikołaj Kuranowski</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=MKuranowski" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://brasswillow.pl"><img src="https://avatars.githubusercontent.com/u/1677760?v=4?s=100" width="100px;" alt="Marek Hobler"/><br /><sub><b>Marek Hobler</b></sub></a><br /><a href="#ideas-neutrinus" title="Ideas, Planning, & Feedback">🤔</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://rso.pt"><img src="https://avatars.githubusercontent.com/u/56204853?v=4?s=100" width="100px;" alt="Rafael Oliveira"/><br /><sub><b>Rafael Oliveira</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=RafDevX" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

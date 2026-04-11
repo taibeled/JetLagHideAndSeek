@@ -5,13 +5,14 @@ import {
     EditIcon,
     LocateIcon,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { OpenLocationCode } from "open-location-code";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useDebounce } from "@/hooks/useDebounce";
-import { isLoading } from "@/lib/context";
+import { allowGooglePlusCodes, isLoading } from "@/lib/context";
 import { cn } from "@/lib/utils";
 import { determineName, geocode, ICON_COLORS } from "@/maps/api";
 
@@ -33,6 +34,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "./ui/dialog";
+import { Separator } from "./ui/separator";
 import { SidebarMenuItem } from "./ui/sidebar-l";
 
 const parseCoordinatesFromText = (
@@ -104,6 +106,8 @@ const LatLngEditForm = ({
     const [results, setResults] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
+    const $allowGooglePlusCodes = useStore(allowGooglePlusCodes);
+    const googlePlusCodesRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         if (debouncedValue === "") {
@@ -227,6 +231,81 @@ const LatLngEditForm = ({
                     {longitude > 0 ? "E" : "W"}
                 </Button>
             </div>
+
+            {$allowGooglePlusCodes && (
+                <>
+                    <Separator />
+
+                    <div className="flex gap-2 items-center">
+                        <Label className="min-w-32">Google Plus Code</Label>
+                        <Input
+                            type="text"
+                            disabled={disabled}
+                            ref={googlePlusCodesRef}
+                            placeholder="i.e., Q9CM+3P Narita, Chiba, Japan"
+                        />
+                        <Button
+                            variant="secondary"
+                            onClick={async () => {
+                                if (!googlePlusCodesRef.current) return;
+                                const code =
+                                    googlePlusCodesRef.current.value.trim();
+                                if (code === "") return;
+
+                                const olc =
+                                    new OpenLocationCode() as typeof OpenLocationCode;
+
+                                let codeBase = code.split(" ")[0];
+
+                                if (!olc.isValid(codeBase)) {
+                                    toast.error("Invalid Google Plus code");
+                                    return;
+                                }
+
+                                if (olc.isShort(codeBase)) {
+                                    const location = code.split(" ")[1];
+
+                                    setLoading(true);
+
+                                    const geo = await geocode(
+                                        location,
+                                        "en",
+                                        false,
+                                    );
+
+                                    if (geo.length === 0) {
+                                        toast.error(
+                                            "Could not resolve location for short code",
+                                        );
+                                        setLoading(false);
+                                        return;
+                                    }
+
+                                    const center = geo[0].geometry.coordinates;
+
+                                    codeBase = olc.recoverNearest(
+                                        codeBase,
+                                        center[0],
+                                        center[1],
+                                    );
+
+                                    setLoading(false);
+                                }
+
+                                const coordinates = olc.decode(codeBase);
+
+                                onChange(
+                                    coordinates.latitudeCenter,
+                                    coordinates.longitudeCenter,
+                                );
+                            }}
+                            disabled={disabled}
+                        >
+                            Import
+                        </Button>
+                    </div>
+                </>
+            )}
         </>
     );
 };

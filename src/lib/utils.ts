@@ -4,6 +4,7 @@ import { twMerge } from "tailwind-merge";
 import {
     PASTEBIN_API_POST_URL,
     PASTEBIN_API_RAW_URL,
+    PASTEBIN_API_RAW_URL_PROXIED,
 } from "@/maps/api/constants";
 
 const PASTEBIN_PROXY_PREFIXES = [

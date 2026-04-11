@@ -7,6 +7,7 @@ import type {
     AdditionalMapGeoLocations,
     CustomStation,
     OpenStreetMap,
+    StationCircle,
 } from "@/maps/api";
 import { extractStationLabel } from "@/maps/geo-utils";
 import {
@@ -50,6 +51,14 @@ export const additionalMapGeoLocations = persistentAtom<
     encode: JSON.stringify,
     decode: JSON.parse,
 });
+export const permanentOverlay = persistentAtom<FeatureCollection | null>(
+    "permanentOverlay",
+    null,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
 
 export const mapGeoJSON = atom<FeatureCollection<
     Polygon | MultiPolygon
@@ -125,11 +134,14 @@ export const displayHidingZonesOptions = persistentAtom<string[]>(
         decode: JSON.parse,
     },
 );
+export const displayHidingZonesStyle = persistentAtom<
+    "zones" | "stations" | "no-overlap" | "no-display"
+>("displayHidingZonesStyle", "zones");
 export const questionFinishedMapData = atom<any>(null);
 export const mapDragInProgress = atom<boolean>(false);
 export const suppressNextAutoFocus = atom<boolean>(false);
 
-export const trainStations = atom<any[]>([]);
+export const trainStations = atom<StationCircle[]>([]);
 onSet(trainStations, ({ newValue }) => {
     newValue.sort((a, b) => {
         const aName = (extractStationLabel(a.properties) || "") as string;
@@ -281,6 +293,7 @@ export const hidingZone = computed(
         mergeDuplicates,
         defaultUnit,
         customPresets,
+        permanentOverlay,
     ],
     (
         q,
@@ -298,6 +311,7 @@ export const hidingZone = computed(
         shouldMergeDuplicates,
         unitDefault,
         presets,
+        $permanentOverlay,
     ) => {
         if (geo !== null) {
             return {
@@ -314,6 +328,7 @@ export const hidingZone = computed(
                 mergeDuplicates: shouldMergeDuplicates,
                 defaultUnit: unitDefault,
                 presets: structuredClone(presets),
+                permanentOverlay: $permanentOverlay,
             };
         } else {
             const $loc = structuredClone(loc);
@@ -333,6 +348,7 @@ export const hidingZone = computed(
                 mergeDuplicates: shouldMergeDuplicates,
                 defaultUnit: unitDefault,
                 presets: structuredClone(presets),
+                permanentOverlay: $permanentOverlay,
             };
         }
     },
@@ -369,6 +385,14 @@ export const followMe = persistentAtom<boolean>("followMe", false, {
     encode: JSON.stringify,
     decode: JSON.parse,
 });
+export const defaultCustomQuestions = persistentAtom<boolean>(
+    "defaultCustomQuestions",
+    false,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
 
 export const linkHiderToGPS = persistentAtom<boolean>("linkHiderToGPS", false, {
     encode: JSON.stringify,
@@ -394,6 +418,15 @@ export const tutorialStep = atom<number>(0);
 export const customInitPreference = persistentAtom<"ask" | "blank" | "prefill">(
     "customInitPreference",
     "ask",
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
+
+export const allowGooglePlusCodes = persistentAtom<boolean>(
+    "allowGooglePlusCodes",
+    false,
     {
         encode: JSON.stringify,
         decode: JSON.parse,

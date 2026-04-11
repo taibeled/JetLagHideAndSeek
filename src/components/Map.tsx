@@ -23,6 +23,7 @@ import {
     mapDragInProgress,
     mapGeoJSON,
     mapGeoLocation,
+    permanentOverlay,
     planningModeEnabled,
     polyGeoJSON,
     questionFinishedMapData,
@@ -135,6 +136,7 @@ export const Map = ({ className }: { className?: string }) => {
     const $linkHiderToGPS = useStore(linkHiderToGPS);
     const $mapDragInProgress = useStore(mapDragInProgress);
     const $suppressNextAutoFocus = useStore(suppressNextAutoFocus);
+    const $permanentOverlay = useStore(permanentOverlay);
     const map = useStore(leafletMapContext);
 
     const followMeMarkerRef = useMemo(
@@ -548,6 +550,44 @@ export const Map = ({ className }: { className?: string }) => {
             }
         };
     }, [$followMe, $linkHiderToGPS, map]);
+
+    useEffect(() => {
+        if (!map) return;
+
+        map.eachLayer((layer: any) => {
+            if (layer.permanentGeoJSON) map.removeLayer(layer);
+        });
+
+        if ($permanentOverlay === null) return;
+
+        try {
+            const overlay = L.geoJSON($permanentOverlay, {
+                interactive: false,
+
+                // @ts-expect-error Type hints force a Layer to be returned, but Leaflet accepts null as well
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                pointToLayer(geoJsonPoint, latlng) {
+                    return null;
+                },
+
+                style(feature) {
+                    return {
+                        color: feature?.properties?.stroke,
+                        weight: feature?.properties?.["stroke-width"],
+                        opacity: feature?.properties?.["stroke-opacity"],
+                        fillColor: feature?.properties?.fill,
+                        fillOpacity: feature?.properties?.["fill-opacity"],
+                    };
+                },
+            });
+            // @ts-expect-error This is a check such that only this type of layer is removed
+            overlay.permanentGeoJSON = true;
+            overlay.addTo(map);
+            overlay.bringToBack();
+        } catch (e) {
+            toast.error(`Failed to display GeoJSON overlay: ${e}`);
+        }
+    }, [$permanentOverlay, map]);
 
     return displayMap;
 };
