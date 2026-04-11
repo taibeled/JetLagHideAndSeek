@@ -79,6 +79,13 @@ export const MatchingQuestionComponent = ({
     const [trainLineContextLoading, setTrainLineContextLoading] =
         React.useState(false);
 
+    const modifyQuestion = (...args: Parameters<typeof questionModified>) => {
+        if ((data as any).autoFrozen) {
+            (data as any).autoFrozen = false;
+        }
+        questionModified(...args);
+    };
+
     const syncMatchingDebugResult = (result: string) => {
         if ((data as any).debug && typeof (data as any).debug === "object") {
             (data as any).debug = {
@@ -198,7 +205,7 @@ export const MatchingQuestionComponent = ({
                                     | 8
                                     | 9
                                     | 10;
-                                questionModified();
+                                modifyQuestion();
                             }}
                             disabled={!data.drag || $isLoading}
                         />
@@ -274,7 +281,7 @@ export const MatchingQuestionComponent = ({
                             )}
                             value={safeSelectedLine}
                             onValueChange={(value) =>
-                                questionModified(
+                                modifyQuestion(
                                     (data.selectedSydneyTrainLine = value),
                                 )
                             }
@@ -392,7 +399,7 @@ export const MatchingQuestionComponent = ({
                 data.collapsed = collapsed; // Doesn't trigger a re-render so no need for questionModified
             }}
             locked={!data.drag}
-            setLocked={(locked) => questionModified((data.drag = !locked))}
+            setLocked={(locked) => modifyQuestion((data.drag = !locked))}
         >
             <CustomInitDialog
                 open={customDialogOpen}
@@ -407,7 +414,7 @@ export const MatchingQuestionComponent = ({
                         toast.info("Please draw the points on the map.");
                     }
                     data.type = pendingCustomType;
-                    questionModified();
+                    modifyQuestion();
                     setCustomDialogOpen(false);
                 }}
                 onPrefill={async () => {
@@ -438,7 +445,7 @@ export const MatchingQuestionComponent = ({
                         }
                     }
                     data.type = pendingCustomType;
-                    questionModified();
+                    modifyQuestion();
                     setCustomDialogOpen(false);
                 }}
             />
@@ -551,7 +558,7 @@ export const MatchingQuestionComponent = ({
                                 (data as any).cat = { adminLevel: 3 };
                             }
                             data.type = value;
-                            questionModified();
+                            modifyQuestion();
                             return;
                         }
 
@@ -565,7 +572,7 @@ export const MatchingQuestionComponent = ({
                             (data as any).cat = { adminLevel: 3 };
                         }
                         data.type = value;
-                        questionModified();
+                        modifyQuestion();
                     }}
                     disabled={!data.drag || $isLoading}
                 />
@@ -594,7 +601,7 @@ export const MatchingQuestionComponent = ({
                         if (lng !== null) {
                             data.lng = lng;
                         }
-                        questionModified();
+                        modifyQuestion();
                     }}
                     disabled={!data.drag || $isLoading}
                 />
@@ -631,18 +638,18 @@ export const MatchingQuestionComponent = ({
                             value: "shorter" | "same" | "longer" | "different",
                         ) => {
                             if (value === "shorter" || value === "longer") {
-                                questionModified(
+                                modifyQuestion(
                                     (data.lengthComparison = value),
                                 );
                                 syncMatchingDebugResult(value);
                             } else if (value === "same") {
-                                questionModified(
+                                modifyQuestion(
                                     (data.lengthComparison = "same"),
                                 );
-                                questionModified((data.same = true));
+                                modifyQuestion((data.same = true));
                                 syncMatchingDebugResult("same");
                             } else if (value === "different") {
-                                questionModified((data.same = false));
+                                modifyQuestion((data.same = false));
                                 syncMatchingDebugResult("different");
                             }
                         }}
@@ -661,10 +668,10 @@ export const MatchingQuestionComponent = ({
                         value={data.same ? "same" : "different"}
                         onValueChange={(value) => {
                             if (value === "same") {
-                                questionModified((data.same = true));
+                                modifyQuestion((data.same = true));
                                 syncMatchingDebugResult("same");
                             } else if (value === "different") {
-                                questionModified((data.same = false));
+                                modifyQuestion((data.same = false));
                                 syncMatchingDebugResult("different");
                             }
                         }}

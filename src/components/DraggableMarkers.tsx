@@ -256,6 +256,15 @@ export const DraggableMarkers = () => {
                                         e.target.getLatLng().lat;
                                     question.data.lng =
                                         e.target.getLatLng().lng;
+
+                                    if (
+                                        question.id === "matching" ||
+                                        question.id === "tentacles"
+                                    ) {
+                                        (question.data as any).autoFrozen =
+                                            false;
+                                    }
+
                                     questionModified();
                                 }}
                             />

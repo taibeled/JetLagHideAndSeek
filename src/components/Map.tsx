@@ -147,14 +147,6 @@ export const Map = ({ className }: { className?: string }) => {
         () => ({ current: null as number | null }),
         [],
     );
-    const autoLockNotifiedRef = useMemo(
-        () => ({ current: false }),
-        [],
-    );
-    const autoLockScheduledRef = useMemo(
-        () => ({ current: false }),
-        [],
-    );
     const lastNonStreetTraceQuestionsRef = useMemo(
         () => ({ current: "" }),
         [],
@@ -500,8 +492,6 @@ export const Map = ({ className }: { className?: string }) => {
         }
 
         if (!shouldWatchPosition) {
-            autoLockNotifiedRef.current = false;
-            autoLockScheduledRef.current = false;
             if (followMeMarkerRef.current) {
                 map.removeLayer(followMeMarkerRef.current);
                 followMeMarkerRef.current = null;
@@ -523,37 +513,6 @@ export const Map = ({ className }: { className?: string }) => {
                         latitude: lat,
                         longitude: lng,
                     });
-
-                    if (!autoLockScheduledRef.current) {
-                        autoLockScheduledRef.current = true;
-
-                        window.setTimeout(() => {
-                            const currentQuestions = questions.get();
-                            if (
-                                currentQuestions.some(
-                                    (question) => question.data.drag,
-                                )
-                            ) {
-                                questions.set(
-                                    currentQuestions.map((question) => ({
-                                        ...question,
-                                        data: {
-                                            ...question.data,
-                                            drag: false,
-                                        },
-                                    })),
-                                );
-
-                                if (!autoLockNotifiedRef.current) {
-                                    toast.info(
-                                        "Questions auto-locked after the first GPS update.",
-                                        { autoClose: 2500 },
-                                    );
-                                    autoLockNotifiedRef.current = true;
-                                }
-                            }
-                        }, 0);
-                    }
                 }
 
                 if ($followMe && followMeMarkerRef.current) {
@@ -585,7 +544,6 @@ export const Map = ({ className }: { className?: string }) => {
                 map.removeLayer(followMeMarkerRef.current);
                 followMeMarkerRef.current = null;
             }
-            autoLockScheduledRef.current = false;
             if (geoWatchIdRef.current !== null) {
                 navigator.geolocation.clearWatch(geoWatchIdRef.current);
                 geoWatchIdRef.current = null;

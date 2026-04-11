@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 
 import {
     hiderMode,
+    linkHiderToGPS,
     mapGeoJSON,
     mapGeoLocation,
     polyGeoJSON,
@@ -466,6 +467,17 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
         return question;
     }
 
+    const maybeFreezeAndReturn = () => {
+        if (linkHiderToGPS.get()) {
+            (question as any).autoFrozen = true;
+        }
+        return question;
+    };
+
+    if ((question as any).autoFrozen) {
+        return question;
+    }
+
     if (
         [
             "aquarium",
@@ -508,7 +520,7 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
             detectedResult: question.same ? "same" : "different",
         };
 
-        return question;
+        return maybeFreezeAndReturn();
     }
 
     if (
@@ -525,7 +537,7 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
         );
 
         if (!places.features.length) {
-            return question;
+            return maybeFreezeAndReturn();
         }
 
         const seekerNearest = turf.nearestPoint(seekerPoint, places as any) as any;
@@ -555,7 +567,7 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
         };
         question.debug = question.matchingDebug;
 
-        return question;
+        return maybeFreezeAndReturn();
     }
 
     if (
@@ -733,7 +745,7 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
             nearestSeekerTrainStation.properties.name;
 
         if (!hiderEnglishName || !seekerEnglishName) {
-            return question;
+            return maybeFreezeAndReturn();
         }
 
         if (question.type === "same-first-letter-station") {
@@ -769,11 +781,11 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
             };
         }
 
-        return question;
+        return maybeFreezeAndReturn();
     }
 
     const $mapGeoJSON = mapGeoJSON.get();
-    if ($mapGeoJSON === null) return question;
+    if ($mapGeoJSON === null) return maybeFreezeAndReturn();
 
     let feature = null;
 
@@ -786,11 +798,13 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
                 features: [holedMask($mapGeoJSON)],
             });
         } catch {
-            return question;
+            return maybeFreezeAndReturn();
         }
     }
 
-    if (feature === null || feature === undefined) return question;
+    if (feature === null || feature === undefined) {
+        return maybeFreezeAndReturn();
+    }
 
     const hiderPoint = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
 
@@ -798,7 +812,7 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
         question.same = !question.same;
     }
 
-    return question;
+    return maybeFreezeAndReturn();
 };
 
 export const matchingPlanningPolygon = async (question: MatchingQuestion) => {

@@ -45,6 +45,7 @@ export const TentacleQuestionComponent = ({
     className?: string;
 }) => {
     const $questions = useStore(questions);
+    const $hiderMode = useStore(hiderMode);
     const $drawingQuestionKey = useStore(drawingQuestionKey);
     const $isLoading = useStore(isLoading);
     const label = `Tentacles
@@ -54,6 +55,13 @@ export const TentacleQuestionComponent = ({
             .map((q) => q.key)
             .indexOf(questionKey) + 1
     }`;
+
+    const modifyQuestion = (...args: Parameters<typeof questionModified>) => {
+        if ((data as any).autoFrozen) {
+            (data as any).autoFrozen = false;
+        }
+        questionModified(...args);
+    };
 
     return (
         <QuestionCard
@@ -66,7 +74,7 @@ export const TentacleQuestionComponent = ({
                 data.collapsed = collapsed; // Doesn't trigger a re-render so no need for questionModified
             }}
             locked={!data.drag}
-            setLocked={(locked) => questionModified((data.drag = !locked))}
+            setLocked={(locked) => modifyQuestion((data.drag = !locked))}
         >
             <SidebarMenuItem>
                 <div className={cn(MENU_ITEM_CLASSNAME, "gap-2 flex flex-row")}>
@@ -75,7 +83,7 @@ export const TentacleQuestionComponent = ({
                         className="rounded-md p-2 w-16"
                         value={data.radius}
                         onChange={(e) =>
-                            questionModified(
+                            modifyQuestion(
                                 (data.radius = parseFloat(e.target.value)),
                             )
                         }
@@ -84,7 +92,7 @@ export const TentacleQuestionComponent = ({
                     <UnitSelect
                         unit={data.unit}
                         onChange={(unit) =>
-                            questionModified((data.unit = unit))
+                            modifyQuestion((data.unit = unit))
                         }
                         disabled={!data.drag || $isLoading}
                     />
@@ -118,6 +126,9 @@ export const TentacleQuestionComponent = ({
                     )}
                     value={data.locationType}
                     onValueChange={async (value) => {
+                        if ((data as any).autoFrozen) {
+                            (data as any).autoFrozen = false;
+                        }
                         if (value === "custom") {
                             const priorLocations = await findTentacleLocations(
                                 data as TraditionalTentacleQuestion,
@@ -138,7 +149,7 @@ export const TentacleQuestionComponent = ({
                             data.location = false;
                             data.locationType = value;
                         }
-                        questionModified();
+                        modifyQuestion();
                     }}
                     disabled={!data.drag || $isLoading}
                 />
@@ -184,7 +195,7 @@ export const TentacleQuestionComponent = ({
                     if (lng !== null) {
                         data.lng = lng;
                     }
-                    questionModified();
+                    modifyQuestion();
                 }}
                 disabled={!data.drag || $isLoading}
             />
@@ -279,6 +290,9 @@ const TentacleLocationSelector = ({
         )
     ) {
         data.location = false;
+        if ((data as any).autoFrozen) {
+            (data as any).autoFrozen = false;
+        }
         questionModified();
     }
 
@@ -302,6 +316,9 @@ const TentacleLocationSelector = ({
                     );
                 }
 
+                if ((data as any).autoFrozen) {
+                    (data as any).autoFrozen = false;
+                }
                 questionModified();
             }}
             disabled={!!$hiderMode || disabled}

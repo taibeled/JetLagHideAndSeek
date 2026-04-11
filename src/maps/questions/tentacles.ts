@@ -1,6 +1,6 @@
 import * as turf from "@turf/turf";
 
-import { hiderMode } from "@/lib/context";
+import { hiderMode, linkHiderToGPS } from "@/lib/context";
 import { findTentacleLocations } from "@/maps/api";
 import { arcBuffer, safeUnion } from "@/maps/geo-utils";
 import { geoSpatialVoronoi } from "@/maps/geo-utils";
@@ -95,6 +95,10 @@ export const hiderifyTentacles = async (question: TentacleQuestion) => {
         return question;
     }
 
+    if ((question as any).autoFrozen) {
+        return question;
+    }
+
     const rawPoints =
         question.locationType === "custom"
             ? turf.featureCollection(question.places)
@@ -128,6 +132,9 @@ export const hiderifyTentacles = async (question: TentacleQuestion) => {
             hiderWithinRadius: false,
             detectedLocation: "Not Within",
         };
+        if (linkHiderToGPS.get()) {
+            (question as any).autoFrozen = true;
+        }
         return question;
     }
 
@@ -153,6 +160,9 @@ export const hiderifyTentacles = async (question: TentacleQuestion) => {
             hiderWithinRadius: true,
             detectedLocation: "Unknown",
         };
+        if (linkHiderToGPS.get()) {
+            (question as any).autoFrozen = true;
+        }
         return question;
     }
 
@@ -167,6 +177,9 @@ export const hiderifyTentacles = async (question: TentacleQuestion) => {
             correctLocation?.properties?.["name:en"] ??
             "Unknown",
     };
+    if (linkHiderToGPS.get()) {
+        (question as any).autoFrozen = true;
+    }
     return question;
 };
 
