@@ -287,6 +287,8 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 sharedDefaultUnit === "meters"
             ) {
                 defaultUnit.set(sharedDefaultUnit);
+            }
+
             if (geojson.permanentOverlay) {
                 permanentOverlay.set(geojson.permanentOverlay);
             } else {
