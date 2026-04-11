@@ -277,6 +277,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
             const sharedDefaultUnit =
                 geojson.defaultUnit ?? geojson.properties?.defaultUnit;
             if (
+                sharedDefaultUnit === "miles" ||
                 sharedDefaultUnit === "kilometers" ||
                 sharedDefaultUnit === "meters"
             ) {

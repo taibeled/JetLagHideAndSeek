@@ -21,10 +21,11 @@ export const determineUnionizedStrings = (
     return [];
 };
 
-const unitsSchema = z.preprocess(
-    (value) => (value === "miles" ? "kilometers" : value),
-    z.union([z.literal("kilometers"), z.literal("meters")]),
-);
+const unitsSchema = z.union([
+    z.literal("miles"),
+    z.literal("kilometers"),
+    z.literal("meters"),
+]);
 
 const iconColorSchema = z.union([
     z.literal("green"),

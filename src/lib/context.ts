@@ -81,7 +81,14 @@ export const leafletMapContext = atom<Map | null>(null);
 const decodeUnit = (value: string): Units => {
     try {
         const parsed = JSON.parse(value);
-        return parsed === "miles" ? "kilometers" : parsed;
+        if (
+            parsed === "miles" ||
+            parsed === "kilometers" ||
+            parsed === "meters"
+        ) {
+            return parsed;
+        }
+        return "kilometers";
     } catch {
         return "kilometers";
     }
