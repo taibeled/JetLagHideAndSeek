@@ -1,6 +1,7 @@
 import { useStore } from "@nanostores/react";
 
 import { LatitudeLongitude } from "@/components/LatLngPicker";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -45,6 +46,18 @@ export const RadiusQuestionComponent = ({
             .indexOf(questionKey) + 1
     }`;
 
+    const applyRadiusPresetKm = (distanceKm: number) => {
+        if (data.unit === "meters") {
+            data.radius = distanceKm * 1000;
+        } else if (data.unit === "miles") {
+            data.radius = distanceKm / 1.609344;
+        } else {
+            data.radius = distanceKm;
+        }
+
+        questionModified();
+    };
+
     return (
         <QuestionCard
             questionKey={questionKey}
@@ -78,6 +91,63 @@ export const RadiusQuestionComponent = ({
                             questionModified((data.unit = unit))
                         }
                     />
+                </div>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+                <div className="px-2 pt-1 pb-1 w-full">
+                    <div className="text-xs text-muted-foreground mb-1">
+                        Quick distance
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={!data.drag || $isLoading}
+                            onClick={() => applyRadiusPresetKm(0.5)}
+                        >
+                            500m
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={!data.drag || $isLoading}
+                            onClick={() => applyRadiusPresetKm(1)}
+                        >
+                            1km
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={!data.drag || $isLoading}
+                            onClick={() => applyRadiusPresetKm(2)}
+                        >
+                            2km
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={!data.drag || $isLoading}
+                            onClick={() => applyRadiusPresetKm(5)}
+                        >
+                            5km
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={!data.drag || $isLoading}
+                            onClick={() => applyRadiusPresetKm(10)}
+                        >
+                            10km
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={!data.drag || $isLoading}
+                            onClick={() => applyRadiusPresetKm(15)}
+                        >
+                            15km
+                        </Button>
+                    </div>
                 </div>
             </SidebarMenuItem>
             <LatitudeLongitude
