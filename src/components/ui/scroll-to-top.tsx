@@ -59,10 +59,10 @@ export function ScrollToTop({
                         }
                     }}
                     variant="ghost"
-                    className="fixed rounded-full right-2 w-12 h-12 z-[1050] hover:bg-slate-500 p-1"
+                    className="fixed rounded-full right-2 w-12 h-12 z-1050 hover:bg-slate-500 p-1"
                     {...props}
                 >
-                    <MdOutlineVerticalAlignTop className="!w-1/2 !h-1/2 " />
+                    <MdOutlineVerticalAlignTop className="w-1/2! h-1/2! " />
                 </Button>
             )}
         </>

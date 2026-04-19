@@ -98,6 +98,16 @@ export const hiderMode = persistentAtom<
     encode: JSON.stringify,
     decode: JSON.parse,
 });
+export const startingLocation = persistentAtom<
+    | false
+    | {
+          latitude: number;
+          longitude: number;
+      }
+>("startingLocation", false, {
+    encode: JSON.stringify,
+    decode: JSON.parse,
+});
 export const triggerLocalRefresh = atom<number>(0);
 export const displayHidingZones = persistentAtom<boolean>(
     "displayHidingZones",
@@ -155,6 +165,14 @@ export const mergeDuplicates = persistentAtom<boolean>(
 );
 export const includeDefaultStations = persistentAtom<boolean>(
     "includeDefaultStations",
+    false,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
+export const activeStationsOnly = persistentAtom<boolean>(
+    "activeStationsOnly",
     false,
     {
         encode: JSON.stringify,

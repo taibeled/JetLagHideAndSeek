@@ -16,7 +16,7 @@ export const determineUnionizedStrings = (
     } else if (obj instanceof z.ZodLiteral) {
         return [obj];
     } else if (obj instanceof z.ZodDefault) {
-        return determineUnionizedStrings(obj._def.innerType);
+        return determineUnionizedStrings(obj._zod.def.innerType);
     }
     return [];
 };
@@ -204,6 +204,7 @@ const baseMatchingQuestionSchema = ordinaryBaseQuestionSchema.extend({
 });
 
 const ordinaryMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
+    activeOnly: z.boolean().default(false),
     type: z
         .union([
             z
@@ -444,7 +445,7 @@ export type MatchingQuestion = z.infer<typeof matchingQuestionSchema>;
 export type HomeGameMatchingQuestions = z.infer<
     typeof homeGameMatchingQuestionsSchema
 >;
-export type ZoneMatchingQuestions = z.infer<typeof zoneMatchingQuestionsSchema>;
+
 export type CustomMatchingQuestion = z.infer<
     typeof customMatchingQuestionSchema
 >;

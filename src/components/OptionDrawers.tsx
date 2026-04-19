@@ -27,6 +27,7 @@ import {
     followMe,
     hiderMode,
     hidingRadius,
+    startingLocation,
     hidingRadiusUnits,
     hidingZone,
     includeDefaultStations,
@@ -80,6 +81,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $animateMapMovements = useStore(animateMapMovements);
     const $autoZoom = useStore(autoZoom);
     const $hiderMode = useStore(hiderMode);
+    const $startingLocation = useStore(startingLocation);
     const $autoSave = useStore(autoSave);
     const $hidingZone = useStore(hidingZone);
     const $planningMode = useStore(planningModeEnabled);
@@ -279,7 +281,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     return (
         <div
             className={cn(
-                "flex justify-end gap-2 max-[412px]:!mb-4 max-[340px]:flex-col",
+                "flex justify-end gap-2 max-[412px]:mb-4! max-[340px]:flex-col",
                 className,
             )}
         >
@@ -699,6 +701,74 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                             }
                                         }}
                                         label="Hider Location"
+                                    />
+                                    {!autoSave && (
+                                        <SidebarMenuItem>
+                                            <SidebarMenuButton
+                                                className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-shadow duration-500 mt-2"
+                                                onClick={save}
+                                            >
+                                                Save
+                                            </SidebarMenuButton>
+                                        </SidebarMenuItem>
+                                    )}
+                                </SidebarMenu>
+                            )}
+                            <div className="flex flex-row items-center gap-2">
+                                <label className="text-2xl font-semibold font-poppins">
+                                    Starting location?
+                                </label>
+                                <Checkbox
+                                    checked={!!$startingLocation}
+                                    onCheckedChange={() => {
+                                        if ($startingLocation === false) {
+                                            const $leafletMapContext =
+                                                leafletMapContext.get();
+
+                                            if ($leafletMapContext) {
+                                                const center =
+                                                    $leafletMapContext.getCenter();
+                                                startingLocation.set({
+                                                    latitude: center.lat,
+                                                    longitude: center.lng,
+                                                });
+                                            } else {
+                                                startingLocation.set({
+                                                    latitude: 0,
+                                                    longitude: 0,
+                                                });
+                                            }
+                                        } else {
+                                            startingLocation.set(false);
+                                        }
+                                    }}
+                                />
+                            </div>
+                            {$startingLocation !== false && (
+                                <SidebarMenu>
+                                    <LatitudeLongitude
+                                        latitude={$startingLocation.latitude}
+                                        longitude={$startingLocation.longitude}
+                                        inlineEdit
+                                        onChange={(latitude, longitude) => {
+                                            $startingLocation.latitude =
+                                                latitude ??
+                                                $startingLocation.latitude;
+                                            $startingLocation.longitude =
+                                                longitude ??
+                                                $startingLocation.longitude;
+
+                                            if ($autoSave) {
+                                                startingLocation.set({
+                                                    ...$startingLocation,
+                                                });
+                                            } else {
+                                                triggerLocalRefresh.set(
+                                                    Math.random(),
+                                                );
+                                            }
+                                        }}
+                                        label="Starting Location"
                                     />
                                     {!autoSave && (
                                         <SidebarMenuItem>

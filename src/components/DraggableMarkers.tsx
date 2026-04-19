@@ -11,6 +11,7 @@ import {
     questionModified,
     questions,
     save,
+    startingLocation,
     triggerLocalRefresh,
 } from "@/lib/context";
 import type { ICON_COLORS } from "@/maps/api";
@@ -45,6 +46,7 @@ const ColoredMarker = ({
 }) => {
     const $questions = useStore(questions);
     const $hiderMode = useStore(hiderMode);
+    const $startingLocation = useStore(startingLocation);
     const $autoSave = useStore(autoSave);
     const [open, setOpen] = useState(false);
 
@@ -83,7 +85,32 @@ const ColoredMarker = ({
                     },
                 }}
             />
-            <DialogContent className="!bg-[hsl(var(--sidebar-background))] !text-white">
+            <DialogContent className="bg-[hsl(var(--sidebar-background))]! text-white!">
+                {questionKey === -2 && $startingLocation !== false && (
+                    <>
+                        <h2 className="text-center text-2xl font-bold font-poppins">
+                            {sub}
+                        </h2>
+                        <SidebarMenu>
+                            <LatitudeLongitude
+                                latitude={$startingLocation.latitude}
+                                longitude={$startingLocation.longitude}
+                                inlineEdit
+                                onChange={(latitude, longitude) => {
+                                    startingLocation.set({
+                                        latitude:
+                                            latitude ??
+                                            $startingLocation.latitude,
+                                        longitude:
+                                            longitude ??
+                                            $startingLocation.longitude,
+                                    });
+                                }}
+                                label="Starting Location"
+                            />
+                        </SidebarMenu>
+                    </>
+                )}
                 {questionKey === -1 && $hiderMode !== false && (
                     <>
                         <h2 className="text-center text-2xl font-bold font-poppins">
@@ -160,6 +187,17 @@ const ColoredMarker = ({
                                 return null;
                         }
                     })}
+                {questionKey === -2 && (
+                    <Button
+                        onClick={() => {
+                            startingLocation.set(false);
+                        }}
+                        variant="destructive"
+                        className="font-semibold font-poppins"
+                    >
+                        Disable
+                    </Button>
+                )}
                 {questionKey === -1 && (
                     <Button // If it's the hider mode marker
                         onClick={() => {
@@ -188,9 +226,34 @@ export const DraggableMarkers = () => {
     useStore(triggerLocalRefresh);
     const $questions = useStore(questions);
     const $hiderMode = useStore(hiderMode);
+    const $startingLocation = useStore(startingLocation);
 
     return (
         <Fragment>
+            {$startingLocation !== false && (
+                <ColoredMarker
+                    color="blue"
+                    key="starting-location"
+                    sub="Starting Location"
+                    questionKey={-2}
+                    latitude={$startingLocation.latitude}
+                    longitude={$startingLocation.longitude}
+                    onChange={(e) => {
+                        $startingLocation.latitude =
+                            e.target.getLatLng().lat ??
+                            $startingLocation.latitude;
+                        $startingLocation.longitude =
+                            e.target.getLatLng().lng ??
+                            $startingLocation.longitude;
+
+                        if (autoSave.get()) {
+                            startingLocation.set({ ...$startingLocation });
+                        } else {
+                            triggerLocalRefresh.set(Math.random());
+                        }
+                    }}
+                />
+            )}
             {$hiderMode !== false && (
                 <ColoredMarker
                     color="green"

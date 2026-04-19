@@ -104,7 +104,7 @@ const CustomPresets: React.FC<Props> = ({ data, presetTypeHint }) => {
 
     return (
         <div className="p-2">
-            <div className="flex flex-col sm:flex-row gap-2 [&>*]:w-[50%]">
+            <div className="flex flex-col sm:flex-row gap-2 *:w-[50%]">
                 <Button onClick={handleSave}>Save as preset</Button>
                 <Button variant="ghost" onClick={handleApplyFromClipboard}>
                     Apply from clipboard

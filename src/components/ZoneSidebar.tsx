@@ -18,6 +18,7 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar-r";
 import {
+    activeStationsOnly as activeStationsOnlyAtom,
     animateMapMovements,
     autoZoom,
     customStations as customStationsAtom,
@@ -98,6 +99,7 @@ export const ZoneSidebar = () => {
     const useCustomStations = useStore(useCustomStationsAtom);
     const mergeDuplicates = useStore(mergeDuplicatesAtom);
     const includeDefaultStations = useStore(includeDefaultStationsAtom);
+    const activeStationsOnly = useStore(activeStationsOnlyAtom);
     const $customStations = useStore(customStationsAtom);
     const [hidingZoneModeStationID, setHidingZoneModeStationID] =
         useState<string>("");
@@ -147,7 +149,7 @@ export const ZoneSidebar = () => {
             pointToLayer(geoJsonPoint, latlng) {
                 const marker = L.marker(latlng, {
                     icon: L.divIcon({
-                        html: `<div class="text-black bg-opacity-0"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" width="1em" height="1em" xmlns="http://www.w3.org/2000/svg"><path d="M96 0C43 0 0 43 0 96L0 352c0 48 35.2 87.7 81.1 94.9l-46 46C28.1 499.9 33.1 512 43 512l39.7 0c8.5 0 16.6-3.4 22.6-9.4L160 448l128 0 54.6 54.6c6 6 14.1 9.4 22.6 9.4l39.7 0c10 0 15-12.1 7.9-19.1l-46-46c46-7.1 81.1-46.9 81.1-94.9l0-256c0-53-43-96-96-96L96 0zM64 96c0-17.7 14.3-32 32-32l256 0c17.7 0 32 14.3 32 32l0 96c0 17.7-14.3 32-32 32L96 224c-17.7 0-32-14.3-32-32l0-96zM224 288a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"></path></svg></div>`,
+                        html: `<div class="text-black bg-transparent"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" width="1em" height="1em" xmlns="http://www.w3.org/2000/svg"><path d="M96 0C43 0 0 43 0 96L0 352c0 48 35.2 87.7 81.1 94.9l-46 46C28.1 499.9 33.1 512 43 512l39.7 0c8.5 0 16.6-3.4 22.6-9.4L160 448l128 0 54.6 54.6c6 6 14.1 9.4 22.6 9.4l39.7 0c10 0 15-12.1 7.9-19.1l-46-46c46-7.1 81.1-46.9 81.1-94.9l0-256c0-53-43-96-96-96L96 0zM64 96c0-17.7 14.3-32 32-32l256 0c17.7 0 32 14.3 32 32l0 96c0 17.7-14.3 32-32 32L96 224c-17.7 0-32-14.3-32-32l0-96zM224 288a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"></path></svg></div>`,
                         className: "",
                     }),
                 });
@@ -202,14 +204,20 @@ export const ZoneSidebar = () => {
                 }));
             } else {
                 // Fetch default, optionally merge custom
+                const activeFilter = activeStationsOnly
+                    ? '["disused"!="yes"]'
+                    : "";
+                const stationOptions = $displayHidingZonesOptions.map(
+                    (opt) => `${opt}${activeFilter}`,
+                );
                 // @ts-expect-error osmtogeojson always defines properties with an "id" string
                 places = osmtogeojson(
                     await findPlacesInZone(
-                        $displayHidingZonesOptions[0],
+                        stationOptions[0],
                         "Finding stations. This may take a while. Do not press any buttons while this is processing. Don't worry, it will be cached.",
                         "nwr",
                         "center",
-                        $displayHidingZonesOptions.slice(1),
+                        stationOptions.slice(1),
                     ),
                 ).features;
 
@@ -449,6 +457,7 @@ export const ZoneSidebar = () => {
         includeDefaultStations,
         $customStations,
         mergeDuplicates,
+        activeStationsOnly,
     ]);
 
     useEffect(() => {
@@ -560,6 +569,20 @@ export const ZoneSidebar = () => {
                                         checked={mergeDuplicates}
                                         onCheckedChange={(v) =>
                                             mergeDuplicatesAtom.set(!!v)
+                                        }
+                                        disabled={$isLoading}
+                                    />
+                                </div>
+                            </SidebarMenuItem>
+                            <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                                <div className="flex flex-row items-center justify-between w-full">
+                                    <Label className="font-semibold font-poppins">
+                                        Active stations only?
+                                    </Label>
+                                    <Checkbox
+                                        checked={activeStationsOnly}
+                                        onCheckedChange={(v) =>
+                                            activeStationsOnlyAtom.set(!!v)
                                         }
                                         disabled={$isLoading}
                                     />
@@ -820,7 +843,7 @@ export const ZoneSidebar = () => {
                                     animation={2}
                                     maxCount={3}
                                     modalPopover
-                                    className="!bg-popover bg-opacity-100"
+                                    className="bg-popover!"
                                     disabled={
                                         $isLoading ||
                                         (useCustomStations &&
@@ -860,7 +883,7 @@ export const ZoneSidebar = () => {
                             </SidebarMenuItem>
                             {$displayHidingZones && stations.length > 0 && (
                                 <SidebarMenuItem
-                                    className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
+                                    className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-hidden data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
                                     onClick={() => {
                                         setHidingZoneModeStationID("");
                                         displayHidingZonesStyle.set(
@@ -874,7 +897,7 @@ export const ZoneSidebar = () => {
                             )}
                             {$displayHidingZones && stations.length > 0 && (
                                 <SidebarMenuItem
-                                    className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
+                                    className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-hidden data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
                                     onClick={() => {
                                         setHidingZoneModeStationID("");
                                         displayHidingZonesStyle.set("stations");
@@ -886,7 +909,7 @@ export const ZoneSidebar = () => {
                             )}
                             {$displayHidingZones && stations.length > 0 && (
                                 <SidebarMenuItem
-                                    className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
+                                    className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-hidden data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
                                     onClick={() => {
                                         setHidingZoneModeStationID("");
                                         displayHidingZonesStyle.set("zones");
@@ -898,7 +921,7 @@ export const ZoneSidebar = () => {
                             )}
                             {$displayHidingZones && stations.length > 0 && (
                                 <SidebarMenuItem
-                                    className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
+                                    className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-hidden data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
                                     onClick={() => {
                                         setHidingZoneModeStationID("");
                                         displayHidingZonesStyle.set(
@@ -954,7 +977,7 @@ export const ZoneSidebar = () => {
                             {$displayHidingZones &&
                                 $disabledStations.length > 0 && (
                                     <SidebarMenuItem
-                                        className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
+                                        className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-hidden data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
                                         onClick={() => {
                                             disabledStations.set([]);
                                         }}
@@ -965,7 +988,7 @@ export const ZoneSidebar = () => {
                                 )}
                             {$displayHidingZones && (
                                 <SidebarMenuItem
-                                    className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
+                                    className="bg-popover hover:bg-accent relative flex cursor-pointer gap-2 select-none items-center rounded-sm px-2 py-2.5 text-sm outline-hidden data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
                                     onClick={() => {
                                         disabledStations.set(
                                             stations.map(
@@ -1022,8 +1045,7 @@ export const ZoneSidebar = () => {
                                                             if (
                                                                 buttonJustClicked
                                                             ) {
-                                                                buttonJustClicked =
-                                                                    false;
+                                                                buttonJustClicked = false;
                                                                 return;
                                                             }
 
@@ -1075,8 +1097,7 @@ export const ZoneSidebar = () => {
                                                         onClick={async () => {
                                                             if (!map) return;
 
-                                                            buttonJustClicked =
-                                                                true;
+                                                            buttonJustClicked = true;
 
                                                             setHidingZoneModeStationID(
                                                                 station

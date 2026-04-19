@@ -116,6 +116,26 @@ export const MatchingQuestionComponent = ({
                 </>
             );
             break;
+        case "airport":
+            questionSpecific = (
+                <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                    <div className="flex flex-row items-center justify-between w-full">
+                        <Label className="font-semibold">
+                            Active airports only?
+                        </Label>
+                        <Checkbox
+                            checked={(data as any).activeOnly ?? false}
+                            onCheckedChange={(v) =>
+                                questionModified(
+                                    ((data as any).activeOnly = !!v),
+                                )
+                            }
+                            disabled={!data.drag || $isLoading}
+                        />
+                    </div>
+                </SidebarMenuItem>
+            );
+            break;
         case "same-train-line":
             questionSpecific = (
                 <span className="px-2 text-center text-orange-500">

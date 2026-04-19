@@ -22,7 +22,7 @@ type Props = {
     checkboxId?: string;
 };
 
-export const CustomInitDialog: React.FC<Props> = ({
+const CustomInitDialog: React.FC<Props> = ({
     open,
     onOpenChange,
     onBlank,

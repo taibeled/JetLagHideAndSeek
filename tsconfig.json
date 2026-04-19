@@ -5,7 +5,7 @@
     "compilerOptions": {
         "jsx": "react-jsx",
         "jsxImportSource": "react",
-        "baseUrl": ".",
+        "noUncheckedSideEffectImports": false,
         "paths": {
             "@/*": ["./src/*"]
         }

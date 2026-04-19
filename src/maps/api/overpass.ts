@@ -25,7 +25,7 @@ import type {
 } from "./types";
 import { CacheType } from "./types";
 
-export const getOverpassData = async (
+const getOverpassData = async (
     query: string,
     loadingText?: string,
     cacheType: CacheType = CacheType.CACHE,
@@ -68,7 +68,7 @@ export const getOverpassData = async (
     return data;
 };
 
-export const determineGeoJSON = async (
+const determineGeoJSON = async (
     osmId: string,
     osmTypeLetter: "W" | "R" | "N",
 ): Promise<any> => {

@@ -2,10 +2,6 @@ import type { LatLngTuple } from "leaflet";
 
 import type { APILocations, OpenStreetMap } from "./types";
 
-export const convertToLongLat = (coordinates: LatLngTuple): number[] => {
-    return [coordinates[1], coordinates[0]];
-};
-
 export const convertToLatLong = (coordinates: number[]): LatLngTuple => {
     return [coordinates[1], coordinates[0]];
 };
