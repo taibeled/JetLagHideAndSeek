@@ -7,7 +7,6 @@ import type {
     Polygon,
 } from "geojson";
 import _ from "lodash";
-import osmtogeojson from "osmtogeojson";
 import { toast } from "react-toastify";
 
 import {
@@ -24,6 +23,7 @@ import {
     prettifyLocation,
     trainLineNodeFinder,
 } from "@/maps/api";
+import osmtogeojson from "@/maps/api/osm-to-geojson";
 import { holedMask, modifyMapData, safeUnion } from "@/maps/geo-utils";
 import { geoSpatialVoronoi } from "@/maps/geo-utils";
 import type {
@@ -393,6 +393,7 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
     const $mapGeoJSON = mapGeoJSON.get();
     if ($mapGeoJSON === null) return question;
 
+    // eslint-disable-next-line no-useless-assignment
     let feature = null;
 
     try {

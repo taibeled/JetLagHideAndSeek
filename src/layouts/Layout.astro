@@ -15,7 +15,7 @@ const { className } = Astro.props;
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <link
             rel="icon"
             type="image/x-icon"
@@ -129,7 +129,7 @@ const { className } = Astro.props;
 
         {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
     </head>
-    <body class:list={[className, "dark"]}>
+    <body class:list={[className, "dark", "flex", "flex-col", "min-h-svh"]} style="touch-action: manipulation;">
         <slot />
         <ToastContainer client:only />
     </body>

@@ -3,7 +3,7 @@ import * as geodesicBufferOperator from "@arcgis/core/geometry/operators/geodesi
 import * as geodeticDistanceOperator from "@arcgis/core/geometry/operators/geodeticDistanceOperator.js";
 import Point from "@arcgis/core/geometry/Point.js";
 import * as geometryJsonUtils from "@arcgis/core/geometry/support/jsonUtils.js";
-import * as unionTypes from "@arcgis/core/unionTypes.js";
+import type { GeometryUnion } from "@arcgis/core/geometry/types.js";
 import { arcgisToGeoJSON, geojsonToArcGIS } from "@terraformer/arcgis";
 import * as turf from "@turf/turf";
 import type {
@@ -69,13 +69,13 @@ export const arcBuffer = (
 ) => {
     const arcgisGeometry = geometry.features.map((x) =>
         geometryJsonUtils.fromJSON(geojsonToArcGIS(x.geometry)),
-    ) as unionTypes.GeometryUnion[];
+    ) as GeometryUnion[];
 
     return innateArcBuffer(arcgisGeometry, distance, unit);
 };
 
 const innateArcBuffer = async (
-    arcgisGeometry: unionTypes.GeometryUnion[],
+    arcgisGeometry: GeometryUnion[],
     distance: number,
     unit: units.LengthUnit & turf.Units = DEFAULT_BUFFER_UNIT,
 ) => {
@@ -110,7 +110,7 @@ export const arcBufferToPoint = async (
 
     const arcgisGeometry = geometry.features.map((x) =>
         geometryJsonUtils.fromJSON(geojsonToArcGIS(x.geometry)),
-    ) as unionTypes.GeometryUnion[];
+    ) as GeometryUnion[];
 
     await geodeticDistanceOperator.load();
 

@@ -1,7 +1,6 @@
 import * as turf from "@turf/turf";
 import type { FeatureCollection, MultiPolygon } from "geojson";
 import _ from "lodash";
-import osmtogeojson from "osmtogeojson";
 import { toast } from "react-toastify";
 
 import {
@@ -9,6 +8,7 @@ import {
     mapGeoLocation,
     polyGeoJSON,
 } from "@/lib/context";
+import osmtogeojson from "@/maps/api/osm-to-geojson";
 import { safeUnion } from "@/maps/geo-utils";
 
 import { cacheFetch, determineCache } from "./cache";
@@ -232,7 +232,7 @@ export const findPlacesInZone = async (
     alternatives: string[] = [],
     timeoutDuration: number = 0,
 ) => {
-    let query = "";
+    let query: string;
     const $polyGeoJSON = polyGeoJSON.get();
     if ($polyGeoJSON) {
         query = `

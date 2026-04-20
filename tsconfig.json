@@ -6,6 +6,7 @@
         "jsx": "react-jsx",
         "jsxImportSource": "react",
         "noUncheckedSideEffectImports": false,
+        "types": [],
         "paths": {
             "@/*": ["./src/*"]
         }

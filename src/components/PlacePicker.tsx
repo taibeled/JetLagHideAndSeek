@@ -283,18 +283,31 @@ export const PlacePicker = ({
                                 <CommandItem
                                     key={`${result.properties.osm_id}${result.properties.name}`}
                                     onSelect={() => {
-                                        additionalMapGeoLocations.set([
-                                            ...additionalMapGeoLocations.get(),
-                                            {
-                                                added: true,
-                                                location: result,
-                                                base: false,
-                                            },
-                                        ]);
+                                        const currentBase =
+                                            mapGeoLocation.get();
+                                        const currentAdditionals =
+                                            additionalMapGeoLocations.get();
+                                        const isDefaultBase =
+                                            currentBase.properties.osm_id ===
+                                                382313 &&
+                                            currentAdditionals.length === 0;
 
+                                        if (isDefaultBase) {
+                                            mapGeoLocation.set(result);
+                                        } else {
+                                            additionalMapGeoLocations.set([
+                                                ...currentAdditionals,
+                                                {
+                                                    added: true,
+                                                    location: result,
+                                                    base: false,
+                                                },
+                                            ]);
+                                        }
                                         mapGeoJSON.set(null);
                                         polyGeoJSON.set(null);
                                         questions.set([...questions.get()]);
+                                        setOpen(false);
                                     }}
                                     className="cursor-pointer"
                                 >

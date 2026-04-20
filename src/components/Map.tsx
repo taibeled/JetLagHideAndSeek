@@ -5,7 +5,7 @@ import "leaflet-contextmenu";
 import { useStore } from "@nanostores/react";
 import * as turf from "@turf/turf";
 import * as L from "leaflet";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { MapContainer, ScaleControl, TileLayer } from "react-leaflet";
 import { toast } from "react-toastify";
 
@@ -116,13 +116,12 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
 };
 
 export const Map = ({ className }: { className?: string }) => {
-    useStore(additionalMapGeoLocations);
+    const $additionalMapGeoLocations = useStore(additionalMapGeoLocations);
     const $mapGeoLocation = useStore(mapGeoLocation);
     const $questions = useStore(questions);
     const $baseTileLayer = useStore(baseTileLayer);
     const $thunderforestApiKey = useStore(thunderforestApiKey);
     const $hiderMode = useStore(hiderMode);
-    const $isLoading = useStore(isLoading);
     const $followMe = useStore(followMe);
     const $permanentOverlay = useStore(permanentOverlay);
     const map = useStore(leafletMapContext);
@@ -135,13 +134,17 @@ export const Map = ({ className }: { className?: string }) => {
         () => ({ current: null as number | null }),
         [],
     );
+    const refreshGenRef = useRef(0);
+    const refreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const refreshQuestions = async (focus: boolean = false) => {
         if (!map) return;
 
-        if ($isLoading) return;
+        if (isLoading.get()) return;
 
         isLoading.set(true);
+
+        const gen = ++refreshGenRef.current;
 
         if ($questions.length === 0) {
             await clearCache();
@@ -175,6 +178,11 @@ export const Map = ({ className }: { className?: string }) => {
             }
 
             triggerLocalRefresh.set(Math.random()); // Refresh the question sidebar with new information but not this map
+        }
+
+        if (gen !== refreshGenRef.current) {
+            isLoading.set(false);
+            return;
         }
 
         map.eachLayer((layer: any) => {
@@ -245,7 +253,7 @@ export const Map = ({ className }: { className?: string }) => {
             <MapContainer
                 center={$mapGeoLocation.geometry.coordinates}
                 zoom={5}
-                className={cn("w-[500px] h-[500px]", className)}
+                className={cn("w-full h-full", className)}
                 ref={leafletMapContext.set}
                 // @ts-expect-error Typing doesn't update from react-contextmenu
                 contextmenu={true}
@@ -397,27 +405,19 @@ export const Map = ({ className }: { className?: string }) => {
     useEffect(() => {
         if (!map) return;
 
-        refreshQuestions(true);
-    }, [$questions, map, $hiderMode]);
+        if (refreshTimerRef.current) clearTimeout(refreshTimerRef.current);
+        refreshTimerRef.current = setTimeout(() => {
+            refreshTimerRef.current = null;
+            refreshQuestions(true);
+        }, 120);
 
-    useEffect(() => {
-        const intervalId = setInterval(async () => {
-            if (!map) return;
-            let layerCount = 0;
-            map.eachLayer((layer: any) => {
-                if (layer.eliminationGeoJSON) {
-                    // Hopefully only geoJSON layers
-                    layerCount++;
-                }
-            });
-            if (layerCount > 1) {
-                console.log("Too many layers, refreshing...");
-                refreshQuestions(false);
+        return () => {
+            if (refreshTimerRef.current) {
+                clearTimeout(refreshTimerRef.current);
+                refreshTimerRef.current = null;
             }
-        }, 1000);
-
-        return () => clearInterval(intervalId);
-    }, [map]);
+        };
+    }, [$questions, map, $hiderMode, $mapGeoLocation, $additionalMapGeoLocations]);
 
     useEffect(() => {
         const handleFullscreenChange = () => {

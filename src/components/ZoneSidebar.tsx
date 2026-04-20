@@ -3,8 +3,7 @@ import * as turf from "@turf/turf";
 import type { Feature, FeatureCollection } from "geojson";
 import * as L from "leaflet";
 import _ from "lodash";
-import { SidebarCloseIcon } from "lucide-react";
-import osmtogeojson from "osmtogeojson";
+import { Loader2, SidebarCloseIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -52,6 +51,7 @@ import {
     type StationPlace,
     trainLineNodeFinder,
 } from "@/maps/api";
+import osmtogeojson from "@/maps/api/osm-to-geojson";
 import {
     extractStationLabel,
     extractStationName,
@@ -101,6 +101,8 @@ export const ZoneSidebar = () => {
     const includeDefaultStations = useStore(includeDefaultStationsAtom);
     const activeStationsOnly = useStore(activeStationsOnlyAtom);
     const $customStations = useStore(customStationsAtom);
+    const [isHidingZoneLoading, setIsHidingZoneLoading] = useState(false);
+    const hidingZoneLoadingRef = useRef(false);
     const [hidingZoneModeStationID, setHidingZoneModeStationID] =
         useState<string>("");
     const [stationSearch, setStationSearch] = useState<string>("");
@@ -174,19 +176,22 @@ export const ZoneSidebar = () => {
     };
 
     useEffect(() => {
-        if (!map || isLoading.get()) return;
+        if (!map || hidingZoneLoadingRef.current) return;
 
         const initializeHidingZones = async () => {
+            hidingZoneLoadingRef.current = true;
             isLoading.set(true);
+            setIsHidingZoneLoading(true);
+
+            try {
 
             const needsDefault = !useCustomStations || includeDefaultStations;
             if (needsDefault && $displayHidingZonesOptions.length === 0) {
                 toast.error("At least one place type must be selected");
-                isLoading.set(false);
                 return;
             }
 
-            let places: StationPlace[] = [];
+            let places: StationPlace[];
 
             if (!needsDefault) {
                 // Custom only
@@ -205,7 +210,7 @@ export const ZoneSidebar = () => {
             } else {
                 // Fetch default, optionally merge custom
                 const activeFilter = activeStationsOnly
-                    ? '["disused"!="yes"]'
+                    ? '["disused"!="yes"]["abandoned"!="yes"]["railway:status"!="abandoned"]["railway:status"!="disused"]'
                     : "";
                 const stationOptions = $displayHidingZonesOptions.map(
                     (opt) => `${opt}${activeFilter}`,
@@ -436,7 +441,12 @@ export const ZoneSidebar = () => {
             }
 
             setStations(circles);
-            isLoading.set(false);
+
+            } finally {
+                hidingZoneLoadingRef.current = false;
+                isLoading.set(false);
+                setIsHidingZoneLoading(false);
+            }
         };
 
         if ($displayHidingZones && $questionFinishedMapData) {
@@ -527,8 +537,11 @@ export const ZoneSidebar = () => {
                     <SidebarGroupContent>
                         <SidebarMenu>
                             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
-                                <Label className="font-semibold font-poppins">
+                                <Label className="font-semibold font-poppins flex items-center gap-1.5">
                                     Display hiding zones?
+                                    {isHidingZoneLoading && (
+                                        <Loader2 className="h-3.5 w-3.5 animate-spin opacity-70" />
+                                    )}
                                 </Label>
                                 <Checkbox
                                     defaultChecked={$displayHidingZones}
@@ -548,8 +561,11 @@ export const ZoneSidebar = () => {
                             </SidebarMenuItem>
                             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                                 <div className="flex flex-row items-center justify-between w-full">
-                                    <Label className="font-semibold font-poppins">
+                                    <Label className="font-semibold font-poppins flex items-center gap-1.5">
                                         Use custom station list?
+                                        {isHidingZoneLoading && (
+                                            <Loader2 className="h-3.5 w-3.5 animate-spin opacity-70" />
+                                        )}
                                     </Label>
                                     <Checkbox
                                         checked={useCustomStations}
@@ -562,8 +578,11 @@ export const ZoneSidebar = () => {
                             </SidebarMenuItem>
                             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                                 <div className="flex flex-row items-center justify-between w-full">
-                                    <Label className="font-semibold font-poppins">
+                                    <Label className="font-semibold font-poppins flex items-center gap-1.5">
                                         Merge duplicated stations?
+                                        {isHidingZoneLoading && (
+                                            <Loader2 className="h-3.5 w-3.5 animate-spin opacity-70" />
+                                        )}
                                     </Label>
                                     <Checkbox
                                         checked={mergeDuplicates}
@@ -576,8 +595,11 @@ export const ZoneSidebar = () => {
                             </SidebarMenuItem>
                             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                                 <div className="flex flex-row items-center justify-between w-full">
-                                    <Label className="font-semibold font-poppins">
+                                    <Label className="font-semibold font-poppins flex items-center gap-1.5">
                                         Active stations only?
+                                        {isHidingZoneLoading && (
+                                            <Loader2 className="h-3.5 w-3.5 animate-spin opacity-70" />
+                                        )}
                                     </Label>
                                     <Checkbox
                                         checked={activeStationsOnly}

@@ -1,7 +1,6 @@
 import * as turf from "@turf/turf";
 import type { Feature, MultiPolygon } from "geojson";
 import _ from "lodash";
-import osmtogeojson from "osmtogeojson";
 import { toast } from "react-toastify";
 
 import {
@@ -20,6 +19,7 @@ import {
     prettifyLocation,
     QuestionSpecificLocation,
 } from "@/maps/api";
+import osmtogeojson from "@/maps/api/osm-to-geojson";
 import {
     arcBufferToPoint,
     connectToSeparateLines,
@@ -388,6 +388,7 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
     const $mapGeoJSON = mapGeoJSON.get();
     if ($mapGeoJSON === null) return question;
 
+    // eslint-disable-next-line no-useless-assignment
     let feature = null;
 
     try {

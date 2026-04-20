@@ -953,7 +953,9 @@ export const TutorialDialog = () => {
             );
             const dialogHeight = dialogRect.height || 400;
 
+            // eslint-disable-next-line no-useless-assignment
             let finalX = 0;
+            // eslint-disable-next-line no-useless-assignment
             let finalY = 0;
 
             // On mobile, use simpler positioning logic
