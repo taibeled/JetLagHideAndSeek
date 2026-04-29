@@ -70,9 +70,91 @@ export const polyGeoJSON = persistentAtom<FeatureCollection<
     decode: JSON.parse,
 });
 
-export const questions = persistentAtom<Questions>("questions", [], {
-    encode: JSON.stringify,
-    decode: (x) => questionsSchema.parse(JSON.parse(x)),
+const QUESTIONS_STORAGE_KEY = "questions";
+const QUESTIONS_STORAGE_BACKUP_KEY = "questions_backup";
+
+const sanitizeQuestions = (input: unknown): Questions => {
+    if (!Array.isArray(input)) return [];
+    return input.flatMap((question) => {
+        const parsed = questionSchema.safeParse(question);
+        return parsed.success ? [parsed.data] : [];
+    });
+};
+
+const recoverTruncatedQuestions = (value: string): Questions | null => {
+    if (!value.trimStart().startsWith("[")) return null;
+
+    for (let idx = value.length - 1; idx >= 0; idx -= 1) {
+        if (value[idx] !== "}") continue;
+
+        let candidate = value.slice(0, idx + 1).trimEnd();
+        if (candidate.endsWith(",")) {
+            candidate = candidate.slice(0, -1);
+        }
+        candidate = `${candidate}]`;
+
+        try {
+            const parsed = JSON.parse(candidate);
+            return sanitizeQuestions(parsed);
+        } catch {
+            // Continue trying shorter prefixes.
+        }
+    }
+
+    return null;
+};
+
+const parseQuestionsString = (value: string): Questions | null => {
+    try {
+        return questionsSchema.parse(JSON.parse(value));
+    } catch {
+        try {
+            return sanitizeQuestions(JSON.parse(value));
+        } catch {
+            return recoverTruncatedQuestions(value);
+        }
+    }
+};
+
+const loadPersistedQuestions = (): Questions => {
+    if (typeof localStorage === "undefined") return [];
+    const primary = localStorage.getItem(QUESTIONS_STORAGE_KEY);
+    const backup = localStorage.getItem(QUESTIONS_STORAGE_BACKUP_KEY);
+
+    if (primary) {
+        const parsed = parseQuestionsString(primary);
+        if (parsed !== null) return parsed;
+    }
+    if (backup) {
+        const parsed = parseQuestionsString(backup);
+        if (parsed !== null) {
+            localStorage.setItem(QUESTIONS_STORAGE_KEY, JSON.stringify(parsed));
+            return parsed;
+        }
+    }
+    return [];
+};
+
+const persistQuestions = (nextQuestions: Questions) => {
+    if (typeof localStorage === "undefined") return;
+    try {
+        const current = localStorage.getItem(QUESTIONS_STORAGE_KEY);
+        if (current !== null) {
+            localStorage.setItem(QUESTIONS_STORAGE_BACKUP_KEY, current);
+        }
+        localStorage.setItem(
+            QUESTIONS_STORAGE_KEY,
+            JSON.stringify(nextQuestions),
+        );
+    } catch (e) {
+        // Keep the last known persisted snapshot if local storage quota is exceeded.
+        console.warn("Failed to persist questions", e);
+    }
+};
+
+export const questions = atom<Questions>(loadPersistedQuestions());
+onSet(questions, ({ newValue }) => {
+    persistQuestions(newValue);
 });
 export const addQuestion = (question: DeepPartial<Question>) =>
     questionModified(questions.get().push(questionSchema.parse(question)));
