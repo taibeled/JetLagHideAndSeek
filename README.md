@@ -57,6 +57,36 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
     - Movie theater
     - Library
 
+## Quickstart
+
+The easiest way to run the full app (frontend + CAS API) is:
+
+```bash
+pnpm install
+pnpm --dir server install
+pnpm start:app
+```
+
+Then open:
+
+- `http://localhost:8787/JetLagHideAndSeek/`
+
+If you want HTTPS on your Tailscale tailnet (for clipboard/browser secure-context features), use:
+
+```bash
+make tailscale_serve
+```
+
+Then open:
+
+- `https://<your-machine>.<your-tailnet>.ts.net/JetLagHideAndSeek/`
+
+To remove the Tailscale serve config later:
+
+```bash
+make tailscale_serve_reset
+```
+
 ## Contributing
 
 This project has evolved significantly, encompassing over 10,000 lines of code. Many intricate features have been developed, so therefore contributions are very much welcome. If you find a bug, please either file an issue or create a pull request. Furthermore, enhancements/feature requests are necessary to keep developing this project, so developments of those would also be appreciated. Here is a list of some suggestions for those wanting to help develop this tool:
