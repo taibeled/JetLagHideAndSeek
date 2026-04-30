@@ -38,7 +38,7 @@ function warnCasThrottled(message: string) {
     toast.warn(message);
 }
 
-function cloneForWire(value: unknown): Record<string, unknown> {
+export function cloneForWire(value: unknown): Record<string, unknown> {
     try {
         return structuredClone(value) as Record<string, unknown>;
     } catch {

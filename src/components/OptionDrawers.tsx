@@ -65,7 +65,13 @@ import {
     applyWireV1Payload,
     loadHidingZoneFromJsonString,
 } from "@/lib/loadHidingZone";
-import { flushLiveSync, initLiveSync, setHydrating } from "@/lib/liveSync";
+import {
+    cloneForWire,
+    flushLiveSync,
+    initLiveSync,
+    setHydrating,
+} from "@/lib/liveSync";
+import { buildWireV1Envelope, canonicalize } from "@/lib/wire";
 import {
     cn,
     compress,
@@ -93,6 +99,28 @@ const HIDING_ZONE_URL_PARAM = "hz";
 const HIDING_ZONE_COMPRESSED_URL_PARAM = "hzc";
 const PASTEBIN_URL_PARAM = "pb";
 const SID_URL_PARAM = "sid";
+
+/** Accept raw sid or a share URL containing `sid=` */
+function parseSessionIdFromClipboard(text: string): string {
+    const t = text.trim();
+    if (!t) return "";
+    try {
+        const u = new URL(t);
+        const sid = u.searchParams.get(SID_URL_PARAM);
+        if (sid) return sid;
+    } catch {
+        /* not an absolute URL */
+    }
+    const match = t.match(new RegExp(`[?&]${SID_URL_PARAM}=([^&\\s#]+)`, "i"));
+    if (match) {
+        try {
+            return decodeURIComponent(match[1]);
+        } catch {
+            return match[1];
+        }
+    }
+    return t;
+}
 
 export const OptionDrawers = ({ className }: { className?: string }) => {
     useStore(triggerLocalRefresh);
@@ -152,8 +180,21 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
             const hasLocal =
                 questions.get().length > 0 || polyGeoJSON.get() !== null;
             if (hasLocal && sid !== currentSid.get()) {
-                const ok = await askReplaceGameState();
-                if (!ok) return false;
+                let incomingCanon: string | null = null;
+                try {
+                    incomingCanon = canonicalize(JSON.parse(canonicalJson));
+                } catch {
+                    incomingCanon = null;
+                }
+                const localCanon = canonicalize(
+                    buildWireV1Envelope(cloneForWire(hidingZone.get())),
+                );
+                const samePayload =
+                    incomingCanon !== null && incomingCanon === localCanon;
+                if (!samePayload) {
+                    const ok = await askReplaceGameState();
+                    if (!ok) return false;
+                }
             }
             await applyIncomingWire(canonicalJson, sid);
             return true;
@@ -163,6 +204,42 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
 
     const maybeReplaceRef = useRef(maybeReplaceThenApply);
     maybeReplaceRef.current = maybeReplaceThenApply;
+
+    const pasteSessionIdFromClipboard = useCallback(async () => {
+        if (!navigator?.clipboard) {
+            toast.error("Clipboard not supported");
+            return;
+        }
+        await discoverCasServer();
+        const base = casServerEffectiveUrl.get();
+        if (!base || casServerStatus.get() !== "available") {
+            toast.error("Game state server not available");
+            return;
+        }
+        let sid: string;
+        try {
+            sid = parseSessionIdFromClipboard(
+                await navigator.clipboard.readText(),
+            );
+        } catch {
+            toast.error("Could not read clipboard");
+            return;
+        }
+        if (!sid) {
+            toast.error("Clipboard is empty");
+            return;
+        }
+        try {
+            const compressed = await getBlob(base, sid);
+            const json = await decompress(compressed);
+            const applied = await maybeReplaceThenApply(json, sid);
+            if (!applied) {
+                toast.info("Load cancelled");
+            }
+        } catch (e) {
+            toast.error(`Could not load session (${sid}): ${e}`);
+        }
+    }, [maybeReplaceThenApply]);
 
     useEffect(() => {
         const currentDefault = $defaultUnit;
@@ -393,38 +470,91 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                         </DrawerHeader>
                         <div className="overflow-y-scroll max-h-[40vh] flex flex-col items-center gap-4 max-w-[1000px] px-12">
                             <div className="flex flex-row max-[330px]:flex-col gap-4">
-                                <Button
-                                    onClick={() => {
-                                        if (!navigator || !navigator.clipboard)
-                                            return toast.error(
-                                                "Clipboard not supported",
-                                            );
-                                        navigator.clipboard.writeText(
-                                            JSON.stringify($hidingZone),
-                                        );
-                                        toast.success(
-                                            "Hiding zone copied successfully",
-                                            {
-                                                autoClose: 2000,
-                                            },
-                                        );
-                                    }}
-                                >
-                                    Copy Hiding Zone
-                                </Button>
-                                <Button
-                                    onClick={() => {
-                                        if (!navigator || !navigator.clipboard)
-                                            return toast.error(
-                                                "Clipboard not supported",
-                                            );
-                                        navigator.clipboard
-                                            .readText()
-                                            .then(loadHidingZoneFromJsonString);
-                                    }}
-                                >
-                                    Paste Hiding Zone
-                                </Button>
+                                {$casStatus === "available" ? (
+                                    <>
+                                        <Button
+                                            onClick={() => {
+                                                if (
+                                                    !navigator ||
+                                                    !navigator.clipboard
+                                                ) {
+                                                    return toast.error(
+                                                        "Clipboard not supported",
+                                                    );
+                                                }
+                                                const sid = currentSid.get();
+                                                if (!sid) {
+                                                    return toast.error(
+                                                        "No session ID yet. Share your game or enable CAS sync and edit.",
+                                                    );
+                                                }
+                                                navigator.clipboard.writeText(
+                                                    sid,
+                                                );
+                                                toast.success(
+                                                    "Session ID copied",
+                                                    {
+                                                        autoClose: 2000,
+                                                    },
+                                                );
+                                            }}
+                                        >
+                                            Copy Session ID
+                                        </Button>
+                                        <Button
+                                            onClick={() => {
+                                                void pasteSessionIdFromClipboard();
+                                            }}
+                                        >
+                                            Paste Session ID
+                                        </Button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Button
+                                            onClick={() => {
+                                                if (
+                                                    !navigator ||
+                                                    !navigator.clipboard
+                                                ) {
+                                                    return toast.error(
+                                                        "Clipboard not supported",
+                                                    );
+                                                }
+                                                navigator.clipboard.writeText(
+                                                    JSON.stringify($hidingZone),
+                                                );
+                                                toast.success(
+                                                    "Hiding zone copied successfully",
+                                                    {
+                                                        autoClose: 2000,
+                                                    },
+                                                );
+                                            }}
+                                        >
+                                            Copy Hiding Zone
+                                        </Button>
+                                        <Button
+                                            onClick={() => {
+                                                if (
+                                                    !navigator ||
+                                                    !navigator.clipboard
+                                                ) {
+                                                    return toast.error(
+                                                        "Clipboard not supported",
+                                                    );
+                                                }
+                                                navigator.clipboard
+                                                    .readText()
+                                                    .then(
+                                                        loadHidingZoneFromJsonString,
+                                                    );
+                                            }}
+                                        >
+                                            Paste Hiding Zone
+                                        </Button>
+                                    </>
+                                )}
                             </div>
                             <Separator className="bg-slate-300 w-[280px]" />
                             <Label>Game state server (optional)</Label>
