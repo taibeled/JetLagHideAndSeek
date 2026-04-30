@@ -99,6 +99,26 @@ const HIDING_ZONE_URL_PARAM = "hz";
 const HIDING_ZONE_COMPRESSED_URL_PARAM = "hzc";
 const PASTEBIN_URL_PARAM = "pb";
 const SID_URL_PARAM = "sid";
+const DEFAULT_LOCALSTORAGE_QUOTA_BYTES = 5 * 1024 * 1024;
+
+function getLocalStorageUsageBytes(): number {
+    if (typeof window === "undefined") return 0;
+    const encoder = new TextEncoder();
+    let total = 0;
+    for (let i = 0; i < localStorage.length; i += 1) {
+        const key = localStorage.key(i);
+        if (!key) continue;
+        const value = localStorage.getItem(key) ?? "";
+        total += encoder.encode(key).length + encoder.encode(value).length;
+    }
+    return total;
+}
+
+function formatBytes(bytes: number): string {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+}
 
 /** Accept raw sid or a share URL containing `sid=` */
 function parseSessionIdFromClipboard(text: string): string {
@@ -132,6 +152,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $hiderMode = useStore(hiderMode);
     const $autoSave = useStore(autoSave);
     const $hidingZone = useStore(hidingZone);
+    const $questions = useStore(questions);
     const $planningMode = useStore(planningModeEnabled);
     const $baseTileLayer = useStore(baseTileLayer);
     const $thunderforestApiKey = useStore(thunderforestApiKey);
@@ -147,6 +168,10 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const [isOptionsOpen, setOptionsOpen] = useState(false);
     const [clientMounted, setClientMounted] = useState(false);
     const [replaceStateOpen, setReplaceStateOpen] = useState(false);
+    const [localStorageUsageBytes, setLocalStorageUsageBytes] = useState(0);
+    const [localStorageQuotaBytes, setLocalStorageQuotaBytes] = useState(
+        DEFAULT_LOCALSTORAGE_QUOTA_BYTES,
+    );
     const resolveReplaceRef = useRef<((value: boolean) => void) | null>(null);
 
     const askReplaceGameState = useCallback((): Promise<boolean> => {
@@ -262,6 +287,23 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
 
     useEffect(() => {
         setClientMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (!isOptionsOpen || typeof window === "undefined") return;
+
+        setLocalStorageUsageBytes(getLocalStorageUsageBytes());
+    }, [isOptionsOpen, $hidingZone, $questions]);
+
+    useEffect(() => {
+        if (typeof navigator === "undefined" || !navigator.storage?.estimate) {
+            return;
+        }
+        void navigator.storage.estimate().then((estimate) => {
+            if (estimate.quota && estimate.quota > 0) {
+                setLocalStorageQuotaBytes(estimate.quota);
+            }
+        });
     }, []);
 
     useEffect(() => {
@@ -555,6 +597,30 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                         </Button>
                                     </>
                                 )}
+                            </div>
+                            <Separator className="bg-slate-300 w-[280px]" />
+                            <div className="flex w-full max-w-md flex-col gap-2">
+                                <Label>Local storage usage (approx.)</Label>
+                                <progress
+                                    className="w-full"
+                                    max={100}
+                                    value={Math.min(
+                                        100,
+                                        (localStorageUsageBytes /
+                                            localStorageQuotaBytes) *
+                                            100,
+                                    )}
+                                />
+                                <p className="text-xs text-gray-500">
+                                    {formatBytes(localStorageUsageBytes)} used of{" "}
+                                    {formatBytes(localStorageQuotaBytes)} (
+                                    {(
+                                        (localStorageUsageBytes /
+                                            localStorageQuotaBytes) *
+                                        100
+                                    ).toFixed(1)}
+                                    %)
+                                </p>
                             </div>
                             <Separator className="bg-slate-300 w-[280px]" />
                             <Label>Game state server (optional)</Label>
