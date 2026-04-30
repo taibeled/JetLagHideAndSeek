@@ -1,11 +1,11 @@
 import { useStore } from "@nanostores/react";
 import * as turf from "@turf/turf";
-import type { Feature, FeatureCollection } from "geojson";
+import type { Feature, FeatureCollection, Polygon } from "geojson";
 import * as L from "leaflet";
 import _ from "lodash";
 import { SidebarCloseIcon } from "lucide-react";
 import osmtogeojson from "osmtogeojson";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
 import {
@@ -22,6 +22,7 @@ import {
     autoZoom,
     customStations as customStationsAtom,
     disabledStations,
+    displayHidingZoneOperators,
     displayHidingZones,
     displayHidingZonesOptions,
     displayHidingZonesStyle,
@@ -58,7 +59,10 @@ import {
     geoSpatialVoronoi,
     holedMask,
     lngLatToText,
+    isLikelyOsmElementId,
+    matchesOperatorSelection,
     mergeDuplicateStation,
+    normalizeOsmText,
     safeUnion,
 } from "@/maps/geo-utils";
 
@@ -89,6 +93,7 @@ export const ZoneSidebar = () => {
     const $displayHidingZones = useStore(displayHidingZones);
     const $questionFinishedMapData = useStore(questionFinishedMapData);
     const $displayHidingZonesOptions = useStore(displayHidingZonesOptions);
+    const $displayHidingZoneOperators = useStore(displayHidingZoneOperators);
     const $displayHidingZonesStyle = useStore(displayHidingZonesStyle);
     const $hidingRadius = useStore(hidingRadius);
     const $hidingRadiusUnits = useStore(hidingRadiusUnits);
@@ -108,6 +113,38 @@ export const ZoneSidebar = () => {
     const setStations = trainStations.set;
     const sidebarRef = useRef<HTMLDivElement>(null);
     const [importUrl, setImportUrl] = useState("");
+    const [operatorFilterStats, setOperatorFilterStats] = useState<{
+        before: number;
+        after: number;
+    } | null>(null);
+
+    const operatorSelectOptions = useMemo(() => {
+        const counts = new Map<string, number>();
+        for (const c of stations) {
+            const inner = c.properties as unknown as StationPlace;
+            const props = inner.properties as
+                | Record<string, unknown>
+                | undefined;
+            const key =
+                normalizeOsmText(props?.operator) ??
+                normalizeOsmText(props?.network);
+            if (!key) continue;
+            counts.set(key, (counts.get(key) ?? 0) + 1);
+        }
+        return [...counts.entries()]
+            .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+            .map(([value, count]) => ({
+                value,
+                label: `${value} (${count})`,
+            }));
+    }, [stations]);
+
+    const canFetchDefaultStations =
+        !useCustomStations || includeDefaultStations;
+    const operatorPickerDisabled =
+        $isLoading ||
+        !canFetchDefaultStations ||
+        operatorSelectOptions.length === 0;
 
     const removeHidingZones = () => {
         if (!map) return;
@@ -181,6 +218,7 @@ export const ZoneSidebar = () => {
 
             const needsDefault = !useCustomStations || includeDefaultStations;
             if (needsDefault && $displayHidingZonesOptions.length === 0) {
+                setOperatorFilterStats(null);
                 toast.error("At least one place type must be selected");
                 isLoading.set(false);
                 return;
@@ -212,6 +250,8 @@ export const ZoneSidebar = () => {
                         "nwr",
                         "center",
                         $displayHidingZonesOptions.slice(1),
+                        0,
+                        $displayHidingZoneOperators,
                     ),
                 ).features;
 
@@ -254,6 +294,25 @@ export const ZoneSidebar = () => {
                 }
             }
 
+            if (!needsDefault) {
+                setOperatorFilterStats(null);
+            } else if ($displayHidingZoneOperators.length > 0) {
+                const beforeOp = places.length;
+                places = places.filter((p) => {
+                    if (!isLikelyOsmElementId(p.properties.id)) return true;
+                    return matchesOperatorSelection(
+                        p.properties as Record<string, unknown>,
+                        $displayHidingZoneOperators,
+                    );
+                });
+                setOperatorFilterStats({
+                    before: beforeOp,
+                    after: places.length,
+                });
+            } else {
+                setOperatorFilterStats(null);
+            }
+
             // merge duplicate stations if selected
             if (mergeDuplicates) {
                 places = mergeDuplicateStation(
@@ -269,6 +328,19 @@ export const ZoneSidebar = () => {
                 }),
             );
 
+            // questionFinishedMapData is a holed mask (world minus playable zone).
+            // Recover the playable polygon so we can test overlap with station circles.
+            // NOTE: `booleanWithin(circle, unionized)` is unreliable for large buffers:
+            // Turf often reports true once the circle spans far outside the hole (e.g.
+            // hiding radius of tens or hundreds of miles), which incorrectly drops every
+            // circle while Overpass still returned stations (misleading operator counts).
+            const playableZone = turf.difference(
+                turf.featureCollection([
+                    BLANK_GEOJSON.features[0] as Feature<Polygon>,
+                    unionized,
+                ]),
+            );
+
             let circles = places
                 .map((place) => {
                     const radius = $hidingRadius;
@@ -282,7 +354,10 @@ export const ZoneSidebar = () => {
                     return circle;
                 })
                 .filter((circle) => {
-                    return !turf.booleanWithin(circle, unionized);
+                    if (!playableZone) {
+                        return !turf.booleanWithin(circle, unionized);
+                    }
+                    return turf.booleanIntersects(circle, playableZone);
                 });
 
             for (const question of questions.get()) {
@@ -451,6 +526,7 @@ export const ZoneSidebar = () => {
         includeDefaultStations,
         $customStations,
         mergeDuplicates,
+        $displayHidingZoneOperators,
     ]);
 
     useEffect(() => {
@@ -839,6 +915,60 @@ export const ZoneSidebar = () => {
                                             !includeDefaultStations)
                                     }
                                 />
+                            </SidebarMenuItem>
+                            <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                                <Label className="font-semibold font-poppins">
+                                    Operators (optional)
+                                </Label>
+                                <MultiSelect
+                                    options={operatorSelectOptions}
+                                    onValueChange={displayHidingZoneOperators.set}
+                                    defaultValue={$displayHidingZoneOperators}
+                                    placeholder="All operators"
+                                    animation={2}
+                                    maxCount={3}
+                                    modalPopover
+                                    commitOnClose
+                                    className="!bg-popover bg-opacity-100 mt-2"
+                                    disabled={operatorPickerDisabled}
+                                />
+                                <p className="mt-1 text-xs text-muted-foreground">
+                                    Auto-detected from OpenStreetMap; availability
+                                    varies by region.
+                                </p>
+                                {operatorPickerDisabled &&
+                                    canFetchDefaultStations &&
+                                    !$isLoading &&
+                                    operatorSelectOptions.length === 0 && (
+                                        <p className="mt-1 text-xs text-amber-600">
+                                            No operator data available in this
+                                            area.
+                                        </p>
+                                    )}
+                                {$displayHidingZoneOperators.length > 0 &&
+                                    operatorFilterStats && (
+                                        <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                                            <span>
+                                                {operatorFilterStats.after} of{" "}
+                                                {operatorFilterStats.before}{" "}
+                                                stations match
+                                            </span>
+                                            {operatorFilterStats.after === 0 && (
+                                                <Button
+                                                    type="button"
+                                                    variant="link"
+                                                    className="h-auto p-0 text-sm"
+                                                    onClick={() =>
+                                                        displayHidingZoneOperators.set(
+                                                            [],
+                                                        )
+                                                    }
+                                                >
+                                                    Clear operator filter
+                                                </Button>
+                                            )}
+                                        </div>
+                                    )}
                             </SidebarMenuItem>
                             <SidebarMenuItem>
                                 <Label className="font-semibold font-poppins ml-2">

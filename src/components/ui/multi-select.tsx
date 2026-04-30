@@ -116,6 +116,13 @@ interface MultiSelectProps
      * Optional, defaults to 500ms.
      */
     debounce?: number;
+
+    /**
+     * When true, `onValueChange` runs only after the dropdown closes (outside click,
+     * Escape, Close, or trigger). While open, selection edits stay local. Changes made
+     * from the trigger (badge remove / clear) while closed still commit immediately.
+     */
+    commitOnClose?: boolean;
 }
 
 export const MultiSelect = React.forwardRef<
@@ -134,6 +141,7 @@ export const MultiSelect = React.forwardRef<
             modalPopover = false,
             className,
             debounce = 500,
+            commitOnClose = false,
             ...props
         },
         ref,
@@ -141,19 +149,47 @@ export const MultiSelect = React.forwardRef<
         const [selectedValues, setSelectedValues] =
             React.useState<string[]>(defaultValue);
         const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
+        const isPopoverOpenRef = React.useRef(isPopoverOpen);
+        const selectedValuesRef = React.useRef(selectedValues);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [isAnimating, setIsAnimating] = React.useState(false);
 
+        React.useEffect(() => {
+            selectedValuesRef.current = selectedValues;
+        }, [selectedValues]);
+
         const debouncedSelectedValues = useDebounce(selectedValues, debounce);
         React.useEffect(() => {
+            if (commitOnClose) return;
             onValueChange(debouncedSelectedValues);
-        }, [debouncedSelectedValues]);
+        }, [debouncedSelectedValues, commitOnClose, onValueChange]);
+
+        const handlePopoverOpenChange = React.useCallback(
+            (open: boolean) => {
+                if (commitOnClose) {
+                    if (isPopoverOpenRef.current && !open) {
+                        onValueChange([...selectedValuesRef.current]);
+                    }
+                    if (open) {
+                        const next = [...(defaultValue ?? [])];
+                        selectedValuesRef.current = next;
+                        setSelectedValues(next);
+                    }
+                    isPopoverOpenRef.current = open;
+                }
+                setIsPopoverOpen(open);
+                if (!commitOnClose) {
+                    isPopoverOpenRef.current = open;
+                }
+            },
+            [commitOnClose, defaultValue, onValueChange],
+        );
 
         const handleInputKeyDown = (
             event: React.KeyboardEvent<HTMLInputElement>,
         ) => {
             if (event.key === "Enter") {
-                setIsPopoverOpen(true);
+                handlePopoverOpenChange(true);
             } else if (
                 event.key === "Backspace" &&
                 !event.currentTarget.value
@@ -168,28 +204,48 @@ export const MultiSelect = React.forwardRef<
             const newSelectedValues = selectedValues.includes(option)
                 ? selectedValues.filter((value) => value !== option)
                 : [...selectedValues, option];
+            selectedValuesRef.current = newSelectedValues;
             setSelectedValues(newSelectedValues);
+            if (commitOnClose && !isPopoverOpenRef.current) {
+                onValueChange(newSelectedValues);
+            }
         };
 
         const handleClear = () => {
+            selectedValuesRef.current = [];
             setSelectedValues([]);
+            if (commitOnClose && !isPopoverOpenRef.current) {
+                onValueChange([]);
+            }
         };
 
         const handleTogglePopover = () => {
-            setIsPopoverOpen((prev) => !prev);
+            handlePopoverOpenChange(!isPopoverOpen);
         };
 
         const clearExtraOptions = () => {
             const newSelectedValues = selectedValues.slice(0, maxCount);
+            selectedValuesRef.current = newSelectedValues;
             setSelectedValues(newSelectedValues);
+            if (commitOnClose && !isPopoverOpenRef.current) {
+                onValueChange(newSelectedValues);
+            }
         };
 
         const toggleAll = () => {
             if (selectedValues.length === options.length) {
-                handleClear();
+                selectedValuesRef.current = [];
+                setSelectedValues([]);
+                if (commitOnClose && !isPopoverOpenRef.current) {
+                    onValueChange([]);
+                }
             } else {
                 const allValues = options.map((option) => option.value);
+                selectedValuesRef.current = allValues;
                 setSelectedValues(allValues);
+                if (commitOnClose && !isPopoverOpenRef.current) {
+                    onValueChange(allValues);
+                }
             }
         };
 
@@ -209,7 +265,7 @@ export const MultiSelect = React.forwardRef<
         return (
             <Popover
                 open={isPopoverOpen}
-                onOpenChange={setIsPopoverOpen}
+                onOpenChange={handlePopoverOpenChange}
                 modal={modalPopover}
             >
                 <PopoverTrigger asChild>
@@ -317,7 +373,7 @@ export const MultiSelect = React.forwardRef<
                 <PopoverContent
                     className="w-auto p-0"
                     align="start"
-                    onEscapeKeyDown={() => setIsPopoverOpen(false)}
+                    onEscapeKeyDown={() => handlePopoverOpenChange(false)}
                 >
                     <Command>
                         <CommandInput
@@ -397,7 +453,9 @@ export const MultiSelect = React.forwardRef<
                                         </>
                                     )}
                                     <CommandItem
-                                        onSelect={() => setIsPopoverOpen(false)}
+                                        onSelect={() =>
+                                            handlePopoverOpenChange(false)
+                                        }
                                         className="flex-1 justify-center cursor-pointer max-w-full"
                                     >
                                         Close

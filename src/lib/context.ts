@@ -197,6 +197,14 @@ export const displayHidingZonesOptions = persistentAtom<string[]>(
         decode: JSON.parse,
     },
 );
+export const displayHidingZoneOperators = persistentAtom<string[]>(
+    "displayHidingZoneOperators",
+    [],
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
 export const displayHidingZonesStyle = persistentAtom<
     "zones" | "stations" | "no-overlap" | "no-display"
 >("displayHidingZonesStyle", "zones");
@@ -377,7 +385,9 @@ export const hidingZone = computed(
         disabledStations,
         hidingRadius,
         hidingRadiusUnits,
+        displayHidingZones,
         displayHidingZonesOptions,
+        displayHidingZoneOperators,
         useCustomStations,
         customStations,
         includeDefaultStations,
@@ -393,7 +403,9 @@ export const hidingZone = computed(
         disabledStations,
         radius,
         hidingRadiusUnits,
+        showHidingZones,
         zoneOptions,
+        zoneOperators,
         useCustom,
         $customStations,
         includeDefault,
@@ -411,7 +423,9 @@ export const hidingZone = computed(
                 disabledStations: disabledStations,
                 hidingRadius: radius,
                 hidingRadiusUnits,
+                displayHidingZones: showHidingZones,
                 zoneOptions: zoneOptions,
+                zoneOperators: zoneOperators,
                 useCustomStations: useCustom,
                 customStations: $customStations,
                 includeDefaultStations: includeDefault,
@@ -428,7 +442,9 @@ export const hidingZone = computed(
             hidingRadius: radius,
             hidingRadiusUnits,
             alternateLocations: structuredClone(altLoc),
+            displayHidingZones: showHidingZones,
             zoneOptions: zoneOptions,
+            zoneOperators: zoneOperators,
             useCustomStations: useCustom,
             customStations: $customStations,
             includeDefaultStations: includeDefault,

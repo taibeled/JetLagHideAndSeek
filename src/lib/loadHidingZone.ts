@@ -5,6 +5,8 @@ import {
     customPresets,
     customStations,
     disabledStations,
+    displayHidingZoneOperators,
+    displayHidingZones,
     displayHidingZonesOptions,
     hidingRadius,
     includeDefaultStations,
@@ -110,6 +112,34 @@ export function applyHidingZoneGeojson(geojson: Record<string, unknown>) {
     if (geojson.zoneOptions) {
         displayHidingZonesOptions.set((geojson.zoneOptions as string[]) ?? []);
     }
+
+    const zoneOptsArr = geojson.zoneOptions;
+    const zoneOpsArr = geojson.zoneOperators;
+    const hasZoneOpts =
+        zoneOptsArr !== undefined &&
+        Array.isArray(zoneOptsArr) &&
+        zoneOptsArr.length > 0;
+    const hasZoneOps =
+        zoneOpsArr !== undefined &&
+        Array.isArray(zoneOpsArr) &&
+        zoneOpsArr.length > 0;
+
+    if (typeof geojson.displayHidingZones === "boolean") {
+        displayHidingZones.set(geojson.displayHidingZones);
+    } else if (
+        !("displayHidingZones" in geojson) &&
+        (hasZoneOpts || hasZoneOps)
+    ) {
+        // Legacy snapshots did not persist this flag; turn zones on when the
+        // payload clearly configures station discovery (was confusing sharing).
+        displayHidingZones.set(true);
+    }
+
+    displayHidingZoneOperators.set(
+        Array.isArray(geojson.zoneOperators)
+            ? (geojson.zoneOperators as string[])
+            : [],
+    );
 
     if (typeof geojson.useCustomStations === "boolean") {
         useCustomStations.set(geojson.useCustomStations);

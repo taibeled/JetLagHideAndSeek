@@ -9,7 +9,7 @@ import {
     mapGeoLocation,
     polyGeoJSON,
 } from "@/lib/context";
-import { safeUnion } from "@/maps/geo-utils";
+import { expandFiltersForOperatorNetwork, safeUnion } from "@/maps/geo-utils";
 
 import { cacheFetch, determineCache } from "./cache";
 import {
@@ -231,34 +231,30 @@ export const findPlacesInZone = async (
     outType: "center" | "geom" = "center",
     alternatives: string[] = [],
     timeoutDuration: number = 0,
+    operatorFilter: string[] = [],
 ) => {
+    const { primaryLines, alternativeLines } =
+        expandFiltersForOperatorNetwork(filter, alternatives, operatorFilter);
+
     let query = "";
     const $polyGeoJSON = polyGeoJSON.get();
     if ($polyGeoJSON) {
-        query = `
-[out:json]${timeoutDuration != 0 ? `[timeout:${timeoutDuration}]` : ""};
-(
-${searchType}${filter}(poly:"${turf
+        const polyQuoted = turf
             .getCoords($polyGeoJSON.features)
             .flatMap((polygon) => polygon.geometry.coordinates)
             .flat()
             .map((coord) => [coord[1], coord[0]].join(" "))
-            .join(" ")}");
-${
-    alternatives.length > 0
-        ? alternatives
-              .map(
-                  (alternative) =>
-                      `${searchType}${alternative}(poly:"${turf
-                          .getCoords($polyGeoJSON.features)
-                          .flatMap((polygon) => polygon.geometry.coordinates)
-                          .flat()
-                          .map((coord) => [coord[1], coord[0]].join(" "))
-                          .join(" ")}");`,
-              )
-              .join("\n")
-        : ""
-}
+            .join(" ");
+        const unionLines = [...primaryLines, ...alternativeLines]
+            .map(
+                (f) =>
+                    `${searchType}${f}(poly:"${polyQuoted}");`,
+            )
+            .join("\n");
+        query = `
+[out:json]${timeoutDuration != 0 ? `[timeout:${timeoutDuration}]` : ""};
+(
+${unionLines}
 );
 out ${outType};
 `;
@@ -275,21 +271,13 @@ out ${outType};
                 return `relation(${loc.properties.osm_id});map_to_area->${regionVar};`;
             })
             .join("\n");
+        const allFilterLines = [...primaryLines, ...alternativeLines];
         const searchBlocks = allLocations
             .map((_, idx) => {
                 const regionVar = `area.region${idx}`;
-                const altQueries =
-                    alternatives.length > 0
-                        ? alternatives
-                              .map(
-                                  (alt) => `${searchType}${alt}(${regionVar});`,
-                              )
-                              .join("\n")
-                        : "";
-                return `
-            ${searchType}${filter}(${regionVar});
-            ${altQueries}
-          `;
+                return allFilterLines
+                    .map((f) => `${searchType}${f}(${regionVar});`)
+                    .join("\n");
             })
             .join("\n");
         query = `
@@ -333,6 +321,22 @@ out ${outType};
             );
         });
     }
+
+    if (
+        operatorFilter.length > 0 &&
+        data &&
+        Array.isArray(data.elements) &&
+        data.elements.length > 0
+    ) {
+        const seen = new Set<string>();
+        data.elements = data.elements.filter((el: any) => {
+            const key = `${el.type}/${el.id}`;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
+    }
+
     return data;
 };
 
