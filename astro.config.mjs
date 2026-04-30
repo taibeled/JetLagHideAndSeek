@@ -18,6 +18,16 @@ export default defineConfig({
             },
         }),
         AstroPWA({
+            workbox: {
+                runtimeCaching: [
+                    {
+                        urlPattern: ({ url }) =>
+                            url.pathname.includes("/api/cas/") ||
+                            url.pathname.includes("/api/teams/"),
+                        handler: "NetworkOnly",
+                    },
+                ],
+            },
             manifest: {
                 name: "Jet Lag Hide and Seek Map Generator",
                 short_name: "Map Generator",

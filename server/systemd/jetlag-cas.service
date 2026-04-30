@@ -1,0 +1,16 @@
+[Unit]
+Description=Jet Lag Hide and Seek CAS API
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/opt/jetlag-cas/server
+Environment=CAS_DATA_DIR=/var/lib/jetlag-cas
+Environment=CAS_PORT=8787
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node dist/index.js
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

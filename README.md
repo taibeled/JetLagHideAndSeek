@@ -92,6 +92,16 @@ You can now host the website as you make modifications:
 pnpm dev
 ```
 
+To run a **production-style** stack (built static PWA + CAS API on one port, default `8787`):
+
+```bash
+pnpm install
+pnpm --dir server install
+pnpm start:app
+```
+
+Use `pnpm start:stack` if you already ran `pnpm build:all` and only want to restart the server. See [server/README.md](server/README.md) for environment variables and API details.
+
 After making any modifications, please run `pnpm lint` to have your code automatically formatted and errors spotted.
 
 ## Contributors

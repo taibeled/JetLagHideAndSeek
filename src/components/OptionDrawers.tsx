@@ -1,7 +1,17 @@
 import { useStore } from "@nanostores/react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
     Drawer,
     DrawerContent,
@@ -17,6 +27,10 @@ import {
     autoSave,
     autoZoom,
     baseTileLayer,
+    casServerEffectiveUrl,
+    casServerStatus,
+    casServerUrl,
+    currentSid,
     customInitPreference,
     customPresets,
     customStations,
@@ -31,6 +45,7 @@ import {
     hidingZone,
     includeDefaultStations,
     leafletMapContext,
+    liveSyncEnabled,
     mapGeoJSON,
     mapGeoLocation,
     pastebinApiKey,
@@ -44,6 +59,13 @@ import {
     triggerLocalRefresh,
     useCustomStations,
 } from "@/lib/context";
+import { getBlob } from "@/lib/cas";
+import { discoverCasServer } from "@/lib/casDiscovery";
+import {
+    applyWireV1Payload,
+    loadHidingZoneFromJsonString,
+} from "@/lib/loadHidingZone";
+import { flushLiveSync, initLiveSync, setHydrating } from "@/lib/liveSync";
 import {
     cn,
     compress,
@@ -52,8 +74,7 @@ import {
     shareOrFallback,
     uploadToPastebin,
 } from "@/lib/utils";
-import { questionsSchema } from "@/maps/schema";
-
+import { TeamPanel } from "./TeamPanel";
 import { LatitudeLongitude } from "./LatLngPicker";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
@@ -71,6 +92,7 @@ import { UnitSelect } from "./UnitSelect";
 const HIDING_ZONE_URL_PARAM = "hz";
 const HIDING_ZONE_COMPRESSED_URL_PARAM = "hzc";
 const PASTEBIN_URL_PARAM = "pb";
+const SID_URL_PARAM = "sid";
 
 export const OptionDrawers = ({ className }: { className?: string }) => {
     useStore(triggerLocalRefresh);
@@ -89,9 +111,58 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $alwaysUsePastebin = useStore(alwaysUsePastebin);
     const $followMe = useStore(followMe);
     const $customInitPref = useStore(customInitPreference);
+    const $casServerUrl = useStore(casServerUrl);
+    const $casStatus = useStore(casServerStatus);
+    const $liveSyncEnabled = useStore(liveSyncEnabled);
     const lastDefaultUnit = useRef($defaultUnit);
     const hasSyncedInitialUnit = useRef(false);
     const [isOptionsOpen, setOptionsOpen] = useState(false);
+    const [clientMounted, setClientMounted] = useState(false);
+    const [replaceStateOpen, setReplaceStateOpen] = useState(false);
+    const resolveReplaceRef = useRef<((value: boolean) => void) | null>(null);
+
+    const askReplaceGameState = useCallback((): Promise<boolean> => {
+        return new Promise((resolve) => {
+            resolveReplaceRef.current = resolve;
+            setReplaceStateOpen(true);
+        });
+    }, []);
+
+    const closeReplacePrompt = useCallback((accepted: boolean) => {
+        resolveReplaceRef.current?.(accepted);
+        resolveReplaceRef.current = null;
+        setReplaceStateOpen(false);
+    }, []);
+
+    const applyIncomingWire = useCallback(
+        async (canonicalJson: string, sid: string) => {
+            setHydrating(true);
+            try {
+                applyWireV1Payload(canonicalJson);
+                currentSid.set(sid);
+            } finally {
+                setHydrating(false);
+            }
+        },
+        [],
+    );
+
+    const maybeReplaceThenApply = useCallback(
+        async (canonicalJson: string, sid: string): Promise<boolean> => {
+            const hasLocal =
+                questions.get().length > 0 || polyGeoJSON.get() !== null;
+            if (hasLocal && sid !== currentSid.get()) {
+                const ok = await askReplaceGameState();
+                if (!ok) return false;
+            }
+            await applyIncomingWire(canonicalJson, sid);
+            return true;
+        },
+        [applyIncomingWire, askReplaceGameState],
+    );
+
+    const maybeReplaceRef = useRef(maybeReplaceThenApply);
+    maybeReplaceRef.current = maybeReplaceThenApply;
 
     useEffect(() => {
         const currentDefault = $defaultUnit;
@@ -109,172 +180,99 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     }, [$defaultUnit]);
 
     useEffect(() => {
-        const params = new URL(window.location.toString()).searchParams;
+        initLiveSync();
+    }, []);
+
+    useEffect(() => {
+        setClientMounted(true);
+    }, []);
+
+    useEffect(() => {
+        const url = new URL(window.location.toString());
+        const params = url.searchParams;
+        const sidParam = params.get(SID_URL_PARAM);
         const hidingZoneOld = params.get(HIDING_ZONE_URL_PARAM);
         const hidingZoneCompressed = params.get(
             HIDING_ZONE_COMPRESSED_URL_PARAM,
         );
         const pastebinId = params.get(PASTEBIN_URL_PARAM);
 
-        if (hidingZoneOld !== null) {
-            // Legacy base64 encoding
-            try {
-                loadHidingZone(atob(hidingZoneOld));
-                // Remove hiding zone parameter after initial load
-                window.history.replaceState({}, "", window.location.pathname);
-            } catch (e) {
-                toast.error(`Invalid hiding zone settings: ${e}`);
-            }
-        } else if (hidingZoneCompressed !== null) {
-            // Modern compressed format
-            decompress(hidingZoneCompressed).then((data) => {
+        void (async () => {
+            await discoverCasServer();
+
+            let sidApplied = false;
+            if (sidParam && casServerEffectiveUrl.get()) {
                 try {
-                    loadHidingZone(data);
-                    // Remove hiding zone parameter after initial load
-                    window.history.replaceState(
-                        {},
-                        "",
-                        window.location.pathname,
+                    const compressed = await getBlob(
+                        casServerEffectiveUrl.get()!,
+                        sidParam,
                     );
+                    const json = await decompress(compressed);
+                    sidApplied = await maybeReplaceRef.current(
+                        json,
+                        sidParam,
+                    );
+                } catch (e) {
+                    toast.error(
+                        `Could not load shared game state (${sidParam}): ${e}`,
+                    );
+                }
+            }
+
+            if (sidApplied) {
+                return;
+            }
+
+            if (hidingZoneOld !== null) {
+                try {
+                    loadHidingZoneFromJsonString(atob(hidingZoneOld));
+                    window.history.replaceState({}, "", window.location.pathname);
                 } catch (e) {
                     toast.error(`Invalid hiding zone settings: ${e}`);
                 }
-            });
-        } else if (pastebinId !== null) {
-            fetchFromPastebin(pastebinId)
-                .then((data) => {
-                    try {
-                        loadHidingZone(data);
-                        // Remove pb parameter after initial load
-                        window.history.replaceState(
-                            {},
-                            "",
-                            window.location.pathname,
-                        );
-                        toast.success(
-                            "Successfully loaded data from Pastebin link!",
-                        );
-                    } catch (e) {
-                        toast.error(`Invalid data from Pastebin: ${e}`);
-                    }
-                })
-                .catch((error) => {
-                    console.error("Failed to fetch from Pastebin:", error);
-                    toast.error(
-                        `Failed to load from Pastebin: ${error.message}`,
+            } else if (hidingZoneCompressed !== null) {
+                decompress(hidingZoneCompressed)
+                    .then((data) => {
+                        try {
+                            loadHidingZoneFromJsonString(data);
+                            window.history.replaceState(
+                                {},
+                                "",
+                                window.location.pathname,
+                            );
+                        } catch (e) {
+                            toast.error(`Invalid hiding zone settings: ${e}`);
+                        }
+                    })
+                    .catch((e) =>
+                        toast.error(`Invalid hiding zone settings: ${e}`),
                     );
-                });
-        }
+            } else if (pastebinId !== null) {
+                fetchFromPastebin(pastebinId)
+                    .then((data) => {
+                        try {
+                            loadHidingZoneFromJsonString(data);
+                            window.history.replaceState(
+                                {},
+                                "",
+                                window.location.pathname,
+                            );
+                            toast.success(
+                                "Successfully loaded data from Pastebin link!",
+                            );
+                        } catch (e) {
+                            toast.error(`Invalid data from Pastebin: ${e}`);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Failed to fetch from Pastebin:", error);
+                        toast.error(
+                            `Failed to load from Pastebin: ${error.message}`,
+                        );
+                    });
+            }
+        })();
     }, []);
-
-    const loadHidingZone = (hidingZone: string) => {
-        try {
-            const geojson = JSON.parse(hidingZone);
-
-            if (
-                geojson.properties &&
-                geojson.properties.isHidingZone === true
-            ) {
-                questions.set(
-                    questionsSchema.parse(geojson.properties.questions ?? []),
-                );
-                mapGeoLocation.set(geojson);
-                mapGeoJSON.set(null);
-                polyGeoJSON.set(null);
-
-                if (geojson.alternateLocations) {
-                    additionalMapGeoLocations.set(geojson.alternateLocations);
-                } else {
-                    additionalMapGeoLocations.set([]);
-                }
-            } else {
-                if (geojson.questions) {
-                    questions.set(questionsSchema.parse(geojson.questions));
-                    delete geojson.questions;
-
-                    mapGeoJSON.set(geojson);
-                    polyGeoJSON.set(geojson);
-                } else {
-                    questions.set([]);
-                    mapGeoJSON.set(geojson);
-                    polyGeoJSON.set(geojson);
-                }
-            }
-
-            const incomingPresets =
-                geojson.presets ?? geojson.properties?.presets;
-            if (incomingPresets && Array.isArray(incomingPresets)) {
-                try {
-                    const normalized = (incomingPresets as any[])
-                        .filter((p) => p && p.data)
-                        .map((p) => {
-                            return {
-                                id:
-                                    p.id ??
-                                    (typeof crypto !== "undefined" &&
-                                    typeof (crypto as any).randomUUID ===
-                                        "function"
-                                        ? (crypto as any).randomUUID()
-                                        : String(Date.now()) + Math.random()),
-                                name: p.name ?? "Imported preset",
-                                type: p.type ?? "custom",
-                                data: p.data,
-                                createdAt:
-                                    p.createdAt ?? new Date().toISOString(),
-                            };
-                        });
-                    if (normalized.length > 0) {
-                        customPresets.set(normalized);
-                        toast.info(`Imported ${normalized.length} preset(s)`);
-                    }
-                } catch (err) {
-                    console.warn("Failed to import presets", err);
-                }
-            }
-
-            if (
-                geojson.disabledStations !== null &&
-                geojson.disabledStations.constructor === Array
-            ) {
-                disabledStations.set(geojson.disabledStations);
-            }
-
-            if (geojson.hidingRadius !== null) {
-                hidingRadius.set(geojson.hidingRadius);
-            }
-
-            if (geojson.zoneOptions) {
-                displayHidingZonesOptions.set(geojson.zoneOptions ?? []);
-            }
-
-            if (typeof geojson.useCustomStations === "boolean") {
-                useCustomStations.set(geojson.useCustomStations);
-            }
-
-            if (
-                geojson.customStations &&
-                geojson.customStations.constructor === Array
-            ) {
-                customStations.set(geojson.customStations);
-            }
-
-            if (typeof geojson.includeDefaultStations === "boolean") {
-                includeDefaultStations.set(geojson.includeDefaultStations);
-            }
-
-            if (geojson.permanentOverlay) {
-                permanentOverlay.set(geojson.permanentOverlay);
-            } else {
-                permanentOverlay.set(null);
-            }
-
-            toast.success("Hiding zone loaded successfully", {
-                autoClose: 2000,
-            });
-        } catch (e) {
-            toast.error(`Invalid hiding zone settings: ${e}`);
-        }
-    };
 
     return (
         <div
@@ -286,18 +284,35 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
             <Button
                 className="shadow-md"
                 onClick={async () => {
-                    const hidingZoneString = JSON.stringify($hidingZone);
-                    let compressedData;
-                    try {
-                        compressedData = await compress(hidingZoneString);
-                    } catch (error) {
-                        console.error("Compression failed:", error);
-                        toast.error(`Failed to prepare data for sharing`);
-                        return;
+                    const baseUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
+                    let shareUrl: string | null = null;
+
+                    if ($casStatus === "available") {
+                        try {
+                            await flushLiveSync();
+                            const sid = currentSid.get();
+                            if (sid) {
+                                shareUrl = `${baseUrl}?${SID_URL_PARAM}=${encodeURIComponent(sid)}`;
+                            }
+                        } catch (e) {
+                            toast.warn(`Could not sync to game state server: ${e}`);
+                        }
                     }
 
-                    const baseUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
-                    let shareUrl = `${baseUrl}?${HIDING_ZONE_COMPRESSED_URL_PARAM}=${compressedData}`;
+                    const hidingZoneString = JSON.stringify($hidingZone);
+                    let compressedData: string | undefined;
+
+                    if (!shareUrl) {
+                        try {
+                            compressedData = await compress(hidingZoneString);
+                        } catch (error) {
+                            console.error("Compression failed:", error);
+                            toast.error(`Failed to prepare data for sharing`);
+                            return;
+                        }
+
+                        shareUrl = `${baseUrl}?${HIDING_ZONE_COMPRESSED_URL_PARAM}=${compressedData}`;
+                    }
 
                     if ($alwaysUsePastebin || shareUrl.length > 2000) {
                         if (!$pastebinApiKey) {
@@ -329,7 +344,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                     }
 
                     // Show platform native share sheet if possible
-                    await shareOrFallback(shareUrl).then((result) => {
+                    await shareOrFallback(shareUrl!).then((result) => {
                         console.log(`result ${result}`);
                         if (result === false) {
                             return toast.error(
@@ -405,12 +420,78 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                             );
                                         navigator.clipboard
                                             .readText()
-                                            .then(loadHidingZone);
+                                            .then(loadHidingZoneFromJsonString);
                                     }}
                                 >
                                     Paste Hiding Zone
                                 </Button>
                             </div>
+                            <Separator className="bg-slate-300 w-[280px]" />
+                            <Label>Game state server (optional)</Label>
+                            <Input
+                                type="url"
+                                className="max-w-md"
+                                placeholder="https://your-server.example"
+                                value={$casServerUrl}
+                                onChange={(e) =>
+                                    casServerUrl.set(e.target.value.trim())
+                                }
+                            />
+                            <div className="flex flex-wrap items-center gap-2 justify-center">
+                                <span
+                                    className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                                        $casStatus === "available"
+                                            ? "bg-emerald-100 text-emerald-900"
+                                            : $casStatus === "unavailable"
+                                              ? "bg-rose-100 text-rose-900"
+                                              : "bg-slate-100 text-slate-700"
+                                    }`}
+                                >
+                                    CAS: {$casStatus}
+                                </span>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() =>
+                                        void discoverCasServer().then(() =>
+                                            toast.info(
+                                                casServerStatus.get() ===
+                                                    "available"
+                                                    ? "Connected to game state server"
+                                                    : "Could not reach game state server",
+                                                { autoClose: 2000 },
+                                            ),
+                                        )
+                                    }
+                                >
+                                    Test connection
+                                </Button>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <div className="flex flex-row items-center gap-2">
+                                    <label className="text-2xl font-semibold font-poppins">
+                                        Auto-sync URL with edits (CAS)
+                                    </label>
+                                    <Checkbox
+                                        checked={$liveSyncEnabled}
+                                        onCheckedChange={() =>
+                                            liveSyncEnabled.set(
+                                                !$liveSyncEnabled,
+                                            )
+                                        }
+                                    />
+                                </div>
+                                <p className="text-sm text-muted-foreground max-w-[300px]">
+                                    Sync waits until every question is locked;
+                                    Share still publishes the current state
+                                    immediately.
+                                </p>
+                            </div>
+                            <TeamPanel
+                                optionsOpen={isOptionsOpen}
+                                onLoadCasWire={maybeReplaceThenApply}
+                            />
                             <Separator className="bg-slate-300 w-[280px]" />
                             <Label>Default Unit</Label>
                             <UnitSelect
@@ -716,6 +797,38 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                     </div>
                 </DrawerContent>
             </Drawer>
+            {clientMounted ? (
+                <AlertDialog
+                    open={replaceStateOpen}
+                    onOpenChange={(open) => {
+                        setReplaceStateOpen(open);
+                        if (!open && resolveReplaceRef.current) {
+                            resolveReplaceRef.current(false);
+                            resolveReplaceRef.current = null;
+                        }
+                    }}
+                >
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>
+                                Replace current game state?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Loading this snapshot will replace your current
+                                questions and map data in this browser.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                                onClick={() => closeReplacePrompt(true)}
+                            >
+                                Replace
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+            ) : null}
         </div>
     );
 };

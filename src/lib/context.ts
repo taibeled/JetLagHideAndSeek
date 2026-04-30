@@ -337,6 +337,37 @@ export const deleteCustomPreset = (id: string) => {
     customPresets.set(customPresets.get().filter((p) => p.id !== id));
 };
 
+export type TeamPayload = { id: string; name: string };
+
+export const team = persistentAtom<TeamPayload | null>("team", null, {
+    encode: JSON.stringify,
+    decode: JSON.parse,
+});
+
+export const casServerUrl = persistentAtom<string>("casServerUrl", "", {
+    encode: (value: string) => value,
+    decode: (value: string) => value,
+});
+
+export const casServerStatus = atom<
+    "unknown" | "available" | "unavailable"
+>("unknown");
+
+export const casServerEffectiveUrl = atom<string | null>(null);
+
+export const liveSyncEnabled = persistentAtom<boolean>(
+    "liveSyncEnabled",
+    true,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
+
+export const currentSid = atom<string | null>(null);
+
+export const teamHistory = atom<{ sid: string; ts: number }[]>([]);
+
 export const hidingZone = computed(
     [
         questions,
@@ -352,6 +383,7 @@ export const hidingZone = computed(
         includeDefaultStations,
         customPresets,
         permanentOverlay,
+        team,
     ],
     (
         q,
@@ -367,9 +399,13 @@ export const hidingZone = computed(
         includeDefault,
         presets,
         $permanentOverlay,
+        $team,
     ) => {
+        const withTeam = <T extends Record<string, unknown>>(base: T) =>
+            $team ? { ...base, team: $team } : base;
+
         if (geo !== null) {
-            return {
+            return withTeam({
                 ...geo,
                 questions: q,
                 disabledStations: disabledStations,
@@ -381,25 +417,24 @@ export const hidingZone = computed(
                 includeDefaultStations: includeDefault,
                 presets: structuredClone(presets),
                 permanentOverlay: $permanentOverlay,
-            };
-        } else {
-            const $loc = structuredClone(loc);
-            $loc.properties.isHidingZone = true;
-            $loc.properties.questions = q;
-            return {
-                ...$loc,
-                disabledStations: disabledStations,
-                hidingRadius: radius,
-                hidingRadiusUnits,
-                alternateLocations: structuredClone(altLoc),
-                zoneOptions: zoneOptions,
-                useCustomStations: useCustom,
-                customStations: $customStations,
-                includeDefaultStations: includeDefault,
-                presets: structuredClone(presets),
-                permanentOverlay: $permanentOverlay,
-            };
+            });
         }
+        const $loc = structuredClone(loc);
+        $loc.properties.isHidingZone = true;
+        $loc.properties.questions = q;
+        return withTeam({
+            ...$loc,
+            disabledStations: disabledStations,
+            hidingRadius: radius,
+            hidingRadiusUnits,
+            alternateLocations: structuredClone(altLoc),
+            zoneOptions: zoneOptions,
+            useCustomStations: useCustom,
+            customStations: $customStations,
+            includeDefaultStations: includeDefault,
+            presets: structuredClone(presets),
+            permanentOverlay: $permanentOverlay,
+        });
     },
 );
 

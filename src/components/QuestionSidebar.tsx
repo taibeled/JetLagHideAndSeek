@@ -16,6 +16,7 @@ import {
     isLoading,
     questions,
     save,
+    team,
     triggerLocalRefresh,
 } from "@/lib/context";
 
@@ -33,13 +34,24 @@ export const QuestionSidebar = () => {
     const $questions = useStore(questions);
     const $autoSave = useStore(autoSave);
     const $isLoading = useStore(isLoading);
+    const $team = useStore(team);
 
     return (
         <Sidebar>
-            <div className="flex items-center justify-between">
-                <h2 className="ml-4 mt-4 font-poppins text-2xl">Questions</h2>
+            <div className="flex items-start justify-between gap-2">
+                <div className="ml-4 mt-4 flex min-w-0 flex-1 flex-col gap-0.5">
+                    {$team ? (
+                        <p
+                            className="truncate text-sm font-medium font-poppins text-muted-foreground"
+                            title={$team.name}
+                        >
+                            {$team.name}
+                        </p>
+                    ) : null}
+                    <h2 className="font-poppins text-2xl">Questions</h2>
+                </div>
                 <SidebarCloseIcon
-                    className="mr-2 visible md:hidden"
+                    className="mr-2 mt-4 shrink-0 visible md:hidden"
                     onClick={() => {
                         SidebarContext.get().setOpenMobile(false);
                     }}

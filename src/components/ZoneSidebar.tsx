@@ -34,6 +34,7 @@ import {
     planningModeEnabled,
     questionFinishedMapData,
     questions,
+    team,
     trainStations,
     useCustomStations as useCustomStationsAtom,
 } from "@/lib/context";
@@ -99,6 +100,7 @@ export const ZoneSidebar = () => {
     const mergeDuplicates = useStore(mergeDuplicatesAtom);
     const includeDefaultStations = useStore(includeDefaultStationsAtom);
     const $customStations = useStore(customStationsAtom);
+    const $team = useStore(team);
     const [hidingZoneModeStationID, setHidingZoneModeStationID] =
         useState<string>("");
     const [stationSearch, setStationSearch] = useState<string>("");
@@ -503,10 +505,20 @@ export const ZoneSidebar = () => {
 
     return (
         <Sidebar side="right">
-            <div className="flex items-center justify-between">
-                <h2 className="ml-4 mt-4 font-poppins text-2xl">Hiding Zone</h2>
+            <div className="flex items-start justify-between gap-2">
+                <div className="ml-4 mt-4 flex min-w-0 flex-1 flex-col gap-0.5">
+                    {$team ? (
+                        <p
+                            className="truncate text-sm font-medium font-poppins text-muted-foreground"
+                            title={$team.name}
+                        >
+                            {$team.name}
+                        </p>
+                    ) : null}
+                    <h2 className="font-poppins text-2xl">Hiding Zone</h2>
+                </div>
                 <SidebarCloseIcon
-                    className="mr-2 visible md:hidden scale-x-[-1]"
+                    className="mr-2 mt-4 shrink-0 visible md:hidden scale-x-[-1]"
                     onClick={() => {
                         SidebarContext.get().setOpenMobile(false);
                     }}

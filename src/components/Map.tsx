@@ -39,6 +39,9 @@ import { LeafletFullScreenButton } from "./LeafletFullScreenButton";
 import { MapPrint } from "./MapPrint";
 import { PolygonDraw } from "./PolygonDraw";
 
+/** Discard stale Overpass results when a newer refresh runs (e.g. `?sid=` hydrate updates zone mid-fetch). */
+let mapRefreshGeneration = 0;
+
 const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
     switch (tileLayer) {
         case "light":
@@ -122,7 +125,6 @@ export const Map = ({ className }: { className?: string }) => {
     const $baseTileLayer = useStore(baseTileLayer);
     const $thunderforestApiKey = useStore(thunderforestApiKey);
     const $hiderMode = useStore(hiderMode);
-    const $isLoading = useStore(isLoading);
     const $followMe = useStore(followMe);
     const $permanentOverlay = useStore(permanentOverlay);
     const map = useStore(leafletMapContext);
@@ -139,104 +141,111 @@ export const Map = ({ className }: { className?: string }) => {
     const refreshQuestions = async (focus: boolean = false) => {
         if (!map) return;
 
-        if ($isLoading) return;
+        const myGen = ++mapRefreshGeneration;
 
         isLoading.set(true);
 
-        if ($questions.length === 0) {
-            await clearCache();
-        }
-
-        let mapGeoData = mapGeoJSON.get();
-
-        if (!mapGeoData) {
-            const polyGeoData = polyGeoJSON.get();
-            if (polyGeoData) {
-                mapGeoData = polyGeoData;
-                mapGeoJSON.set(polyGeoData);
-            } else {
-                await toast.promise(
-                    determineMapBoundaries()
-                        .then((x) => {
-                            mapGeoJSON.set(x);
-                            mapGeoData = x;
-                        })
-                        .catch((error) => console.log(error)),
-                    {
-                        error: "Error refreshing map data",
-                    },
-                );
-            }
-        }
-
-        if ($hiderMode !== false) {
-            for (const question of $questions) {
-                await hiderifyQuestion(question);
-            }
-
-            triggerLocalRefresh.set(Math.random()); // Refresh the question sidebar with new information but not this map
-        }
-
-        map.eachLayer((layer: any) => {
-            if (layer.questionKey || layer.questionKey === 0) {
-                map.removeLayer(layer);
-            }
-        });
-
         try {
-            mapGeoData = await applyQuestionsToMapGeoData(
-                $questions,
-                mapGeoData,
-                planningModeEnabled.get(),
-                (geoJSONObj, question) => {
-                    const geoJSONPlane = L.geoJSON(geoJSONObj);
-                    // @ts-expect-error This is a check such that only this type of layer is removed
-                    geoJSONPlane.questionKey = question.key;
-                    geoJSONPlane.addTo(map);
-                },
-            );
+            if ($questions.length === 0) {
+                await clearCache();
+            }
 
-            mapGeoData = {
-                type: "FeatureCollection",
-                features: [holedMask(mapGeoData!)!],
-            };
+            if (myGen !== mapRefreshGeneration) return;
+
+            let mapGeoData = mapGeoJSON.get();
+
+            if (!mapGeoData) {
+                const polyGeoData = polyGeoJSON.get();
+                if (polyGeoData) {
+                    mapGeoData = polyGeoData;
+                    mapGeoJSON.set(polyGeoData);
+                } else {
+                    try {
+                        const x = await determineMapBoundaries();
+                        if (myGen !== mapRefreshGeneration) return;
+                        mapGeoJSON.set(x);
+                        mapGeoData = x;
+                    } catch (error) {
+                        console.log(error);
+                        toast.error("Error refreshing map data");
+                    }
+                }
+            }
+
+            if (!mapGeoData) return;
+
+            if (myGen !== mapRefreshGeneration) return;
+
+            if ($hiderMode !== false) {
+                for (const question of $questions) {
+                    await hiderifyQuestion(question);
+                }
+
+                triggerLocalRefresh.set(Math.random()); // Refresh the question sidebar with new information but not this map
+            }
 
             map.eachLayer((layer: any) => {
-                if (layer.eliminationGeoJSON) {
-                    // Hopefully only geoJSON layers
+                if (layer.questionKey || layer.questionKey === 0) {
                     map.removeLayer(layer);
                 }
             });
 
-            const g = L.geoJSON(mapGeoData);
-            // @ts-expect-error This is a check such that only this type of layer is removed
-            g.eliminationGeoJSON = true;
-            g.addTo(map);
+            try {
+                mapGeoData = await applyQuestionsToMapGeoData(
+                    $questions,
+                    mapGeoData,
+                    planningModeEnabled.get(),
+                    (geoJSONObj, question) => {
+                        const geoJSONPlane = L.geoJSON(geoJSONObj);
+                        // @ts-expect-error This is a check such that only this type of layer is removed
+                        geoJSONPlane.questionKey = question.key;
+                        geoJSONPlane.addTo(map);
+                    },
+                );
 
-            questionFinishedMapData.set(mapGeoData);
+                mapGeoData = {
+                    type: "FeatureCollection",
+                    features: [holedMask(mapGeoData!)!],
+                };
 
-            if (autoZoom.get() && focus) {
-                const bbox = turf.bbox(holedMask(mapGeoData) as any);
-                const bounds = [
-                    [bbox[1], bbox[0]],
-                    [bbox[3], bbox[2]],
-                ];
+                map.eachLayer((layer: any) => {
+                    if (layer.eliminationGeoJSON) {
+                        // Hopefully only geoJSON layers
+                        map.removeLayer(layer);
+                    }
+                });
 
-                if (animateMapMovements.get()) {
-                    map.flyToBounds(bounds as any);
-                } else {
-                    map.fitBounds(bounds as any);
+                const g = L.geoJSON(mapGeoData);
+                // @ts-expect-error This is a check such that only this type of layer is removed
+                g.eliminationGeoJSON = true;
+                g.addTo(map);
+
+                questionFinishedMapData.set(mapGeoData);
+
+                if (autoZoom.get() && focus) {
+                    const bbox = turf.bbox(holedMask(mapGeoData) as any);
+                    const bounds = [
+                        [bbox[1], bbox[0]],
+                        [bbox[3], bbox[2]],
+                    ];
+
+                    if (animateMapMovements.get()) {
+                        map.flyToBounds(bounds as any);
+                    } else {
+                        map.fitBounds(bounds as any);
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+
+                if (document.querySelectorAll(".Toastify__toast").length === 0) {
+                    toast.error("No solutions found / error occurred");
                 }
             }
-        } catch (error) {
-            console.log(error);
-
-            isLoading.set(false);
-            if (document.querySelectorAll(".Toastify__toast").length === 0) {
-                return toast.error("No solutions found / error occurred");
-            }
         } finally {
-            isLoading.set(false);
+            if (myGen === mapRefreshGeneration) {
+                isLoading.set(false);
+            }
         }
     };
 

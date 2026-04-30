@@ -1,0 +1,26 @@
+{
+    "name": "jetlag-cas-server",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "tsx watch src/index.ts",
+        "build": "tsc",
+        "start": "node dist/index.js",
+        "test": "vitest run"
+    },
+    "dependencies": {
+        "@fastify/cors": "^10.0.1",
+        "@fastify/static": "^9.1.3",
+        "fastify": "^5.2.1",
+        "zod": "^3.25.28"
+    },
+    "devDependencies": {
+        "@types/node": "^22.10.2",
+        "tsx": "^4.19.2",
+        "typescript": "^5.7.3",
+        "vitest": "^3.1.4"
+    },
+    "engines": {
+        "node": ">=18"
+    }
+}

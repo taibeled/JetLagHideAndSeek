@@ -5,10 +5,14 @@
     "scripts": {
         "dev": "astro dev",
         "build": "astro build",
+        "build:all": "pnpm build && pnpm --dir server build",
+        "start:stack": "node scripts/start-stack.mjs",
+        "start:app": "pnpm build:all && pnpm start:stack",
         "preview": "astro preview",
         "astro": "astro",
         "lint": "eslint --fix src && prettier . --write",
-        "test": "vitest"
+        "test": "vitest",
+        "test:server": "pnpm --dir server test"
     },
     "dependencies": {
         "@arcgis/core": "^4.32.10",
