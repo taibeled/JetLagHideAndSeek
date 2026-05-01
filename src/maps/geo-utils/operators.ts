@@ -9,18 +9,95 @@ import * as turf from "@turf/turf";
 import type {
     Feature,
     FeatureCollection,
+    GeoJSON,
     MultiPolygon,
     Polygon,
 } from "geojson";
 
 import { BLANK_GEOJSON } from "@/maps/api";
+import { dedupePolygonFeatureVertices } from "@/maps/geo-utils/polygon-ring-dedupe";
 
-export { geoSpatialVoronoi } from "@/maps/geo-utils/voronoi";
+export {
+    clippedVoronoiCells,
+    finalizePolygonForLeaflet,
+    geoSpatialVoronoi,
+    repairIntersectedCell,
+    VORONOI_POINT_CAP,
+} from "@/maps/geo-utils/voronoi";
 
-export const safeUnion = (input: FeatureCollection<Polygon | MultiPolygon>) => {
-    if (input.features.length === 1) return input.features[0];
+/** Turf booleans often emit consecutive duplicate ring vertices; Leaflet GeoJSON throws on those. */
+function stripDuplicateVerticesFromPolygonFeature(
+    feature: Feature<Polygon | MultiPolygon>,
+): Feature<Polygon | MultiPolygon> {
+    let base: Feature<Polygon | MultiPolygon>;
+    try {
+        base = turf.cleanCoords(feature, {
+            mutate: false,
+        }) as Feature<Polygon | MultiPolygon>;
+    } catch {
+        base = dedupePolygonFeatureVertices(feature);
+        try {
+            base = turf.cleanCoords(base, {
+                mutate: false,
+            }) as Feature<Polygon | MultiPolygon>;
+        } catch {
+            /* keep manually deduped rings */
+        }
+    }
+    /* `cleanCoords` can still leave repeats that Leaflet rejects on projected boundaries / Voronoi. */
+    return dedupePolygonFeatureVertices(base);
+}
+
+/** Walk GeoJSON and clean polygon coordinates before passing to `L.geoJSON`. */
+export function sanitizeGeoJSONForLeaflet(
+    input: GeoJSON | null | undefined,
+): GeoJSON | null {
+    if (!input) return null;
+    if (input.type === "FeatureCollection") {
+        return {
+            type: "FeatureCollection",
+            features: input.features.map((f) => {
+                if (
+                    f.geometry &&
+                    (f.geometry.type === "Polygon" ||
+                        f.geometry.type === "MultiPolygon")
+                ) {
+                    return stripDuplicateVerticesFromPolygonFeature(
+                        f as Feature<Polygon | MultiPolygon>,
+                    );
+                }
+                return f;
+            }),
+        };
+    }
+    if (input.type === "Feature") {
+        const g = input.geometry;
+        if (
+            g &&
+            (g.type === "Polygon" || g.type === "MultiPolygon")
+        ) {
+            return stripDuplicateVerticesFromPolygonFeature(
+                input as Feature<Polygon | MultiPolygon>,
+            );
+        }
+    }
+    return input;
+}
+
+export const safeUnion = (
+    input: FeatureCollection<Polygon | MultiPolygon>,
+): Feature<Polygon | MultiPolygon> => {
+    if (input.features.length === 1) {
+        return stripDuplicateVerticesFromPolygonFeature(
+            input.features[0] as Feature<Polygon | MultiPolygon>,
+        );
+    }
     const union = turf.union(input);
-    if (union) return union;
+    if (union) {
+        return stripDuplicateVerticesFromPolygonFeature(
+            union as Feature<Polygon | MultiPolygon>,
+        );
+    }
     throw new Error("No features");
 };
 
@@ -29,11 +106,15 @@ export const holedMask = (
         | Feature<Polygon | MultiPolygon>
         | FeatureCollection<Polygon | MultiPolygon>,
 ) => {
-    return turf.difference(
+    const diff = turf.difference(
         turf.featureCollection([
             BLANK_GEOJSON.features[0] as Feature<Polygon>,
             "features" in input ? safeUnion(input) : input,
         ]),
+    );
+    if (!diff) return null;
+    return stripDuplicateVerticesFromPolygonFeature(
+        diff as Feature<Polygon | MultiPolygon>,
     );
 };
 
@@ -47,16 +128,20 @@ export const modifyMapData = (
     const safeModifications =
         "features" in modifications ? safeUnion(modifications) : modifications;
 
-    if (withinModifications) {
-        return turf.intersect(
-            turf.featureCollection([safeUnion(mapData), safeModifications]),
-        );
-    }
-    return turf.intersect(
-        turf.featureCollection([
-            safeUnion(mapData),
-            holedMask(safeModifications)!,
-        ]),
+    const raw =
+        withinModifications ?
+            turf.intersect(
+                turf.featureCollection([safeUnion(mapData), safeModifications]),
+            )
+        :   turf.intersect(
+                turf.featureCollection([
+                    safeUnion(mapData),
+                    holedMask(safeModifications)!,
+                ]),
+            );
+    if (!raw) return raw;
+    return stripDuplicateVerticesFromPolygonFeature(
+        raw as Feature<Polygon | MultiPolygon>,
     );
 };
 

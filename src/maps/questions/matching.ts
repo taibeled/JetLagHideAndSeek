@@ -17,6 +17,7 @@ import {
     polyGeoJSON,
 } from "@/lib/context";
 import {
+    elementsToUniqueNamedPoints,
     findAdminBoundary,
     findPlacesInZone,
     nearestToQuestion,
@@ -24,8 +25,15 @@ import {
     prettifyLocation,
     trainLineNodeFinder,
 } from "@/maps/api";
-import { holedMask, modifyMapData, safeUnion } from "@/maps/geo-utils";
-import { geoSpatialVoronoi } from "@/maps/geo-utils";
+import {
+    clippedVoronoiCells,
+    finalizePolygonForLeaflet,
+    geoSpatialVoronoi,
+    holedMask,
+    mergeNearbyPoiPointsForLocation,
+    modifyMapData,
+    safeUnion,
+} from "@/maps/geo-utils";
 import type {
     APILocations,
     HomeGameMatchingQuestions,
@@ -108,15 +116,96 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
                 return [];
             }
 
-            return data.elements.map((x: any) =>
-                turf.point([
-                    x.center ? x.center.lon : x.lon,
-                    x.center ? x.center.lat : x.lat,
-                ]),
+            // Same dedupe/name rules as `findHomeGamePoiPointsInPlayZone` / map overlay Voronoi — raw elements add unnamed seeds and duplicate names and change cells vs preview.
+            return mergeNearbyPoiPointsForLocation(
+                elementsToUniqueNamedPoints(data.elements ?? []),
+                location,
             );
         }
     }
 };
+
+function isPlayZoneVoronoiMatchingType(
+    type: MatchingQuestion["type"],
+): boolean {
+    switch (type) {
+        case "airport":
+        case "major-city":
+        case "aquarium-full":
+        case "zoo-full":
+        case "theme_park-full":
+        case "peak-full":
+        case "museum-full":
+        case "hospital-full":
+        case "cinema-full":
+        case "library-full":
+        case "golf_course-full":
+        case "consulate-full":
+        case "park-full":
+        case "custom-points":
+            return true;
+        default:
+            return false;
+    }
+}
+
+function normalizeMatchingPoints(
+    raw: FeatureCollection<Point> | Feature<Point>[] | undefined,
+): FeatureCollection<Point> {
+    if (!raw) return turf.featureCollection([]);
+    if (Array.isArray(raw)) return turf.featureCollection(raw);
+    return raw;
+}
+
+/**
+ * Turf can throw for malformed polygon rings produced by upstream Voronoi/boolean ops.
+ * Treat those as non-matches so matching overlays remain usable instead of crashing.
+ */
+export function pointInPolygonSafe(
+    point: Feature<Point>,
+    polygon: Feature<Polygon | MultiPolygon>,
+): boolean {
+    try {
+        return turf.booleanPointInPolygon(point, polygon);
+    } catch {
+        return false;
+    }
+}
+
+/**
+ * Pick the Voronoi cell under the seeker pin using the same clip + projection path as
+ * `PoiCandidatesLayer` (`clippedVoronoiCells`). Unclipped `geoSpatialVoronoi` alone can disagree.
+ */
+async function determinePlayZoneMatchingBoundary(
+    question: MatchingQuestion,
+    mapData: FeatureCollection<Polygon | MultiPolygon>,
+): Promise<Feature<Polygon | MultiPolygon> | undefined> {
+    const raw = await findMatchingPlaces(question);
+    const pointsFc = normalizeMatchingPoints(raw);
+    if (pointsFc.features.length < 2) return undefined;
+
+    let clip: Feature<Polygon | MultiPolygon> | null = null;
+    try {
+        clip = safeUnion(mapData) as Feature<Polygon | MultiPolygon>;
+    } catch {
+        clip = null;
+    }
+
+    const pt = turf.point([question.lng, question.lat]);
+    for (const cell of clippedVoronoiCells(pointsFc, clip)) {
+        if (pointInPolygonSafe(pt, cell)) return cell;
+    }
+
+    const voronoi = geoSpatialVoronoi(pointsFc);
+    for (const feature of voronoi.features) {
+        const safeFeature = finalizePolygonForLeaflet(
+            feature as Feature<Polygon | MultiPolygon>,
+        );
+        if (!safeFeature) continue;
+        if (pointInPolygonSafe(pt, safeFeature)) return safeFeature;
+    }
+    return undefined;
+}
 
 export const determineMatchingBoundary = _.memoize(
     async (question: MatchingQuestion) => {
@@ -263,11 +352,22 @@ export const adjustPerMatching = async (
 ) => {
     if (mapData === null) return;
 
+    if (isPlayZoneVoronoiMatchingType(question.type)) {
+        const boundary = await determinePlayZoneMatchingBoundary(
+            question,
+            mapData as FeatureCollection<Polygon | MultiPolygon>,
+        );
+        if (!boundary) return mapData;
+        return modifyMapData(mapData, boundary, question.same);
+    }
+
     const boundary = await determineMatchingBoundary(question);
 
     if (boundary === false) {
         return mapData;
     }
+
+    if (!boundary) return mapData;
 
     return modifyMapData(mapData, boundary, question.same);
 };

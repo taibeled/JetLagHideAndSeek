@@ -4,6 +4,7 @@ import "leaflet-contextmenu";
 
 import { useStore } from "@nanostores/react";
 import * as turf from "@turf/turf";
+import type { GeoJSON } from "geojson";
 import * as L from "leaflet";
 import { useEffect, useMemo } from "react";
 import { MapContainer, ScaleControl, TileLayer } from "react-leaflet";
@@ -30,7 +31,11 @@ import {
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
-import { applyQuestionsToMapGeoData, holedMask } from "@/maps";
+import {
+    applyQuestionsToMapGeoData,
+    holedMask,
+    sanitizeGeoJSONForLeaflet,
+} from "@/maps";
 import { hiderifyQuestion } from "@/maps";
 import { clearCache, determineMapBoundaries } from "@/maps/api";
 
@@ -197,7 +202,10 @@ export const Map = ({ className }: { className?: string }) => {
                     mapGeoData,
                     planningModeEnabled.get(),
                     (geoJSONObj, question) => {
-                        const geoJSONPlane = L.geoJSON(geoJSONObj);
+                        const geoJSONPlane = L.geoJSON(
+                            sanitizeGeoJSONForLeaflet(geoJSONObj as GeoJSON) ??
+                                geoJSONObj,
+                        );
                         // @ts-expect-error This is a check such that only this type of layer is removed
                         geoJSONPlane.questionKey = question.key;
                         geoJSONPlane.addTo(map);
@@ -208,6 +216,10 @@ export const Map = ({ className }: { className?: string }) => {
                     type: "FeatureCollection",
                     features: [holedMask(mapGeoData!)!],
                 };
+
+                mapGeoData =
+                    (sanitizeGeoJSONForLeaflet(mapGeoData as GeoJSON) as typeof mapGeoData) ??
+                    mapGeoData;
 
                 map.eachLayer((layer: any) => {
                     if (layer.eliminationGeoJSON) {
