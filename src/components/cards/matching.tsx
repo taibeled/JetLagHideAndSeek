@@ -21,9 +21,16 @@ import {
     isLoading,
     questionModified,
     questions,
+    trainStations,
     triggerLocalRefresh,
 } from "@/lib/context";
+import {
+    matchingNearestPoiCategory,
+    type NearestPoiResult,
+    resolveMatchingNearestPoi,
+} from "@/lib/nearestPoi";
 import { cn } from "@/lib/utils";
+import { extractStationLabel } from "@/maps/geo-utils";
 import {
     determineMatchingBoundary,
     findMatchingPlaces,
@@ -36,6 +43,7 @@ import {
 } from "@/maps/schema";
 
 import { QuestionCard } from "./base";
+import { NearestPoiRow } from "./NearestPoiInfo";
 
 export const MatchingQuestionComponent = ({
     data,
@@ -55,10 +63,33 @@ export const MatchingQuestionComponent = ({
     const $drawingQuestionKey = useStore(drawingQuestionKey);
     const $isLoading = useStore(isLoading);
     const $customInitPref = useStore(customInitPreference);
+    const $trainStations = useStore(trainStations);
     const [customDialogOpen, setCustomDialogOpen] = React.useState(false);
     const [pendingCustomType, setPendingCustomType] = React.useState<
         "custom-zone" | "custom-points" | null
     >(null);
+    const [nearestPoi, setNearestPoi] = React.useState<
+        NearestPoiResult | { status: "loading"; category: string }
+    >({ status: "unsupported" });
+    const stationPoints = React.useMemo(
+        () => $trainStations.map((station) => station.properties),
+        [$trainStations],
+    );
+    const nearestPoiKey = JSON.stringify({
+        type: data.type,
+        lat: data.lat,
+        lng: data.lng,
+        geo: data.type === "custom-points" ? data.geo : undefined,
+        stations:
+            data.type === "same-first-letter-station" ||
+            data.type === "same-length-station" ||
+            data.type === "same-train-line"
+                ? stationPoints.map((station) => ({
+                      label: extractStationLabel(station),
+                      coordinates: station.geometry.coordinates,
+                  }))
+                : undefined,
+    });
     const label = `Matching
     ${
         $questions
@@ -68,6 +99,27 @@ export const MatchingQuestionComponent = ({
     }`;
 
     let questionSpecific = <></>;
+
+    React.useEffect(() => {
+        const category = matchingNearestPoiCategory(data.type);
+        if (!category) {
+            setNearestPoi({ status: "unsupported" });
+            return;
+        }
+
+        let cancelled = false;
+        setNearestPoi({ status: "loading", category });
+
+        resolveMatchingNearestPoi(data, stationPoints).then((result) => {
+            if (!cancelled) {
+                setNearestPoi(result);
+            }
+        });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [nearestPoiKey]);
 
     switch (data.type) {
         case "zone":
@@ -368,21 +420,24 @@ export const MatchingQuestionComponent = ({
             {questionSpecific}
 
             {data.type !== "custom-zone" && (
-                <LatitudeLongitude
-                    latitude={data.lat}
-                    longitude={data.lng}
-                    colorName={data.color}
-                    onChange={(lat, lng) => {
-                        if (lat !== null) {
-                            data.lat = lat;
-                        }
-                        if (lng !== null) {
-                            data.lng = lng;
-                        }
-                        questionModified();
-                    }}
-                    disabled={!data.drag || $isLoading}
-                />
+                <>
+                    <LatitudeLongitude
+                        latitude={data.lat}
+                        longitude={data.lng}
+                        colorName={data.color}
+                        onChange={(lat, lng) => {
+                            if (lat !== null) {
+                                data.lat = lat;
+                            }
+                            if (lng !== null) {
+                                data.lng = lng;
+                            }
+                            questionModified();
+                        }}
+                        disabled={!data.drag || $isLoading}
+                    />
+                    <NearestPoiRow nearestPoi={nearestPoi} />
+                </>
             )}
             <div
                 className={cn(

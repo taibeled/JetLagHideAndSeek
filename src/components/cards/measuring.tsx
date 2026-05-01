@@ -14,15 +14,23 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
     customInitPreference,
+    defaultUnit,
     displayHidingZones,
     drawingQuestionKey,
     hiderMode,
     isLoading,
     questionModified,
     questions,
+    trainStations,
     triggerLocalRefresh,
 } from "@/lib/context";
+import {
+    measuringNearestPoiCategory,
+    type NearestPoiResult,
+    resolveMeasuringNearestPoi,
+} from "@/lib/nearestPoi";
 import { cn } from "@/lib/utils";
+import { extractStationLabel } from "@/maps/geo-utils";
 import { determineMeasuringBoundary } from "@/maps/questions/measuring";
 import {
     determineUnionizedStrings,
@@ -32,6 +40,7 @@ import {
 } from "@/maps/schema";
 
 import { QuestionCard } from "./base";
+import { NearestPoiDistanceRow, NearestPoiRow } from "./NearestPoiInfo";
 
 export const MeasuringQuestionComponent = ({
     data,
@@ -51,7 +60,30 @@ export const MeasuringQuestionComponent = ({
     const $drawingQuestionKey = useStore(drawingQuestionKey);
     const $isLoading = useStore(isLoading);
     const $customInitPref = useStore(customInitPreference);
+    const $trainStations = useStore(trainStations);
+    const $defaultUnit = useStore(defaultUnit);
     const [customDialogOpen, setCustomDialogOpen] = React.useState(false);
+    const [nearestPoi, setNearestPoi] = React.useState<
+        NearestPoiResult | { status: "loading"; category: string }
+    >({ status: "unsupported" });
+    const stationPoints = React.useMemo(
+        () => $trainStations.map((station) => station.properties),
+        [$trainStations],
+    );
+    const nearestPoiKey = JSON.stringify({
+        type: data.type,
+        lat: data.lat,
+        lng: data.lng,
+        unit: $defaultUnit,
+        geo: data.type === "custom-measure" ? data.geo : undefined,
+        stations:
+            data.type === "rail-measure"
+                ? stationPoints.map((station) => ({
+                      label: extractStationLabel(station),
+                      coordinates: station.geometry.coordinates,
+                  }))
+                : undefined,
+    });
     const label = `Measuring
     ${
         $questions
@@ -61,6 +93,29 @@ export const MeasuringQuestionComponent = ({
     }`;
 
     let questionSpecific = <></>;
+
+    React.useEffect(() => {
+        const category = measuringNearestPoiCategory(data.type);
+        if (!category) {
+            setNearestPoi({ status: "unsupported" });
+            return;
+        }
+
+        let cancelled = false;
+        setNearestPoi({ status: "loading", category });
+
+        resolveMeasuringNearestPoi(data, stationPoints, $defaultUnit).then(
+            (result) => {
+                if (!cancelled) {
+                    setNearestPoi(result);
+                }
+            },
+        );
+
+        return () => {
+            cancelled = true;
+        };
+    }, [nearestPoiKey]);
 
     switch (data.type) {
         case "mcdonalds":
@@ -272,6 +327,8 @@ export const MeasuringQuestionComponent = ({
                 }}
                 disabled={!data.drag || $isLoading}
             />
+            <NearestPoiRow nearestPoi={nearestPoi} />
+            <NearestPoiDistanceRow nearestPoi={nearestPoi} />
             <div className="flex gap-2 items-center p-2">
                 <Label
                     className={cn(

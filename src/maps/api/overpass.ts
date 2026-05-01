@@ -1,5 +1,5 @@
 import * as turf from "@turf/turf";
-import type { FeatureCollection, MultiPolygon } from "geojson";
+import type { Feature, FeatureCollection, MultiPolygon, Point } from "geojson";
 import _ from "lodash";
 import osmtogeojson from "osmtogeojson";
 import { toast } from "react-toastify";
@@ -10,6 +10,7 @@ import {
     polyGeoJSON,
 } from "@/lib/context";
 import { expandFiltersForOperatorNetwork, safeUnion } from "@/maps/geo-utils";
+import type { APILocations } from "@/maps/schema";
 
 import { cacheFetch, determineCache } from "./cache";
 import {
@@ -17,8 +18,6 @@ import {
     OVERPASS_API_FALLBACK,
     overpassFilterForLocation,
 } from "./constants";
-import type { APILocations } from "@/maps/schema";
-
 import { prettifyLocation } from "./geo";
 import type {
     EncompassingTentacleQuestionSchema,
@@ -28,37 +27,59 @@ import type {
 } from "./types";
 import { CacheType } from "./types";
 
+const pointCoordinates = (element: any): [number, number] | null => {
+    if (typeof element?.lon === "number" && typeof element?.lat === "number") {
+        return [element.lon, element.lat];
+    }
+    if (
+        typeof element?.center?.lon === "number" &&
+        typeof element?.center?.lat === "number"
+    ) {
+        return [element.center.lon, element.center.lat];
+    }
+    return null;
+};
+
+const pointName = (element: any): string | undefined => {
+    const name = element?.tags?.["name:en"] ?? element?.tags?.name;
+    return typeof name === "string" && name.trim() ? name : undefined;
+};
+
+const pointToFeature = (
+    element: any,
+    labelResolver: (element: any) => string | undefined,
+): Feature<Point> | null => {
+    const coordinates = pointCoordinates(element);
+    const name = labelResolver(element);
+    if (!coordinates || !name) return null;
+    return turf.point(coordinates, { name });
+};
+
+export const elementsToPoints = (
+    elements: any[],
+    labelResolver: (element: any) => string | undefined,
+) =>
+    turf.featureCollection(
+        elements.flatMap((element: any) => {
+            const point = pointToFeature(element, labelResolver);
+            return point ? [point] : [];
+        }),
+    ) as FeatureCollection<Point>;
+
 /** Dedupe by `properties.name` — matches tentacle / zone POI picker behavior. */
 export const elementsToUniqueNamedPoints = (elements: any[]) => {
-    const response = turf.points([]);
-    elements.forEach((element: any) => {
-        if (!element.tags?.["name"] && !element.tags?.["name:en"]) return;
-        if (element.lat && element.lon) {
-            const name = element.tags["name:en"] ?? element.tags["name"];
-            if (
-                response.features.find(
-                    (feature: any) => feature.properties.name === name,
-                )
-            )
-                return;
-            response.features.push(
-                turf.point([element.lon, element.lat], { name }),
-            );
-        }
-        if (!element.center || !element.center.lon || !element.center.lat)
-            return;
-        const name = element.tags["name:en"] ?? element.tags["name"];
-        if (
-            response.features.find(
-                (feature: any) => feature.properties.name === name,
-            )
-        )
-            return;
-        response.features.push(
-            turf.point([element.center.lon, element.center.lat], { name }),
-        );
-    });
-    return response;
+    const seen = new Set<string>();
+    return turf.featureCollection(
+        elements.flatMap((element: any) => {
+            const point = pointToFeature(element, pointName);
+            if (!point) return [];
+
+            const name = point.properties?.name;
+            if (typeof name !== "string" || seen.has(name)) return [];
+            seen.add(name);
+            return [point];
+        }),
+    ) as FeatureCollection<Point>;
 };
 
 export const getOverpassData = async (
@@ -240,8 +261,11 @@ export const findPlacesInZone = async (
     timeoutDuration: number = 0,
     operatorFilter: string[] = [],
 ) => {
-    const { primaryLines, alternativeLines } =
-        expandFiltersForOperatorNetwork(filter, alternatives, operatorFilter);
+    const { primaryLines, alternativeLines } = expandFiltersForOperatorNetwork(
+        filter,
+        alternatives,
+        operatorFilter,
+    );
 
     let query = "";
     const $polyGeoJSON = polyGeoJSON.get();
@@ -253,10 +277,7 @@ export const findPlacesInZone = async (
             .map((coord) => [coord[1], coord[0]].join(" "))
             .join(" ");
         const unionLines = [...primaryLines, ...alternativeLines]
-            .map(
-                (f) =>
-                    `${searchType}${f}(poly:"${polyQuoted}");`,
-            )
+            .map((f) => `${searchType}${f}(poly:"${polyQuoted}");`)
             .join("\n");
         query = `
 [out:json]${timeoutDuration != 0 ? `[timeout:${timeoutDuration}]` : ""};
@@ -380,28 +401,73 @@ export const findHomeGamePoiPointsInPlayZone = async (
     return elementsToUniqueNamedPoints(els);
 };
 
+export const findAirportPointsInPlayZone = async () =>
+    elementsToPoints(
+        (
+            await findPlacesInZone(
+                '["aeroway"="aerodrome"]["iata"]',
+                "Finding airports...",
+            )
+        ).elements,
+        (element) =>
+            pointName(element) ??
+            (typeof element?.tags?.iata === "string" && element.tags.iata.trim()
+                ? element.tags.iata
+                : undefined),
+    );
+
+export const findCityPointsInPlayZone = async () =>
+    elementsToPoints(
+        (
+            await findPlacesInZone(
+                '[place=city]["population"~"^[1-9]+[0-9]{6}$"]',
+                "Finding cities...",
+            )
+        ).elements,
+        pointName,
+    );
+
+export const findBrandPointsInZone = async (
+    location: `${QuestionSpecificLocation}`,
+) =>
+    elementsToPoints(
+        (
+            await findPlacesInZone(
+                location,
+                `Finding ${
+                    location === '["brand:wikidata"="Q38076"]'
+                        ? "McDonald's"
+                        : "7-Elevens"
+                }...`,
+            )
+        ).elements,
+        (element) =>
+            pointName(element) ??
+            (typeof element?.tags?.brand === "string" &&
+            element.tags.brand.trim()
+                ? element.tags.brand
+                : undefined) ??
+            (typeof element?.tags?.operator === "string" &&
+            element.tags.operator.trim()
+                ? element.tags.operator
+                : undefined),
+    );
+
 export const findPlacesSpecificInZone = async (
     location: `${QuestionSpecificLocation}`,
 ) => {
-    const locations = (
-        await findPlacesInZone(
-            location,
-            `Finding ${
-                location === '["brand:wikidata"="Q38076"]'
-                    ? "McDonald's"
-                    : "7-Elevens"
-            }...`,
-        )
-    ).elements;
-    return turf.featureCollection(
-        locations.map((x: any) =>
-            turf.point([
-                x.center ? x.center.lon : x.lon,
-                x.center ? x.center.lat : x.lat,
-            ]),
-        ),
-    );
+    return findBrandPointsInZone(location);
 };
+
+export const findHighSpeedRailFeatures = async (): Promise<Feature[]> =>
+    osmtogeojson(
+        await findPlacesInZone(
+            "[highspeed=yes]",
+            "Finding high-speed lines...",
+            "nwr",
+            "geom",
+        ),
+    ).features as Feature[];
 
 export const nearestToQuestion = async (
     question: HomeGameMatchingQuestions | HomeGameMeasuringQuestions,

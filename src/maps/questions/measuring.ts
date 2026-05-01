@@ -1,7 +1,6 @@
 import * as turf from "@turf/turf";
 import type { Feature, MultiPolygon } from "geojson";
 import _ from "lodash";
-import osmtogeojson from "osmtogeojson";
 import { toast } from "react-toastify";
 
 import {
@@ -13,6 +12,7 @@ import {
 } from "@/lib/context";
 import {
     fetchCoastline,
+    findHighSpeedRailFeatures,
     findPlacesInZone,
     findPlacesSpecificInZone,
     nearestToQuestion,
@@ -89,16 +89,7 @@ export const determineMeasuringBoundary = async (
 
     switch (question.type) {
         case "highspeed-measure-shinkansen": {
-            const features = osmtogeojson(
-                await findPlacesInZone(
-                    "[highspeed=yes]",
-                    "Finding high-speed lines...",
-                    "nwr",
-                    "geom",
-                ),
-            ).features;
-
-            return [highSpeedBase(features)];
+            return [highSpeedBase(await findHighSpeedRailFeatures())];
         }
         case "coastline": {
             const coastline = turf.lineToPolygon(
