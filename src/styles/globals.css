@@ -9,6 +9,23 @@ body {
     height: 100%;
 }
 
+/* Touch-only installed PWA: avoid accidental selection and iOS/Android text handles */
+@media (display-mode: standalone) and (pointer: coarse) {
+    html {
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+    }
+
+    input,
+    textarea,
+    select,
+    [contenteditable] {
+        -webkit-user-select: text;
+        user-select: text;
+    }
+}
+
 .leaflet-container {
     height: 100vh; /* Fallback for old browsers */
     height: 100svh;
