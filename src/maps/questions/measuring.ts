@@ -15,8 +15,8 @@ import {
     fetchCoastline,
     findPlacesInZone,
     findPlacesSpecificInZone,
-    LOCATION_FIRST_TAG,
     nearestToQuestion,
+    overpassFilterForLocation,
     prettifyLocation,
     QuestionSpecificLocation,
 } from "@/maps/api";
@@ -191,7 +191,7 @@ export const determineMeasuringBoundary = async (
             const location = question.type.split("-full")[0] as APILocations;
 
             const data = await findPlacesInZone(
-                `[${LOCATION_FIRST_TAG[location]}=${location}]`,
+                overpassFilterForLocation(location),
                 `Finding ${prettifyLocation(location, true).toLowerCase()}...`,
                 "nwr",
                 "center",

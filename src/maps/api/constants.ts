@@ -42,6 +42,13 @@ export const LOCATION_FIRST_TAG: {
     park: "leisure",
 };
 
+export const overpassFilterForLocation = (location: APILocations): string => {
+    if (location === "consulate") {
+        return `["diplomatic"~"embassy|consulate"]`;
+    }
+    return `["${LOCATION_FIRST_TAG[location]}"="${location}"]`;
+};
+
 export const BLANK_GEOJSON = {
     type: "FeatureCollection",
     features: [

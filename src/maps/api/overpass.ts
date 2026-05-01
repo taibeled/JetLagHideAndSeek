@@ -13,10 +13,13 @@ import { expandFiltersForOperatorNetwork, safeUnion } from "@/maps/geo-utils";
 
 import { cacheFetch, determineCache } from "./cache";
 import {
-    LOCATION_FIRST_TAG,
     OVERPASS_API,
     OVERPASS_API_FALLBACK,
+    overpassFilterForLocation,
 } from "./constants";
+import type { APILocations } from "@/maps/schema";
+
+import { prettifyLocation } from "./geo";
 import type {
     EncompassingTentacleQuestionSchema,
     HomeGameMatchingQuestions,
@@ -24,6 +27,39 @@ import type {
     QuestionSpecificLocation,
 } from "./types";
 import { CacheType } from "./types";
+
+/** Dedupe by `properties.name` — matches tentacle / zone POI picker behavior. */
+export const elementsToUniqueNamedPoints = (elements: any[]) => {
+    const response = turf.points([]);
+    elements.forEach((element: any) => {
+        if (!element.tags?.["name"] && !element.tags?.["name:en"]) return;
+        if (element.lat && element.lon) {
+            const name = element.tags["name:en"] ?? element.tags["name"];
+            if (
+                response.features.find(
+                    (feature: any) => feature.properties.name === name,
+                )
+            )
+                return;
+            response.features.push(
+                turf.point([element.lon, element.lat], { name }),
+            );
+        }
+        if (!element.center || !element.center.lon || !element.center.lat)
+            return;
+        const name = element.tags["name:en"] ?? element.tags["name"];
+        if (
+            response.features.find(
+                (feature: any) => feature.properties.name === name,
+            )
+        )
+            return;
+        response.features.push(
+            turf.point([element.center.lon, element.center.lat], { name }),
+        );
+    });
+    return response;
+};
 
 export const getOverpassData = async (
     query: string,
@@ -99,7 +135,7 @@ export const findTentacleLocations = async (
 ) => {
     const query = `
 [out:json][timeout:25];
-nwr["${LOCATION_FIRST_TAG[question.locationType]}"="${question.locationType}"](around:${turf.convertLength(
+nwr${overpassFilterForLocation(question.locationType)}(around:${turf.convertLength(
         question.radius,
         question.unit,
         "meters",
@@ -107,36 +143,7 @@ nwr["${LOCATION_FIRST_TAG[question.locationType]}"="${question.locationType}"](a
 out center;
     `;
     const data = await getOverpassData(query, text);
-    const elements = data.elements;
-    const response = turf.points([]);
-    elements.forEach((element: any) => {
-        if (!element.tags["name"] && !element.tags["name:en"]) return;
-        if (element.lat && element.lon) {
-            const name = element.tags["name:en"] ?? element.tags["name"];
-            if (
-                response.features.find(
-                    (feature: any) => feature.properties.name === name,
-                )
-            )
-                return;
-            response.features.push(
-                turf.point([element.lon, element.lat], { name }),
-            );
-        }
-        if (!element.center || !element.center.lon || !element.center.lat)
-            return;
-        const name = element.tags["name:en"] ?? element.tags["name"];
-        if (
-            response.features.find(
-                (feature: any) => feature.properties.name === name,
-            )
-        )
-            return;
-        response.features.push(
-            turf.point([element.center.lon, element.center.lat], { name }),
-        );
-    });
-    return response;
+    return elementsToUniqueNamedPoints(data.elements ?? []);
 };
 
 export const findAdminBoundary = async (
@@ -338,6 +345,39 @@ out ${outType};
     }
 
     return data;
+};
+
+/** POIs for home-game POI categories (measuring / matching) — scoped like `findPlacesInZone` (play region). */
+export const findHomeGamePoiPointsInPlayZone = async (
+    locationType: APILocations,
+    loadingText?: string,
+) => {
+    const label = prettifyLocation(locationType, true).toLowerCase();
+    const data = await findPlacesInZone(
+        overpassFilterForLocation(locationType),
+        loadingText ?? `Finding ${label}...`,
+        "nwr",
+        "center",
+        [],
+        60,
+    );
+
+    if (data.remark && data.remark.startsWith("runtime error")) {
+        toast.error(
+            `Error finding ${label}. Please enable hiding zone mode and switch to the Large Game variation of this question.`,
+        );
+        return turf.featureCollection([]);
+    }
+
+    const els = data.elements ?? [];
+    if (els.length >= 1000) {
+        toast.error(
+            `Too many ${label} found (${els.length}). Please enable hiding zone mode and switch to the Large Game variation of this question.`,
+        );
+        return turf.featureCollection([]);
+    }
+
+    return elementsToUniqueNamedPoints(els);
 };
 
 export const findPlacesSpecificInZone = async (

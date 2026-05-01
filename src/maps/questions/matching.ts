@@ -19,8 +19,8 @@ import {
 import {
     findAdminBoundary,
     findPlacesInZone,
-    LOCATION_FIRST_TAG,
     nearestToQuestion,
+    overpassFilterForLocation,
     prettifyLocation,
     trainLineNodeFinder,
 } from "@/maps/api";
@@ -80,7 +80,7 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
             const location = question.type.split("-full")[0] as APILocations;
 
             const data = await findPlacesInZone(
-                `[${LOCATION_FIRST_TAG[location]}=${location}]`,
+                overpassFilterForLocation(location),
                 `Finding ${prettifyLocation(location, true).toLowerCase()}...`,
                 "nwr",
                 "center",

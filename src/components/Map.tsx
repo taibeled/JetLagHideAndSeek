@@ -37,6 +37,7 @@ import { clearCache, determineMapBoundaries } from "@/maps/api";
 import { DraggableMarkers } from "./DraggableMarkers";
 import { LeafletFullScreenButton } from "./LeafletFullScreenButton";
 import { MapPrint } from "./MapPrint";
+import { PoiCandidatesLayer } from "./PoiCandidatesLayer";
 import { PolygonDraw } from "./PolygonDraw";
 
 /** Discard stale Overpass results when a newer refresh runs (e.g. `?sid=` hydrate updates zone mid-fetch). */
@@ -378,6 +379,7 @@ export const Map = ({ className }: { className?: string }) => {
                 ]}
             >
                 {getTileLayer($baseTileLayer, $thunderforestApiKey)}
+                <PoiCandidatesLayer />
                 <DraggableMarkers />
                 <div className="leaflet-top leaflet-right">
                     <div className="leaflet-control flex-col flex gap-2">
