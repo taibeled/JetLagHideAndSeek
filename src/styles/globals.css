@@ -20,7 +20,10 @@ body {
     input,
     textarea,
     select,
-    [contenteditable] {
+    [contenteditable],
+    /* Radix Select uses divs, not <select>; allow normal touch/selection behavior */
+    [data-radix-select-viewport],
+    [role="listbox"] {
         -webkit-user-select: text;
         user-select: text;
     }

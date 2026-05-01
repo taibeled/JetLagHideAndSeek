@@ -7,6 +7,7 @@ import { TbMessage2Question } from "react-icons/tb";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SelectPortalHost } from "@/components/ui/select-portal-host";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -206,7 +207,7 @@ const Sidebar = React.forwardRef<
                     ref={ref}
                     {...props}
                 >
-                    {children}
+                    <SelectPortalHost>{children}</SelectPortalHost>
                 </div>
             );
         }
@@ -230,7 +231,7 @@ const Sidebar = React.forwardRef<
                         side={side}
                     >
                         <div className="flex h-full w-full flex-col">
-                            {children}
+                            <SelectPortalHost>{children}</SelectPortalHost>
                         </div>
                     </SheetContent>
                 </Sheet>
@@ -275,7 +276,7 @@ const Sidebar = React.forwardRef<
                         data-sidebar="sidebar"
                         className="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow"
                     >
-                        {children}
+                        <SelectPortalHost>{children}</SelectPortalHost>
                     </div>
                 </div>
             </div>
