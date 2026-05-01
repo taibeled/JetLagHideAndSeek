@@ -235,12 +235,8 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
             toast.error("Clipboard not supported");
             return;
         }
-        await discoverCasServer();
-        const base = casServerEffectiveUrl.get();
-        if (!base || casServerStatus.get() !== "available") {
-            toast.error("Game state server not available");
-            return;
-        }
+        // Read clipboard before any other await — iOS Safari ties readText() to user
+        // activation; awaiting discoverCasServer() first drops the gesture and paste fails.
         let sid: string;
         try {
             sid = parseSessionIdFromClipboard(
@@ -252,6 +248,12 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
         }
         if (!sid) {
             toast.error("Clipboard is empty");
+            return;
+        }
+        await discoverCasServer();
+        const base = casServerEffectiveUrl.get();
+        if (!base || casServerStatus.get() !== "available") {
+            toast.error("Game state server not available");
             return;
         }
         try {
