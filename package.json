@@ -12,7 +12,8 @@
         "astro": "astro",
         "lint": "eslint --fix src && prettier . --write",
         "test": "vitest",
-        "test:server": "pnpm --dir server test"
+        "test:server": "pnpm --dir server test",
+        "icons:generate": "python3 scripts/generate-app-icons.py"
     },
     "dependencies": {
         "@arcgis/core": "^4.32.10",

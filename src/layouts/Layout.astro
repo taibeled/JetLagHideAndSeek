@@ -9,6 +9,8 @@ export interface Props {
 }
 
 const { className } = Astro.props;
+const rawBase = import.meta.env.BASE_URL;
+const iconBase = rawBase.endsWith("/") ? rawBase : `${rawBase}/`;
 ---
 
 <!doctype html>
@@ -16,32 +18,24 @@ const { className } = Astro.props;
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
-        <link
-            rel="icon"
-            type="image/x-icon"
-            href="https://taibeled.github.io/JetLagHideAndSeek/favicon.ico"
-        />
-        <link
-            rel="shortcut icon"
-            type="image/x-icon"
-            href="https://taibeled.github.io/JetLagHideAndSeek/favicon.ico"
-        />
+        <link rel="icon" type="image/x-icon" href={`${iconBase}favicon.ico`} />
+        <link rel="shortcut icon" type="image/x-icon" href={`${iconBase}favicon.ico`} />
         <link
             rel="apple-touch-icon"
             sizes="180x180"
-            href="https://taibeled.github.io/JetLagHideAndSeek/apple-touch-icon.png"
+            href={`${iconBase}apple-touch-icon.png`}
         />
         <link
             rel="icon"
             type="image/png"
             sizes="32x32"
-            href="https://taibeled.github.io/JetLagHideAndSeek/favicon-32x32.png"
+            href={`${iconBase}favicon-32x32.png`}
         />
         <link
             rel="icon"
             type="image/png"
             sizes="16x16"
-            href="https://taibeled.github.io/JetLagHideAndSeek/favicon-16x16.png"
+            href={`${iconBase}favicon-16x16.png`}
         />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
