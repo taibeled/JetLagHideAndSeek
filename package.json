@@ -16,7 +16,6 @@
     },
     "dependencies": {
         "@arcgis/core": "^4.32.10",
-        "@astrojs/partytown": "^2.1.4",
         "@astrojs/react": "4.2.0",
         "@astrojs/tailwind": "^5.1.5",
         "@nanostores/persistent": "^0.10.2",

@@ -1,5 +1,4 @@
 // @ts-check
-import partytown from "@astrojs/partytown";
 import react from "@astrojs/react";
 import tailwind from "@astrojs/tailwind";
 import AstroPWA from "@vite-pwa/astro";
@@ -11,11 +10,6 @@ export default defineConfig({
         react(),
         tailwind({
             applyBaseStyles: false,
-        }),
-        partytown({
-            config: {
-                forward: ["dataLayer.push"],
-            },
         }),
         AstroPWA({
             workbox: {
