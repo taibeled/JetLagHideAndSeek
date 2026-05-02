@@ -15,9 +15,12 @@ import {
     permanentOverlay,
     polyGeoJSON,
     questions,
+    refreshPlayAreaModeFromCurrentLocations,
+    refreshPlayAreaModeFromGeometry,
     team,
     useCustomStations,
 } from "@/lib/context";
+import { normalizePlayAreaGeometry } from "@/lib/playAreaMode";
 import {
     stripWireEnvelope,
     teamSchema,
@@ -33,6 +36,8 @@ export function applyWireV1Payload(jsonText: string) {
 }
 
 export function applyHidingZoneGeojson(geojson: Record<string, unknown>) {
+    const playAreaGeometry = normalizePlayAreaGeometry(geojson);
+
     if (
         geojson.properties &&
         typeof geojson.properties === "object" &&
@@ -55,16 +60,24 @@ export function applyHidingZoneGeojson(geojson: Record<string, unknown>) {
         } else {
             additionalMapGeoLocations.set([]);
         }
+
+        if (playAreaGeometry) {
+            void refreshPlayAreaModeFromGeometry(playAreaGeometry);
+        } else {
+            void refreshPlayAreaModeFromCurrentLocations();
+        }
     } else if (geojson.questions) {
         questions.set(questionsSchema.parse(geojson.questions));
         const clone = { ...geojson };
         delete clone.questions;
         mapGeoJSON.set(clone as never);
         polyGeoJSON.set(clone as never);
+        void refreshPlayAreaModeFromGeometry(clone);
     } else {
         questions.set([]);
         mapGeoJSON.set(geojson as never);
         polyGeoJSON.set(geojson as never);
+        void refreshPlayAreaModeFromGeometry(geojson);
     }
 
     const incomingPresets =

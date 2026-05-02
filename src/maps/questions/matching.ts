@@ -14,8 +14,10 @@ import {
     hiderMode,
     mapGeoJSON,
     mapGeoLocation,
+    playAreaMode,
     polyGeoJSON,
 } from "@/lib/context";
+import { PLAY_AREA_MODES } from "@/lib/playAreaModes";
 import {
     elementsToUniqueNamedPoints,
     findAdminBoundary,
@@ -453,30 +455,36 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
             }
         }
 
-        const hiderEnglishName =
-            nearestHiderTrainStation.properties["name:en"] ||
-            nearestHiderTrainStation.properties.name;
-        const seekerEnglishName =
-            nearestSeekerTrainStation.properties["name:en"] ||
-            nearestSeekerTrainStation.properties.name;
+        const mode = playAreaMode.get();
+        const strategy = PLAY_AREA_MODES[mode].stationNameStrategy;
 
-        if (!hiderEnglishName || !seekerEnglishName) {
+        const hiderName = (strategy === "native-preferred"
+            ? (nearestHiderTrainStation.properties.name ??
+              nearestHiderTrainStation.properties["name:en"])
+            : (nearestHiderTrainStation.properties["name:en"] ??
+              nearestHiderTrainStation.properties.name)) as string;
+        const seekerName = (strategy === "native-preferred"
+            ? (nearestSeekerTrainStation.properties.name ??
+              nearestSeekerTrainStation.properties["name:en"])
+            : (nearestSeekerTrainStation.properties["name:en"] ??
+              nearestSeekerTrainStation.properties.name)) as string;
+
+        if (!hiderName || !seekerName) {
             return question;
         }
 
         if (question.type === "same-first-letter-station") {
             if (
-                hiderEnglishName[0].toUpperCase() ===
-                seekerEnglishName[0].toUpperCase()
+                hiderName[0].toUpperCase() === seekerName[0].toUpperCase()
             ) {
                 question.same = true;
             } else {
                 question.same = false;
             }
         } else if (question.type === "same-length-station") {
-            if (hiderEnglishName.length === seekerEnglishName.length) {
+            if (hiderName.length === seekerName.length) {
                 question.lengthComparison = "same";
-            } else if (hiderEnglishName.length < seekerEnglishName.length) {
+            } else if (hiderName.length < seekerName.length) {
                 question.lengthComparison = "shorter";
             } else {
                 question.lengthComparison = "longer";

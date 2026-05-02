@@ -29,6 +29,7 @@ import {
     mapGeoJSON,
     mapGeoLocation,
     polyGeoJSON,
+    refreshPlayAreaModeFromCurrentLocations,
     questions,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
@@ -173,6 +174,7 @@ export const PlacePicker = ({
                                                 questions.set([
                                                     ...questions.get(),
                                                 ]);
+                                                void refreshPlayAreaModeFromCurrentLocations();
                                             }}
                                         />
                                     ) : (
@@ -195,6 +197,7 @@ export const PlacePicker = ({
                                                 questions.set([
                                                     ...questions.get(),
                                                 ]);
+                                                void refreshPlayAreaModeFromCurrentLocations();
                                             }}
                                         />
                                     ))}
@@ -245,6 +248,7 @@ export const PlacePicker = ({
                                         mapGeoJSON.set(null);
                                         polyGeoJSON.set(null);
                                         questions.set([...questions.get()]);
+                                        void refreshPlayAreaModeFromCurrentLocations();
                                     }}
                                 />
                             </div>
@@ -295,6 +299,7 @@ export const PlacePicker = ({
                                         mapGeoJSON.set(null);
                                         polyGeoJSON.set(null);
                                         questions.set([...questions.get()]);
+                                        void refreshPlayAreaModeFromCurrentLocations();
                                     }}
                                     className="cursor-pointer"
                                 >
@@ -318,6 +323,7 @@ export const PlacePicker = ({
                             polyGeoJSON.set(null);
                             questions.set([]);
                             clearCache(CacheType.ZONE_CACHE);
+                            void refreshPlayAreaModeFromCurrentLocations();
                         }}
                     >
                         Clear Questions & Cache
@@ -330,6 +336,7 @@ export const PlacePicker = ({
                                 polyGeoJSON.set(null);
                                 mapGeoJSON.set(null);
                                 questions.set([...questions.get()]);
+                                void refreshPlayAreaModeFromCurrentLocations();
                             }}
                         >
                             Reuse Preset Locations

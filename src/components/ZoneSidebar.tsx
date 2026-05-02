@@ -38,7 +38,9 @@ import {
     team,
     trainStations,
     useCustomStations as useCustomStationsAtom,
+    playAreaMode,
 } from "@/lib/context";
+import { PLAY_AREA_MODES } from "@/lib/playAreaModes";
 import { cn } from "@/lib/utils";
 import {
     BLANK_GEOJSON,
@@ -106,6 +108,9 @@ export const ZoneSidebar = () => {
     const includeDefaultStations = useStore(includeDefaultStationsAtom);
     const $customStations = useStore(customStationsAtom);
     const $team = useStore(team);
+    const $playAreaMode = useStore(playAreaMode);
+    const modeConfig = PLAY_AREA_MODES[$playAreaMode];
+
     const [hidingZoneModeStationID, setHidingZoneModeStationID] =
         useState<string>("");
     const [stationSearch, setStationSearch] = useState<string>("");
@@ -1069,6 +1074,7 @@ export const ZoneSidebar = () => {
                                         );
                                         const displayName = extractStationLabel(
                                             selected?.properties,
+                                            modeConfig.stationNameStrategy,
                                         );
                                         const id = selected?.properties
                                             .properties.id as string;
@@ -1212,6 +1218,7 @@ export const ZoneSidebar = () => {
                                                 >
                                                     {extractStationLabel(
                                                         station.properties,
+                                                        modeConfig.stationNameStrategy,
                                                     )}
                                                     <button
                                                         onClick={async () => {

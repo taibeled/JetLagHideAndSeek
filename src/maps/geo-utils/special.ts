@@ -5,11 +5,21 @@ export const lngLatToText = (coordinates: [number, number]) => {
     return `${Math.abs(coordinates[1])}°${coordinates[1] > 0 ? "N" : "S"}, ${Math.abs(coordinates[0])}°${coordinates[0] > 0 ? "E" : "W"}`;
 };
 
-export const extractStationName = (stationPlace: any) =>
-    stationPlace.properties["name:en"] || stationPlace.properties.name;
+export const extractStationName = (
+    stationPlace: any,
+    strategy: "english-preferred" | "native-preferred" = "english-preferred",
+) => {
+    if (strategy === "native-preferred") {
+        return stationPlace.properties.name || stationPlace.properties["name:en"];
+    }
+    return stationPlace.properties["name:en"] || stationPlace.properties.name;
+};
 
-export const extractStationLabel = (stationPlace: any) =>
-    extractStationName(stationPlace) ||
+export const extractStationLabel = (
+    stationPlace: any,
+    strategy: "english-preferred" | "native-preferred" = "english-preferred",
+) =>
+    extractStationName(stationPlace, strategy) ||
     lngLatToText(stationPlace.geometry.coordinates);
 
 export const groupObjects = (objects: any[]): any[][] => {

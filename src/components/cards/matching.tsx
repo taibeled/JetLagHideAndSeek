@@ -23,12 +23,14 @@ import {
     questions,
     trainStations,
     triggerLocalRefresh,
+    playAreaMode,
 } from "@/lib/context";
 import {
     matchingNearestPoiCategory,
     type NearestPoiResult,
     resolveMatchingNearestPoi,
 } from "@/lib/nearestPoi";
+import { PLAY_AREA_MODES } from "@/lib/playAreaModes";
 import { cn } from "@/lib/utils";
 import { extractStationLabel } from "@/maps/geo-utils";
 import {
@@ -64,6 +66,9 @@ export const MatchingQuestionComponent = ({
     const $isLoading = useStore(isLoading);
     const $customInitPref = useStore(customInitPreference);
     const $trainStations = useStore(trainStations);
+    const $playAreaMode = useStore(playAreaMode);
+    const modeConfig = PLAY_AREA_MODES[$playAreaMode];
+
     const [customDialogOpen, setCustomDialogOpen] = React.useState(false);
     const [pendingCustomType, setPendingCustomType] = React.useState<
         "custom-zone" | "custom-points" | null
@@ -85,7 +90,10 @@ export const MatchingQuestionComponent = ({
             data.type === "same-length-station" ||
             data.type === "same-train-line"
                 ? stationPoints.map((station) => ({
-                      label: extractStationLabel(station),
+                      label: extractStationLabel(
+                          station,
+                          modeConfig.stationNameStrategy,
+                      ),
                       coordinates: station.geometry.coordinates,
                   }))
                 : undefined,
@@ -121,6 +129,17 @@ export const MatchingQuestionComponent = ({
         };
     }, [nearestPoiKey]);
 
+    React.useEffect(() => {
+        if (data.type !== "zone" && data.type !== "letter-zone") return;
+        const validLevels = modeConfig.matchingZoneLevels.map(
+            (l) => l.adminLevel,
+        );
+        if (!validLevels.includes(data.cat.adminLevel)) {
+            data.cat.adminLevel = modeConfig.defaultMatchingAdminLevel;
+            questionModified();
+        }
+    }, [$playAreaMode, data.type]);
+
     switch (data.type) {
         case "zone":
         case "letter-zone":
@@ -129,17 +148,12 @@ export const MatchingQuestionComponent = ({
                     <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                         <Select
                             trigger="OSM Zone"
-                            options={{
-                                2: "OSM Zone 2 (Country)",
-                                3: "OSM Zone 3 (region in Japan)",
-                                4: "OSM Zone 4 (prefecture in Japan)",
-                                5: "OSM Zone 5",
-                                6: "OSM Zone 6",
-                                7: "OSM Zone 7",
-                                8: "OSM Zone 8",
-                                9: "OSM Zone 9",
-                                10: "OSM Zone 10",
-                            }}
+                            options={Object.fromEntries(
+                                modeConfig.matchingZoneLevels.map((l) => [
+                                    l.adminLevel.toString(),
+                                    l.label,
+                                ]),
+                            )}
                             value={data.cat.adminLevel.toString()}
                             onValueChange={(value) =>
                                 questionModified(
@@ -397,7 +411,10 @@ export const MatchingQuestionComponent = ({
                             }
                             // The category should be defined such that no error is thrown if this is a zone question.
                             if (!(data as any).cat) {
-                                (data as any).cat = { adminLevel: 3 };
+                                (data as any).cat = {
+                                    adminLevel:
+                                        modeConfig.defaultMatchingAdminLevel,
+                                };
                             }
                             questionModified((data.type = value));
                             return;
@@ -410,7 +427,10 @@ export const MatchingQuestionComponent = ({
 
                         // The category should be defined such that no error is thrown if this is a zone question.
                         if (!(data as any).cat) {
-                            (data as any).cat = { adminLevel: 3 };
+                            (data as any).cat = {
+                                adminLevel:
+                                    modeConfig.defaultMatchingAdminLevel,
+                            };
                         }
                         questionModified((data.type = value));
                     }}

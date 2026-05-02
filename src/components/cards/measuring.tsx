@@ -23,12 +23,14 @@ import {
     questions,
     trainStations,
     triggerLocalRefresh,
+    playAreaMode,
 } from "@/lib/context";
 import {
     measuringNearestPoiCategory,
     type NearestPoiResult,
     resolveMeasuringNearestPoi,
 } from "@/lib/nearestPoi";
+import { PLAY_AREA_MODES } from "@/lib/playAreaModes";
 import { cn } from "@/lib/utils";
 import { extractStationLabel } from "@/maps/geo-utils";
 import { determineMeasuringBoundary } from "@/maps/questions/measuring";
@@ -62,6 +64,9 @@ export const MeasuringQuestionComponent = ({
     const $customInitPref = useStore(customInitPreference);
     const $trainStations = useStore(trainStations);
     const $defaultUnit = useStore(defaultUnit);
+    const $playAreaMode = useStore(playAreaMode);
+    const modeConfig = PLAY_AREA_MODES[$playAreaMode];
+
     const [customDialogOpen, setCustomDialogOpen] = React.useState(false);
     const [nearestPoi, setNearestPoi] = React.useState<
         NearestPoiResult | { status: "loading"; category: string }
@@ -79,7 +84,10 @@ export const MeasuringQuestionComponent = ({
         stations:
             data.type === "rail-measure"
                 ? stationPoints.map((station) => ({
-                      label: extractStationLabel(station),
+                      label: extractStationLabel(
+                          station,
+                          modeConfig.stationNameStrategy,
+                      ),
                       coordinates: station.geometry.coordinates,
                   }))
                 : undefined,
@@ -225,14 +233,24 @@ export const MeasuringQuestionComponent = ({
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
                     trigger="Measuring Type"
-                    options={Object.fromEntries(
-                        measuringQuestionSchema.options
-                            .filter((x) => x.description === NO_GROUP)
-                            .flatMap((x) =>
-                                determineUnionizedStrings(x.shape.type),
-                            )
-                            .map((x) => [(x._def as any).value, x.description]),
-                    )}
+                    options={(() => {
+                        const options = Object.fromEntries(
+                            measuringQuestionSchema.options
+                                .filter((x) => x.description === NO_GROUP)
+                                .flatMap((x) =>
+                                    determineUnionizedStrings(x.shape.type),
+                                )
+                                .map((x) => [
+                                    (x._def as any).value,
+                                    x.description,
+                                ]),
+                        );
+                        if (options["highspeed-measure-shinkansen"]) {
+                            options["highspeed-measure-shinkansen"] =
+                                modeConfig.highSpeedRailLabel + " Question";
+                        }
+                        return options;
+                    })()}
                     groups={measuringQuestionSchema.options
                         .filter((x) => x.description !== NO_GROUP)
                         .map((x) => [

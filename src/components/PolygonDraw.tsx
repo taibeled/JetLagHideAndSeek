@@ -20,6 +20,7 @@ import {
     polyGeoJSON,
     questionModified,
     questions,
+    refreshPlayAreaModeFromGeometry,
     save,
 } from "@/lib/context";
 import { CacheType, clearCache } from "@/maps/api";
@@ -276,6 +277,7 @@ export const PolygonDraw = () => {
 
             mapGeoJSON.set(geoJSON);
             polyGeoJSON.set(geoJSON);
+            void refreshPlayAreaModeFromGeometry(geoJSON);
             questions.set([]);
             clearCache(CacheType.ZONE_CACHE);
         } else if (

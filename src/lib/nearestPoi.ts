@@ -7,13 +7,15 @@ import type {
     Point,
 } from "geojson";
 
-import { nearestToQuestion, QuestionSpecificLocation } from "@/maps/api";
+import { playAreaMode } from "@/lib/context";
 import {
     findAirportPointsInPlayZone,
     findCityPointsInPlayZone,
     findHighSpeedRailFeatures,
     findHomeGamePoiPointsInPlayZone,
     findPlacesSpecificInZone,
+    nearestToQuestion,
+    QuestionSpecificLocation,
 } from "@/maps/api";
 import { extractStationLabel, lngLatToText } from "@/maps/geo-utils";
 import type {
@@ -24,6 +26,8 @@ import type {
     MeasuringQuestion,
     Units,
 } from "@/maps/schema";
+
+import { PLAY_AREA_MODES } from "./playAreaModes";
 
 type NamedPoint = Feature<Point, Record<string, any>>;
 
@@ -69,11 +73,15 @@ const fullPoiLocation = (type: string): APILocations | null => {
 const coordinateFallback = (feature: Feature<Point>) =>
     lngLatToText(feature.geometry.coordinates as [number, number]);
 
-export const pointDisplayName = (feature: Feature<Point>): string => {
+export const pointDisplayName = (
+    feature: Feature<Point>,
+    strategy: "english-preferred" | "native-preferred" = "english-preferred",
+): string => {
     const props = feature.properties as Record<string, any> | null;
     const name =
-        props?.["name:en"] ??
-        props?.name ??
+        (strategy === "native-preferred"
+            ? (props?.name ?? props?.["name:en"])
+            : (props?.["name:en"] ?? props?.name)) ??
         (Array.isArray(props?.memberNames) ? props.memberNames[0] : undefined);
     return typeof name === "string" && name.trim()
         ? name
@@ -84,8 +92,9 @@ export const nearestNamedPoint = (
     lat: number,
     lng: number,
     points: FeatureCollection<Point> | Feature<Point>[],
+    strategy: "english-preferred" | "native-preferred" = "english-preferred",
 ): string | null => {
-    return nearestPointDetails(lat, lng, points)?.name ?? null;
+    return nearestPointDetails(lat, lng, points, strategy)?.name ?? null;
 };
 
 type NearestPointDetails = {
@@ -97,6 +106,7 @@ const nearestPointDetails = (
     lat: number,
     lng: number,
     points: FeatureCollection<Point> | Feature<Point>[],
+    strategy: "english-preferred" | "native-preferred" = "english-preferred",
 ): NearestPointDetails | null => {
     const features = Array.isArray(points) ? points : points.features;
     if (features.length === 0) return null;
@@ -106,7 +116,7 @@ const nearestPointDetails = (
         turf.featureCollection(features as NamedPoint[]),
     ) as Feature<Point>;
     return {
-        name: pointDisplayName(nearest),
+        name: pointDisplayName(nearest, strategy),
         point: nearest,
     };
 };
@@ -179,10 +189,11 @@ export const nearestLineDistance = (
 
 const findHomeGameNearestDetails = async (
     question: HomeGameMatchingQuestions | HomeGameMeasuringQuestions,
+    strategy: "english-preferred" | "native-preferred" = "english-preferred",
 ): Promise<NearestPointDetails> => {
     const point = (await nearestToQuestion(question)) as Feature<Point>;
     return {
-        name: pointDisplayName(point),
+        name: pointDisplayName(point, strategy),
         point,
     };
 };
@@ -227,6 +238,10 @@ export async function resolveMatchingNearestPoi(
     const category = matchingNearestPoiCategory(question.type);
     if (!category) return { status: "unsupported" };
 
+    const mode = playAreaMode.get();
+    const modeConfig = PLAY_AREA_MODES[mode];
+    const strategy = modeConfig.stationNameStrategy;
+
     try {
         let name: string | null = null;
 
@@ -235,23 +250,27 @@ export async function resolveMatchingNearestPoi(
                 question.lat,
                 question.lng,
                 await findAirportPointsInPlayZone(),
+                strategy,
             );
         } else if (question.type === "major-city") {
             name = nearestNamedPoint(
                 question.lat,
                 question.lng,
                 await findCityPointsInPlayZone(),
+                strategy,
             );
         } else if (question.type === "custom-points") {
             name = nearestNamedPoint(
                 question.lat,
                 question.lng,
                 (question.geo ?? []) as Feature<Point>[],
+                strategy,
             );
         } else if (isHomeGamePoiType(question.type)) {
             name = (
                 await findHomeGameNearestDetails(
                     question as HomeGameMatchingQuestions,
+                    strategy,
                 )
             ).name;
         } else {
@@ -263,13 +282,14 @@ export async function resolveMatchingNearestPoi(
                     (await findHomeGamePoiPointsInPlayZone(
                         fullLocation,
                     )) as FeatureCollection<Point>,
+                    strategy,
                 );
             } else if (stationPoints.length > 0) {
                 const nearest = turf.nearestPoint(
                     turf.point([question.lng, question.lat]),
                     turf.featureCollection(stationPoints as NamedPoint[]),
                 );
-                name = extractStationLabel(nearest);
+                name = extractStationLabel(nearest, strategy);
             }
         }
 
@@ -289,6 +309,10 @@ export async function resolveMeasuringNearestPoi(
     const category = measuringNearestPoiCategory(question.type);
     if (!category) return { status: "unsupported" };
 
+    const mode = playAreaMode.get();
+    const modeConfig = PLAY_AREA_MODES[mode];
+    const strategy = modeConfig.stationNameStrategy;
+
     try {
         let name: string | null = null;
         let nearestPoint: Feature<Point> | null = null;
@@ -303,6 +327,7 @@ export async function resolveMeasuringNearestPoi(
                     question.lat,
                     question.lng,
                     await findAirportPointsInPlayZone(),
+                    strategy,
                 ),
             );
         } else if (question.type === "city") {
@@ -311,6 +336,7 @@ export async function resolveMeasuringNearestPoi(
                     question.lat,
                     question.lng,
                     await findCityPointsInPlayZone(),
+                    strategy,
                 ),
             );
         } else if (question.type === "highspeed-measure-shinkansen") {
@@ -321,7 +347,7 @@ export async function resolveMeasuringNearestPoi(
                 unit,
             );
             if (distance) {
-                name = "High-speed rail";
+                name = modeConfig.highSpeedRailLabel;
                 return {
                     status: "found",
                     category,
@@ -335,7 +361,12 @@ export async function resolveMeasuringNearestPoi(
                     feature.geometry?.type === "Point",
             );
             setNearest(
-                nearestPointDetails(question.lat, question.lng, features ?? []),
+                nearestPointDetails(
+                    question.lat,
+                    question.lng,
+                    features ?? [],
+                    strategy,
+                ),
             );
         } else if (question.type === "rail-measure") {
             if (stationPoints.length > 0) {
@@ -343,7 +374,7 @@ export async function resolveMeasuringNearestPoi(
                     turf.point([question.lng, question.lat]),
                     turf.featureCollection(stationPoints as NamedPoint[]),
                 ) as Feature<Point>;
-                name = extractStationLabel(nearest);
+                name = extractStationLabel(nearest, strategy);
                 nearestPoint = nearest;
             }
         } else if (question.type === "mcdonalds") {
@@ -354,6 +385,7 @@ export async function resolveMeasuringNearestPoi(
                     await findPlacesSpecificInZone(
                         QuestionSpecificLocation.McDonalds,
                     ),
+                    strategy,
                 ),
             );
         } else if (question.type === "seven11") {
@@ -364,12 +396,14 @@ export async function resolveMeasuringNearestPoi(
                     await findPlacesSpecificInZone(
                         QuestionSpecificLocation.Seven11,
                     ),
+                    strategy,
                 ),
             );
         } else if (isHomeGamePoiType(question.type)) {
             setNearest(
                 await findHomeGameNearestDetails(
                     question as HomeGameMeasuringQuestions,
+                    strategy,
                 ),
             );
         } else {
@@ -382,6 +416,7 @@ export async function resolveMeasuringNearestPoi(
                         (await findHomeGamePoiPointsInPlayZone(
                             fullLocation,
                         )) as FeatureCollection<Point>,
+                        strategy,
                     ),
                 );
             }

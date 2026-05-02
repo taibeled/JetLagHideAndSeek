@@ -19,6 +19,13 @@ import {
     type Units,
 } from "@/maps/schema";
 
+import {
+    detectPlayAreaMode,
+    normalizePlayAreaGeometry,
+} from "./playAreaMode";
+import { PLAY_AREA_MODES } from "./playAreaModes";
+import { type PlayAreaModeId } from "./playAreaModes";
+
 export const mapGeoLocation = persistentAtom<OpenStreetMap>(
     "mapGeoLocation",
     {
@@ -69,6 +76,89 @@ export const polyGeoJSON = persistentAtom<FeatureCollection<
     encode: JSON.stringify,
     decode: JSON.parse,
 });
+
+export const playAreaMode = atom<PlayAreaModeId>("default");
+
+let playAreaModeRecomputeGeneration = 0;
+
+const updatePlayAreaMode = async (
+    resolver: () => Promise<PlayAreaModeId>,
+) => {
+    const generation = ++playAreaModeRecomputeGeneration;
+    try {
+        const mode = await resolver();
+        if (generation === playAreaModeRecomputeGeneration) {
+            playAreaMode.set(mode);
+        }
+    } catch (e) {
+        console.error("Failed to recompute play area mode", e);
+        if (generation === playAreaModeRecomputeGeneration) {
+            playAreaMode.set("default");
+        }
+    }
+};
+
+export const refreshPlayAreaModeFromGeometry = async (
+    playArea: unknown,
+) => {
+    if (typeof window === "undefined") return;
+    const normalized = normalizePlayAreaGeometry(playArea);
+    if (!normalized) return;
+
+    await updatePlayAreaMode(() => detectPlayAreaMode(normalized));
+};
+
+const isOpenStreetMapLocation = (value: unknown): value is OpenStreetMap => {
+    if (!value || typeof value !== "object") return false;
+    const geometry = (value as { geometry?: unknown }).geometry;
+    if (
+        !geometry ||
+        typeof geometry !== "object" ||
+        (geometry as { type?: unknown }).type !== "Point"
+    ) {
+        return false;
+    }
+    const properties = (value as { properties?: unknown }).properties;
+    if (!properties || typeof properties !== "object") return false;
+    const osmId = (properties as { osm_id?: unknown }).osm_id;
+    const osmType = (properties as { osm_type?: unknown }).osm_type;
+    return typeof osmId === "number" && typeof osmType === "string";
+};
+
+export const refreshPlayAreaModeFromCurrentLocations = async () => {
+    if (typeof window === "undefined") return;
+    if (polyGeoJSON.get() !== null) return;
+
+    const currentLocation = mapGeoLocation.get();
+    if (!isOpenStreetMapLocation(currentLocation)) return;
+
+    await updatePlayAreaMode(async () => {
+        const { determineMapBoundaries } = await import("@/maps/api");
+        const boundaries = await determineMapBoundaries();
+        return detectPlayAreaMode(boundaries);
+    });
+};
+
+[
+    mapGeoLocation,
+    additionalMapGeoLocations,
+].forEach((s) => {
+    onSet(s, () => {
+        refreshPlayAreaModeFromCurrentLocations();
+    });
+});
+
+// Initial computation
+if (typeof window !== "undefined") {
+    setTimeout(() => {
+        const poly = polyGeoJSON.get();
+        if (poly !== null) {
+            void refreshPlayAreaModeFromGeometry(poly);
+        } else {
+            void refreshPlayAreaModeFromCurrentLocations();
+        }
+    }, 0);
+}
 
 const QUESTIONS_STORAGE_KEY = "questions";
 const QUESTIONS_STORAGE_BACKUP_KEY = "questions_backup";
@@ -212,9 +302,11 @@ export const questionFinishedMapData = atom<any>(null);
 
 export const trainStations = atom<StationCircle[]>([]);
 onSet(trainStations, ({ newValue }) => {
+    const mode = playAreaMode.get();
+    const strategy = PLAY_AREA_MODES[mode].stationNameStrategy;
     newValue.sort((a, b) => {
-        const aName = (extractStationLabel(a.properties) || "") as string;
-        const bName = (extractStationLabel(b.properties) || "") as string;
+        const aName = (extractStationLabel(a.properties, strategy) || "") as string;
+        const bName = (extractStationLabel(b.properties, strategy) || "") as string;
         return aName.localeCompare(bName);
     });
 });
