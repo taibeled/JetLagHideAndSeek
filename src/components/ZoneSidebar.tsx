@@ -33,12 +33,12 @@ import {
     leafletMapContext,
     mergeDuplicates as mergeDuplicatesAtom,
     planningModeEnabled,
+    playAreaMode,
     questionFinishedMapData,
     questions,
     team,
     trainStations,
     useCustomStations as useCustomStationsAtom,
-    playAreaMode,
 } from "@/lib/context";
 import { PLAY_AREA_MODES } from "@/lib/playAreaModes";
 import { cn } from "@/lib/utils";
@@ -60,8 +60,8 @@ import {
     extractStationName,
     geoSpatialVoronoi,
     holedMask,
-    lngLatToText,
     isLikelyOsmElementId,
+    lngLatToText,
     matchesOperatorSelection,
     mergeDuplicateStation,
     normalizeOsmText,

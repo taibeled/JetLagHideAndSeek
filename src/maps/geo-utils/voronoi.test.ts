@@ -3,7 +3,6 @@ import type { Feature, MultiPolygon, Polygon } from "geojson";
 import { describe, expect, it } from "vitest";
 
 import { assertPolygonalFeatureHasCleanRings } from "../../../tests/leafletPolygonAssertions";
-
 import {
     clippedVoronoiCells,
     finalizePolygonForLeaflet,

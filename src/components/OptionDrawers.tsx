@@ -19,6 +19,8 @@ import {
     DrawerTitle,
     DrawerTrigger,
 } from "@/components/ui/drawer";
+import { getBlob } from "@/lib/cas";
+import { discoverCasServer } from "@/lib/casDiscovery";
 import {
     additionalMapGeoLocations,
     allowGooglePlusCodes,
@@ -59,19 +61,16 @@ import {
     triggerLocalRefresh,
     useCustomStations,
 } from "@/lib/context";
-import { getBlob } from "@/lib/cas";
-import { discoverCasServer } from "@/lib/casDiscovery";
-import {
-    applyWireV1Payload,
-    loadHidingZoneFromJsonString,
-} from "@/lib/loadHidingZone";
 import {
     cloneForWire,
     flushLiveSync,
     initLiveSync,
     setHydrating,
 } from "@/lib/liveSync";
-import { buildWireV1Envelope, canonicalize } from "@/lib/wire";
+import {
+    applyWireV1Payload,
+    loadHidingZoneFromJsonString,
+} from "@/lib/loadHidingZone";
 import {
     cn,
     compress,
@@ -80,8 +79,10 @@ import {
     shareOrFallback,
     uploadToPastebin,
 } from "@/lib/utils";
-import { TeamPanel } from "./TeamPanel";
+import { buildWireV1Envelope, canonicalize } from "@/lib/wire";
+
 import { LatitudeLongitude } from "./LatLngPicker";
+import { TeamPanel } from "./TeamPanel";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import { Input } from "./ui/input";

@@ -1,4 +1,5 @@
 import { useStore } from "@nanostores/react";
+import * as turf from "@turf/turf";
 import type {
     Feature,
     FeatureCollection,
@@ -6,7 +7,6 @@ import type {
     Point,
     Polygon,
 } from "geojson";
-import * as turf from "@turf/turf";
 import { useEffect, useMemo, useState } from "react";
 import {
     CircleMarker,

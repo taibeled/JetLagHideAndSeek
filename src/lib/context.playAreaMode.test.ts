@@ -15,6 +15,8 @@ vi.mock("./playAreaMode", async () => {
     };
 });
 
+import { determineMapBoundaries } from "@/maps/api";
+
 import {
     mapGeoLocation,
     playAreaMode,
@@ -22,7 +24,6 @@ import {
     refreshPlayAreaModeFromCurrentLocations,
     refreshPlayAreaModeFromGeometry,
 } from "./context";
-import { determineMapBoundaries } from "@/maps/api";
 import { detectPlayAreaMode } from "./playAreaMode";
 
 const stubWindow = () => {
