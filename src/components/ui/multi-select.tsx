@@ -74,6 +74,9 @@ interface MultiSelectProps
     /** The default selected values when the component mounts. */
     defaultValue?: string[];
 
+    /** Controlled selected values. */
+    value?: string[];
+
     /**
      * Placeholder text to be displayed when no values are selected.
      * Optional, defaults to "Select options".
@@ -135,6 +138,7 @@ export const MultiSelect = React.forwardRef<
             onValueChange,
             variant,
             defaultValue = [],
+            value,
             placeholder = "Select options",
             animation = 0,
             maxCount = 3,
@@ -146,9 +150,14 @@ export const MultiSelect = React.forwardRef<
         },
         ref,
     ) => {
-        const [selectedValues, setSelectedValues] =
+        const isControlled = value !== undefined;
+        const [internalSelectedValues, setInternalSelectedValues] =
             React.useState<string[]>(defaultValue);
         const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
+        const selectedValues =
+            isControlled && !(commitOnClose && isPopoverOpen)
+                ? value
+                : internalSelectedValues;
         const isPopoverOpenRef = React.useRef(isPopoverOpen);
         const selectedValuesRef = React.useRef(selectedValues);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -160,9 +169,34 @@ export const MultiSelect = React.forwardRef<
 
         const debouncedSelectedValues = useDebounce(selectedValues, debounce);
         React.useEffect(() => {
+            if (isControlled) return;
             if (commitOnClose) return;
             onValueChange(debouncedSelectedValues);
-        }, [debouncedSelectedValues, commitOnClose, onValueChange]);
+        }, [
+            debouncedSelectedValues,
+            commitOnClose,
+            isControlled,
+            onValueChange,
+        ]);
+
+        const setSelectedValues = React.useCallback(
+            (newSelectedValues: string[]) => {
+                selectedValuesRef.current = newSelectedValues;
+                if (
+                    !isControlled ||
+                    (commitOnClose && isPopoverOpenRef.current)
+                ) {
+                    setInternalSelectedValues(newSelectedValues);
+                }
+                if (
+                    isControlled &&
+                    (!commitOnClose || !isPopoverOpenRef.current)
+                ) {
+                    onValueChange(newSelectedValues);
+                }
+            },
+            [commitOnClose, isControlled, onValueChange],
+        );
 
         const handlePopoverOpenChange = React.useCallback(
             (open: boolean) => {
@@ -171,9 +205,9 @@ export const MultiSelect = React.forwardRef<
                         onValueChange([...selectedValuesRef.current]);
                     }
                     if (open) {
-                        const next = [...(defaultValue ?? [])];
+                        const next = [...(value ?? defaultValue ?? [])];
                         selectedValuesRef.current = next;
-                        setSelectedValues(next);
+                        setInternalSelectedValues(next);
                     }
                     isPopoverOpenRef.current = open;
                 }
@@ -182,7 +216,7 @@ export const MultiSelect = React.forwardRef<
                     isPopoverOpenRef.current = open;
                 }
             },
-            [commitOnClose, defaultValue, onValueChange],
+            [commitOnClose, defaultValue, isControlled, onValueChange, value],
         );
 
         const handleInputKeyDown = (
@@ -204,17 +238,15 @@ export const MultiSelect = React.forwardRef<
             const newSelectedValues = selectedValues.includes(option)
                 ? selectedValues.filter((value) => value !== option)
                 : [...selectedValues, option];
-            selectedValuesRef.current = newSelectedValues;
             setSelectedValues(newSelectedValues);
-            if (commitOnClose && !isPopoverOpenRef.current) {
+            if (commitOnClose && !isControlled && !isPopoverOpenRef.current) {
                 onValueChange(newSelectedValues);
             }
         };
 
         const handleClear = () => {
-            selectedValuesRef.current = [];
             setSelectedValues([]);
-            if (commitOnClose && !isPopoverOpenRef.current) {
+            if (commitOnClose && !isControlled && !isPopoverOpenRef.current) {
                 onValueChange([]);
             }
         };
@@ -225,25 +257,30 @@ export const MultiSelect = React.forwardRef<
 
         const clearExtraOptions = () => {
             const newSelectedValues = selectedValues.slice(0, maxCount);
-            selectedValuesRef.current = newSelectedValues;
             setSelectedValues(newSelectedValues);
-            if (commitOnClose && !isPopoverOpenRef.current) {
+            if (commitOnClose && !isControlled && !isPopoverOpenRef.current) {
                 onValueChange(newSelectedValues);
             }
         };
 
         const toggleAll = () => {
             if (selectedValues.length === options.length) {
-                selectedValuesRef.current = [];
                 setSelectedValues([]);
-                if (commitOnClose && !isPopoverOpenRef.current) {
+                if (
+                    commitOnClose &&
+                    !isControlled &&
+                    !isPopoverOpenRef.current
+                ) {
                     onValueChange([]);
                 }
             } else {
                 const allValues = options.map((option) => option.value);
-                selectedValuesRef.current = allValues;
                 setSelectedValues(allValues);
-                if (commitOnClose && !isPopoverOpenRef.current) {
+                if (
+                    commitOnClose &&
+                    !isControlled &&
+                    !isPopoverOpenRef.current
+                ) {
                     onValueChange(allValues);
                 }
             }

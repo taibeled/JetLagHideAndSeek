@@ -31,6 +31,7 @@ import {
     includeDefaultStations as includeDefaultStationsAtom,
     isLoading,
     leafletMapContext,
+    mapGeoLocation,
     mergeDuplicates as mergeDuplicatesAtom,
     planningModeEnabled,
     playAreaMode,
@@ -41,6 +42,13 @@ import {
     useCustomStations as useCustomStationsAtom,
 } from "@/lib/context";
 import { PLAY_AREA_MODES } from "@/lib/playAreaModes";
+import {
+    applyTransitPassProfile,
+    isTokyoTransitPassEligibleLocation,
+    isTransitPassProfileApplied,
+    resetStationSettings,
+    TRANSIT_PASS_PROFILES,
+} from "@/lib/transitPasses";
 import { cn } from "@/lib/utils";
 import {
     BLANK_GEOJSON,
@@ -91,6 +99,11 @@ function _previewText(count: number) {
 
 let buttonJustClicked = false;
 
+const getOsmTag = (
+    properties: Record<string, unknown> | undefined,
+    key: string,
+) => properties?.[key];
+
 export const ZoneSidebar = () => {
     const $displayHidingZones = useStore(displayHidingZones);
     const $questionFinishedMapData = useStore(questionFinishedMapData);
@@ -109,7 +122,9 @@ export const ZoneSidebar = () => {
     const $customStations = useStore(customStationsAtom);
     const $team = useStore(team);
     const $playAreaMode = useStore(playAreaMode);
+    const $mapGeoLocation = useStore(mapGeoLocation);
     const modeConfig = PLAY_AREA_MODES[$playAreaMode];
+    const isTokyoZone = isTokyoTransitPassEligibleLocation($mapGeoLocation);
 
     const [hidingZoneModeStationID, setHidingZoneModeStationID] =
         useState<string>("");
@@ -131,8 +146,8 @@ export const ZoneSidebar = () => {
                 | Record<string, unknown>
                 | undefined;
             const key =
-                normalizeOsmText(props?.operator) ??
-                normalizeOsmText(props?.network);
+                normalizeOsmText(getOsmTag(props, "operator")) ??
+                normalizeOsmText(getOsmTag(props, "network"));
             if (!key) continue;
             counts.set(key, (counts.get(key) ?? 0) + 1);
         }
@@ -630,6 +645,66 @@ export const ZoneSidebar = () => {
                                 Warning: This feature can drastically slow down
                                 your device.
                             </SidebarMenuItem>
+                            {isTokyoZone && (
+                                <SidebarMenuItem
+                                    className={MENU_ITEM_CLASSNAME}
+                                >
+                                    <div className="flex w-full flex-col gap-2">
+                                        <Label className="font-semibold font-poppins">
+                                            Transit passes
+                                        </Label>
+                                        {TRANSIT_PASS_PROFILES.map(
+                                            (profile) => {
+                                                const added =
+                                                    isTransitPassProfileApplied(
+                                                        profile,
+                                                        $displayHidingZoneOperators,
+                                                    );
+                                                return (
+                                                    <Button
+                                                        key={profile.id}
+                                                        type="button"
+                                                        variant={
+                                                            added
+                                                                ? "secondary"
+                                                                : "outline"
+                                                        }
+                                                        className="h-auto w-full justify-between whitespace-normal px-3 py-2 text-left"
+                                                        disabled={$isLoading}
+                                                        onClick={() => {
+                                                            applyTransitPassProfile(
+                                                                profile,
+                                                            );
+                                                            toast.success(
+                                                                `${profile.label} settings added`,
+                                                                {
+                                                                    autoClose: 2000,
+                                                                },
+                                                            );
+                                                        }}
+                                                    >
+                                                        <span className="flex flex-col gap-0.5">
+                                                            <span className="font-semibold">
+                                                                {profile.label}
+                                                            </span>
+                                                            <span className="text-xs font-normal text-muted-foreground">
+                                                                {
+                                                                    profile.description
+                                                                }
+                                                            </span>
+                                                        </span>
+                                                        {added && (
+                                                            <span className="shrink-0 text-xs font-semibold text-green-500">
+                                                                Added
+                                                            </span>
+                                                        )}
+                                                    </Button>
+                                                );
+                                            },
+                                        )}
+                                    </div>
+                                </SidebarMenuItem>
+                            )}
                             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                                 <div className="flex flex-row items-center justify-between w-full">
                                     <Label className="font-semibold font-poppins">
@@ -908,7 +983,7 @@ export const ZoneSidebar = () => {
                                     onValueChange={
                                         displayHidingZonesOptions.set
                                     }
-                                    defaultValue={$displayHidingZonesOptions}
+                                    value={$displayHidingZonesOptions}
                                     placeholder="Select allowed places"
                                     animation={2}
                                     maxCount={3}
@@ -927,8 +1002,10 @@ export const ZoneSidebar = () => {
                                 </Label>
                                 <MultiSelect
                                     options={operatorSelectOptions}
-                                    onValueChange={displayHidingZoneOperators.set}
-                                    defaultValue={$displayHidingZoneOperators}
+                                    onValueChange={
+                                        displayHidingZoneOperators.set
+                                    }
+                                    value={$displayHidingZoneOperators}
                                     placeholder="All operators"
                                     animation={2}
                                     maxCount={3}
@@ -938,8 +1015,8 @@ export const ZoneSidebar = () => {
                                     disabled={operatorPickerDisabled}
                                 />
                                 <p className="mt-1 text-xs text-muted-foreground">
-                                    Auto-detected from OpenStreetMap; availability
-                                    varies by region.
+                                    Auto-detected from OpenStreetMap;
+                                    availability varies by region.
                                 </p>
                                 {operatorPickerDisabled &&
                                     canFetchDefaultStations &&
@@ -958,7 +1035,8 @@ export const ZoneSidebar = () => {
                                                 {operatorFilterStats.before}{" "}
                                                 stations match
                                             </span>
-                                            {operatorFilterStats.after === 0 && (
+                                            {operatorFilterStats.after ===
+                                                0 && (
                                                 <Button
                                                     type="button"
                                                     variant="link"
@@ -1004,6 +1082,22 @@ export const ZoneSidebar = () => {
                                         }}
                                     />
                                 </div>
+                            </SidebarMenuItem>
+                            <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    className="w-full"
+                                    disabled={$isLoading}
+                                    onClick={() => {
+                                        resetStationSettings();
+                                        toast.info("Station settings reset", {
+                                            autoClose: 2000,
+                                        });
+                                    }}
+                                >
+                                    Reset station settings
+                                </Button>
                             </SidebarMenuItem>
                             {$displayHidingZones && stations.length > 0 && (
                                 <SidebarMenuItem

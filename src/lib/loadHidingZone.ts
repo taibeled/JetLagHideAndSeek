@@ -4,11 +4,14 @@ import {
     additionalMapGeoLocations,
     customPresets,
     customStations,
+    defaultUnit,
     disabledStations,
     displayHidingZoneOperators,
     displayHidingZones,
     displayHidingZonesOptions,
+    displayHidingZonesStyle,
     hidingRadius,
+    hidingRadiusUnits,
     includeDefaultStations,
     mapGeoJSON,
     mapGeoLocation,
@@ -26,7 +29,31 @@ import {
     teamSchema,
     wireV1SnapshotSchema,
 } from "@/lib/wire";
-import { questionsSchema } from "@/maps/schema";
+import { questionsSchema, type Units } from "@/maps/schema";
+
+type DisplayHidingZonesStyle =
+    | "zones"
+    | "stations"
+    | "no-overlap"
+    | "no-display";
+
+const UNIT_VALUES = ["miles", "kilometers", "meters"] as const;
+const DISPLAY_HIDING_ZONES_STYLE_VALUES = [
+    "zones",
+    "stations",
+    "no-overlap",
+    "no-display",
+] as const;
+
+const isUnit = (value: unknown): value is Units =>
+    typeof value === "string" &&
+    (UNIT_VALUES as readonly string[]).includes(value);
+
+const isDisplayHidingZonesStyle = (
+    value: unknown,
+): value is DisplayHidingZonesStyle =>
+    typeof value === "string" &&
+    (DISPLAY_HIDING_ZONES_STYLE_VALUES as readonly string[]).includes(value);
 
 export function applyWireV1Payload(jsonText: string) {
     const snap = wireV1SnapshotSchema.parse(JSON.parse(jsonText));
@@ -118,8 +145,23 @@ export function applyHidingZoneGeojson(geojson: Record<string, unknown>) {
         disabledStations.set(geojson.disabledStations as never);
     }
 
-    if (geojson.hidingRadius !== null && geojson.hidingRadius !== undefined) {
-        hidingRadius.set(geojson.hidingRadius as number);
+    if (
+        typeof geojson.hidingRadius === "number" &&
+        Number.isFinite(geojson.hidingRadius)
+    ) {
+        hidingRadius.set(geojson.hidingRadius);
+    }
+
+    if (isUnit(geojson.hidingRadiusUnits)) {
+        hidingRadiusUnits.set(geojson.hidingRadiusUnits);
+    }
+
+    if (isUnit(geojson.defaultUnit)) {
+        defaultUnit.set(geojson.defaultUnit);
+    }
+
+    if (isDisplayHidingZonesStyle(geojson.displayHidingZonesStyle)) {
+        displayHidingZonesStyle.set(geojson.displayHidingZonesStyle);
     }
 
     if (geojson.zoneOptions) {

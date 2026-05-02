@@ -486,6 +486,8 @@ export const hidingZone = computed(
         customPresets,
         permanentOverlay,
         team,
+        defaultUnit,
+        displayHidingZonesStyle,
     ],
     (
         q,
@@ -504,6 +506,8 @@ export const hidingZone = computed(
         presets,
         $permanentOverlay,
         $team,
+        unit,
+        zonesStyle,
     ) => {
         const withTeam = <T extends Record<string, unknown>>(base: T) =>
             $team ? { ...base, team: $team } : base;
@@ -523,6 +527,8 @@ export const hidingZone = computed(
                 includeDefaultStations: includeDefault,
                 presets: structuredClone(presets),
                 permanentOverlay: $permanentOverlay,
+                defaultUnit: unit,
+                displayHidingZonesStyle: zonesStyle,
             });
         }
         const $loc = structuredClone(loc);
@@ -542,6 +548,8 @@ export const hidingZone = computed(
             includeDefaultStations: includeDefault,
             presets: structuredClone(presets),
             permanentOverlay: $permanentOverlay,
+            defaultUnit: unit,
+            displayHidingZonesStyle: zonesStyle,
         });
     },
 );

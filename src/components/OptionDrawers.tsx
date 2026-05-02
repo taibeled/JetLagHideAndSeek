@@ -164,7 +164,6 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $casServerUrl = useStore(casServerUrl);
     const $casStatus = useStore(casServerStatus);
     const $liveSyncEnabled = useStore(liveSyncEnabled);
-    const lastDefaultUnit = useRef($defaultUnit);
     const hasSyncedInitialUnit = useRef(false);
     const [isOptionsOpen, setOptionsOpen] = useState(false);
     const [clientMounted, setClientMounted] = useState(false);
@@ -277,11 +276,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
             if (hidingRadiusUnits.get() !== currentDefault) {
                 hidingRadiusUnits.set(currentDefault);
             }
-        } else if (lastDefaultUnit.current !== currentDefault) {
-            hidingRadiusUnits.set(currentDefault);
         }
-
-        lastDefaultUnit.current = currentDefault;
     }, [$defaultUnit]);
 
     useEffect(() => {
@@ -695,7 +690,10 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                             <Label>Default Unit</Label>
                             <UnitSelect
                                 unit={$defaultUnit}
-                                onChange={defaultUnit.set}
+                                onChange={(unit) => {
+                                    defaultUnit.set(unit);
+                                    hidingRadiusUnits.set(unit);
+                                }}
                             />
                             <Separator className="bg-slate-300 w-[280px]" />
                             <Label>New Custom Question Defaults</Label>
