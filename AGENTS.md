@@ -27,7 +27,7 @@ Notes:
 
 - `pnpm start:app` builds the frontend and server, then serves both the PWA and CAS API on port `8787`.
 - `pnpm start:stack` expects `pnpm build:all` to have already produced `dist/` and `server/dist/`.
-- `pnpm lint` runs ESLint with `--fix` on `src` and then Prettier over the repo, so expect formatting changes.
+- `pnpm lint` runs ESLint with `--fix` on `src` (not `tests/`) and then Prettier over the repo, so expect formatting changes.
 - Root `package.json` declares Node `<25`; server declares Node `>=18`.
 
 ## Running Locally
@@ -62,9 +62,18 @@ Then configure the app's Options -> Game state server URL if CAS is not same-ori
 - `src/components/QuestionSidebar.tsx` and `src/components/cards/*` render/edit question cards.
 - `src/components/ZoneSidebar.tsx` handles hiding-zone/station discovery controls.
 - `src/components/OptionDrawers.tsx` handles sharing, CAS discovery, `?sid=`, team sync, local storage stats, and app options.
+- `src/components/TutorialDialog.tsx` provides an interactive walkthrough of all features and question types.
+- `src/components/DraggableMarkers.tsx` renders draggable station markers on the map (uses remote CDN marker icons, not local assets).
+- `src/components/PlacePicker.tsx` is the top-of-page geocoder for centering the map.
+- `src/components/LatLngPicker.tsx` lets users pick custom coordinate points.
+- `src/components/PolygonDraw.tsx` wraps Leaflet draw for creating custom polygons.
+- `src/components/PoiCandidatesLayer.tsx` renders POI markers (museums, parks, etc.) on the map.
 - `src/lib/context.ts` is the central state registry. Many stores are persistent atoms backed by `localStorage`.
 - `src/lib/liveSync.ts` uploads canonical wire snapshots to CAS. It deliberately waits until all questions are locked unless forced by Share.
-- `server/src/app.ts` exposes `/api/cas/*`, `/api/teams/*`, and optionally serves the built Astro app.
+- `src/lib/cas.ts` and `src/lib/casDiscovery.ts` handle CAS client operations and SID-based URL discovery.
+- `src/lib/nearestPoi.ts` provides POI name resolution and distance formatting helpers.
+- `src/lib/playAreaModes.ts` defines play area behavioral modes.
+- `server/src/app.ts` exposes `/api/cas/*`, `/api/teams/*`, and optionally serves the built Astro app. See [server/README.md](server/README.md).
 
 ## State And Sharing
 
@@ -80,6 +89,7 @@ Then configure the app's Options -> Game state server URL if CAS is not same-ori
 - `src/maps/index.ts` applies questions sequentially. In planning mode, unlocked questions produce planning polygons and are skipped for elimination.
 - `sanitizeGeoJSONForLeaflet` exists because Leaflet can choke on some valid GeoJSON shapes. Use existing sanitizers/helpers before adding ad hoc geometry fixes.
 - Some map data comes from browser/network APIs: geocoding, Overpass, map tiles, ArcGIS/Turf transforms, and station discovery. Tests should avoid depending on live network unless explicitly designed for it.
+- `public/coastline50.geojson` (~3.9 MB) is used for coastline distance elimination. It is the largest tracked file in the repo.
 - The PWA service worker is configured to use `NetworkOnly` for CAS/team API routes. Keep API routes out of precache/offline behavior.
 
 ## Code Style

@@ -7,7 +7,7 @@ A tool to trivially generate interactive maps for viewing hiding possibilities i
 - Thermometer
     - All
 - Matching
-    - Same occupance of custom zone
+     - Same occupancy of custom zone
     - Same nearest of custom points
     - Same zone (i.e., same region or prefecture)
     - Same first letter of zone
@@ -89,7 +89,7 @@ make tailscale_serve_reset
 
 ## Contributing
 
-This project has evolved significantly, encompassing over 10,000 lines of code. Many intricate features have been developed, so therefore contributions are very much welcome. If you find a bug, please either file an issue or create a pull request. Furthermore, enhancements/feature requests are necessary to keep developing this project, so developments of those would also be appreciated. Here is a list of some suggestions for those wanting to help develop this tool:
+This project has evolved significantly, encompassing nearly 20,000 lines of code. Many intricate features have been developed, so therefore contributions are very much welcome. If you find a bug, please either file an issue or create a pull request. Furthermore, enhancements/feature requests are necessary to keep developing this project, so developments of those would also be appreciated. Here is a list of some suggestions for those wanting to help develop this tool:
 
 - [ ] Adding more questions (https://github.com/taibeled/JetLagHideAndSeek/issues/9, https://github.com/taibeled/JetLagHideAndSeek/issues/32, https://github.com/taibeled/JetLagHideAndSeek/issues/34)
 - [ ] Refactoring code
@@ -103,36 +103,33 @@ Even if you're not a programmer, you can still help by further documenting the u
 
 ## Developer Workflow
 
-To develop this website, you need to have [git](https://git-scm.com/downloads), [Node.js](https://nodejs.org/) (version 24 or earlier), and [pnpm](https://pnpm.io/installation) installed. You should then start by cloning this repository and entering the directory:
+The app is built with [Astro](https://astro.build/) (static PWA), [React](https://react.dev/), [Tailwind CSS](https://tailwindcss.com/), [Leaflet](https://leafletjs.com/), [Turf](https://turfjs.org/), and [Nanostores](https://github.com/nanostores/nanostores). The server uses [Fastify](https://fastify.dev/).
+
+To develop, you need [git](https://git-scm.com/downloads), [Node.js](https://nodejs.org/) (version 24 or earlier), and [pnpm](https://pnpm.io/installation).
 
 ```bash
 git clone https://github.com/taibeled/JetLagHideAndSeek.git
 cd JetLagHideAndSeek
-```
-
-Next, use `pnpm` to install the dependencies:
-
-```bash
 pnpm install
+pnpm --dir server install
 ```
 
-You can now host the website as you make modifications:
+Start the dev server (frontend only, with hot reload):
 
 ```bash
 pnpm dev
 ```
 
-To run a **production-style** stack (built static PWA + CAS API on one port, default `8787`):
+For a **production-style** stack (built PWA + CAS API on one port), see [Quickstart](#quickstart) above, or use `pnpm start:stack` after `pnpm build:all`. See [server/README.md](server/README.md) for environment variables and API details.
+
+Running tests:
 
 ```bash
-pnpm install
-pnpm --dir server install
-pnpm start:app
+pnpm test                 # frontend/unit tests
+pnpm --dir server test    # server tests
 ```
 
-Use `pnpm start:stack` if you already ran `pnpm build:all` and only want to restart the server. See [server/README.md](server/README.md) for environment variables and API details.
-
-After making any modifications, please run `pnpm lint` to have your code automatically formatted and errors spotted.
+After making modifications, run `pnpm lint` to auto-format and check for errors.
 
 ## Contributors
 
