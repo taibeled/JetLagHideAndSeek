@@ -1,0 +1,7620 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-05-03T11:49:10Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "node",
+  "id": 1926376076,
+  "lat": 35.7383242,
+  "lon": 139.6893660,
+  "tags": {
+    "loc_ref": "2",
+    "name": "千川",
+    "name:en": "Senkawa",
+    "name:es": "Senkawa",
+    "name:ja": "千川",
+    "name:ja-Hira": "せんかわ",
+    "name:ja_rm": "Senkawa",
+    "name:ko": "센카와",
+    "name:ru": "Сэнкава",
+    "operator": "東京メトロ",
+    "public_transport": "station",
+    "railway": "station",
+    "ref": "F07;Y07",
+    "station": "subway",
+    "subway": "yes",
+    "wheelchair": "yes",
+    "wikidata": "Q128304",
+    "wikipedia": "ja:千川駅"
+  }
+},
+{
+  "type": "node",
+  "id": 1926376084,
+  "lat": 35.7332405,
+  "lon": 139.6986842,
+  "tags": {
+    "colour": "yellow",
+    "name": "要町",
+    "name:en": "Kanamecho",
+    "name:es": "Kanamecho",
+    "name:ja": "要町",
+    "name:ja-Hira": "かなめちょう",
+    "name:ja_rm": "Kanamechō",
+    "name:ko": "가나메초",
+    "name:ru": "Канамэтё",
+    "operator": "東京地下鉄",
+    "public_transport": "station",
+    "railway": "station",
+    "ref": "Y08;F08",
+    "station": "subway",
+    "subway": "yes",
+    "transport": "subway",
+    "wheelchair": "yes",
+    "wikidata": "Q128296",
+    "wikipedia": "ja:要町駅"
+  }
+},
+{
+  "type": "node",
+  "id": 1951952351,
+  "lat": 35.6826222,
+  "lon": 139.7046232
+},
+{
+  "type": "node",
+  "id": 1951952352,
+  "lat": 35.6723649,
+  "lon": 139.7080412
+},
+{
+  "type": "node",
+  "id": 1951952353,
+  "lat": 35.6663354,
+  "lon": 139.7038353
+},
+{
+  "type": "node",
+  "id": 1951952354,
+  "lat": 35.6882043,
+  "lon": 139.7030522
+},
+{
+  "type": "node",
+  "id": 1951952355,
+  "lat": 35.6879058,
+  "lon": 139.7029477
+},
+{
+  "type": "node",
+  "id": 1951952356,
+  "lat": 35.6802006,
+  "lon": 139.7044981
+},
+{
+  "type": "node",
+  "id": 1951952357,
+  "lat": 35.6729773,
+  "lon": 139.7079983
+},
+{
+  "type": "node",
+  "id": 1951952358,
+  "lat": 35.6726477,
+  "lon": 139.7080404
+},
+{
+  "type": "node",
+  "id": 1951952359,
+  "lat": 35.6643678,
+  "lon": 139.7024917
+},
+{
+  "type": "node",
+  "id": 1951952360,
+  "lat": 35.6717832,
+  "lon": 139.7078936
+},
+{
+  "type": "node",
+  "id": 1951952361,
+  "lat": 35.6876046,
+  "lon": 139.7029281
+},
+{
+  "type": "node",
+  "id": 1951952362,
+  "lat": 35.6668345,
+  "lon": 139.7042046
+},
+{
+  "type": "node",
+  "id": 1951952364,
+  "lat": 35.6852218,
+  "lon": 139.7036021
+},
+{
+  "type": "node",
+  "id": 1951952365,
+  "lat": 35.6609165,
+  "lon": 139.7022764,
+  "tags": {
+    "railway": "switch"
+  }
+},
+{
+  "type": "node",
+  "id": 1951952366,
+  "lat": 35.6772914,
+  "lon": 139.7062361
+},
+{
+  "type": "node",
+  "id": 1951952368,
+  "lat": 35.6709681,
+  "lon": 139.7073388
+},
+{
+  "type": "node",
+  "id": 1951952369,
+  "lat": 35.6720494,
+  "lon": 139.7079830
+},
+{
+  "type": "node",
+  "id": 1951952371,
+  "lat": 35.6919958,
+  "lon": 139.7056182
+},
+{
+  "type": "node",
+  "id": 1951952373,
+  "lat": 35.6696872,
+  "lon": 139.7063153
+},
+{
+  "type": "node",
+  "id": 1951952374,
+  "lat": 35.6752171,
+  "lon": 139.7068180
+},
+{
+  "type": "node",
+  "id": 1951952375,
+  "lat": 35.6676378,
+  "lon": 139.7048145
+},
+{
+  "type": "node",
+  "id": 1951952376,
+  "lat": 35.6702141,
+  "lon": 139.7067145
+},
+{
+  "type": "node",
+  "id": 1951952377,
+  "lat": 35.6714954,
+  "lon": 139.7077496
+},
+{
+  "type": "node",
+  "id": 1951952378,
+  "lat": 35.6640884,
+  "lon": 139.7023675
+},
+{
+  "type": "node",
+  "id": 1951952380,
+  "lat": 35.6794157,
+  "lon": 139.7047689
+},
+{
+  "type": "node",
+  "id": 1951952381,
+  "lat": 35.6651779,
+  "lon": 139.7030055
+},
+{
+  "type": "node",
+  "id": 1951952383,
+  "lat": 35.6906889,
+  "lon": 139.7048163,
+  "tags": {
+    "name": "新宿三丁目",
+    "name:en": "Shinjuku-sanchome",
+    "name:es": "Shinjuku-sanchome",
+    "name:ja": "新宿三丁目",
+    "name:ja-Hira": "しんじゅくさんちょうめ",
+    "name:ja_rm": "Shinjuku sanchōme",
+    "name:ru": "Синдзюку Сантёмэ",
+    "operator": "東京地下鉄",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "ref": "F13",
+    "subway": "yes",
+    "wheelchair": "no",
+    "wheelchair:description": "A2出口です。向かいの伊勢丹出口か大塚家具側にエレベーターあります。",
+    "wikidata": "Q1147009",
+    "wikipedia": "ja:新宿三丁目駅"
+  }
+},
+{
+  "type": "node",
+  "id": 1951952384,
+  "lat": 35.6796618,
+  "lon": 139.7046402
+},
+{
+  "type": "node",
+  "id": 1951952385,
+  "lat": 35.6798596,
+  "lon": 139.7045750
+},
+{
+  "type": "node",
+  "id": 1951952387,
+  "lat": 35.6749339,
+  "lon": 139.7069173
+},
+{
+  "type": "node",
+  "id": 1951952388,
+  "lat": 35.6670931,
+  "lon": 139.7043917
+},
+{
+  "type": "node",
+  "id": 1951952389,
+  "lat": 35.6778181,
+  "lon": 139.7059804
+},
+{
+  "type": "node",
+  "id": 1951952390,
+  "lat": 35.6619245,
+  "lon": 139.7022441
+},
+{
+  "type": "node",
+  "id": 1951952391,
+  "lat": 35.6691983,
+  "lon": 139.7059778
+},
+{
+  "type": "node",
+  "id": 1951952392,
+  "lat": 35.6745395,
+  "lon": 139.7071184
+},
+{
+  "type": "node",
+  "id": 1951952393,
+  "lat": 35.6606054,
+  "lon": 139.7022935
+},
+{
+  "type": "node",
+  "id": 1951952394,
+  "lat": 35.6758142,
+  "lon": 139.7066410
+},
+{
+  "type": "node",
+  "id": 1951952395,
+  "lat": 35.6740950,
+  "lon": 139.7074001
+},
+{
+  "type": "node",
+  "id": 1951952396,
+  "lat": 35.6776525,
+  "lon": 139.7060689
+},
+{
+  "type": "node",
+  "id": 1951952397,
+  "lat": 35.6811935,
+  "lon": 139.7045623
+},
+{
+  "type": "node",
+  "id": 1951952398,
+  "lat": 35.6844288,
+  "lon": 139.7040017
+},
+{
+  "type": "node",
+  "id": 1951952399,
+  "lat": 35.6832349,
+  "lon": 139.7045650
+},
+{
+  "type": "node",
+  "id": 1951952400,
+  "lat": 35.6838754,
+  "lon": 139.7043210
+},
+{
+  "type": "node",
+  "id": 1951952401,
+  "lat": 35.6835857,
+  "lon": 139.7044444
+},
+{
+  "type": "node",
+  "id": 1951952402,
+  "lat": 35.6637855,
+  "lon": 139.7022736
+},
+{
+  "type": "node",
+  "id": 1951952403,
+  "lat": 35.6735677,
+  "lon": 139.7077461
+},
+{
+  "type": "node",
+  "id": 1951952404,
+  "lat": 35.6846771,
+  "lon": 139.7038435
+},
+{
+  "type": "node",
+  "id": 1951952405,
+  "lat": 35.6884308,
+  "lon": 139.7031971
+},
+{
+  "type": "node",
+  "id": 1951952406,
+  "lat": 35.6634852,
+  "lon": 139.7022047
+},
+{
+  "type": "node",
+  "id": 1951952407,
+  "lat": 35.6869690,
+  "lon": 139.7030710
+},
+{
+  "type": "node",
+  "id": 1951952408,
+  "lat": 35.6646332,
+  "lon": 139.7026357
+},
+{
+  "type": "node",
+  "id": 1951952409,
+  "lat": 35.6659913,
+  "lon": 139.7036021
+},
+{
+  "type": "node",
+  "id": 1951953891,
+  "lat": 35.6939662,
+  "lon": 139.7067376
+},
+{
+  "type": "node",
+  "id": 1951953892,
+  "lat": 35.6953094,
+  "lon": 139.7070143
+},
+{
+  "type": "node",
+  "id": 1951953893,
+  "lat": 35.6942488,
+  "lon": 139.7068226
+},
+{
+  "type": "node",
+  "id": 1951953894,
+  "lat": 35.6969526,
+  "lon": 139.7073300
+},
+{
+  "type": "node",
+  "id": 1951953895,
+  "lat": 35.7005334,
+  "lon": 139.7080317
+},
+{
+  "type": "node",
+  "id": 1951953896,
+  "lat": 35.6977314,
+  "lon": 139.7074909,
+  "tags": {
+    "railway": "switch"
+  }
+},
+{
+  "type": "node",
+  "id": 1951953897,
+  "lat": 35.6936497,
+  "lon": 139.7065839
+},
+{
+  "type": "node",
+  "id": 1951953898,
+  "lat": 35.6989330,
+  "lon": 139.7076950,
+  "tags": {
+    "name": "東新宿",
+    "name:en": "Higashi-shinjuku",
+    "name:es": "Higashi-shinjuku",
+    "name:ja": "東新宿",
+    "name:ja-Hira": "ひがししんじゅく",
+    "name:ja_rm": "Higashi Shinjuku",
+    "name:ko": "히가시신주쿠",
+    "operator": "東京地下鉄",
+    "platforms": "2",
+    "public_transport": "station",
+    "railway": "station",
+    "ref": "F12",
+    "station": "subway",
+    "subway": "yes",
+    "wheelchair": "yes",
+    "wikidata": "Q112503",
+    "wikipedia": "ja:東新宿駅"
+  }
+},
+{
+  "type": "node",
+  "id": 1951954570,
+  "lat": 35.7079175,
+  "lon": 139.7090644,
+  "tags": {
+    "name": "西早稲田",
+    "name:en": "Nishi-waseda",
+    "name:es": "Nishi-waseda",
+    "name:ja": "西早稲田",
+    "name:ja-Hira": "にしわせだ",
+    "name:ja_rm": "Nishi Waseda",
+    "name:ko": "니시와세다",
+    "name:ru": "Ниси-Васэда",
+    "operator": "東京地下鉄",
+    "platforms": "2",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "ref": "F11",
+    "station": "subway",
+    "subway": "yes",
+    "wikidata": "Q128305",
+    "wikipedia": "ja:西早稲田駅"
+  }
+},
+{
+  "type": "node",
+  "id": 1951954574,
+  "lat": 35.7107180,
+  "lon": 139.7098034
+},
+{
+  "type": "node",
+  "id": 1951954577,
+  "lat": 35.7034275,
+  "lon": 139.7084819
+},
+{
+  "type": "node",
+  "id": 1951954579,
+  "lat": 35.7065010,
+  "lon": 139.7088933
+},
+{
+  "type": "node",
+  "id": 1951954581,
+  "lat": 35.7085575,
+  "lon": 139.7091570
+},
+{
+  "type": "node",
+  "id": 1951954583,
+  "lat": 35.7048784,
+  "lon": 139.7086868
+},
+{
+  "type": "node",
+  "id": 1951954586,
+  "lat": 35.7019537,
+  "lon": 139.7082182
+},
+{
+  "type": "node",
+  "id": 1951954587,
+  "lat": 35.7093585,
+  "lon": 139.7093922
+},
+{
+  "type": "node",
+  "id": 1951959606,
+  "lat": 35.7262666,
+  "lon": 139.7173377
+},
+{
+  "type": "node",
+  "id": 1951959607,
+  "lat": 35.7188629,
+  "lon": 139.7137937
+},
+{
+  "type": "node",
+  "id": 1951959608,
+  "lat": 35.7187167,
+  "lon": 139.7136629
+},
+{
+  "type": "node",
+  "id": 1951959610,
+  "lat": 35.7171186,
+  "lon": 139.7126814
+},
+{
+  "type": "node",
+  "id": 1951959611,
+  "lat": 35.7246640,
+  "lon": 139.7174289
+},
+{
+  "type": "node",
+  "id": 1951959612,
+  "lat": 35.7240009,
+  "lon": 139.7174057
+},
+{
+  "type": "node",
+  "id": 1951959613,
+  "lat": 35.7328640,
+  "lon": 139.7017112
+},
+{
+  "type": "node",
+  "id": 1951959614,
+  "lat": 35.7270639,
+  "lon": 139.7171109
+},
+{
+  "type": "node",
+  "id": 1951959615,
+  "lat": 35.7276030,
+  "lon": 139.7166744
+},
+{
+  "type": "node",
+  "id": 1951959616,
+  "lat": 35.7298420,
+  "lon": 139.7127752
+},
+{
+  "type": "node",
+  "id": 1951959617,
+  "lat": 35.7295658,
+  "lon": 139.7134465
+},
+{
+  "type": "node",
+  "id": 1951959618,
+  "lat": 35.7293546,
+  "lon": 139.7138444
+},
+{
+  "type": "node",
+  "id": 1951959619,
+  "lat": 35.7235010,
+  "lon": 139.7172725
+},
+{
+  "type": "node",
+  "id": 1951959621,
+  "lat": 35.7297506,
+  "lon": 139.7130161
+},
+{
+  "type": "node",
+  "id": 1951959622,
+  "lat": 35.7127930,
+  "lon": 139.7104329
+},
+{
+  "type": "node",
+  "id": 1951959623,
+  "lat": 35.7202465,
+  "lon": 139.7147782,
+  "tags": {
+    "name": "雑司が谷",
+    "name:en": "Zoshigaya",
+    "name:es": "Zoshigaya",
+    "name:ja": "雑司が谷",
+    "name:ja-Hira": "ぞうしがや",
+    "name:ja_rm": "Zōshigaya",
+    "name:ko": "조시가야",
+    "operator": "東京地下鉄",
+    "platforms": "2",
+    "public_transport": "station",
+    "railway": "station",
+    "ref": "F10",
+    "station": "subway",
+    "subway": "yes",
+    "wikidata": "Q128312",
+    "wikipedia": "ja:雑司が谷駅"
+  }
+},
+{
+  "type": "node",
+  "id": 1951959624,
+  "lat": 35.7312233,
+  "lon": 139.7089976,
+  "tags": {
+    "loc_ref": "3",
+    "name": "池袋",
+    "name:en": "Ikebukuro",
+    "name:es": "Ikebukuro",
+    "name:fr": "Ikebukuro",
+    "name:ja": "池袋03",
+    "name:ja-Hira": "いけぶくろ",
+    "name:ja-Latn": "Ikebukuro",
+    "name:ru": "Икэбукуро",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "ref": "F09",
+    "subway": "yes",
+    "wikidata": "Q173919",
+    "wikipedia": "ja:池袋駅"
+  }
+},
+{
+  "type": "node",
+  "id": 1951959625,
+  "lat": 35.7180707,
+  "lon": 139.7131161
+},
+{
+  "type": "node",
+  "id": 1951959627,
+  "lat": 35.7329577,
+  "lon": 139.7002601
+},
+{
+  "type": "node",
+  "id": 1951959629,
+  "lat": 35.7153844,
+  "lon": 139.7118731
+},
+{
+  "type": "node",
+  "id": 1951959632,
+  "lat": 35.7319963,
+  "lon": 139.7063057
+},
+{
+  "type": "node",
+  "id": 1951959633,
+  "lat": 35.7283461,
+  "lon": 139.7154897
+},
+{
+  "type": "node",
+  "id": 1951959634,
+  "lat": 35.7272837,
+  "lon": 139.7169698
+},
+{
+  "type": "node",
+  "id": 1951959635,
+  "lat": 35.7184535,
+  "lon": 139.7134110
+},
+{
+  "type": "node",
+  "id": 1951959637,
+  "lat": 35.7268784,
+  "lon": 139.7172097
+},
+{
+  "type": "node",
+  "id": 1951959638,
+  "lat": 35.7328727,
+  "lon": 139.7008046
+},
+{
+  "type": "node",
+  "id": 1951959642,
+  "lat": 35.7334175,
+  "lon": 139.6978519
+},
+{
+  "type": "node",
+  "id": 1951959644,
+  "lat": 35.7122687,
+  "lon": 139.7102567
+},
+{
+  "type": "node",
+  "id": 1951959645,
+  "lat": 35.7325592,
+  "lon": 139.7047555
+},
+{
+  "type": "node",
+  "id": 1951959647,
+  "lat": 35.7309320,
+  "lon": 139.7096456
+},
+{
+  "type": "node",
+  "id": 1951959648,
+  "lat": 35.7136833,
+  "lon": 139.7109821
+},
+{
+  "type": "node",
+  "id": 1951959649,
+  "lat": 35.7229863,
+  "lon": 139.7170015
+},
+{
+  "type": "node",
+  "id": 1951959650,
+  "lat": 35.7237355,
+  "lon": 139.7173483
+},
+{
+  "type": "node",
+  "id": 1951959651,
+  "lat": 35.7216388,
+  "lon": 139.7160012
+},
+{
+  "type": "node",
+  "id": 1951959652,
+  "lat": 35.7328771,
+  "lon": 139.7037335
+},
+{
+  "type": "node",
+  "id": 1951959653,
+  "lat": 35.7266168,
+  "lon": 139.7172782
+},
+{
+  "type": "node",
+  "id": 1951959654,
+  "lat": 35.7183190,
+  "lon": 139.7132907
+},
+{
+  "type": "node",
+  "id": 1951959657,
+  "lat": 35.7321455,
+  "lon": 139.7057344
+},
+{
+  "type": "node",
+  "id": 1951959659,
+  "lat": 35.7203689,
+  "lon": 139.7148930
+},
+{
+  "type": "node",
+  "id": 1951959660,
+  "lat": 35.7327443,
+  "lon": 139.7042914
+},
+{
+  "type": "node",
+  "id": 1951959661,
+  "lat": 35.7232431,
+  "lon": 139.7171388
+},
+{
+  "type": "node",
+  "id": 1951959666,
+  "lat": 35.7242408,
+  "lon": 139.7174332
+},
+{
+  "type": "node",
+  "id": 2078327976,
+  "lat": 35.6622544,
+  "lon": 139.7022248
+},
+{
+  "type": "node",
+  "id": 2087224408,
+  "lat": 35.7817248,
+  "lon": 139.6266940
+},
+{
+  "type": "node",
+  "id": 2087224414,
+  "lat": 35.7821287,
+  "lon": 139.6260924
+},
+{
+  "type": "node",
+  "id": 2087224431,
+  "lat": 35.7828979,
+  "lon": 139.6249717
+},
+{
+  "type": "node",
+  "id": 2087224435,
+  "lat": 35.7833858,
+  "lon": 139.6242796
+},
+{
+  "type": "node",
+  "id": 2087224440,
+  "lat": 35.7836152,
+  "lon": 139.6239369
+},
+{
+  "type": "node",
+  "id": 2087224462,
+  "lat": 35.7839332,
+  "lon": 139.6234281
+},
+{
+  "type": "node",
+  "id": 2087224466,
+  "lat": 35.7841238,
+  "lon": 139.6230981
+},
+{
+  "type": "node",
+  "id": 2087224472,
+  "lat": 35.7843154,
+  "lon": 139.6227411
+},
+{
+  "type": "node",
+  "id": 2087224478,
+  "lat": 35.7844764,
+  "lon": 139.6224238
+},
+{
+  "type": "node",
+  "id": 2087224484,
+  "lat": 35.7845889,
+  "lon": 139.6221914
+},
+{
+  "type": "node",
+  "id": 2087224489,
+  "lat": 35.7846992,
+  "lon": 139.6219495
+},
+{
+  "type": "node",
+  "id": 2087224493,
+  "lat": 35.7848505,
+  "lon": 139.6215984
+},
+{
+  "type": "node",
+  "id": 2087224499,
+  "lat": 35.7851565,
+  "lon": 139.6208474
+},
+{
+  "type": "node",
+  "id": 2087224524,
+  "lat": 35.7857942,
+  "lon": 139.6192536
+},
+{
+  "type": "node",
+  "id": 2087224535,
+  "lat": 35.7860550,
+  "lon": 139.6185251
+},
+{
+  "type": "node",
+  "id": 2087224547,
+  "lat": 35.7863675,
+  "lon": 139.6176997
+},
+{
+  "type": "node",
+  "id": 2087224561,
+  "lat": 35.7871171,
+  "lon": 139.6158777
+},
+{
+  "type": "node",
+  "id": 2087224575,
+  "lat": 35.7875452,
+  "lon": 139.6148314
+},
+{
+  "type": "node",
+  "id": 2091194185,
+  "lat": 35.7823668,
+  "lon": 139.6257339
+},
+{
+  "type": "node",
+  "id": 2367019793,
+  "lat": 35.6707359,
+  "lon": 139.7071376
+},
+{
+  "type": "node",
+  "id": 2484449887,
+  "lat": 35.7812099,
+  "lon": 139.6274608
+},
+{
+  "type": "node",
+  "id": 2600954688,
+  "lat": 35.7433734,
+  "lon": 139.6795267,
+  "tags": {
+    "name": "小竹向原",
+    "name:en": "Kotake-mukaihara",
+    "name:es": "Kotake-mukaihara",
+    "name:ja": "小竹向原",
+    "name:ja-Hira": "こたけむかいはら",
+    "name:ja_rm": "Kotake-Mukaihara",
+    "name:ko": "고타케무카이하라",
+    "name:ru": "Котакэ Мукаихара",
+    "operator": "西武鉄道;東京地下鉄",
+    "public_transport": "station",
+    "railway": "station",
+    "ref": "Y06;F06;SI37",
+    "station": "subway",
+    "subway": "yes",
+    "transport": "subway",
+    "wheelchair": "yes",
+    "wikidata": "Q93684",
+    "wikimedia_commons": "Category:Kotake-mukaihara Station",
+    "wikipedia": "ja:小竹向原駅"
+  }
+},
+{
+  "type": "node",
+  "id": 2655548929,
+  "lat": 35.7328290,
+  "lon": 139.7040111
+},
+{
+  "type": "node",
+  "id": 3645998146,
+  "lat": 35.7883529,
+  "lon": 139.6128678,
+  "tags": {
+    "loc_ref": "2",
+    "name": "和光市",
+    "name:en": "Wakoshi",
+    "name:es": "Wakoshi",
+    "name:ja": "和光市",
+    "name:ja-Hira": "わこうし",
+    "name:ja_rm": "Wakōshi",
+    "name:ko": "와코시",
+    "name:ru": "Вакоси",
+    "name:th": "วาโกชิ",
+    "name:zh-Hans": "和光市",
+    "name:zh-Hant": "和光市",
+    "network": "東京メトロ副都心線",
+    "operator": "東京地下鉄",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "ref": "Y01;F01",
+    "subway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5408169522,
+  "lat": 35.6907365,
+  "lon": 139.7047597,
+  "tags": {
+    "name": "新宿三丁目",
+    "name:en": "Shinjuku-sanchome",
+    "name:es": "Shinjuku-sanchome",
+    "name:ja": "新宿三丁目",
+    "name:ja-Hira": "しんじゅくさんちょうめ",
+    "name:ko": "신주쿠산초메",
+    "network": "副都心線",
+    "operator": "東京地下鉄",
+    "platforms": "2",
+    "public_transport": "station",
+    "railway": "station",
+    "ref": "F13",
+    "station": "subway",
+    "subway": "yes",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5408201206,
+  "lat": 35.7497818,
+  "lon": 139.6650083,
+  "tags": {
+    "name": "氷川台",
+    "name:en": "Hikawadai",
+    "name:es": "Hikawadai",
+    "name:ja": "氷川台",
+    "name:ko": "히카와다이",
+    "public_transport": "station",
+    "railway": "station",
+    "station": "subway",
+    "subway": "yes",
+    "wheelchair": "yes",
+    "wikidata": "Q93680"
+  }
+},
+{
+  "type": "node",
+  "id": 5408201207,
+  "lat": 35.7576885,
+  "lon": 139.6541369,
+  "tags": {
+    "name": "平和台",
+    "name:en": "Heiwadai",
+    "name:es": "Heiwadai",
+    "name:ja": "平和台",
+    "name:ko": "헤이와다리",
+    "public_transport": "station",
+    "railway": "station",
+    "station": "subway",
+    "subway": "yes",
+    "wheelchair": "yes",
+    "wikidata": "Q80427",
+    "wikipedia": "ja:平和台駅 (東京都)"
+  }
+},
+{
+  "type": "node",
+  "id": 5408201208,
+  "lat": 35.7699229,
+  "lon": 139.6441259,
+  "tags": {
+    "name": "地下鉄赤塚",
+    "name:en": "Chikatetsu-akatsuka",
+    "name:es": "Chikatetsu-akatsuka",
+    "name:ja": "地下鉄赤塚",
+    "name:ko": "지카테쓰아카쓰카",
+    "operator": "東京地下鉄",
+    "public_transport": "station",
+    "railway": "station",
+    "station": "subway",
+    "subway": "yes",
+    "wheelchair": "yes",
+    "wikidata": "Q80412"
+  }
+},
+{
+  "type": "node",
+  "id": 5408201209,
+  "lat": 35.7766946,
+  "lon": 139.6312465,
+  "tags": {
+    "name": "地下鉄成増",
+    "name:en": "Chikatetsu-narimasu",
+    "name:es": "Chikatetsu-narimasu",
+    "name:ja": "地下鉄成増",
+    "name:ko": "지카테쓰나리마스",
+    "operator": "東京地下鉄",
+    "public_transport": "station",
+    "railway": "station",
+    "station": "subway",
+    "subway": "yes",
+    "wheelchair": "yes",
+    "wikidata": "Q80506"
+  }
+},
+{
+  "type": "node",
+  "id": 5408205539,
+  "lat": 35.7884097,
+  "lon": 139.6126725,
+  "tags": {
+    "name": "和光市",
+    "name:en": "Wakoshi",
+    "name:es": "Wakoshi",
+    "name:ja": "和光市",
+    "name:ja-Hira": "わこうし",
+    "name:ja_rm": "Wakōshi",
+    "name:ko": "와코시",
+    "name:ru": "Вакоси",
+    "name:th": "วาโกชิ",
+    "name:zh-Hans": "和光市",
+    "name:zh-Hant": "和光市",
+    "network": "東京メトロ副都心線",
+    "operator": "東京地下鉄",
+    "public_transport": "station",
+    "railway": "station",
+    "ref": "Y01;F01",
+    "station": "subway",
+    "subway": "yes",
+    "wheelchair": "yes",
+    "wikidata": "Q128298",
+    "wikipedia": "ja:和光市駅"
+  }
+},
+{
+  "type": "node",
+  "id": 5409272742,
+  "lat": 35.7311425,
+  "lon": 139.7089439,
+  "tags": {
+    "alt_name": "新線池袋",
+    "description": "副都心線開通以前（小竹向原～池袋間の有楽町新線時代）は 通称「新線池袋駅」と呼称された",
+    "name": "池袋",
+    "name:en": "Ikebukuro",
+    "name:es": "Ikebukuro",
+    "name:ja": "池袋",
+    "name:ko": "이케부쿠로",
+    "operator": "東京メトロ",
+    "public_transport": "station",
+    "railway": "station",
+    "ref": "F09",
+    "routes": "副都心線",
+    "source": "survey",
+    "station": "subway",
+    "subway": "yes",
+    "wheelchair": "yes",
+    "wikidata": "Q173919",
+    "wikipedia": "ja:池袋駅"
+  }
+},
+{
+  "type": "node",
+  "id": 6178465936,
+  "lat": 35.6683960,
+  "lon": 139.7053934,
+  "tags": {
+    "name": "明治神宮前〈原宿〉",
+    "name:en": "Meiji-jingumae 'Harajuku'",
+    "name:es": "Meiji-jingumae 'Harajuku'",
+    "network": "副都心線",
+    "operator": "東京地下鉄",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "subway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6184862547,
+  "lat": 35.6913113,
+  "lon": 139.7052210,
+  "tags": {
+    "railway": "switch"
+  }
+},
+{
+  "type": "node",
+  "id": 6188734706,
+  "lat": 35.6989445,
+  "lon": 139.7077279,
+  "tags": {
+    "name": "東新宿",
+    "name:en": "Higashi-shinjuku",
+    "name:es": "Higashi-shinjuku",
+    "name:ja": "東新宿",
+    "name:ja-Hira": "ひがししんじゅく",
+    "name:ja_rm": "Higashi Shinjuku",
+    "operator": "東京地下鉄",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "ref": "F12",
+    "subway": "yes",
+    "wheelchair": "yes",
+    "wikidata": "Q112503",
+    "wikipedia": "ja:東新宿駅"
+  }
+},
+{
+  "type": "node",
+  "id": 6205782888,
+  "lat": 35.6684942,
+  "lon": 139.7054308
+},
+{
+  "type": "node",
+  "id": 6205782892,
+  "lat": 35.6682697,
+  "lon": 139.7052656
+},
+{
+  "type": "node",
+  "id": 6205784380,
+  "lat": 35.6677021,
+  "lon": 139.7048294
+},
+{
+  "type": "node",
+  "id": 6205784381,
+  "lat": 35.6691403,
+  "lon": 139.7059045
+},
+{
+  "type": "node",
+  "id": 6205805324,
+  "lat": 35.6681119,
+  "lon": 139.7051455
+},
+{
+  "type": "node",
+  "id": 6205830956,
+  "lat": 35.6687233,
+  "lon": 139.7055974
+},
+{
+  "type": "node",
+  "id": 6213377980,
+  "lat": 35.7331211,
+  "lon": 139.6996284
+},
+{
+  "type": "node",
+  "id": 6213383387,
+  "lat": 35.7332813,
+  "lon": 139.6987138,
+  "tags": {
+    "loc_ref": "3",
+    "name": "要町",
+    "name:en": "Kanamecho",
+    "name:es": "Kanamecho",
+    "name:ja": "要町03",
+    "name:ja-Hira": "かなめちょう",
+    "name:ja_rm": "Kanamechō",
+    "name:ru": "Канамэтё",
+    "operator": "東京地下鉄",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "ref": "F08",
+    "subway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6214539158,
+  "lat": 35.7333742,
+  "lon": 139.6978224
+},
+{
+  "type": "node",
+  "id": 6214539159,
+  "lat": 35.7334115,
+  "lon": 139.6978508
+},
+{
+  "type": "node",
+  "id": 6214539160,
+  "lat": 35.7331346,
+  "lon": 139.6995191
+},
+{
+  "type": "node",
+  "id": 6214539161,
+  "lat": 35.7331056,
+  "lon": 139.6995326
+},
+{
+  "type": "node",
+  "id": 6214539170,
+  "lat": 35.7333413,
+  "lon": 139.6982999
+},
+{
+  "type": "node",
+  "id": 6214634886,
+  "lat": 35.7331450,
+  "lon": 139.6994534
+},
+{
+  "type": "node",
+  "id": 6219636708,
+  "lat": 35.6586186,
+  "lon": 139.7027508,
+  "tags": {
+    "name": "渋谷",
+    "name:en": "Shibuya",
+    "name:es": "Shibuya",
+    "name:ja": "渋谷",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "ref": "TY01",
+    "subway": "yes",
+    "train": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6219636711,
+  "lat": 35.6582981,
+  "lon": 139.7030011
+},
+{
+  "type": "node",
+  "id": 6219636712,
+  "lat": 35.6583098,
+  "lon": 139.7030278
+},
+{
+  "type": "node",
+  "id": 6219636713,
+  "lat": 35.6595179,
+  "lon": 139.7025272
+},
+{
+  "type": "node",
+  "id": 6219636719,
+  "lat": 35.6584501,
+  "lon": 139.7028426,
+  "tags": {
+    "colour": "brown",
+    "name": "渋谷",
+    "name:en": "Shibuya",
+    "name:es": "Shibuya",
+    "name:fr": "Shibuya",
+    "name:ja": "渋谷",
+    "name:ja-Hira": "しぶや",
+    "name:ja_rm": "Shibuya",
+    "name:ko": "시부야",
+    "name:ru": "Сибуя",
+    "network": "東急電鉄;東京地下鉄",
+    "network:en": "Tokyu Railways;Tokyo Metro",
+    "network:ja": "東急電鉄",
+    "network:wikidata": "Q80229029",
+    "operator": "東急電鉄",
+    "operator:en": "Tokyu Railways",
+    "platforms": "4",
+    "public_transport": "station",
+    "railway": "station",
+    "ref": "T01;F16",
+    "source": "KSJ2;Tokyo Metro Co.,Ltd.",
+    "station": "subway",
+    "subway": "yes",
+    "train": "yes",
+    "website": "https://www.tokyometro.jp/lang_en/station/shibuya/index.html",
+    "wheelchair": "yes",
+    "wikidata": "Q428811",
+    "wikipedia": "ja:渋谷駅"
+  }
+},
+{
+  "type": "node",
+  "id": 6219636723,
+  "lat": 35.6584912,
+  "lon": 139.7029016
+},
+{
+  "type": "node",
+  "id": 6219636724,
+  "lat": 35.6595141,
+  "lon": 139.7024886
+},
+{
+  "type": "node",
+  "id": 6219636725,
+  "lat": 35.6585034,
+  "lon": 139.7029322
+},
+{
+  "type": "node",
+  "id": 6219636736,
+  "lat": 35.6588888,
+  "lon": 139.7026975
+},
+{
+  "type": "node",
+  "id": 6219636738,
+  "lat": 35.6589014,
+  "lon": 139.7027490
+},
+{
+  "type": "node",
+  "id": 6224973729,
+  "lat": 35.7315566,
+  "lon": 139.7081263
+},
+{
+  "type": "node",
+  "id": 6225008812,
+  "lat": 35.7310612,
+  "lon": 139.7093322
+},
+{
+  "type": "node",
+  "id": 6225008813,
+  "lat": 35.7314158,
+  "lon": 139.7084994
+},
+{
+  "type": "node",
+  "id": 6225008814,
+  "lat": 35.7315505,
+  "lon": 139.7081191
+},
+{
+  "type": "node",
+  "id": 6225008815,
+  "lat": 35.7317856,
+  "lon": 139.7071727
+},
+{
+  "type": "node",
+  "id": 6225008821,
+  "lat": 35.7309995,
+  "lon": 139.7093014
+},
+{
+  "type": "node",
+  "id": 6225067695,
+  "lat": 35.7313426,
+  "lon": 139.7086768
+},
+{
+  "type": "node",
+  "id": 6225067696,
+  "lat": 35.7314227,
+  "lon": 139.7085034
+},
+{
+  "type": "node",
+  "id": 6225499837,
+  "lat": 35.7312470,
+  "lon": 139.7089243
+},
+{
+  "type": "node",
+  "id": 6225511558,
+  "lat": 35.7310955,
+  "lon": 139.7092580
+},
+{
+  "type": "node",
+  "id": 6235968754,
+  "lat": 35.7201652,
+  "lon": 139.7147443,
+  "tags": {
+    "name": "雑司が谷",
+    "name:en": "Zoshigaya",
+    "name:es": "Zoshigaya",
+    "name:ja": "雑司が谷",
+    "name:ja-Hira": "ぞうしがや",
+    "name:ja_rm": "Zōshigaya",
+    "operator": "東京地下鉄",
+    "public_transport": "stop_position",
+    "railway": "tram_stop",
+    "ref": "F10",
+    "subway": "yes",
+    "tram": "yes",
+    "wikidata": "Q128312",
+    "wikipedia": "ja:雑司が谷駅"
+  }
+},
+{
+  "type": "node",
+  "id": 6277490559,
+  "lat": 35.6684209,
+  "lon": 139.7053410,
+  "tags": {
+    "alt_name:en": "Meiji-jingumae;Harajuku",
+    "alt_name:es": "Meiji-jingumae;Harajuku",
+    "alt_name:ja": "明治神宮前;原宿",
+    "alt_name:ja-Hira": "めいじじんぐうまえ;はらじゅく",
+    "colour": "brown",
+    "name": "明治神宮前〈原宿〉",
+    "name:en": "Meiji-jingumae 'Harajuku'",
+    "name:es": "Meiji-jingumae 'Harajuku'",
+    "name:fr": "Meiji-jingumae 'Harajuku'",
+    "name:ja-Hira": "めいじじんぐうまえ〈はらじゅく〉",
+    "name:ja_rm": "Meiji jingūmae Harajuku",
+    "name:ko": "메이지진구마에(하라주쿠)",
+    "name:ru": "Мэйдзи Дзингумаэ (Харадзюку)",
+    "network": "副都心線",
+    "operator": "東京地下鉄",
+    "public_transport": "station",
+    "railway": "station",
+    "ref": "F15",
+    "source": "Survey",
+    "station": "subway",
+    "subway": "yes",
+    "transport": "subway",
+    "wheelchair": "yes",
+    "wikidata": "Q80429",
+    "wikipedia": "ja:明治神宮前駅"
+  }
+},
+{
+  "type": "node",
+  "id": 6280941665,
+  "lat": 35.6891134,
+  "lon": 139.7036848,
+  "tags": {
+    "note": "副都心線8・10号車側"
+  }
+},
+{
+  "type": "node",
+  "id": 6280941669,
+  "lat": 35.6907962,
+  "lon": 139.7047998
+},
+{
+  "type": "node",
+  "id": 6280941670,
+  "lat": 35.6891169,
+  "lon": 139.7037093
+},
+{
+  "type": "node",
+  "id": 6280941672,
+  "lat": 35.6907753,
+  "lon": 139.7048085
+},
+{
+  "type": "node",
+  "id": 6281290588,
+  "lat": 35.6902995,
+  "lon": 139.7045019
+},
+{
+  "type": "node",
+  "id": 6281439100,
+  "lat": 35.6900679,
+  "lon": 139.7043490
+},
+{
+  "type": "node",
+  "id": 6394721505,
+  "lat": 35.7009950,
+  "lon": 139.7080844
+},
+{
+  "type": "node",
+  "id": 6394721510,
+  "lat": 35.6979700,
+  "lon": 139.7075589
+},
+{
+  "type": "node",
+  "id": 6394721511,
+  "lat": 35.6979616,
+  "lon": 139.7076281
+},
+{
+  "type": "node",
+  "id": 6394721512,
+  "lat": 35.7007926,
+  "lon": 139.7081269
+},
+{
+  "type": "node",
+  "id": 6394721513,
+  "lat": 35.7007989,
+  "lon": 139.7080770
+},
+{
+  "type": "node",
+  "id": 6415116608,
+  "lat": 35.6902057,
+  "lon": 139.7044400
+},
+{
+  "type": "node",
+  "id": 6473332323,
+  "lat": 35.7078634,
+  "lon": 139.7090128
+},
+{
+  "type": "node",
+  "id": 6473332324,
+  "lat": 35.7078598,
+  "lon": 139.7090491
+},
+{
+  "type": "node",
+  "id": 6473332325,
+  "lat": 35.7081974,
+  "lon": 139.7091002
+},
+{
+  "type": "node",
+  "id": 6473332326,
+  "lat": 35.7082011,
+  "lon": 139.7090639
+},
+{
+  "type": "node",
+  "id": 6473540498,
+  "lat": 35.7194540,
+  "lon": 139.7141774
+},
+{
+  "type": "node",
+  "id": 6473540499,
+  "lat": 35.7194416,
+  "lon": 139.7142030
+},
+{
+  "type": "node",
+  "id": 6473540500,
+  "lat": 35.7206585,
+  "lon": 139.7151014
+},
+{
+  "type": "node",
+  "id": 6473540501,
+  "lat": 35.7206710,
+  "lon": 139.7150758
+},
+{
+  "type": "node",
+  "id": 6545201655,
+  "lat": 35.7887980,
+  "lon": 139.6120341
+},
+{
+  "type": "node",
+  "id": 6545201656,
+  "lat": 35.7887319,
+  "lon": 139.6119923
+},
+{
+  "type": "node",
+  "id": 6545201657,
+  "lat": 35.7878597,
+  "lon": 139.6141081
+},
+{
+  "type": "node",
+  "id": 6545201658,
+  "lat": 35.7879120,
+  "lon": 139.6141390
+},
+{
+  "type": "node",
+  "id": 7090524747,
+  "lat": 35.6589974,
+  "lon": 139.7025703
+},
+{
+  "type": "node",
+  "id": 7090524753,
+  "lat": 35.6604185,
+  "lon": 139.7022939
+},
+{
+  "type": "node",
+  "id": 7369435822,
+  "lat": 35.7437196,
+  "lon": 139.6790144
+},
+{
+  "type": "node",
+  "id": 7369435823,
+  "lat": 35.7436734,
+  "lon": 139.6789819
+},
+{
+  "type": "node",
+  "id": 7369435824,
+  "lat": 35.7427901,
+  "lon": 139.6808858
+},
+{
+  "type": "node",
+  "id": 7369435825,
+  "lat": 35.7428363,
+  "lon": 139.6809183
+},
+{
+  "type": "node",
+  "id": 7369435826,
+  "lat": 35.7428773,
+  "lon": 139.6806313,
+  "tags": {
+    "loc_ref": "2",
+    "name": "小竹向原",
+    "name:en": "Kotake-mukaihara",
+    "name:es": "Kotake-mukaihara",
+    "name:ja": "小竹向原02",
+    "name:ja-Hira": "こたけむかいはら",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "subway": "yes",
+    "train": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 7369566821,
+  "lat": 35.7450775,
+  "lon": 139.6759255
+},
+{
+  "type": "node",
+  "id": 7373432108,
+  "lat": 35.7448427,
+  "lon": 139.6765335
+},
+{
+  "type": "node",
+  "id": 7373432110,
+  "lat": 35.7426993,
+  "lon": 139.6810106,
+  "tags": {
+    "railway": "switch"
+  }
+},
+{
+  "type": "node",
+  "id": 7373591316,
+  "lat": 35.7436858,
+  "lon": 139.6789906
+},
+{
+  "type": "node",
+  "id": 7373591317,
+  "lat": 35.7437044,
+  "lon": 139.6790037
+},
+{
+  "type": "node",
+  "id": 7775736871,
+  "lat": 35.7402870,
+  "lon": 139.6862326
+},
+{
+  "type": "node",
+  "id": 7775774742,
+  "lat": 35.7345085,
+  "lon": 139.6944537
+},
+{
+  "type": "node",
+  "id": 7775786584,
+  "lat": 35.7771159,
+  "lon": 139.6305080
+},
+{
+  "type": "node",
+  "id": 7775791255,
+  "lat": 35.7558273,
+  "lon": 139.6573027
+},
+{
+  "type": "node",
+  "id": 7775791256,
+  "lat": 35.7565467,
+  "lon": 139.6560571
+},
+{
+  "type": "node",
+  "id": 7775791257,
+  "lat": 35.7576942,
+  "lon": 139.6542458,
+  "tags": {
+    "loc_ref": "1",
+    "name": "平和台",
+    "name:en": "Heiwadai",
+    "name:es": "Heiwadai",
+    "name:ja": "平和台",
+    "name:ja-Hira": "へいわだい",
+    "name:ja_rm": "Heiwadai",
+    "name:ru": "Хэйвадай",
+    "operator": "東京地下鉄",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "ref": "Y04;F04",
+    "subway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 7775791258,
+  "lat": 35.7580163,
+  "lon": 139.6536345
+},
+{
+  "type": "node",
+  "id": 7775791259,
+  "lat": 35.7584130,
+  "lon": 139.6529979
+},
+{
+  "type": "node",
+  "id": 7775795133,
+  "lat": 35.7788164,
+  "lon": 139.6286909
+},
+{
+  "type": "node",
+  "id": 7775795134,
+  "lat": 35.7792643,
+  "lon": 139.6286607
+},
+{
+  "type": "node",
+  "id": 7775795135,
+  "lat": 35.7795652,
+  "lon": 139.6286436
+},
+{
+  "type": "node",
+  "id": 7775795136,
+  "lat": 35.7798716,
+  "lon": 139.6285967
+},
+{
+  "type": "node",
+  "id": 7775795137,
+  "lat": 35.7801597,
+  "lon": 139.6285028
+},
+{
+  "type": "node",
+  "id": 7775795241,
+  "lat": 35.7804414,
+  "lon": 139.6283484
+},
+{
+  "type": "node",
+  "id": 7775795242,
+  "lat": 35.7806997,
+  "lon": 139.6281361
+},
+{
+  "type": "node",
+  "id": 7775795243,
+  "lat": 35.7452205,
+  "lon": 139.6755686
+},
+{
+  "type": "node",
+  "id": 7775795925,
+  "lat": 35.7722415,
+  "lon": 139.6377833
+},
+{
+  "type": "node",
+  "id": 7775795926,
+  "lat": 35.7724815,
+  "lon": 139.6373366
+},
+{
+  "type": "node",
+  "id": 7775795927,
+  "lat": 35.7728251,
+  "lon": 139.6367875
+},
+{
+  "type": "node",
+  "id": 7775795928,
+  "lat": 35.7732111,
+  "lon": 139.6363604
+},
+{
+  "type": "node",
+  "id": 7775795929,
+  "lat": 35.7740222,
+  "lon": 139.6354694
+},
+{
+  "type": "node",
+  "id": 7775800611,
+  "lat": 35.7342082,
+  "lon": 139.6949753
+},
+{
+  "type": "node",
+  "id": 7775800612,
+  "lat": 35.7340014,
+  "lon": 139.6954528
+},
+{
+  "type": "node",
+  "id": 7775800613,
+  "lat": 35.7338049,
+  "lon": 139.6959931
+},
+{
+  "type": "node",
+  "id": 7775800614,
+  "lat": 35.7336599,
+  "lon": 139.6965082
+},
+{
+  "type": "node",
+  "id": 7775801100,
+  "lat": 35.7592727,
+  "lon": 139.6519094
+},
+{
+  "type": "node",
+  "id": 7775801101,
+  "lat": 35.7595067,
+  "lon": 139.6516245
+},
+{
+  "type": "node",
+  "id": 7775801102,
+  "lat": 35.7598226,
+  "lon": 139.6514466
+},
+{
+  "type": "node",
+  "id": 7775801103,
+  "lat": 35.7604876,
+  "lon": 139.6512403
+},
+{
+  "type": "node",
+  "id": 7775801104,
+  "lat": 35.7643364,
+  "lon": 139.6507614
+},
+{
+  "type": "node",
+  "id": 7775801424,
+  "lat": 35.7682904,
+  "lon": 139.6484653
+},
+{
+  "type": "node",
+  "id": 7775801425,
+  "lat": 35.7689083,
+  "lon": 139.6461525
+},
+{
+  "type": "node",
+  "id": 7775801426,
+  "lat": 35.7692265,
+  "lon": 139.6454140
+},
+{
+  "type": "node",
+  "id": 7775801427,
+  "lat": 35.7699710,
+  "lon": 139.6441677,
+  "tags": {
+    "loc_ref": "1",
+    "name": "地下鉄赤塚",
+    "name:en": "Chikatetsu-akatsuka",
+    "name:es": "Chikatetsu-akatsuka",
+    "name:ja": "地下鉄赤塚01",
+    "name:ja-Hira": "ちかてつあかつか",
+    "name:ja_rm": "Chikatetsu Akatsuka",
+    "name:ru": "Тикатэцу Акацука",
+    "operator": "東京地下鉄",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "ref": "Y03;F03",
+    "station": "subway",
+    "subway": "yes",
+    "wikidata": "Q80412",
+    "wikipedia": "ja:地下鉄赤塚駅"
+  }
+},
+{
+  "type": "node",
+  "id": 7775801428,
+  "lat": 35.7707122,
+  "lon": 139.6428841
+},
+{
+  "type": "node",
+  "id": 7775803874,
+  "lat": 35.7396820,
+  "lon": 139.6875093
+},
+{
+  "type": "node",
+  "id": 7775803876,
+  "lat": 35.6784974,
+  "lon": 139.7054140,
+  "tags": {
+    "name": "北参道",
+    "name:en": "Kita-sando",
+    "name:es": "Kita-sando",
+    "name:ja": "北参道",
+    "name:ja-Hira": "きたさんどう",
+    "name:ja_rm": "Kita sandō",
+    "name:ko": "기타산도",
+    "name:ru": "Кита-Сандо",
+    "operator": "東京地下鉄",
+    "platforms": "2",
+    "public_transport": "station",
+    "railway": "station",
+    "ref": "F14",
+    "station": "subway",
+    "subway": "yes",
+    "transport": "subway",
+    "wheelchair": "yes",
+    "wikidata": "Q128322",
+    "wikipedia": "ja:北参道駅"
+  }
+},
+{
+  "type": "node",
+  "id": 7775803877,
+  "lat": 35.6784821,
+  "lon": 139.7054958,
+  "tags": {
+    "name": "北参道",
+    "name:en": "Kita-sando",
+    "name:es": "Kita-sando",
+    "name:ja": "北参道",
+    "name:ja-Hira": "きたさんどう",
+    "name:ja_rm": "Kita sandō",
+    "name:ko": "기타산도",
+    "name:ru": "Кита-Сандо",
+    "operator": "東京地下鉄",
+    "platforms": "2",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "ref": "F14",
+    "station": "subway",
+    "subway": "yes",
+    "wheelchair": "yes",
+    "wikidata": "Q128322",
+    "wikipedia": "ja:北参道駅"
+  }
+},
+{
+  "type": "node",
+  "id": 7775803878,
+  "lat": 35.7079347,
+  "lon": 139.7090404,
+  "tags": {
+    "name": "西早稲田",
+    "name:en": "Nishi-waseda",
+    "name:es": "Nishi-waseda",
+    "name:ja": "西早稲田",
+    "name:ja-Hira": "にしわせだ",
+    "name:ja_rm": "Nishi Waseda",
+    "name:ko": "니시와세다",
+    "name:ru": "Ниси-Васэда",
+    "operator": "東京地下鉄",
+    "platforms": "2",
+    "public_transport": "station",
+    "railway": "station",
+    "ref": "F11",
+    "station": "subway",
+    "subway": "yes",
+    "wikidata": "Q128305",
+    "wikipedia": "ja:西早稲田駅"
+  }
+},
+{
+  "type": "node",
+  "id": 7775803879,
+  "lat": 35.7709005,
+  "lon": 139.6425199
+},
+{
+  "type": "node",
+  "id": 7775803880,
+  "lat": 35.7710260,
+  "lon": 139.6421852
+},
+{
+  "type": "node",
+  "id": 7775803881,
+  "lat": 35.7712077,
+  "lon": 139.6415177
+},
+{
+  "type": "node",
+  "id": 7775803882,
+  "lat": 35.7717826,
+  "lon": 139.6388379
+},
+{
+  "type": "node",
+  "id": 7775803883,
+  "lat": 35.7719335,
+  "lon": 139.6384261
+},
+{
+  "type": "node",
+  "id": 7775804754,
+  "lat": 35.7343928,
+  "lon": 139.6946339
+},
+{
+  "type": "node",
+  "id": 7775808125,
+  "lat": 35.7382898,
+  "lon": 139.6894970,
+  "tags": {
+    "colour": "yellow",
+    "loc_ref": "3",
+    "name": "千川",
+    "name:en": "Senkawa",
+    "name:es": "Senkawa",
+    "name:ja": "千川03",
+    "name:ja-Hira": "せんかわ",
+    "name:ja_rm": "Senkawa",
+    "name:ko": "센카와",
+    "name:ru": "Сэнкава",
+    "operator": "東京地下鉄",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "ref": "F07",
+    "subway": "yes",
+    "wikidata": "Q128304",
+    "wikipedia": "ja:千川駅"
+  }
+},
+{
+  "type": "node",
+  "id": 7775808127,
+  "lat": 35.7390240,
+  "lon": 139.6885481
+},
+{
+  "type": "node",
+  "id": 7775808132,
+  "lat": 35.7393292,
+  "lon": 139.6881125
+},
+{
+  "type": "node",
+  "id": 7775810076,
+  "lat": 35.7424492,
+  "lon": 139.6816280,
+  "tags": {
+    "railway": "switch"
+  }
+},
+{
+  "type": "node",
+  "id": 7775813299,
+  "lat": 35.7404931,
+  "lon": 139.6857890,
+  "tags": {
+    "railway": "switch"
+  }
+},
+{
+  "type": "node",
+  "id": 7775813418,
+  "lat": 35.7421504,
+  "lon": 139.6822679,
+  "tags": {
+    "railway": "switch"
+  }
+},
+{
+  "type": "node",
+  "id": 7775813420,
+  "lat": 35.7437892,
+  "lon": 139.6786885,
+  "tags": {
+    "railway": "switch"
+  }
+},
+{
+  "type": "node",
+  "id": 7775813422,
+  "lat": 35.7442849,
+  "lon": 139.6777877,
+  "tags": {
+    "railway": "switch"
+  }
+},
+{
+  "type": "node",
+  "id": 7775814625,
+  "lat": 35.7809179,
+  "lon": 139.6278774
+},
+{
+  "type": "node",
+  "id": 7775814626,
+  "lat": 35.7786489,
+  "lon": 139.6287203
+},
+{
+  "type": "node",
+  "id": 7775815974,
+  "lat": 35.7348636,
+  "lon": 139.6939376
+},
+{
+  "type": "node",
+  "id": 7775820082,
+  "lat": 35.7782545,
+  "lon": 139.6288832
+},
+{
+  "type": "node",
+  "id": 7775820084,
+  "lat": 35.7775728,
+  "lon": 139.6295531
+},
+{
+  "type": "node",
+  "id": 7775821233,
+  "lat": 35.7500477,
+  "lon": 139.6647104
+},
+{
+  "type": "node",
+  "id": 7775821234,
+  "lat": 35.7504713,
+  "lon": 139.6640979
+},
+{
+  "type": "node",
+  "id": 7775821235,
+  "lat": 35.7536006,
+  "lon": 139.6601986
+},
+{
+  "type": "node",
+  "id": 7775821236,
+  "lat": 35.7549281,
+  "lon": 139.6585589
+},
+{
+  "type": "node",
+  "id": 7775821237,
+  "lat": 35.7553099,
+  "lon": 139.6580634
+},
+{
+  "type": "node",
+  "id": 7775821412,
+  "lat": 35.7335516,
+  "lon": 139.6970369
+},
+{
+  "type": "node",
+  "id": 7775821589,
+  "lat": 35.7767040,
+  "lon": 139.6313339,
+  "tags": {
+    "loc_ref": "1",
+    "name": "地下鉄成増",
+    "name:en": "Chikatetsu-narimasu",
+    "name:ja": "地下鉄成増01",
+    "name:ja-Hira": "ちかてつなります",
+    "name:ja_rm": "Chikatetsu Narimasu",
+    "name:ru": "Тикатэцу Наримасу",
+    "operator": "東京地下鉄",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "ref": "Y02;F02",
+    "subway": "yes",
+    "transport": "subway",
+    "wikidata": "Q80506",
+    "wikipedia": "ja:地下鉄成増駅"
+  }
+},
+{
+  "type": "node",
+  "id": 7775821590,
+  "lat": 35.7774168,
+  "lon": 139.6298326
+},
+{
+  "type": "node",
+  "id": 7775821591,
+  "lat": 35.7777691,
+  "lon": 139.6292863
+},
+{
+  "type": "node",
+  "id": 7775821592,
+  "lat": 35.7779727,
+  "lon": 139.6290812
+},
+{
+  "type": "node",
+  "id": 7775821593,
+  "lat": 35.7783572,
+  "lon": 139.6288335
+},
+{
+  "type": "node",
+  "id": 7775821687,
+  "lat": 35.7334349,
+  "lon": 139.6977208
+},
+{
+  "type": "node",
+  "id": 7775822075,
+  "lat": 35.7665718,
+  "lon": 139.6502687
+},
+{
+  "type": "node",
+  "id": 7775822076,
+  "lat": 35.7672049,
+  "lon": 139.6500789
+},
+{
+  "type": "node",
+  "id": 7775822077,
+  "lat": 35.7675994,
+  "lon": 139.6498578
+},
+{
+  "type": "node",
+  "id": 7775822078,
+  "lat": 35.7680227,
+  "lon": 139.6494397
+},
+{
+  "type": "node",
+  "id": 7775822079,
+  "lat": 35.7681326,
+  "lon": 139.6491029
+},
+{
+  "type": "node",
+  "id": 7775824106,
+  "lat": 35.7454960,
+  "lon": 139.6749305
+},
+{
+  "type": "node",
+  "id": 7775824107,
+  "lat": 35.7465128,
+  "lon": 139.6726742
+},
+{
+  "type": "node",
+  "id": 7775824108,
+  "lat": 35.7479203,
+  "lon": 139.6695435
+},
+{
+  "type": "node",
+  "id": 7775824109,
+  "lat": 35.7491811,
+  "lon": 139.6665662
+},
+{
+  "type": "node",
+  "id": 7775824110,
+  "lat": 35.7498601,
+  "lon": 139.6650785,
+  "tags": {
+    "loc_ref": "1",
+    "name": "氷川台",
+    "name:en": "Hikawadai",
+    "name:es": "Hikawadai",
+    "name:ja": "氷川台01",
+    "name:ja-Hira": "ひかわだい",
+    "name:ja_rm": "Hikawadai",
+    "name:ru": "Хикавадай",
+    "operator": "東京地下鉄",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "ref": "Y05;F05",
+    "station": "subway",
+    "subway": "yes",
+    "wikidata": "Q93680",
+    "wikipedia": "ja:氷川台駅"
+  }
+},
+{
+  "type": "node",
+  "id": 7775824398,
+  "lat": 35.7746729,
+  "lon": 139.6348892
+},
+{
+  "type": "node",
+  "id": 7775824399,
+  "lat": 35.7750182,
+  "lon": 139.6345701
+},
+{
+  "type": "node",
+  "id": 7775824400,
+  "lat": 35.7752019,
+  "lon": 139.6342538
+},
+{
+  "type": "node",
+  "id": 7775824401,
+  "lat": 35.7753160,
+  "lon": 139.6340583
+},
+{
+  "type": "node",
+  "id": 7775824402,
+  "lat": 35.7760587,
+  "lon": 139.6325467
+},
+{
+  "type": "node",
+  "id": 7787647711,
+  "lat": 35.7301854,
+  "lon": 139.7117736
+},
+{
+  "type": "node",
+  "id": 7810227898,
+  "lat": 35.7299747,
+  "lon": 139.7123946
+},
+{
+  "type": "node",
+  "id": 7810227901,
+  "lat": 35.7305550,
+  "lon": 139.7106926
+},
+{
+  "type": "node",
+  "id": 7810227903,
+  "lat": 35.7318037,
+  "lon": 139.7071803
+},
+{
+  "type": "node",
+  "id": 7928169102,
+  "lat": 35.7317576,
+  "lon": 139.7071639
+},
+{
+  "type": "node",
+  "id": 7928169103,
+  "lat": 35.7313616,
+  "lon": 139.7084680
+},
+{
+  "type": "node",
+  "id": 7928169104,
+  "lat": 35.7315060,
+  "lon": 139.7080887
+},
+{
+  "type": "node",
+  "id": 7944173406,
+  "lat": 35.7408190,
+  "lon": 139.6850962,
+  "tags": {
+    "railway": "switch"
+  }
+},
+{
+  "type": "node",
+  "id": 7987434495,
+  "lat": 35.6595060,
+  "lon": 139.7024073
+},
+{
+  "type": "node",
+  "id": 7987434497,
+  "lat": 35.6602078,
+  "lon": 139.7023121
+},
+{
+  "type": "node",
+  "id": 7987434499,
+  "lat": 35.6598983,
+  "lon": 139.7023389
+},
+{
+  "type": "node",
+  "id": 8016072864,
+  "lat": 35.6600454,
+  "lon": 139.7023262
+},
+{
+  "type": "node",
+  "id": 8026646422,
+  "lat": 35.6948027,
+  "lon": 139.7069415
+},
+{
+  "type": "node",
+  "id": 8026646425,
+  "lat": 35.6928182,
+  "lon": 139.7060966
+},
+{
+  "type": "node",
+  "id": 8026646427,
+  "lat": 35.6915809,
+  "lon": 139.7053805
+},
+{
+  "type": "node",
+  "id": 8026646428,
+  "lat": 35.6890974,
+  "lon": 139.7037417
+},
+{
+  "type": "node",
+  "id": 8026646430,
+  "lat": 35.6873002,
+  "lon": 139.7029665
+},
+{
+  "type": "node",
+  "id": 8026646434,
+  "lat": 35.6849626,
+  "lon": 139.7037014
+},
+{
+  "type": "node",
+  "id": 8026646436,
+  "lat": 35.6829190,
+  "lon": 139.7046027
+},
+{
+  "type": "node",
+  "id": 8026646438,
+  "lat": 35.6823766,
+  "lon": 139.7046161
+},
+{
+  "type": "node",
+  "id": 8026646440,
+  "lat": 35.6817535,
+  "lon": 139.7045919
+},
+{
+  "type": "node",
+  "id": 8026646441,
+  "lat": 35.6808646,
+  "lon": 139.7045222
+},
+{
+  "type": "node",
+  "id": 8026646443,
+  "lat": 35.6805138,
+  "lon": 139.7044980
+},
+{
+  "type": "node",
+  "id": 8026646445,
+  "lat": 35.6792131,
+  "lon": 139.7048977
+},
+{
+  "type": "node",
+  "id": 8026646448,
+  "lat": 35.6769864,
+  "lon": 139.7063273
+},
+{
+  "type": "node",
+  "id": 8026646450,
+  "lat": 35.6766792,
+  "lon": 139.7064185
+},
+{
+  "type": "node",
+  "id": 8026646452,
+  "lat": 35.6732801,
+  "lon": 139.7078937
+},
+{
+  "type": "node",
+  "id": 8026646454,
+  "lat": 35.6712210,
+  "lon": 139.7075504
+},
+{
+  "type": "node",
+  "id": 8026646455,
+  "lat": 35.6665928,
+  "lon": 139.7040313
+},
+{
+  "type": "node",
+  "id": 8026646457,
+  "lat": 35.6631803,
+  "lon": 139.7021699
+},
+{
+  "type": "node",
+  "id": 8026646459,
+  "lat": 35.6628643,
+  "lon": 139.7021699
+},
+{
+  "type": "node",
+  "id": 8377082766,
+  "lat": 35.6586508,
+  "lon": 139.7028511
+},
+{
+  "type": "node",
+  "id": 8377082767,
+  "lat": 35.6586399,
+  "lon": 139.7028171
+},
+{
+  "type": "node",
+  "id": 8377082777,
+  "lat": 35.6592118,
+  "lon": 139.7025724
+},
+{
+  "type": "node",
+  "id": 8377082778,
+  "lat": 35.6592249,
+  "lon": 139.7026273
+},
+{
+  "type": "node",
+  "id": 8377082781,
+  "lat": 35.6591943,
+  "lon": 139.7024988
+},
+{
+  "type": "node",
+  "id": 8377606662,
+  "lat": 35.7401020,
+  "lon": 139.6866327
+},
+{
+  "type": "node",
+  "id": 8429296264,
+  "lat": 35.6860722,
+  "lon": 139.7033346
+},
+{
+  "type": "node",
+  "id": 9847013382,
+  "lat": 35.6673489,
+  "lon": 139.7045828
+},
+{
+  "type": "node",
+  "id": 9847013386,
+  "lat": 35.6677992,
+  "lon": 139.7049423
+},
+{
+  "type": "node",
+  "id": 9847013387,
+  "lat": 35.6681261,
+  "lon": 139.7051951
+},
+{
+  "type": "node",
+  "id": 9847013388,
+  "lat": 35.6686473,
+  "lon": 139.7055788
+},
+{
+  "type": "node",
+  "id": 9847013411,
+  "lat": 35.6694390,
+  "lon": 139.7061372
+},
+{
+  "type": "node",
+  "id": 9847013412,
+  "lat": 35.6689019,
+  "lon": 139.7057701
+},
+{
+  "type": "node",
+  "id": 9847056774,
+  "lat": 35.6689307,
+  "lon": 139.7057570
+},
+{
+  "type": "node",
+  "id": 9934059503,
+  "lat": 35.7114525,
+  "lon": 139.7100520
+},
+{
+  "type": "node",
+  "id": 10586899121,
+  "lat": 35.7492131,
+  "lon": 139.6664962
+},
+{
+  "type": "node",
+  "id": 10596369757,
+  "lat": 35.7771550,
+  "lon": 139.6304202,
+  "tags": {
+    "railway": "crossing"
+  }
+},
+{
+  "type": "node",
+  "id": 10660748533,
+  "lat": 35.7237039,
+  "lon": 139.7173381
+},
+{
+  "type": "node",
+  "id": 10660748538,
+  "lat": 35.7218223,
+  "lon": 139.7161375
+},
+{
+  "type": "node",
+  "id": 10702746721,
+  "lat": 35.7378538,
+  "lon": 139.6900636
+},
+{
+  "type": "node",
+  "id": 10702757959,
+  "lat": 35.7378030,
+  "lon": 139.6901117
+},
+{
+  "type": "node",
+  "id": 10702757960,
+  "lat": 35.7377474,
+  "lon": 139.6900497
+},
+{
+  "type": "node",
+  "id": 10702757961,
+  "lat": 35.7387097,
+  "lon": 139.6887673
+},
+{
+  "type": "node",
+  "id": 10702757962,
+  "lat": 35.7387810,
+  "lon": 139.6888386
+},
+{
+  "type": "node",
+  "id": 10971506261,
+  "lat": 35.7576342,
+  "lon": 139.6543405
+},
+{
+  "type": "node",
+  "id": 10971506263,
+  "lat": 35.7576628,
+  "lon": 139.6542953
+},
+{
+  "type": "node",
+  "id": 11629469063,
+  "lat": 35.7571706,
+  "lon": 139.6550722
+},
+{
+  "type": "node",
+  "id": 11629469065,
+  "lat": 35.7571318,
+  "lon": 139.6551336
+},
+{
+  "type": "node",
+  "id": 13306705724,
+  "lat": 35.7194473,
+  "lon": 139.7141912
+},
+{
+  "type": "node",
+  "id": 13451732794,
+  "lat": 35.7423886,
+  "lon": 139.6817621
+},
+{
+  "type": "node",
+  "id": 13451732795,
+  "lat": 35.7423336,
+  "lon": 139.6818813
+},
+{
+  "type": "node",
+  "id": 13451732798,
+  "lat": 35.7446640,
+  "lon": 139.6769788
+},
+{
+  "type": "node",
+  "id": 13451732799,
+  "lat": 35.7447482,
+  "lon": 139.6767823
+},
+{
+  "type": "node",
+  "id": 13451732800,
+  "lat": 35.7453447,
+  "lon": 139.6752676,
+  "tags": {
+    "railway": "switch"
+  }
+},
+{
+  "type": "node",
+  "id": 13451737822,
+  "lat": 35.7399477,
+  "lon": 139.6869570
+},
+{
+  "type": "node",
+  "id": 13451737823,
+  "lat": 35.7398189,
+  "lon": 139.6872296
+},
+{
+  "type": "node",
+  "id": 13451737824,
+  "lat": 35.7395745,
+  "lon": 139.6877061
+},
+{
+  "type": "node",
+  "id": 13451737825,
+  "lat": 35.7394622,
+  "lon": 139.6879008
+},
+{
+  "type": "node",
+  "id": 13451737826,
+  "lat": 35.7391724,
+  "lon": 139.6883457
+},
+{
+  "type": "node",
+  "id": 13451737833,
+  "lat": 35.7376362,
+  "lon": 139.6903309
+},
+{
+  "type": "node",
+  "id": 13451737834,
+  "lat": 35.7375123,
+  "lon": 139.6904850
+},
+{
+  "type": "node",
+  "id": 13451737835,
+  "lat": 35.7373754,
+  "lon": 139.6906521
+},
+{
+  "type": "node",
+  "id": 13451737845,
+  "lat": 35.7346158,
+  "lon": 139.6942920
+},
+{
+  "type": "node",
+  "id": 13451737850,
+  "lat": 35.7372204,
+  "lon": 139.6908464
+},
+{
+  "type": "node",
+  "id": 13451737852,
+  "lat": 35.7347297,
+  "lon": 139.6941255
+},
+{
+  "type": "node",
+  "id": 13596284496,
+  "lat": 35.7877993,
+  "lon": 139.6142149
+},
+{
+  "type": "node",
+  "id": 13596284507,
+  "lat": 35.7866247,
+  "lon": 139.6170740
+},
+{
+  "type": "node",
+  "id": 13596284511,
+  "lat": 35.7858914,
+  "lon": 139.6189900
+},
+{
+  "type": "node",
+  "id": 13596284527,
+  "lat": 35.7814465,
+  "lon": 139.6271045
+},
+{
+  "type": "node",
+  "id": 13596284528,
+  "lat": 35.7815577,
+  "lon": 139.6269416
+},
+{
+  "type": "node",
+  "id": 13596284529,
+  "lat": 35.7826326,
+  "lon": 139.6253473
+},
+{
+  "type": "node",
+  "id": 13596284530,
+  "lat": 35.7831494,
+  "lon": 139.6246123
+},
+{
+  "type": "node",
+  "id": 13596284531,
+  "lat": 35.7835019,
+  "lon": 139.6241077
+},
+{
+  "type": "node",
+  "id": 13596284532,
+  "lat": 35.7837274,
+  "lon": 139.6237622
+},
+{
+  "type": "node",
+  "id": 13596284533,
+  "lat": 35.7838346,
+  "lon": 139.6235878
+},
+{
+  "type": "node",
+  "id": 13596284534,
+  "lat": 35.7843954,
+  "lon": 139.6225859
+},
+{
+  "type": "node",
+  "id": 13596284535,
+  "lat": 35.7850014,
+  "lon": 139.6212281
+},
+{
+  "type": "node",
+  "id": 13596284536,
+  "lat": 35.7855047,
+  "lon": 139.6199868
+},
+{
+  "type": "node",
+  "id": 13596284537,
+  "lat": 35.7856840,
+  "lon": 139.6195408
+},
+{
+  "type": "node",
+  "id": 13596284538,
+  "lat": 35.7861961,
+  "lon": 139.6181395
+},
+{
+  "type": "node",
+  "id": 13596284539,
+  "lat": 35.7861255,
+  "lon": 139.6183279
+},
+{
+  "type": "node",
+  "id": 13596284542,
+  "lat": 35.7862860,
+  "lon": 139.6179062
+},
+{
+  "type": "way",
+  "id": 55356236,
+  "bounds": {
+    "minlat": 35.7428773,
+    "minlon": 139.6786885,
+    "maxlat": 35.7437892,
+    "maxlon": 139.6806313
+  },
+  "nodes": [
+    7775813420,
+    7369435826
+  ],
+  "geometry": [
+    { "lat": 35.7437892, "lon": 139.6786885 },
+    { "lat": 35.7428773, "lon": 139.6806313 }
+  ],
+  "tags": {
+    "colour": "#ED772D",
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1067",
+    "layer": "-2",
+    "level": "-2",
+    "maxspeed": "80",
+    "name": "西武有楽町線",
+    "name:en": "Seibu Yurakucho Line",
+    "name:es": "Línea Seibu Yurakucho",
+    "name:ja": "西武有楽町線",
+    "name:ja-Hira": "せいぶゆうらくちょうせん",
+    "name:ja_rm": "Seibu Yūrakuchō Sen",
+    "operator": "西武鉄道",
+    "operator:en": "Seibu Railway",
+    "operator:ja": "西武鉄道",
+    "operator:ja_rm": "Tōkyō Chikatetsu",
+    "passenger_lines": "2",
+    "railway": "subway",
+    "railway:atc": "yes",
+    "railway:ato": "sto",
+    "railway:preferred_direction": "forward",
+    "railway:track_ref": "C",
+    "ref": "SI",
+    "source": "KSJ2",
+    "tunnel": "yes",
+    "usage": "branch",
+    "voltage": "1500"
+  }
+},
+{
+  "type": "way",
+  "id": 184696239,
+  "bounds": {
+    "minlat": 35.6609165,
+    "minlon": 139.7021699,
+    "maxlat": 35.7298420,
+    "maxlon": 139.7174332
+  },
+  "nodes": [
+    1951959616,
+    1951959621,
+    1951959617,
+    1951959618,
+    1951959633,
+    1951959615,
+    1951959634,
+    1951959614,
+    1951959637,
+    1951959653,
+    1951959606,
+    1951959611,
+    1951959666,
+    1951959612,
+    1951959650,
+    10660748533,
+    1951959619,
+    1951959661,
+    1951959649,
+    10660748538,
+    1951959651,
+    1951959659,
+    6235968754,
+    1951959607,
+    1951959608,
+    1951959635,
+    1951959654,
+    1951959625,
+    1951959610,
+    1951959629,
+    1951959648,
+    1951959622,
+    1951959644,
+    9934059503,
+    1951954574,
+    1951954587,
+    1951954581,
+    1951954570,
+    1951954579,
+    1951954583,
+    1951954577,
+    1951954586,
+    6394721505,
+    1951953895,
+    6188734706,
+    1951953896,
+    1951953894,
+    1951953892,
+    8026646422,
+    1951953893,
+    1951953891,
+    1951953897,
+    8026646425,
+    1951952371,
+    8026646427,
+    6184862547,
+    1951952383,
+    8026646428,
+    1951952405,
+    1951952354,
+    1951952355,
+    1951952361,
+    8026646430,
+    1951952407,
+    8429296264,
+    1951952364,
+    8026646434,
+    1951952404,
+    1951952398,
+    1951952400,
+    1951952401,
+    1951952399,
+    8026646436,
+    1951952351,
+    8026646438,
+    8026646440,
+    1951952397,
+    8026646441,
+    8026646443,
+    1951952356,
+    1951952385,
+    1951952384,
+    1951952380,
+    8026646445,
+    7775803877,
+    1951952389,
+    1951952396,
+    1951952366,
+    8026646448,
+    8026646450,
+    1951952394,
+    1951952374,
+    1951952387,
+    1951952392,
+    1951952395,
+    1951952403,
+    8026646452,
+    1951952357,
+    1951952358,
+    1951952352,
+    1951952369,
+    1951952360,
+    1951952377,
+    8026646454,
+    1951952368,
+    2367019793,
+    1951952376,
+    1951952373,
+    9847013411,
+    1951952391,
+    9847013412,
+    9847013388,
+    6178465936,
+    9847013387,
+    9847013386,
+    1951952375,
+    9847013382,
+    1951952388,
+    1951952362,
+    8026646455,
+    1951952353,
+    1951952409,
+    1951952381,
+    1951952408,
+    1951952359,
+    1951952378,
+    1951952402,
+    1951952406,
+    8026646457,
+    8026646459,
+    2078327976,
+    1951952390,
+    1951952365
+  ],
+  "geometry": [
+    { "lat": 35.7298420, "lon": 139.7127752 },
+    { "lat": 35.7297506, "lon": 139.7130161 },
+    { "lat": 35.7295658, "lon": 139.7134465 },
+    { "lat": 35.7293546, "lon": 139.7138444 },
+    { "lat": 35.7283461, "lon": 139.7154897 },
+    { "lat": 35.7276030, "lon": 139.7166744 },
+    { "lat": 35.7272837, "lon": 139.7169698 },
+    { "lat": 35.7270639, "lon": 139.7171109 },
+    { "lat": 35.7268784, "lon": 139.7172097 },
+    { "lat": 35.7266168, "lon": 139.7172782 },
+    { "lat": 35.7262666, "lon": 139.7173377 },
+    { "lat": 35.7246640, "lon": 139.7174289 },
+    { "lat": 35.7242408, "lon": 139.7174332 },
+    { "lat": 35.7240009, "lon": 139.7174057 },
+    { "lat": 35.7237355, "lon": 139.7173483 },
+    { "lat": 35.7237039, "lon": 139.7173381 },
+    { "lat": 35.7235010, "lon": 139.7172725 },
+    { "lat": 35.7232431, "lon": 139.7171388 },
+    { "lat": 35.7229863, "lon": 139.7170015 },
+    { "lat": 35.7218223, "lon": 139.7161375 },
+    { "lat": 35.7216388, "lon": 139.7160012 },
+    { "lat": 35.7203689, "lon": 139.7148930 },
+    { "lat": 35.7201652, "lon": 139.7147443 },
+    { "lat": 35.7188629, "lon": 139.7137937 },
+    { "lat": 35.7187167, "lon": 139.7136629 },
+    { "lat": 35.7184535, "lon": 139.7134110 },
+    { "lat": 35.7183190, "lon": 139.7132907 },
+    { "lat": 35.7180707, "lon": 139.7131161 },
+    { "lat": 35.7171186, "lon": 139.7126814 },
+    { "lat": 35.7153844, "lon": 139.7118731 },
+    { "lat": 35.7136833, "lon": 139.7109821 },
+    { "lat": 35.7127930, "lon": 139.7104329 },
+    { "lat": 35.7122687, "lon": 139.7102567 },
+    { "lat": 35.7114525, "lon": 139.7100520 },
+    { "lat": 35.7107180, "lon": 139.7098034 },
+    { "lat": 35.7093585, "lon": 139.7093922 },
+    { "lat": 35.7085575, "lon": 139.7091570 },
+    { "lat": 35.7079175, "lon": 139.7090644 },
+    { "lat": 35.7065010, "lon": 139.7088933 },
+    { "lat": 35.7048784, "lon": 139.7086868 },
+    { "lat": 35.7034275, "lon": 139.7084819 },
+    { "lat": 35.7019537, "lon": 139.7082182 },
+    { "lat": 35.7009950, "lon": 139.7080844 },
+    { "lat": 35.7005334, "lon": 139.7080317 },
+    { "lat": 35.6989445, "lon": 139.7077279 },
+    { "lat": 35.6977314, "lon": 139.7074909 },
+    { "lat": 35.6969526, "lon": 139.7073300 },
+    { "lat": 35.6953094, "lon": 139.7070143 },
+    { "lat": 35.6948027, "lon": 139.7069415 },
+    { "lat": 35.6942488, "lon": 139.7068226 },
+    { "lat": 35.6939662, "lon": 139.7067376 },
+    { "lat": 35.6936497, "lon": 139.7065839 },
+    { "lat": 35.6928182, "lon": 139.7060966 },
+    { "lat": 35.6919958, "lon": 139.7056182 },
+    { "lat": 35.6915809, "lon": 139.7053805 },
+    { "lat": 35.6913113, "lon": 139.7052210 },
+    { "lat": 35.6906889, "lon": 139.7048163 },
+    { "lat": 35.6890974, "lon": 139.7037417 },
+    { "lat": 35.6884308, "lon": 139.7031971 },
+    { "lat": 35.6882043, "lon": 139.7030522 },
+    { "lat": 35.6879058, "lon": 139.7029477 },
+    { "lat": 35.6876046, "lon": 139.7029281 },
+    { "lat": 35.6873002, "lon": 139.7029665 },
+    { "lat": 35.6869690, "lon": 139.7030710 },
+    { "lat": 35.6860722, "lon": 139.7033346 },
+    { "lat": 35.6852218, "lon": 139.7036021 },
+    { "lat": 35.6849626, "lon": 139.7037014 },
+    { "lat": 35.6846771, "lon": 139.7038435 },
+    { "lat": 35.6844288, "lon": 139.7040017 },
+    { "lat": 35.6838754, "lon": 139.7043210 },
+    { "lat": 35.6835857, "lon": 139.7044444 },
+    { "lat": 35.6832349, "lon": 139.7045650 },
+    { "lat": 35.6829190, "lon": 139.7046027 },
+    { "lat": 35.6826222, "lon": 139.7046232 },
+    { "lat": 35.6823766, "lon": 139.7046161 },
+    { "lat": 35.6817535, "lon": 139.7045919 },
+    { "lat": 35.6811935, "lon": 139.7045623 },
+    { "lat": 35.6808646, "lon": 139.7045222 },
+    { "lat": 35.6805138, "lon": 139.7044980 },
+    { "lat": 35.6802006, "lon": 139.7044981 },
+    { "lat": 35.6798596, "lon": 139.7045750 },
+    { "lat": 35.6796618, "lon": 139.7046402 },
+    { "lat": 35.6794157, "lon": 139.7047689 },
+    { "lat": 35.6792131, "lon": 139.7048977 },
+    { "lat": 35.6784821, "lon": 139.7054958 },
+    { "lat": 35.6778181, "lon": 139.7059804 },
+    { "lat": 35.6776525, "lon": 139.7060689 },
+    { "lat": 35.6772914, "lon": 139.7062361 },
+    { "lat": 35.6769864, "lon": 139.7063273 },
+    { "lat": 35.6766792, "lon": 139.7064185 },
+    { "lat": 35.6758142, "lon": 139.7066410 },
+    { "lat": 35.6752171, "lon": 139.7068180 },
+    { "lat": 35.6749339, "lon": 139.7069173 },
+    { "lat": 35.6745395, "lon": 139.7071184 },
+    { "lat": 35.6740950, "lon": 139.7074001 },
+    { "lat": 35.6735677, "lon": 139.7077461 },
+    { "lat": 35.6732801, "lon": 139.7078937 },
+    { "lat": 35.6729773, "lon": 139.7079983 },
+    { "lat": 35.6726477, "lon": 139.7080404 },
+    { "lat": 35.6723649, "lon": 139.7080412 },
+    { "lat": 35.6720494, "lon": 139.7079830 },
+    { "lat": 35.6717832, "lon": 139.7078936 },
+    { "lat": 35.6714954, "lon": 139.7077496 },
+    { "lat": 35.6712210, "lon": 139.7075504 },
+    { "lat": 35.6709681, "lon": 139.7073388 },
+    { "lat": 35.6707359, "lon": 139.7071376 },
+    { "lat": 35.6702141, "lon": 139.7067145 },
+    { "lat": 35.6696872, "lon": 139.7063153 },
+    { "lat": 35.6694390, "lon": 139.7061372 },
+    { "lat": 35.6691983, "lon": 139.7059778 },
+    { "lat": 35.6689019, "lon": 139.7057701 },
+    { "lat": 35.6686473, "lon": 139.7055788 },
+    { "lat": 35.6683960, "lon": 139.7053934 },
+    { "lat": 35.6681261, "lon": 139.7051951 },
+    { "lat": 35.6677992, "lon": 139.7049423 },
+    { "lat": 35.6676378, "lon": 139.7048145 },
+    { "lat": 35.6673489, "lon": 139.7045828 },
+    { "lat": 35.6670931, "lon": 139.7043917 },
+    { "lat": 35.6668345, "lon": 139.7042046 },
+    { "lat": 35.6665928, "lon": 139.7040313 },
+    { "lat": 35.6663354, "lon": 139.7038353 },
+    { "lat": 35.6659913, "lon": 139.7036021 },
+    { "lat": 35.6651779, "lon": 139.7030055 },
+    { "lat": 35.6646332, "lon": 139.7026357 },
+    { "lat": 35.6643678, "lon": 139.7024917 },
+    { "lat": 35.6640884, "lon": 139.7023675 },
+    { "lat": 35.6637855, "lon": 139.7022736 },
+    { "lat": 35.6634852, "lon": 139.7022047 },
+    { "lat": 35.6631803, "lon": 139.7021699 },
+    { "lat": 35.6628643, "lon": 139.7021699 },
+    { "lat": 35.6622544, "lon": 139.7022248 },
+    { "lat": 35.6619245, "lon": 139.7022441 },
+    { "lat": 35.6609165, "lon": 139.7022764 }
+  ],
+  "tags": {
+    "colour": "#B74D17",
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1067",
+    "layer": "-5",
+    "maxspeed": "80",
+    "name": "東京メトロ副都心線",
+    "name:en": "Tokyo Metro Fukutoshin Line",
+    "name:es": "Línea Fukutoshin de Tokyo Metro",
+    "name:ja": "東京メトロ副都心線",
+    "name:ja_rm": "Tōkyō Metro Fukutoshin Sen",
+    "name:ko": "도쿄 메트로 후쿠토신선",
+    "name:ru": "Линия метро Фукутосин",
+    "oneway": "yes",
+    "operator": "東京地下鉄",
+    "operator:en": "Tokyo Metro",
+    "operator:ja": "東京地下鉄",
+    "operator:ja_rm": "Tōkyō Chikatetsu",
+    "railway": "subway",
+    "railway:atc": "yes",
+    "railway:ato": "sto",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "1500"
+  }
+},
+{
+  "type": "way",
+  "id": 198609048,
+  "bounds": {
+    "minlat": 35.7823668,
+    "minlon": 139.6185251,
+    "maxlat": 35.7860550,
+    "maxlon": 139.6257339
+  },
+  "nodes": [
+    2087224535,
+    13596284511,
+    2087224524,
+    13596284537,
+    13596284536,
+    2087224499,
+    13596284535,
+    2087224493,
+    2087224489,
+    2087224484,
+    2087224478,
+    13596284534,
+    2087224472,
+    2087224466,
+    2087224462,
+    13596284533,
+    13596284532,
+    2087224440,
+    13596284531,
+    2087224435,
+    13596284530,
+    2087224431,
+    13596284529,
+    2091194185
+  ],
+  "geometry": [
+    { "lat": 35.7860550, "lon": 139.6185251 },
+    { "lat": 35.7858914, "lon": 139.6189900 },
+    { "lat": 35.7857942, "lon": 139.6192536 },
+    { "lat": 35.7856840, "lon": 139.6195408 },
+    { "lat": 35.7855047, "lon": 139.6199868 },
+    { "lat": 35.7851565, "lon": 139.6208474 },
+    { "lat": 35.7850014, "lon": 139.6212281 },
+    { "lat": 35.7848505, "lon": 139.6215984 },
+    { "lat": 35.7846992, "lon": 139.6219495 },
+    { "lat": 35.7845889, "lon": 139.6221914 },
+    { "lat": 35.7844764, "lon": 139.6224238 },
+    { "lat": 35.7843954, "lon": 139.6225859 },
+    { "lat": 35.7843154, "lon": 139.6227411 },
+    { "lat": 35.7841238, "lon": 139.6230981 },
+    { "lat": 35.7839332, "lon": 139.6234281 },
+    { "lat": 35.7838346, "lon": 139.6235878 },
+    { "lat": 35.7837274, "lon": 139.6237622 },
+    { "lat": 35.7836152, "lon": 139.6239369 },
+    { "lat": 35.7835019, "lon": 139.6241077 },
+    { "lat": 35.7833858, "lon": 139.6242796 },
+    { "lat": 35.7831494, "lon": 139.6246123 },
+    { "lat": 35.7828979, "lon": 139.6249717 },
+    { "lat": 35.7826326, "lon": 139.6253473 },
+    { "lat": 35.7823668, "lon": 139.6257339 }
+  ],
+  "tags": {
+    "colour": "#C1A470",
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1067",
+    "maxspeed": "80",
+    "name": "東京メトロ有楽町線",
+    "name:en": "Tokyo Metro Yurakucho Line",
+    "name:es": "Línea Yurakucho de Tokyo Metro",
+    "name:ja": "東京メトロ有楽町線",
+    "name:ja-Hira": "とうきょうめとろゆうらくちょうせん",
+    "name:ja_rm": "Tōkyō Metoro Yūrakuchō-sen",
+    "name:ko": "도쿄메트로 유라쿠조선",
+    "name:ru": "Линия метро Юракутё",
+    "name:zh": "东京地铁有乐町线",
+    "oneway": "yes",
+    "operator": "東京地下鉄",
+    "operator:en": "Tokyo Metro",
+    "operator:ja": "東京地下鉄",
+    "operator:ja_rm": "Tōkyō Chikatetsu",
+    "railway": "subway",
+    "railway:atc": "new-CS",
+    "railway:ato": "sto",
+    "ref": "Y",
+    "source": "Bing",
+    "usage": "main",
+    "voltage": "1500"
+  }
+},
+{
+  "type": "way",
+  "id": 198609110,
+  "bounds": {
+    "minlat": 35.7875452,
+    "minlon": 139.6128678,
+    "maxlat": 35.7883529,
+    "maxlon": 139.6148314
+  },
+  "nodes": [
+    3645998146,
+    13596284496,
+    2087224575
+  ],
+  "geometry": [
+    { "lat": 35.7883529, "lon": 139.6128678 },
+    { "lat": 35.7877993, "lon": 139.6142149 },
+    { "lat": 35.7875452, "lon": 139.6148314 }
+  ],
+  "tags": {
+    "colour": "#C1A470",
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1067",
+    "maxspeed": "80",
+    "name": "東京メトロ有楽町線",
+    "name:en": "Tokyo Metro Yurakucho Line",
+    "name:es": "Línea Yurakucho de Tokyo Metro",
+    "name:ja": "東京メトロ有楽町線",
+    "name:ja-Hira": "とうきょうめとろゆうらくちょうせん",
+    "name:ja_rm": "Tōkyō Metoro Yūrakuchō-sen",
+    "name:ko": "도쿄메트로 유라쿠조선",
+    "name:ru": "Линия метро Юракутё",
+    "name:zh": "东京地铁有乐町线",
+    "oneway": "yes",
+    "operator": "東京地下鉄",
+    "operator:en": "Tokyo Metro",
+    "operator:ja": "東京地下鉄",
+    "operator:ja_rm": "Tōkyō Chikatetsu",
+    "railway": "subway",
+    "railway:atc": "new-CS",
+    "railway:ato": "sto",
+    "ref": "Y",
+    "source": "Bing",
+    "usage": "main",
+    "voltage": "1500"
+  }
+},
+{
+  "type": "way",
+  "id": 198609129,
+  "bounds": {
+    "minlat": 35.7860550,
+    "minlon": 139.6148314,
+    "maxlat": 35.7875452,
+    "maxlon": 139.6185251
+  },
+  "nodes": [
+    2087224575,
+    2087224561,
+    13596284507,
+    2087224547,
+    13596284542,
+    13596284538,
+    13596284539,
+    2087224535
+  ],
+  "geometry": [
+    { "lat": 35.7875452, "lon": 139.6148314 },
+    { "lat": 35.7871171, "lon": 139.6158777 },
+    { "lat": 35.7866247, "lon": 139.6170740 },
+    { "lat": 35.7863675, "lon": 139.6176997 },
+    { "lat": 35.7862860, "lon": 139.6179062 },
+    { "lat": 35.7861961, "lon": 139.6181395 },
+    { "lat": 35.7861255, "lon": 139.6183279 },
+    { "lat": 35.7860550, "lon": 139.6185251 }
+  ],
+  "tags": {
+    "bridge": "yes",
+    "colour": "#C1A470",
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1067",
+    "layer": "2",
+    "maxspeed": "80",
+    "name": "東京メトロ有楽町線",
+    "name:en": "Tokyo Metro Yurakucho Line",
+    "name:es": "Línea Yurakucho de Tokyo Metro",
+    "name:ja": "東京メトロ有楽町線",
+    "name:ja-Hira": "とうきょうめとろゆうらくちょうせん",
+    "name:ja_rm": "Tōkyō Metoro Yūrakuchō-sen",
+    "name:ko": "도쿄메트로 유라쿠조선",
+    "name:ru": "Линия метро Юракутё",
+    "name:zh": "东京地铁有乐町线",
+    "oneway": "yes",
+    "operator": "東京地下鉄",
+    "operator:en": "Tokyo Metro",
+    "operator:ja": "東京地下鉄",
+    "operator:ja_rm": "Tōkyō Chikatetsu",
+    "railway": "subway",
+    "railway:atc": "new-CS",
+    "railway:ato": "sto",
+    "ref": "Y",
+    "source": "Bing",
+    "usage": "main",
+    "voltage": "1500"
+  }
+},
+{
+  "type": "way",
+  "id": 199076136,
+  "bounds": {
+    "minlat": 35.7821287,
+    "minlon": 139.6257339,
+    "maxlat": 35.7823668,
+    "maxlon": 139.6260924
+  },
+  "nodes": [
+    2091194185,
+    2087224414
+  ],
+  "geometry": [
+    { "lat": 35.7823668, "lon": 139.6257339 },
+    { "lat": 35.7821287, "lon": 139.6260924 }
+  ],
+  "tags": {
+    "bridge": "yes",
+    "colour": "#C1A470",
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1067",
+    "layer": "2",
+    "maxspeed": "80",
+    "name": "東京メトロ有楽町線",
+    "name:en": "Tokyo Metro Yurakucho Line",
+    "name:es": "Línea Yurakucho de Tokyo Metro",
+    "name:ja": "東京メトロ有楽町線",
+    "name:ja-Hira": "とうきょうめとろゆうらくちょうせん",
+    "name:ja_rm": "Tōkyō Metoro Yūrakuchō-sen",
+    "name:ko": "도쿄메트로 유라쿠조선",
+    "name:ru": "Линия метро Юракутё",
+    "name:zh": "东京地铁有乐町线",
+    "operator": "東京地下鉄",
+    "operator:en": "Tokyo Metro",
+    "operator:ja": "東京地下鉄",
+    "operator:ja_rm": "Tōkyō Chikatetsu",
+    "railway": "subway",
+    "railway:atc": "new-CS",
+    "railway:ato": "sto",
+    "ref": "Y",
+    "source": "Bing",
+    "usage": "main",
+    "voltage": "1500"
+  }
+},
+{
+  "type": "way",
+  "id": 199076138,
+  "bounds": {
+    "minlat": 35.7812099,
+    "minlon": 139.6260924,
+    "maxlat": 35.7821287,
+    "maxlon": 139.6274608
+  },
+  "nodes": [
+    2087224414,
+    2087224408,
+    13596284528,
+    13596284527,
+    2484449887
+  ],
+  "geometry": [
+    { "lat": 35.7821287, "lon": 139.6260924 },
+    { "lat": 35.7817248, "lon": 139.6266940 },
+    { "lat": 35.7815577, "lon": 139.6269416 },
+    { "lat": 35.7814465, "lon": 139.6271045 },
+    { "lat": 35.7812099, "lon": 139.6274608 }
+  ],
+  "tags": {
+    "colour": "#C1A470",
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1067",
+    "maxspeed": "80",
+    "name": "東京メトロ有楽町線",
+    "name:en": "Tokyo Metro Yurakucho Line",
+    "name:es": "Línea Yurakucho de Tokyo Metro",
+    "name:ja": "東京メトロ有楽町線",
+    "name:ja-Hira": "とうきょうめとろゆうらくちょうせん",
+    "name:ja_rm": "Tōkyō Metoro Yūrakuchō-sen",
+    "name:ko": "도쿄메트로 유라쿠조선",
+    "name:ru": "Линия метро Юракутё",
+    "name:zh": "东京地铁有乐町线",
+    "oneway": "yes",
+    "operator": "東京地下鉄",
+    "operator:en": "Tokyo Metro",
+    "operator:ja": "東京地下鉄",
+    "operator:ja_rm": "Tōkyō Chikatetsu",
+    "railway": "subway",
+    "railway:atc": "new-CS",
+    "railway:ato": "sto",
+    "ref": "Y",
+    "source": "Bing",
+    "usage": "main",
+    "voltage": "1500"
+  }
+},
+{
+  "type": "way",
+  "id": 662923219,
+  "bounds": {
+    "minlat": 35.6677021,
+    "minlon": 139.7048294,
+    "maxlat": 35.6691403,
+    "maxlon": 139.7059045
+  },
+  "nodes": [
+    6205784380,
+    6205805324,
+    6205782892,
+    6205782888,
+    6205830956,
+    9847056774,
+    6205784381
+  ],
+  "geometry": [
+    { "lat": 35.6677021, "lon": 139.7048294 },
+    { "lat": 35.6681119, "lon": 139.7051455 },
+    { "lat": 35.6682697, "lon": 139.7052656 },
+    { "lat": 35.6684942, "lon": 139.7054308 },
+    { "lat": 35.6687233, "lon": 139.7055974 },
+    { "lat": 35.6689307, "lon": 139.7057570 },
+    { "lat": 35.6691403, "lon": 139.7059045 }
+  ],
+  "tags": {
+    "indoor": "yes",
+    "layer": "-5",
+    "level": "-5",
+    "lit": "yes",
+    "network": "副都心線",
+    "public_transport": "platform",
+    "railway": "platform",
+    "ref": "3",
+    "subway": "yes",
+    "surface": "asphalt",
+    "tunnel": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 663950528,
+  "bounds": {
+    "minlat": 35.7331056,
+    "minlon": 139.6978224,
+    "maxlat": 35.7334115,
+    "maxlon": 139.6995326
+  },
+  "nodes": [
+    6214539158,
+    6214539159,
+    6214539170,
+    6214634886,
+    6214539160,
+    6214539161
+  ],
+  "geometry": [
+    { "lat": 35.7333742, "lon": 139.6978224 },
+    { "lat": 35.7334115, "lon": 139.6978508 },
+    { "lat": 35.7333413, "lon": 139.6982999 },
+    { "lat": 35.7331450, "lon": 139.6994534 },
+    { "lat": 35.7331346, "lon": 139.6995191 },
+    { "lat": 35.7331056, "lon": 139.6995326 }
+  ],
+  "tags": {
+    "bench": "yes",
+    "layer": "-4",
+    "level": "-3",
+    "lit": "yes",
+    "name": "要町 (東京メトロ副都心線)",
+    "name:en": "Kanamecho (Fukutoshin Line)",
+    "name:es": "Kanamecho (Línea Fukutoshin)",
+    "name:ja": "要町 (東京メトロ副都心線)",
+    "public_transport": "platform",
+    "railway": "platform",
+    "ref": "3",
+    "subway": "yes",
+    "surface": "asphalt",
+    "tunnel": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 664521490,
+  "bounds": {
+    "minlat": 35.6582981,
+    "minlon": 139.7024886,
+    "maxlat": 35.6595179,
+    "maxlon": 139.7030278
+  },
+  "nodes": [
+    6219636711,
+    6219636712,
+    6219636725,
+    8377082766,
+    6219636738,
+    8377082778,
+    6219636713,
+    6219636724,
+    8377082777,
+    6219636736,
+    8377082767,
+    6219636723,
+    6219636711
+  ],
+  "geometry": [
+    { "lat": 35.6582981, "lon": 139.7030011 },
+    { "lat": 35.6583098, "lon": 139.7030278 },
+    { "lat": 35.6585034, "lon": 139.7029322 },
+    { "lat": 35.6586508, "lon": 139.7028511 },
+    { "lat": 35.6589014, "lon": 139.7027490 },
+    { "lat": 35.6592249, "lon": 139.7026273 },
+    { "lat": 35.6595179, "lon": 139.7025272 },
+    { "lat": 35.6595141, "lon": 139.7024886 },
+    { "lat": 35.6592118, "lon": 139.7025724 },
+    { "lat": 35.6588888, "lon": 139.7026975 },
+    { "lat": 35.6586399, "lon": 139.7028171 },
+    { "lat": 35.6584912, "lon": 139.7029016 },
+    { "lat": 35.6582981, "lon": 139.7030011 }
+  ],
+  "tags": {
+    "area": "yes",
+    "bench": "yes",
+    "layer": "-5",
+    "level": "-5",
+    "level:ref": "B5F",
+    "lit": "yes",
+    "name": "渋谷",
+    "public_transport": "platform",
+    "railway": "platform",
+    "ref": "3",
+    "subway": "yes",
+    "surface": "asphalt",
+    "tunnel": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 665064489,
+  "bounds": {
+    "minlat": 35.7309995,
+    "minlon": 139.7071639,
+    "maxlat": 35.7317856,
+    "maxlon": 139.7093322
+  },
+  "nodes": [
+    6225008815,
+    6225008814,
+    6225008813,
+    6225067695,
+    6225499837,
+    6225511558,
+    6225008812,
+    6225008821,
+    7928169103,
+    7928169104,
+    7928169102,
+    6225008815
+  ],
+  "geometry": [
+    { "lat": 35.7317856, "lon": 139.7071727 },
+    { "lat": 35.7315505, "lon": 139.7081191 },
+    { "lat": 35.7314158, "lon": 139.7084994 },
+    { "lat": 35.7313426, "lon": 139.7086768 },
+    { "lat": 35.7312470, "lon": 139.7089243 },
+    { "lat": 35.7310955, "lon": 139.7092580 },
+    { "lat": 35.7310612, "lon": 139.7093322 },
+    { "lat": 35.7309995, "lon": 139.7093014 },
+    { "lat": 35.7313616, "lon": 139.7084680 },
+    { "lat": 35.7315060, "lon": 139.7080887 },
+    { "lat": 35.7317576, "lon": 139.7071639 },
+    { "lat": 35.7317856, "lon": 139.7071727 }
+  ],
+  "tags": {
+    "area": "yes",
+    "bench": "yes",
+    "layer": "-4",
+    "level": "-4",
+    "lit": "yes",
+    "public_transport": "platform",
+    "railway": "platform",
+    "ref": "5",
+    "subway": "yes",
+    "surface": "asphalt",
+    "tunnel": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 670712982,
+  "bounds": {
+    "minlat": 35.6891134,
+    "minlon": 139.7036848,
+    "maxlat": 35.6907962,
+    "maxlon": 139.7048085
+  },
+  "nodes": [
+    6280941665,
+    6280941670,
+    6281439100,
+    6415116608,
+    6281290588,
+    6280941672,
+    6280941669
+  ],
+  "geometry": [
+    { "lat": 35.6891134, "lon": 139.7036848 },
+    { "lat": 35.6891169, "lon": 139.7037093 },
+    { "lat": 35.6900679, "lon": 139.7043490 },
+    { "lat": 35.6902057, "lon": 139.7044400 },
+    { "lat": 35.6902995, "lon": 139.7045019 },
+    { "lat": 35.6907753, "lon": 139.7048085 },
+    { "lat": 35.6907962, "lon": 139.7047998 }
+  ],
+  "tags": {
+    "bench": "yes",
+    "indoor": "yes",
+    "layer": "-3",
+    "level": "-3",
+    "lit": "yes",
+    "name": "新宿三丁目",
+    "name:en": "Shinjuku-sanchome",
+    "name:es": "Shinjuku-sanchome",
+    "network": "東京メトロ",
+    "operator": "東京地下鉄",
+    "public_transport": "platform",
+    "railway": "platform",
+    "ref": "3",
+    "subway": "yes",
+    "surface": "asphalt",
+    "tunnel": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 682766012,
+  "bounds": {
+    "minlat": 35.6979616,
+    "minlon": 139.7075589,
+    "maxlat": 35.7007989,
+    "maxlon": 139.7081269
+  },
+  "nodes": [
+    6394721510,
+    6394721511,
+    6394721512,
+    6394721513,
+    6394721510
+  ],
+  "geometry": [
+    { "lat": 35.6979700, "lon": 139.7075589 },
+    { "lat": 35.6979616, "lon": 139.7076281 },
+    { "lat": 35.7007926, "lon": 139.7081269 },
+    { "lat": 35.7007989, "lon": 139.7080770 },
+    { "lat": 35.6979700, "lon": 139.7075589 }
+  ],
+  "tags": {
+    "area": "yes",
+    "covered": "yes",
+    "highway": "footway",
+    "indoor": "area",
+    "level": "-5",
+    "public_transport": "platform",
+    "railway": "platform",
+    "subway": "yes",
+    "tunnel": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 689991340,
+  "bounds": {
+    "minlat": 35.7078598,
+    "minlon": 139.7090128,
+    "maxlat": 35.7082011,
+    "maxlon": 139.7091002
+  },
+  "nodes": [
+    6473332323,
+    6473332324,
+    6473332325,
+    6473332326,
+    6473332323
+  ],
+  "geometry": [
+    { "lat": 35.7078634, "lon": 139.7090128 },
+    { "lat": 35.7078598, "lon": 139.7090491 },
+    { "lat": 35.7081974, "lon": 139.7091002 },
+    { "lat": 35.7082011, "lon": 139.7090639 },
+    { "lat": 35.7078634, "lon": 139.7090128 }
+  ],
+  "tags": {
+    "area": "yes",
+    "level": "-1",
+    "public_transport": "platform",
+    "railway": "platform",
+    "subway": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 690016724,
+  "bounds": {
+    "minlat": 35.7194416,
+    "minlon": 139.7141774,
+    "maxlat": 35.7206710,
+    "maxlon": 139.7151014
+  },
+  "nodes": [
+    6473540498,
+    13306705724,
+    6473540499,
+    6473540500,
+    6473540501,
+    6473540498
+  ],
+  "geometry": [
+    { "lat": 35.7194540, "lon": 139.7141774 },
+    { "lat": 35.7194473, "lon": 139.7141912 },
+    { "lat": 35.7194416, "lon": 139.7142030 },
+    { "lat": 35.7206585, "lon": 139.7151014 },
+    { "lat": 35.7206710, "lon": 139.7150758 },
+    { "lat": 35.7194540, "lon": 139.7141774 }
+  ],
+  "tags": {
+    "area": "yes",
+    "departures_board": "timetable",
+    "public_transport": "platform",
+    "railway": "platform",
+    "shelter": "yes",
+    "subway": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 696941856,
+  "bounds": {
+    "minlat": 35.7878597,
+    "minlon": 139.6119923,
+    "maxlat": 35.7887980,
+    "maxlon": 139.6141390
+  },
+  "nodes": [
+    6545201655,
+    6545201656,
+    6545201657,
+    6545201658,
+    6545201655
+  ],
+  "geometry": [
+    { "lat": 35.7887980, "lon": 139.6120341 },
+    { "lat": 35.7887319, "lon": 139.6119923 },
+    { "lat": 35.7878597, "lon": 139.6141081 },
+    { "lat": 35.7879120, "lon": 139.6141390 },
+    { "lat": 35.7887980, "lon": 139.6120341 }
+  ],
+  "tags": {
+    "area:highway": "footway",
+    "public_transport": "platform",
+    "railway": "platform",
+    "train": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 759139125,
+  "bounds": {
+    "minlat": 35.6586186,
+    "minlon": 139.7022935,
+    "maxlat": 35.6606054,
+    "maxlon": 139.7027508
+  },
+  "nodes": [
+    6219636708,
+    7090524747,
+    8377082781,
+    7987434495,
+    7987434499,
+    8016072864,
+    7987434497,
+    7090524753,
+    1951952393
+  ],
+  "geometry": [
+    { "lat": 35.6586186, "lon": 139.7027508 },
+    { "lat": 35.6589974, "lon": 139.7025703 },
+    { "lat": 35.6591943, "lon": 139.7024988 },
+    { "lat": 35.6595060, "lon": 139.7024073 },
+    { "lat": 35.6598983, "lon": 139.7023389 },
+    { "lat": 35.6600454, "lon": 139.7023262 },
+    { "lat": 35.6602078, "lon": 139.7023121 },
+    { "lat": 35.6604185, "lon": 139.7022939 },
+    { "lat": 35.6606054, "lon": 139.7022935 }
+  ],
+  "tags": {
+    "colour": "#B74D17",
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1067",
+    "layer": "-5",
+    "level": "-5",
+    "maxspeed": "80",
+    "name": "東京メトロ副都心線",
+    "name:en": "Tokyo Metro Fukutoshin Line",
+    "name:es": "Línea Fukutoshin de Tokyo Metro",
+    "name:ja": "東京メトロ副都心線",
+    "name:ja_rm": "Tōkyō Metro Fukutoshin Sen",
+    "name:ko": "도쿄 메트로 후쿠토신선",
+    "name:ru": "Линия метро Фукутосин",
+    "operator": "東京地下鉄",
+    "operator:en": "Tokyo Metro",
+    "operator:ja": "東京地下鉄",
+    "operator:ja_rm": "Tōkyō Chikatetsu",
+    "railway": "subway",
+    "railway:atc": "yes",
+    "railway:ato": "sto",
+    "source": "bing",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "1500"
+  }
+},
+{
+  "type": "way",
+  "id": 759139127,
+  "bounds": {
+    "minlat": 35.6606054,
+    "minlon": 139.7022764,
+    "maxlat": 35.6609165,
+    "maxlon": 139.7022935
+  },
+  "nodes": [
+    1951952365,
+    1951952393
+  ],
+  "geometry": [
+    { "lat": 35.6609165, "lon": 139.7022764 },
+    { "lat": 35.6606054, "lon": 139.7022935 }
+  ],
+  "tags": {
+    "colour": "#B74D17",
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1067",
+    "layer": "-5",
+    "level": "-5",
+    "maxspeed": "80",
+    "name": "東京メトロ副都心線",
+    "name:en": "Tokyo Metro Fukutoshin Line",
+    "name:es": "Línea Fukutoshin de Tokyo Metro",
+    "name:ja": "東京メトロ副都心線",
+    "name:ja_rm": "Tōkyō Metro Fukutoshin Sen",
+    "name:ko": "도쿄 메트로 후쿠토신선",
+    "name:ru": "Линия метро Фукутосин",
+    "operator": "東京地下鉄",
+    "operator:en": "Tokyo Metro",
+    "operator:ja": "東京地下鉄",
+    "operator:ja_rm": "Tōkyō Chikatetsu",
+    "railway": "subway",
+    "railway:atc": "yes",
+    "railway:ato": "sto",
+    "service": "siding",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "1500"
+  }
+},
+{
+  "type": "way",
+  "id": 788228525,
+  "bounds": {
+    "minlat": 35.7427901,
+    "minlon": 139.6789819,
+    "maxlat": 35.7437196,
+    "maxlon": 139.6809183
+  },
+  "nodes": [
+    7369435822,
+    7373591317,
+    7373591316,
+    7369435823,
+    7369435824,
+    7369435825,
+    7369435822
+  ],
+  "geometry": [
+    { "lat": 35.7437196, "lon": 139.6790144 },
+    { "lat": 35.7437044, "lon": 139.6790037 },
+    { "lat": 35.7436858, "lon": 139.6789906 },
+    { "lat": 35.7436734, "lon": 139.6789819 },
+    { "lat": 35.7427901, "lon": 139.6808858 },
+    { "lat": 35.7428363, "lon": 139.6809183 },
+    { "lat": 35.7437196, "lon": 139.6790144 }
+  ],
+  "tags": {
+    "area": "yes",
+    "level": "-2",
+    "network": "東京メトロ;西武鉄道",
+    "public_transport": "platform",
+    "railway": "platform",
+    "ref": "1;2",
+    "subway": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 832954115,
+  "bounds": {
+    "minlat": 35.7442849,
+    "minlon": 139.6759255,
+    "maxlat": 35.7450775,
+    "maxlon": 139.6777877
+  },
+  "nodes": [
+    7369566821,
+    7373432108,
+    13451732799,
+    13451732798,
+    7775813422
+  ],
+  "geometry": [
+    { "lat": 35.7450775, "lon": 139.6759255 },
+    { "lat": 35.7448427, "lon": 139.6765335 },
+    { "lat": 35.7447482, "lon": 139.6767823 },
+    { "lat": 35.7446640, "lon": 139.6769788 },
+    { "lat": 35.7442849, "lon": 139.6777877 }
+  ],
+  "tags": {
+    "colour": "#C1A470",
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1067",
+    "layer": "-2",
+    "level": "-2",
+    "maxspeed": "80",
+    "name": "東京メトロ有楽町線",
+    "name:en": "Tokyo Metro Yurakucho Line",
+    "name:es": "Línea Yurakucho de Tokyo Metro",
+    "name:ja": "東京メトロ有楽町線",
+    "name:ja-Hira": "とうきょうめとろゆうらくちょうせん",
+    "name:ja_rm": "Tōkyō Metoro Yūrakuchō-sen",
+    "name:ko": "도쿄메트로 유라쿠조선",
+    "name:ru": "Линия метро Юракутё",
+    "name:zh": "东京地铁有乐町线",
+    "operator": "東京地下鉄",
+    "operator:en": "Tokyo Metro",
+    "operator:ja": "東京地下鉄",
+    "operator:ja_rm": "Tōkyō Chikatetsu",
+    "railway": "subway",
+    "railway:atc": "yes",
+    "railway:ato": "sto",
+    "railway:preferred_direction": "forward",
+    "ref": "Y",
+    "source": "GSI/KIBAN 2500;NARO",
+    "tunnel": "yes",
+    "voltage": "1500"
+  }
+},
+{
+  "type": "way",
+  "id": 832954120,
+  "bounds": {
+    "minlat": 35.7421504,
+    "minlon": 139.6816280,
+    "maxlat": 35.7424492,
+    "maxlon": 139.6822679
+  },
+  "nodes": [
+    7775810076,
+    13451732794,
+    13451732795,
+    7775813418
+  ],
+  "geometry": [
+    { "lat": 35.7424492, "lon": 139.6816280 },
+    { "lat": 35.7423886, "lon": 139.6817621 },
+    { "lat": 35.7423336, "lon": 139.6818813 },
+    { "lat": 35.7421504, "lon": 139.6822679 }
+  ],
+  "tags": {
+    "colour": "#B74D17",
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1067",
+    "layer": "-2",
+    "level": "-2",
+    "maxspeed": "80",
+    "name": "東京メトロ副都心線",
+    "name:en": "Tokyo Metro Fukutoshin Line",
+    "name:es": "Línea Fukutoshin de Tokyo Metro",
+    "name:ja": "東京メトロ副都心線",
+    "name:ja_rm": "Tōkyō Metro Fukutoshin Sen",
+    "name:ko": "도쿄 메트로 후쿠토신선",
+    "name:ru": "Линия метро Фукутосин",
+    "note": "Shared with Seibu Yurakucho line.",
+    "operator": "東京地下鉄",
+    "operator:en": "Tokyo Metro",
+    "operator:ja": "東京地下鉄",
+    "operator:ja_rm": "Tōkyō Chikatetsu",
+    "railway": "subway",
+    "railway:atc": "yes",
+    "railway:ato": "sto",
+    "railway:preferred_direction": "forward",
+    "source": "Yūrakuchō Line",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "1500"
+  }
+},
+{
+  "type": "way",
+  "id": 832954126,
+  "bounds": {
+    "minlat": 35.7437892,
+    "minlon": 139.6777877,
+    "maxlat": 35.7442849,
+    "maxlon": 139.6786885
+  },
+  "nodes": [
+    7775813422,
+    7775813420
+  ],
+  "geometry": [
+    { "lat": 35.7442849, "lon": 139.6777877 },
+    { "lat": 35.7437892, "lon": 139.6786885 }
+  ],
+  "tags": {
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1067",
+    "layer": "-2",
+    "level": "-2",
+    "maxspeed": "80",
+    "name": "東京メトロ有楽町線",
+    "name:en": "Tokyo Metro Yurakucho Line",
+    "name:es": "Línea Yurakucho de Tokyo Metro",
+    "name:ja": "東京メトロ有楽町線",
+    "name:ja_rm": "Tōkyō Metro Yūrakuchō-sen",
+    "note": "Shared with Seibu Yurakucho line.",
+    "operator": "東京地下鉄",
+    "operator:en": "Tokyo Metro",
+    "operator:ja": "東京地下鉄",
+    "operator:ja_rm": "Tōkyō Chikatetsu",
+    "railway": "subway",
+    "railway:atc": "yes",
+    "railway:ato": "sto",
+    "railway:preferred_direction": "forward",
+    "source": "Yūrakuchō Line",
+    "tracks": "1",
+    "tunnel": "yes",
+    "voltage": "1500"
+  }
+},
+{
+  "type": "way",
+  "id": 832954135,
+  "bounds": {
+    "minlat": 35.7408190,
+    "minlon": 139.6822679,
+    "maxlat": 35.7421504,
+    "maxlon": 139.6850962
+  },
+  "nodes": [
+    7775813418,
+    7944173406
+  ],
+  "geometry": [
+    { "lat": 35.7421504, "lon": 139.6822679 },
+    { "lat": 35.7408190, "lon": 139.6850962 }
+  ],
+  "tags": {
+    "colour": "#B74D17",
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1067",
+    "layer": "-2",
+    "level": "-2",
+    "maxspeed": "80",
+    "name": "東京メトロ副都心線",
+    "name:en": "Tokyo Metro Fukutoshin Line",
+    "name:es": "Línea Fukutoshin de Tokyo Metro",
+    "name:ja": "東京メトロ副都心線",
+    "name:ja_rm": "Tōkyō Metro Fukutoshin Sen",
+    "name:ko": "도쿄 메트로 후쿠토신선",
+    "name:ru": "Линия метро Фукутосин",
+    "operator": "東京地下鉄",
+    "operator:en": "Tokyo Metro",
+    "operator:ja": "東京地下鉄",
+    "operator:ja_rm": "Tōkyō Chikatetsu",
+    "railway": "subway",
+    "railway:atc": "yes",
+    "railway:ato": "sto",
+    "railway:preferred_direction": "forward",
+    "railway:track_ref": "中A",
+    "source": "GSI/KIBAN 2500;NARO",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "1500"
+  }
+},
+{
+  "type": "way",
+  "id": 832954142,
+  "bounds": {
+    "minlat": 35.7450775,
+    "minlon": 139.6274608,
+    "maxlat": 35.7812099,
+    "maxlon": 139.6759255
+  },
+  "nodes": [
+    2484449887,
+    7775814625,
+    7775795242,
+    7775795241,
+    7775795137,
+    7775795136,
+    7775795135,
+    7775795134,
+    7775795133,
+    7775814626,
+    7775821593,
+    7775820082,
+    7775821592,
+    7775821591,
+    7775820084,
+    7775821590,
+    10596369757,
+    7775786584,
+    7775821589,
+    7775824402,
+    7775824401,
+    7775824400,
+    7775824399,
+    7775824398,
+    7775795929,
+    7775795928,
+    7775795927,
+    7775795926,
+    7775795925,
+    7775803883,
+    7775803882,
+    7775803881,
+    7775803880,
+    7775803879,
+    7775801428,
+    7775801427,
+    7775801426,
+    7775801425,
+    7775801424,
+    7775822079,
+    7775822078,
+    7775822077,
+    7775822076,
+    7775822075,
+    7775801104,
+    7775801103,
+    7775801102,
+    7775801101,
+    7775801100,
+    7775791259,
+    7775791258,
+    7775791257,
+    10971506263,
+    10971506261,
+    11629469063,
+    11629469065,
+    7775791256,
+    7775791255,
+    7775821237,
+    7775821236,
+    7775821235,
+    7775821234,
+    7775821233,
+    7775824110,
+    10586899121,
+    7775824109,
+    7775824108,
+    7775824107,
+    7775824106,
+    13451732800,
+    7775795243,
+    7369566821
+  ],
+  "geometry": [
+    { "lat": 35.7812099, "lon": 139.6274608 },
+    { "lat": 35.7809179, "lon": 139.6278774 },
+    { "lat": 35.7806997, "lon": 139.6281361 },
+    { "lat": 35.7804414, "lon": 139.6283484 },
+    { "lat": 35.7801597, "lon": 139.6285028 },
+    { "lat": 35.7798716, "lon": 139.6285967 },
+    { "lat": 35.7795652, "lon": 139.6286436 },
+    { "lat": 35.7792643, "lon": 139.6286607 },
+    { "lat": 35.7788164, "lon": 139.6286909 },
+    { "lat": 35.7786489, "lon": 139.6287203 },
+    { "lat": 35.7783572, "lon": 139.6288335 },
+    { "lat": 35.7782545, "lon": 139.6288832 },
+    { "lat": 35.7779727, "lon": 139.6290812 },
+    { "lat": 35.7777691, "lon": 139.6292863 },
+    { "lat": 35.7775728, "lon": 139.6295531 },
+    { "lat": 35.7774168, "lon": 139.6298326 },
+    { "lat": 35.7771550, "lon": 139.6304202 },
+    { "lat": 35.7771159, "lon": 139.6305080 },
+    { "lat": 35.7767040, "lon": 139.6313339 },
+    { "lat": 35.7760587, "lon": 139.6325467 },
+    { "lat": 35.7753160, "lon": 139.6340583 },
+    { "lat": 35.7752019, "lon": 139.6342538 },
+    { "lat": 35.7750182, "lon": 139.6345701 },
+    { "lat": 35.7746729, "lon": 139.6348892 },
+    { "lat": 35.7740222, "lon": 139.6354694 },
+    { "lat": 35.7732111, "lon": 139.6363604 },
+    { "lat": 35.7728251, "lon": 139.6367875 },
+    { "lat": 35.7724815, "lon": 139.6373366 },
+    { "lat": 35.7722415, "lon": 139.6377833 },
+    { "lat": 35.7719335, "lon": 139.6384261 },
+    { "lat": 35.7717826, "lon": 139.6388379 },
+    { "lat": 35.7712077, "lon": 139.6415177 },
+    { "lat": 35.7710260, "lon": 139.6421852 },
+    { "lat": 35.7709005, "lon": 139.6425199 },
+    { "lat": 35.7707122, "lon": 139.6428841 },
+    { "lat": 35.7699710, "lon": 139.6441677 },
+    { "lat": 35.7692265, "lon": 139.6454140 },
+    { "lat": 35.7689083, "lon": 139.6461525 },
+    { "lat": 35.7682904, "lon": 139.6484653 },
+    { "lat": 35.7681326, "lon": 139.6491029 },
+    { "lat": 35.7680227, "lon": 139.6494397 },
+    { "lat": 35.7675994, "lon": 139.6498578 },
+    { "lat": 35.7672049, "lon": 139.6500789 },
+    { "lat": 35.7665718, "lon": 139.6502687 },
+    { "lat": 35.7643364, "lon": 139.6507614 },
+    { "lat": 35.7604876, "lon": 139.6512403 },
+    { "lat": 35.7598226, "lon": 139.6514466 },
+    { "lat": 35.7595067, "lon": 139.6516245 },
+    { "lat": 35.7592727, "lon": 139.6519094 },
+    { "lat": 35.7584130, "lon": 139.6529979 },
+    { "lat": 35.7580163, "lon": 139.6536345 },
+    { "lat": 35.7576942, "lon": 139.6542458 },
+    { "lat": 35.7576628, "lon": 139.6542953 },
+    { "lat": 35.7576342, "lon": 139.6543405 },
+    { "lat": 35.7571706, "lon": 139.6550722 },
+    { "lat": 35.7571318, "lon": 139.6551336 },
+    { "lat": 35.7565467, "lon": 139.6560571 },
+    { "lat": 35.7558273, "lon": 139.6573027 },
+    { "lat": 35.7553099, "lon": 139.6580634 },
+    { "lat": 35.7549281, "lon": 139.6585589 },
+    { "lat": 35.7536006, "lon": 139.6601986 },
+    { "lat": 35.7504713, "lon": 139.6640979 },
+    { "lat": 35.7500477, "lon": 139.6647104 },
+    { "lat": 35.7498601, "lon": 139.6650785 },
+    { "lat": 35.7492131, "lon": 139.6664962 },
+    { "lat": 35.7491811, "lon": 139.6665662 },
+    { "lat": 35.7479203, "lon": 139.6695435 },
+    { "lat": 35.7465128, "lon": 139.6726742 },
+    { "lat": 35.7454960, "lon": 139.6749305 },
+    { "lat": 35.7453447, "lon": 139.6752676 },
+    { "lat": 35.7452205, "lon": 139.6755686 },
+    { "lat": 35.7450775, "lon": 139.6759255 }
+  ],
+  "tags": {
+    "colour": "#C1A470",
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1067",
+    "layer": "-1",
+    "maxspeed": "80",
+    "name": "東京メトロ有楽町線",
+    "name:en": "Tokyo Metro Yurakucho Line",
+    "name:es": "Línea Yurakucho de Tokyo Metro",
+    "name:ja": "東京メトロ有楽町線",
+    "name:ja-Hira": "とうきょうめとろゆうらくちょうせん",
+    "name:ja_rm": "Tōkyō Metoro Yūrakuchō-sen",
+    "name:ko": "도쿄메트로 유라쿠조선",
+    "name:ru": "Линия метро Юракутё",
+    "name:zh": "东京地铁有乐町线",
+    "oneway": "yes",
+    "operator": "東京地下鉄",
+    "operator:en": "Tokyo Metro",
+    "operator:ja": "東京地下鉄",
+    "operator:ja_rm": "Tōkyō Chikatetsu",
+    "railway": "subway",
+    "railway:atc": "new-CS",
+    "railway:ato": "sto",
+    "railway:preferred_direction": "forward",
+    "ref": "Y",
+    "source": "GSI/KIBAN 2500;NARO",
+    "tunnel": "yes",
+    "voltage": "1500"
+  }
+},
+{
+  "type": "way",
+  "id": 834249965,
+  "bounds": {
+    "minlat": 35.7318037,
+    "minlon": 139.6875093,
+    "maxlat": 35.7396820,
+    "maxlon": 139.7071803
+  },
+  "nodes": [
+    7775803874,
+    13451737824,
+    13451737825,
+    7775808132,
+    13451737826,
+    7775808127,
+    7775808125,
+    10702746721,
+    13451737833,
+    13451737834,
+    13451737835,
+    13451737850,
+    7775815974,
+    13451737852,
+    13451737845,
+    7775774742,
+    7775804754,
+    7775800611,
+    7775800612,
+    7775800613,
+    7775800614,
+    7775821412,
+    7775821687,
+    1951959642,
+    6213383387,
+    6213377980,
+    1951959627,
+    1951959638,
+    1951959613,
+    1951959652,
+    2655548929,
+    1951959660,
+    1951959645,
+    1951959657,
+    1951959632,
+    7810227903
+  ],
+  "geometry": [
+    { "lat": 35.7396820, "lon": 139.6875093 },
+    { "lat": 35.7395745, "lon": 139.6877061 },
+    { "lat": 35.7394622, "lon": 139.6879008 },
+    { "lat": 35.7393292, "lon": 139.6881125 },
+    { "lat": 35.7391724, "lon": 139.6883457 },
+    { "lat": 35.7390240, "lon": 139.6885481 },
+    { "lat": 35.7382898, "lon": 139.6894970 },
+    { "lat": 35.7378538, "lon": 139.6900636 },
+    { "lat": 35.7376362, "lon": 139.6903309 },
+    { "lat": 35.7375123, "lon": 139.6904850 },
+    { "lat": 35.7373754, "lon": 139.6906521 },
+    { "lat": 35.7372204, "lon": 139.6908464 },
+    { "lat": 35.7348636, "lon": 139.6939376 },
+    { "lat": 35.7347297, "lon": 139.6941255 },
+    { "lat": 35.7346158, "lon": 139.6942920 },
+    { "lat": 35.7345085, "lon": 139.6944537 },
+    { "lat": 35.7343928, "lon": 139.6946339 },
+    { "lat": 35.7342082, "lon": 139.6949753 },
+    { "lat": 35.7340014, "lon": 139.6954528 },
+    { "lat": 35.7338049, "lon": 139.6959931 },
+    { "lat": 35.7336599, "lon": 139.6965082 },
+    { "lat": 35.7335516, "lon": 139.6970369 },
+    { "lat": 35.7334349, "lon": 139.6977208 },
+    { "lat": 35.7334175, "lon": 139.6978519 },
+    { "lat": 35.7332813, "lon": 139.6987138 },
+    { "lat": 35.7331211, "lon": 139.6996284 },
+    { "lat": 35.7329577, "lon": 139.7002601 },
+    { "lat": 35.7328727, "lon": 139.7008046 },
+    { "lat": 35.7328640, "lon": 139.7017112 },
+    { "lat": 35.7328771, "lon": 139.7037335 },
+    { "lat": 35.7328290, "lon": 139.7040111 },
+    { "lat": 35.7327443, "lon": 139.7042914 },
+    { "lat": 35.7325592, "lon": 139.7047555 },
+    { "lat": 35.7321455, "lon": 139.7057344 },
+    { "lat": 35.7319963, "lon": 139.7063057 },
+    { "lat": 35.7318037, "lon": 139.7071803 }
+  ],
+  "tags": {
+    "colour": "#9C5E31",
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1067",
+    "layer": "-5",
+    "level": "-3",
+    "maxspeed": "80",
+    "name": "東京メトロ副都心線",
+    "name:en": "Tokyo Metro Fukutoshin Line",
+    "name:es": "Línea Fukutoshin de Tokyo Metro",
+    "name:ja": "東京メトロ副都心線",
+    "name:ja_rm": "Tōkyō Metro Fukutoshin Sen",
+    "name:ko": "도쿄 메트로 후쿠토신선",
+    "name:ru": "Линия метро Фукутосин",
+    "oneway": "yes",
+    "operator": "東京地下鉄",
+    "operator:en": "Tokyo Metro",
+    "operator:ja": "東京地下鉄",
+    "operator:ja_rm": "Tōkyō Chikatetsu",
+    "railway": "subway",
+    "railway:atc": "yes",
+    "railway:ato": "sto",
+    "source": "GSI/KIBAN 2500;NARO",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "1500"
+  }
+},
+{
+  "type": "way",
+  "id": 843143544,
+  "bounds": {
+    "minlat": 35.7298420,
+    "minlon": 139.7071803,
+    "maxlat": 35.7318037,
+    "maxlon": 139.7127752
+  },
+  "nodes": [
+    7810227903,
+    6224973729,
+    6225067696,
+    1951959624,
+    1951959647,
+    7810227901,
+    7787647711,
+    7810227898,
+    1951959616
+  ],
+  "geometry": [
+    { "lat": 35.7318037, "lon": 139.7071803 },
+    { "lat": 35.7315566, "lon": 139.7081263 },
+    { "lat": 35.7314227, "lon": 139.7085034 },
+    { "lat": 35.7312233, "lon": 139.7089976 },
+    { "lat": 35.7309320, "lon": 139.7096456 },
+    { "lat": 35.7305550, "lon": 139.7106926 },
+    { "lat": 35.7301854, "lon": 139.7117736 },
+    { "lat": 35.7299747, "lon": 139.7123946 },
+    { "lat": 35.7298420, "lon": 139.7127752 }
+  ],
+  "tags": {
+    "colour": "#B74D17",
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1067",
+    "layer": "-5",
+    "maxspeed": "80",
+    "name": "東京メトロ副都心線",
+    "name:en": "Tokyo Metro Fukutoshin Line",
+    "name:es": "Línea Fukutoshin de Tokyo Metro",
+    "name:ja": "東京メトロ副都心線",
+    "name:ja_rm": "Tōkyō Metro Fukutoshin Sen",
+    "name:ko": "도쿄 메트로 후쿠토신선",
+    "name:ru": "Линия метро Фукутосин",
+    "oneway": "yes",
+    "operator": "東京地下鉄",
+    "operator:en": "Tokyo Metro",
+    "operator:ja": "東京地下鉄",
+    "operator:ja_rm": "Tōkyō Chikatetsu",
+    "railway": "subway",
+    "railway:atc": "yes",
+    "railway:ato": "sto",
+    "railway:track_ref": "B4F 5",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "1500"
+  }
+},
+{
+  "type": "way",
+  "id": 851736442,
+  "bounds": {
+    "minlat": 35.7424492,
+    "minlon": 139.6810106,
+    "maxlat": 35.7426993,
+    "maxlon": 139.6816280
+  },
+  "nodes": [
+    7373432110,
+    7775810076
+  ],
+  "geometry": [
+    { "lat": 35.7426993, "lon": 139.6810106 },
+    { "lat": 35.7424492, "lon": 139.6816280 }
+  ],
+  "tags": {
+    "colour": "#B74D17",
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1067",
+    "layer": "-2",
+    "level": "-2",
+    "maxspeed": "80",
+    "name": "東京メトロ副都心線",
+    "name:en": "Tokyo Metro Fukutoshin Line",
+    "name:es": "Línea Fukutoshin de Tokyo Metro",
+    "name:ja": "東京メトロ副都心線",
+    "name:ja_rm": "Tōkyō Metro Fukutoshin Sen",
+    "name:ko": "도쿄 메트로 후쿠토신선",
+    "name:ru": "Линия метро Фукутосин",
+    "note": "Shared with Seibu Yurakucho line.",
+    "operator": "東京地下鉄",
+    "operator:en": "Tokyo Metro",
+    "operator:ja": "東京地下鉄",
+    "operator:ja_rm": "Tōkyō Chikatetsu",
+    "railway": "subway",
+    "railway:atc": "yes",
+    "railway:ato": "sto",
+    "source": "Yūrakuchō Line",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "1500"
+  }
+},
+{
+  "type": "way",
+  "id": 854519246,
+  "bounds": {
+    "minlat": 35.7426993,
+    "minlon": 139.6806313,
+    "maxlat": 35.7428773,
+    "maxlon": 139.6810106
+  },
+  "nodes": [
+    7369435826,
+    7373432110
+  ],
+  "geometry": [
+    { "lat": 35.7428773, "lon": 139.6806313 },
+    { "lat": 35.7426993, "lon": 139.6810106 }
+  ],
+  "tags": {
+    "colour": "#B74D17",
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1067",
+    "layer": "-2",
+    "level": "-2",
+    "maxspeed": "80",
+    "name": "東京メトロ副都心線",
+    "name:en": "Tokyo Metro Fukutoshin Line",
+    "name:es": "Línea Fukutoshin de Tokyo Metro",
+    "name:ja": "東京メトロ副都心線",
+    "name:ja_rm": "Tōkyō Metro Fukutoshin Sen",
+    "name:ko": "도쿄 메트로 후쿠토신선",
+    "name:ru": "Линия метро Фукутосин",
+    "note": "Shared with Seibu Yurakucho line.",
+    "operator": "東京地下鉄",
+    "operator:en": "Tokyo Metro",
+    "operator:ja": "東京地下鉄",
+    "operator:ja_rm": "Tōkyō Chikatetsu",
+    "railway": "subway",
+    "railway:atc": "yes",
+    "railway:ato": "sto",
+    "railway:preferred_direction": "both",
+    "railway:track_ref": "C",
+    "source": "Yūrakuchō Line",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "1500"
+  }
+},
+{
+  "type": "way",
+  "id": 901886760,
+  "bounds": {
+    "minlat": 35.7396820,
+    "minlon": 139.6862326,
+    "maxlat": 35.7402870,
+    "maxlon": 139.6875093
+  },
+  "nodes": [
+    7775736871,
+    8377606662,
+    13451737822,
+    13451737823,
+    7775803874
+  ],
+  "geometry": [
+    { "lat": 35.7402870, "lon": 139.6862326 },
+    { "lat": 35.7401020, "lon": 139.6866327 },
+    { "lat": 35.7399477, "lon": 139.6869570 },
+    { "lat": 35.7398189, "lon": 139.6872296 },
+    { "lat": 35.7396820, "lon": 139.6875093 }
+  ],
+  "tags": {
+    "colour": "#9C5E31",
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1067",
+    "layer": "-2",
+    "level": "-2;-3",
+    "maxspeed": "80",
+    "name": "東京メトロ副都心線",
+    "name:en": "Tokyo Metro Fukutoshin Line",
+    "name:es": "Línea Fukutoshin de Tokyo Metro",
+    "name:ja": "東京メトロ副都心線",
+    "name:ja_rm": "Tōkyō Metro Fukutoshin Sen",
+    "name:ko": "도쿄 메트로 후쿠토신선",
+    "name:ru": "Линия метро Фукутосин",
+    "operator": "東京地下鉄",
+    "operator:en": "Tokyo Metro",
+    "operator:ja": "東京地下鉄",
+    "operator:ja_rm": "Tōkyō Chikatetsu",
+    "railway": "subway",
+    "railway:atc": "yes",
+    "railway:ato": "sto",
+    "railway:preferred_direction": "forward",
+    "source": "GSI/KIBAN 2500;NARO",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "1500"
+  }
+},
+{
+  "type": "way",
+  "id": 901886769,
+  "bounds": {
+    "minlat": 35.7402870,
+    "minlon": 139.6857890,
+    "maxlat": 35.7404931,
+    "maxlon": 139.6862326
+  },
+  "nodes": [
+    7775813299,
+    7775736871
+  ],
+  "geometry": [
+    { "lat": 35.7404931, "lon": 139.6857890 },
+    { "lat": 35.7402870, "lon": 139.6862326 }
+  ],
+  "tags": {
+    "colour": "#9C5E31",
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1067",
+    "layer": "-1",
+    "level": "-2",
+    "maxspeed": "80",
+    "name": "東京メトロ副都心線",
+    "name:en": "Tokyo Metro Fukutoshin Line",
+    "name:es": "Línea Fukutoshin de Tokyo Metro",
+    "name:ja": "東京メトロ副都心線",
+    "name:ja_rm": "Tōkyō Metro Fukutoshin Sen",
+    "name:ko": "도쿄 메트로 후쿠토신선",
+    "name:ru": "Линия метро Фукутосин",
+    "operator": "東京地下鉄",
+    "operator:en": "Tokyo Metro",
+    "operator:ja": "東京地下鉄",
+    "operator:ja_rm": "Tōkyō Chikatetsu",
+    "railway": "subway",
+    "railway:atc": "yes",
+    "railway:ato": "sto",
+    "railway:preferred_direction": "forward",
+    "source": "GSI/KIBAN 2500;NARO",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "1500"
+  }
+},
+{
+  "type": "way",
+  "id": 1150541589,
+  "bounds": {
+    "minlat": 35.7377474,
+    "minlon": 139.6887673,
+    "maxlat": 35.7387810,
+    "maxlon": 139.6901117
+  },
+  "nodes": [
+    10702757962,
+    10702757961,
+    10702757960,
+    10702757959,
+    10702757962
+  ],
+  "geometry": [
+    { "lat": 35.7387810, "lon": 139.6888386 },
+    { "lat": 35.7387097, "lon": 139.6887673 },
+    { "lat": 35.7377474, "lon": 139.6900497 },
+    { "lat": 35.7378030, "lon": 139.6901117 },
+    { "lat": 35.7387810, "lon": 139.6888386 }
+  ],
+  "tags": {
+    "area": "yes",
+    "level": "-3",
+    "public_transport": "platform",
+    "railway": "platform"
+  }
+},
+{
+  "type": "way",
+  "id": 1356327827,
+  "bounds": {
+    "minlat": 35.7404931,
+    "minlon": 139.6850962,
+    "maxlat": 35.7408190,
+    "maxlon": 139.6857890
+  },
+  "nodes": [
+    7944173406,
+    7775813299
+  ],
+  "geometry": [
+    { "lat": 35.7408190, "lon": 139.6850962 },
+    { "lat": 35.7404931, "lon": 139.6857890 }
+  ],
+  "tags": {
+    "colour": "#B74D17",
+    "electrified": "contact_line",
+    "frequency": "0",
+    "gauge": "1067",
+    "layer": "-2",
+    "level": "-2",
+    "maxspeed": "80",
+    "name": "東京メトロ副都心線",
+    "name:en": "Tokyo Metro Fukutoshin Line",
+    "name:es": "Línea Fukutoshin de Tokyo Metro",
+    "name:ja": "東京メトロ副都心線",
+    "name:ja_rm": "Tōkyō Metro Fukutoshin Sen",
+    "name:ko": "도쿄 메트로 후쿠토신선",
+    "name:ru": "Линия метро Фукутосин",
+    "operator": "東京地下鉄",
+    "operator:en": "Tokyo Metro",
+    "operator:ja": "東京地下鉄",
+    "operator:ja_rm": "Tōkyō Chikatetsu",
+    "railway": "subway",
+    "railway:atc": "yes",
+    "railway:ato": "sto",
+    "railway:preferred_direction": "forward",
+    "source": "GSI/KIBAN 2500;NARO",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "1500"
+  }
+},
+{
+  "type": "relation",
+  "id": 5375678,
+  "bounds": {
+    "minlat": 35.6582981,
+    "minlon": 139.6119923,
+    "maxlat": 35.7887980,
+    "maxlon": 139.7174332
+  },
+  "members": [
+    {
+      "type": "node",
+      "ref": 3645998146,
+      "role": "stop",
+      "lat": 35.7883529,
+      "lon": 139.6128678
+    },
+    {
+      "type": "way",
+      "ref": 696941856,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.7887980, "lon": 139.6120341 },
+         { "lat": 35.7887319, "lon": 139.6119923 },
+         { "lat": 35.7878597, "lon": 139.6141081 },
+         { "lat": 35.7879120, "lon": 139.6141390 },
+         { "lat": 35.7887980, "lon": 139.6120341 }
+      ]
+    },
+    {
+      "type": "node",
+      "ref": 7775821589,
+      "role": "stop",
+      "lat": 35.7767040,
+      "lon": 139.6313339
+    },
+    {
+      "type": "node",
+      "ref": 7775801427,
+      "role": "stop",
+      "lat": 35.7699710,
+      "lon": 139.6441677
+    },
+    {
+      "type": "node",
+      "ref": 7775791257,
+      "role": "stop",
+      "lat": 35.7576942,
+      "lon": 139.6542458
+    },
+    {
+      "type": "node",
+      "ref": 7775824110,
+      "role": "stop",
+      "lat": 35.7498601,
+      "lon": 139.6650785
+    },
+    {
+      "type": "node",
+      "ref": 7369435826,
+      "role": "stop",
+      "lat": 35.7428773,
+      "lon": 139.6806313
+    },
+    {
+      "type": "way",
+      "ref": 788228525,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.7437196, "lon": 139.6790144 },
+         { "lat": 35.7437044, "lon": 139.6790037 },
+         { "lat": 35.7436858, "lon": 139.6789906 },
+         { "lat": 35.7436734, "lon": 139.6789819 },
+         { "lat": 35.7427901, "lon": 139.6808858 },
+         { "lat": 35.7428363, "lon": 139.6809183 },
+         { "lat": 35.7437196, "lon": 139.6790144 }
+      ]
+    },
+    {
+      "type": "node",
+      "ref": 7775808125,
+      "role": "stop",
+      "lat": 35.7382898,
+      "lon": 139.6894970
+    },
+    {
+      "type": "way",
+      "ref": 1150541589,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.7387810, "lon": 139.6888386 },
+         { "lat": 35.7387097, "lon": 139.6887673 },
+         { "lat": 35.7377474, "lon": 139.6900497 },
+         { "lat": 35.7378030, "lon": 139.6901117 },
+         { "lat": 35.7387810, "lon": 139.6888386 }
+      ]
+    },
+    {
+      "type": "node",
+      "ref": 6213383387,
+      "role": "stop",
+      "lat": 35.7332813,
+      "lon": 139.6987138
+    },
+    {
+      "type": "way",
+      "ref": 663950528,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.7333742, "lon": 139.6978224 },
+         { "lat": 35.7334115, "lon": 139.6978508 },
+         { "lat": 35.7333413, "lon": 139.6982999 },
+         { "lat": 35.7331450, "lon": 139.6994534 },
+         { "lat": 35.7331346, "lon": 139.6995191 },
+         { "lat": 35.7331056, "lon": 139.6995326 }
+      ]
+    },
+    {
+      "type": "node",
+      "ref": 1951959624,
+      "role": "stop",
+      "lat": 35.7312233,
+      "lon": 139.7089976
+    },
+    {
+      "type": "way",
+      "ref": 665064489,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.7317856, "lon": 139.7071727 },
+         { "lat": 35.7315505, "lon": 139.7081191 },
+         { "lat": 35.7314158, "lon": 139.7084994 },
+         { "lat": 35.7313426, "lon": 139.7086768 },
+         { "lat": 35.7312470, "lon": 139.7089243 },
+         { "lat": 35.7310955, "lon": 139.7092580 },
+         { "lat": 35.7310612, "lon": 139.7093322 },
+         { "lat": 35.7309995, "lon": 139.7093014 },
+         { "lat": 35.7313616, "lon": 139.7084680 },
+         { "lat": 35.7315060, "lon": 139.7080887 },
+         { "lat": 35.7317576, "lon": 139.7071639 },
+         { "lat": 35.7317856, "lon": 139.7071727 }
+      ]
+    },
+    {
+      "type": "node",
+      "ref": 6235968754,
+      "role": "stop",
+      "lat": 35.7201652,
+      "lon": 139.7147443
+    },
+    {
+      "type": "way",
+      "ref": 690016724,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.7194540, "lon": 139.7141774 },
+         { "lat": 35.7194473, "lon": 139.7141912 },
+         { "lat": 35.7194416, "lon": 139.7142030 },
+         { "lat": 35.7206585, "lon": 139.7151014 },
+         { "lat": 35.7206710, "lon": 139.7150758 },
+         { "lat": 35.7194540, "lon": 139.7141774 }
+      ]
+    },
+    {
+      "type": "node",
+      "ref": 1951954570,
+      "role": "stop",
+      "lat": 35.7079175,
+      "lon": 139.7090644
+    },
+    {
+      "type": "way",
+      "ref": 689991340,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.7078634, "lon": 139.7090128 },
+         { "lat": 35.7078598, "lon": 139.7090491 },
+         { "lat": 35.7081974, "lon": 139.7091002 },
+         { "lat": 35.7082011, "lon": 139.7090639 },
+         { "lat": 35.7078634, "lon": 139.7090128 }
+      ]
+    },
+    {
+      "type": "node",
+      "ref": 6188734706,
+      "role": "stop",
+      "lat": 35.6989445,
+      "lon": 139.7077279
+    },
+    {
+      "type": "way",
+      "ref": 682766012,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.6979700, "lon": 139.7075589 },
+         { "lat": 35.6979616, "lon": 139.7076281 },
+         { "lat": 35.7007926, "lon": 139.7081269 },
+         { "lat": 35.7007989, "lon": 139.7080770 },
+         { "lat": 35.6979700, "lon": 139.7075589 }
+      ]
+    },
+    {
+      "type": "node",
+      "ref": 1951952383,
+      "role": "stop",
+      "lat": 35.6906889,
+      "lon": 139.7048163
+    },
+    {
+      "type": "way",
+      "ref": 670712982,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.6891134, "lon": 139.7036848 },
+         { "lat": 35.6891169, "lon": 139.7037093 },
+         { "lat": 35.6900679, "lon": 139.7043490 },
+         { "lat": 35.6902057, "lon": 139.7044400 },
+         { "lat": 35.6902995, "lon": 139.7045019 },
+         { "lat": 35.6907753, "lon": 139.7048085 },
+         { "lat": 35.6907962, "lon": 139.7047998 }
+      ]
+    },
+    {
+      "type": "node",
+      "ref": 7775803877,
+      "role": "stop",
+      "lat": 35.6784821,
+      "lon": 139.7054958
+    },
+    {
+      "type": "node",
+      "ref": 6178465936,
+      "role": "stop",
+      "lat": 35.6683960,
+      "lon": 139.7053934
+    },
+    {
+      "type": "way",
+      "ref": 662923219,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.6677021, "lon": 139.7048294 },
+         { "lat": 35.6681119, "lon": 139.7051455 },
+         { "lat": 35.6682697, "lon": 139.7052656 },
+         { "lat": 35.6684942, "lon": 139.7054308 },
+         { "lat": 35.6687233, "lon": 139.7055974 },
+         { "lat": 35.6689307, "lon": 139.7057570 },
+         { "lat": 35.6691403, "lon": 139.7059045 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 664521490,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.6582981, "lon": 139.7030011 },
+         { "lat": 35.6583098, "lon": 139.7030278 },
+         { "lat": 35.6585034, "lon": 139.7029322 },
+         { "lat": 35.6586508, "lon": 139.7028511 },
+         { "lat": 35.6589014, "lon": 139.7027490 },
+         { "lat": 35.6592249, "lon": 139.7026273 },
+         { "lat": 35.6595179, "lon": 139.7025272 },
+         { "lat": 35.6595141, "lon": 139.7024886 },
+         { "lat": 35.6592118, "lon": 139.7025724 },
+         { "lat": 35.6588888, "lon": 139.7026975 },
+         { "lat": 35.6586399, "lon": 139.7028171 },
+         { "lat": 35.6584912, "lon": 139.7029016 },
+         { "lat": 35.6582981, "lon": 139.7030011 }
+      ]
+    },
+    {
+      "type": "node",
+      "ref": 6219636708,
+      "role": "stop",
+      "lat": 35.6586186,
+      "lon": 139.7027508
+    },
+    {
+      "type": "way",
+      "ref": 198609110,
+      "role": "",
+      "geometry": [
+         { "lat": 35.7883529, "lon": 139.6128678 },
+         { "lat": 35.7877993, "lon": 139.6142149 },
+         { "lat": 35.7875452, "lon": 139.6148314 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 198609129,
+      "role": "",
+      "geometry": [
+         { "lat": 35.7875452, "lon": 139.6148314 },
+         { "lat": 35.7871171, "lon": 139.6158777 },
+         { "lat": 35.7866247, "lon": 139.6170740 },
+         { "lat": 35.7863675, "lon": 139.6176997 },
+         { "lat": 35.7862860, "lon": 139.6179062 },
+         { "lat": 35.7861961, "lon": 139.6181395 },
+         { "lat": 35.7861255, "lon": 139.6183279 },
+         { "lat": 35.7860550, "lon": 139.6185251 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 198609048,
+      "role": "",
+      "geometry": [
+         { "lat": 35.7860550, "lon": 139.6185251 },
+         { "lat": 35.7858914, "lon": 139.6189900 },
+         { "lat": 35.7857942, "lon": 139.6192536 },
+         { "lat": 35.7856840, "lon": 139.6195408 },
+         { "lat": 35.7855047, "lon": 139.6199868 },
+         { "lat": 35.7851565, "lon": 139.6208474 },
+         { "lat": 35.7850014, "lon": 139.6212281 },
+         { "lat": 35.7848505, "lon": 139.6215984 },
+         { "lat": 35.7846992, "lon": 139.6219495 },
+         { "lat": 35.7845889, "lon": 139.6221914 },
+         { "lat": 35.7844764, "lon": 139.6224238 },
+         { "lat": 35.7843954, "lon": 139.6225859 },
+         { "lat": 35.7843154, "lon": 139.6227411 },
+         { "lat": 35.7841238, "lon": 139.6230981 },
+         { "lat": 35.7839332, "lon": 139.6234281 },
+         { "lat": 35.7838346, "lon": 139.6235878 },
+         { "lat": 35.7837274, "lon": 139.6237622 },
+         { "lat": 35.7836152, "lon": 139.6239369 },
+         { "lat": 35.7835019, "lon": 139.6241077 },
+         { "lat": 35.7833858, "lon": 139.6242796 },
+         { "lat": 35.7831494, "lon": 139.6246123 },
+         { "lat": 35.7828979, "lon": 139.6249717 },
+         { "lat": 35.7826326, "lon": 139.6253473 },
+         { "lat": 35.7823668, "lon": 139.6257339 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 199076136,
+      "role": "",
+      "geometry": [
+         { "lat": 35.7823668, "lon": 139.6257339 },
+         { "lat": 35.7821287, "lon": 139.6260924 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 199076138,
+      "role": "",
+      "geometry": [
+         { "lat": 35.7821287, "lon": 139.6260924 },
+         { "lat": 35.7817248, "lon": 139.6266940 },
+         { "lat": 35.7815577, "lon": 139.6269416 },
+         { "lat": 35.7814465, "lon": 139.6271045 },
+         { "lat": 35.7812099, "lon": 139.6274608 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 832954142,
+      "role": "",
+      "geometry": [
+         { "lat": 35.7812099, "lon": 139.6274608 },
+         { "lat": 35.7809179, "lon": 139.6278774 },
+         { "lat": 35.7806997, "lon": 139.6281361 },
+         { "lat": 35.7804414, "lon": 139.6283484 },
+         { "lat": 35.7801597, "lon": 139.6285028 },
+         { "lat": 35.7798716, "lon": 139.6285967 },
+         { "lat": 35.7795652, "lon": 139.6286436 },
+         { "lat": 35.7792643, "lon": 139.6286607 },
+         { "lat": 35.7788164, "lon": 139.6286909 },
+         { "lat": 35.7786489, "lon": 139.6287203 },
+         { "lat": 35.7783572, "lon": 139.6288335 },
+         { "lat": 35.7782545, "lon": 139.6288832 },
+         { "lat": 35.7779727, "lon": 139.6290812 },
+         { "lat": 35.7777691, "lon": 139.6292863 },
+         { "lat": 35.7775728, "lon": 139.6295531 },
+         { "lat": 35.7774168, "lon": 139.6298326 },
+         { "lat": 35.7771550, "lon": 139.6304202 },
+         { "lat": 35.7771159, "lon": 139.6305080 },
+         { "lat": 35.7767040, "lon": 139.6313339 },
+         { "lat": 35.7760587, "lon": 139.6325467 },
+         { "lat": 35.7753160, "lon": 139.6340583 },
+         { "lat": 35.7752019, "lon": 139.6342538 },
+         { "lat": 35.7750182, "lon": 139.6345701 },
+         { "lat": 35.7746729, "lon": 139.6348892 },
+         { "lat": 35.7740222, "lon": 139.6354694 },
+         { "lat": 35.7732111, "lon": 139.6363604 },
+         { "lat": 35.7728251, "lon": 139.6367875 },
+         { "lat": 35.7724815, "lon": 139.6373366 },
+         { "lat": 35.7722415, "lon": 139.6377833 },
+         { "lat": 35.7719335, "lon": 139.6384261 },
+         { "lat": 35.7717826, "lon": 139.6388379 },
+         { "lat": 35.7712077, "lon": 139.6415177 },
+         { "lat": 35.7710260, "lon": 139.6421852 },
+         { "lat": 35.7709005, "lon": 139.6425199 },
+         { "lat": 35.7707122, "lon": 139.6428841 },
+         { "lat": 35.7699710, "lon": 139.6441677 },
+         { "lat": 35.7692265, "lon": 139.6454140 },
+         { "lat": 35.7689083, "lon": 139.6461525 },
+         { "lat": 35.7682904, "lon": 139.6484653 },
+         { "lat": 35.7681326, "lon": 139.6491029 },
+         { "lat": 35.7680227, "lon": 139.6494397 },
+         { "lat": 35.7675994, "lon": 139.6498578 },
+         { "lat": 35.7672049, "lon": 139.6500789 },
+         { "lat": 35.7665718, "lon": 139.6502687 },
+         { "lat": 35.7643364, "lon": 139.6507614 },
+         { "lat": 35.7604876, "lon": 139.6512403 },
+         { "lat": 35.7598226, "lon": 139.6514466 },
+         { "lat": 35.7595067, "lon": 139.6516245 },
+         { "lat": 35.7592727, "lon": 139.6519094 },
+         { "lat": 35.7584130, "lon": 139.6529979 },
+         { "lat": 35.7580163, "lon": 139.6536345 },
+         { "lat": 35.7576942, "lon": 139.6542458 },
+         { "lat": 35.7576628, "lon": 139.6542953 },
+         { "lat": 35.7576342, "lon": 139.6543405 },
+         { "lat": 35.7571706, "lon": 139.6550722 },
+         { "lat": 35.7571318, "lon": 139.6551336 },
+         { "lat": 35.7565467, "lon": 139.6560571 },
+         { "lat": 35.7558273, "lon": 139.6573027 },
+         { "lat": 35.7553099, "lon": 139.6580634 },
+         { "lat": 35.7549281, "lon": 139.6585589 },
+         { "lat": 35.7536006, "lon": 139.6601986 },
+         { "lat": 35.7504713, "lon": 139.6640979 },
+         { "lat": 35.7500477, "lon": 139.6647104 },
+         { "lat": 35.7498601, "lon": 139.6650785 },
+         { "lat": 35.7492131, "lon": 139.6664962 },
+         { "lat": 35.7491811, "lon": 139.6665662 },
+         { "lat": 35.7479203, "lon": 139.6695435 },
+         { "lat": 35.7465128, "lon": 139.6726742 },
+         { "lat": 35.7454960, "lon": 139.6749305 },
+         { "lat": 35.7453447, "lon": 139.6752676 },
+         { "lat": 35.7452205, "lon": 139.6755686 },
+         { "lat": 35.7450775, "lon": 139.6759255 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 832954115,
+      "role": "",
+      "geometry": [
+         { "lat": 35.7450775, "lon": 139.6759255 },
+         { "lat": 35.7448427, "lon": 139.6765335 },
+         { "lat": 35.7447482, "lon": 139.6767823 },
+         { "lat": 35.7446640, "lon": 139.6769788 },
+         { "lat": 35.7442849, "lon": 139.6777877 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 832954126,
+      "role": "",
+      "geometry": [
+         { "lat": 35.7442849, "lon": 139.6777877 },
+         { "lat": 35.7437892, "lon": 139.6786885 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 55356236,
+      "role": "",
+      "geometry": [
+         { "lat": 35.7437892, "lon": 139.6786885 },
+         { "lat": 35.7428773, "lon": 139.6806313 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 854519246,
+      "role": "",
+      "geometry": [
+         { "lat": 35.7428773, "lon": 139.6806313 },
+         { "lat": 35.7426993, "lon": 139.6810106 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 851736442,
+      "role": "",
+      "geometry": [
+         { "lat": 35.7426993, "lon": 139.6810106 },
+         { "lat": 35.7424492, "lon": 139.6816280 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 832954120,
+      "role": "",
+      "geometry": [
+         { "lat": 35.7424492, "lon": 139.6816280 },
+         { "lat": 35.7423886, "lon": 139.6817621 },
+         { "lat": 35.7423336, "lon": 139.6818813 },
+         { "lat": 35.7421504, "lon": 139.6822679 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 832954135,
+      "role": "",
+      "geometry": [
+         { "lat": 35.7421504, "lon": 139.6822679 },
+         { "lat": 35.7408190, "lon": 139.6850962 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 1356327827,
+      "role": "",
+      "geometry": [
+         { "lat": 35.7408190, "lon": 139.6850962 },
+         { "lat": 35.7404931, "lon": 139.6857890 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 901886769,
+      "role": "",
+      "geometry": [
+         { "lat": 35.7404931, "lon": 139.6857890 },
+         { "lat": 35.7402870, "lon": 139.6862326 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 901886760,
+      "role": "",
+      "geometry": [
+         { "lat": 35.7402870, "lon": 139.6862326 },
+         { "lat": 35.7401020, "lon": 139.6866327 },
+         { "lat": 35.7399477, "lon": 139.6869570 },
+         { "lat": 35.7398189, "lon": 139.6872296 },
+         { "lat": 35.7396820, "lon": 139.6875093 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 834249965,
+      "role": "",
+      "geometry": [
+         { "lat": 35.7396820, "lon": 139.6875093 },
+         { "lat": 35.7395745, "lon": 139.6877061 },
+         { "lat": 35.7394622, "lon": 139.6879008 },
+         { "lat": 35.7393292, "lon": 139.6881125 },
+         { "lat": 35.7391724, "lon": 139.6883457 },
+         { "lat": 35.7390240, "lon": 139.6885481 },
+         { "lat": 35.7382898, "lon": 139.6894970 },
+         { "lat": 35.7378538, "lon": 139.6900636 },
+         { "lat": 35.7376362, "lon": 139.6903309 },
+         { "lat": 35.7375123, "lon": 139.6904850 },
+         { "lat": 35.7373754, "lon": 139.6906521 },
+         { "lat": 35.7372204, "lon": 139.6908464 },
+         { "lat": 35.7348636, "lon": 139.6939376 },
+         { "lat": 35.7347297, "lon": 139.6941255 },
+         { "lat": 35.7346158, "lon": 139.6942920 },
+         { "lat": 35.7345085, "lon": 139.6944537 },
+         { "lat": 35.7343928, "lon": 139.6946339 },
+         { "lat": 35.7342082, "lon": 139.6949753 },
+         { "lat": 35.7340014, "lon": 139.6954528 },
+         { "lat": 35.7338049, "lon": 139.6959931 },
+         { "lat": 35.7336599, "lon": 139.6965082 },
+         { "lat": 35.7335516, "lon": 139.6970369 },
+         { "lat": 35.7334349, "lon": 139.6977208 },
+         { "lat": 35.7334175, "lon": 139.6978519 },
+         { "lat": 35.7332813, "lon": 139.6987138 },
+         { "lat": 35.7331211, "lon": 139.6996284 },
+         { "lat": 35.7329577, "lon": 139.7002601 },
+         { "lat": 35.7328727, "lon": 139.7008046 },
+         { "lat": 35.7328640, "lon": 139.7017112 },
+         { "lat": 35.7328771, "lon": 139.7037335 },
+         { "lat": 35.7328290, "lon": 139.7040111 },
+         { "lat": 35.7327443, "lon": 139.7042914 },
+         { "lat": 35.7325592, "lon": 139.7047555 },
+         { "lat": 35.7321455, "lon": 139.7057344 },
+         { "lat": 35.7319963, "lon": 139.7063057 },
+         { "lat": 35.7318037, "lon": 139.7071803 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 843143544,
+      "role": "",
+      "geometry": [
+         { "lat": 35.7318037, "lon": 139.7071803 },
+         { "lat": 35.7315566, "lon": 139.7081263 },
+         { "lat": 35.7314227, "lon": 139.7085034 },
+         { "lat": 35.7312233, "lon": 139.7089976 },
+         { "lat": 35.7309320, "lon": 139.7096456 },
+         { "lat": 35.7305550, "lon": 139.7106926 },
+         { "lat": 35.7301854, "lon": 139.7117736 },
+         { "lat": 35.7299747, "lon": 139.7123946 },
+         { "lat": 35.7298420, "lon": 139.7127752 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 184696239,
+      "role": "",
+      "geometry": [
+         { "lat": 35.7298420, "lon": 139.7127752 },
+         { "lat": 35.7297506, "lon": 139.7130161 },
+         { "lat": 35.7295658, "lon": 139.7134465 },
+         { "lat": 35.7293546, "lon": 139.7138444 },
+         { "lat": 35.7283461, "lon": 139.7154897 },
+         { "lat": 35.7276030, "lon": 139.7166744 },
+         { "lat": 35.7272837, "lon": 139.7169698 },
+         { "lat": 35.7270639, "lon": 139.7171109 },
+         { "lat": 35.7268784, "lon": 139.7172097 },
+         { "lat": 35.7266168, "lon": 139.7172782 },
+         { "lat": 35.7262666, "lon": 139.7173377 },
+         { "lat": 35.7246640, "lon": 139.7174289 },
+         { "lat": 35.7242408, "lon": 139.7174332 },
+         { "lat": 35.7240009, "lon": 139.7174057 },
+         { "lat": 35.7237355, "lon": 139.7173483 },
+         { "lat": 35.7237039, "lon": 139.7173381 },
+         { "lat": 35.7235010, "lon": 139.7172725 },
+         { "lat": 35.7232431, "lon": 139.7171388 },
+         { "lat": 35.7229863, "lon": 139.7170015 },
+         { "lat": 35.7218223, "lon": 139.7161375 },
+         { "lat": 35.7216388, "lon": 139.7160012 },
+         { "lat": 35.7203689, "lon": 139.7148930 },
+         { "lat": 35.7201652, "lon": 139.7147443 },
+         { "lat": 35.7188629, "lon": 139.7137937 },
+         { "lat": 35.7187167, "lon": 139.7136629 },
+         { "lat": 35.7184535, "lon": 139.7134110 },
+         { "lat": 35.7183190, "lon": 139.7132907 },
+         { "lat": 35.7180707, "lon": 139.7131161 },
+         { "lat": 35.7171186, "lon": 139.7126814 },
+         { "lat": 35.7153844, "lon": 139.7118731 },
+         { "lat": 35.7136833, "lon": 139.7109821 },
+         { "lat": 35.7127930, "lon": 139.7104329 },
+         { "lat": 35.7122687, "lon": 139.7102567 },
+         { "lat": 35.7114525, "lon": 139.7100520 },
+         { "lat": 35.7107180, "lon": 139.7098034 },
+         { "lat": 35.7093585, "lon": 139.7093922 },
+         { "lat": 35.7085575, "lon": 139.7091570 },
+         { "lat": 35.7079175, "lon": 139.7090644 },
+         { "lat": 35.7065010, "lon": 139.7088933 },
+         { "lat": 35.7048784, "lon": 139.7086868 },
+         { "lat": 35.7034275, "lon": 139.7084819 },
+         { "lat": 35.7019537, "lon": 139.7082182 },
+         { "lat": 35.7009950, "lon": 139.7080844 },
+         { "lat": 35.7005334, "lon": 139.7080317 },
+         { "lat": 35.6989445, "lon": 139.7077279 },
+         { "lat": 35.6977314, "lon": 139.7074909 },
+         { "lat": 35.6969526, "lon": 139.7073300 },
+         { "lat": 35.6953094, "lon": 139.7070143 },
+         { "lat": 35.6948027, "lon": 139.7069415 },
+         { "lat": 35.6942488, "lon": 139.7068226 },
+         { "lat": 35.6939662, "lon": 139.7067376 },
+         { "lat": 35.6936497, "lon": 139.7065839 },
+         { "lat": 35.6928182, "lon": 139.7060966 },
+         { "lat": 35.6919958, "lon": 139.7056182 },
+         { "lat": 35.6915809, "lon": 139.7053805 },
+         { "lat": 35.6913113, "lon": 139.7052210 },
+         { "lat": 35.6906889, "lon": 139.7048163 },
+         { "lat": 35.6890974, "lon": 139.7037417 },
+         { "lat": 35.6884308, "lon": 139.7031971 },
+         { "lat": 35.6882043, "lon": 139.7030522 },
+         { "lat": 35.6879058, "lon": 139.7029477 },
+         { "lat": 35.6876046, "lon": 139.7029281 },
+         { "lat": 35.6873002, "lon": 139.7029665 },
+         { "lat": 35.6869690, "lon": 139.7030710 },
+         { "lat": 35.6860722, "lon": 139.7033346 },
+         { "lat": 35.6852218, "lon": 139.7036021 },
+         { "lat": 35.6849626, "lon": 139.7037014 },
+         { "lat": 35.6846771, "lon": 139.7038435 },
+         { "lat": 35.6844288, "lon": 139.7040017 },
+         { "lat": 35.6838754, "lon": 139.7043210 },
+         { "lat": 35.6835857, "lon": 139.7044444 },
+         { "lat": 35.6832349, "lon": 139.7045650 },
+         { "lat": 35.6829190, "lon": 139.7046027 },
+         { "lat": 35.6826222, "lon": 139.7046232 },
+         { "lat": 35.6823766, "lon": 139.7046161 },
+         { "lat": 35.6817535, "lon": 139.7045919 },
+         { "lat": 35.6811935, "lon": 139.7045623 },
+         { "lat": 35.6808646, "lon": 139.7045222 },
+         { "lat": 35.6805138, "lon": 139.7044980 },
+         { "lat": 35.6802006, "lon": 139.7044981 },
+         { "lat": 35.6798596, "lon": 139.7045750 },
+         { "lat": 35.6796618, "lon": 139.7046402 },
+         { "lat": 35.6794157, "lon": 139.7047689 },
+         { "lat": 35.6792131, "lon": 139.7048977 },
+         { "lat": 35.6784821, "lon": 139.7054958 },
+         { "lat": 35.6778181, "lon": 139.7059804 },
+         { "lat": 35.6776525, "lon": 139.7060689 },
+         { "lat": 35.6772914, "lon": 139.7062361 },
+         { "lat": 35.6769864, "lon": 139.7063273 },
+         { "lat": 35.6766792, "lon": 139.7064185 },
+         { "lat": 35.6758142, "lon": 139.7066410 },
+         { "lat": 35.6752171, "lon": 139.7068180 },
+         { "lat": 35.6749339, "lon": 139.7069173 },
+         { "lat": 35.6745395, "lon": 139.7071184 },
+         { "lat": 35.6740950, "lon": 139.7074001 },
+         { "lat": 35.6735677, "lon": 139.7077461 },
+         { "lat": 35.6732801, "lon": 139.7078937 },
+         { "lat": 35.6729773, "lon": 139.7079983 },
+         { "lat": 35.6726477, "lon": 139.7080404 },
+         { "lat": 35.6723649, "lon": 139.7080412 },
+         { "lat": 35.6720494, "lon": 139.7079830 },
+         { "lat": 35.6717832, "lon": 139.7078936 },
+         { "lat": 35.6714954, "lon": 139.7077496 },
+         { "lat": 35.6712210, "lon": 139.7075504 },
+         { "lat": 35.6709681, "lon": 139.7073388 },
+         { "lat": 35.6707359, "lon": 139.7071376 },
+         { "lat": 35.6702141, "lon": 139.7067145 },
+         { "lat": 35.6696872, "lon": 139.7063153 },
+         { "lat": 35.6694390, "lon": 139.7061372 },
+         { "lat": 35.6691983, "lon": 139.7059778 },
+         { "lat": 35.6689019, "lon": 139.7057701 },
+         { "lat": 35.6686473, "lon": 139.7055788 },
+         { "lat": 35.6683960, "lon": 139.7053934 },
+         { "lat": 35.6681261, "lon": 139.7051951 },
+         { "lat": 35.6677992, "lon": 139.7049423 },
+         { "lat": 35.6676378, "lon": 139.7048145 },
+         { "lat": 35.6673489, "lon": 139.7045828 },
+         { "lat": 35.6670931, "lon": 139.7043917 },
+         { "lat": 35.6668345, "lon": 139.7042046 },
+         { "lat": 35.6665928, "lon": 139.7040313 },
+         { "lat": 35.6663354, "lon": 139.7038353 },
+         { "lat": 35.6659913, "lon": 139.7036021 },
+         { "lat": 35.6651779, "lon": 139.7030055 },
+         { "lat": 35.6646332, "lon": 139.7026357 },
+         { "lat": 35.6643678, "lon": 139.7024917 },
+         { "lat": 35.6640884, "lon": 139.7023675 },
+         { "lat": 35.6637855, "lon": 139.7022736 },
+         { "lat": 35.6634852, "lon": 139.7022047 },
+         { "lat": 35.6631803, "lon": 139.7021699 },
+         { "lat": 35.6628643, "lon": 139.7021699 },
+         { "lat": 35.6622544, "lon": 139.7022248 },
+         { "lat": 35.6619245, "lon": 139.7022441 },
+         { "lat": 35.6609165, "lon": 139.7022764 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 759139127,
+      "role": "",
+      "geometry": [
+         { "lat": 35.6609165, "lon": 139.7022764 },
+         { "lat": 35.6606054, "lon": 139.7022935 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 759139125,
+      "role": "",
+      "geometry": [
+         { "lat": 35.6586186, "lon": 139.7027508 },
+         { "lat": 35.6589974, "lon": 139.7025703 },
+         { "lat": 35.6591943, "lon": 139.7024988 },
+         { "lat": 35.6595060, "lon": 139.7024073 },
+         { "lat": 35.6598983, "lon": 139.7023389 },
+         { "lat": 35.6600454, "lon": 139.7023262 },
+         { "lat": 35.6602078, "lon": 139.7023121 },
+         { "lat": 35.6604185, "lon": 139.7022939 },
+         { "lat": 35.6606054, "lon": 139.7022935 }
+      ]
+    }
+  ],
+  "tags": {
+    "colour": "#9C5E31",
+    "distance": "20.2",
+    "duration": "35",
+    "from": "和光市",
+    "interval": "3",
+    "interval:conditional": "6 @ Mo-Fr 05:00-05:59; 7 @ Sa-Su 05:00-05:59; 4 @ Mo-Fr 06:00-08:09; 2 @ Mo-Fr 08:10-09:50, 16:50-17:50; 6 @ Sa-Su 06:00-08:09; 5 @ Sa-Su 08:10-09:50; 4 @ Mo-Su 21:00-23:00; 5 @ Mo-Su 23:00-23:59",
+    "interval:peak": "2",
+    "name": "東京メトロ副都心線 : 和光市→渋谷",
+    "name:en": "Tokyo Metro Fukutoshin Line (Wakoshi --> Shibuya)",
+    "name:es": "Línea Fukutoshin de Tokyo Metro (Wakoshi --> Shibuya)",
+    "name:ja": "東京メトロ副都心線 : 和光市→渋谷",
+    "name:ko": "도쿄 메트로 후쿠토신선",
+    "network": "東京メトロ",
+    "not:network:wikidata": "Q682894",
+    "official_ref": "13",
+    "opening_hours": "Mo-Su 05:00-23:59",
+    "operator": "Tokyo Metro",
+    "public_transport:version": "2",
+    "ref": "F",
+    "route": "subway",
+    "source:colour": "https://developer.tokyometroapp.jp/guideline",
+    "source:distance": "Wikipedia",
+    "to": "渋谷",
+    "type": "route",
+    "wikidata": "Q1332908",
+    "wikipedia": "en:Tokyo Metro Fukutoshin Line"
+  }
+},
+{
+  "type": "relation",
+  "id": 7935035,
+  "bounds": {
+    "minlat": 35.7061894,
+    "minlon": 139.7086721,
+    "maxlat": 35.7094106,
+    "maxlon": 139.7095432
+  },
+  "members": [
+    {
+      "type": "node",
+      "ref": 7775803878,
+      "role": "",
+      "lat": 35.7079347,
+      "lon": 139.7090404
+    },
+    {
+      "type": "node",
+      "ref": 3656055989,
+      "role": "stop",
+      "lat": 35.7079260,
+      "lon": 139.7090109
+    },
+    {
+      "type": "node",
+      "ref": 1951954570,
+      "role": "stop",
+      "lat": 35.7079175,
+      "lon": 139.7090644
+    },
+    {
+      "type": "way",
+      "ref": 689991340,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.7078634, "lon": 139.7090128 },
+         { "lat": 35.7078598, "lon": 139.7090491 },
+         { "lat": 35.7081974, "lon": 139.7091002 },
+         { "lat": 35.7082011, "lon": 139.7090639 },
+         { "lat": 35.7078634, "lon": 139.7090128 }
+      ]
+    },
+    {
+      "type": "node",
+      "ref": 1115025600,
+      "role": "",
+      "lat": 35.7063657,
+      "lon": 139.7090229
+    },
+    {
+      "type": "node",
+      "ref": 1114945023,
+      "role": "",
+      "lat": 35.7061894,
+      "lon": 139.7086721
+    },
+    {
+      "type": "node",
+      "ref": 1115423562,
+      "role": "",
+      "lat": 35.7087435,
+      "lon": 139.7090445
+    },
+    {
+      "type": "node",
+      "ref": 1933333435,
+      "role": "",
+      "lat": 35.7094106,
+      "lon": 139.7095432
+    }
+  ],
+  "tags": {
+    "name:en": "Nishi-waseda",
+    "name:es": "Nishi-waseda",
+    "name:ja": "西早稲田",
+    "public_transport": "stop_area",
+    "public_transport:version": "2",
+    "station": "西早稲田",
+    "type": "public_transport"
+  }
+},
+{
+  "type": "relation",
+  "id": 7966819,
+  "bounds": {
+    "minlat": 35.6576970,
+    "minlon": 139.6990054,
+    "maxlat": 35.6599502,
+    "maxlon": 139.7036563
+  },
+  "members": [
+    {
+      "type": "node",
+      "ref": 6219636719,
+      "role": "",
+      "lat": 35.6584501,
+      "lon": 139.7028426
+    },
+    {
+      "type": "node",
+      "ref": 1951952370,
+      "role": "stop",
+      "lat": 35.6586094,
+      "lon": 139.7027222
+    },
+    {
+      "type": "node",
+      "ref": 6219636708,
+      "role": "stop",
+      "lat": 35.6586186,
+      "lon": 139.7027508
+    },
+    {
+      "type": "node",
+      "ref": 6219636707,
+      "role": "stop",
+      "lat": 35.6586573,
+      "lon": 139.7028715
+    },
+    {
+      "type": "node",
+      "ref": 3656055919,
+      "role": "stop",
+      "lat": 35.6585645,
+      "lon": 139.7025824
+    },
+    {
+      "type": "way",
+      "ref": 664411290,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.6582414, "lon": 139.7028711 },
+         { "lat": 35.6582533, "lon": 139.7028984 },
+         { "lat": 35.6584479, "lon": 139.7027926 },
+         { "lat": 35.6586024, "lon": 139.7027006 },
+         { "lat": 35.6588548, "lon": 139.7025753 },
+         { "lat": 35.6589798, "lon": 139.7025186 },
+         { "lat": 35.6591826, "lon": 139.7024497 },
+         { "lat": 35.6595013, "lon": 139.7023603 },
+         { "lat": 35.6594909, "lon": 139.7023101 },
+         { "lat": 35.6591699, "lon": 139.7023965 },
+         { "lat": 35.6588370, "lon": 139.7025285 },
+         { "lat": 35.6585866, "lon": 139.7026513 },
+         { "lat": 35.6584292, "lon": 139.7027458 },
+         { "lat": 35.6582414, "lon": 139.7028711 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 664411289,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.6582414, "lon": 139.7028711 },
+         { "lat": 35.6582295, "lon": 139.7028438 },
+         { "lat": 35.6584105, "lon": 139.7026989 },
+         { "lat": 35.6585697, "lon": 139.7025985 },
+         { "lat": 35.6588191, "lon": 139.7024817 },
+         { "lat": 35.6589340, "lon": 139.7024274 },
+         { "lat": 35.6591575, "lon": 139.7023444 },
+         { "lat": 35.6594804, "lon": 139.7022599 },
+         { "lat": 35.6594909, "lon": 139.7023101 },
+         { "lat": 35.6591699, "lon": 139.7023965 },
+         { "lat": 35.6588370, "lon": 139.7025285 },
+         { "lat": 35.6585866, "lon": 139.7026513 },
+         { "lat": 35.6584292, "lon": 139.7027458 },
+         { "lat": 35.6582414, "lon": 139.7028711 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 664521490,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.6582981, "lon": 139.7030011 },
+         { "lat": 35.6583098, "lon": 139.7030278 },
+         { "lat": 35.6585034, "lon": 139.7029322 },
+         { "lat": 35.6586508, "lon": 139.7028511 },
+         { "lat": 35.6589014, "lon": 139.7027490 },
+         { "lat": 35.6592249, "lon": 139.7026273 },
+         { "lat": 35.6595179, "lon": 139.7025272 },
+         { "lat": 35.6595141, "lon": 139.7024886 },
+         { "lat": 35.6592118, "lon": 139.7025724 },
+         { "lat": 35.6588888, "lon": 139.7026975 },
+         { "lat": 35.6586399, "lon": 139.7028171 },
+         { "lat": 35.6584912, "lon": 139.7029016 },
+         { "lat": 35.6582981, "lon": 139.7030011 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 664521491,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.6582981, "lon": 139.7030011 },
+         { "lat": 35.6582865, "lon": 139.7029744 },
+         { "lat": 35.6584740, "lon": 139.7028582 },
+         { "lat": 35.6586248, "lon": 139.7027701 },
+         { "lat": 35.6588763, "lon": 139.7026460 },
+         { "lat": 35.6589950, "lon": 139.7025937 },
+         { "lat": 35.6591999, "lon": 139.7025224 },
+         { "lat": 35.6595102, "lon": 139.7024499 },
+         { "lat": 35.6595141, "lon": 139.7024886 },
+         { "lat": 35.6592118, "lon": 139.7025724 },
+         { "lat": 35.6588888, "lon": 139.7026975 },
+         { "lat": 35.6586399, "lon": 139.7028171 },
+         { "lat": 35.6584912, "lon": 139.7029016 },
+         { "lat": 35.6582981, "lon": 139.7030011 }
+      ]
+    },
+    {
+      "type": "node",
+      "ref": 1681663859,
+      "role": "",
+      "lat": 35.6593017,
+      "lon": 139.7001474
+    },
+    {
+      "type": "node",
+      "ref": 861115229,
+      "role": "",
+      "lat": 35.6591162,
+      "lon": 139.7001168
+    },
+    {
+      "type": "node",
+      "ref": 1377643961,
+      "role": "",
+      "lat": 35.6593176,
+      "lon": 139.7026638
+    },
+    {
+      "type": "node",
+      "ref": 1558819055,
+      "role": "",
+      "lat": 35.6595331,
+      "lon": 139.7009491
+    },
+    {
+      "type": "node",
+      "ref": 1558819056,
+      "role": "",
+      "lat": 35.6595943,
+      "lon": 139.7007817
+    },
+    {
+      "type": "node",
+      "ref": 1681663861,
+      "role": "",
+      "lat": 35.6596952,
+      "lon": 139.7005066
+    },
+    {
+      "type": "node",
+      "ref": 1681663860,
+      "role": "",
+      "lat": 35.6596542,
+      "lon": 139.7001439
+    },
+    {
+      "type": "node",
+      "ref": 1657287473,
+      "role": "",
+      "lat": 35.6597179,
+      "lon": 139.6995926
+    },
+    {
+      "type": "node",
+      "ref": 1657287469,
+      "role": "",
+      "lat": 35.6592237,
+      "lon": 139.6990054
+    },
+    {
+      "type": "node",
+      "ref": 3608610193,
+      "role": "",
+      "lat": 35.6599276,
+      "lon": 139.7022355
+    },
+    {
+      "type": "node",
+      "ref": 1681068414,
+      "role": "",
+      "lat": 35.6590258,
+      "lon": 139.7009281
+    },
+    {
+      "type": "node",
+      "ref": 1316007443,
+      "role": "",
+      "lat": 35.6599502,
+      "lon": 139.7024630
+    },
+    {
+      "type": "node",
+      "ref": 5657973394,
+      "role": "",
+      "lat": 35.6576970,
+      "lon": 139.7031437
+    },
+    {
+      "type": "node",
+      "ref": 5657973395,
+      "role": "",
+      "lat": 35.6579024,
+      "lon": 139.7036563
+    },
+    {
+      "type": "node",
+      "ref": 7092260266,
+      "role": "",
+      "lat": 35.6584230,
+      "lon": 139.7025159
+    },
+    {
+      "type": "node",
+      "ref": 12336491226,
+      "role": "",
+      "lat": 35.6592033,
+      "lon": 139.7015768
+    },
+    {
+      "type": "node",
+      "ref": 12336491231,
+      "role": "",
+      "lat": 35.6593673,
+      "lon": 139.7017660
+    },
+    {
+      "type": "node",
+      "ref": 12336505511,
+      "role": "",
+      "lat": 35.6583160,
+      "lon": 139.7027544
+    },
+    {
+      "type": "node",
+      "ref": 12336505527,
+      "role": "",
+      "lat": 35.6599071,
+      "lon": 139.7005491
+    }
+  ],
+  "tags": {
+    "name": "渋谷 (東京メトロ副都心線・東急東横線)",
+    "name:en": "Shibuya (Fukutoshin & Tōyoko Lines)",
+    "name:es": "Shibuya (Línea Fukutoshin)",
+    "name:ja": "渋谷 (東京メトロ副都心線・東急東横線)",
+    "public_transport": "stop_area",
+    "public_transport:version": "2",
+    "ref": "F16;TY01",
+    "ref:東京地下鉄": "F16",
+    "ref:東急電鉄": "TY01",
+    "type": "public_transport"
+  }
+},
+{
+  "type": "relation",
+  "id": 7967610,
+  "bounds": {
+    "minlat": 35.7296962,
+    "minlon": 139.7066260,
+    "maxlat": 35.7319455,
+    "maxlon": 139.7097012
+  },
+  "members": [
+    {
+      "type": "node",
+      "ref": 5409272742,
+      "role": "",
+      "lat": 35.7311425,
+      "lon": 139.7089439
+    },
+    {
+      "type": "node",
+      "ref": 3656056039,
+      "role": "stop",
+      "lat": 35.7310839,
+      "lon": 139.7089164
+    },
+    {
+      "type": "node",
+      "ref": 1951959624,
+      "role": "stop",
+      "lat": 35.7312233,
+      "lon": 139.7089976
+    },
+    {
+      "type": "way",
+      "ref": 665064489,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.7317856, "lon": 139.7071727 },
+         { "lat": 35.7315505, "lon": 139.7081191 },
+         { "lat": 35.7314158, "lon": 139.7084994 },
+         { "lat": 35.7313426, "lon": 139.7086768 },
+         { "lat": 35.7312470, "lon": 139.7089243 },
+         { "lat": 35.7310955, "lon": 139.7092580 },
+         { "lat": 35.7310612, "lon": 139.7093322 },
+         { "lat": 35.7309995, "lon": 139.7093014 },
+         { "lat": 35.7313616, "lon": 139.7084680 },
+         { "lat": 35.7315060, "lon": 139.7080887 },
+         { "lat": 35.7317576, "lon": 139.7071639 },
+         { "lat": 35.7317856, "lon": 139.7071727 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 665064490,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.7309995, "lon": 139.7093014 },
+         { "lat": 35.7309663, "lon": 139.7092641 },
+         { "lat": 35.7309958, "lon": 139.7091776 },
+         { "lat": 35.7311256, "lon": 139.7088357 },
+         { "lat": 35.7312301, "lon": 139.7086027 },
+         { "lat": 35.7313074, "lon": 139.7084367 },
+         { "lat": 35.7314382, "lon": 139.7080510 },
+         { "lat": 35.7317295, "lon": 139.7071551 },
+         { "lat": 35.7317576, "lon": 139.7071639 },
+         { "lat": 35.7315060, "lon": 139.7080887 },
+         { "lat": 35.7313616, "lon": 139.7084680 },
+         { "lat": 35.7309995, "lon": 139.7093014 }
+      ]
+    },
+    {
+      "type": "node",
+      "ref": 6225462374,
+      "role": "",
+      "lat": 35.7307949,
+      "lon": 139.7077735
+    },
+    {
+      "type": "node",
+      "ref": 6225462372,
+      "role": "",
+      "lat": 35.7304975,
+      "lon": 139.7079075
+    },
+    {
+      "type": "node",
+      "ref": 6225462360,
+      "role": "",
+      "lat": 35.7296962,
+      "lon": 139.7094493
+    },
+    {
+      "type": "node",
+      "ref": 1907526462,
+      "role": "",
+      "lat": 35.7310315,
+      "lon": 139.7095074
+    },
+    {
+      "type": "node",
+      "ref": 1907526466,
+      "role": "",
+      "lat": 35.7310928,
+      "lon": 139.7097012
+    },
+    {
+      "type": "node",
+      "ref": 1906928876,
+      "role": "",
+      "lat": 35.7317517,
+      "lon": 139.7082562
+    },
+    {
+      "type": "node",
+      "ref": 6071824773,
+      "role": "",
+      "lat": 35.7313748,
+      "lon": 139.7080439
+    },
+    {
+      "type": "node",
+      "ref": 6071824782,
+      "role": "",
+      "lat": 35.7312289,
+      "lon": 139.7084087
+    },
+    {
+      "type": "node",
+      "ref": 6070213424,
+      "role": "",
+      "lat": 35.7319455,
+      "lon": 139.7066260
+    }
+  ],
+  "tags": {
+    "name": "池袋 (東京メトロ副都心線)",
+    "name:en": "Ikebukuro (Fukutoshin Line)",
+    "name:es": "Ikebukuro (Línea Fukutoshin)",
+    "name:ja": "池袋 (東京メトロ副都心線)",
+    "network": "東京メトロ副都心線",
+    "operator": "東京地下鉄",
+    "public_transport": "stop_area",
+    "public_transport:version": "2",
+    "ref": "F09",
+    "type": "public_transport"
+  }
+},
+{
+  "type": "relation",
+  "id": 7973529,
+  "bounds": {
+    "minlat": 35.6872750,
+    "minlon": 139.7018947,
+    "maxlat": 35.6937565,
+    "maxlon": 139.7064374
+  },
+  "members": [
+    {
+      "type": "node",
+      "ref": 5408169522,
+      "role": "",
+      "lat": 35.6907365,
+      "lon": 139.7047597
+    },
+    {
+      "type": "node",
+      "ref": 3656056037,
+      "role": "stop",
+      "lat": 35.6907569,
+      "lon": 139.7047060
+    },
+    {
+      "type": "node",
+      "ref": 1951952383,
+      "role": "stop",
+      "lat": 35.6906889,
+      "lon": 139.7048163
+    },
+    {
+      "type": "way",
+      "ref": 670712981,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.6891134, "lon": 139.7036848 },
+         { "lat": 35.6891328, "lon": 139.7036728 },
+         { "lat": 35.6900842, "lon": 139.7043124 },
+         { "lat": 35.6902227, "lon": 139.7044033 },
+         { "lat": 35.6903163, "lon": 139.7044648 },
+         { "lat": 35.6907943, "lon": 139.7047708 },
+         { "lat": 35.6907962, "lon": 139.7047998 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 670712982,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.6891134, "lon": 139.7036848 },
+         { "lat": 35.6891169, "lon": 139.7037093 },
+         { "lat": 35.6900679, "lon": 139.7043490 },
+         { "lat": 35.6902057, "lon": 139.7044400 },
+         { "lat": 35.6902995, "lon": 139.7045019 },
+         { "lat": 35.6907753, "lon": 139.7048085 },
+         { "lat": 35.6907962, "lon": 139.7047998 }
+      ]
+    },
+    {
+      "type": "node",
+      "ref": 6411462979,
+      "role": "",
+      "lat": 35.6910888,
+      "lon": 139.7051560
+    },
+    {
+      "type": "node",
+      "ref": 2280384508,
+      "role": "",
+      "lat": 35.6914861,
+      "lon": 139.7054322
+    },
+    {
+      "type": "node",
+      "ref": 2525394055,
+      "role": "",
+      "lat": 35.6886530,
+      "lon": 139.7031610
+    },
+    {
+      "type": "node",
+      "ref": 2525389957,
+      "role": "",
+      "lat": 35.6884660,
+      "lon": 139.7034380
+    },
+    {
+      "type": "node",
+      "ref": 2449165896,
+      "role": "",
+      "lat": 35.6872750,
+      "lon": 139.7028532
+    },
+    {
+      "type": "node",
+      "ref": 2525388747,
+      "role": "",
+      "lat": 35.6893913,
+      "lon": 139.7018947
+    },
+    {
+      "type": "node",
+      "ref": 6447893227,
+      "role": "",
+      "lat": 35.6894299,
+      "lon": 139.7020019
+    },
+    {
+      "type": "node",
+      "ref": 1676868729,
+      "role": "",
+      "lat": 35.6892354,
+      "lon": 139.7039044
+    },
+    {
+      "type": "node",
+      "ref": 2525399770,
+      "role": "",
+      "lat": 35.6874690,
+      "lon": 139.7026140
+    },
+    {
+      "type": "node",
+      "ref": 6184907855,
+      "role": "",
+      "lat": 35.6931777,
+      "lon": 139.7060748
+    },
+    {
+      "type": "node",
+      "ref": 4716049675,
+      "role": "",
+      "lat": 35.6937565,
+      "lon": 139.7061539
+    },
+    {
+      "type": "node",
+      "ref": 6411462961,
+      "role": "",
+      "lat": 35.6877275,
+      "lon": 139.7027318
+    },
+    {
+      "type": "node",
+      "ref": 6281439107,
+      "role": "",
+      "lat": 35.6902055,
+      "lon": 139.7044680
+    },
+    {
+      "type": "node",
+      "ref": 6281290593,
+      "role": "",
+      "lat": 35.6903749,
+      "lon": 139.7045285
+    },
+    {
+      "type": "node",
+      "ref": 6281439109,
+      "role": "",
+      "lat": 35.6898296,
+      "lon": 139.7034845
+    },
+    {
+      "type": "node",
+      "ref": 6281388669,
+      "role": "",
+      "lat": 35.6908249,
+      "lon": 139.7056832
+    },
+    {
+      "type": "node",
+      "ref": 6281388667,
+      "role": "",
+      "lat": 35.6908304,
+      "lon": 139.7053357
+    },
+    {
+      "type": "node",
+      "ref": 6280941663,
+      "role": "",
+      "lat": 35.6910912,
+      "lon": 139.7047821
+    },
+    {
+      "type": "node",
+      "ref": 6281388676,
+      "role": "",
+      "lat": 35.6907737,
+      "lon": 139.7045903
+    },
+    {
+      "type": "way",
+      "ref": 660599138,
+      "role": "",
+      "geometry": [
+         { "lat": 35.6937565, "lon": 139.7061539 },
+         { "lat": 35.6937264, "lon": 139.7063078 },
+         { "lat": 35.6936697, "lon": 139.7064374 },
+         { "lat": 35.6931534, "lon": 139.7061504 },
+         { "lat": 35.6931300, "lon": 139.7061365 },
+         { "lat": 35.6915830, "lon": 139.7051947 },
+         { "lat": 35.6911769, "lon": 139.7049475 },
+         { "lat": 35.6911375, "lon": 139.7049235 }
+      ]
+    }
+  ],
+  "tags": {
+    "name": "新宿三丁目 (東京メトロ副都心線)",
+    "name:en": "Shinjuku-sanchome (Fukutoshin Line)",
+    "name:es": "Shinjuku-sanchome (Línea Fukutoshin)",
+    "name:ja": "新宿三丁目 (東京メトロ副都心線)",
+    "public_transport": "stop_area",
+    "type": "public_transport",
+    "wheelchair": "limited"
+  }
+},
+{
+  "type": "relation",
+  "id": 8014010,
+  "bounds": {
+    "minlat": 35.7426276,
+    "minlon": 139.6780632,
+    "maxlat": 35.7442989,
+    "maxlon": 139.6809381
+  },
+  "members": [
+    {
+      "type": "node",
+      "ref": 2600954688,
+      "role": "",
+      "lat": 35.7433734,
+      "lon": 139.6795267
+    },
+    {
+      "type": "node",
+      "ref": 7369566822,
+      "role": "stop",
+      "lat": 35.7429781,
+      "lon": 139.6807045
+    },
+    {
+      "type": "node",
+      "ref": 7369435826,
+      "role": "stop",
+      "lat": 35.7428773,
+      "lon": 139.6806313
+    },
+    {
+      "type": "node",
+      "ref": 7775797964,
+      "role": "stop",
+      "lat": 35.7435961,
+      "lon": 139.6790059
+    },
+    {
+      "type": "node",
+      "ref": 7369435827,
+      "role": "stop",
+      "lat": 35.7435243,
+      "lon": 139.6789250
+    },
+    {
+      "type": "way",
+      "ref": 788228525,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.7437196, "lon": 139.6790144 },
+         { "lat": 35.7437044, "lon": 139.6790037 },
+         { "lat": 35.7436858, "lon": 139.6789906 },
+         { "lat": 35.7436734, "lon": 139.6789819 },
+         { "lat": 35.7427901, "lon": 139.6808858 },
+         { "lat": 35.7428363, "lon": 139.6809183 },
+         { "lat": 35.7437196, "lon": 139.6790144 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 788228524,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.7436075, "lon": 139.6789220 },
+         { "lat": 35.7435940, "lon": 139.6789125 },
+         { "lat": 35.7435756, "lon": 139.6788996 },
+         { "lat": 35.7435613, "lon": 139.6788895 },
+         { "lat": 35.7426715, "lon": 139.6808076 },
+         { "lat": 35.7427176, "lon": 139.6808402 },
+         { "lat": 35.7436075, "lon": 139.6789220 }
+      ]
+    },
+    {
+      "type": "node",
+      "ref": 3274593199,
+      "role": "",
+      "lat": 35.7442989,
+      "lon": 139.6780632
+    },
+    {
+      "type": "node",
+      "ref": 3274578478,
+      "role": "",
+      "lat": 35.7436297,
+      "lon": 139.6786650
+    },
+    {
+      "type": "node",
+      "ref": 3274562418,
+      "role": "",
+      "lat": 35.7428495,
+      "lon": 139.6809381
+    },
+    {
+      "type": "node",
+      "ref": 5773354457,
+      "role": "",
+      "lat": 35.7426276,
+      "lon": 139.6807989
+    }
+  ],
+  "tags": {
+    "name": "小竹向原",
+    "name:en": "Kotake-Mukaihara",
+    "name:es": "Kotake-mukaihara",
+    "name:ja": "小竹向原",
+    "public_transport": "stop_area",
+    "public_transport:version": "2",
+    "type": "public_transport"
+  }
+},
+{
+  "type": "relation",
+  "id": 8015991,
+  "bounds": {
+    "minlat": 35.6975042,
+    "minlon": 139.7069011,
+    "maxlat": 35.7008223,
+    "maxlon": 139.7082766
+  },
+  "members": [
+    {
+      "type": "node",
+      "ref": 1951953898,
+      "role": "",
+      "lat": 35.6989330,
+      "lon": 139.7076950
+    },
+    {
+      "type": "node",
+      "ref": 6188734707,
+      "role": "stop",
+      "lat": 35.6989566,
+      "lon": 139.7076636
+    },
+    {
+      "type": "node",
+      "ref": 6188734706,
+      "role": "stop",
+      "lat": 35.6989445,
+      "lon": 139.7077279
+    },
+    {
+      "type": "node",
+      "ref": 6394721500,
+      "role": "stop",
+      "lat": 35.6989685,
+      "lon": 139.7075681
+    },
+    {
+      "type": "node",
+      "ref": 6394721502,
+      "role": "stop",
+      "lat": 35.6989306,
+      "lon": 139.7078116
+    },
+    {
+      "type": "way",
+      "ref": 682766012,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.6979700, "lon": 139.7075589 },
+         { "lat": 35.6979616, "lon": 139.7076281 },
+         { "lat": 35.7007926, "lon": 139.7081269 },
+         { "lat": 35.7007989, "lon": 139.7080770 },
+         { "lat": 35.6979700, "lon": 139.7075589 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 682765997,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.6979934, "lon": 139.7074065 },
+         { "lat": 35.6979870, "lon": 139.7074604 },
+         { "lat": 35.7008160, "lon": 139.7079643 },
+         { "lat": 35.7008223, "lon": 139.7079106 },
+         { "lat": 35.6979934, "lon": 139.7074065 }
+      ]
+    },
+    {
+      "type": "node",
+      "ref": 2606259288,
+      "role": "",
+      "lat": 35.6978246,
+      "lon": 139.7069011
+    },
+    {
+      "type": "node",
+      "ref": 1582740009,
+      "role": "",
+      "lat": 35.6980310,
+      "lon": 139.7080524
+    },
+    {
+      "type": "node",
+      "ref": 6365189831,
+      "role": "",
+      "lat": 35.6975042,
+      "lon": 139.7082502
+    },
+    {
+      "type": "node",
+      "ref": 6365189830,
+      "role": "",
+      "lat": 35.6995792,
+      "lon": 139.7075179
+    },
+    {
+      "type": "node",
+      "ref": 2606259289,
+      "role": "",
+      "lat": 35.6989244,
+      "lon": 139.7079614
+    },
+    {
+      "type": "node",
+      "ref": 6411462982,
+      "role": "",
+      "lat": 35.7005784,
+      "lon": 139.7082004
+    },
+    {
+      "type": "node",
+      "ref": 6411462959,
+      "role": "",
+      "lat": 35.7007734,
+      "lon": 139.7082766
+    }
+  ],
+  "tags": {
+    "name": "東新宿 (東京メトロ副都心線)",
+    "name:en": "Higashi-shinjuku (Tokyo Metro)",
+    "name:es": "Higashi-shinjuku (Tokyo Metro)",
+    "name:ja": "東新宿 (東京メトロ副都心線)",
+    "public_transport": "stop_area",
+    "ref": "F12",
+    "type": "public_transport"
+  }
+},
+{
+  "type": "relation",
+  "id": 8016036,
+  "bounds": {
+    "minlat": 35.7493090,
+    "minlon": 139.6650083,
+    "maxlat": 35.7498601,
+    "maxlon": 139.6659677
+  },
+  "members": [
+    {
+      "type": "node",
+      "ref": 5408201206,
+      "role": "",
+      "lat": 35.7497818,
+      "lon": 139.6650083
+    },
+    {
+      "type": "node",
+      "ref": 7775824110,
+      "role": "stop",
+      "lat": 35.7498601,
+      "lon": 139.6650785
+    },
+    {
+      "type": "node",
+      "ref": 7775809567,
+      "role": "stop",
+      "lat": 35.7498203,
+      "lon": 139.6650562
+    },
+    {
+      "type": "node",
+      "ref": 699675516,
+      "role": "",
+      "lat": 35.7497565,
+      "lon": 139.6659215
+    },
+    {
+      "type": "node",
+      "ref": 7600523512,
+      "role": "",
+      "lat": 35.7493090,
+      "lon": 139.6659677
+    },
+    {
+      "type": "node",
+      "ref": 7600523511,
+      "role": "",
+      "lat": 35.7497311,
+      "lon": 139.6650149
+    }
+  ],
+  "tags": {
+    "name": "氷川台",
+    "name:en": "Hikawadai",
+    "name:es": "Hikawadai",
+    "name:ja": "氷川台",
+    "public_transport": "stop_area",
+    "public_transport:version": "2",
+    "ref": "Y05;F05",
+    "type": "public_transport"
+  }
+},
+{
+  "type": "relation",
+  "id": 8016037,
+  "bounds": {
+    "minlat": 35.7572959,
+    "minlon": 139.6532964,
+    "maxlat": 35.7580698,
+    "maxlon": 139.6545869
+  },
+  "members": [
+    {
+      "type": "node",
+      "ref": 5408201207,
+      "role": "",
+      "lat": 35.7576885,
+      "lon": 139.6541369
+    },
+    {
+      "type": "node",
+      "ref": 7775791257,
+      "role": "stop",
+      "lat": 35.7576942,
+      "lon": 139.6542458
+    },
+    {
+      "type": "node",
+      "ref": 7775793853,
+      "role": "stop",
+      "lat": 35.7576097,
+      "lon": 139.6541628
+    },
+    {
+      "type": "node",
+      "ref": 2048859777,
+      "role": "",
+      "lat": 35.7580698,
+      "lon": 139.6532964
+    },
+    {
+      "type": "node",
+      "ref": 5335933367,
+      "role": "",
+      "lat": 35.7572959,
+      "lon": 139.6545869
+    },
+    {
+      "type": "node",
+      "ref": 11140750627,
+      "role": "",
+      "lat": 35.7574220,
+      "lon": 139.6543677
+    }
+  ],
+  "tags": {
+    "name": "平和台",
+    "name:en": "Heiwadai",
+    "name:es": "Heiwadai",
+    "name:ja": "平和台",
+    "operator": "東京メトロ",
+    "public_transport": "stop_area",
+    "public_transport:version": "2",
+    "ref": "F04;Y04",
+    "type": "public_transport",
+    "wikidata": "Q80427",
+    "wikipedia": "ja:平和台駅 (東京都)"
+  }
+},
+{
+  "type": "relation",
+  "id": 8016038,
+  "bounds": {
+    "minlat": 35.7688136,
+    "minlon": 139.6426284,
+    "maxlat": 35.7709548,
+    "maxlon": 139.6458556
+  },
+  "members": [
+    {
+      "type": "node",
+      "ref": 5408201208,
+      "role": "",
+      "lat": 35.7699229,
+      "lon": 139.6441259
+    },
+    {
+      "type": "node",
+      "ref": 7775801427,
+      "role": "stop",
+      "lat": 35.7699710,
+      "lon": 139.6441677
+    },
+    {
+      "type": "node",
+      "ref": 7775802447,
+      "role": "stop",
+      "lat": 35.7698772,
+      "lon": 139.6440815
+    },
+    {
+      "type": "node",
+      "ref": 1653452879,
+      "role": "",
+      "lat": 35.7694619,
+      "lon": 139.6452313
+    },
+    {
+      "type": "node",
+      "ref": 5585710134,
+      "role": "",
+      "lat": 35.7703471,
+      "lon": 139.6430647
+    },
+    {
+      "type": "node",
+      "ref": 8452442572,
+      "role": "",
+      "lat": 35.7688136,
+      "lon": 139.6458556
+    },
+    {
+      "type": "node",
+      "ref": 8476573415,
+      "role": "",
+      "lat": 35.7709548,
+      "lon": 139.6426284
+    }
+  ],
+  "tags": {
+    "name": "地下鉄赤塚",
+    "name:en": "Chikatetsu-akatsuka",
+    "name:es": "Chikatetsu-akatsuka",
+    "name:ja": "地下鉄赤塚",
+    "public_transport": "stop_area",
+    "public_transport:version": "2",
+    "ref": "Y03;F03",
+    "type": "public_transport"
+  }
+},
+{
+  "type": "relation",
+  "id": 8016039,
+  "bounds": {
+    "minlat": 35.7760017,
+    "minlon": 139.6302906,
+    "maxlat": 35.7772638,
+    "maxlon": 139.6325467
+  },
+  "members": [
+    {
+      "type": "node",
+      "ref": 5408201209,
+      "role": "",
+      "lat": 35.7766946,
+      "lon": 139.6312465
+    },
+    {
+      "type": "node",
+      "ref": 7775821589,
+      "role": "stop",
+      "lat": 35.7767040,
+      "lon": 139.6313339
+    },
+    {
+      "type": "node",
+      "ref": 7775796371,
+      "role": "stop",
+      "lat": 35.7766151,
+      "lon": 139.6312688
+    },
+    {
+      "type": "way",
+      "ref": 901165619,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.7770212, "lon": 139.6305267 },
+         { "lat": 35.7770680, "lon": 139.6305656 },
+         { "lat": 35.7766893, "lon": 139.6313381 },
+         { "lat": 35.7760461, "lon": 139.6325467 },
+         { "lat": 35.7760017, "lon": 139.6325102 },
+         { "lat": 35.7766284, "lon": 139.6312912 },
+         { "lat": 35.7770212, "lon": 139.6305267 }
+      ]
+    },
+    {
+      "type": "node",
+      "ref": 1653452866,
+      "role": "",
+      "lat": 35.7769537,
+      "lon": 139.6310860
+    },
+    {
+      "type": "node",
+      "ref": 1692706360,
+      "role": "",
+      "lat": 35.7767754,
+      "lon": 139.6308057
+    },
+    {
+      "type": "node",
+      "ref": 1692706377,
+      "role": "",
+      "lat": 35.7770539,
+      "lon": 139.6302906
+    },
+    {
+      "type": "node",
+      "ref": 1692706424,
+      "role": "",
+      "lat": 35.7772638,
+      "lon": 139.6304328
+    },
+    {
+      "type": "node",
+      "ref": 1692706273,
+      "role": "",
+      "lat": 35.7760317,
+      "lon": 139.6322047
+    },
+    {
+      "type": "node",
+      "ref": 1692706348,
+      "role": "",
+      "lat": 35.7762348,
+      "lon": 139.6324339
+    }
+  ],
+  "tags": {
+    "name": "地下鉄成増",
+    "name:en": "Chikatetsu-narimasu",
+    "name:ja": "地下鉄成増",
+    "public_transport": "stop_area",
+    "public_transport:version": "2",
+    "type": "public_transport"
+  }
+},
+{
+  "type": "relation",
+  "id": 8017918,
+  "bounds": {
+    "minlat": 35.7186359,
+    "minlon": 139.7140170,
+    "maxlat": 35.7206860,
+    "maxlon": 139.7154121
+  },
+  "members": [
+    {
+      "type": "node",
+      "ref": 1951959623,
+      "role": "",
+      "lat": 35.7202465,
+      "lon": 139.7147782
+    },
+    {
+      "type": "node",
+      "ref": 3656056003,
+      "role": "stop",
+      "lat": 35.7203241,
+      "lon": 139.7148032
+    },
+    {
+      "type": "node",
+      "ref": 6235968754,
+      "role": "stop",
+      "lat": 35.7201652,
+      "lon": 139.7147443
+    },
+    {
+      "type": "way",
+      "ref": 690016724,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.7194540, "lon": 139.7141774 },
+         { "lat": 35.7194473, "lon": 139.7141912 },
+         { "lat": 35.7194416, "lon": 139.7142030 },
+         { "lat": 35.7206585, "lon": 139.7151014 },
+         { "lat": 35.7206710, "lon": 139.7150758 },
+         { "lat": 35.7194540, "lon": 139.7141774 }
+      ]
+    },
+    {
+      "type": "node",
+      "ref": 6473548404,
+      "role": "",
+      "lat": 35.7205234,
+      "lon": 139.7149874
+    },
+    {
+      "type": "node",
+      "ref": 6473540502,
+      "role": "",
+      "lat": 35.7195898,
+      "lon": 139.7142909
+    },
+    {
+      "type": "node",
+      "ref": 5056464827,
+      "role": "",
+      "lat": 35.7186359,
+      "lon": 139.7144323
+    },
+    {
+      "type": "node",
+      "ref": 6473540493,
+      "role": "",
+      "lat": 35.7198772,
+      "lon": 139.7140170
+    },
+    {
+      "type": "node",
+      "ref": 6473540494,
+      "role": "",
+      "lat": 35.7195446,
+      "lon": 139.7141133
+    },
+    {
+      "type": "node",
+      "ref": 6473548402,
+      "role": "",
+      "lat": 35.7206860,
+      "lon": 139.7154121
+    }
+  ],
+  "tags": {
+    "name": "雑司が谷",
+    "name:en": "Zoshigaya (Fukutoshin Line)",
+    "name:es": "Zoshigaya (Línea Fukutoshin)",
+    "name:ja": "雑司が谷",
+    "public_transport": "stop_area",
+    "public_transport:version": "2",
+    "ref": "F10",
+    "type": "public_transport"
+  }
+},
+{
+  "type": "relation",
+  "id": 9208408,
+  "bounds": {
+    "minlat": 35.6778642,
+    "minlon": 139.7049420,
+    "maxlat": 35.6791905,
+    "maxlon": 139.7061668
+  },
+  "members": [
+    {
+      "type": "node",
+      "ref": 7775803876,
+      "role": "",
+      "lat": 35.6784974,
+      "lon": 139.7054140
+    },
+    {
+      "type": "node",
+      "ref": 7775803877,
+      "role": "stop",
+      "lat": 35.6784821,
+      "lon": 139.7054958
+    },
+    {
+      "type": "node",
+      "ref": 1951952367,
+      "role": "stop",
+      "lat": 35.6784659,
+      "lon": 139.7054087
+    },
+    {
+      "type": "node",
+      "ref": 4416045469,
+      "role": "",
+      "lat": 35.6778642,
+      "lon": 139.7061668
+    },
+    {
+      "type": "node",
+      "ref": 3899237657,
+      "role": "",
+      "lat": 35.6791905,
+      "lon": 139.7051688
+    },
+    {
+      "type": "node",
+      "ref": 7661833074,
+      "role": "",
+      "lat": 35.6789744,
+      "lon": 139.7049420
+    }
+  ],
+  "tags": {
+    "name": "北参道",
+    "name:en": "Kita-sando",
+    "name:es": "Kita-sando",
+    "name:ja": "北参道",
+    "public_transport": "stop_area",
+    "public_transport:version": "2",
+    "ref": "F14",
+    "type": "public_transport"
+  }
+},
+{
+  "type": "relation",
+  "id": 9222385,
+  "bounds": {
+    "minlat": 35.7377385,
+    "minlon": 139.6878147,
+    "maxlat": 35.7392442,
+    "maxlon": 139.6901974
+  },
+  "members": [
+    {
+      "type": "node",
+      "ref": 1926376076,
+      "role": "",
+      "lat": 35.7383242,
+      "lon": 139.6893660
+    },
+    {
+      "type": "node",
+      "ref": 7775808125,
+      "role": "stop",
+      "lat": 35.7382898,
+      "lon": 139.6894970
+    },
+    {
+      "type": "node",
+      "ref": 7775774740,
+      "role": "stop",
+      "lat": 35.7382060,
+      "lon": 139.6894193
+    },
+    {
+      "type": "way",
+      "ref": 1150541589,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.7387810, "lon": 139.6888386 },
+         { "lat": 35.7387097, "lon": 139.6887673 },
+         { "lat": 35.7377474, "lon": 139.6900497 },
+         { "lat": 35.7378030, "lon": 139.6901117 },
+         { "lat": 35.7387810, "lon": 139.6888386 }
+      ]
+    },
+    {
+      "type": "node",
+      "ref": 6138494910,
+      "role": "",
+      "lat": 35.7389905,
+      "lon": 139.6888079
+    },
+    {
+      "type": "node",
+      "ref": 6138494899,
+      "role": "",
+      "lat": 35.7377385,
+      "lon": 139.6898445
+    },
+    {
+      "type": "node",
+      "ref": 6138494904,
+      "role": "",
+      "lat": 35.7378293,
+      "lon": 139.6901974
+    },
+    {
+      "type": "node",
+      "ref": 6138494909,
+      "role": "",
+      "lat": 35.7392442,
+      "lon": 139.6878147
+    }
+  ],
+  "tags": {
+    "name": "千川 (東京メトロ副都心線)",
+    "name:en": "Senkawa",
+    "name:es": "Senkawa",
+    "name:ja": "千川 (東京メトロ副都心線)",
+    "public_transport": "stop_area",
+    "public_transport:version": "2",
+    "ref": "F07",
+    "type": "public_transport"
+  }
+},
+{
+  "type": "relation",
+  "id": 9324045,
+  "bounds": {
+    "minlat": 35.6677021,
+    "minlon": 139.7048034,
+    "maxlat": 35.6691523,
+    "maxlon": 139.7059045
+  },
+  "members": [
+    {
+      "type": "node",
+      "ref": 6277490559,
+      "role": "",
+      "lat": 35.6684209,
+      "lon": 139.7053410
+    },
+    {
+      "type": "node",
+      "ref": 6178465936,
+      "role": "stop",
+      "lat": 35.6683960,
+      "lon": 139.7053934
+    },
+    {
+      "type": "node",
+      "ref": 6204459716,
+      "role": "stop",
+      "lat": 35.6684461,
+      "lon": 139.7052881
+    },
+    {
+      "type": "way",
+      "ref": 662923219,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.6677021, "lon": 139.7048294 },
+         { "lat": 35.6681119, "lon": 139.7051455 },
+         { "lat": 35.6682697, "lon": 139.7052656 },
+         { "lat": 35.6684942, "lon": 139.7054308 },
+         { "lat": 35.6687233, "lon": 139.7055974 },
+         { "lat": 35.6689307, "lon": 139.7057570 },
+         { "lat": 35.6691403, "lon": 139.7059045 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 662923217,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.6677142, "lon": 139.7048034 },
+         { "lat": 35.6679166, "lon": 139.7049368 },
+         { "lat": 35.6681348, "lon": 139.7051034 },
+         { "lat": 35.6682941, "lon": 139.7052154 },
+         { "lat": 35.6685186, "lon": 139.7053802 },
+         { "lat": 35.6687474, "lon": 139.7055499 },
+         { "lat": 35.6689553, "lon": 139.7057099 },
+         { "lat": 35.6691523, "lon": 139.7058757 }
+      ]
+    },
+    {
+      "type": "node",
+      "ref": 6205846508,
+      "role": "",
+      "lat": 35.6683157,
+      "lon": 139.7053056
+    },
+    {
+      "type": "node",
+      "ref": 3607529966,
+      "role": "",
+      "lat": 35.6680084,
+      "lon": 139.7048427
+    },
+    {
+      "type": "node",
+      "ref": 3853846596,
+      "role": "",
+      "lat": 35.6684301,
+      "lon": 139.7058017
+    }
+  ],
+  "tags": {
+    "name": "明治神宮前〈原宿〉 (東京メトロ副都心線)",
+    "name:en": "Meiji-jingumae 'Harajuku' (Fukutoshin)",
+    "name:es": "Meiji-jingumae 'Harajuku' (Fukutoshin)",
+    "name:ja": "明治神宮前〈原宿〉 (東京メトロ副都心線)",
+    "network": "副都心線",
+    "operator": "Tokyo Metro",
+    "public_transport": "stop_area",
+    "public_transport:version": "2",
+    "ref": "F15",
+    "type": "public_transport"
+  }
+},
+{
+  "type": "relation",
+  "id": 9328862,
+  "bounds": {
+    "minlat": 35.7329675,
+    "minlon": 139.6974153,
+    "maxlat": 35.7335159,
+    "maxlon": 139.7001551
+  },
+  "members": [
+    {
+      "type": "node",
+      "ref": 1926376084,
+      "role": "",
+      "lat": 35.7332405,
+      "lon": 139.6986842
+    },
+    {
+      "type": "node",
+      "ref": 6213383387,
+      "role": "stop",
+      "lat": 35.7332813,
+      "lon": 139.6987138
+    },
+    {
+      "type": "node",
+      "ref": 6213383388,
+      "role": "stop",
+      "lat": 35.7332256,
+      "lon": 139.6987005
+    },
+    {
+      "type": "way",
+      "ref": 663950529,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.7333742, "lon": 139.6978224 },
+         { "lat": 35.7333634, "lon": 139.6978449 },
+         { "lat": 35.7332972, "lon": 139.6982888 },
+         { "lat": 35.7331111, "lon": 139.6994444 },
+         { "lat": 35.7331004, "lon": 139.6995107 },
+         { "lat": 35.7331056, "lon": 139.6995326 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 663950528,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.7333742, "lon": 139.6978224 },
+         { "lat": 35.7334115, "lon": 139.6978508 },
+         { "lat": 35.7333413, "lon": 139.6982999 },
+         { "lat": 35.7331450, "lon": 139.6994534 },
+         { "lat": 35.7331346, "lon": 139.6995191 },
+         { "lat": 35.7331056, "lon": 139.6995326 }
+      ]
+    },
+    {
+      "type": "node",
+      "ref": 6070130259,
+      "role": "",
+      "lat": 35.7331134,
+      "lon": 139.6989573
+    },
+    {
+      "type": "node",
+      "ref": 6071857561,
+      "role": "",
+      "lat": 35.7329675,
+      "lon": 139.6999142
+    },
+    {
+      "type": "node",
+      "ref": 1906785745,
+      "role": "",
+      "lat": 35.7330631,
+      "lon": 139.7001551
+    },
+    {
+      "type": "node",
+      "ref": 6213383394,
+      "role": "",
+      "lat": 35.7333171,
+      "lon": 139.6988531
+    },
+    {
+      "type": "node",
+      "ref": 6213383393,
+      "role": "",
+      "lat": 35.7335159,
+      "lon": 139.6974714
+    },
+    {
+      "type": "node",
+      "ref": 6213383392,
+      "role": "",
+      "lat": 35.7333576,
+      "lon": 139.6974153
+    }
+  ],
+  "tags": {
+    "name": "要町 (東京メトロ副都心線)",
+    "name:en": "Kanamecho (Fukutoshin)",
+    "name:es": "Kanamecho (Fukutoshin)",
+    "name:ja": "要町 (東京メトロ副都心線)",
+    "public_transport": "stop_area",
+    "public_transport:version": "2",
+    "ref": "Y08;F08",
+    "type": "public_transport"
+  }
+},
+{
+  "type": "relation",
+  "id": 20252252,
+  "bounds": {
+    "minlat": 35.7877080,
+    "minlon": 139.6115882,
+    "maxlat": 35.7889121,
+    "maxlon": 139.6141402
+  },
+  "members": [
+    {
+      "type": "node",
+      "ref": 5408205539,
+      "role": "",
+      "lat": 35.7884097,
+      "lon": 139.6126725
+    },
+    {
+      "type": "node",
+      "ref": 3645998146,
+      "role": "stop",
+      "lat": 35.7883529,
+      "lon": 139.6128678
+    },
+    {
+      "type": "node",
+      "ref": 6211857640,
+      "role": "stop",
+      "lat": 35.7883191,
+      "lon": 139.6128488
+    },
+    {
+      "type": "way",
+      "ref": 696941855,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.7886740, "lon": 139.6119370 },
+         { "lat": 35.7886216, "lon": 139.6119028 },
+         { "lat": 35.7877080, "lon": 139.6141047 },
+         { "lat": 35.7877684, "lon": 139.6141402 },
+         { "lat": 35.7886740, "lon": 139.6119370 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 696941856,
+      "role": "platform",
+      "geometry": [
+         { "lat": 35.7887980, "lon": 139.6120341 },
+         { "lat": 35.7887319, "lon": 139.6119923 },
+         { "lat": 35.7878597, "lon": 139.6141081 },
+         { "lat": 35.7879120, "lon": 139.6141390 },
+         { "lat": 35.7887980, "lon": 139.6120341 }
+      ]
+    },
+    {
+      "type": "node",
+      "ref": 6545201659,
+      "role": "",
+      "lat": 35.7882268,
+      "lon": 139.6121788
+    },
+    {
+      "type": "node",
+      "ref": 6545201660,
+      "role": "",
+      "lat": 35.7887241,
+      "lon": 139.6125656
+    },
+    {
+      "type": "way",
+      "ref": 183178809,
+      "role": "",
+      "geometry": [
+         { "lat": 35.7888740, "lon": 139.6118022 },
+         { "lat": 35.7888182, "lon": 139.6119514 },
+         { "lat": 35.7889121, "lon": 139.6120056 },
+         { "lat": 35.7888666, "lon": 139.6121268 },
+         { "lat": 35.7888358, "lon": 139.6121702 },
+         { "lat": 35.7888021, "lon": 139.6121448 },
+         { "lat": 35.7887926, "lon": 139.6121702 },
+         { "lat": 35.7888270, "lon": 139.6121873 },
+         { "lat": 35.7888094, "lon": 139.6122307 },
+         { "lat": 35.7888329, "lon": 139.6122461 },
+         { "lat": 35.7887610, "lon": 139.6124215 },
+         { "lat": 35.7887750, "lon": 139.6124287 },
+         { "lat": 35.7887241, "lon": 139.6125656 },
+         { "lat": 35.7886980, "lon": 139.6126358 },
+         { "lat": 35.7886444, "lon": 139.6127506 },
+         { "lat": 35.7886136, "lon": 139.6127352 },
+         { "lat": 35.7886202, "lon": 139.6127162 },
+         { "lat": 35.7885799, "lon": 139.6126945 },
+         { "lat": 35.7880276, "lon": 139.6140493 },
+         { "lat": 35.7879592, "lon": 139.6140052 },
+         { "lat": 35.7879036, "lon": 139.6141309 },
+         { "lat": 35.7878675, "lon": 139.6141080 },
+         { "lat": 35.7879178, "lon": 139.6139874 },
+         { "lat": 35.7879060, "lon": 139.6139522 },
+         { "lat": 35.7878753, "lon": 139.6139314 },
+         { "lat": 35.7878421, "lon": 139.6139386 },
+         { "lat": 35.7877635, "lon": 139.6141357 },
+         { "lat": 35.7877289, "lon": 139.6141161 },
+         { "lat": 35.7878061, "lon": 139.6139223 },
+         { "lat": 35.7877775, "lon": 139.6139034 },
+         { "lat": 35.7882579, "lon": 139.6127352 },
+         { "lat": 35.7881937, "lon": 139.6126964 },
+         { "lat": 35.7881343, "lon": 139.6128396 },
+         { "lat": 35.7880442, "lon": 139.6127903 },
+         { "lat": 35.7880211, "lon": 139.6126695 },
+         { "lat": 35.7882268, "lon": 139.6121788 },
+         { "lat": 35.7883057, "lon": 139.6119975 },
+         { "lat": 35.7883568, "lon": 139.6118802 },
+         { "lat": 35.7883152, "lon": 139.6118073 },
+         { "lat": 35.7884278, "lon": 139.6115882 },
+         { "lat": 35.7885299, "lon": 139.6116538 },
+         { "lat": 35.7884931, "lon": 139.6117477 },
+         { "lat": 35.7885902, "lon": 139.6118105 },
+         { "lat": 35.7886591, "lon": 139.6116431 },
+         { "lat": 35.7888740, "lon": 139.6118022 }
+      ]
+    }
+  ],
+  "tags": {
+    "name": "和光市",
+    "name:en": "Wakoshi",
+    "name:ja": "和光市",
+    "name:ja-Hira": "わこうし",
+    "name:ko": "와코시",
+    "name:th": "วาโกชิ",
+    "name:zh-Hans": "和光市 (subway)",
+    "name:zh-Hant": "和光市",
+    "public_transport": "stop_area",
+    "subway": "yes",
+    "type": "public_transport"
+  }
+}
+
+  ]
+}

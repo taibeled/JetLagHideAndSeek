@@ -406,7 +406,7 @@ export const MatchingQuestionComponent = ({
                                 ? "Loading stations..."
                                 : `Stations matched: ${lineStationPreview.length}`}
                         </div>
-                        <div className="mt-1 max-h-40 overflow-y-auto rounded-md border p-2">
+                        <div className="mt-1 max-h-40 overflow-y-auto rounded-md border p-2" data-testid="station-preview">
                             {lineStationPreview.length === 0 &&
                             !loadingLineStationPreview ? (
                                 <span className="text-muted-foreground">

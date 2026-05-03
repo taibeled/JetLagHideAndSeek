@@ -1,0 +1,26 @@
+{
+  "version": 0.6,
+  "elements": [
+    {
+      "type": "node",
+      "id": 1001,
+      "lat": 35.0,
+      "lon": 139.0,
+      "tags": {"railway": "station", "name": "Station Alpha", "name:en": "Station Alpha", "ref": "A-01"}
+    },
+    {
+      "type": "node",
+      "id": 1002,
+      "lat": 35.1,
+      "lon": 139.1,
+      "tags": {"railway": "station", "name": "Station Beta", "name:en": "Station Beta", "ref": "A-02"}
+    },
+    {
+      "type": "node",
+      "id": 1003,
+      "lat": 35.2,
+      "lon": 139.2,
+      "tags": {"railway": "station", "name": "Station Gamma", "name:en": "Station Gamma", "ref": "A-03"}
+    }
+  ]
+}

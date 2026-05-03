@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # CAS server local blobs and team JSONL (runtime data)
 server/data/
+
+# Playwright
+test-results/

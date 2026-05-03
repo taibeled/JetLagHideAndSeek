@@ -1,0 +1,19 @@
+{
+  "version": 0.6,
+  "elements": [
+    {
+      "type": "node",
+      "id": 5001,
+      "lat": 35.0,
+      "lon": 139.0,
+      "tags": {
+        "railway": "station",
+        "name": "Station Alpha",
+        "name:en": "Station Alpha",
+        "ref": "A-01",
+        "network": "Test Metro",
+        "operator": "Test Metro"
+      }
+    }
+  ]
+}

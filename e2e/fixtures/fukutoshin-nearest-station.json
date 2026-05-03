@@ -1,0 +1,37 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-05-03T11:49:10Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "node",
+  "id": 1951953898,
+  "lat": 35.6989330,
+  "lon": 139.7076950,
+  "tags": {
+    "name": "東新宿",
+    "name:en": "Higashi-shinjuku",
+    "name:es": "Higashi-shinjuku",
+    "name:ja": "東新宿",
+    "name:ja-Hira": "ひがししんじゅく",
+    "name:ja_rm": "Higashi Shinjuku",
+    "name:ko": "히가시신주쿠",
+    "operator": "東京地下鉄",
+    "platforms": "2",
+    "public_transport": "station",
+    "railway": "station",
+    "ref": "F12",
+    "station": "subway",
+    "subway": "yes",
+    "wheelchair": "yes",
+    "wikidata": "Q112503",
+    "wikipedia": "ja:東新宿駅"
+  }
+}
+
+  ]
+}

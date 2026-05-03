@@ -6,6 +6,7 @@ export default defineConfig({
             "**/node_modules/**",
             "**/dist/**",
             "**/server/**",
+            "**/e2e/**",
         ],
         alias: {
             "@/": new URL("./src/", import.meta.url).pathname,

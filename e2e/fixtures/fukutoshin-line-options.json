@@ -1,0 +1,71 @@
+{
+  "version": 0.6,
+  "elements": [
+    {
+      "type": "way",
+      "id": 184696239,
+      "tags": {
+        "railway": "subway",
+        "name": "東京メトロ副都心線",
+        "operator": "東京地下鉄"
+      }
+    },
+    {
+      "type": "way",
+      "id": 361085879,
+      "tags": {
+        "railway": "subway",
+        "name": "東京メトロ副都心線",
+        "operator": "東京地下鉄"
+      }
+    },
+    {
+      "type": "way",
+      "id": 682766000,
+      "tags": {
+        "railway": "subway",
+        "name": "東京メトロ副都心線",
+        "operator": "東京地下鉄"
+      }
+    },
+    {
+      "type": "way",
+      "id": 682766005,
+      "tags": {
+        "railway": "subway",
+        "name": "東京メトロ副都心線",
+        "operator": "東京地下鉄"
+      }
+    },
+    {
+      "type": "relation",
+      "id": 5375678,
+      "tags": {
+        "colour": "#9C5E31",
+        "from": "和光市",
+        "name": "東京メトロ副都心線 : 和光市→渋谷",
+        "name:en": "Tokyo Metro Fukutoshin Line (Wakoshi --> Shibuya)",
+        "network": "東京メトロ",
+        "operator": "Tokyo Metro",
+        "ref": "F",
+        "route": "subway",
+        "to": "渋谷",
+        "type": "route"
+      }
+    },
+    {
+      "type": "relation",
+      "id": 1234567,
+      "tags": {
+        "from": "都庁前",
+        "name": "都営大江戸線",
+        "name:en": "Toei Oedo Line",
+        "ref": "E",
+        "route": "subway",
+        "network": "都営地下鉄",
+        "operator": "Tokyo Metropolitan Bureau of Transportation",
+        "to": "都庁前"
+      }
+    }
+  ]
+}

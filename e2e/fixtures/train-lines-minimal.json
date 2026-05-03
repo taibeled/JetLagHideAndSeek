@@ -1,0 +1,29 @@
+{
+  "version": 0.6,
+  "elements": [
+    {
+      "type": "relation",
+      "id": 100,
+      "tags": {
+        "route": "subway",
+        "name": "Test Line A",
+        "name:en": "Test Line A",
+        "ref": "A",
+        "network": "Test Metro",
+        "operator": "Test Metro"
+      }
+    },
+    {
+      "type": "relation",
+      "id": 200,
+      "tags": {
+        "route": "train",
+        "name": "Test Line B",
+        "name:en": "Test Line B",
+        "ref": "B",
+        "network": "Test Railway",
+        "operator": "Test Railway"
+      }
+    }
+  ]
+}
