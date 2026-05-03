@@ -1,0 +1,47 @@
+{
+    "v": 1,
+    "type": "Feature",
+    "geometry": {
+        "type": "Point",
+        "coordinates": [139.2394179, 36.5748441]
+    },
+    "properties": {
+        "osm_type": "R",
+        "osm_id": 382313,
+        "extent": [45.7112046, 122.7141754, 20.2145811, 154.205541],
+        "country": "Japan",
+        "osm_key": "place",
+        "countrycode": "JP",
+        "osm_value": "country",
+        "name": "Japan",
+        "type": "country",
+        "isHidingZone": true,
+        "questions": [
+            {
+                "id": "thermometer",
+                "key": 0,
+                "data": {
+                    "latA": 35.6895,
+                    "lngA": 139.6917,
+                    "latB": 34.6937,
+                    "lngB": 135.5023,
+                    "warmer": true,
+                    "colorA": "red",
+                    "colorB": "blue",
+                    "drag": true,
+                    "collapsed": false
+                }
+            }
+        ]
+    },
+    "disabledStations": [],
+    "hidingRadius": 0.5,
+    "hidingRadiusUnits": "miles",
+    "alternateLocations": [],
+    "zoneOptions": ["[railway=station]"],
+    "useCustomStations": false,
+    "customStations": [],
+    "includeDefaultStations": false,
+    "presets": [],
+    "permanentOverlay": null
+}

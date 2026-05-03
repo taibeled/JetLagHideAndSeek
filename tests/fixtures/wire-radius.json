@@ -1,0 +1,46 @@
+{
+    "v": 1,
+    "type": "Feature",
+    "geometry": {
+        "type": "Point",
+        "coordinates": [139.2394179, 36.5748441]
+    },
+    "properties": {
+        "osm_type": "R",
+        "osm_id": 382313,
+        "extent": [45.7112046, 122.7141754, 20.2145811, 154.205541],
+        "country": "Japan",
+        "osm_key": "place",
+        "countrycode": "JP",
+        "osm_value": "country",
+        "name": "Japan",
+        "type": "country",
+        "isHidingZone": true,
+        "questions": [
+            {
+                "id": "radius",
+                "key": 0,
+                "data": {
+                    "lat": 35.6895,
+                    "lng": 139.6917,
+                    "radius": 25,
+                    "unit": "miles",
+                    "within": true,
+                    "drag": true,
+                    "color": "red",
+                    "collapsed": false
+                }
+            }
+        ]
+    },
+    "disabledStations": [],
+    "hidingRadius": 0.5,
+    "hidingRadiusUnits": "miles",
+    "alternateLocations": [],
+    "zoneOptions": ["[railway=station]"],
+    "useCustomStations": false,
+    "customStations": [],
+    "includeDefaultStations": false,
+    "presets": [],
+    "permanentOverlay": null
+}
