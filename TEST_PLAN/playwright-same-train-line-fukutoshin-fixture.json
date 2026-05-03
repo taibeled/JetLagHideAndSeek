@@ -1,0 +1,187 @@
+{
+  "name": "same-train-line-fukutoshin-higashi-shinjuku-regression",
+  "historicalReproSid": "uREYiIub6Krlp5ygVDNwKQ",
+  "portableSourceOfTruth": "portableSeedSnapshot",
+  "portableSeedSnapshot": {
+    "v": 1,
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [139.2394179, 36.5748441]
+    },
+    "properties": {
+      "osm_type": "R",
+      "osm_id": 382313,
+      "extent": [45.7112046, 122.7141754, 20.2145811, 154.205541],
+      "country": "Japan",
+      "osm_key": "place",
+      "countrycode": "JP",
+      "osm_value": "country",
+      "name": "Japan",
+      "type": "country",
+      "isHidingZone": true,
+      "questions": [
+        {
+          "id": "radius",
+          "key": 0,
+          "data": {
+            "lat": 35.7381525002691,
+            "lng": 139.62730407714847,
+            "drag": false,
+            "color": "violet",
+            "collapsed": false,
+            "radius": 20,
+            "unit": "kilometers",
+            "within": true
+          }
+        },
+        {
+          "id": "matching",
+          "key": 1,
+          "data": {
+            "lat": 35.696898090133836,
+            "lng": 139.70868218966376,
+            "drag": false,
+            "color": "red",
+            "collapsed": false,
+            "same": true,
+            "type": "same-train-line"
+          }
+        }
+      ]
+    },
+    "disabledStations": [],
+    "hidingRadius": 600,
+    "hidingRadiusUnits": "meters",
+    "alternateLocations": [],
+    "zoneOptions": ["[railway=station]", "[railway=stop]"],
+    "zoneOperators": ["東京地下鉄", "西武鉄道;東京地下鉄"],
+    "displayHidingZones": true,
+    "displayHidingZonesStyle": "no-overlap",
+    "useCustomStations": false,
+    "customStations": [],
+    "includeDefaultStations": false,
+    "presets": [],
+    "permanentOverlay": null
+  },
+  "matchingQuestion": {
+    "lat": 35.696898090133836,
+    "lng": 139.70868218966376,
+    "expectedClosestStation": {
+      "osmNodeIdsSeenInRepros": ["node/1951953898", "node/6394721502"],
+      "name_en": "Higashi-shinjuku",
+      "name_ja": "東新宿",
+      "station_code": "F-12"
+    },
+    "expectedAutoDetectedLine": {
+      "osmRelationId": "relation/5375678",
+      "name_en": "Tokyo Metro Fukutoshin Line",
+      "name_ja": "東京メトロ副都心線",
+      "ref": "F"
+    }
+  },
+  "expectedStationsInCodeOrder": [
+    {
+      "station_code": "F-01",
+      "name_en": "Wakōshi",
+      "name_ja": "和光市"
+    },
+    {
+      "station_code": "F-02",
+      "name_en": "Chikatetsu-narimasu",
+      "name_ja": "地下鉄成増"
+    },
+    {
+      "station_code": "F-03",
+      "name_en": "Chikatetsu-akatsuka",
+      "name_ja": "地下鉄赤塚"
+    },
+    {
+      "station_code": "F-04",
+      "name_en": "Heiwadai",
+      "name_ja": "平和台"
+    },
+    {
+      "station_code": "F-05",
+      "name_en": "Hikawadai",
+      "name_ja": "氷川台"
+    },
+    {
+      "station_code": "F-06",
+      "name_en": "Kotake-mukaihara",
+      "name_ja": "小竹向原"
+    },
+    {
+      "station_code": "F-07",
+      "name_en": "Senkawa",
+      "name_ja": "千川"
+    },
+    {
+      "station_code": "F-08",
+      "name_en": "Kanamechō",
+      "name_ja": "要町"
+    },
+    {
+      "station_code": "F-09",
+      "name_en": "Ikebukuro",
+      "name_ja": "池袋"
+    },
+    {
+      "station_code": "F-10",
+      "name_en": "Zōshigaya",
+      "name_ja": "雑司が谷"
+    },
+    {
+      "station_code": "F-11",
+      "name_en": "Nishi-waseda",
+      "name_ja": "西早稲田"
+    },
+    {
+      "station_code": "F-12",
+      "name_en": "Higashi-shinjuku",
+      "name_ja": "東新宿"
+    },
+    {
+      "station_code": "F-13",
+      "name_en": "Shinjuku-sanchōme",
+      "name_ja": "新宿三丁目"
+    },
+    {
+      "station_code": "F-14",
+      "name_en": "Kita-sandō",
+      "name_ja": "北参道"
+    },
+    {
+      "station_code": "F-15",
+      "name_en": "Meiji-jingūmae (Harajuku)",
+      "name_ja": "明治神宮前〈原宿〉"
+    },
+    {
+      "station_code": "F-16",
+      "name_en": "Shibuya",
+      "name_ja": "渋谷"
+    }
+  ],
+  "overpassMockContract": [
+    {
+      "purpose": "station discovery for the Tokyo Metro daypass area",
+      "match": "queries that include railway=station or railway=stop plus Tokyo Metro operator/network filters",
+      "responseShouldInclude": "all 16 Fukutoshin station candidates, including both station and stop_position variants where OSM commonly has both"
+    },
+    {
+      "purpose": "nearest station body lookup",
+      "match": "node(<closest Higashi-shinjuku node>); out body;",
+      "responseShouldInclude": "lat/lon and ref=F12 so auto-detect can prefer ref F routes"
+    },
+    {
+      "purpose": "nearby line option lookup",
+      "match": "rel(around:300, <Higashi-shinjuku lat>, <lng>)[route~...] and optional nearby railway ways",
+      "responseShouldInclude": "Fukutoshin route relation/5375678 and nearby non-F routes such as Oedo, to prove ref prioritization"
+    },
+    {
+      "purpose": "exact line expansion",
+      "match": "relation(5375678)->.line plus stop_area expansion",
+      "responseShouldInclude": "Fukutoshin station nodes and stop_position nodes; station labels should dedupe to exactly 16 user-facing stations"
+    }
+  ]
+}
