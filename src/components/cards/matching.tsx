@@ -37,6 +37,7 @@ import { cn } from "@/lib/utils";
 import {
     fetchStationTrainLineOptions,
     findNodesOnTrainLine,
+    findStationLabelsOnTrainLine,
     trainLineNodeFinder,
 } from "@/maps/api";
 import { extractStationLabel } from "@/maps/geo-utils";
@@ -181,7 +182,7 @@ export const MatchingQuestionComponent = ({
         if (data.type !== "same-train-line") return;
 
         let cancelled = false;
-        const autoOptions = {
+        const autoOptions: Record<string, string> = {
             [AUTO_TRAIN_LINE]: AUTO_TRAIN_LINE_LABEL,
         };
 
@@ -262,22 +263,48 @@ export const MatchingQuestionComponent = ({
         const nodesPromise = selectedTrainLineId
             ? findNodesOnTrainLine(selectedTrainLineId)
             : trainLineNodeFinder(nearestTrainStationId!);
+        const lineLabelsPromise = selectedTrainLineId
+            ? findStationLabelsOnTrainLine(
+                  selectedTrainLineId,
+                  modeConfig.stationNameStrategy,
+              )
+            : fetchStationTrainLineOptions(nearestTrainStationId!).then(
+                  (options) => {
+                      const selectedLine = options.find((option) =>
+                          option.id.startsWith("relation/"),
+                      );
+                      return selectedLine
+                          ? findStationLabelsOnTrainLine(
+                                selectedLine.id,
+                                modeConfig.stationNameStrategy,
+                            )
+                          : [];
+                  },
+              );
 
-        nodesPromise
-            .then((nodes) => {
+        Promise.all([nodesPromise, lineLabelsPromise])
+            .then(([nodes, lineLabels]) => {
                 if (cancelled) return;
 
-                const matchedLabels = Array.from(new Set(nodes))
-                    .flatMap((nodeId) => {
-                        const label = stationLabelByNodeId.get(nodeId);
-                        return label ? [label] : [];
-                    })
-                    .sort((a, b) =>
-                        a.localeCompare(b, undefined, {
-                            numeric: true,
-                            sensitivity: "base",
-                        }),
-                    );
+                const matchedLabels =
+                    lineLabels.length > 0
+                        ? lineLabels
+                        : Array.from(
+                              new Set(
+                                  Array.from(new Set(nodes)).flatMap(
+                                      (nodeId) => {
+                                          const label =
+                                              stationLabelByNodeId.get(nodeId);
+                                          return label ? [label] : [];
+                                      },
+                                  ),
+                              ),
+                          ).sort((a, b) =>
+                              a.localeCompare(b, undefined, {
+                                  numeric: true,
+                                  sensitivity: "base",
+                              }),
+                          );
                 setLineStationPreview(matchedLabels);
             })
             .catch(() => {

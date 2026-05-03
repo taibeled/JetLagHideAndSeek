@@ -133,6 +133,22 @@ export const ZoneSidebar = () => {
     const isStationSearchActive = stationSearch.trim().length > 0;
     const setStations = trainStations.set;
     const sidebarRef = useRef<HTMLDivElement>(null);
+
+    const dedupeStationCirclesByLabel = (items: StationCircle[]) => {
+        const seen = new Set<string>();
+        return items.filter((circle) => {
+            const label = extractStationLabel(
+                circle.properties,
+                modeConfig.stationNameStrategy,
+            );
+            if (!label) return true;
+
+            const key = normalizeOsmText(label);
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
+    };
     const [importUrl, setImportUrl] = useState("");
     const [operatorFilterStats, setOperatorFilterStats] = useState<{
         before: number;
@@ -446,6 +462,10 @@ export const ZoneSidebar = () => {
                                         ? nodes.includes(id)
                                         : !nodes.includes(id);
                                 });
+                                if (question.data.same) {
+                                    circles =
+                                        dedupeStationCirclesByLabel(circles);
+                                }
                             }
                         }
                     }

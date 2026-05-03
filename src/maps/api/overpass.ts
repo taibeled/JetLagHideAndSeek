@@ -9,7 +9,11 @@ import {
     mapGeoLocation,
     polyGeoJSON,
 } from "@/lib/context";
-import { expandFiltersForOperatorNetwork, safeUnion } from "@/maps/geo-utils";
+import {
+    expandFiltersForOperatorNetwork,
+    extractStationLabel,
+    safeUnion,
+} from "@/maps/geo-utils";
 import type { APILocations } from "@/maps/schema";
 
 import { cacheFetch, determineCache } from "./cache";
@@ -246,7 +250,8 @@ const hasRailLineTags = (
     element: any,
     tags: Record<string, unknown> = element?.tags ?? {},
 ): boolean => {
-    if (element?.type === "route_master") return false;
+    if (tags.type === "route_master" || typeof tags.route_master === "string")
+        return false;
 
     const route = tags.route;
     if (typeof route === "string" && RAIL_ROUTE_VALUES.has(route)) return true;
@@ -267,11 +272,33 @@ const trainLineLabel = (element: any): string => {
     if (label?.trim()) {
         return label
             .trim()
-            .replace(/\s*\([^)]*-->\s*[^)]*\)\s*/g, "")
+            .replace(/\s*\([^)]*(?:-->|\u2192)\s*[^)]*\)\s*/g, "")
             .trim();
     }
 
     return osmElementId(element) ?? "Unknown train line";
+};
+
+const stationLineRefs = (tags: Record<string, unknown> = {}): string[] => {
+    const ref = tags.ref;
+    if (typeof ref !== "string") return [];
+
+    return _.uniq(
+        ref
+            .split(/[;/,]/)
+            .map((part) => part.trim().match(/^[^\d-]+/)?.[0]?.trim())
+            .filter((part): part is string => !!part),
+    );
+};
+
+const trainLineRefScore = (
+    element: any,
+    preferredRefs: string[] = [],
+): number => {
+    const ref = element?.tags?.ref;
+    if (preferredRefs.length === 0 || typeof ref !== "string") return 1;
+
+    return preferredRefs.includes(ref.trim()) ? 0 : 1;
 };
 
 const disambiguateTrainLineLabels = (
@@ -298,25 +325,32 @@ const disambiguateTrainLineLabels = (
 
 export const elementsToTrainLineOptions = (
     elements: any[],
+    preferredRefs: string[] = [],
 ): TrainLineOption[] => {
     const options = new Map<string, TrainLineOption>();
+    const scores = new Map<string, number>();
 
     for (const element of elements) {
         const id = osmElementId(element);
         if (!id || !hasRailLineTags(element)) continue;
+        const score = trainLineRefScore(element, preferredRefs);
 
         const existing = options.get(id);
         if (existing) {
             if (element.type === "relation" && existing.id.startsWith("way/")) {
                 options.set(id, { id, label: trainLineLabel(element) });
+                scores.set(id, score);
             }
             continue;
         }
 
         options.set(id, { id, label: trainLineLabel(element) });
+        scores.set(id, score);
     }
 
     const sorted = [...options.values()].sort((a, b) => {
+        const scoreDiff = (scores.get(a.id) ?? 1) - (scores.get(b.id) ?? 1);
+        if (scoreDiff !== 0) return scoreDiff;
         if (a.id.startsWith("relation/") && b.id.startsWith("way/"))
             return -1;
         if (a.id.startsWith("way/") && b.id.startsWith("relation/"))
@@ -329,6 +363,17 @@ export const elementsToTrainLineOptions = (
 
 export const extractTrainLineNodeIds = (data: any): number[] => {
     const nodes: number[] = [];
+    const stationOrStopNodes = (data.elements ?? [])
+        .filter(
+            (element: any) =>
+                element?.type === "node" &&
+                Number.isFinite(element.id) &&
+                (element.tags?.railway === "station" ||
+                    element.tags?.public_transport === "stop_position"),
+        )
+        .map((element: any) => element.id);
+    if (stationOrStopNodes.length > 0) return _.uniq(stationOrStopNodes);
+
     const geoJSON = osmtogeojson(data);
 
     geoJSON.features.forEach((feature: any) => {
@@ -348,20 +393,114 @@ export const extractTrainLineNodeIds = (data: any): number[] => {
     return _.uniq(nodes);
 };
 
+export const extractTrainLineStationLabels = (
+    data: any,
+    strategy: "english-preferred" | "native-preferred" = "english-preferred",
+): string[] => {
+    const stationElements = (data.elements ?? []).filter(
+        (element: any) =>
+            element?.type === "node" &&
+            element.tags?.railway === "station" &&
+            (element.tags.name || element.tags["name:en"]),
+    );
+    const fallbackElements = (data.elements ?? []).filter(
+        (element: any) =>
+            element?.type === "node" &&
+            element.tags?.public_transport === "stop_position" &&
+            (element.tags.name || element.tags["name:en"]),
+    );
+    const elements =
+        stationElements.length > 0 ? stationElements : fallbackElements;
+    const lineRefs = (data.elements ?? [])
+        .map((element: any) => element?.tags?.ref)
+        .filter((ref: unknown): ref is string => typeof ref === "string");
+    const sortRef = (ref: unknown) => {
+        if (typeof ref !== "string") return "";
+        const parts = ref.split(";").map((part) => part.trim());
+        return (
+            parts.find((part) =>
+                lineRefs.some((lineRef) => part.startsWith(lineRef)),
+            ) ?? ref
+        );
+    };
+    const fallbackRefByLabel = new Map<string, string>();
+    for (const element of fallbackElements) {
+        const label = element.tags?.["name:en"] ?? element.tags?.name;
+        const ref = element.tags?.ref;
+        if (typeof label === "string" && typeof ref === "string") {
+            fallbackRefByLabel.set(label, ref);
+        }
+    }
+
+    const labels = elements
+        .map((element: any) => ({
+            label: extractStationLabel(
+                {
+                    properties: element.tags,
+                    geometry: { coordinates: [element.lon, element.lat] },
+                },
+                strategy,
+            ),
+            ref:
+                element.tags?.ref ??
+                fallbackRefByLabel.get(
+                    element.tags?.["name:en"] ?? element.tags?.name,
+                ),
+        }))
+        .filter((station: { label?: string }) => !!station.label)
+        .sort((a: { ref?: string }, b: { ref?: string }) =>
+            sortRef(a.ref).localeCompare(sortRef(b.ref), undefined, {
+                numeric: true,
+                sensitivity: "base",
+            }),
+        )
+        .map((station: { label: string }) => station.label);
+
+    return Array.from(new Set(labels));
+};
+
 export const fetchStationTrainLineOptions = async (
     stationOsmId: string,
 ): Promise<TrainLineOption[]> => {
     const station = parseOsmObjectId(stationOsmId, ["node"]);
     if (!station) return [];
 
-    const query = `
+    const stationQuery = `
 [out:json];
 node(${station.id});
-wr(bn);
+out body;
+`;
+    const stationData = await getOverpassData(
+        stationQuery,
+        "Finding train lines...",
+    );
+    const stationElement = stationData.elements?.find(
+        (element: any) => element?.type === "node" && element?.id === station.id,
+    );
+    if (
+        !Number.isFinite(stationElement?.lat) ||
+        !Number.isFinite(stationElement?.lon)
+    ) {
+        return [];
+    }
+
+    const query = `
+[out:json];
+(
+rel(around:300, ${stationElement.lat}, ${stationElement.lon})["route"~"^(${[
+        ...RAIL_ROUTE_VALUES,
+    ].join("|")})$"];
+way(around:100, ${stationElement.lat}, ${stationElement.lon})["railway"~"^(${[
+        ...RAILWAY_VALUES,
+    ].join("|")})$"];
+);
 out tags;
 `;
     const data = await getOverpassData(query, "Finding train lines...");
-    return elementsToTrainLineOptions(data.elements ?? []);
+    return elementsToTrainLineOptions(
+        data.elements ?? [],
+        stationLineRefs(stationElement.tags),
+    );
 };
 
 const exactTrainLineQuery = (lineOsmId: string): string | null => {
@@ -383,7 +522,9 @@ relation(${line.id})->.line;
 way(r.line)->.lineWays;
 node(w.lineWays)->.lineWayNodes;
 node(r.line)->.lineRelationNodes;
-(.line; .lineWays; .lineWayNodes; .lineRelationNodes;);
+rel(bn.lineRelationNodes)["public_transport"="stop_area"]->.stopAreas;
+node(r.stopAreas)["railway"="station"]->.stopAreaStations;
+(.line; .lineWays; .lineWayNodes; .lineRelationNodes; .stopAreas; .stopAreaStations;);
 out geom;
 `;
 };
@@ -398,7 +539,26 @@ export const findNodesOnTrainLine = async (
     return extractTrainLineNodeIds(data);
 };
 
+export const findStationLabelsOnTrainLine = async (
+    lineOsmId: string,
+    strategy: "english-preferred" | "native-preferred" = "english-preferred",
+): Promise<string[]> => {
+    const query = exactTrainLineQuery(lineOsmId);
+    if (!query) return [];
+
+    const data = await getOverpassData(query, "Finding train line...");
+    return extractTrainLineStationLabels(data, strategy);
+};
+
 export const trainLineNodeFinder = async (node: string): Promise<number[]> => {
+    const options = await fetchStationTrainLineOptions(node);
+    const selectedLine = options.find((option) =>
+        option.id.startsWith("relation/"),
+    );
+    if (selectedLine) {
+        return findNodesOnTrainLine(selectedLine.id);
+    }
+
     const nodeId = node.split("/")[1];
     const tagQuery = `
 [out:json];
