@@ -23,6 +23,8 @@ export interface OpenStreetMapProperties {
     osm_key: string;
     countrycode: string;
     osm_value: string;
+    county?: string;
+    postcode?: string;
     name: string;
     type: string;
     isHidingZone?: boolean;
@@ -33,11 +35,6 @@ export interface AdditionalMapGeoLocations {
     added: boolean;
     location: OpenStreetMap;
     base: boolean;
-}
-
-export enum QuestionSpecificLocation {
-    McDonalds = '["brand:wikidata"="Q38076"]',
-    Seven11 = '["brand:wikidata"="Q259340"]',
 }
 
 export enum CacheType {

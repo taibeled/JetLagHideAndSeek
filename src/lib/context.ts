@@ -18,27 +18,11 @@ import {
     questionsSchema,
     type Units,
 } from "@/maps/schema";
+import { DEFAULT_LOCATION } from "@/lib/presetLocations";
 
 export const mapGeoLocation = persistentAtom<OpenStreetMap>(
     "mapGeoLocation",
-    {
-        geometry: {
-            coordinates: [36.5748441, 139.2394179],
-            type: "Point",
-        },
-        type: "Feature",
-        properties: {
-            osm_type: "R",
-            osm_id: 382313,
-            extent: [45.7112046, 122.7141754, 20.2145811, 154.205541],
-            country: "Japan",
-            osm_key: "place",
-            countrycode: "JP",
-            osm_value: "country",
-            name: "Japan",
-            type: "country",
-        },
-    },
+    DEFAULT_LOCATION.mapGeoLocation,
     {
         encode: JSON.stringify,
         decode: JSON.parse,
@@ -47,10 +31,11 @@ export const mapGeoLocation = persistentAtom<OpenStreetMap>(
 
 export const additionalMapGeoLocations = persistentAtom<
     AdditionalMapGeoLocations[]
->("additionalMapGeoLocations", [], {
+>("additionalMapGeoLocations", DEFAULT_LOCATION.additionalMapGeoLocations, {
     encode: JSON.stringify,
     decode: JSON.parse,
 });
+
 export const permanentOverlay = persistentAtom<FeatureCollection | null>(
     "permanentOverlay",
     null,
@@ -63,6 +48,7 @@ export const permanentOverlay = persistentAtom<FeatureCollection | null>(
 export const mapGeoJSON = atom<FeatureCollection<
     Polygon | MultiPolygon
 > | null>(null);
+
 export const polyGeoJSON = persistentAtom<FeatureCollection<
     Polygon | MultiPolygon
 > | null>("polyGeoJSON", null, {
@@ -74,8 +60,10 @@ export const questions = persistentAtom<Questions>("questions", [], {
     encode: JSON.stringify,
     decode: (x) => questionsSchema.parse(JSON.parse(x)),
 });
+
 export const addQuestion = (question: DeepPartial<Question>) =>
     questionModified(questions.get().push(questionSchema.parse(question)));
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const questionModified = (..._: any[]) => {
     if (autoSave.get()) {
@@ -91,9 +79,9 @@ export const defaultUnit = persistentAtom<Units>("defaultUnit", "miles");
 export const hiderMode = persistentAtom<
     | false
     | {
-          latitude: number;
-          longitude: number;
-      }
+        latitude: number;
+        longitude: number;
+    }
 >("isHiderMode", false, {
     encode: JSON.stringify,
     decode: JSON.parse,
@@ -163,7 +151,7 @@ export const includeDefaultStations = persistentAtom<boolean>(
 );
 export const animateMapMovements = persistentAtom<boolean>(
     "animateMapMovements",
-    false,
+    true,
     {
         encode: JSON.stringify,
         decode: JSON.parse,
@@ -228,7 +216,7 @@ export const saveCustomPreset = (
 ) => {
     const id =
         typeof crypto !== "undefined" &&
-        typeof (crypto as any).randomUUID === "function"
+            typeof (crypto as any).randomUUID === "function"
             ? (crypto as any).randomUUID()
             : String(Date.now());
     const p: CustomPreset = {

@@ -21,7 +21,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import { useTutorialStep } from "@/hooks/use-tutorial-step";
+import { useTutorialStep } from "@/hooks/useTutorialStep";
 import { useDebounce } from "@/hooks/useDebounce";
 import {
     additionalMapGeoLocations,

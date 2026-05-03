@@ -38,6 +38,7 @@ import { DraggableMarkers } from "./DraggableMarkers";
 import { LeafletFullScreenButton } from "./LeafletFullScreenButton";
 import { MapPrint } from "./MapPrint";
 import { PolygonDraw } from "./PolygonDraw";
+import { MBTAOverlay } from "./MBTAOverlay";
 
 const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
     switch (tileLayer) {
@@ -376,6 +377,7 @@ export const Map = ({ className }: { className?: string }) => {
                     </div>
                 </div>
                 <PolygonDraw />
+                <MBTAOverlay />
                 <ScaleControl position="bottomleft" />
                 <MapPrint
                     position="topright"

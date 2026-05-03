@@ -42,7 +42,7 @@ type IconColor = z.infer<typeof iconColorSchema>;
 
 const randomColor = () =>
     (Object.keys(ICON_COLORS) as IconColor[])[
-        Math.floor(Math.random() * Object.keys(ICON_COLORS).length)
+    Math.floor(Math.random() * Object.keys(ICON_COLORS).length)
     ];
 
 const randomColorExcluding = (excluded: IconColor[] = []) => {

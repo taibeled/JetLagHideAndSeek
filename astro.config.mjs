@@ -10,7 +10,7 @@ export default defineConfig({
     integrations: [
         react(),
         tailwind({
-            applyBaseStyles: false,
+            applyBaseStyles: true,
         }),
         partytown({
             config: {
@@ -48,5 +48,5 @@ export default defineConfig({
         enabled: false,
     },
     site: "https://taibeled.github.io",
-    base: "JetLagHideAndSeek",
+    base: "hideandseek",
 });

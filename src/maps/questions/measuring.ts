@@ -14,11 +14,9 @@ import {
 import {
     fetchCoastline,
     findPlacesInZone,
-    findPlacesSpecificInZone,
     LOCATION_FIRST_TAG,
     nearestToQuestion,
     prettifyLocation,
-    QuestionSpecificLocation,
 } from "@/maps/api";
 import {
     arcBufferToPoint,
@@ -123,9 +121,9 @@ export const determineMeasuringBoundary = async (
                                 coastline,
                                 bBox
                                     ? bboxExtension(
-                                          bBox as any,
-                                          distanceToCoastline,
-                                      )
+                                        bBox as any,
+                                        distanceToCoastline,
+                                    )
                                     : [-180, -90, 180, 90],
                             ),
                             distanceToCoastline,
@@ -358,31 +356,6 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
         const hiderDistance = turf.distance(hider, hiderNearest);
 
         question.hiderCloser = hiderDistance < distance;
-    }
-
-    if (question.type === "mcdonalds" || question.type === "seven11") {
-        const points = await findPlacesSpecificInZone(
-            question.type === "mcdonalds"
-                ? QuestionSpecificLocation.McDonalds
-                : QuestionSpecificLocation.Seven11,
-        );
-
-        const seeker = turf.point([question.lng, question.lat]);
-        const nearest = turf.nearestPoint(seeker, points as any);
-
-        const distance = turf.distance(seeker, nearest, {
-            units: "miles",
-        });
-
-        const hider = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
-        const hiderNearest = turf.nearestPoint(hider, points as any);
-
-        const hiderDistance = turf.distance(hider, hiderNearest, {
-            units: "miles",
-        });
-
-        question.hiderCloser = hiderDistance < distance;
-        return question;
     }
 
     const $mapGeoJSON = mapGeoJSON.get();

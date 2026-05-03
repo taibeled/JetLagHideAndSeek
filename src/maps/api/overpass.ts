@@ -21,7 +21,6 @@ import type {
     EncompassingTentacleQuestionSchema,
     HomeGameMatchingQuestions,
     HomeGameMeasuringQuestions,
-    QuestionSpecificLocation,
 } from "./types";
 import { CacheType } from "./types";
 
@@ -178,22 +177,22 @@ out tags;
 [out:json];
 (
 ${tagData.elements
-    .map((element: any) => {
-        if (
-            !element.tags.name &&
-            !element.tags["name:en"] &&
-            !element.tags.network
-        )
-            return "";
-        let query = "";
-        if (element.tags.name) query += `wr["name"="${element.tags.name}"];`;
-        if (element.tags["name:en"])
-            query += `wr["name:en"="${element.tags["name:en"]}"];`;
-        if (element.tags["network"])
-            query += `wr["network"="${element.tags["network"]}"];`;
-        return query;
-    })
-    .join("\n")}
+            .map((element: any) => {
+                if (
+                    !element.tags.name &&
+                    !element.tags["name:en"] &&
+                    !element.tags.network
+                )
+                    return "";
+                let query = "";
+                if (element.tags.name) query += `wr["name"="${element.tags.name}"];`;
+                if (element.tags["name:en"])
+                    query += `wr["name:en"="${element.tags["name:en"]}"];`;
+                if (element.tags["network"])
+                    query += `wr["network"="${element.tags["network"]}"];`;
+                return query;
+            })
+            .join("\n")}
 );
 out geom;
 `;
@@ -239,26 +238,25 @@ export const findPlacesInZone = async (
 [out:json]${timeoutDuration != 0 ? `[timeout:${timeoutDuration}]` : ""};
 (
 ${searchType}${filter}(poly:"${turf
-            .getCoords($polyGeoJSON.features)
-            .flatMap((polygon) => polygon.geometry.coordinates)
-            .flat()
-            .map((coord) => [coord[1], coord[0]].join(" "))
-            .join(" ")}");
-${
-    alternatives.length > 0
-        ? alternatives
-              .map(
-                  (alternative) =>
-                      `${searchType}${alternative}(poly:"${turf
-                          .getCoords($polyGeoJSON.features)
-                          .flatMap((polygon) => polygon.geometry.coordinates)
-                          .flat()
-                          .map((coord) => [coord[1], coord[0]].join(" "))
-                          .join(" ")}");`,
-              )
-              .join("\n")
-        : ""
-}
+                .getCoords($polyGeoJSON.features)
+                .flatMap((polygon) => polygon.geometry.coordinates)
+                .flat()
+                .map((coord) => [coord[1], coord[0]].join(" "))
+                .join(" ")}");
+${alternatives.length > 0
+                ? alternatives
+                    .map(
+                        (alternative) =>
+                            `${searchType}${alternative}(poly:"${turf
+                                .getCoords($polyGeoJSON.features)
+                                .flatMap((polygon) => polygon.geometry.coordinates)
+                                .flat()
+                                .map((coord) => [coord[1], coord[0]].join(" "))
+                                .join(" ")}");`,
+                    )
+                    .join("\n")
+                : ""
+            }
 );
 out ${outType};
 `;
@@ -281,10 +279,10 @@ out ${outType};
                 const altQueries =
                     alternatives.length > 0
                         ? alternatives
-                              .map(
-                                  (alt) => `${searchType}${alt}(${regionVar});`,
-                              )
-                              .join("\n")
+                            .map(
+                                (alt) => `${searchType}${alt}(${regionVar});`,
+                            )
+                            .join("\n")
                         : "";
                 return `
             ${searchType}${filter}(${regionVar});
@@ -334,29 +332,6 @@ out ${outType};
         });
     }
     return data;
-};
-
-export const findPlacesSpecificInZone = async (
-    location: `${QuestionSpecificLocation}`,
-) => {
-    const locations = (
-        await findPlacesInZone(
-            location,
-            `Finding ${
-                location === '["brand:wikidata"="Q38076"]'
-                    ? "McDonald's"
-                    : "7-Elevens"
-            }...`,
-        )
-    ).elements;
-    return turf.featureCollection(
-        locations.map((x: any) =>
-            turf.point([
-                x.center ? x.center.lon : x.lon,
-                x.center ? x.center.lat : x.lat,
-            ]),
-        ),
-    );
 };
 
 export const nearestToQuestion = async (
