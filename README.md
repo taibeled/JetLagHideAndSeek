@@ -103,7 +103,7 @@ Even if you're not a programmer, you can still help by further documenting the u
 
 ## Developer Workflow
 
-The app is built with [Astro](https://astro.build/) (static PWA), [React](https://react.dev/), [Tailwind CSS](https://tailwindcss.com/), [Leaflet](https://leafletjs.com/), [Turf](https://turfjs.org/), and [Nanostores](https://github.com/nanostores/nanostores). The server uses [Fastify](https://fastify.dev/).
+The app is built with [Astro](https://astro.build/) (static PWA), [React](https://react.dev/), [Tailwind CSS](https://tailwindcss.com/), [Leaflet](https://leafletjs.com/), [Turf](https://turfjs.org/), and [Nanostores](https://github.com/nanostores/nanostores). The server uses [Fastify](https://fastify.dev/). E2E tests use [Playwright](https://playwright.dev/).
 
 To develop, you need [git](https://git-scm.com/downloads), [Node.js](https://nodejs.org/) (version 24 or earlier), and [pnpm](https://pnpm.io/installation).
 
@@ -125,9 +125,12 @@ For a **production-style** stack (built PWA + CAS API on one port), see [Quickst
 Running tests:
 
 ```bash
-pnpm test                 # frontend/unit tests
-pnpm --dir server test    # server tests
+pnpm test                 # frontend/unit tests (Vitest)
+pnpm --dir server test    # server tests (Vitest)
+pnpm test:e2e             # end-to-end tests (Playwright, requires start:app)
 ```
+
+E2E tests require Chromium (`npx playwright install chromium`). They run against `pnpm start:app` (or let the Playwright `webServer` config launch it).
 
 After making modifications, run `pnpm lint` to auto-format and check for errors.
 

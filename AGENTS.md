@@ -7,6 +7,7 @@
 - Frontend source lives in `src/`; server source lives in `server/src/`.
 - Shared game state is persisted mostly through Nanostores in `src/lib/context.ts`, encoded/decoded through `src/lib/wire.ts`, and loaded from shared payloads in `src/lib/loadHidingZone.ts`.
 - Question behavior is split by type under `src/maps/questions/`; shared geometry helpers live under `src/maps/geo-utils/`.
+- E2E tests live in `e2e/` using Playwright with helper utilities and Overpass fixture files in `e2e/fixtures/`.
 - Do not hand-edit `dist/` or `server/dist/`; they are build output.
 
 ## Common Commands
@@ -16,6 +17,7 @@ Use `pnpm`.
 ```bash
 pnpm test
 pnpm --dir server test
+pnpm test:e2e
 pnpm build
 pnpm build:all
 pnpm start:stack
@@ -25,6 +27,9 @@ pnpm lint
 
 Notes:
 
+- `pnpm test` runs Vitest frontend/unit tests (excludes `server/` and `e2e/`).
+- `pnpm --dir server test` runs Vitest server integration tests.
+- `pnpm test:e2e` runs Playwright E2E tests against the full app stack. Requires `npx playwright install chromium` first. The `webServer` config in `playwright.config.ts` launches `pnpm start:app` automatically.
 - `pnpm start:app` builds the frontend and server, then serves both the PWA and CAS API on port `8787`.
 - `pnpm start:stack` expects `pnpm build:all` to have already produced `dist/` and `server/dist/`.
 - `pnpm lint` runs ESLint with `--fix` on `src` (not `tests/`) and then Prettier over the repo, so expect formatting changes.
@@ -90,6 +95,7 @@ Then configure the app's Options -> Game state server URL if CAS is not same-ori
 - `sanitizeGeoJSONForLeaflet` exists because Leaflet can choke on some valid GeoJSON shapes. Use existing sanitizers/helpers before adding ad hoc geometry fixes.
 - Some map data comes from browser/network APIs: geocoding, Overpass, map tiles, ArcGIS/Turf transforms, and station discovery. Tests should avoid depending on live network unless explicitly designed for it.
 - `public/coastline50.geojson` (~3.9 MB) is used for coastline distance elimination. It is the largest tracked file in the repo.
+- Some E2E fixture files under `e2e/fixtures/` are large (e.g. `fukutoshin-station-discovery.json` ~2 MB) — they are captured Overpass API responses used only by Playwright, not bundled in the production PWA.
 - The PWA service worker is configured to use `NetworkOnly` for CAS/team API routes. Keep API routes out of precache/offline behavior.
 
 ## Code Style
@@ -105,6 +111,7 @@ Then configure the app's Options -> Game state server URL if CAS is not same-ori
 
 - Frontend/unit tests: `pnpm test`.
 - Server tests: `pnpm --dir server test`.
+- E2E tests: `pnpm test:e2e` (Playwright, requires Chromium via `npx playwright install chromium`).
 - For focused work, run the nearest test file directly with Vitest, for example:
 
 ```bash
@@ -114,7 +121,8 @@ pnpm --dir server vitest run tests/blobs.test.ts
 ```
 
 - Add or update tests when changing wire compatibility, CAS validation, persistence recovery, station manipulation, or geometry operators.
-- For browser checks, use the running app URL and verify at least load, map controls, Options, sharing/CAS state, and the relevant question UI.
+- Add `data-testid` attributes sparingly — prefer `getByRole`/`getByText`/`getByLabel` from Testing Library philosophy.
+- For deeper testing guidance (mock patterns, fixture creation, Overpass interception), see [docs/testing.md](docs/testing.md) and [docs/testing-mocks.md](docs/testing-mocks.md).
 
 ## Known UI Checkpoints
 
