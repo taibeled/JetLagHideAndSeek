@@ -1,4 +1,6 @@
 import { useStore } from "@nanostores/react";
+import * as turf from "@turf/turf";
+import type { Feature, Point } from "geojson";
 import * as React from "react";
 import { toast } from "react-toastify";
 
@@ -32,6 +34,11 @@ import {
 } from "@/lib/nearestPoi";
 import { PLAY_AREA_MODES } from "@/lib/playAreaModes";
 import { cn } from "@/lib/utils";
+import {
+    fetchStationTrainLineOptions,
+    findNodesOnTrainLine,
+    trainLineNodeFinder,
+} from "@/maps/api";
 import { extractStationLabel } from "@/maps/geo-utils";
 import {
     determineMatchingBoundary,
@@ -46,6 +53,9 @@ import {
 
 import { QuestionCard } from "./base";
 import { NearestPoiRow } from "./NearestPoiInfo";
+
+const AUTO_TRAIN_LINE = "__auto__";
+const AUTO_TRAIN_LINE_LABEL = "(auto-detect from nearest station)";
 
 export const MatchingQuestionComponent = ({
     data,
@@ -76,10 +86,37 @@ export const MatchingQuestionComponent = ({
     const [nearestPoi, setNearestPoi] = React.useState<
         NearestPoiResult | { status: "loading"; category: string }
     >({ status: "unsupported" });
+    const [lineOptions, setLineOptions] = React.useState<
+        Record<string, string>
+    >({
+        [AUTO_TRAIN_LINE]: AUTO_TRAIN_LINE_LABEL,
+    });
+    const [loadingLineOptions, setLoadingLineOptions] = React.useState(false);
+    const [lineStationPreview, setLineStationPreview] = React.useState<
+        string[]
+    >([]);
+    const [loadingLineStationPreview, setLoadingLineStationPreview] =
+        React.useState(false);
     const stationPoints = React.useMemo(
         () => $trainStations.map((station) => station.properties),
         [$trainStations],
     );
+    const nearestTrainStation = React.useMemo(() => {
+        if (data.type !== "same-train-line" || stationPoints.length === 0) {
+            return null;
+        }
+
+        return turf.nearestPoint(
+            turf.point([data.lng, data.lat]),
+            turf.featureCollection(stationPoints),
+        ) as Feature<Point>;
+    }, [data.lat, data.lng, data.type, stationPoints]);
+    const nearestTrainStationId =
+        typeof nearestTrainStation?.properties?.id === "string"
+            ? nearestTrainStation.properties.id
+            : undefined;
+    const selectedTrainLineId =
+        data.type === "same-train-line" ? data.selectedTrainLineId : undefined;
     const nearestPoiKey = JSON.stringify({
         type: data.type,
         lat: data.lat,
@@ -140,6 +177,131 @@ export const MatchingQuestionComponent = ({
         }
     }, [$playAreaMode, data.type]);
 
+    React.useEffect(() => {
+        if (data.type !== "same-train-line") return;
+
+        let cancelled = false;
+        const autoOptions = {
+            [AUTO_TRAIN_LINE]: AUTO_TRAIN_LINE_LABEL,
+        };
+
+        if (!nearestTrainStationId?.startsWith("node/")) {
+            setLineOptions(autoOptions);
+            setLoadingLineOptions(false);
+            if (data.selectedTrainLineId) {
+                data.selectedTrainLineId = undefined;
+                data.selectedTrainLineLabel = undefined;
+                questionModified();
+            }
+            return;
+        }
+
+        setLoadingLineOptions(true);
+        fetchStationTrainLineOptions(nearestTrainStationId)
+            .then((options) => {
+                if (cancelled) return;
+
+                const nextOptions = {
+                    ...autoOptions,
+                    ...Object.fromEntries(
+                        options.map((option) => [option.id, option.label]),
+                    ),
+                };
+                setLineOptions(nextOptions);
+
+                if (
+                    data.selectedTrainLineId &&
+                    !nextOptions[data.selectedTrainLineId]
+                ) {
+                    data.selectedTrainLineId = undefined;
+                    data.selectedTrainLineLabel = undefined;
+                    questionModified();
+                }
+            })
+            .finally(() => {
+                if (!cancelled) {
+                    setLoadingLineOptions(false);
+                }
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [data.type, nearestTrainStationId]);
+
+    React.useEffect(() => {
+        if (data.type !== "same-train-line") return;
+
+        let cancelled = false;
+
+        const stationLabelByNodeId = new Map<number, string>();
+        for (const station of stationPoints) {
+            const stationId = station.properties?.id;
+            if (!stationId?.startsWith("node/")) continue;
+
+            const nodeId = Number(stationId.split("/")[1]);
+            if (!Number.isFinite(nodeId)) continue;
+
+            stationLabelByNodeId.set(
+                nodeId,
+                extractStationLabel(station, modeConfig.stationNameStrategy),
+            );
+        }
+
+        if (
+            stationLabelByNodeId.size === 0 ||
+            (!selectedTrainLineId &&
+                !nearestTrainStationId?.startsWith("node/"))
+        ) {
+            setLineStationPreview([]);
+            setLoadingLineStationPreview(false);
+            return;
+        }
+
+        setLoadingLineStationPreview(true);
+        const nodesPromise = selectedTrainLineId
+            ? findNodesOnTrainLine(selectedTrainLineId)
+            : trainLineNodeFinder(nearestTrainStationId!);
+
+        nodesPromise
+            .then((nodes) => {
+                if (cancelled) return;
+
+                const matchedLabels = Array.from(new Set(nodes))
+                    .flatMap((nodeId) => {
+                        const label = stationLabelByNodeId.get(nodeId);
+                        return label ? [label] : [];
+                    })
+                    .sort((a, b) =>
+                        a.localeCompare(b, undefined, {
+                            numeric: true,
+                            sensitivity: "base",
+                        }),
+                    );
+                setLineStationPreview(matchedLabels);
+            })
+            .catch(() => {
+                if (!cancelled) {
+                    setLineStationPreview([]);
+                }
+            })
+            .finally(() => {
+                if (!cancelled) {
+                    setLoadingLineStationPreview(false);
+                }
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [
+        data.type,
+        modeConfig.stationNameStrategy,
+        nearestTrainStationId,
+        selectedTrainLineId,
+        stationPoints,
+    ]);
+
     switch (data.type) {
         case "zone":
         case "letter-zone":
@@ -184,12 +346,59 @@ export const MatchingQuestionComponent = ({
             break;
         case "same-train-line":
             questionSpecific = (
-                <span className="px-2 text-center text-orange-500">
-                    Warning: The train line data is based on OpenStreetMap and
-                    may have fewer train stations than expected. If you are
-                    using this tool, ensure that the other players are also
-                    using this tool.
-                </span>
+                <>
+                    <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                        <Select
+                            trigger={
+                                loadingLineOptions
+                                    ? "Loading train lines..."
+                                    : (data.selectedTrainLineLabel ??
+                                      "Train line")
+                            }
+                            options={lineOptions}
+                            value={data.selectedTrainLineId ?? AUTO_TRAIN_LINE}
+                            onValueChange={(value) => {
+                                if (value === AUTO_TRAIN_LINE) {
+                                    data.selectedTrainLineId = undefined;
+                                    data.selectedTrainLineLabel = undefined;
+                                } else {
+                                    data.selectedTrainLineId = value;
+                                    data.selectedTrainLineLabel =
+                                        lineOptions[value];
+                                }
+                                questionModified();
+                            }}
+                            disabled={
+                                !data.drag || $isLoading || loadingLineOptions
+                            }
+                        />
+                    </SidebarMenuItem>
+                    <div className="px-2 text-xs">
+                        <div className="font-medium">
+                            {loadingLineStationPreview
+                                ? "Loading stations..."
+                                : `Stations matched: ${lineStationPreview.length}`}
+                        </div>
+                        <div className="mt-1 max-h-40 overflow-y-auto rounded-md border p-2">
+                            {lineStationPreview.length === 0 &&
+                            !loadingLineStationPreview ? (
+                                <span className="text-muted-foreground">
+                                    No stations found for this line
+                                </span>
+                            ) : (
+                                lineStationPreview.map((name, index) => (
+                                    <div key={`${name}-${index}`}>{name}</div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                    <span className="px-2 text-center text-orange-500">
+                        Warning: The train line data is based on OpenStreetMap
+                        and may have fewer train stations than expected. If you
+                        are using this tool, ensure that the other players are
+                        also using this tool.
+                    </span>
+                </>
             );
             break;
         case "aquarium":

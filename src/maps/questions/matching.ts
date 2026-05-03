@@ -21,6 +21,7 @@ import { PLAY_AREA_MODES } from "@/lib/playAreaModes";
 import {
     elementsToUniqueNamedPoints,
     findAdminBoundary,
+    findNodesOnTrainLine,
     findPlacesInZone,
     nearestToQuestion,
     overpassFilterForLocation,
@@ -440,9 +441,11 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
         );
 
         if (question.type === "same-train-line") {
-            const nodes = await trainLineNodeFinder(
-                nearestSeekerTrainStation.properties.id,
-            );
+            const nodes = question.selectedTrainLineId
+                ? await findNodesOnTrainLine(question.selectedTrainLineId)
+                : await trainLineNodeFinder(
+                      nearestSeekerTrainStation.properties.id,
+                  );
 
             const hiderId = parseInt(
                 nearestHiderTrainStation.properties.id.split("/")[1],
@@ -458,25 +461,27 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
         const mode = playAreaMode.get();
         const strategy = PLAY_AREA_MODES[mode].stationNameStrategy;
 
-        const hiderName = (strategy === "native-preferred"
-            ? (nearestHiderTrainStation.properties.name ??
-              nearestHiderTrainStation.properties["name:en"])
-            : (nearestHiderTrainStation.properties["name:en"] ??
-              nearestHiderTrainStation.properties.name)) as string;
-        const seekerName = (strategy === "native-preferred"
-            ? (nearestSeekerTrainStation.properties.name ??
-              nearestSeekerTrainStation.properties["name:en"])
-            : (nearestSeekerTrainStation.properties["name:en"] ??
-              nearestSeekerTrainStation.properties.name)) as string;
+        const hiderName = (
+            strategy === "native-preferred"
+                ? (nearestHiderTrainStation.properties.name ??
+                  nearestHiderTrainStation.properties["name:en"])
+                : (nearestHiderTrainStation.properties["name:en"] ??
+                  nearestHiderTrainStation.properties.name)
+        ) as string;
+        const seekerName = (
+            strategy === "native-preferred"
+                ? (nearestSeekerTrainStation.properties.name ??
+                  nearestSeekerTrainStation.properties["name:en"])
+                : (nearestSeekerTrainStation.properties["name:en"] ??
+                  nearestSeekerTrainStation.properties.name)
+        ) as string;
 
         if (!hiderName || !seekerName) {
             return question;
         }
 
         if (question.type === "same-first-letter-station") {
-            if (
-                hiderName[0].toUpperCase() === seekerName[0].toUpperCase()
-            ) {
+            if (hiderName[0].toUpperCase() === seekerName[0].toUpperCase()) {
                 question.same = true;
             } else {
                 question.same = false;

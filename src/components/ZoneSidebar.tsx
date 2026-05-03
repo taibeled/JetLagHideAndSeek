@@ -52,6 +52,7 @@ import {
 import { cn } from "@/lib/utils";
 import {
     BLANK_GEOJSON,
+    findNodesOnTrainLine,
     findPlacesInZone,
     findPlacesSpecificInZone,
     findTentacleLocations,
@@ -420,7 +421,11 @@ export const ZoneSidebar = () => {
                                 continue;
                             }
 
-                            const nodes = await trainLineNodeFinder(nid);
+                            const nodes = question.data.selectedTrainLineId
+                                ? await findNodesOnTrainLine(
+                                      question.data.selectedTrainLineId,
+                                  )
+                                : await trainLineNodeFinder(nid);
 
                             if (nodes.length === 0) {
                                 toast.warning(

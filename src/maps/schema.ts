@@ -299,6 +299,11 @@ const hidingZoneMatchingQuestionsSchema = baseMatchingQuestionSchema.extend({
             .literal("same-train-line")
             .describe("Station On Same Train Line Question"),
     ]),
+    selectedTrainLineId: z
+        .string()
+        .regex(/^(way|relation)\/\d+$/)
+        .optional(),
+    selectedTrainLineLabel: z.string().optional(),
 });
 
 const customMatchingQuestionSchema = baseMatchingQuestionSchema.extend({

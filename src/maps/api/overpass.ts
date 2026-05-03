@@ -193,6 +193,211 @@ export const fetchCoastline = async () => {
     return data;
 };
 
+export interface TrainLineOption {
+    id: string;
+    label: string;
+}
+
+type OsmObjectType = "node" | "way" | "relation";
+
+const RAIL_ROUTE_VALUES = new Set([
+    "train",
+    "subway",
+    "light_rail",
+    "tram",
+    "railway",
+    "monorail",
+]);
+
+const RAILWAY_VALUES = new Set([
+    "rail",
+    "subway",
+    "light_rail",
+    "tram",
+    "monorail",
+    "narrow_gauge",
+]);
+
+const parseOsmObjectId = (
+    osmId: string,
+    allowedTypes: OsmObjectType[],
+): { type: OsmObjectType; id: number } | null => {
+    const match = /^(node|way|relation)\/(\d+)$/.exec(osmId);
+    if (!match) return null;
+
+    const type = match[1] as OsmObjectType;
+    if (!allowedTypes.includes(type)) return null;
+
+    return { type, id: Number(match[2]) };
+};
+
+const osmElementId = (element: any): string | null => {
+    if (
+        (element?.type === "way" || element?.type === "relation") &&
+        Number.isFinite(element.id)
+    ) {
+        return `${element.type}/${element.id}`;
+    }
+
+    return null;
+};
+
+const hasRailLineTags = (
+    element: any,
+    tags: Record<string, unknown> = element?.tags ?? {},
+): boolean => {
+    if (element?.type === "route_master") return false;
+
+    const route = tags.route;
+    if (typeof route === "string" && RAIL_ROUTE_VALUES.has(route)) return true;
+
+    const railway = tags.railway;
+    if (typeof railway === "string" && RAILWAY_VALUES.has(railway)) return true;
+
+    return false;
+};
+
+const trainLineLabel = (element: any): string => {
+    const tags = element?.tags ?? {};
+    const labels = [tags["name:en"], tags.name, tags.ref];
+    const label = labels.find(
+        (value) => typeof value === "string" && value.trim(),
+    );
+
+    if (label?.trim()) {
+        return label
+            .trim()
+            .replace(/\s*\([^)]*-->\s*[^)]*\)\s*/g, "")
+            .trim();
+    }
+
+    return osmElementId(element) ?? "Unknown train line";
+};
+
+const disambiguateTrainLineLabels = (
+    options: TrainLineOption[],
+): TrainLineOption[] => {
+    const labelCounts = new Map<string, number>();
+    for (const option of options) {
+        labelCounts.set(option.label, (labelCounts.get(option.label) ?? 0) + 1);
+    }
+
+    const seen = new Set<string>();
+    return options.flatMap((option) => {
+        if (seen.has(option.label)) return [];
+        seen.add(option.label);
+
+        const dupe = (labelCounts.get(option.label) ?? 0) > 1;
+        return [
+            dupe
+                ? { ...option, label: `${option.label} (${option.id})` }
+                : option,
+        ];
+    });
+};
+
+export const elementsToTrainLineOptions = (
+    elements: any[],
+): TrainLineOption[] => {
+    const options = new Map<string, TrainLineOption>();
+
+    for (const element of elements) {
+        const id = osmElementId(element);
+        if (!id || !hasRailLineTags(element)) continue;
+
+        const existing = options.get(id);
+        if (existing) {
+            if (element.type === "relation" && existing.id.startsWith("way/")) {
+                options.set(id, { id, label: trainLineLabel(element) });
+            }
+            continue;
+        }
+
+        options.set(id, { id, label: trainLineLabel(element) });
+    }
+
+    const sorted = [...options.values()].sort((a, b) => {
+        if (a.id.startsWith("relation/") && b.id.startsWith("way/"))
+            return -1;
+        if (a.id.startsWith("way/") && b.id.startsWith("relation/"))
+            return 1;
+        return 0;
+    });
+
+    return disambiguateTrainLineLabels(sorted);
+};
+
+export const extractTrainLineNodeIds = (data: any): number[] => {
+    const nodes: number[] = [];
+    const geoJSON = osmtogeojson(data);
+
+    geoJSON.features.forEach((feature: any) => {
+        if (feature?.id?.startsWith("node/")) {
+            nodes.push(parseInt(feature.id.split("/")[1]));
+        }
+    });
+
+    (data.elements ?? []).forEach((element: any) => {
+        if (element?.type === "node" && Number.isFinite(element.id)) {
+            nodes.push(element.id);
+        } else if (element?.type === "way" && Array.isArray(element.nodes)) {
+            nodes.push(...element.nodes);
+        }
+    });
+
+    return _.uniq(nodes);
+};
+
+export const fetchStationTrainLineOptions = async (
+    stationOsmId: string,
+): Promise<TrainLineOption[]> => {
+    const station = parseOsmObjectId(stationOsmId, ["node"]);
+    if (!station) return [];
+
+    const query = `
+[out:json];
+node(${station.id});
+wr(bn);
+out tags;
+`;
+    const data = await getOverpassData(query, "Finding train lines...");
+    return elementsToTrainLineOptions(data.elements ?? []);
+};
+
+const exactTrainLineQuery = (lineOsmId: string): string | null => {
+    const line = parseOsmObjectId(lineOsmId, ["way", "relation"]);
+    if (!line) return null;
+
+    if (line.type === "way") {
+        return `
+[out:json];
+way(${line.id});
+(._;>;);
+out geom;
+`;
+    }
+
+    return `
+[out:json];
+relation(${line.id})->.line;
+way(r.line)->.lineWays;
+node(w.lineWays)->.lineWayNodes;
+node(r.line)->.lineRelationNodes;
+(.line; .lineWays; .lineWayNodes; .lineRelationNodes;);
+out geom;
+`;
+};
+
+export const findNodesOnTrainLine = async (
+    lineOsmId: string,
+): Promise<number[]> => {
+    const query = exactTrainLineQuery(lineOsmId);
+    if (!query) return [];
+
+    const data = await getOverpassData(query, "Finding train line...");
+    return extractTrainLineNodeIds(data);
+};
+
 export const trainLineNodeFinder = async (node: string): Promise<number[]> => {
     const nodeId = node.split("/")[1];
     const tagQuery = `
@@ -226,22 +431,7 @@ ${tagData.elements
 out geom;
 `;
     const data = await getOverpassData(query, "Finding train lines...");
-    const geoJSON = osmtogeojson(data);
-    const nodes: number[] = [];
-    geoJSON.features.forEach((feature: any) => {
-        if (feature && feature.id && feature.id.startsWith("node")) {
-            nodes.push(parseInt(feature.id.split("/")[1]));
-        }
-    });
-    data.elements.forEach((element: any) => {
-        if (element && element.type === "node") {
-            nodes.push(element.id);
-        } else if (element && element.type === "way") {
-            nodes.push(...element.nodes);
-        }
-    });
-    const uniqNodes = _.uniq(nodes);
-    return uniqNodes;
+    return extractTrainLineNodeIds(data);
 };
 
 export const findPlacesInZone = async (

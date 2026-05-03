@@ -15,4 +15,34 @@ describe("canonicalize", () => {
             x: [3, 2, 1],
         });
     });
+
+    it("preserves selectedTrainLineId in canonical output", () => {
+        const question = {
+            type: "same-train-line",
+            lat: 35.6,
+            lng: 139.7,
+            selectedTrainLineId: "relation/123",
+            selectedTrainLineLabel: "Yamanote Line",
+            same: true,
+        };
+
+        const result = JSON.parse(canonicalize(question));
+        expect(result.selectedTrainLineId).toBe("relation/123");
+        expect(result.selectedTrainLineLabel).toBe("Yamanote Line");
+    });
+
+    it("omits undefined selectedTrainLineId from canonical output", () => {
+        const question = {
+            type: "same-train-line",
+            lat: 35.6,
+            lng: 139.7,
+            selectedTrainLineId: undefined,
+            selectedTrainLineLabel: undefined,
+            same: true,
+        };
+
+        const result = JSON.parse(canonicalize(question));
+        expect(result).not.toHaveProperty("selectedTrainLineId");
+        expect(result).not.toHaveProperty("selectedTrainLineLabel");
+    });
 });
