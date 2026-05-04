@@ -1,6 +1,7 @@
 import { useStore } from "@nanostores/react";
 import { Label } from "@radix-ui/react-label";
 import * as React from "react";
+import { Suspense, use } from "react";
 
 import CustomInitDialog from "@/components/CustomInitDialog";
 import { LatitudeLongitude } from "@/components/LatLngPicker";
@@ -23,7 +24,10 @@ import {
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
-import { determineMeasuringBoundary } from "@/maps/questions/measuring";
+import {
+    determineMeasuringBoundary,
+    findAdminZoneInfo,
+} from "@/maps/questions/measuring";
 import {
     determineUnionizedStrings,
     type MeasuringQuestion,
@@ -63,6 +67,64 @@ export const MeasuringQuestionComponent = ({
     let questionSpecific = <></>;
 
     switch (data.type) {
+        case "admin-measure":
+            questionSpecific = (
+                <>
+                    <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                        <Select
+                            trigger="OSM Zone"
+                            options={{
+                                2: "OSM Zone 2 (Country)",
+                                3: "OSM Zone 3 (region in Japan)",
+                                4: "OSM Zone 4 (prefecture in Japan)",
+                                5: "OSM Zone 5",
+                                6: "OSM Zone 6",
+                                7: "OSM Zone 7",
+                                8: "OSM Zone 8",
+                                9: "OSM Zone 9",
+                                10: "OSM Zone 10",
+                            }}
+                            value={((data as any).cat?.adminLevel ?? 4).toString()}
+                            onValueChange={(value) => {
+                                if (!(data as any).cat) {
+                                    (data as any).cat = { adminLevel: 4 };
+                                }
+                                (data as any).cat.adminLevel = parseInt(
+                                    value,
+                                ) as 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+                                (data as any).cat.zoneName = undefined;
+                                questionModified();
+                            }}
+                            disabled={!data.drag || $isLoading}
+                        />
+                    </SidebarMenuItem>
+                    <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                        <Suspense
+                            fallback={
+                                <div className="flex items-center justify-center w-full h-[3rem]">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        className="animate-spin"
+                                    >
+                                        <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                                    </svg>
+                                </div>
+                            }
+                        >
+                            <AdminZoneNameDisplay data={data} />
+                        </Suspense>
+                    </SidebarMenuItem>
+                </>
+            );
+            break;
         case "mcdonalds":
         case "seven11":
             questionSpecific = (
@@ -250,6 +312,9 @@ export const MeasuringQuestionComponent = ({
                             questionModified();
                             return;
                         }
+                        if (value === "admin-measure" && !(data as any).cat) {
+                            (data as any).cat = { adminLevel: 4 };
+                        }
                         data.type = value;
                         questionModified();
                     }}
@@ -301,5 +366,47 @@ export const MeasuringQuestionComponent = ({
                 </ToggleGroup>
             </div>
         </QuestionCard>
+    );
+};
+
+const AdminZoneNameDisplay = ({
+    data,
+}: {
+    data: MeasuringQuestion;
+}) => {
+    useStore(triggerLocalRefresh);
+
+    const adminLevel = (data as any).cat?.adminLevel ?? 4;
+    const zoneInfo = use(
+        findAdminZoneInfo(data.lat, data.lng, adminLevel),
+    );
+
+    // Update the zone name in the data
+    if (
+        zoneInfo &&
+        (data as any).cat &&
+        (data as any).cat.zoneName !== zoneInfo.name
+    ) {
+        (data as any).cat.zoneName = zoneInfo.name;
+        questionModified();
+    }
+
+    if (!zoneInfo) {
+        return (
+            <div className="flex items-center justify-center w-full h-[3rem] text-muted-foreground text-sm">
+                No zone found
+            </div>
+        );
+    }
+
+    return (
+        <div className="flex flex-col items-center w-full h-[3rem]">
+            <Label className="text-xs text-muted-foreground">
+                Zone
+            </Label>
+            <span className="font-medium text-sm truncate max-w-full">
+                {zoneInfo.name}
+            </span>
+        </div>
     );
 };

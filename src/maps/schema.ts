@@ -334,6 +334,7 @@ const ordinaryMeasuringQuestionSchema = baseMeasuringQuestionSchema.extend({
             z
                 .literal("highspeed-measure-shinkansen")
                 .describe("High-Speed Rail Question"),
+            z.literal("admin-measure").describe("Admin Border Question"),
             z
                 .literal("aquarium-full")
                 .describe("Aquarium Question (Small+Medium Games)"),
@@ -367,6 +368,22 @@ const ordinaryMeasuringQuestionSchema = baseMeasuringQuestionSchema.extend({
                 .describe("Park Question (Small+Medium Games)"),
         ])
         .default("coastline"),
+    cat: z
+        .object({
+            adminLevel: z.union([
+                z.literal(2),
+                z.literal(3),
+                z.literal(4),
+                z.literal(5),
+                z.literal(6),
+                z.literal(7),
+                z.literal(8),
+                z.literal(9),
+                z.literal(10),
+            ]),
+            zoneName: z.string().optional(),
+        })
+        .optional(),
 });
 
 const hidingZoneMeasuringQuestionsSchema = baseMeasuringQuestionSchema.extend({
