@@ -17,7 +17,7 @@ export function useIsMobile() {
         mql.addEventListener("change", onChange);
         // Initial sync — effect runs post-mount so first paint has no
         // measurement; this is the standard responsive-hook pattern.
-        // eslint-disable-next-line @eslint-react/set-state-in-effect -- intentional mount-sync
+         
         setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
         return () => mql.removeEventListener("change", onChange);
     }, []);

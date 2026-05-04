@@ -311,7 +311,7 @@ export const MatchingQuestionComponent = ({
         // there's no station to query. @eslint-react/set-state-in-effect
         // wants async-gated updates, which would mean an extra render where
         // stale chips are briefly visible — worse UX than the warning.
-        /* eslint-disable @eslint-react/set-state-in-effect */
+         
         if (data.type !== "same-train-line") {
             setTrainLineOptions([]);
             setTrainLineOptionsLoading(false);
@@ -325,7 +325,7 @@ export const MatchingQuestionComponent = ({
 
         let cancelled = false;
         setTrainLineOptionsLoading(true);
-        /* eslint-enable @eslint-react/set-state-in-effect */
+         
         trainLineRefsForStation(nearestTrainStationId, {
             latitude: data.lat,
             longitude: data.lng,
@@ -382,7 +382,7 @@ export const MatchingQuestionComponent = ({
         // via questionModified, so re-running on every lineRef change would
         // create a feedback loop. The granular deps below cover every input
         // that should re-trigger the fetch.
-        // eslint-disable-next-line @eslint-react/exhaustive-deps
+         
     }, [data.type, nearestTrainStationId, data.lat, data.lng]);
 
     switch (data.type) {

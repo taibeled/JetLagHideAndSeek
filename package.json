@@ -10,7 +10,7 @@
         "astro": "astro",
         "typecheck:ts6": "tsc --noEmit",
         "typecheck:ts7": "tsgo --noEmit",
-        "lint": "eslint --fix src && prettier . --write",
+        "lint": "node --max-old-space-size=8192 ./node_modules/eslint/bin/eslint.js --fix src && prettier . --write",
         "test": "vitest",
         "test:e2e": "playwright test",
         "test:e2e:mobile": "playwright test --project=mobile-chromium",
@@ -77,7 +77,7 @@
     },
     "devDependencies": {
         "@dword-design/eslint-plugin-import-alias": "^8.1.8",
-        "@eslint-react/eslint-plugin": "^5.7.1",
+        "@eslint-react/eslint-plugin": "^5.7.2",
         "@eslint/js": "^10.0.1",
         "@playwright/test": "^1.59.1",
         "@serwist/build": "^9.5.11",
@@ -92,6 +92,7 @@
         "@types/react": "19.2.14",
         "@types/react-dom": "19.2.3",
         "@types/terraformer__arcgis": "^2.0.5",
+        "@typescript-eslint/parser": "^8.59.2",
         "@typescript/native-preview": "7.0.0-dev.20260504.1",
         "esbuild": "^0.28.0",
         "eslint": "^10.3.0",
@@ -102,7 +103,7 @@
         "prettier": "3.8.3",
         "serwist": "^9.5.11",
         "typescript": "^6.0.3",
-        "typescript-eslint": "^8.59.1",
+        "typescript-eslint": "^8.59.2",
         "vitest": "^4.1.5"
     },
     "engines": {

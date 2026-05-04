@@ -77,9 +77,8 @@ const isLocalhost =
                 ></script>
                 <script is:inline type="text/partytown">
                     window.dataLayer = window.dataLayer || [];
-                    function gtag() {
-                        // eslint-disable-next-line prefer-rest-params
-                        dataLayer.push(arguments);
+                    function gtag(...args) {
+                        window.dataLayer.push(args);
                     }
                     gtag("js", new Date());
 
@@ -92,9 +91,8 @@ const isLocalhost =
                 (function (c, l, a, r, i, t, y) {
                     c[a] =
                         c[a] ||
-                        function () {
-                            // eslint-disable-next-line prefer-rest-params
-                            (c[a].q = c[a].q || []).push(arguments);
+                        function (...args) {
+                            (c[a].q = c[a].q || []).push(args);
                         };
                     t = l.createElement(r);
                     t.async = 1;

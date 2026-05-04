@@ -136,7 +136,7 @@ export const PlacePicker = ({
     useEffect(() => {
         // Debounced query effect: resetting/loading-flag bookkeeping is
         // the whole point, so `set-state-in-effect` warnings are expected.
-        /* eslint-disable @eslint-react/set-state-in-effect */
+         
         if (debouncedValue === "") {
             setResults([]);
             return;
@@ -154,7 +154,7 @@ export const PlacePicker = ({
                     setLoading(false);
                 });
         }
-        /* eslint-enable @eslint-react/set-state-in-effect */
+         
     }, [debouncedValue]);
 
     const _placeLabels = results.map((r) => determineName(r));

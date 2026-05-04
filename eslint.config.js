@@ -6,6 +6,17 @@ import simpleImportSort from "eslint-plugin-simple-import-sort";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
+/** @typescript-eslint `recommended` includes a rules-only block with no `files`; scope it to TS. */
+const typescriptEslintRecommended = tseslint.configs.recommended.map(
+    (config) =>
+        config.name === "typescript-eslint/recommended"
+            ? {
+                  ...config,
+                  files: ["**/*.{ts,tsx,mts,cts}"],
+              }
+            : config,
+);
+
 /** @type {import('eslint').Linter.Config[]} */
 export default [
     // Agent sandboxes checked out as locked git worktrees under
@@ -17,7 +28,9 @@ export default [
     { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
     { languageOptions: { globals: globals.browser } },
     pluginJs.configs.recommended,
-    ...tseslint.configs.recommended,
+    ...typescriptEslintRecommended,
+    // After typescript-eslint/base (global parser). Astro overrides `*.astro`
+    // when `@typescript-eslint/parser` is a direct devDependency (pnpm).
     ...pluginAstro.configs["flat/recommended"],
     // @eslint-react runs on TS/TSX only. Astro files have an Astro-specific
     // JSX-like syntax that would false-positive on many React rules, and
@@ -25,9 +38,14 @@ export default [
     {
         files: ["**/*.{ts,tsx}"],
         ...eslintReact.configs["recommended-typescript"],
-    },
-    {
-        files: ["**/*.{ts,tsx}"],
+        // https://www.eslint-react.xyz/docs/configuration/configure-analyzer
+        settings: {
+            "react-x": {
+                // Keep in sync with `dependencies.react` in package.json.
+                version: "19.2.5",
+                importSource: "react",
+            },
+        },
         rules: {
             // Flags `(() => { ... })()` in JSX because React Compiler
             // can't optimize IIFEs. We don't run React Compiler, and the

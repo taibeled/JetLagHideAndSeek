@@ -567,13 +567,13 @@ export const ZoneSidebar = () => {
     // ------------------------------------------------------------------
     useEffect(() => {
         if (!rawCircles || rawCircles.length === 0) {
-            // eslint-disable-next-line @eslint-react/set-state-in-effect -- reset stale bundle when upstream clears
+             
             setReachabilityBundle(null);
             return;
         }
         if (!$reachabilityResult) {
             // Reachability hasn't been queried yet; don't load GTFS.
-            // eslint-disable-next-line @eslint-react/set-state-in-effect -- reset stale bundle when query cleared
+             
             setReachabilityBundle(null);
             return;
         }
@@ -801,7 +801,7 @@ export const ZoneSidebar = () => {
                 $hidingRadius,
                 $hidingRadiusUnits,
             ),
-        // eslint-disable-next-line @eslint-react/exhaustive-deps
+         
         [activeStationsSignature, $displayHidingZonesStyle],
     );
 
@@ -862,7 +862,7 @@ export const ZoneSidebar = () => {
         // (map is a Leaflet instance captured once; the two functions
         // are component-module scoped). Re-running on their identity
         // would needlessly redraw the GeoJSON layer.
-        // eslint-disable-next-line @eslint-react/exhaustive-deps
+         
     }, [
         $displayHidingZones,
         $displayHidingZonesStyle,

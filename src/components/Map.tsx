@@ -549,7 +549,7 @@ export const Map = ({ className }: { className?: string }) => {
         // prop so there's no benefit to reactively re-creating the
         // container. Same story for `className`, which is passed from
         // Astro as a static string.
-        // eslint-disable-next-line @eslint-react/exhaustive-deps
+         
         [map, $baseTileLayer, $thunderforestApiKey],
     );
 
@@ -573,7 +573,7 @@ export const Map = ({ className }: { className?: string }) => {
         // identity changes on every render. Putting it in deps would
         // kick the debounce on every state change. We want the debounce
         // to fire only on the real inputs listed below.
-        // eslint-disable-next-line @eslint-react/exhaustive-deps
+         
     }, [
         $questions,
         map,
@@ -660,7 +660,7 @@ export const Map = ({ className }: { className?: string }) => {
         };
         // `followMeMarkerRef` and `geoWatchIdRef` are refs, not values;
         // including them in deps would be a hook-rules false positive.
-        // eslint-disable-next-line @eslint-react/exhaustive-deps
+         
     }, [$followMe, map]);
 
     useEffect(() => {

@@ -164,7 +164,7 @@ function TransitSystemsDialog({
                 if (!cancelled) setStorageInfo(null);
             });
         // Reset to loading state before the IDB read resolves.
-        // eslint-disable-next-line @eslint-react/set-state-in-effect -- loading-state reset before async load
+         
         setSystems(null);
         listSystems()
             .then((s) => {
