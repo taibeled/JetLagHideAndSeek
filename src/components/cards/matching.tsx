@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import CustomInitDialog from "@/components/CustomInitDialog";
 import { LatitudeLongitude } from "@/components/LatLngPicker";
 import PresetsDialog from "@/components/PresetsDialog";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
@@ -98,6 +99,13 @@ export const MatchingQuestionComponent = ({
     >([]);
     const [loadingLineStationPreview, setLoadingLineStationPreview] =
         React.useState(false);
+    const [lineOptionsError, setLineOptionsError] = React.useState<
+        string | null
+    >(null);
+    const [lineStationPreviewError, setLineStationPreviewError] =
+        React.useState<string | null>(null);
+    const [lineOptionsRetryKey, setLineOptionsRetryKey] = React.useState(0);
+    const [linePreviewRetryKey, setLinePreviewRetryKey] = React.useState(0);
     const stationPoints = React.useMemo(
         () => $trainStations.map((station) => station.properties),
         [$trainStations],
@@ -189,6 +197,7 @@ export const MatchingQuestionComponent = ({
         if (!nearestTrainStationId?.startsWith("node/")) {
             setLineOptions(autoOptions);
             setLoadingLineOptions(false);
+            setLineOptionsError(null);
             if (data.selectedTrainLineId) {
                 data.selectedTrainLineId = undefined;
                 data.selectedTrainLineLabel = undefined;
@@ -198,6 +207,7 @@ export const MatchingQuestionComponent = ({
         }
 
         setLoadingLineOptions(true);
+        setLineOptionsError(null);
         fetchStationTrainLineOptions(nearestTrainStationId)
             .then((options) => {
                 if (cancelled) return;
@@ -219,6 +229,15 @@ export const MatchingQuestionComponent = ({
                     questionModified();
                 }
             })
+            .catch((err) => {
+                if (!cancelled) {
+                    setLineOptionsError(
+                        err instanceof Error
+                            ? err.message
+                            : "Failed to load train lines",
+                    );
+                }
+            })
             .finally(() => {
                 if (!cancelled) {
                     setLoadingLineOptions(false);
@@ -228,7 +247,7 @@ export const MatchingQuestionComponent = ({
         return () => {
             cancelled = true;
         };
-    }, [data.type, nearestTrainStationId]);
+    }, [data.type, nearestTrainStationId, lineOptionsRetryKey]);
 
     React.useEffect(() => {
         if (data.type !== "same-train-line") return;
@@ -256,10 +275,12 @@ export const MatchingQuestionComponent = ({
         ) {
             setLineStationPreview([]);
             setLoadingLineStationPreview(false);
+            setLineStationPreviewError(null);
             return;
         }
 
         setLoadingLineStationPreview(true);
+        setLineStationPreviewError(null);
         const nodesPromise = selectedTrainLineId
             ? findNodesOnTrainLine(selectedTrainLineId)
             : trainLineNodeFinder(nearestTrainStationId!);
@@ -307,9 +328,14 @@ export const MatchingQuestionComponent = ({
                           );
                 setLineStationPreview(matchedLabels);
             })
-            .catch(() => {
+            .catch((err) => {
                 if (!cancelled) {
                     setLineStationPreview([]);
+                    setLineStationPreviewError(
+                        err instanceof Error
+                            ? err.message
+                            : "Failed to load station preview",
+                    );
                 }
             })
             .finally(() => {
@@ -327,6 +353,7 @@ export const MatchingQuestionComponent = ({
         nearestTrainStationId,
         selectedTrainLineId,
         stationPoints,
+        linePreviewRetryKey,
     ]);
 
     switch (data.type) {
@@ -377,10 +404,12 @@ export const MatchingQuestionComponent = ({
                     <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                         <Select
                             trigger={
-                                loadingLineOptions
-                                    ? "Loading train lines..."
-                                    : (data.selectedTrainLineLabel ??
-                                      "Train line")
+                                lineOptionsError
+                                    ? "Error loading — tap Retry"
+                                    : loadingLineOptions
+                                      ? "Loading train lines..."
+                                      : (data.selectedTrainLineLabel ??
+                                        "Train line")
                             }
                             options={lineOptions}
                             value={data.selectedTrainLineId ?? AUTO_TRAIN_LINE}
@@ -396,28 +425,65 @@ export const MatchingQuestionComponent = ({
                                 questionModified();
                             }}
                             disabled={
-                                !data.drag || $isLoading || loadingLineOptions
+                                !data.drag || $isLoading || loadingLineOptions || !!lineOptionsError
                             }
                         />
                     </SidebarMenuItem>
+                    {lineOptionsError && (
+                        <div className="px-2 pb-1">
+                            <div className="text-xs text-red-500 mb-1">
+                                {lineOptionsError}
+                            </div>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                    setLineOptionsRetryKey((k) => k + 1)
+                                }
+                                disabled={!data.drag || $isLoading}
+                            >
+                                Retry
+                            </Button>
+                        </div>
+                    )}
                     <div className="px-2 text-xs">
                         <div className="font-medium">
-                            {loadingLineStationPreview
-                                ? "Loading stations..."
-                                : `Stations matched: ${lineStationPreview.length}`}
+                            {lineStationPreviewError
+                                ? "Error loading stations"
+                                : loadingLineStationPreview
+                                  ? "Loading stations..."
+                                  : `Stations matched: ${lineStationPreview.length}`}
                         </div>
-                        <div className="mt-1 max-h-40 overflow-y-auto rounded-md border p-2" data-testid="station-preview">
-                            {lineStationPreview.length === 0 &&
-                            !loadingLineStationPreview ? (
-                                <span className="text-muted-foreground">
-                                    No stations found for this line
-                                </span>
-                            ) : (
-                                lineStationPreview.map((name, index) => (
-                                    <div key={`${name}-${index}`}>{name}</div>
-                                ))
-                            )}
-                        </div>
+                        {lineStationPreviewError ? (
+                            <div className="mt-1 space-y-1">
+                                <div className="text-xs text-red-500">
+                                    {lineStationPreviewError}
+                                </div>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() =>
+                                        setLinePreviewRetryKey((k) => k + 1)
+                                    }
+                                    disabled={!data.drag || $isLoading}
+                                >
+                                    Retry
+                                </Button>
+                            </div>
+                        ) : (
+                            <div className="mt-1 max-h-40 overflow-y-auto rounded-md border p-2" data-testid="station-preview">
+                                {lineStationPreview.length === 0 &&
+                                !loadingLineStationPreview ? (
+                                    <span className="text-muted-foreground">
+                                        No stations found for this line
+                                    </span>
+                                ) : (
+                                    lineStationPreview.map((name, index) => (
+                                        <div key={`${name}-${index}`}>{name}</div>
+                                    ))
+                                )}
+                            </div>
+                        )}
                     </div>
                     <span className="px-2 text-center text-orange-500">
                         Warning: The train line data is based on OpenStreetMap

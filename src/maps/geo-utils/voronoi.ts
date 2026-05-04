@@ -12,7 +12,7 @@ import type {
     Polygon,
 } from "geojson";
 
-import { dedupePolygonFeatureVertices } from "@/maps/geo-utils/polygon-ring-dedupe";
+import { dedupePolygonFeatureVertices, stripDuplicateVertices } from "@/maps/geo-utils/polygon-ring-dedupe";
 
 const scaleReference = turf.toMercator(turf.point([180, 90])); // I thought this would yield the same as turf.earthRadius * Math.pi, but it's slightly larger
 
@@ -40,30 +40,6 @@ export const geoSpatialVoronoi = (
 
 /** Skip Voronoi for huge candidate sets — d3 projection + per-cell intersect chokes the main thread. */
 export const VORONOI_POINT_CAP = 500;
-
-/**
- * Strip duplicate consecutive vertices from rings (and related junk). Turf `intersect` / `union`
- * and projected Voronoi edges can emit repeats that **Leaflet GeoJSON throws** on:
- * "The input polygon may not have duplicate vertices …".
- */
-function stripDuplicateVertices(
-    feature: Feature<Polygon | MultiPolygon>,
-): Feature<Polygon | MultiPolygon> | null {
-    try {
-        return turf.cleanCoords(feature, {
-            mutate: false,
-        }) as Feature<Polygon | MultiPolygon>;
-    } catch {
-        const manual = dedupePolygonFeatureVertices(feature);
-        try {
-            return turf.cleanCoords(manual, {
-                mutate: false,
-            }) as Feature<Polygon | MultiPolygon>;
-        } catch {
-            return manual;
-        }
-    }
-}
 
 /** Best-effort ring cleanup before boolean ops; avoids turf.intersect throwing on duplicate vertices. */
 function cleanPolygonFeatureForBoolean(
@@ -103,7 +79,7 @@ export function finalizePolygonForLeaflet(
 ): Feature<Polygon | MultiPolygon> | null {
     if (!feature?.geometry) return null;
     const stripped = stripDuplicateVertices(feature);
-    if (!stripped?.geometry) return null;
+    if (!stripped.geometry) return null;
     const forLeaflet = dedupePolygonFeatureVertices(stripped);
     try {
         const a = turf.area(forLeaflet);
@@ -129,8 +105,8 @@ export function repairIntersectedCell(
             turf.feature(feature.geometry, props) as Feature<
                 Polygon | MultiPolygon
             >,
-        ) ?? null;
-    if (!strippedIn?.geometry) return null;
+        );
+    if (!strippedIn.geometry) return null;
 
     const geom = turf.feature(strippedIn.geometry, props) as Feature<
         Polygon | MultiPolygon

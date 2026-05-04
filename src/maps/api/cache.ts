@@ -26,6 +26,7 @@ export const cacheFetch = async (
     url: string,
     loadingText?: string,
     cacheType: CacheType = CacheType.CACHE,
+    timeoutMs?: number,
 ) => {
     try {
         const cache = await determineCache(cacheType);
@@ -46,14 +47,26 @@ export const cacheFetch = async (
             return response.clone();
         }
 
+        const controller =
+            timeoutMs && timeoutMs > 0 ? new AbortController() : undefined;
+        const timeoutId = controller
+            ? setTimeout(() => controller.abort(), timeoutMs)
+            : undefined;
+
         const fetchAndMaybeCache = async () => {
-            const response = await fetch(url);
-            if (response.ok) {
-                await cache.put(url, response.clone());
-            } else {
-                await cache.delete(url);
+            try {
+                const response = await fetch(url, {
+                    signal: controller?.signal,
+                });
+                if (response.ok) {
+                    await cache.put(url, response.clone());
+                } else {
+                    await cache.delete(url);
+                }
+                return response;
+            } finally {
+                if (timeoutId !== undefined) clearTimeout(timeoutId);
             }
-            return response;
         };
 
         const fetchPromise = fetchAndMaybeCache();
@@ -73,7 +86,11 @@ export const cacheFetch = async (
     } catch (e) {
         console.log(e); // Probably a caches not supported error
 
-        return fetch(url);
+        return fetch(url, {
+            signal: timeoutMs && timeoutMs > 0
+                ? AbortSignal.timeout(timeoutMs)
+                : undefined,
+        });
     }
 };
 

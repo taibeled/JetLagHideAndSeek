@@ -41,6 +41,7 @@ import {
     trainStations,
     useCustomStations as useCustomStationsAtom,
 } from "@/lib/context";
+import { isHomeGamePoiType } from "@/lib/nearestPoi";
 import { PLAY_AREA_MODES } from "@/lib/playAreaModes";
 import {
     applyTransitPassProfile,
@@ -437,11 +438,19 @@ export const ZoneSidebar = () => {
                                 continue;
                             }
 
-                            const nodes = question.data.selectedTrainLineId
-                                ? await findNodesOnTrainLine(
-                                      question.data.selectedTrainLineId,
-                                  )
-                                : await trainLineNodeFinder(nid);
+                            let nodes: number[] = [];
+                            try {
+                                nodes = question.data.selectedTrainLineId
+                                    ? await findNodesOnTrainLine(
+                                          question.data.selectedTrainLineId,
+                                      )
+                                    : await trainLineNodeFinder(nid);
+                            } catch {
+                                toast.warning(
+                                    "Failed to load train line data; skipping this filter.",
+                                );
+                                continue;
+                            }
 
                             if (nodes.length === 0) {
                                 toast.warning(
@@ -1422,17 +1431,7 @@ async function selectionProcess(
 
         if (
             (question.id === "measuring" || question.id === "matching") &&
-            (question.data.type === "aquarium" ||
-                question.data.type === "zoo" ||
-                question.data.type === "theme_park" ||
-                question.data.type === "peak" ||
-                question.data.type === "museum" ||
-                question.data.type === "hospital" ||
-                question.data.type === "cinema" ||
-                question.data.type === "library" ||
-                question.data.type === "golf_course" ||
-                question.data.type === "consulate" ||
-                question.data.type === "park")
+            isHomeGamePoiType(question.data.type)
         ) {
             const nearestQuestion = await nearestToQuestion(question.data);
 

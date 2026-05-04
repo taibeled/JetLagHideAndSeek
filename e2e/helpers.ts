@@ -150,6 +150,8 @@ export interface OverpassFixtureContract {
   /** Matcher: return true if this fixture should serve the intercepted request. */
   match: (url: URL, body: string) => boolean;
   delay?: number;
+  /** HTTP status code to return. Defaults to 200. When set to a non-200 value, the fixture file is ignored and an empty body is returned. */
+  status?: number;
 }
 
 export interface OverpassMock {
@@ -185,12 +187,22 @@ export async function mockOverpass(
             query,
             servedFixture: contract.fixture,
           });
-          const raw = readFileSync(
-            join(__dirname, "fixtures", contract.fixture),
-            "utf8",
-          );
+          const errorStatus =
+            contract.status !== undefined && contract.status !== 200;
+          const raw = errorStatus
+            ? ""
+            : readFileSync(
+                join(__dirname, "fixtures", contract.fixture),
+                "utf8",
+              );
           const fulfill = () =>
-            route.fulfill({ body: raw, contentType: "application/json" });
+            route.fulfill({
+              status: contract.status ?? 200,
+              body: errorStatus ? undefined : raw,
+              contentType: errorStatus
+                ? "text/plain"
+                : "application/json",
+            });
           if (contract.delay) {
             return new Promise<void>((resolve) =>
               setTimeout(() => {
@@ -248,4 +260,16 @@ export function overpassRoute(
   delay?: number,
 ): OverpassFixtureContract {
   return { fixture, match: matchOverpassQuery(fragments), delay };
+}
+
+/** Convenience: create a contract that returns an error status for matching queries. */
+export function overpassErrorRoute(
+  status: number,
+  fragments: string[],
+): OverpassFixtureContract {
+  return {
+    fixture: "empty-overpass.json",
+    match: matchOverpassQuery(fragments),
+    status,
+  };
 }

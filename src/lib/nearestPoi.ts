@@ -47,7 +47,7 @@ export type NearestPoiResult =
           status: "unsupported" | "unavailable" | "error";
       };
 
-const HOME_GAME_POI_TYPES = [
+export const HOME_GAME_POI_TYPES = [
     "aquarium",
     "zoo",
     "theme_park",
@@ -61,13 +61,20 @@ const HOME_GAME_POI_TYPES = [
     "park",
 ] as const;
 
-const isHomeGamePoiType = (type: string): type is APILocations =>
+export const isHomeGamePoiType = (
+    type: string,
+): type is APILocations =>
     (HOME_GAME_POI_TYPES as readonly string[]).includes(type);
 
-const fullPoiLocation = (type: string): APILocations | null => {
+export const fullPoiLocation = (type: string): APILocations | null => {
     if (!type.endsWith("-full")) return null;
     const location = type.slice(0, -"-full".length);
     return isHomeGamePoiType(location) ? location : null;
+};
+
+export const toHomeGamePoiType = (type: string): APILocations | null => {
+    if (isHomeGamePoiType(type)) return type;
+    return fullPoiLocation(type);
 };
 
 const coordinateFallback = (feature: Feature<Point>) =>

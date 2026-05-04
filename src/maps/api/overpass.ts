@@ -86,14 +86,32 @@ export const elementsToUniqueNamedPoints = (elements: any[]) => {
     ) as FeatureCollection<Point>;
 };
 
+const overpassStatusMessage = (response: Response): string => {
+    const code = response.status;
+    if (code === 429)
+        return "Overpass rate limited (429). Wait a moment before retrying.";
+    if (code === 504)
+        return "Overpass timed out (504). The servers may be overloaded. Try again later.";
+    return `Could not load data from Overpass: ${code} ${response.statusText}`;
+};
+
+const toastOverpassError = (response: Response): void => {
+    toast.error(overpassStatusMessage(response), {
+        toastId: "overpass-error",
+        autoClose: false,
+    });
+};
+
 export const getOverpassData = async (
     query: string,
     loadingText?: string,
     cacheType: CacheType = CacheType.CACHE,
+    timeoutMs: number = 30_000,
+    throwOnError = false,
 ) => {
     const encodedQuery = encodeURIComponent(query);
     const primaryUrl = `${OVERPASS_API}?data=${encodedQuery}`;
-    let response = await cacheFetch(primaryUrl, loadingText, cacheType);
+    let response = await cacheFetch(primaryUrl, loadingText, cacheType, timeoutMs);
 
     if (!response.ok) {
         // Try the fallback, but store the result under the primary URL key so future requests are served from cache without needing to fail-over again.
@@ -102,6 +120,7 @@ export const getOverpassData = async (
                 `${OVERPASS_API_FALLBACK}?data=${encodedQuery}`,
                 loadingText,
                 cacheType,
+                timeoutMs,
             );
             if (fallbackResponse.ok) {
                 const cache = await determineCache(cacheType);
@@ -109,19 +128,15 @@ export const getOverpassData = async (
             }
             response = fallbackResponse;
         } catch {
-            toast.error(
-                `Could not load data from Overpass: ${response.status} ${response.statusText}`,
-                { toastId: "overpass-error" },
-            );
+            toastOverpassError(response);
+            if (throwOnError) throw new Error(overpassStatusMessage(response));
             return { elements: [] };
         }
     }
 
     if (!response.ok) {
-        toast.error(
-            `Could not load data from Overpass: ${response.status} ${response.statusText}`,
-            { toastId: "overpass-error" },
-        );
+        toastOverpassError(response);
+        if (throwOnError) throw new Error(overpassStatusMessage(response));
         return { elements: [] };
     }
 
@@ -473,6 +488,9 @@ out body;
     const stationData = await getOverpassData(
         stationQuery,
         "Finding train lines...",
+        CacheType.CACHE,
+        undefined,
+        true,
     );
     const stationElement = stationData.elements?.find(
         (element: any) => element?.type === "node" && element?.id === station.id,
@@ -496,7 +514,13 @@ way(around:100, ${stationElement.lat}, ${stationElement.lon})["railway"~"^(${[
 );
 out tags;
 `;
-    const data = await getOverpassData(query, "Finding train lines...");
+    const data = await getOverpassData(
+        query,
+        "Finding train lines...",
+        CacheType.CACHE,
+        undefined,
+        true,
+    );
     return elementsToTrainLineOptions(
         data.elements ?? [],
         stationLineRefs(stationElement.tags),
@@ -535,7 +559,13 @@ export const findNodesOnTrainLine = async (
     const query = exactTrainLineQuery(lineOsmId);
     if (!query) return [];
 
-    const data = await getOverpassData(query, "Finding train line...");
+    const data = await getOverpassData(
+        query,
+        "Finding train line...",
+        CacheType.CACHE,
+        undefined,
+        true,
+    );
     return extractTrainLineNodeIds(data);
 };
 
@@ -546,28 +576,38 @@ export const findStationLabelsOnTrainLine = async (
     const query = exactTrainLineQuery(lineOsmId);
     if (!query) return [];
 
-    const data = await getOverpassData(query, "Finding train line...");
+    const data = await getOverpassData(
+        query,
+        "Finding train line...",
+        CacheType.CACHE,
+        undefined,
+        true,
+    );
     return extractTrainLineStationLabels(data, strategy);
 };
 
 export const trainLineNodeFinder = async (node: string): Promise<number[]> => {
-    const options = await fetchStationTrainLineOptions(node);
-    const selectedLine = options.find((option) =>
-        option.id.startsWith("relation/"),
-    );
-    if (selectedLine) {
-        return findNodesOnTrainLine(selectedLine.id);
-    }
+    try {
+        const options = await fetchStationTrainLineOptions(node);
+        const selectedLine = options.find((option) =>
+            option.id.startsWith("relation/"),
+        );
+        if (selectedLine) {
+            return findNodesOnTrainLine(selectedLine.id);
+        }
 
-    const nodeId = node.split("/")[1];
-    const tagQuery = `
+        const nodeId = node.split("/")[1];
+        const tagQuery = `
 [out:json];
 node(${nodeId});
 wr(bn);
 out tags;
 `;
-    const tagData = await getOverpassData(tagQuery, "Finding train line...");
-    const query = `
+        const tagData = await getOverpassData(
+            tagQuery,
+            "Finding train line...",
+        );
+        const query = `
 [out:json];
 (
 ${tagData.elements
@@ -590,8 +630,11 @@ ${tagData.elements
 );
 out geom;
 `;
-    const data = await getOverpassData(query, "Finding train lines...");
-    return extractTrainLineNodeIds(data);
+        const data = await getOverpassData(query, "Finding train lines...");
+        return extractTrainLineNodeIds(data);
+    } catch {
+        return [];
+    }
 };
 
 export const findPlacesInZone = async (

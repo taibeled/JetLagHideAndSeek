@@ -15,7 +15,7 @@ import type {
 } from "geojson";
 
 import { BLANK_GEOJSON } from "@/maps/api";
-import { dedupePolygonFeatureVertices } from "@/maps/geo-utils/polygon-ring-dedupe";
+import { dedupePolygonFeatureVertices, stripDuplicateVertices } from "@/maps/geo-utils/polygon-ring-dedupe";
 
 export {
     clippedVoronoiCells,
@@ -29,23 +29,9 @@ export {
 function stripDuplicateVerticesFromPolygonFeature(
     feature: Feature<Polygon | MultiPolygon>,
 ): Feature<Polygon | MultiPolygon> {
-    let base: Feature<Polygon | MultiPolygon>;
-    try {
-        base = turf.cleanCoords(feature, {
-            mutate: false,
-        }) as Feature<Polygon | MultiPolygon>;
-    } catch {
-        base = dedupePolygonFeatureVertices(feature);
-        try {
-            base = turf.cleanCoords(base, {
-                mutate: false,
-            }) as Feature<Polygon | MultiPolygon>;
-        } catch {
-            /* keep manually deduped rings */
-        }
-    }
+    const cleaned = stripDuplicateVertices(feature);
     /* `cleanCoords` can still leave repeats that Leaflet rejects on projected boundaries / Voronoi. */
-    return dedupePolygonFeatureVertices(base);
+    return dedupePolygonFeatureVertices(cleaned);
 }
 
 /** Walk GeoJSON and clean polygon coordinates before passing to `L.geoJSON`. */

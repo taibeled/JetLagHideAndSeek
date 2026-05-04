@@ -21,13 +21,7 @@ import {
 } from "@/lib/context";
 
 import { AddQuestionDialog } from "./AddQuestionDialog";
-import {
-    MatchingQuestionComponent,
-    MeasuringQuestionComponent,
-    RadiusQuestionComponent,
-    TentacleQuestionComponent,
-    ThermometerQuestionComponent,
-} from "./QuestionCards";
+import { renderQuestionCard } from "./QuestionCards";
 
 export const QuestionSidebar = () => {
     useStore(triggerLocalRefresh);
@@ -58,52 +52,7 @@ export const QuestionSidebar = () => {
                 />
             </div>
             <SidebarContent>
-                {$questions.map((question) => {
-                    switch (question.id) {
-                        case "radius":
-                            return (
-                                <RadiusQuestionComponent
-                                    data={question.data}
-                                    key={question.key}
-                                    questionKey={question.key}
-                                />
-                            );
-                        case "thermometer":
-                            return (
-                                <ThermometerQuestionComponent
-                                    data={question.data}
-                                    key={question.key}
-                                    questionKey={question.key}
-                                />
-                            );
-                        case "tentacles":
-                            return (
-                                <TentacleQuestionComponent
-                                    data={question.data}
-                                    key={question.key}
-                                    questionKey={question.key}
-                                />
-                            );
-                        case "matching":
-                            return (
-                                <MatchingQuestionComponent
-                                    data={question.data}
-                                    key={question.key}
-                                    questionKey={question.key}
-                                />
-                            );
-                        case "measuring":
-                            return (
-                                <MeasuringQuestionComponent
-                                    data={question.data}
-                                    key={question.key}
-                                    questionKey={question.key}
-                                />
-                            );
-                        default:
-                            return null;
-                    }
-                })}
+                {$questions.map((question) => renderQuestionCard(question))}
             </SidebarContent>
             <SidebarGroup>
                 <SidebarGroupContent>

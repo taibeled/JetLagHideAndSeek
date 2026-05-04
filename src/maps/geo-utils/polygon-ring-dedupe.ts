@@ -62,3 +62,27 @@ export function dedupePolygonFeatureVertices(
         t.properties ?? {},
     ) as Feature<Polygon | MultiPolygon>;
 }
+
+/**
+ * Strip duplicate consecutive vertices from rings (and related junk). Turf `intersect` / `union`
+ * and projected Voronoi edges can emit repeats that **Leaflet GeoJSON throws** on:
+ * "The input polygon may not have duplicate vertices …".
+ */
+export function stripDuplicateVertices(
+    feature: Feature<Polygon | MultiPolygon>,
+): Feature<Polygon | MultiPolygon> {
+    try {
+        return turf.cleanCoords(feature, {
+            mutate: false,
+        }) as Feature<Polygon | MultiPolygon>;
+    } catch {
+        const manual = dedupePolygonFeatureVertices(feature);
+        try {
+            return turf.cleanCoords(manual, {
+                mutate: false,
+            }) as Feature<Polygon | MultiPolygon>;
+        } catch {
+            return manual;
+        }
+    }
+}

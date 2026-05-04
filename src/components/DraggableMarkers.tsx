@@ -16,13 +16,7 @@ import {
 import type { ICON_COLORS } from "@/maps/api";
 
 import { LatitudeLongitude } from "./LatLngPicker";
-import {
-    MatchingQuestionComponent,
-    MeasuringQuestionComponent,
-    RadiusQuestionComponent,
-    TentacleQuestionComponent,
-    ThermometerQuestionComponent,
-} from "./QuestionCards";
+import { renderQuestionCard } from "./QuestionCards";
 import { Button } from "./ui/button";
 import { SidebarMenu } from "./ui/sidebar-l";
 
@@ -109,57 +103,7 @@ const ColoredMarker = ({
                 )}
                 {$questions
                     .filter((q) => q.key === questionKey)
-                    .map((q) => {
-                        switch (q.id) {
-                            case "radius":
-                                return (
-                                    <RadiusQuestionComponent
-                                        key={q.key}
-                                        data={q.data}
-                                        questionKey={q.key}
-                                        sub={sub}
-                                    />
-                                );
-                            case "tentacles":
-                                return (
-                                    <TentacleQuestionComponent
-                                        key={q.key}
-                                        data={q.data}
-                                        questionKey={q.key}
-                                        sub={sub}
-                                    />
-                                );
-                            case "thermometer":
-                                return (
-                                    <ThermometerQuestionComponent
-                                        key={q.key}
-                                        data={q.data}
-                                        questionKey={q.key}
-                                        sub={sub}
-                                    />
-                                );
-                            case "matching":
-                                return (
-                                    <MatchingQuestionComponent
-                                        key={q.key}
-                                        data={q.data}
-                                        questionKey={q.key}
-                                        sub={sub}
-                                    />
-                                );
-                            case "measuring":
-                                return (
-                                    <MeasuringQuestionComponent
-                                        key={q.key}
-                                        data={q.data}
-                                        questionKey={q.key}
-                                        sub={sub}
-                                    />
-                                );
-                            default:
-                                return null;
-                        }
-                    })}
+                    .map((q) => renderQuestionCard(q, sub))}
                 {questionKey === -1 && (
                     <Button // If it's the hider mode marker
                         onClick={() => {

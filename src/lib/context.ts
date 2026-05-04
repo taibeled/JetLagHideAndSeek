@@ -23,10 +23,16 @@ import {
     detectPlayAreaMode,
     normalizePlayAreaGeometry,
 } from "./playAreaMode";
-import { PLAY_AREA_MODES } from "./playAreaModes";
-import { type PlayAreaModeId } from "./playAreaModes";
+import { PLAY_AREA_MODES,type PlayAreaModeId } from "./playAreaModes";
 
-export const mapGeoLocation = persistentAtom<OpenStreetMap>(
+function persistentJsonAtom<T>(key: string, initial: T) {
+    return persistentAtom<T>(key, initial, {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    });
+}
+
+export const mapGeoLocation = persistentJsonAtom<OpenStreetMap>(
     "mapGeoLocation",
     {
         geometry: {
@@ -46,36 +52,22 @@ export const mapGeoLocation = persistentAtom<OpenStreetMap>(
             type: "country",
         },
     },
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
 );
 
-export const additionalMapGeoLocations = persistentAtom<
+export const additionalMapGeoLocations = persistentJsonAtom<
     AdditionalMapGeoLocations[]
->("additionalMapGeoLocations", [], {
-    encode: JSON.stringify,
-    decode: JSON.parse,
-});
-export const permanentOverlay = persistentAtom<FeatureCollection | null>(
+>("additionalMapGeoLocations", []);
+export const permanentOverlay = persistentJsonAtom<FeatureCollection | null>(
     "permanentOverlay",
     null,
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
 );
 
 export const mapGeoJSON = atom<FeatureCollection<
     Polygon | MultiPolygon
 > | null>(null);
-export const polyGeoJSON = persistentAtom<FeatureCollection<
+export const polyGeoJSON = persistentJsonAtom<FeatureCollection<
     Polygon | MultiPolygon
-> | null>("polyGeoJSON", null, {
-    encode: JSON.stringify,
-    decode: JSON.parse,
-});
+> | null>("polyGeoJSON", null);
 
 export const playAreaMode = atom<PlayAreaModeId>("default");
 
@@ -260,40 +252,25 @@ export const questionModified = (..._: any[]) => {
 export const leafletMapContext = atom<Map | null>(null);
 
 export const defaultUnit = persistentAtom<Units>("defaultUnit", "miles");
-export const hiderMode = persistentAtom<
+export const hiderMode = persistentJsonAtom<
     | false
     | {
           latitude: number;
           longitude: number;
       }
->("isHiderMode", false, {
-    encode: JSON.stringify,
-    decode: JSON.parse,
-});
+>("isHiderMode", false);
 export const triggerLocalRefresh = atom<number>(0);
-export const displayHidingZones = persistentAtom<boolean>(
+export const displayHidingZones = persistentJsonAtom<boolean>(
     "displayHidingZones",
     false,
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
 );
-export const displayHidingZonesOptions = persistentAtom<string[]>(
+export const displayHidingZonesOptions = persistentJsonAtom<string[]>(
     "displayHidingZonesOptions",
     ["[railway=station]"],
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
 );
-export const displayHidingZoneOperators = persistentAtom<string[]>(
+export const displayHidingZoneOperators = persistentJsonAtom<string[]>(
     "displayHidingZoneOperators",
     [],
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
 );
 export const displayHidingZonesStyle = persistentAtom<
     "zones" | "stations" | "no-overlap" | "no-display"
@@ -311,70 +288,36 @@ onSet(trainStations, ({ newValue }) => {
     });
 });
 
-export const useCustomStations = persistentAtom<boolean>(
+export const useCustomStations = persistentJsonAtom<boolean>(
     "useCustomStations",
     false,
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
 );
-export const customStations = persistentAtom<CustomStation[]>(
+export const customStations = persistentJsonAtom<CustomStation[]>(
     "customStations",
     [],
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
 );
-export const mergeDuplicates = persistentAtom<boolean>(
+export const mergeDuplicates = persistentJsonAtom<boolean>(
     "removeDuplicates",
     false,
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
 );
-export const includeDefaultStations = persistentAtom<boolean>(
+export const includeDefaultStations = persistentJsonAtom<boolean>(
     "includeDefaultStations",
     false,
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
 );
-export const animateMapMovements = persistentAtom<boolean>(
+export const animateMapMovements = persistentJsonAtom<boolean>(
     "animateMapMovements",
     false,
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
 );
-export const hidingRadius = persistentAtom<number>("hidingRadius", 0.5, {
-    encode: JSON.stringify,
-    decode: JSON.parse,
-});
-export const hidingRadiusUnits = persistentAtom<Units>(
+export const hidingRadius = persistentJsonAtom<number>("hidingRadius", 0.5);
+export const hidingRadiusUnits = persistentJsonAtom<Units>(
     "hidingRadiusUnits",
     "miles",
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
 );
-export const disabledStations = persistentAtom<string[]>(
+export const disabledStations = persistentJsonAtom<string[]>(
     "disabledStations",
     [],
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
 );
-export const autoSave = persistentAtom<boolean>("autoSave", true, {
-    encode: JSON.stringify,
-    decode: JSON.parse,
-});
+export const autoSave = persistentJsonAtom<boolean>("autoSave", true);
 export const save = () => {
     questions.set([...questions.get()]);
     const $hiderMode = hiderMode.get();
@@ -393,13 +336,9 @@ export type CustomPreset = {
     createdAt: string;
 };
 
-export const customPresets = persistentAtom<CustomPreset[]>(
+export const customPresets = persistentJsonAtom<CustomPreset[]>(
     "customPresets",
     [],
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
 );
 onSet(customPresets, ({ newValue }) => {
     newValue.sort((a, b) => a.name.localeCompare(b.name));
@@ -439,10 +378,7 @@ export const deleteCustomPreset = (id: string) => {
 
 export type TeamPayload = { id: string; name: string };
 
-export const team = persistentAtom<TeamPayload | null>("team", null, {
-    encode: JSON.stringify,
-    decode: JSON.parse,
-});
+export const team = persistentJsonAtom<TeamPayload | null>("team", null);
 
 export const casServerUrl = persistentAtom<string>("casServerUrl", "", {
     encode: (value: string) => value,
@@ -455,13 +391,9 @@ export const casServerStatus = atom<
 
 export const casServerEffectiveUrl = atom<string | null>(null);
 
-export const liveSyncEnabled = persistentAtom<boolean>(
+export const liveSyncEnabled = persistentJsonAtom<boolean>(
     "liveSyncEnabled",
     true,
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
 );
 
 export const currentSid = atom<string | null>(null);
@@ -555,18 +487,11 @@ export const hidingZone = computed(
 );
 
 export const drawingQuestionKey = atom<number>(-1);
-export const planningModeEnabled = persistentAtom<boolean>(
+export const planningModeEnabled = persistentJsonAtom<boolean>(
     "planningModeEnabled",
     false,
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
 );
-export const autoZoom = persistentAtom<boolean>("autoZoom", true, {
-    encode: JSON.stringify,
-    decode: JSON.parse,
-});
+export const autoZoom = persistentJsonAtom<boolean>("autoZoom", true);
 
 export const isLoading = atom<boolean>(false);
 
@@ -581,49 +506,27 @@ export const thunderforestApiKey = persistentAtom<string>(
         decode: (value: string) => value,
     },
 );
-export const followMe = persistentAtom<boolean>("followMe", false, {
-    encode: JSON.stringify,
-    decode: JSON.parse,
-});
-export const defaultCustomQuestions = persistentAtom<boolean>(
+export const followMe = persistentJsonAtom<boolean>("followMe", false);
+export const defaultCustomQuestions = persistentJsonAtom<boolean>(
     "defaultCustomQuestions",
     false,
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
 );
 
 export const pastebinApiKey = persistentAtom<string>("pastebinApiKey", "");
-export const alwaysUsePastebin = persistentAtom<boolean>(
+export const alwaysUsePastebin = persistentJsonAtom<boolean>(
     "alwaysUsePastebin",
     false,
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
 );
 
-export const showTutorial = persistentAtom<boolean>("showTutorials", true, {
-    encode: JSON.stringify,
-    decode: JSON.parse,
-});
+export const showTutorial = persistentJsonAtom<boolean>("showTutorials", true);
 export const tutorialStep = atom<number>(0);
 
-export const customInitPreference = persistentAtom<"ask" | "blank" | "prefill">(
+export const customInitPreference = persistentJsonAtom<"ask" | "blank" | "prefill">(
     "customInitPreference",
     "ask",
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
 );
 
-export const allowGooglePlusCodes = persistentAtom<boolean>(
+export const allowGooglePlusCodes = persistentJsonAtom<boolean>(
     "allowGooglePlusCodes",
     false,
-    {
-        encode: JSON.stringify,
-        decode: JSON.parse,
-    },
 );

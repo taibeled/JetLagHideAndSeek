@@ -1,3 +1,4 @@
+import { bytesToBase64Url } from "@/lib/base64url";
 import { TEAM_ID_REGEX } from "@/lib/wire";
 
 const PROBE_TIMEOUT_MS = 4000;
@@ -13,29 +14,14 @@ export async function computeSidFromCanonicalUtf8(
 ): Promise<string> {
     const enc = new TextEncoder().encode(canonicalUtf8);
     const digest = await crypto.subtle.digest("SHA-256", enc);
-    const bytes = new Uint8Array(digest).slice(0, 16);
-    let binary = "";
-    for (let i = 0; i < bytes.length; i++) {
-        binary += String.fromCharCode(bytes[i]);
-    }
-    return btoa(binary)
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_")
-        .replace(/=/g, "");
+    return bytesToBase64Url(new Uint8Array(digest).slice(0, 16));
 }
 
 /** 128-bit nonce, base64url ~22 chars; satisfies TEAM_ID_REGEX length. */
 export function newTeamId(): string {
     const buf = new Uint8Array(16);
     crypto.getRandomValues(buf);
-    let binary = "";
-    for (let i = 0; i < buf.length; i++) {
-        binary += String.fromCharCode(buf[i]);
-    }
-    return btoa(binary)
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_")
-        .replace(/=/g, "");
+    return bytesToBase64Url(buf);
 }
 
 export async function probeHealth(baseUrl: string): Promise<boolean> {

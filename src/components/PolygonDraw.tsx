@@ -26,8 +26,6 @@ import {
 import { CacheType, clearCache } from "@/maps/api";
 import { lngLatToText } from "@/maps/geo-utils";
 import type {
-    CustomMatchingQuestion,
-    CustomMeasuringQuestion,
     CustomTentacleQuestion,
     Question,
 } from "@/maps/schema";
@@ -40,6 +38,11 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "./ui/sidebar-l";
+
+type PointWithGeometry = {
+    geometry: { coordinates: number[] };
+    properties?: Record<string, any>;
+};
 
 const swapCoordinates = (geojson: any) => {
     return JSON.parse(JSON.stringify(geojson), (key, value) => {
@@ -55,76 +58,12 @@ const swapCoordinates = (geojson: any) => {
     });
 };
 
-const TentacleMarker = ({
+const EditablePointMarker = ({
     point,
+    showNameInput = false,
 }: {
-    point: CustomTentacleQuestion["places"][number];
-}) => {
-    const $autoSave = useStore(autoSave);
-    const [open, setOpen] = useState(false);
-
-    return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <Marker
-                // @ts-expect-error This is passed to options, so it is not typed
-                properties={point.properties}
-                position={[
-                    point.geometry.coordinates[1],
-                    point.geometry.coordinates[0],
-                ]}
-                eventHandlers={{
-                    click: () => {
-                        setOpen(true);
-                    },
-                }}
-            />
-            <DialogContent>
-                <div className="flex flex-col gap-2">
-                    <Input
-                        className="text-center !text-2xl font-bold font-poppins mt-3"
-                        value={point.properties?.name}
-                        onChange={(e) => {
-                            point.properties.name = e.target.value;
-                            questionModified();
-                        }}
-                    />
-                    <SidebarMenu>
-                        <LatitudeLongitude
-                            latitude={point.geometry.coordinates[1]}
-                            longitude={point.geometry.coordinates[0]}
-                            inlineEdit
-                            onChange={(lat, lng) => {
-                                if (lat) {
-                                    point.geometry.coordinates[1] = lat;
-                                }
-                                if (lng) {
-                                    point.geometry.coordinates[0] = lng;
-                                }
-
-                                questionModified();
-                            }}
-                        />
-                        {!$autoSave && (
-                            <SidebarMenuItem>
-                                <SidebarMenuButton
-                                    className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-shadow duration-500 mt-2"
-                                    onClick={save}
-                                >
-                                    Save
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        )}
-                    </SidebarMenu>
-                </div>
-            </DialogContent>
-        </Dialog>
-    );
-};
-
-const MatchingPointMarker = ({
-    point,
-}: {
-    point: CustomMatchingQuestion["geo"][number];
+    point: PointWithGeometry;
+    showNameInput?: boolean;
 }) => {
     const $autoSave = useStore(autoSave);
     const [open, setOpen] = useState(false);
@@ -146,64 +85,18 @@ const MatchingPointMarker = ({
             />
             <DialogContent>
                 <div className="flex flex-col gap-2">
-                    <SidebarMenu>
-                        <LatitudeLongitude
-                            latitude={point.geometry.coordinates[1]}
-                            longitude={point.geometry.coordinates[0]}
-                            inlineEdit
-                            onChange={(lat, lng) => {
-                                if (lat) {
-                                    point.geometry.coordinates[1] = lat;
+                    {showNameInput && (
+                        <Input
+                            className="text-center !text-2xl font-bold font-poppins mt-3"
+                            value={point.properties?.name}
+                            onChange={(e) => {
+                                if (point.properties) {
+                                    point.properties.name = e.target.value;
                                 }
-                                if (lng) {
-                                    point.geometry.coordinates[0] = lng;
-                                }
-
                                 questionModified();
                             }}
                         />
-                        {!$autoSave && (
-                            <SidebarMenuItem>
-                                <SidebarMenuButton
-                                    className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-shadow duration-500 mt-2"
-                                    onClick={save}
-                                >
-                                    Save
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        )}
-                    </SidebarMenu>
-                </div>
-            </DialogContent>
-        </Dialog>
-    );
-};
-
-const MeasuringPointMarker = ({
-    point,
-}: {
-    point: CustomMeasuringQuestion["geo"]["features"][number];
-}) => {
-    const $autoSave = useStore(autoSave);
-    const [open, setOpen] = useState(false);
-
-    return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <Marker
-                position={[
-                    point.geometry.coordinates[1],
-                    point.geometry.coordinates[0],
-                ]}
-                // @ts-expect-error This is passed to options, so it is not typed
-                isDialog={true}
-                eventHandlers={{
-                    click: () => {
-                        setOpen(true);
-                    },
-                }}
-            />
-            <DialogContent>
-                <div className="flex flex-col gap-2">
+                    )}
                     <SidebarMenu>
                         <LatitudeLongitude
                             latitude={point.geometry.coordinates[1]}
@@ -216,7 +109,6 @@ const MeasuringPointMarker = ({
                                 if (lng) {
                                     point.geometry.coordinates[0] = lng;
                                 }
-
                                 questionModified();
                             }}
                         />
@@ -400,16 +292,17 @@ export const PolygonDraw = () => {
                 question.id === "tentacles" &&
                 question.data.locationType === "custom" &&
                 question.data.places.map((x) => (
-                    <TentacleMarker
+                    <EditablePointMarker
                         key={x.geometry.coordinates.join(",")}
                         point={x}
+                        showNameInput
                     />
                 ))}
             {question &&
                 question.id === "matching" &&
                 question.data.type === "custom-points" &&
                 question.data.geo.map((x: any) => (
-                    <MatchingPointMarker
+                    <EditablePointMarker
                         key={x.geometry.coordinates.join(",")}
                         point={x}
                     />
@@ -421,7 +314,7 @@ export const PolygonDraw = () => {
                     .flatten(question.data.geo)
                     .features.filter((x: any) => turf.getType(x) === "Point")
                     .map((x: any) => (
-                        <MeasuringPointMarker
+                        <EditablePointMarker
                             key={x.geometry.coordinates.join(",")}
                             point={x}
                         />

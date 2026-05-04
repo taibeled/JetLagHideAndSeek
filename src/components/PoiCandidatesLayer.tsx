@@ -25,6 +25,10 @@ import {
     triggerLocalRefresh,
 } from "@/lib/context";
 import {
+    isHomeGamePoiType,
+    toHomeGamePoiType,
+} from "@/lib/nearestPoi";
+import {
     findHomeGamePoiPointsInPlayZone,
     findTentacleLocations,
     ICON_COLORS,
@@ -37,8 +41,6 @@ import {
 } from "@/maps/geo-utils";
 import type {
     APILocations,
-    MatchingQuestion,
-    MeasuringQuestion,
     TentacleQuestion,
     TraditionalTentacleQuestion,
     Units,
@@ -48,41 +50,6 @@ type ClipPolygon = Feature<Polygon | MultiPolygon> | null;
 
 /** Above Leaflet overlayPane (400), below markerPane (600). Keeps taps reaching POI CircleMarkers instead of hiding-zone GeoJSON drawn imperatively on overlayPane. */
 const POI_CANDIDATES_PANE_Z = 550;
-
-const HOME_GAME_POI_TYPES = new Set<string>([
-    "aquarium",
-    "zoo",
-    "theme_park",
-    "peak",
-    "museum",
-    "hospital",
-    "cinema",
-    "library",
-    "golf_course",
-    "consulate",
-    "park",
-]);
-
-function isHomeGameMeasuringPoiType(
-    type: MeasuringQuestion["type"],
-): type is APILocations {
-    return HOME_GAME_POI_TYPES.has(type);
-}
-
-function matchingTypeToPoiOverlayLocation(
-    type: MatchingQuestion["type"],
-): APILocations | null {
-    if (HOME_GAME_POI_TYPES.has(type)) {
-        return type as APILocations;
-    }
-    if (typeof type === "string" && type.endsWith("-full")) {
-        const base = type.slice(0, -"-full".length);
-        if (HOME_GAME_POI_TYPES.has(base)) {
-            return base as APILocations;
-        }
-    }
-    return null;
-}
 
 function filterPointsWithinRadius(
     points: FeatureCollection,
@@ -583,7 +550,7 @@ export function PoiCandidatesLayer() {
                 ];
             }
 
-            if (q.id === "measuring" && isHomeGameMeasuringPoiType(q.data.type)) {
+            if (q.id === "measuring" && isHomeGamePoiType(q.data.type)) {
                 return [
                     <PlayZonePoiCandidates
                         key={q.key}
@@ -598,7 +565,7 @@ export function PoiCandidatesLayer() {
             }
 
             if (q.id === "matching") {
-                const loc = matchingTypeToPoiOverlayLocation(q.data.type);
+                const loc = toHomeGamePoiType(q.data.type);
                 if (!loc) return [];
                 return [
                     <PlayZonePoiCandidates

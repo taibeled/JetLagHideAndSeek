@@ -5,6 +5,7 @@ import {
   clearPwaState,
   maybeClick,
   mockOverpass,
+  overpassErrorRoute,
   overpassRoute,
   seedOrMockCasBlob,
 } from "./helpers";
@@ -643,4 +644,57 @@ test("C12: Wire serialization roundtrip preserves selectedTrainLineId", async ({
   const trigger = trainLineCombobox(page).filter({ hasText: "Test Line A" });
   await expect(trigger).toBeVisible({ timeout: 15000 });
   await expect(trigger).toBeDisabled();
+});
+
+// ---------------------------------------------------------------------------
+// C14: Overpass 429 error shows retry state in matching card
+// ---------------------------------------------------------------------------
+
+test("C14: Overpass 429 error shows retry in matching card", async ({
+  page,
+}) => {
+  const sid = await loadState(page);
+
+  // Mock station discovery and station body normally, but return 429 for
+  // the train line options around query so fetchStationTrainLineOptions throws.
+  await mockOverpass(page, [
+    overpassRoute("stations-minimal.json", [
+      "[railway=station]",
+      "[railway=stop]",
+    ]),
+    overpassRoute("line-expansion-minimal.json", ["node(1001)"]),
+    // Return 429 for the line options query — this causes the card to
+    // show an error state with a Retry button instead of a stuck toast.
+    overpassErrorRoute(429, ["around:300"]),
+  ]);
+
+  await loadWithSid(page, sid);
+
+  // The combobox should show the error trigger text
+  await expect(
+    trainLineCombobox(page).filter({ hasText: /Error loading/ }),
+  ).toBeVisible({ timeout: 15000 });
+
+  // A Retry button should be visible in the card
+  const retryButton = page.getByRole("button", { name: "Retry" }).first();
+  await expect(retryButton).toBeVisible();
+  await expect(retryButton).toBeEnabled();
+
+  // Now mock the line options query normally (replace with successful response)
+  await mockOverpass(page, [
+    overpassRoute("stations-minimal.json", [
+      "[railway=station]",
+      "[railway=stop]",
+    ]),
+    overpassRoute("line-expansion-minimal.json", ["node(1001)"]),
+    overpassRoute("train-lines-minimal.json", ["around:300"]),
+    overpassRoute("line-expansion-minimal.json", ["relation(100)"]),
+  ]);
+
+  // Click Retry — this should re-fetch and populate the dropdown
+  await retryButton.click();
+
+  await expect(
+    trainLineCombobox(page).filter({ hasText: "auto-detect" }),
+  ).toBeVisible({ timeout: 15000 });
 });

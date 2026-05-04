@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+import { base64UrlToBytes, bytesToBase64Url } from "@/lib/base64url";
 import {
     PASTEBIN_API_POST_URL,
     PASTEBIN_API_RAW_URL,
@@ -26,32 +27,14 @@ export const compress = async (
     writer.write(byteArray);
     writer.close();
     const arrayBuffer = await new Response(cs.readable).arrayBuffer();
-
-    const bytes = new Uint8Array(arrayBuffer);
-    let binary = "";
-    for (let i = 0; i < bytes.byteLength; i++) {
-        binary += String.fromCharCode(bytes[i]);
-    }
-    return btoa(binary)
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_")
-        .replace(/=/g, "");
+    return bytesToBase64Url(new Uint8Array(arrayBuffer));
 };
 
 export const decompress = async (
     base64String: string,
     encoding = "deflate" as CompressionFormat,
 ): Promise<string> => {
-    const regularBase64 = base64String.replace(/-/g, "+").replace(/_/g, "/");
-    const paddedBase64 =
-        regularBase64 + "=".repeat((4 - (regularBase64.length % 4)) % 4);
-
-    const binaryString = atob(paddedBase64);
-    const bytes = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-    }
-
+    const bytes = base64UrlToBytes(base64String);
     const cs = new DecompressionStream(encoding);
     const writer = cs.writable.getWriter();
     writer.write(bytes);
