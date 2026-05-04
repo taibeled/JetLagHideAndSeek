@@ -878,7 +878,15 @@ export const ZoneSidebar = () => {
 
     return (
         <Sidebar side="right">
-            <div className="flex items-center justify-between">
+            <div
+                className="flex items-center justify-between"
+                data-hiding-zone-raw={
+                    rawCircles === null ? "null" : String(rawCircles.length)
+                }
+                data-hiding-zone-reachability-bundle={
+                    reachabilityBundle ? "ready" : "none"
+                }
+            >
                 <h2 className="ml-4 mt-4 font-poppins text-2xl">Hiding Zone</h2>
                 <SidebarCloseIcon
                     className="mr-2 visible md:hidden scale-x-[-1]"

@@ -152,6 +152,10 @@ export function overpassZoneCacheKey(): string {
     return `rel:${ids}${suffix}`;
 }
 
+// RFC7231 allows Retry-After as delta-seconds or an HTTP-date; we
+// intentionally parse only delta-seconds because Overpass typically sends
+// that form. Parse failures fall back to OVERPASS_429_MIN_RETRY_MS (for 429)
+// and non-429 responses use OVERPASS_RETRY_DELAY_MS.
 function overpassRetryDelayMs(status: number, response: Response): number {
     if (status === 429) {
         const ra = response.headers.get("Retry-After");

@@ -15,6 +15,7 @@ const inFlightFetches = new Map<string, Promise<Response>>();
 const TRANSIENT_FETCH_STATUSES = new Set([
     408, 429, 502, 503, 504, 507, 529,
 ]);
+const MAX_FETCH_FAILURE_LOG_ENTRIES = 100;
 
 function reportFetchFailure(args: {
     url: string;
@@ -43,9 +44,18 @@ function reportFetchFailure(args: {
         transient,
     };
     if (typeof window !== "undefined") {
-        const w = window as Window & { __jlFetchFailures?: unknown[] };
-        w.__jlFetchFailures = w.__jlFetchFailures ?? [];
-        w.__jlFetchFailures.push(payload);
+        const w = window as Window & { __jlFetchFailures?: unknown };
+        if (!Array.isArray(w.__jlFetchFailures)) {
+            w.__jlFetchFailures = [];
+        }
+        const failures = w.__jlFetchFailures as unknown[];
+        failures.push(payload);
+        if (failures.length > MAX_FETCH_FAILURE_LOG_ENTRIES) {
+            failures.splice(
+                0,
+                failures.length - MAX_FETCH_FAILURE_LOG_ENTRIES,
+            );
+        }
     }
     const label = transient
         ? "[cacheFetch] HTTP failure (often recovers via another Overpass mirror or retry)"

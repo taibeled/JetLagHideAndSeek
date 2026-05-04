@@ -94,6 +94,33 @@ pnpm dev
 
 After making any modifications, please run `pnpm lint` to have your code automatically formatted and errors spotted.
 
+## Railway Deploy Workflow Secrets
+
+The GitHub Actions workflow in `.github/workflows/railway-deploy.yml` uses four repository secrets in the `Link Railway project and redeploy` step:
+
+- `RAILWAY_API_TOKEN`
+- `RAILWAY_SERVICE_ID`
+- `RAILWAY_PROJECT_ID`
+- `RAILWAY_ENVIRONMENT_ID`
+
+### 1) Get values from Railway
+
+1. In Railway, open your account menu and create/copy an API token from **Account Settings -> Tokens**. Use that value for `RAILWAY_API_TOKEN`.
+2. Open the target project in Railway and copy the **Project ID** from project settings/details for `RAILWAY_PROJECT_ID`.
+3. In that same project, open the service that is deployed by this repo and copy its **Service ID** for `RAILWAY_SERVICE_ID`.
+4. Open the environment used for deployment (for example, production) and copy its **Environment ID** for `RAILWAY_ENVIRONMENT_ID`.
+
+### 2) Add secrets in GitHub
+
+1. Go to your repository on GitHub.
+2. Navigate to **Settings -> Secrets and variables -> Actions**.
+3. Select **New repository secret** and add each of the four names above with the corresponding Railway value.
+
+### 3) Verify a run
+
+1. Go to **Actions -> Deploy to Railway** and run it with **Run workflow** (or wait for the Docker image workflow trigger on `master`).
+2. Confirm the `Link Railway project and redeploy` step succeeds and the job finishes green.
+
 ## Contributors
 
 A great deal of appreciation goes out to these individuals who have helped to create this tool:

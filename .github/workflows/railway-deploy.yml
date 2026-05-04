@@ -4,13 +4,18 @@ on:
     workflow_run:
         workflows: ["Build and Push Docker Image"]
         types: [completed]
+        branches:
+            - master
+    # workflow_dispatch has no branches: filter in GitHub workflow syntax; master-only manual runs are enforced in deploy.if below (github.ref).
     workflow_dispatch:
 
 jobs:
     deploy:
         if: |
-            github.event_name == 'workflow_dispatch' ||
-            (github.event.workflow_run.conclusion == 'success' &&
+            (github.event_name == 'workflow_dispatch' &&
+             github.ref == 'refs/heads/master') ||
+            (github.event_name == 'workflow_run' &&
+             github.event.workflow_run.conclusion == 'success' &&
              github.event.workflow_run.head_branch == 'master')
         runs-on: ubuntu-latest
         steps:

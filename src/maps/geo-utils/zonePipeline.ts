@@ -285,6 +285,13 @@ export function matchingFacilityCacheKey(
     });
 }
 
+/**
+ * One-shot guard for airport single-point refreshes. This prevents calling
+ * `findMatchingPlaces` on every filter pass when an airport key currently
+ * resolves to exactly one point.
+ */
+const airportSingleRefreshAttemptedKeys = new Set<string>();
+
 function isVoronoiMatchingType(data: Question["data"]): boolean {
     if (!data || typeof data !== "object" || !("type" in data)) return false;
     const t = (data as { type: string }).type;
@@ -553,6 +560,16 @@ function haversineMeters(
     return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
 }
 
+function formatNearestDistribution(
+    nearestCounts: ReadonlyMap<string, number>,
+): string {
+    const formatted = [...nearestCounts.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .map(([label, count]) => `${label}: ${count}`)
+        .join(", ");
+    return formatted || "none";
+}
+
 /**
  * Apply every active matching/measuring filter to the circle set. Pure
  * in its inputs — async work: `resolveTrainLineNodes` (train-line),
@@ -612,13 +629,16 @@ export async function applyQuestionFilters({
                 question.data.type === "airport" &&
                 points.features.length === 1
             ) {
-                const raw = await findMatchingPlaces(
-                    question.data as MatchingQuestion,
-                );
-                const refreshed = normalizeMatchingPointsToFc(raw);
-                if (refreshed.features.length > points.features.length) {
-                    points = refreshed;
-                    matchingFacilityCache.set(key, points);
+                if (!airportSingleRefreshAttemptedKeys.has(key)) {
+                    airportSingleRefreshAttemptedKeys.add(key);
+                    const raw = await findMatchingPlaces(
+                        question.data as MatchingQuestion,
+                    );
+                    const refreshed = normalizeMatchingPointsToFc(raw);
+                    if (refreshed.features.length > points.features.length) {
+                        points = refreshed;
+                        matchingFacilityCache.set(key, points);
+                    }
                 }
             }
             if (!points || points.features.length === 0) {
@@ -698,20 +718,18 @@ export async function applyQuestionFilters({
                     return wantSame ? sameRegion : !sameRegion;
                 });
                 if (!wantSame && current.length > 0 && next.length === 0) {
-                    const distribution = [...nearestCounts.entries()]
-                        .sort((a, b) => b[1] - a[1])
-                        .map(([label, count]) => `${label}: ${count}`)
-                        .join(", ");
+                    const distribution = formatNearestDistribution(
+                        nearestCounts,
+                    );
                     toast?.info(
-                        `All current hiding stations are nearest to the same airport as your seeker pin, so 'Different' leaves no stations. Distribution: ${distribution || "none"}.`,
+                        `All current hiding stations are nearest to the same airport as your seeker pin, so 'Different' leaves no stations. Distribution: ${distribution}.`,
                         { toastId: "matching-airport-different-empty" },
                     );
                 }
                 if (airportDebugEnabled()) {
-                    const distribution = [...nearestCounts.entries()]
-                        .sort((a, b) => b[1] - a[1])
-                        .map(([label, count]) => `${label}: ${count}`)
-                        .join(", ");
+                    const distribution = formatNearestDistribution(
+                        nearestCounts,
+                    );
                     console.info(
                         "[airport-matching]",
                         JSON.stringify({

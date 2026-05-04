@@ -190,7 +190,31 @@ function mergePolygonsBinary(
             const b = layer[i + 1]!;
             const u = turf.union(turf.featureCollection([a, b]));
             if (u) next.push(u as Feature<Polygon | MultiPolygon>);
-            else next.push(a);
+            else {
+                let aBbox = "unknown";
+                let bBbox = "unknown";
+                let aAreaKm2 = "unknown";
+                let bAreaKm2 = "unknown";
+                try {
+                    aBbox = JSON.stringify(turf.bbox(a));
+                    bBbox = JSON.stringify(turf.bbox(b));
+                    aAreaKm2 = (turf.area(a) / 1_000_000).toFixed(3);
+                    bAreaKm2 = (turf.area(b) / 1_000_000).toFixed(3);
+                } catch {
+                    // Keep fallbacks above.
+                }
+                console.warn(
+                    "[measuring] mergePolygonsBinary union failed; preserving first polygon only",
+                    {
+                        pairStartIndex: i,
+                        aBbox,
+                        bBbox,
+                        aAreaKm2,
+                        bAreaKm2,
+                    },
+                );
+                next.push(a);
+            }
         }
         layer = next;
     }

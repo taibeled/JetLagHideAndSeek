@@ -123,6 +123,7 @@ const SidebarProvider = React.forwardRef<
         return (
             <TooltipProvider delayDuration={0}>
                 <div
+                    data-mobile-sheet-open={openMobile ? "true" : "false"}
                     style={
                         {
                             "--sidebar-width": SIDEBAR_WIDTH,
