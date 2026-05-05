@@ -92,6 +92,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const lastDefaultUnit = useRef($defaultUnit);
     const hasSyncedInitialUnit = useRef(false);
     const [isOptionsOpen, setOptionsOpen] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         const currentDefault = $defaultUnit;
@@ -276,13 +277,77 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
         }
     };
 
+    const saveToFile = () => {
+        try {
+            const data = JSON.stringify($hidingZone, null, 2);
+            const blob = new Blob([data], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            const timestamp = new Date()
+                .toISOString()
+                .replace(/[:.]/g, "-")
+                .slice(0, 19);
+            a.download = `jetlag-hiding-zone-${timestamp}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            toast.success("Hiding zone saved to file", { autoClose: 2000 });
+        } catch (e) {
+            console.error("Failed to save file:", e);
+            toast.error(`Failed to save file: ${e}`);
+        }
+    };
+
+    const loadFromFile = (file: File) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const result = event.target?.result;
+            if (typeof result === "string") {
+                loadHidingZone(result);
+            } else {
+                toast.error("Failed to read file");
+            }
+        };
+        reader.onerror = () => {
+            toast.error("Failed to read file");
+        };
+        reader.readAsText(file);
+    };
+
     return (
         <div
             className={cn(
-                "flex justify-end gap-2 max-[412px]:!mb-4 max-[340px]:flex-col",
+                "flex justify-end gap-2 max-[412px]:!mb-4 max-[640px]:overflow-x-auto max-[640px]:w-[85vw] max-[640px]:justify-start max-[640px]:[&>button]:flex-shrink-0 max-[640px]:[&>div]:flex-shrink-0 max-[640px]:pb-1",
                 className,
             )}
         >
+            <input
+                ref={fileInputRef}
+                type="file"
+                accept="application/json,.json"
+                className="hidden"
+                onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) loadFromFile(file);
+                    e.target.value = "";
+                }}
+            />
+            <Button
+                className="shadow-md"
+                onClick={saveToFile}
+                title="Download current hiding zone as a JSON file"
+            >
+                Save File
+            </Button>
+            <Button
+                className="shadow-md"
+                onClick={() => fileInputRef.current?.click()}
+                title="Load a hiding zone from a JSON file"
+            >
+                Load File
+            </Button>
             <Button
                 className="shadow-md"
                 onClick={async () => {
@@ -300,30 +365,35 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                     let shareUrl = `${baseUrl}?${HIDING_ZONE_COMPRESSED_URL_PARAM}=${compressedData}`;
 
                     if ($alwaysUsePastebin || shareUrl.length > 2000) {
-                        if (!$pastebinApiKey) {
-                            toast.error(
-                                "Data is too large for a URL or Pastebin is forced. Please enter a Pastebin API key in Options to share via Pastebin.",
+                        if ($pastebinApiKey) {
+                            try {
+                                toast.info(
+                                    "Data is being shared via Pastebin...",
+                                );
+                                const pastebinUrl = await uploadToPastebin(
+                                    $pastebinApiKey,
+                                    hidingZoneString,
+                                );
+                                const pasteId = pastebinUrl.substring(
+                                    pastebinUrl.lastIndexOf("/") + 1,
+                                );
+                                shareUrl = `${baseUrl}?${PASTEBIN_URL_PARAM}=${pasteId}`;
+                                toast.success(
+                                    "Successfully uploaded to Pastebin! URL is ready to be shared.",
+                                );
+                            } catch (error) {
+                                console.error("Pastebin upload failed:", error);
+                                toast.warning(
+                                    "Pastebin upload failed, falling back to file download.",
+                                );
+                                saveToFile();
+                                return;
+                            }
+                        } else {
+                            toast.info(
+                                "Data is too large for a URL — saving to file instead.",
                             );
-                            return;
-                        }
-                        try {
-                            toast.info("Data is being shared via Pastebin...");
-                            const pastebinUrl = await uploadToPastebin(
-                                $pastebinApiKey,
-                                hidingZoneString,
-                            );
-                            const pasteId = pastebinUrl.substring(
-                                pastebinUrl.lastIndexOf("/") + 1,
-                            );
-                            shareUrl = `${baseUrl}?${PASTEBIN_URL_PARAM}=${pasteId}`;
-                            toast.success(
-                                "Successfully uploaded to Pastebin! URL is ready to be shared.",
-                            );
-                        } catch (error) {
-                            console.error("Pastebin upload failed:", error);
-                            toast.error(
-                                `Pastebin upload failed. Please check your API key and try again.`,
-                            );
+                            saveToFile();
                             return;
                         }
                     }
@@ -487,8 +557,9 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     placeholder="Enter your Pastebin API key"
                                 />
                                 <p className="text-xs text-gray-500">
-                                    Needed for sharing large game data. Create a
-                                    key{" "}
+                                    Optional. If set, large game data will be
+                                    shared via Pastebin URL; otherwise it falls
+                                    back to a JSON file download. Create a key{" "}
                                     <a
                                         href="https://pastebin.com/doc_api"
                                         target="_blank"
