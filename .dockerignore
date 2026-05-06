@@ -1,0 +1,9 @@
+.git
+node_modules
+.astro
+dist
+.pnpm-store
+test-results
+playwright-report
+.env
+.env.*
