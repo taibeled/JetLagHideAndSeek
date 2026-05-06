@@ -31,12 +31,14 @@ import {
     additionalMapGeoLocations,
     boundaryDetailLevel,
     DEFAULT_MAP_GEO_LOCATION_OSM_ID,
+    hiderMode,
     isLoading,
     mapGeoJSON,
     mapGeoLocation,
     mapRefreshNonce,
     polyGeoJSON,
     questions,
+    startingLocation,
 } from "@/lib/context";
 import { withTask } from "@/lib/progress";
 import { cn } from "@/lib/utils";
@@ -466,13 +468,20 @@ export const PlacePicker = ({
                         variant="outline"
                         className="font-normal bg-slate-50 hover:bg-slate-200"
                         onClick={() => {
+                            // Full new-game reset: clear questions, all
+                            // selected regions, hider state, drawn polygon,
+                            // and zone cache. Keeps non-game settings
+                            // (API keys, unit preference, tile layer, etc.).
+                            questions.set([]);
                             mapGeoJSON.set(null);
                             polyGeoJSON.set(null);
-                            questions.set([]);
+                            additionalMapGeoLocations.set([]);
+                            hiderMode.set(false);
+                            startingLocation.set(false);
                             clearCache(CacheType.ZONE_CACHE);
                         }}
                     >
-                        Clear Questions & Cache
+                        New Game
                     </Button>
                     {$polyGeoJSON && (
                         <Button

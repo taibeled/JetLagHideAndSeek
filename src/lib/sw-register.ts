@@ -83,6 +83,29 @@ export function registerServiceWorker() {
     // browser side.
     const sw = new Serwist(scriptURL, { scope, type: "module" });
 
+    // Track whether the user has interacted with the page. A waiting SW
+    // detected before any interaction means we're on a fresh page load —
+    // safe to auto-apply the update immediately. After interaction (click,
+    // keydown, touch) we show the toast instead so a mid-game session isn't
+    // disrupted by a sudden reload.
+    let hasUserInteracted = false;
+    const onFirstInteraction = () => {
+        hasUserInteracted = true;
+    };
+    document.addEventListener("click", onFirstInteraction, {
+        once: true,
+        capture: true,
+    });
+    document.addEventListener("keydown", onFirstInteraction, {
+        once: true,
+        capture: true,
+    });
+    document.addEventListener("touchstart", onFirstInteraction, {
+        once: true,
+        capture: true,
+        passive: true,
+    });
+
     let reloadingForUpdate = false;
     navigator.serviceWorker.addEventListener("controllerchange", () => {
         if (reloadingForUpdate) return;
@@ -94,6 +117,18 @@ export function registerServiceWorker() {
     });
 
     sw.addEventListener("waiting", async () => {
+        // Fresh page load, no interaction yet → auto-apply the new SW so
+        // users always get the latest code on open. This is the primary fix
+        // for "I have to clear cache to see territory after a deployment":
+        // the old SW had stale code; auto-activating the new one on the
+        // next fresh open avoids that entirely.
+        if (!hasUserInteracted) {
+            reloadingForUpdate = true;
+            sw.messageSkipWaiting();
+            // controllerchange fires → location.reload() above runs.
+            return;
+        }
+
         const registration =
             await navigator.serviceWorker.getRegistration(scope);
         const waitingScriptURL = registration?.waiting?.scriptURL ?? null;
@@ -107,8 +142,8 @@ export function registerServiceWorker() {
             return;
         }
 
-        // Sticky toast with a manual Reload button. `autoClose: false`
-        // so users in the middle of a game don't lose it.
+        // Mid-session: sticky toast with a manual Reload button.
+        // `autoClose: false` so users in the middle of a game don't lose it.
         toast.info("A new version of the app is ready.", {
             toastId: TOAST_ID,
             autoClose: false,
