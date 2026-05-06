@@ -16,12 +16,14 @@ providers = []
 nixpkgsArchive = "4bd9165a9165d7b5e33ae57f3eecbcb28fb231c9"
 nixPkgs = ["nodejs_24", "pnpm"]
 
-# Install phase: cache node_modules so unchanged-lockfile builds skip
-# re-downloading packages entirely. pnpm --prefer-offline reads from
-# the cached store, so even lockfile bumps only fetch the delta.
+# Install phase: cache the pnpm STORE (downloaded package tarballs), NOT
+# node_modules. Caching node_modules as a Docker cache mount would make it
+# invisible to the build phase (cache mounts don't persist across RUN steps).
+# Caching the store means pnpm install reads packages from disk instead of
+# the network; node_modules is written normally into the image layer.
 [phases.install]
-cmds = ["pnpm install --frozen-lockfile --prefer-offline"]
-cacheDirectories = ["node_modules"]
+cmds = ["pnpm install --frozen-lockfile --prefer-offline --store-dir /pnpm-store"]
+cacheDirectories = ["/pnpm-store"]
 
 # Build phase: cache .astro so Vite reuses incremental compilation
 # artifacts for unchanged source files across builds.
