@@ -289,8 +289,32 @@ export function matchingFacilityCacheKey(
  * One-shot guard for airport single-point refreshes. This prevents calling
  * `findMatchingPlaces` on every filter pass when an airport key currently
  * resolves to exactly one point.
+ *
+ * Capped at MAX_AIRPORT_REFRESH_KEYS entries; when full the oldest entry is
+ * evicted before insertion (ES6 Sets iterate in insertion order). This bounds
+ * memory in long sessions where the user visits many different territories.
  */
 const airportSingleRefreshAttemptedKeys = new Set<string>();
+const MAX_AIRPORT_REFRESH_KEYS = 100;
+
+function airportRefreshAttempted(key: string): boolean {
+    return airportSingleRefreshAttemptedKeys.has(key);
+}
+
+function markAirportRefreshAttempted(key: string): void {
+    if (airportSingleRefreshAttemptedKeys.has(key)) return;
+    if (airportSingleRefreshAttemptedKeys.size >= MAX_AIRPORT_REFRESH_KEYS) {
+        // Delete the oldest entry (first in iteration order).
+        const oldest = airportSingleRefreshAttemptedKeys.values().next().value;
+        if (oldest !== undefined) airportSingleRefreshAttemptedKeys.delete(oldest);
+    }
+    airportSingleRefreshAttemptedKeys.add(key);
+}
+
+/** Exported for tests — clears the refresh-attempt guard so tests start clean. */
+export function resetAirportSingleRefreshAttemptedKeys(): void {
+    airportSingleRefreshAttemptedKeys.clear();
+}
 
 function isVoronoiMatchingType(data: Question["data"]): boolean {
     if (!data || typeof data !== "object" || !("type" in data)) return false;
@@ -629,15 +653,25 @@ export async function applyQuestionFilters({
                 question.data.type === "airport" &&
                 points.features.length === 1
             ) {
-                if (!airportSingleRefreshAttemptedKeys.has(key)) {
-                    airportSingleRefreshAttemptedKeys.add(key);
-                    const raw = await findMatchingPlaces(
-                        question.data as MatchingQuestion,
-                    );
-                    const refreshed = normalizeMatchingPointsToFc(raw);
-                    if (refreshed.features.length > points.features.length) {
-                        points = refreshed;
-                        matchingFacilityCache.set(key, points);
+                if (!airportRefreshAttempted(key)) {
+                    try {
+                        const raw = await findMatchingPlaces(
+                            question.data as MatchingQuestion,
+                        );
+                        const refreshed = normalizeMatchingPointsToFc(raw);
+                        // Only guard the key after a successful fetch so
+                        // transient network errors stay retryable.
+                        markAirportRefreshAttempted(key);
+                        if (refreshed.features.length > points.features.length) {
+                            points = refreshed;
+                            matchingFacilityCache.set(key, points);
+                        }
+                    } catch (err) {
+                        // Leave key unguarded; the next filter pass can retry.
+                        console.warn(
+                            "[airport-matching] single-point refresh failed; will retry next pass",
+                            err,
+                        );
                     }
                 }
             }

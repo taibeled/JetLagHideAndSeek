@@ -145,10 +145,15 @@ function lightenCoastlinesForMeasuring(
     }[] = [];
 
     for (const raw of fc.features) {
+        const featureId = raw.id ?? raw.properties?.osm_id ?? "(unknown)";
         let clipped: Feature | undefined;
         try {
             clipped = turf.bboxClip(raw, clipBbox) as Feature | undefined;
-        } catch {
+        } catch (err) {
+            console.debug(
+                "[coastline] bboxClip failed; skipping feature",
+                { featureId, clipBbox, err },
+            );
             continue;
         }
         if (!clipped?.geometry) continue;
@@ -161,7 +166,11 @@ function lightenCoastlinesForMeasuring(
                 tolerance: tol,
                 highQuality: false,
             }) as Feature<LineString | MultiLineString>;
-        } catch {
+        } catch (err) {
+            console.debug(
+                "[coastline] simplify failed; skipping feature",
+                { featureId, tol, err },
+            );
             continue;
         }
         const lenKm = turf.length(f, { units: "kilometers" });

@@ -331,7 +331,7 @@ export const PlacePicker = ({
                     ))}
                     {canUpgradeBoundary && (
                     <>
-                        <Separator className="h-[0.5px] shrink-0" />
+                        <Separator className="h-px shrink-0" />
                         <button
                             type="button"
                             onClick={handleUpgradeBoundary}

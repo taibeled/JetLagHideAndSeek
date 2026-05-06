@@ -10,7 +10,7 @@
         "astro": "astro",
         "typecheck:ts6": "tsc --noEmit",
         "typecheck:ts7": "tsgo --noEmit",
-        "lint": "node --max-old-space-size=8192 ./node_modules/eslint/bin/eslint.js --fix src && prettier . --write",
+        "lint": "eslint --fix src && prettier . --write",
         "test": "vitest",
         "test:e2e": "playwright test",
         "test:e2e:mobile": "playwright test --project=mobile-chromium",
@@ -18,7 +18,7 @@
         "test:e2e:install": "playwright install chromium",
         "knip": "knip"
     },
-    "packageManager": "pnpm@10.33.2",
+    "packageManager": "pnpm@10.33.3",
     "dependencies": {
         "@arcgis/core": "^5.0.19",
         "@astrojs/check": "^0.9.9",
@@ -93,7 +93,7 @@
         "@types/react-dom": "19.2.3",
         "@types/terraformer__arcgis": "^2.0.5",
         "@typescript-eslint/parser": "^8.59.2",
-        "@typescript/native-preview": "7.0.0-dev.20260504.1",
+        "@typescript/native-preview": "7.0.0-dev.20260505.1",
         "esbuild": "^0.28.0",
         "eslint": "^10.3.0",
         "eslint-plugin-astro": "^1.7.0",
