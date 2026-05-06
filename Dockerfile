@@ -4,25 +4,19 @@ RUN corepack enable && corepack prepare pnpm@10.33.3 --activate
 
 # ── Install ───────────────────────────────────────────────────────────────────
 # Separate stage so the node_modules layer is only invalidated when
-# package.json or pnpm-lock.yaml actually change.
+# package.json or pnpm-lock.yaml actually change — code-only pushes skip
+# pnpm install entirely via Docker layer cache.
 FROM base AS deps
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
-# Cache the pnpm store (downloaded tarballs) between builds.
-# node_modules is written to the image layer normally so the build stage
-# can read it without any cache mount tricks.
-RUN --mount=type=cache,id=pnpm-store,target=/pnpm-store \
-    pnpm install --frozen-lockfile --prefer-offline --store-dir /pnpm-store
+RUN pnpm install --frozen-lockfile --prefer-offline
 
 # ── Build ─────────────────────────────────────────────────────────────────────
 FROM base AS build
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-# Cache .astro so Vite reuses incremental compilation artifacts for unchanged
-# source files across builds.
-RUN --mount=type=cache,id=astro-cache,target=/app/.astro \
-    NODE_OPTIONS='--max-old-space-size=4096' pnpm build
+RUN NODE_OPTIONS='--max-old-space-size=4096' pnpm build
 
 # ── Runtime ───────────────────────────────────────────────────────────────────
 FROM node:24-slim AS runtime
