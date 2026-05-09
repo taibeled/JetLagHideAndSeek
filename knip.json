@@ -3,14 +3,15 @@
     "tags": ["-lintignore"],
     "entry": [
         "src/lib/sw-register.ts",
-        "postcss.config.mjs",
         "src/pages/**/*.astro",
         "src/layouts/**/*.astro"
     ],
     "ignoreDependencies": [
         "@astrojs/check",
         "@react-leaflet/core",
-        "@tailwindcss/postcss"
+        // @typescript-eslint/parser must stay as a direct devDep: eslint-plugin-astro
+        // uses it as a peer dep and pnpm does not hoist peers automatically.
+        "@typescript-eslint/parser"
     ],
     "ignoreIssues": {
         "src/lib/**": ["types"],

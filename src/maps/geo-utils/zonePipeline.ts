@@ -306,13 +306,14 @@ function markAirportRefreshAttempted(key: string): void {
     if (airportSingleRefreshAttemptedKeys.size >= MAX_AIRPORT_REFRESH_KEYS) {
         // Delete the oldest entry (first in iteration order).
         const oldest = airportSingleRefreshAttemptedKeys.values().next().value;
-        if (oldest !== undefined) airportSingleRefreshAttemptedKeys.delete(oldest);
+        if (oldest !== undefined)
+            airportSingleRefreshAttemptedKeys.delete(oldest);
     }
     airportSingleRefreshAttemptedKeys.add(key);
 }
 
-/** Exported for tests — clears the refresh-attempt guard so tests start clean. */
-export function resetAirportSingleRefreshAttemptedKeys(): void {
+/** Clears the refresh-attempt guard so tests start clean. */
+function resetAirportSingleRefreshAttemptedKeys(): void {
     airportSingleRefreshAttemptedKeys.clear();
 }
 
@@ -448,7 +449,11 @@ async function retryResolveMatchingAdminRegion(
     data: MatchingQuestion,
 ): Promise<Feature<Polygon | MultiPolygon> | null> {
     let lastError: unknown;
-    for (let attempt = 0; attempt < MATCHING_ADMIN_REGION_RETRY_ATTEMPTS; attempt++) {
+    for (
+        let attempt = 0;
+        attempt < MATCHING_ADMIN_REGION_RETRY_ATTEMPTS;
+        attempt++
+    ) {
         try {
             return await resolveMatchingAdminRegion(data);
         } catch (error) {
@@ -456,9 +461,7 @@ async function retryResolveMatchingAdminRegion(
             if (attempt < MATCHING_ADMIN_REGION_RETRY_ATTEMPTS - 1) {
                 const delayMs =
                     MATCHING_ADMIN_REGION_RETRY_DELAY_MS * 2 ** attempt;
-                await new Promise((resolve) =>
-                    setTimeout(resolve, delayMs),
-                );
+                await new Promise((resolve) => setTimeout(resolve, delayMs));
             }
         }
     }
@@ -480,18 +483,15 @@ function boundaryToPolygonFeature(
         }
         return null;
     }
-    if (
-        "features" in b &&
-        Array.isArray(b.features) &&
-        b.features.length > 0
-    ) {
+    if ("features" in b && Array.isArray(b.features) && b.features.length > 0) {
         const u = safeUnion(b);
         if (
             u &&
             typeof u === "object" &&
             "geometry" in u &&
             u.geometry &&
-            (u.geometry.type === "Polygon" || u.geometry.type === "MultiPolygon")
+            (u.geometry.type === "Polygon" ||
+                u.geometry.type === "MultiPolygon")
         ) {
             return u as Feature<Polygon | MultiPolygon>;
         }
@@ -662,7 +662,9 @@ export async function applyQuestionFilters({
                         // Only guard the key after a successful fetch so
                         // transient network errors stay retryable.
                         markAirportRefreshAttempted(key);
-                        if (refreshed.features.length > points.features.length) {
+                        if (
+                            refreshed.features.length > points.features.length
+                        ) {
                             points = refreshed;
                             matchingFacilityCache.set(key, points);
                         }
@@ -709,10 +711,13 @@ export async function applyQuestionFilters({
 
             const wantSame = question.data.same === true;
             if (question.data.type === "airport") {
-                const seekerNearest = turf.nearestPoint(seekerPoint, airportFc as any);
+                const seekerNearest = turf.nearestPoint(
+                    seekerPoint,
+                    airportFc as any,
+                );
                 const seekerIata = String(
-                    (seekerNearest.properties as { iata?: string } | null)?.iata ??
-                        "",
+                    (seekerNearest.properties as { iata?: string } | null)
+                        ?.iata ?? "",
                 )
                     .trim()
                     .toUpperCase();
@@ -734,9 +739,9 @@ export async function applyQuestionFilters({
                     );
                     const stationIata = String(
                         (
-                            nearestForStation.properties as
-                                | { iata?: string }
-                                | null
+                            nearestForStation.properties as {
+                                iata?: string;
+                            } | null
                         )?.iata ?? "",
                     )
                         .trim()
@@ -752,18 +757,16 @@ export async function applyQuestionFilters({
                     return wantSame ? sameRegion : !sameRegion;
                 });
                 if (!wantSame && current.length > 0 && next.length === 0) {
-                    const distribution = formatNearestDistribution(
-                        nearestCounts,
-                    );
+                    const distribution =
+                        formatNearestDistribution(nearestCounts);
                     toast?.info(
                         `All current hiding stations are nearest to the same airport as your seeker pin, so 'Different' leaves no stations. Distribution: ${distribution}.`,
                         { toastId: "matching-airport-different-empty" },
                     );
                 }
                 if (airportDebugEnabled()) {
-                    const distribution = formatNearestDistribution(
-                        nearestCounts,
-                    );
+                    const distribution =
+                        formatNearestDistribution(nearestCounts);
                     console.info(
                         "[airport-matching]",
                         JSON.stringify({
@@ -914,9 +917,8 @@ export async function applyQuestionFilters({
                     );
                     // Cheap to fetch (already cached by line ref) and only
                     // used when neither OSM source can answer for a circle.
-                    const gtfsNames = await getGtfsStationNamesForLineRef(
-                        trainLineRef,
-                    );
+                    const gtfsNames =
+                        await getGtfsStationNamesForLineRef(trainLineRef);
 
                     const haveAnySignal =
                         nodeIdSet.size > 0 ||
@@ -950,10 +952,7 @@ export async function applyQuestionFilters({
                         const idProp = circle.properties.properties.id;
                         if (idProp && idProp.includes("/")) {
                             const id = parseInt(idProp.split("/")[1], 10);
-                            if (
-                                !Number.isNaN(id) &&
-                                nodeIdSet.has(id)
-                            ) {
+                            if (!Number.isNaN(id) && nodeIdSet.has(id)) {
                                 return true;
                             }
                         }
@@ -970,8 +969,7 @@ export async function applyQuestionFilters({
                                             lon,
                                             stop.lat,
                                             stop.lon,
-                                        ) <=
-                                        TRAIN_LINE_STOP_PROXIMITY_METERS
+                                        ) <= TRAIN_LINE_STOP_PROXIMITY_METERS
                                     ) {
                                         return true;
                                     }
