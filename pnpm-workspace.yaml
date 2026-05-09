@@ -4,7 +4,7 @@ allowBuilds:
   sharp: true
 
 overrides:
-  '@xmldom/xmldom': '0.8.14'
+  '@xmldom/xmldom': '0.8.13'
   serialize-javascript: '7.0.5'
   glob: '13.0.6'
   '@amcharts/amcharts5': '5.17.2'
