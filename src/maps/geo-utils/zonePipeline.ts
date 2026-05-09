@@ -312,10 +312,6 @@ function markAirportRefreshAttempted(key: string): void {
     airportSingleRefreshAttemptedKeys.add(key);
 }
 
-/** Clears the refresh-attempt guard so tests start clean. */
-function resetAirportSingleRefreshAttemptedKeys(): void {
-    airportSingleRefreshAttemptedKeys.clear();
-}
 
 function isVoronoiMatchingType(data: Question["data"]): boolean {
     if (!data || typeof data !== "object" || !("type" in data)) return false;
