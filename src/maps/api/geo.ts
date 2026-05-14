@@ -36,6 +36,8 @@ export const prettifyLocation = (
             return "Cinema";
         case "library":
             return "Library";
+        case "cafe":
+            return "Coffee Shop";
         case "golf_course":
             return "Golf Course";
         case "consulate":

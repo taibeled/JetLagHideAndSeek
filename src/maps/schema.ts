@@ -121,6 +121,7 @@ const tentacleLocationsOne = z.union([
     z.literal("hospital").describe("Hospitals"),
     z.literal("cinema").describe("Movie Theaters"),
     z.literal("library").describe("Libraries"),
+    z.literal("cafe").describe("Coffee Shops"),
 ]);
 
 const apiLocationSchema = z.union([

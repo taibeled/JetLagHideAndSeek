@@ -108,6 +108,7 @@ export const LOCATION_FIRST_TAG: {
     zoo: "tourism",
     cinema: "amenity",
     library: "amenity",
+    cafe: "amenity",
     golf_course: "leisure",
     consulate: "diplomatic",
     park: "leisure",
