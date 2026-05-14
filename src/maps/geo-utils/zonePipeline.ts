@@ -312,7 +312,6 @@ function markAirportRefreshAttempted(key: string): void {
     airportSingleRefreshAttemptedKeys.add(key);
 }
 
-
 function isVoronoiMatchingType(data: Question["data"]): boolean {
     if (!data || typeof data !== "object" || !("type" in data)) return false;
     const t = (data as { type: string }).type;

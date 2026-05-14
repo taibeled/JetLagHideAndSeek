@@ -64,7 +64,13 @@ export const GTFS_PRESETS: GtfsPreset[] = [
         region: "New York",
         description:
             "Full subway system. Updated a few times per year; represents the normal schedule without most temporary changes.",
-        url: "https://rrgtfsfeeds.s3.amazonaws.com/gtfs_subway.zip",
+        // In local dev: serve from public/gtfs/nyct-subway.zip (gitignored,
+        // see .gitignore). Same-origin — no CORS, no proxy needed. In
+        // production: /api/proxy-gtfs handles the S3 fetch (S3 has no CORS
+        // headers so direct browser fetches fail without the proxy).
+        url: import.meta.env.DEV
+            ? "/gtfs/nyct-subway.zip"
+            : "https://rrgtfsfeeds.s3.amazonaws.com/gtfs_subway.zip",
         licenseUrl: "https://www.mta.info/developers",
     },
     {

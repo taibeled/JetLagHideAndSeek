@@ -25,6 +25,9 @@ test-results/
 # macOS-specific files
 .DS_Store
 
+# Local GTFS data files — too large for git, developer-supplied only
+public/gtfs/
+
 # jetbrains setting folder
 .idea/
 # gstack tooling

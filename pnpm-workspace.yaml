@@ -1,21 +1,21 @@
 allowBuilds:
-  '@vaadin/vaadin-usage-statistics': true
-  esbuild: true
-  sharp: true
+    "@vaadin/vaadin-usage-statistics": true
+    esbuild: true
+    sharp: true
 
 overrides:
-  '@xmldom/xmldom': '0.8.13'
-  serialize-javascript: '7.0.5'
-  glob: '13.0.6'
-  '@amcharts/amcharts5': '5.17.2'
-  pdfmake: '0.3.7'
-  source-map: '0.7.6'
-  magic-string: '0.30.21'
-  pbf: '4.0.1'
-  '@rollup/pluginutils': '5.3.0'
-  picomatch: '4.0.4'
-  htmlparser2: '12.0.0'
-  get-stream: '9.0.1'
-  is-stream: '4.0.0'
-  rollup: '4.60.2'
-  yaml-language-server: '1.22.0'
+    "@xmldom/xmldom": "0.8.13"
+    serialize-javascript: "7.0.5"
+    glob: "13.0.6"
+    "@amcharts/amcharts5": "5.17.2"
+    pdfmake: "0.3.7"
+    source-map: "0.7.6"
+    magic-string: "0.30.21"
+    pbf: "4.0.1"
+    "@rollup/pluginutils": "5.3.0"
+    picomatch: "4.0.4"
+    htmlparser2: "12.0.0"
+    get-stream: "9.0.1"
+    is-stream: "4.0.0"
+    rollup: "4.60.2"
+    yaml-language-server: "1.22.0"

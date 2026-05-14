@@ -22,7 +22,12 @@
  */
 const PUBLIC_PROXY = "https://corsproxy.io/?url=";
 
-const SELF_HOSTED_PROXY = (import.meta as any).env?.PUBLIC_GTFS_PROXY_URL || "";
+// Default to our own proxy endpoint — it always exists on SSR deploys
+// (Railway, Vercel, etc). If the app is served as a fully static build and
+// /api/proxy-gtfs returns 404, the catch below will fall through to tier 3.
+// Set PUBLIC_GTFS_PROXY_URL to override (e.g. a separate microservice).
+const SELF_HOSTED_PROXY =
+    (import.meta as any).env?.PUBLIC_GTFS_PROXY_URL || "/api/proxy-gtfs";
 
 export type FetchMethod = "direct" | "self-hosted" | "public-proxy";
 
