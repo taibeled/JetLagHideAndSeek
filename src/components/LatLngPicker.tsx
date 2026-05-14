@@ -4,6 +4,7 @@ import {
     ClipboardPasteIcon,
     EditIcon,
     LocateIcon,
+    MapPinIcon,
 } from "lucide-react";
 import { OpenLocationCode } from "open-location-code";
 import { useEffect, useRef, useState } from "react";
@@ -32,7 +33,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { SidebarMenuItem } from "@/components/ui/sidebar-l";
 import { useDebounce } from "@/hooks/useDebounce";
-import { allowGooglePlusCodes, isLoading } from "@/lib/context";
+import { allowGooglePlusCodes, isLoading, mapPickMode } from "@/lib/context";
 import { cn } from "@/lib/utils";
 import {
     determineName,
@@ -400,6 +401,19 @@ export const LatitudeLongitude = ({
                             />
                         </div>
                     ) : (
+                        <>
+                        <Button
+                            variant="outline"
+                            title="Pick location on map"
+                            disabled={disabled}
+                            onClick={() => {
+                                mapPickMode.set((lat, lng) => {
+                                    onChange(lat, lng);
+                                });
+                            }}
+                        >
+                            <MapPinIcon />
+                        </Button>
                         <Dialog>
                             <DialogTrigger asChild>
                                 <Button
@@ -429,6 +443,7 @@ export const LatitudeLongitude = ({
                                 </DialogFooter>
                             </DialogContent>
                         </Dialog>
+                        </>
                     )}
                     <div
                         className={

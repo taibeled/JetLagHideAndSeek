@@ -7,7 +7,7 @@ import * as turf from "@turf/turf";
 import type { Feature, MultiPolygon, Polygon } from "geojson";
 import * as L from "leaflet";
 import { useEffect, useMemo, useRef } from "react";
-import { MapContainer, ScaleControl, TileLayer } from "react-leaflet";
+import { MapContainer, ScaleControl, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import { toast } from "react-toastify";
 
 import { DraggableMarkers } from "@/components/DraggableMarkers";
@@ -26,12 +26,14 @@ import {
     leafletMapContext,
     mapGeoJSON,
     mapGeoLocation,
+    mapPickMode,
     mapRefreshNonce,
     permanentOverlay,
     planningModeEnabled,
     playableTerritoryUnion,
     polyGeoJSON,
     questionFinishedMapData,
+    questionModified,
     questions,
     startingLocation,
     thunderforestApiKey,
@@ -146,6 +148,57 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
             minZoom={2}
             noWrap
         />
+    );
+};
+
+/**
+ * Rendered inside MapContainer. When `mapPickMode` is set, this intercepts
+ * the next map left-click, passes the coordinates to the stored callback,
+ * then clears the atom. Also shows a banner and sets a crosshair cursor so
+ * the user knows the map is waiting for a tap.
+ */
+const MapPickModeHandler = () => {
+    const $mapPickMode = useStore(mapPickMode);
+    const map = useMap();
+
+    useMapEvents({
+        click(e) {
+            const handler = mapPickMode.get();
+            if (!handler) return;
+            handler(e.latlng.lat, e.latlng.lng);
+            mapPickMode.set(null);
+        },
+    });
+
+    useEffect(() => {
+        const container = map.getContainer();
+        if ($mapPickMode) {
+            container.style.cursor = "crosshair";
+        } else {
+            container.style.cursor = "";
+        }
+        return () => {
+            container.style.cursor = "";
+        };
+    }, [$mapPickMode, map]);
+
+    useEffect(() => {
+        if (!$mapPickMode) return;
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") mapPickMode.set(null);
+        };
+        document.addEventListener("keydown", onKeyDown);
+        return () => document.removeEventListener("keydown", onKeyDown);
+    }, [$mapPickMode]);
+
+    if (!$mapPickMode) return null;
+
+    return (
+        <div className="leaflet-top leaflet-left" style={{ pointerEvents: "none" }}>
+            <div className="leaflet-control m-3 rounded-lg bg-black/80 px-3 py-2 text-sm font-medium text-white shadow-lg">
+                Tap the map to place the end point · Esc to cancel
+            </div>
+        </div>
     );
 };
 
@@ -405,23 +458,26 @@ export const Map = ({ className }: { className?: string }) => {
                     {
                         text: "Add Thermometer",
                         callback: (e: any) => {
-                            const destination = turf.destination(
-                                [e.latlng.lng, e.latlng.lat],
-                                5,
-                                90,
-                                {
-                                    units: "miles",
-                                },
-                            );
-
+                            // Place both pins at the tapped location. Pick
+                            // mode immediately activates so the next tap on
+                            // the map sets the end point.
                             addQuestion({
                                 id: "thermometer",
                                 data: {
                                     latA: e.latlng.lat,
                                     lngA: e.latlng.lng,
-                                    latB: destination.geometry.coordinates[1],
-                                    lngB: destination.geometry.coordinates[0],
+                                    latB: e.latlng.lat,
+                                    lngB: e.latlng.lng,
                                 },
+                            });
+                            mapPickMode.set((lat, lng) => {
+                                const qs = questions.get();
+                                const last = qs[qs.length - 1];
+                                if (last?.id === "thermometer") {
+                                    last.data.latB = lat;
+                                    last.data.lngB = lng;
+                                    questionModified();
+                                }
                             });
                         },
                     },
@@ -522,6 +578,7 @@ export const Map = ({ className }: { className?: string }) => {
                 ]}
             >
                 {getTileLayer($baseTileLayer, $thunderforestApiKey)}
+                <MapPickModeHandler />
                 <DraggableMarkers />
                 <div className="leaflet-top leaflet-right">
                     <div className="leaflet-control flex-col flex gap-2">

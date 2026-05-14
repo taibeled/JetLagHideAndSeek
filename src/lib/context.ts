@@ -105,6 +105,17 @@ export const boundaryDetailLevel = atom<"simple" | "detailed">("simple");
  */
 export const mapRefreshNonce = atom(0);
 
+/**
+ * When non-null, the next map left-click will invoke this callback with the
+ * clicked lat/lng, then reset the atom to null. Used by the thermometer
+ * "tap to place end point" flow and the 📍 pick-on-map button in
+ * LatLngPicker. Components inside MapContainer subscribe via useStore and
+ * register a useMapEvents click handler that fires when this is set.
+ */
+export const mapPickMode = atom<((lat: number, lng: number) => void) | null>(
+    null,
+);
+
 onSet(mapGeoLocation, ({ newValue }) => {
     // Picking a new region resets the upgrade state - the new
     // polygon starts life as Nominatim-simplified again. We gate on
