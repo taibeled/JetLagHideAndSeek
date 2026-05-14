@@ -8,7 +8,22 @@ import {
     OVERPASS_MAJOR_CITY_FILTER,
     prettifyLocation,
 } from "@/maps/api";
+import { NYC_HOSPITALS } from "@/data/nyc-hospitals";
 import type { APILocations } from "@/maps/schema";
+
+/** Convert the curated NYC hospital list to Feature<Point>[] for Voronoi use. */
+export function nycHospitalPoints(
+    disabledRefs?: readonly string[],
+): Feature<Point>[] {
+    const disabled = new Set(
+        (disabledRefs ?? []).map(normalizeFacilityOsmRef).filter(Boolean),
+    );
+    return NYC_HOSPITALS.filter(
+        (h) => !disabled.has(normalizeFacilityOsmRef(h.ref)),
+    ).map((h) =>
+        turf.point([h.lng, h.lat], { osmRef: h.ref, name: h.name }),
+    );
+}
 
 function osmElementToRef(el: { type?: string; id?: number }): string {
     const t = String(el.type ?? "").toLowerCase();
@@ -109,10 +124,18 @@ export function supportsOrdinaryFacilityOsmPicks(type: string): boolean {
     return type === "major-city" || type === "city" || type.endsWith("-full");
 }
 
+export function isNycStaticFacilityType(type: string): boolean {
+    return type === "hospital-nyc-full";
+}
+
 /** Unfiltered OSM facility points for UI lists (major-city / city and *-full). */
 export async function listOrdinaryFacilityVoronoiCandidates(q: {
     type: string;
+    disabledFacilityOsmRefs?: string[];
 }): Promise<Feature<Point>[]> {
+    if (q.type === "hospital-nyc-full") {
+        return nycHospitalPoints(q.disabledFacilityOsmRefs);
+    }
     if (q.type === "major-city" || q.type === "city") {
         const data = await findPlacesInZone(
             OVERPASS_MAJOR_CITY_FILTER,

@@ -37,6 +37,7 @@ import { geoSpatialVoronoi } from "@/maps/geo-utils";
 import {
     fetchFullFacilityElements,
     filterFacilityPointsByDisabledOsmRefs,
+    nycHospitalPoints,
     osmElementsToFacilityPoints,
     validateFullFacilityFetch,
 } from "@/maps/questions/facility-full";
@@ -138,6 +139,12 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
         }
         case "custom-points": {
             return question.geo!;
+        }
+        case "hospital-nyc-full": {
+            return nycHospitalPoints(
+                (question as MatchingQuestionWithFacilityOsmRefs)
+                    .disabledFacilityOsmRefs,
+            );
         }
         case "aquarium-full":
         case "zoo-full":
@@ -322,6 +329,7 @@ export const determineMatchingBoundary = _.memoize(
             case "peak-full":
             case "museum-full":
             case "hospital-full":
+            case "hospital-nyc-full":
             case "cinema-full":
             case "library-full":
             case "golf_course-full":
@@ -415,6 +423,7 @@ export const determineMatchingBoundary = _.memoize(
             .disabledFacilityOsmRefs;
         const facilityOsmExtras =
             question.type === "major-city" ||
+            question.type === "hospital-nyc-full" ||
             (typeof question.type === "string" &&
                 question.type.endsWith("-full"))
                 ? {

@@ -243,6 +243,9 @@ const ordinaryMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
                 .literal("hospital-full")
                 .describe("Hospital Question (Small+Medium Games)"),
             z
+                .literal("hospital-nyc-full")
+                .describe("Hospital Question — NYC Curated List (Small+Medium Games)"),
+            z
                 .literal("cinema-full")
                 .describe("Cinema Question (Small+Medium Games)"),
             z
@@ -374,6 +377,9 @@ const ordinaryMeasuringQuestionSchema = baseMeasuringQuestionSchema.extend({
             z
                 .literal("hospital-full")
                 .describe("Hospital Question (Small+Medium Games)"),
+            z
+                .literal("hospital-nyc-full")
+                .describe("Hospital Question — NYC Curated List (Small+Medium Games)"),
             z
                 .literal("cinema-full")
                 .describe("Cinema Question (Small+Medium Games)"),

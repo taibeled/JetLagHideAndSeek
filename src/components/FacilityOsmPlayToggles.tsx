@@ -29,6 +29,9 @@ function headingForType(type: string): string {
     if (type === "major-city" || type === "city") {
         return "Cities in play (1M+)";
     }
+    if (type === "hospital-nyc-full") {
+        return "Hospitals in play (NYC curated list)";
+    }
     if (type.endsWith("-full")) {
         const loc = type.replace("-full", "") as APILocations;
         return `${prettifyLocation(loc, true)} in play`;
