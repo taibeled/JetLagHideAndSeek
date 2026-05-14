@@ -116,6 +116,20 @@ export function registerServiceWorker() {
         window.location.reload();
     });
 
+    // Check for a SW that was already waiting before this page loaded (e.g.
+    // installed on a previous visit but skipWaiting was never called). Do
+    // this synchronously before any user interaction can set hasUserInteracted,
+    // so we auto-apply rather than showing the toast. This is the primary fix
+    // for mobile: the browser fires the Serwist "waiting" event asynchronously,
+    // by which point the user has usually already tapped something.
+    navigator.serviceWorker.getRegistration(scope).then((existing) => {
+        if (existing?.waiting && !hasUserInteracted && !reloadingForUpdate) {
+            reloadingForUpdate = true;
+            existing.waiting.postMessage({ type: "SKIP_WAITING" });
+            // controllerchange fires above → location.reload() runs.
+        }
+    });
+
     sw.addEventListener("waiting", async () => {
         // Fresh page load, no interaction yet → auto-apply the new SW so
         // users always get the latest code on open. This is the primary fix
@@ -164,11 +178,20 @@ export function registerServiceWorker() {
         });
     });
 
-    sw.register().catch((err: unknown) => {
-        // We deliberately don't toast on registration failure — it
-        // happens routinely in unsupported contexts (iOS private
-        // browsing, some embedded webviews) and surfacing it would
-        // be noise. Log for developer debugging.
-        console.log("Service worker registration failed:", err);
-    });
+    sw.register()
+        .then((registration) => {
+            if (!registration) return;
+            // Force an immediate update check after registration. Mobile
+            // browsers often defer the automatic SW update check; calling
+            // update() here ensures we detect a new version on every page
+            // load rather than waiting for the browser's own schedule.
+            registration.update().catch(() => {});
+        })
+        .catch((err: unknown) => {
+            // We deliberately don't toast on registration failure — it
+            // happens routinely in unsupported contexts (iOS private
+            // browsing, some embedded webviews) and surfacing it would
+            // be noise. Log for developer debugging.
+            console.log("Service worker registration failed:", err);
+        });
 }
