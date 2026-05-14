@@ -138,7 +138,7 @@ export const PlacePicker = ({
     useEffect(() => {
         // Debounced query effect: resetting/loading-flag bookkeeping is
         // the whole point, so `set-state-in-effect` warnings are expected.
-         
+
         if (debouncedValue === "") {
             setResults([]);
             return;
@@ -156,7 +156,6 @@ export const PlacePicker = ({
                     setLoading(false);
                 });
         }
-         
     }, [debouncedValue]);
 
     const _placeLabels = results.map((r) => determineName(r));
@@ -332,37 +331,37 @@ export const PlacePicker = ({
                         </div>
                     ))}
                     {canUpgradeBoundary && (
-                    <>
-                        <Separator className="h-px shrink-0" />
-                        <button
-                            type="button"
-                            onClick={handleUpgradeBoundary}
-                            disabled={upgradingBoundary || $isLoading}
-                            className={cn(
-                                "flex w-full items-start gap-2 px-3 py-2 text-left text-sm",
-                                "text-slate-700 transition-colors duration-150",
-                                "hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60",
-                            )}
-                            aria-label="Load detailed boundary from Overpass"
-                        >
-                            {upgradingBoundary ? (
-                                <Loader2 className="mt-0.5 h-4 w-4 shrink-0 animate-spin" />
-                            ) : (
-                                <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
-                            )}
-                            <span className="flex flex-col">
-                                <span className="font-medium">
-                                    {upgradingBoundary
-                                        ? "Loading detailed boundary..."
-                                        : "Load detailed boundary"}
+                        <>
+                            <Separator className="h-px shrink-0" />
+                            <button
+                                type="button"
+                                onClick={handleUpgradeBoundary}
+                                disabled={upgradingBoundary || $isLoading}
+                                className={cn(
+                                    "flex w-full items-start gap-2 px-3 py-2 text-left text-sm",
+                                    "text-slate-700 transition-colors duration-150",
+                                    "hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60",
+                                )}
+                                aria-label="Load detailed boundary from Overpass"
+                            >
+                                {upgradingBoundary ? (
+                                    <Loader2 className="mt-0.5 h-4 w-4 shrink-0 animate-spin" />
+                                ) : (
+                                    <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
+                                )}
+                                <span className="flex flex-col">
+                                    <span className="font-medium">
+                                        {upgradingBoundary
+                                            ? "Loading detailed boundary..."
+                                            : "Load detailed boundary"}
+                                    </span>
+                                    <span className="text-xs text-slate-500">
+                                        Coastline-precision geometry from
+                                        Overpass. Slower, sometimes times out.
+                                    </span>
                                 </span>
-                                <span className="text-xs text-slate-500">
-                                    Coastline-precision geometry from Overpass.
-                                    Slower, sometimes times out.
-                                </span>
-                            </span>
-                        </button>
-                    </>
+                            </button>
+                        </>
                     )}
                 </div>
                 <Separator className="h-px shrink-0" />

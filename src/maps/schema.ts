@@ -1,10 +1,7 @@
 import { z } from "zod";
 
 import { defaultUnit } from "@/lib/context";
-import {
-    ICON_COLORS,
-    type IconColorKey,
-} from "@/maps/api/constants";
+import { ICON_COLORS, type IconColorKey } from "@/maps/api/constants";
 
 export const NO_GROUP = "NO_GROUP";
 

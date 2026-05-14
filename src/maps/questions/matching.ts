@@ -354,10 +354,10 @@ export const determineMatchingBoundary = _.memoize(
                     }
                 }
                 if (!boundary) {
-                    const nearest = turf.nearestPoint(point, fc as any) as Feature<
-                        Point,
-                        { name?: string } | null
-                    >;
+                    const nearest = turf.nearestPoint(
+                        point,
+                        fc as any,
+                    ) as Feature<Point, { name?: string } | null>;
                     boundary =
                         voronoi.features.find((feature) => {
                             const siteCoords = (feature.properties as any)?.site
@@ -370,7 +370,10 @@ export const determineMatchingBoundary = _.memoize(
                             ) {
                                 return (
                                     turf.distance(
-                                        turf.point([siteCoords[0], siteCoords[1]]),
+                                        turf.point([
+                                            siteCoords[0],
+                                            siteCoords[1],
+                                        ]),
                                         nearest,
                                         { units: "kilometers" },
                                     ) < 0.0001
@@ -559,8 +562,7 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
                 const lat2 = bLat * toRad;
                 const h =
                     Math.sin(dLat / 2) ** 2 +
-                    Math.cos(lat1) * Math.cos(lat2) *
-                        Math.sin(dLon / 2) ** 2;
+                    Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
                 return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
             };
             const PROXIMITY_M = 250;

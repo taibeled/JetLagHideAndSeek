@@ -294,34 +294,34 @@ export const MeasuringQuestionComponent = ({
                 disabled={!data.drag || $isLoading}
             />
             {data.type !== "pick-type" && (
-            <div className="flex gap-2 items-center p-2">
-                <Label
-                    className={cn(
-                        "font-semibold text-lg",
-                        $isLoading && "text-muted-foreground",
-                    )}
-                >
-                    Result
-                </Label>
-                <ToggleGroup
-                    className="grow"
-                    type="single"
-                    value={data.hiderCloser ? "closer" : "further"}
-                    onValueChange={(value: "closer" | "further") =>
-                        questionModified(
-                            (data.hiderCloser = value === "closer"),
-                        )
-                    }
-                    disabled={!!$hiderMode || !data.drag || $isLoading}
-                >
-                    <ToggleGroupItem value="further">
-                        Hider Further
-                    </ToggleGroupItem>
-                    <ToggleGroupItem value="closer">
-                        Hider Closer
-                    </ToggleGroupItem>
-                </ToggleGroup>
-            </div>
+                <div className="flex gap-2 items-center p-2">
+                    <Label
+                        className={cn(
+                            "font-semibold text-lg",
+                            $isLoading && "text-muted-foreground",
+                        )}
+                    >
+                        Result
+                    </Label>
+                    <ToggleGroup
+                        className="grow"
+                        type="single"
+                        value={data.hiderCloser ? "closer" : "further"}
+                        onValueChange={(value: "closer" | "further") =>
+                            questionModified(
+                                (data.hiderCloser = value === "closer"),
+                            )
+                        }
+                        disabled={!!$hiderMode || !data.drag || $isLoading}
+                    >
+                        <ToggleGroupItem value="further">
+                            Hider Further
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="closer">
+                            Hider Closer
+                        </ToggleGroupItem>
+                    </ToggleGroup>
+                </div>
             )}
         </QuestionCard>
     );

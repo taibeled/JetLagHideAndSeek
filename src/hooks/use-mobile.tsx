@@ -17,7 +17,7 @@ export function useIsMobile() {
         mql.addEventListener("change", onChange);
         // Initial sync — effect runs post-mount so first paint has no
         // measurement; this is the standard responsive-hook pattern.
-         
+
         setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
         return () => mql.removeEventListener("change", onChange);
     }, []);

@@ -11,11 +11,7 @@ import type { TransitRoute } from "./types";
 const lineMembershipCache = new Map<string, Promise<Set<string>>>();
 
 const normalizeLineRef = (value: string) =>
-    value
-        .trim()
-        .replace(/^<+/, "")
-        .replace(/>+$/, "")
-        .toUpperCase();
+    value.trim().replace(/^<+/, "").replace(/>+$/, "").toUpperCase();
 
 const lineRefMatchesTokenString = (
     normalizedRef: string,
@@ -124,9 +120,7 @@ const isSubwayFeed = (s: { id: string; name: string }) => {
     const id = s.id.toLowerCase();
     const name = s.name.toLowerCase();
     return (
-        id.includes("subway") ||
-        name.includes("subway") ||
-        id.includes("nyct")
+        id.includes("subway") || name.includes("subway") || id.includes("nyct")
     );
 };
 

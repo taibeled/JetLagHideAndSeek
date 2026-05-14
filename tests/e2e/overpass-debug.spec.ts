@@ -12,7 +12,7 @@ test("debug overpass 400 queries", async ({ page }) => {
         const postData = request.postData() ?? "";
         const rawData = postData.startsWith("data=")
             ? postData.slice(5)
-            : new URL(url).searchParams.get("data") ?? "";
+            : (new URL(url).searchParams.get("data") ?? "");
         const decoded = decodeURIComponent(rawData);
         overpass400.push(decoded);
         console.log("=== OVERPASS 400 QUERY START ===");

@@ -12,9 +12,7 @@ const determinePermanentCache = _.memoize(() =>
 const inFlightFetches = new Map<string, Promise<Response>>();
 
 /** Busy upstream / rate limit — Overpass mirror sweep or getOverpassData retry often recovers. */
-const TRANSIENT_FETCH_STATUSES = new Set([
-    408, 429, 502, 503, 504, 507, 529,
-]);
+const TRANSIENT_FETCH_STATUSES = new Set([408, 429, 502, 503, 504, 507, 529]);
 const MAX_FETCH_FAILURE_LOG_ENTRIES = 100;
 
 function reportFetchFailure(args: {
@@ -51,10 +49,7 @@ function reportFetchFailure(args: {
         const failures = w.__jlFetchFailures as unknown[];
         failures.push(payload);
         if (failures.length > MAX_FETCH_FAILURE_LOG_ENTRIES) {
-            failures.splice(
-                0,
-                failures.length - MAX_FETCH_FAILURE_LOG_ENTRIES,
-            );
+            failures.splice(0, failures.length - MAX_FETCH_FAILURE_LOG_ENTRIES);
         }
     }
     const label = transient

@@ -262,7 +262,8 @@ export const Map = ({ className }: { className?: string }) => {
 
             const territoryBeforeHoled = mapGeoData;
             /** Playable area for fitBounds — never use holed elimination geometry (world bbox). */
-            let zoomTargetFeature: Feature<Polygon | MultiPolygon> | null = null;
+            let zoomTargetFeature: Feature<Polygon | MultiPolygon> | null =
+                null;
             try {
                 const unioned = safeUnion(territoryBeforeHoled!) as Feature<
                     Polygon | MultiPolygon
@@ -274,18 +275,17 @@ export const Map = ({ className }: { className?: string }) => {
             } catch {
                 playableTerritoryUnion.set(null);
                 if (territoryBeforeHoled?.features?.[0]?.geometry) {
-                    zoomTargetFeature = territoryBeforeHoled.features[0] as Feature<
-                        Polygon | MultiPolygon
-                    >;
+                    zoomTargetFeature = territoryBeforeHoled
+                        .features[0] as Feature<Polygon | MultiPolygon>;
                 }
             }
 
             let maskedTerritory = holedMask(territoryBeforeHoled!);
             if (!maskedTerritory) {
                 try {
-                    const unioned = safeUnion(
-                        territoryBeforeHoled!,
-                    ) as Feature<Polygon | MultiPolygon>;
+                    const unioned = safeUnion(territoryBeforeHoled!) as Feature<
+                        Polygon | MultiPolygon
+                    >;
                     const masked = turf.mask(unioned as any) as
                         | Feature<Polygon | MultiPolygon>
                         | null
@@ -296,9 +296,9 @@ export const Map = ({ className }: { className?: string }) => {
                 }
             }
             if (!maskedTerritory) {
-                maskedTerritory = safeUnion(
-                    territoryBeforeHoled!,
-                ) as Feature<Polygon | MultiPolygon>;
+                maskedTerritory = safeUnion(territoryBeforeHoled!) as Feature<
+                    Polygon | MultiPolygon
+                >;
             }
             mapGeoData = {
                 type: "FeatureCollection",
@@ -549,7 +549,7 @@ export const Map = ({ className }: { className?: string }) => {
         // prop so there's no benefit to reactively re-creating the
         // container. Same story for `className`, which is passed from
         // Astro as a static string.
-         
+
         [map, $baseTileLayer, $thunderforestApiKey],
     );
 
@@ -573,7 +573,6 @@ export const Map = ({ className }: { className?: string }) => {
         // identity changes on every render. Putting it in deps would
         // kick the debounce on every state change. We want the debounce
         // to fire only on the real inputs listed below.
-         
     }, [
         $questions,
         map,
@@ -660,7 +659,6 @@ export const Map = ({ className }: { className?: string }) => {
         };
         // `followMeMarkerRef` and `geoWatchIdRef` are refs, not values;
         // including them in deps would be a hook-rules false positive.
-         
     }, [$followMe, map]);
 
     useEffect(() => {

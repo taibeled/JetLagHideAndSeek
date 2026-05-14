@@ -1,4 +1,4 @@
- import * as turf from "@turf/turf";
+import * as turf from "@turf/turf";
 import type {
     BBox,
     Feature,
@@ -162,7 +162,10 @@ function overpassRetryDelayMs(status: number, response: Response): number {
         if (ra) {
             const sec = Number.parseInt(ra, 10);
             if (Number.isFinite(sec) && sec > 0) {
-                return Math.min(120_000, Math.max(OVERPASS_429_MIN_RETRY_MS, sec * 1000));
+                return Math.min(
+                    120_000,
+                    Math.max(OVERPASS_429_MIN_RETRY_MS, sec * 1000),
+                );
             }
         }
         return OVERPASS_429_MIN_RETRY_MS;
@@ -307,7 +310,12 @@ const getOverpassData = async (
         ) {
             const delay = overpassRetryDelayMs(response.status, response);
             await new Promise((r) => setTimeout(r, delay));
-            return getOverpassData(query, loadingText, cacheType, _retryCount + 1);
+            return getOverpassData(
+                query,
+                loadingText,
+                cacheType,
+                _retryCount + 1,
+            );
         }
         await debugOverpassFailure(response);
         const tries = _retryCount + 1;
@@ -559,7 +567,8 @@ function polygonFeaturesOnly(fc: FeatureCollection): PolyFeature[] {
     return fc.features.filter(
         (f): f is PolyFeature =>
             !!f.geometry &&
-            (f.geometry.type === "Polygon" || f.geometry.type === "MultiPolygon"),
+            (f.geometry.type === "Polygon" ||
+                f.geometry.type === "MultiPolygon"),
     );
 }
 
@@ -579,7 +588,9 @@ function chooseContainingOrLargestPolygon(
 ): PolyFeature | null {
     if (features.length === 0) return null;
     const pt = turf.point([longitude, latitude]);
-    const containing = features.filter((f) => turf.booleanPointInPolygon(pt, f));
+    const containing = features.filter((f) =>
+        turf.booleanPointInPolygon(pt, f),
+    );
     const pool = containing.length > 0 ? containing : features;
     const sorted = [...pool].sort(
         (a, b) => turf.area(b as any) - turf.area(a as any),
@@ -587,7 +598,9 @@ function chooseContainingOrLargestPolygon(
     return sorted[0] ?? null;
 }
 
-function asPolygonFeature(feature: Feature | null | undefined): PolyFeature | null {
+function asPolygonFeature(
+    feature: Feature | null | undefined,
+): PolyFeature | null {
     if (!feature?.geometry) return null;
     return feature.geometry.type === "Polygon" ||
         feature.geometry.type === "MultiPolygon"
@@ -629,7 +642,9 @@ export function deriveLandmassComponents(
             Polygon | MultiPolygon
         >,
     ) as PolyFeature;
-    const split = turf.difference(turf.featureCollection([territory, mergedWater]));
+    const split = turf.difference(
+        turf.featureCollection([territory, mergedWater]),
+    );
     if (
         split &&
         (split.geometry.type === "Polygon" ||
@@ -1173,7 +1188,10 @@ out body;
     const collect = (elements: any[] | undefined) => {
         for (const element of elements ?? []) {
             if (!isStopLikeStationNode(element)) continue;
-            if (typeof element.id === "number" && !seenNodeIds.has(element.id)) {
+            if (
+                typeof element.id === "number" &&
+                !seenNodeIds.has(element.id)
+            ) {
                 seenNodeIds.add(element.id);
                 nodeIds.push(element.id);
             }
@@ -1184,9 +1202,7 @@ out body;
             if (lat == null || lon == null) continue;
             const tags = element.tags ?? {};
             const rawName = tags["name:en"] || tags.name || "";
-            const nameKey = rawName
-                ? stationNameMatchKey(String(rawName))
-                : "";
+            const nameKey = rawName ? stationNameMatchKey(String(rawName)) : "";
             stops.push({ lat, lon, nameKey });
         }
     };
@@ -1215,7 +1231,10 @@ export const trainLineRefsForStation = async (
 out tags;
 `;
 
-    const primaryPromise = getOverpassData(query, "Finding train line options...");
+    const primaryPromise = getOverpassData(
+        query,
+        "Finding train line options...",
+    );
     const fallbackPromise =
         aroundLatLng == null
             ? null

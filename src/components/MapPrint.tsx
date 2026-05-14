@@ -19,7 +19,6 @@ export const MapPrint = (props) => {
         };
         // Props are captured once at mount by design — the print
         // control is re-created on `map` changes only.
-         
     }, [map]);
 
     return null;

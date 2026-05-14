@@ -567,13 +567,12 @@ export const ZoneSidebar = () => {
     // ------------------------------------------------------------------
     useEffect(() => {
         if (!rawCircles || rawCircles.length === 0) {
-             
             setReachabilityBundle(null);
             return;
         }
         if (!$reachabilityResult) {
             // Reachability hasn't been queried yet; don't load GTFS.
-             
+
             setReachabilityBundle(null);
             return;
         }
@@ -728,9 +727,11 @@ export const ZoneSidebar = () => {
                         filterCirclesByReachability({
                             circles: filtered,
                             matches: reachabilityBundle.matches,
-                            arrivalsByStopId: $reachabilityResult.arrivalSeconds,
+                            arrivalsByStopId:
+                                $reachabilityResult.arrivalSeconds,
                             stopById: reachabilityBundle.stopById,
-                            budgetMinutes: $reachabilityResult.query.budgetMinutes,
+                            budgetMinutes:
+                                $reachabilityResult.query.budgetMinutes,
                             overrides: overridesMap,
                             unknownDefault: "include",
                         });
@@ -801,7 +802,7 @@ export const ZoneSidebar = () => {
                 $hidingRadius,
                 $hidingRadiusUnits,
             ),
-         
+
         [activeStationsSignature, $displayHidingZonesStyle],
     );
 
@@ -862,7 +863,6 @@ export const ZoneSidebar = () => {
         // (map is a Leaflet instance captured once; the two functions
         // are component-module scoped). Re-running on their identity
         // would needlessly redraw the GeoJSON layer.
-         
     }, [
         $displayHidingZones,
         $displayHidingZonesStyle,
@@ -1776,7 +1776,10 @@ async function selectionProcess(
                 : (raw as FeatureCollection<Point>);
 
             if (!points || points.features.length === 0) {
-                if (question.id === "matching" && question.data.type === "airport") {
+                if (
+                    question.id === "matching" &&
+                    question.data.type === "airport"
+                ) {
                     toast.warning(
                         "No commercial airports found in the current territory.",
                         { toastId: "matching-airport-no-points" },
@@ -1808,7 +1811,8 @@ async function selectionProcess(
                 points as FeatureCollection<Point>,
             );
             const correctPolygon = voronoi.features.find((feature: any) => {
-                const siteCoords = feature?.properties?.site?.geometry?.coordinates;
+                const siteCoords =
+                    feature?.properties?.site?.geometry?.coordinates;
                 if (
                     Array.isArray(siteCoords) &&
                     siteCoords.length >= 2 &&
@@ -1881,8 +1885,14 @@ async function selectionProcess(
                 continue;
             }
 
-            const seekerPoint = turf.point([question.data.lng, question.data.lat]);
-            const nearestQuestion = turf.nearestPoint(seekerPoint, points as any);
+            const seekerPoint = turf.point([
+                question.data.lng,
+                question.data.lat,
+            ]);
+            const nearestQuestion = turf.nearestPoint(
+                seekerPoint,
+                points as any,
+            );
 
             const distances: any[] = points.features.map((x: any) => {
                 return {

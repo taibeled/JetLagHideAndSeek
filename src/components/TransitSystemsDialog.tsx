@@ -164,7 +164,7 @@ function TransitSystemsDialog({
                 if (!cancelled) setStorageInfo(null);
             });
         // Reset to loading state before the IDB read resolves.
-         
+
         setSystems(null);
         listSystems()
             .then((s) => {

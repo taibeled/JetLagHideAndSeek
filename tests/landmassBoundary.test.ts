@@ -12,8 +12,8 @@ describe("deriveLandmassComponents", () => {
             [
                 [-74.03, 40.67],
                 [-73.84, 40.67],
-                [-73.84, 40.90],
-                [-74.03, 40.90],
+                [-73.84, 40.9],
+                [-74.03, 40.9],
                 [-74.03, 40.67],
             ],
         ]) as PolyFeature;
@@ -24,8 +24,8 @@ describe("deriveLandmassComponents", () => {
             [
                 [-73.99, 40.67],
                 [-73.975, 40.67],
-                [-73.975, 40.90],
-                [-73.99, 40.90],
+                [-73.975, 40.9],
+                [-73.99, 40.9],
                 [-73.99, 40.67],
             ],
         ]) as PolyFeature;
@@ -33,8 +33,8 @@ describe("deriveLandmassComponents", () => {
             [
                 [-73.955, 40.67],
                 [-73.945, 40.67],
-                [-73.945, 40.90],
-                [-73.955, 40.90],
+                [-73.945, 40.9],
+                [-73.955, 40.9],
                 [-73.955, 40.67],
             ],
         ]) as PolyFeature;
@@ -68,25 +68,26 @@ describe("deriveLandmassComponents", () => {
             [
                 [-74.03, 40.67],
                 [-73.84, 40.67],
-                [-73.84, 40.90],
-                [-74.03, 40.90],
+                [-73.84, 40.9],
+                [-74.03, 40.9],
                 [-74.03, 40.67],
             ],
         ]) as PolyFeature;
 
         const westChannelLine = turf.lineString([
             [-73.982, 40.67],
-            [-73.982, 40.90],
+            [-73.982, 40.9],
         ]);
         const eastChannelLine = turf.lineString([
             [-73.95, 40.67],
-            [-73.95, 40.90],
+            [-73.95, 40.9],
         ]);
 
-        const parts = deriveLandmassComponents(territory, [], [
-            westChannelLine as any,
-            eastChannelLine as any,
-        ]);
+        const parts = deriveLandmassComponents(
+            territory,
+            [],
+            [westChannelLine as any, eastChannelLine as any],
+        );
         expect(parts.length).toBe(3);
     });
 });

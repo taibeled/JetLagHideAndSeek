@@ -19,11 +19,7 @@ import {
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
-import {
-    ICON_COLOR_LABELS,
-    ICON_COLORS,
-    type IconColorKey,
-} from "@/maps/api";
+import { ICON_COLOR_LABELS, ICON_COLORS, type IconColorKey } from "@/maps/api";
 import type { ThermometerQuestion } from "@/maps/schema";
 
 const firstPinColorNot = (avoid: IconColorKey): IconColorKey => {
@@ -125,7 +121,9 @@ export const ThermometerQuestionComponent = ({
                         "flex flex-col gap-2 items-stretch",
                     )}
                 >
-                    <Label className="text-sm font-medium">Start pin color</Label>
+                    <Label className="text-sm font-medium">
+                        Start pin color
+                    </Label>
                     <Select<IconColorKey>
                         trigger="Color"
                         value={data.colorA}

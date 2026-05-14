@@ -115,11 +115,7 @@ function expandBboxDegrees(bbox: BBox, padDeg: number): BBox {
 }
 
 function coastlineSimplifyTolerance(bbox: BBox): number {
-    const span = Math.max(
-        bbox[2] - bbox[0],
-        bbox[3] - bbox[1],
-        1e-8,
-    );
+    const span = Math.max(bbox[2] - bbox[0], bbox[3] - bbox[1], 1e-8);
     return Math.min(0.025, span * COASTLINE_SIMPLIFY_SPAN_RATIO);
 }
 
@@ -150,10 +146,11 @@ function lightenCoastlinesForMeasuring(
         try {
             clipped = turf.bboxClip(raw, clipBbox) as Feature | undefined;
         } catch (err) {
-            console.debug(
-                "[coastline] bboxClip failed; skipping feature",
-                { featureId, clipBbox, err },
-            );
+            console.debug("[coastline] bboxClip failed; skipping feature", {
+                featureId,
+                clipBbox,
+                err,
+            });
             continue;
         }
         if (!clipped?.geometry) continue;
@@ -167,10 +164,11 @@ function lightenCoastlinesForMeasuring(
                 highQuality: false,
             }) as Feature<LineString | MultiLineString>;
         } catch (err) {
-            console.debug(
-                "[coastline] simplify failed; skipping feature",
-                { featureId, tol, err },
-            );
+            console.debug("[coastline] simplify failed; skipping feature", {
+                featureId,
+                tol,
+                err,
+            });
             continue;
         }
         const lenKm = turf.length(f, { units: "kilometers" });
@@ -323,7 +321,10 @@ export const determineMeasuringBoundary = async (
                 }
             }
 
-            const bufMiles = Math.max(distanceToCoastline, COASTLINE_BUFFER_EPS_MI);
+            const bufMiles = Math.max(
+                distanceToCoastline,
+                COASTLINE_BUFFER_EPS_MI,
+            );
             const extendedBbox = bboxExtension(bBox, bufMiles);
 
             const exclusion = mergeCoastalLineBuffers(

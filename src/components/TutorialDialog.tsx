@@ -1114,7 +1114,6 @@ export const TutorialDialog = () => {
         // `currentTutorialStep` is derived from `$tutorialStep` and
         // read inside the timeout callback, so keying the effect on the
         // step index + visibility is sufficient.
-         
     }, [$tutorialStep, $showTutorial]);
 
     useEffect(() => {
@@ -1154,7 +1153,6 @@ export const TutorialDialog = () => {
         // nanostore reads, so keying the effect on the visible tutorial
         // state is enough. Including the callbacks would reattach the
         // keydown listener on every render.
-         
     }, [$showTutorial, $tutorialStep]);
 
     return (
@@ -1203,7 +1201,6 @@ export const TutorialDialog = () => {
                         <div className="flex space-x-1.5">
                             {tutorialSteps.map((_, index) => (
                                 <div
-                                     
                                     key={index}
                                     className={`h-2 rounded-full flex-1 ${
                                         index <= $tutorialStep
