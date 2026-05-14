@@ -123,6 +123,11 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
             const cityData = await findPlacesInZone(
                 OVERPASS_MAJOR_CITY_FILTER,
                 "Finding cities...",
+                "nwr",
+                "center",
+                [],
+                0,
+                true, // skipPlayableTerritoryFilter — same Voronoi reason as facilities
             );
             const pts = osmElementsToFacilityPoints(cityData.elements ?? []);
             return filterFacilityPointsByDisabledOsmRefs(
@@ -455,7 +460,17 @@ export const adjustPerMatching = async (
         return mapData;
     }
 
-    return modifyMapData(mapData, boundary, question.same);
+    const result = modifyMapData(mapData, boundary, question.same);
+    if (result === null) {
+        toast.warning(
+            `This matching answer has no overlap with the remaining territory — the ${
+                question.same ? '"Same"' : '"Different"'
+            } result may be contradictory with prior questions.`,
+            { toastId: "matching-no-territory" },
+        );
+        return mapData;
+    }
+    return result;
 };
 
 export const hiderifyMatching = async (question: MatchingQuestion) => {

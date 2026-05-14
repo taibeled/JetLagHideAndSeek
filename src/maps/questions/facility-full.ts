@@ -117,6 +117,11 @@ export async function listOrdinaryFacilityVoronoiCandidates(q: {
         const data = await findPlacesInZone(
             OVERPASS_MAJOR_CITY_FILTER,
             "Finding cities...",
+            "nwr",
+            "center",
+            [],
+            0,
+            true, // skipPlayableTerritoryFilter — same Voronoi reason as facilities
         );
         return osmElementsToFacilityPoints(data.elements ?? []);
     }
