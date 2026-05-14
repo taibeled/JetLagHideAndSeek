@@ -77,6 +77,9 @@ export async function fetchFullFacilityElements(
         "center",
         [],
         60,
+        true, // skipPlayableTerritoryFilter — Voronoi cells extend beyond the
+              // POI centroid; a facility just outside remaining territory may
+              // still define the nearest catchment for territory inside the mask.
     );
     return { elements: data.elements ?? [], remark: data.remark };
 }
