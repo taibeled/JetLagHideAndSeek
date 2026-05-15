@@ -158,6 +158,35 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
 };
 
 /**
+ * On touch/coarse-pointer devices (iOS, Android) the leaflet-contextmenu
+ * plugin requires a long-press to open. This handler intercepts a plain tap
+ * (click) and immediately shows the context menu at that location so the
+ * user doesn't have to hold. Skips when pick mode is active so thermometer
+ * end-point placement still works normally.
+ */
+const MapTapMenuHandler = () => {
+    const map = useMap();
+    useMapEvents({
+        click(e) {
+            if (!window.matchMedia("(pointer: coarse)").matches) return;
+            if (mapPickMode.get()) return;
+            const cm = (map as any).contextmenu;
+            if (!cm) return;
+            if (cm.isVisible()) {
+                cm.hide();
+            } else {
+                cm.showAt(e.containerPoint, {
+                    latlng: e.latlng,
+                    layerPoint: e.layerPoint,
+                    containerPoint: e.containerPoint,
+                });
+            }
+        },
+    });
+    return null;
+};
+
+/**
  * Rendered inside MapContainer. When `mapPickMode` is set, this intercepts
  * the next map left-click, passes the coordinates to the stored callback,
  * then clears the atom. Also shows a banner and sets a crosshair cursor so
@@ -587,6 +616,7 @@ export const Map = ({ className }: { className?: string }) => {
                 ]}
             >
                 {getTileLayer($baseTileLayer, $thunderforestApiKey)}
+                <MapTapMenuHandler />
                 <MapPickModeHandler />
                 <DraggableMarkers />
                 <div className="leaflet-top leaflet-right">
