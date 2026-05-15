@@ -7,7 +7,13 @@ import * as turf from "@turf/turf";
 import type { Feature, MultiPolygon, Polygon } from "geojson";
 import * as L from "leaflet";
 import { useEffect, useMemo, useRef } from "react";
-import { MapContainer, ScaleControl, TileLayer, useMap, useMapEvents } from "react-leaflet";
+import {
+    MapContainer,
+    ScaleControl,
+    TileLayer,
+    useMap,
+    useMapEvents,
+} from "react-leaflet";
 import { toast } from "react-toastify";
 
 import { DraggableMarkers } from "@/components/DraggableMarkers";
@@ -194,7 +200,10 @@ const MapPickModeHandler = () => {
     if (!$mapPickMode) return null;
 
     return (
-        <div className="leaflet-top leaflet-left" style={{ pointerEvents: "none" }}>
+        <div
+            className="leaflet-top leaflet-left"
+            style={{ pointerEvents: "none" }}
+        >
             <div className="leaflet-control m-3 rounded-lg bg-black/80 px-3 py-2 text-sm font-medium text-white shadow-lg">
                 Tap the map to place the end point · Esc to cancel
             </div>

@@ -2,13 +2,13 @@ import * as turf from "@turf/turf";
 import type { Feature, Point } from "geojson";
 import { toast } from "react-toastify";
 
+import { NYC_HOSPITALS } from "@/data/nyc-hospitals";
 import {
     findPlacesInZone,
     LOCATION_FIRST_TAG,
     OVERPASS_MAJOR_CITY_FILTER,
     prettifyLocation,
 } from "@/maps/api";
-import { NYC_HOSPITALS } from "@/data/nyc-hospitals";
 import type { APILocations } from "@/maps/schema";
 
 /** Convert the curated NYC hospital list to Feature<Point>[] for Voronoi use. */

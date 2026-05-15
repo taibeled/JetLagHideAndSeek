@@ -402,47 +402,47 @@ export const LatitudeLongitude = ({
                         </div>
                     ) : (
                         <>
-                        <Button
-                            variant="outline"
-                            title="Pick location on map"
-                            disabled={disabled}
-                            onClick={() => {
-                                mapPickMode.set((lat, lng) => {
-                                    onChange(lat, lng);
-                                });
-                            }}
-                        >
-                            <MapPinIcon />
-                        </Button>
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <Button
-                                    disabled={disabled}
-                                    variant="outline"
-                                    title="Edit coordinates"
-                                >
-                                    <EditIcon />
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle className="text-2xl">
-                                        Update {label}
-                                    </DialogTitle>
-                                </DialogHeader>
-                                <LatLngEditForm
-                                    latitude={latitude}
-                                    longitude={longitude}
-                                    onChange={onChange}
-                                    disabled={disabled}
-                                />
-                                <DialogFooter>
-                                    <DialogClose asChild>
-                                        <Button>Done</Button>
-                                    </DialogClose>
-                                </DialogFooter>
-                            </DialogContent>
-                        </Dialog>
+                            <Button
+                                variant="outline"
+                                title="Pick location on map"
+                                disabled={disabled}
+                                onClick={() => {
+                                    mapPickMode.set((lat, lng) => {
+                                        onChange(lat, lng);
+                                    });
+                                }}
+                            >
+                                <MapPinIcon />
+                            </Button>
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button
+                                        disabled={disabled}
+                                        variant="outline"
+                                        title="Edit coordinates"
+                                    >
+                                        <EditIcon />
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle className="text-2xl">
+                                            Update {label}
+                                        </DialogTitle>
+                                    </DialogHeader>
+                                    <LatLngEditForm
+                                        latitude={latitude}
+                                        longitude={longitude}
+                                        onChange={onChange}
+                                        disabled={disabled}
+                                    />
+                                    <DialogFooter>
+                                        <DialogClose asChild>
+                                            <Button>Done</Button>
+                                        </DialogClose>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
                         </>
                     )}
                     <div
