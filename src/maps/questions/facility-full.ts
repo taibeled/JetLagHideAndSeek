@@ -20,9 +20,7 @@ export function nycHospitalPoints(
     );
     return NYC_HOSPITALS.filter(
         (h) => !disabled.has(normalizeFacilityOsmRef(h.ref)),
-    ).map((h) =>
-        turf.point([h.lng, h.lat], { osmRef: h.ref, name: h.name }),
-    );
+    ).map((h) => turf.point([h.lng, h.lat], { osmRef: h.ref, name: h.name }));
 }
 
 function osmElementToRef(el: { type?: string; id?: number }): string {
@@ -93,8 +91,8 @@ export async function fetchFullFacilityElements(
         [],
         60,
         true, // skipPlayableTerritoryFilter — Voronoi cells extend beyond the
-              // POI centroid; a facility just outside remaining territory may
-              // still define the nearest catchment for territory inside the mask.
+        // POI centroid; a facility just outside remaining territory may
+        // still define the nearest catchment for territory inside the mask.
     );
     return { elements: data.elements ?? [], remark: data.remark };
 }
@@ -124,9 +122,6 @@ export function supportsOrdinaryFacilityOsmPicks(type: string): boolean {
     return type === "major-city" || type === "city" || type.endsWith("-full");
 }
 
-export function isNycStaticFacilityType(type: string): boolean {
-    return type === "hospital-nyc-full";
-}
 
 /** Unfiltered OSM facility points for UI lists (major-city / city and *-full). */
 export async function listOrdinaryFacilityVoronoiCandidates(q: {
