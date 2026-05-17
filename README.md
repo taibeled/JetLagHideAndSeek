@@ -1,7 +1,7 @@
 # Hide & Seek Mapper
 
 A mobile app for generating interactive maps to explore hiding possibilities in
-*Jet Lag: The Game* — Hide & Seek. Built with Expo SDK 54 and React Native,
+_Jet Lag: The Game_ — Hide & Seek. Built with Expo SDK 54 and React Native,
 centered on a native MapLibre map and an Apple Maps-style bottom sheet.
 
 ## Features
@@ -18,17 +18,17 @@ centered on a native MapLibre map and an Apple Maps-style bottom sheet.
 
 ## Tech Stack
 
-| Layer          | Technology                                          |
-| -------------- | --------------------------------------------------- |
-| Framework      | Expo SDK 54, React Native 0.81                      |
-| Routing        | Expo Router                                         |
-| Map            | MapLibre GL Native, OSM raster tiles                |
-| Bottom sheet   | `@gorhom/bottom-sheet`                              |
-| Geometry       | Turf.js (`@turf/circle`, `@turf/union`)             |
-| Transit data   | ODPT GTFS (Tokyo Metro, Toei Subway)                |
-| State          | React Context                                       |
-| Lint / Format  | ESLint, Prettier, TypeScript                        |
-| Testing        | Jest, React Native Testing Library, Maestro         |
+| Layer         | Technology                                  |
+| ------------- | ------------------------------------------- |
+| Framework     | Expo SDK 54, React Native 0.81              |
+| Routing       | Expo Router                                 |
+| Map           | MapLibre GL Native, OSM raster tiles        |
+| Bottom sheet  | `@gorhom/bottom-sheet`                      |
+| Geometry      | Turf.js (`@turf/circle`, `@turf/union`)     |
+| Transit data  | ODPT GTFS (Tokyo Metro, Toei Subway)        |
+| State         | React Context                               |
+| Lint / Format | ESLint, Prettier, TypeScript                |
+| Testing       | Jest, React Native Testing Library, Maestro |
 
 ## Prerequisites
 
@@ -66,20 +66,20 @@ LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 pnpm exec expo run:ios --device "iPhone 16 P
 
 ## Commands
 
-| Command                    | Description                               |
-| -------------------------- | ----------------------------------------- |
-| `pnpm start`               | Start the Expo dev server                 |
-| `pnpm ios`                 | Run on iOS simulator or device            |
-| `pnpm android`             | Run on Android emulator or device         |
-| `pnpm lint`                | Lint with ESLint                          |
-| `pnpm format`              | Format with Prettier                      |
-| `pnpm format:check`        | Check formatting                          |
-| `pnpm typecheck`           | Run TypeScript type checking              |
-| `pnpm check`               | Lint, format check, and typecheck         |
-| `pnpm test`                | Run Jest unit and component tests         |
-| `pnpm test:e2e:ios`        | Run Maestro E2E flows                     |
-| `pnpm test:e2e:ios:stack`  | Start Metro, run E2E flows, stop Metro    |
-| `pnpm data:odpt`           | Regenerate ODPT hiding-zone presets       |
+| Command                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| `pnpm start`              | Start the Expo dev server              |
+| `pnpm ios`                | Run on iOS simulator or device         |
+| `pnpm android`            | Run on Android emulator or device      |
+| `pnpm lint`               | Lint with ESLint                       |
+| `pnpm format`             | Format with Prettier                   |
+| `pnpm format:check`       | Check formatting                       |
+| `pnpm typecheck`          | Run TypeScript type checking           |
+| `pnpm check`              | Lint, format check, and typecheck      |
+| `pnpm test`               | Run Jest unit and component tests      |
+| `pnpm test:e2e:ios`       | Run Maestro E2E flows                  |
+| `pnpm test:e2e:ios:stack` | Start Metro, run E2E flows, stop Metro |
+| `pnpm data:odpt`          | Regenerate ODPT hiding-zone presets    |
 
 ## Project Structure
 
