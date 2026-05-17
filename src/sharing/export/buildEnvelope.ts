@@ -11,13 +11,11 @@ export type HidingZoneExportState = {
 export function buildAppStateEnvelope({
     gameId = createGameId(),
     hidingZones,
-    includeBoundary = true,
     now = new Date(),
     playArea,
 }: {
     gameId?: string;
     hidingZones: HidingZoneExportState;
-    includeBoundary?: boolean;
     now?: Date;
     playArea: PlayArea;
 }): AppStateEnvelopeV1 {
@@ -38,7 +36,6 @@ export function buildAppStateEnvelope({
             },
             playArea: {
                 bbox: playArea.bbox,
-                ...(includeBoundary ? { boundary: playArea.boundary } : {}),
                 center: playArea.center,
                 label: playArea.label,
                 osmId: playArea.osmId,
@@ -50,7 +47,7 @@ export function buildAppStateEnvelope({
 }
 
 function createGameId(): string {
-    return `setup-${Date.now().toString(36)}-${Math.random()
+    return `s-${Date.now().toString(36)}-${Math.random()
         .toString(36)
-        .slice(2, 10)}`;
+        .slice(2, 6)}`;
 }

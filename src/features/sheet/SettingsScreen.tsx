@@ -83,7 +83,6 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
                     radiusUnit,
                     selectedPresetIds,
                 }}
-                includeBoundary={cacheSource !== "bundled"}
                 onClose={() => setIsShareVisible(false)}
                 playArea={playArea}
                 visible={isShareVisible}

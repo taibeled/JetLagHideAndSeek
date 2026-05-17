@@ -1,3 +1,6 @@
+// Full-key schemas for internal use.
+// The wire format uses minified keys. See ../minified.ts
+// for the FIELD_MAP and minified schemas.
 import { z } from "zod";
 
 import type { GeoJsonFeatureCollection } from "@/features/map/geojsonTypes";

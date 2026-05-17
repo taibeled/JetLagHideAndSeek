@@ -15,11 +15,11 @@ import type { HidingZoneExportState } from "@/sharing/export/buildEnvelope";
 import { buildAppStateEnvelope } from "@/sharing/export/buildEnvelope";
 import { buildImportLink } from "@/sharing/links/buildLink";
 import { QRCodeView } from "@/sharing/qr/QRCodeView";
+import { minifyEnvelope } from "@/sharing/wire/minified";
 import { colors } from "@/theme/colors";
 
 type ShareSetupModalProps = {
     hidingZones: HidingZoneExportState;
-    includeBoundary: boolean;
     onClose: () => void;
     playArea: PlayArea;
     visible: boolean;
@@ -27,12 +27,13 @@ type ShareSetupModalProps = {
 
 export function ShareSetupModal({
     hidingZones,
-    includeBoundary,
     onClose,
     playArea,
     visible,
 }: ShareSetupModalProps) {
-    const [debugJson, setDebugJson] = useState(false);
+    const [debugMode, setDebugMode] = useState<false | "full" | "minified">(
+        false,
+    );
     const [status, setStatus] = useState<string | null>(null);
     const tapCountRef = useRef(0);
     const tapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -47,10 +48,9 @@ export function ShareSetupModal({
         () =>
             buildAppStateEnvelope({
                 hidingZones,
-                includeBoundary,
                 playArea,
             }),
-        [hidingZones, includeBoundary, playArea],
+        [hidingZones, playArea],
     );
 
     const link = useMemo(
@@ -65,7 +65,9 @@ export function ShareSetupModal({
 
         if (tapCountRef.current >= 3) {
             tapCountRef.current = 0;
-            setDebugJson((prev) => !prev);
+            setDebugMode((prev) =>
+                prev === false ? "full" : prev === "full" ? "minified" : false,
+            );
         } else {
             tapTimerRef.current = setTimeout(() => {
                 tapCountRef.current = 0;
@@ -169,10 +171,23 @@ export function ShareSetupModal({
                             onPress={handleLinkTripleTap}
                             testID="share-setup-link"
                         >
+                            {debugMode !== false ? (
+                                <Text style={styles.debugLabel}>
+                                    {debugMode === "full"
+                                        ? "Full JSON"
+                                        : "Minified JSON"}
+                                </Text>
+                            ) : null}
                             <Text selectable style={styles.linkText}>
-                                {debugJson
+                                {debugMode === "full"
                                     ? JSON.stringify(envelope, null, 2)
-                                    : link}
+                                    : debugMode === "minified"
+                                      ? JSON.stringify(
+                                            minifyEnvelope(envelope),
+                                            null,
+                                            2,
+                                        )
+                                      : link}
                             </Text>
                         </Pressable>
 
@@ -240,6 +255,14 @@ const styles = StyleSheet.create({
     content: {
         gap: 16,
         paddingBottom: 22,
+    },
+    debugLabel: {
+        color: colors.tint,
+        fontSize: 10,
+        fontWeight: "800",
+        letterSpacing: 0,
+        marginBottom: 4,
+        textTransform: "uppercase",
     },
     eyebrow: {
         color: colors.tint,

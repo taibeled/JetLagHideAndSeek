@@ -5,6 +5,11 @@ import type { ImportLinkError } from "@/sharing/errors";
 
 import { base64UrlToBytes, bytesToBase64Url } from "./base64url";
 import { canonicalize } from "./canonicalize";
+import {
+    minifyEnvelope,
+    unminifyEnvelope,
+    wireEnvelopeMinifiedSchema,
+} from "./minified";
 import { wireEnvelopeSchema, type WireEnvelope } from "./schema";
 
 export type DecodeEnvelopeResult =
@@ -13,7 +18,8 @@ export type DecodeEnvelopeResult =
 
 export function encodeEnvelope(envelope: WireEnvelope): string {
     const validated = wireEnvelopeSchema.parse(envelope);
-    const json = canonicalize(validated);
+    const minified = minifyEnvelope(validated);
+    const json = canonicalize(minified);
     return bytesToBase64Url(deflateSync(strToU8(json)));
 }
 
@@ -45,7 +51,8 @@ export function decodeEnvelopePayload(payload: string): DecodeEnvelopeResult {
     }
 
     try {
-        return { envelope: wireEnvelopeSchema.parse(parsed), ok: true };
+        const minified = wireEnvelopeMinifiedSchema.parse(parsed);
+        return { envelope: unminifyEnvelope(minified), ok: true };
     } catch (err) {
         return {
             error: {
@@ -59,7 +66,7 @@ export function decodeEnvelopePayload(payload: string): DecodeEnvelopeResult {
 
 function getUnsupportedVersion(value: unknown): number | null {
     if (!value || typeof value !== "object") return null;
-    const version = (value as { version?: unknown }).version;
+    const version = (value as { v?: unknown }).v;
     if (typeof version === "number" && version !== 1) return version;
     return null;
 }

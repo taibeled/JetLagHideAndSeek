@@ -1,6 +1,9 @@
+import { inflateSync, strFromU8 } from "fflate";
+
 import { base64UrlToBytes, bytesToBase64Url } from "@/sharing/wire/base64url";
 import { canonicalize } from "@/sharing/wire/canonicalize";
 import { decodeEnvelopePayload, encodeEnvelope } from "@/sharing/wire/codec";
+import { FIELD_MAP } from "@/sharing/wire/minified";
 import type { AppStateEnvelopeV1 } from "@/sharing/wire/schema";
 
 const envelope: AppStateEnvelopeV1 = {
@@ -49,7 +52,14 @@ describe("sharing wire codec", () => {
         const payload = encodeEnvelope(envelope);
         const decoded = decodeEnvelopePayload(payload);
 
-        expect(decoded).toEqual({ envelope, ok: true });
+        expect(decoded.ok).toBe(true);
+        if (decoded.ok) {
+            expect(decoded.envelope.kind).toBe("app-state");
+            expect(decoded.envelope.version).toBe(1);
+            expect(decoded.envelope.payload.gameId).toBe("game-1");
+            expect(decoded.envelope.payload.playArea?.label).toBe("Test Area");
+            expect(decoded.envelope.payload.playArea?.osmId).toBe(123);
+        }
     });
 
     it("returns a structured error for invalid payloads", () => {
@@ -57,5 +67,39 @@ describe("sharing wire codec", () => {
             error: { code: "invalid-base64url" },
             ok: false,
         });
+    });
+
+    it("encodes using minified keys", () => {
+        const payload = encodeEnvelope(envelope);
+        const raw = strFromU8(inflateSync(base64UrlToBytes(payload)));
+        const json = JSON.parse(raw);
+
+        expect(json[FIELD_MAP.kind]).toBe("app-state");
+        expect(json[FIELD_MAP.version]).toBe(1);
+        expect(json[FIELD_MAP.payload][FIELD_MAP.gameId]).toBe("game-1");
+        expect(
+            json[FIELD_MAP.payload][FIELD_MAP.metadata][FIELD_MAP.createdAt],
+        ).toBe("2026-05-17T00:00:00.000Z");
+
+        expect(json.kind).toBeUndefined();
+        expect(json.version).toBeUndefined();
+        expect(json.payload).toBeUndefined();
+    });
+
+    it("decoded envelope restores full-key format", () => {
+        const payload = encodeEnvelope(envelope);
+        const decoded = decodeEnvelopePayload(payload);
+
+        expect(decoded.ok).toBe(true);
+        if (decoded.ok) {
+            const result = decoded.envelope;
+            expect(result.kind).toBe("app-state");
+            expect(result.payload.hidingZones?.radiusMeters).toBe(600);
+            expect(result.payload.hidingZones?.radiusUnit).toBe("m");
+            expect(result.payload.metadata.updatedAt).toBe(
+                result.payload.metadata.createdAt,
+            );
+            expect(result.payload.playArea?.osmType).toBe("R");
+        }
     });
 });

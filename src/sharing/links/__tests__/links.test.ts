@@ -25,10 +25,22 @@ describe("sharing links", () => {
         const link = buildImportLink({ envelope, mode: "custom-scheme" });
 
         expect(link).toMatch(/^jetlag-hide-seek-v2:\/\/import\?d=/);
-        expect(parseImportLink(link)).toEqual({
-            envelope,
-            ok: true,
-            source: "payload",
-        });
+
+        const parsed = parseImportLink(link);
+        expect(parsed.ok).toBe(true);
+        if (parsed.ok) {
+            const result = parsed.envelope;
+            expect(parsed.source).toBe("payload");
+            expect(result.kind).toBe("app-state");
+            expect(result.version).toBe(1);
+            expect(result.payload.gameId).toBe("game-1");
+            expect(result.payload.playArea?.label).toBe("Test Area");
+            expect(result.payload.playArea?.osmId).toBe(123);
+            expect(result.payload.playArea?.center[0]).toBeCloseTo(2, 4);
+            expect(result.payload.playArea?.center[1]).toBeCloseTo(3, 4);
+            expect(result.payload.hidingZones?.radiusMeters).toBe(600);
+            expect(result.payload.hidingZones?.radiusUnit).toBe("m");
+            expect(result.payload.playArea?.osmType).toBe("R");
+        }
     });
 });
