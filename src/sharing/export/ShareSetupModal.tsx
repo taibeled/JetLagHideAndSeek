@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
     Modal,
     NativeModules,
@@ -32,16 +32,46 @@ export function ShareSetupModal({
     playArea,
     visible,
 }: ShareSetupModalProps) {
+    const [debugJson, setDebugJson] = useState(false);
     const [status, setStatus] = useState<string | null>(null);
-    const link = useMemo(() => {
-        const envelope = buildAppStateEnvelope({
-            hidingZones,
-            includeBoundary,
-            playArea,
-        });
-        return buildImportLink({ envelope, mode: "custom-scheme" });
-    }, [hidingZones, includeBoundary, playArea]);
+    const tapCountRef = useRef(0);
+    const tapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    useEffect(() => {
+        return () => {
+            if (tapTimerRef.current) clearTimeout(tapTimerRef.current);
+        };
+    }, []);
+
+    const envelope = useMemo(
+        () =>
+            buildAppStateEnvelope({
+                hidingZones,
+                includeBoundary,
+                playArea,
+            }),
+        [hidingZones, includeBoundary, playArea],
+    );
+
+    const link = useMemo(
+        () => buildImportLink({ envelope, mode: "custom-scheme" }),
+        [envelope],
+    );
     const canShowQr = link.length <= 2500;
+
+    const handleLinkTripleTap = () => {
+        tapCountRef.current += 1;
+        if (tapTimerRef.current) clearTimeout(tapTimerRef.current);
+
+        if (tapCountRef.current >= 3) {
+            tapCountRef.current = 0;
+            setDebugJson((prev) => !prev);
+        } else {
+            tapTimerRef.current = setTimeout(() => {
+                tapCountRef.current = 0;
+            }, 500);
+        }
+    };
 
     const copyLink = async () => {
         const copied = await copyToClipboard(link);
@@ -135,13 +165,16 @@ export function ShareSetupModal({
                             </View>
                         )}
 
-                        <Text
-                            selectable
-                            style={styles.linkText}
+                        <Pressable
+                            onPress={handleLinkTripleTap}
                             testID="share-setup-link"
                         >
-                            {link}
-                        </Text>
+                            <Text selectable style={styles.linkText}>
+                                {debugJson
+                                    ? JSON.stringify(envelope, null, 2)
+                                    : link}
+                            </Text>
+                        </Pressable>
 
                         <View style={styles.buttonRow}>
                             <Pressable
