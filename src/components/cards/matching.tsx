@@ -429,7 +429,7 @@ export const MatchingQuestionComponent = ({
                                 3: "Admin L3 (region/borough in some areas)",
                                 4: "Admin L4 (state/province/county in some areas)",
                                 5: "Admin L5 (county/city in some areas)",
-                                6: "Admin L6 (county/city district in some areas)",
+                                6: "Admin L6 (NYC boroughs / county district in some areas)",
                                 7: "Admin L7 (district/borough in some areas)",
                                 8: "Admin L8 (city/town in many areas)",
                                 9: "Admin L9 (city subdivision/neighborhood)",

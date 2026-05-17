@@ -153,7 +153,7 @@ const isLocalhost =
     </head>
     <body class:list={[className, "dark", "flex", "flex-col", "min-h-svh"]} style="touch-action: manipulation;">
         <slot />
-        <ToastContainer client:only="react" />
+        <ToastContainer client:only="react" position="bottom-right" />
         {/*
           SW registration. Ships as its own client-only script so it
           runs once per page load (the import side effect), cannot
