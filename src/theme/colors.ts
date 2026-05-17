@@ -1,0 +1,15 @@
+export const colors = {
+    background: "#f7f4ee",
+    border: "#d9d4ca",
+    button: "#111827",
+    buttonSubtle: "#ece7dc",
+    card: "#fffefa",
+    ink: "#17202a",
+    mapBlue: "#9ec5df",
+    mapGreen: "#9bc4a3",
+    mapRoad: "#f1d083",
+    muted: "#667085",
+    panel: "#fffefa",
+    tint: "#1f6f78",
+    white: "#ffffff",
+};

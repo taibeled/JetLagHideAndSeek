@@ -1,0 +1,27 @@
+{
+    "expo": {
+        "name": "Hide & Seek Mapper v2",
+        "slug": "jet-lag-hide-and-seek-v2",
+        "scheme": "jetlag-hide-seek-v2",
+        "version": "0.1.0",
+        "orientation": "portrait",
+        "icon": "./assets/icon.png",
+        "userInterfaceStyle": "light",
+        "newArchEnabled": true,
+        "ios": {
+            "supportsTablet": true,
+            "bundleIdentifier": "com.hinoka.hideandseek.v2",
+            "infoPlist": {
+                "NSLocationWhenInUseUsageDescription": "Your location is shown on the map so you can see where you are relative to the current Hide & Seek play area. Location is never stored or shared."
+            }
+        },
+        "android": {
+            "package": "com.wztlei.jetlaghideandseek.v2",
+            "predictiveBackGestureEnabled": false
+        },
+        "plugins": ["expo-router", "@maplibre/maplibre-react-native"],
+        "extra": {
+            "router": {}
+        }
+    }
+}

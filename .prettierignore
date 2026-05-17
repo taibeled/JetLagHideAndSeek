@@ -1,2 +1,8 @@
-pnpm-lock.yaml
-tailwind.config.mjs
+node_modules
+.expo
+dist
+coverage
+e2e/artifacts
+data/odpt/cache
+data/odpt/odpt_api.htm
+data/odpt/odpt_api_files

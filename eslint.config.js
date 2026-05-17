@@ -1,56 +1,60 @@
-import pluginJs from "@eslint/js";
-import pluginImportAlias from "eslint-plugin-import-alias";
-import pluginReact from "eslint-plugin-react";
-import simpleImportSort from "eslint-plugin-simple-import-sort";
-import globals from "globals";
-import tseslint from "typescript-eslint";
+const pluginJs = require("@eslint/js");
+const eslintConfigPrettier = require("eslint-config-prettier");
+const pluginReact = require("eslint-plugin-react");
+const pluginRnA11y = require("eslint-plugin-rn-a11y");
+const globals = require("globals");
+const tseslint = require("typescript-eslint");
 
-import tsconfig from "./tsconfig.json" with { type: "json" };
-
-/** @type {import('eslint').Linter.Config[]} */
-export default [
-    { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
-    { languageOptions: { globals: globals.browser } },
-    pluginJs.configs.recommended,
-    ...tseslint.configs.recommended,
-    pluginReact.configs.flat.recommended,
+module.exports = [
     {
-        plugins: {
-            "import-alias": pluginImportAlias,
-            "simple-import-sort": simpleImportSort,
-        },
+        ignores: [
+            "node_modules/**",
+            ".expo/**",
+            "dist/**",
+            "data/odpt/cache/**",
+            "data/odpt/odpt_api.htm",
+            "data/odpt/odpt_api_files/**",
+        ],
+    },
+    {
         settings: {
             react: {
                 version: "19",
             },
         },
+    },
+    pluginJs.configs.recommended,
+    ...tseslint.configs.recommended,
+    pluginReact.configs.flat.recommended,
+    {
+        plugins: { "rn-a11y": pluginRnA11y },
         rules: {
-            "import-alias/import-alias": [
-                "error",
-                {
-                    relativeDepth: 0,
-                    aliases: Object.entries(tsconfig.compilerOptions.paths).map(
-                        ([to, [from]]) => ({
-                            alias: to.replace(/\*$/, ""),
-                            matcher: from.replace(/^\.\//, "^"),
-                        }),
-                    ),
-                },
-            ],
+            "rn-a11y/has-valid-accessibility-actions": "error",
+            "rn-a11y/no-deprecated-props": "error",
+            "rn-a11y/no-accessibilityLabel-for-testing": "warn",
+            "rn-a11y/no-nested-touchables": "error",
+            "rn-a11y/no-long-alt": "warn",
+            "rn-a11y/no-same-label-and-hint": "error",
+            "rn-a11y/image-has-accessible": "warn",
+            "rn-a11y/no-use-inverted-virtualizedList": "warn",
+            "rn-a11y/touchable-text-has-role": "error",
+        },
+    },
+    {
+        files: ["**/*.{js,ts,tsx}"],
+        languageOptions: {
+            globals: {
+                ...globals.es2022,
+                ...globals.node,
+            },
+        },
+        rules: {
             "react/react-in-jsx-scope": "off",
-            "@typescript-eslint/no-explicit-any": "off", // Would be great to remove all `any` types...
-            "simple-import-sort/imports": "error",
-            "simple-import-sort/exports": "error",
+            "react/display-name": "off",
+            "react/prop-types": "off",
+            "@typescript-eslint/no-explicit-any": "off",
+            "@typescript-eslint/no-require-imports": "off",
         },
     },
-    {
-        files: ["server/**/*.{js,ts}"],
-        rules: {
-            "import-alias/import-alias": "off",
-        },
-    },
-    {
-        files: ["scripts/**/*.mjs"],
-        languageOptions: { globals: globals.node },
-    },
+    eslintConfigPrettier,
 ];

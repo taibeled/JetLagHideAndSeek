@@ -1,0 +1,26 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "id": "relation/358674",
+            "properties": {
+                "name": "Osaka",
+                "osm_id": 358674,
+                "osm_type": "R"
+            },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [135.345, 34.49],
+                        [135.725, 34.49],
+                        [135.725, 34.84],
+                        [135.345, 34.84],
+                        [135.345, 34.49]
+                    ]
+                ]
+            }
+        }
+    ]
+}

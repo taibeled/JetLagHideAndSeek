@@ -1,0 +1,72 @@
+name: App Checks
+
+on:
+    pull_request:
+        paths:
+            - "app/**"
+            - "assets/**"
+            - "data/**"
+            - "docs/**"
+            - "e2e/**"
+            - "scripts/**"
+            - "src/**"
+            - "package.json"
+            - "pnpm-lock.yaml"
+            - "pnpm-workspace.yaml"
+            - "app.json"
+            - "babel.config.js"
+            - "eslint.config.js"
+            - "jest.config.js"
+            - "jest.setup.ts"
+            - "metro.config.js"
+            - "tsconfig.json"
+            - ".prettierrc"
+            - ".editorconfig"
+            - ".github/workflows/app-checks.yml"
+    push:
+        branches:
+            - master
+        paths:
+            - "app/**"
+            - "assets/**"
+            - "data/**"
+            - "docs/**"
+            - "e2e/**"
+            - "scripts/**"
+            - "src/**"
+            - "package.json"
+            - "pnpm-lock.yaml"
+            - "pnpm-workspace.yaml"
+            - "app.json"
+            - "babel.config.js"
+            - "eslint.config.js"
+            - "jest.config.js"
+            - "jest.setup.ts"
+            - "metro.config.js"
+            - "tsconfig.json"
+            - ".prettierrc"
+            - ".editorconfig"
+            - ".github/workflows/app-checks.yml"
+
+jobs:
+    check:
+        name: Lint, format, and typecheck
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+
+            - name: Install pnpm
+              run: npm install -g pnpm
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Check
+              run: pnpm check
+
+            - name: Test
+              run: pnpm test

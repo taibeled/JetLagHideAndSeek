@@ -1,0 +1,32 @@
+appId: com.hinoka.hideandseek.v2
+---
+- launchApp
+- runFlow:
+      when:
+          visible: "Open"
+      commands:
+          - tapOn: "Open"
+- runFlow:
+      when:
+          visible: "Continue"
+      commands:
+          - tapOn: "Continue"
+- extendedWaitUntil:
+      visible: "Tokyo 23 Wards"
+      timeout: 60000
+- assertVisible:
+      id: "main-settings-row"
+- tapOn:
+      id: "main-settings-row"
+- extendedWaitUntil:
+      visible: "Game Settings"
+      timeout: 10000
+- swipe:
+      start: "2%,75%"
+      end: "80%,75%"
+      duration: 500
+- extendedWaitUntil:
+      visible: "Game Setup"
+      timeout: 10000
+- assertVisible:
+      id: "main-settings-row"

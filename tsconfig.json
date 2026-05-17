@@ -1,13 +1,14 @@
 {
-    "extends": "astro/tsconfigs/strict",
-    "include": [".astro/types.d.ts", "**/*"],
-    "exclude": ["dist"],
+    "extends": "expo/tsconfig.base",
     "compilerOptions": {
-        "jsx": "react-jsx",
-        "jsxImportSource": "react",
+        "strict": true,
         "baseUrl": ".",
+        "jsx": "react-jsx",
         "paths": {
-            "@/*": ["./src/*"]
-        }
-    }
+            "@/*": ["src/*"]
+        },
+        "typeRoots": ["./node_modules/@types", "../node_modules/@types"],
+        "types": ["jest"]
+    },
+    "include": ["app/**/*.ts", "app/**/*.tsx", "src/**/*.ts", "src/**/*.tsx"]
 }

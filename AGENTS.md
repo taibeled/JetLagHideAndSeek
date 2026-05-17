@@ -1,137 +1,262 @@
 # Agent Guide
 
-## Project Shape
+This file is for agents working on the Expo app. This is an Expo SDK 54
+React Native rewrite of the Hide & Seek mapper, built around a native map and an
+Apple Maps-style bottom sheet. Keep changes mobile-first; do not port web UI
+patterns wholesale.
 
-- This is an Astro static PWA with React islands, Tailwind, Leaflet, Nanostores, Turf, and a small Fastify CAS server.
-- The public app is served under the Astro base path `/JetLagHideAndSeek/`. Keep this aligned with `CAS_STATIC_PREFIX` in the server stack.
-- Frontend source lives in `src/`; server source lives in `server/src/`.
-- Shared game state is persisted mostly through Nanostores in `src/lib/context.ts`, encoded/decoded through `src/lib/wire.ts`, and loaded from shared payloads in `src/lib/loadHidingZone.ts`.
-- Question behavior is split by type under `src/maps/questions/`; shared geometry helpers live under `src/maps/geo-utils/`.
-- E2E tests live in `e2e/` using Playwright with helper utilities and Overpass fixture files in `e2e/fixtures/`.
-- Do not hand-edit `dist/` or `server/dist/`; they are build output.
+## Project Snapshot
 
-## Common Commands
+- Entry points: `app/_layout.tsx` wraps the app in gesture/safe-area providers,
+  and `app/index.tsx` renders `src/screens/MapAppScreen.tsx`.
+- Main screen: `MapAppScreen` composes `NativeMap` and `AppBottomSheet` inside
+  `PlayAreaProvider` and `HidingZoneProvider`.
+- Current milestone: MapLibre map plus Settings -> Play Area and Settings ->
+  Hiding Zones. Question state, copy/paste wire format, and persistence of the
+  selected play area/hiding zones are still future work.
+- Default play area: Tokyo 23 Wards, OSM relation `19631009`, loaded from
+  `assets/default-zones/tokyo.json`.
+- Deterministic E2E play-area fixture: Osaka, OSM relation `358674`, loaded from
+  `assets/default-zones/osaka.json`.
+- Hiding-zone presets: Tokyo Metro and Toei Subway, generated from ODPT GTFS
+  data in `data/odpt/generated/hiding-zone-presets.json`.
 
-Use `pnpm`.
+## Commands
+
+Run commands from the repo root.
+
+```bash
+pnpm lint
+pnpm format:check
+pnpm typecheck
+pnpm check
+pnpm test
+pnpm test -- NativeMap.test.tsx
+pnpm data:odpt
+```
+
+For local app work:
+
+```bash
+pnpm exec expo start --dev-client --host localhost --port 8081 -c
+```
+
+For the iOS E2E stack:
+
+```bash
+pnpm test:e2e:ios:stack
+```
+
+That helper starts Metro, runs the Maestro smoke and play-area flows, writes
+debug artifacts under `mobile_v2/e2e/artifacts/`, and stops Metro. A simulator
+must already be available; the known target has been `iPhone 16 Pro - iOS 18.3`.
+
+## Native Build Rules
+
+- Expo Go will not work. This app uses native modules, especially
+  `@maplibre/maplibre-react-native` and AsyncStorage, so use a dev build.
+- Do not run Expo native commands from the monorepo root. Use the repo root or
+  `pnpm --dir mobile_v2`.
+- After adding or changing native dependencies or Expo plugins, regenerate and
+  rebuild the native app:
+
+```bash
+LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 pnpm exec expo prebuild --platform ios --clean
+LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 pnpm exec expo run:ios --device "iPhone 16 Pro" --no-bundler
+```
+
+- `app.json` must keep the MapLibre plugin. Location copy lives in
+  `ios.infoPlist.NSLocationWhenInUseUsageDescription`.
+- `babel.config.js` must keep `react-native-reanimated/plugin` last.
+- `metro.config.js` pins native singletons. If a new native package starts
+  resolving duplicate copies, update Metro intentionally.
+
+## Source Layout
+
+- `src/features/map/`: MapLibre rendering, camera helpers, OSM raster style,
+  user location, GeoJSON boundary loading, and play-area math.
+- `src/features/sheet/`: one persistent bottom sheet and sheet-route UI.
+- `src/features/playArea/`: Play Area settings UI and Photon search mapping.
+- `src/features/hidingZone/`: Hiding Zones settings UI, preset data adapters,
+  radius/unit helpers, and derived GeoJSON overlays.
+- `src/state/`: React state providers. Keep them mobile-specific.
+- `data/odpt/`: ODPT source config, fetch script, attribution docs, ignored
+  download cache, and checked-in processed preset JSON.
+- `src/theme/colors.ts`: shared color tokens for the mobile app.
+- `src/types/`: local ambient types for JSON and third-party packages.
+- `docs/implementation_notes.md`: milestone-specific native, map, and E2E
+  notes. Update it when you learn a new durable setup/debugging fact.
+
+## Architecture Direction
+
+The intended shape is:
+
+```text
+mobile app state -> derived map render state -> NativeMap layers
+                 -> AppBottomSheet route screens
+```
+
+Prefer mobile-specific state and adapters over importing legacy web context.
+The web app can be a reference for domain logic, but avoid bringing over
+Leaflet, sidebar, browser-storage, or root-controller assumptions.
+
+Keep `MapAppScreen` as a coordinator. Avoid turning it into the owner of every
+mode, form, network request, and map side effect. If a new workflow has state,
+put that state in a focused feature/store and let the map render derived data.
+
+## MapLibre and Geometry Rules
+
+- MapLibre coordinates are `[longitude, latitude]`.
+- Bboxes are `[west, south, east, north]`.
+- `ShapeSource`/layer children should stay before marker-like overlays. MapLibre
+  RN can behave badly when native children are ordered casually.
+- Be conservative with MapLibre RN style expressions on iOS. Feature-driven
+  colors such as `["to-color", ["get", "color"], fallback]` are known to work,
+  but complex numeric expressions on circle styles have crashed native MapLibre.
+  Prefer separate filtered layers with literal numeric radii/widths when the
+  visual states are bounded.
+- `NativeMap` fits the play area into the upper map area using
+  `getTopViewportFitPadding`. If sheet snap points or top chrome change, revisit
+  `src/features/map/camera.ts`.
+- Keep map camera behavior in small helpers (`camera.ts`) and test it with unit
+  tests. This makes native ref behavior easier to mock.
+- Use bundled fixtures for deterministic tests where possible. Networked
+  Overpass/Photon paths should be mocked in Jest.
+- Hiding-zone circles are geographic polygons generated from station points and
+  radius meters, then merged before rendering. Do not use MapLibre pixel-radius
+  circles for hiding-zone eligibility areas.
+- Assert hiding-zone polygon correctness in Jest by inspecting the generated
+  GeoJSON and `ShapeSource.shape` props. Maestro should cover the user settings
+  workflow and can capture screenshots for agent/debug review, but it should not
+  be the source of truth for polygon geometry.
+
+## Bottom Sheet Rules
+
+- Use one persistent `@gorhom/bottom-sheet` for primary navigation.
+- Keep fixed snap points paired with `enableDynamicSizing={false}`; v5 can
+  otherwise create surprising near-zero snap behavior.
+- Current routes live in `src/features/sheet/sheetRoutes.ts`.
+- Routes that need more space, such as `play-area`, should snap to the large
+  index before E2E tries to interact with their controls.
+- Use modals sparingly. Prefer same-sheet routes unless the interaction is a
+  destructive confirmation or an import/review flow.
+- Drawer screens with content that may overflow the sheet height must use
+  `SheetScrollView` (`src/features/sheet/SheetScrollView.tsx`) instead of a
+  plain `ScrollView`. It provides consistent bottom padding (`40px`) and
+  `keyboardShouldPersistTaps="handled"` by default. Pass per-screen styles
+  via `style` and `contentContainerStyle` props; do not duplicate `flex: 1`
+  or `paddingBottom` since the component owns those.
+
+## Play Area Rules
+
+- `loadPlayAreaByRelationId` handles bundled Tokyo, bundled Osaka, memory cache,
+  AsyncStorage cache, and Overpass fetch in that order.
+- The selected play area is currently in memory only. Do not imply persistence
+  in UI or tests until milestone 4 state persistence exists.
+- `searchPlayAreas` queries Photon and keeps relation results only
+  (`osm_type === "R"`). Tests should exercise mapping/deduping without network.
+- When accepting direct relation IDs, keep validation strict: positive safe
+  integer strings only.
+- Store distances internally in meters when settings/questions land, even if
+  display units become km or miles.
+
+## Hiding Zone Rules
+
+- Hiding-zone state is currently in memory only. Do not imply persistence in UI
+  or tests yet.
+- Preset suggestions use bbox intersection with the current play-area bbox.
+  Suggestions are not auto-selected.
+- Preset selection is additive. Removing one preset should not remove a station
+  that is still contributed by another selected preset.
+- Radius display units are `m`, `km`, and `mi`; `HidingZoneProvider` stores the
+  canonical value in meters.
+- Route and station overlay colors should come from generated preset route
+  colors. Stations may be contributed by more than one selected route, so render
+  multiple colors as concentric station rings instead of choosing a single
+  arbitrary transfer color.
+- ODPT generated data is checked in, but raw GTFS zips live in ignored
+  `data/odpt/cache/`.
+- Some GTFS feeds, including cached Tokyo Metro data seen during development,
+  may omit `shapes.txt` or route `shape_id` values. Preserve the fallback that
+  derives route geometry from ordered `stop_times` so generated route lines do
+  not silently become empty while colors still exist.
+- `data/odpt/scripts/fetch-odpt.mjs --cache-only` is useful for regenerating
+  checked-in preset JSON from ignored cached GTFS zips when network access or
+  `ODPT_KEY` is unavailable.
+- Keep `data/odpt/NOTICE.md` and `data/odpt/sources.md` current when adding or
+  refreshing ODPT providers. Generated JSON also carries an attribution block.
+- `pnpm data:odpt` requires network access and `ODPT_KEY` for
+  Tokyo Metro.
+
+## Testing Expectations
+
+For most code changes, run at least:
 
 ```bash
 pnpm test
-pnpm --dir server test
-pnpm test:e2e
-pnpm build
-pnpm build:all
-pnpm start:stack
-pnpm start:app
-pnpm lint
+pnpm typecheck
 ```
 
-Notes:
-
-- `pnpm test` runs Vitest frontend/unit tests (excludes `server/` and `e2e/`).
-- `pnpm --dir server test` runs Vitest server integration tests.
-- `pnpm test:e2e` runs Playwright E2E tests against the full app stack. Requires `npx playwright install chromium` first. The `webServer` config in `playwright.config.ts` launches `pnpm start:app` automatically.
-- `pnpm start:app` builds the frontend and server, then serves both the PWA and CAS API on port `8787`.
-- `pnpm start:stack` expects `pnpm build:all` to have already produced `dist/` and `server/dist/`.
-- `pnpm lint` runs ESLint with `--fix` on `src` (not `tests/`) and then Prettier over the repo, so expect formatting changes.
-- Root `package.json` declares Node `<25`; server declares Node `>=18`.
-
-## Running Locally
-
-Production-style single-origin app:
+For UI, state, or config changes, prefer the full:
 
 ```bash
-pnpm install
-pnpm --dir server install
-pnpm start:app
+pnpm check
 ```
 
-Open:
-
-```text
-http://localhost:8787/JetLagHideAndSeek/
-```
-
-Dev split setup:
+For native accessibility, bottom-sheet, MapLibre, or app-start changes, run the
+Maestro stack when the simulator/dev build is available:
 
 ```bash
-pnpm dev
-pnpm --dir server dev
+pnpm test:e2e:ios:stack
 ```
 
-Then configure the app's Options -> Game state server URL if CAS is not same-origin.
+Jest setup already mocks MapLibre, Gorhom bottom sheet, Reanimated,
+AsyncStorage, and `expo-location` in `jest.setup.ts`. Extend those mocks in one
+place instead of recreating ad hoc mocks in each test.
 
-## Architecture Notes
+## React Native E2E and Accessibility
 
-- `src/pages/index.astro` wires together the two sidebars, top place picker, map, options drawer, and tutorial dialog.
-- `src/components/Map.tsx` owns the Leaflet map, tile layers, right-click context menu, draw controls, print control, geolocation follow mode, and question refresh pipeline.
-- `src/components/QuestionSidebar.tsx` and `src/components/cards/*` render/edit question cards.
-- `src/components/ZoneSidebar.tsx` handles hiding-zone/station discovery controls.
-- `src/components/OptionDrawers.tsx` handles sharing, CAS discovery, `?sid=`, team sync, local storage stats, and app options.
-- `src/components/TutorialDialog.tsx` provides an interactive walkthrough of all features and question types.
-- `src/components/DraggableMarkers.tsx` renders draggable station markers on the map (uses remote CDN marker icons, not local assets).
-- `src/components/PlacePicker.tsx` is the top-of-page geocoder for centering the map.
-- `src/components/LatLngPicker.tsx` lets users pick custom coordinate points.
-- `src/components/PolygonDraw.tsx` wraps Leaflet draw for creating custom polygons.
-- `src/components/PoiCandidatesLayer.tsx` renders POI markers (museums, parks, etc.) on the map.
-- `src/lib/context.ts` is the central state registry. Many stores are persistent atoms backed by `localStorage`.
-- `src/lib/liveSync.ts` uploads canonical wire snapshots to CAS. It deliberately waits until all questions are locked unless forced by Share.
-- `src/lib/cas.ts` and `src/lib/casDiscovery.ts` handle CAS client operations and SID-based URL discovery.
-- `src/lib/nearestPoi.ts` provides POI name resolution and distance formatting helpers.
-- `src/lib/playAreaModes.ts` defines play area behavioral modes.
-- `server/src/app.ts` exposes `/api/cas/*`, `/api/teams/*`, and optionally serves the built Astro app. See [server/README.md](server/README.md).
+Maestro/XCUITest does not test the React component tree. It interacts with the
+native iOS accessibility/view hierarchy, which can disagree with JSX, Jest
+queries, and screenshots.
 
-## State And Sharing
+Keep these separate when debugging E2E:
 
-- Legacy URL/state formats include `hz`, `hzc`, and `pb`; current CAS sharing uses `sid`.
-- Wire v1 snapshots are deterministic JSON with sorted keys; SID is derived from the canonical UTF-8 payload.
-- `drag === true` on question data means the question is unlocked/editable. Several flows intentionally avoid final sync while any question is unlocked.
-- When hydrating from a shared URL, uploads are suppressed with `setHydrating(true)` to avoid immediately overwriting the incoming state.
-- Hiding-zone payloads can contain questions, custom stations, disabled stations, presets, radius settings, station discovery options, and team metadata. Preserve passthrough fields unless you are intentionally changing the wire format.
+- The React tree is what React Native Testing Library sees.
+- The native view/accessibility tree is what Maestro and XCUITest see.
+- A screenshot only proves pixels rendered; it does not prove the element is
+  targetable by native automation.
 
-## Geometry And Map Gotchas
+Practical rules:
 
-- Leaflet uses `[lat, lng]`; GeoJSON and Turf use `[lng, lat]`. Check coordinate order before changing geometry code.
-- `src/maps/index.ts` applies questions sequentially. In planning mode, unlocked questions produce planning polygons and are skipped for elimination.
-- `sanitizeGeoJSONForLeaflet` exists because Leaflet can choke on some valid GeoJSON shapes. Use existing sanitizers/helpers before adding ad hoc geometry fixes.
-- Some map data comes from browser/network APIs: geocoding, Overpass, map tiles, ArcGIS/Turf transforms, and station discovery. Tests should avoid depending on live network unless explicitly designed for it.
-- `public/coastline50.geojson` (~3.9 MB) is used for coastline distance elimination. It is the largest tracked file in the repo.
-- Some E2E fixture files under `e2e/fixtures/` are large (e.g. `fukutoshin-station-discovery.json` ~2 MB) — they are captured Overpass API responses used only by Playwright, not bundled in the production PWA.
-- The PWA service worker is configured to use `NetworkOnly` for CAS/team API routes. Keep API routes out of precache/offline behavior.
+- If Maestro says an element is missing, inspect the debug hierarchy artifact,
+  not just the screenshot.
+- Put E2E selectors on stable native-accessible interaction targets.
+- For iOS `TextInput`, especially when empty, a visible input may not expose the
+  expected `testID`. If a visible control cannot be targeted by ID in Maestro,
+  prefer a stable native-accessible parent; otherwise use carefully documented
+  coordinate taps as a last resort. The current Play Area flow uses coordinate
+  taps for the direct relation ID field and Apply button.
+- Keep unit-test IDs and E2E IDs aligned in intent, but do not assume a Jest
+  `getByTestId` pass guarantees Maestro can find the same node.
+- Avoid unnecessary generic keyboard actions in Maestro. iOS number pads may not
+  expose a standard dismiss action; if the next control is visible, tap it
+  directly.
+- If replacing text labels with icon-only buttons, provide stable
+  accessibility labels and update both Jest and Maestro assertions together.
 
-## Code Style
+Accessibility lint is useful as a guardrail. It can catch missing labels, roles,
+and bad accessibility prop usage, but it cannot prove that iOS exposes a
+specific node through XCUITest. Use lint as the typecheck for the interaction
+surface, and Maestro as the integration test for that surface.
 
-- Prefer the existing `@/` import alias over relative imports from `src`; ESLint enforces this.
-- Keep imports sorted; `simple-import-sort` is enabled.
-- React is configured for the automatic JSX runtime; do not add `import React`.
-- Existing code tolerates `any` in places. Do not do broad type refactors unless that is the task.
-- Use existing UI primitives under `src/components/ui/` and existing map/question helpers before adding new abstractions.
-- Keep comments sparse and useful; many complex areas already rely on short explanatory comments.
+## Current Sharp Edges
 
-## Testing Guidance
-
-- Frontend/unit tests: `pnpm test`.
-- Server tests: `pnpm --dir server test`.
-- E2E tests: `pnpm test:e2e` (Playwright, requires Chromium via `npx playwright install chromium`).
-- For focused work, run the nearest test file directly with Vitest, for example:
-
-```bash
-pnpm vitest tests/wire.test.ts
-pnpm vitest src/maps/questions/matching.test.ts
-pnpm --dir server vitest run tests/blobs.test.ts
-```
-
-- Add or update tests when changing wire compatibility, CAS validation, persistence recovery, station manipulation, or geometry operators.
-- Add `data-testid` attributes sparingly — prefer `getByRole`/`getByText`/`getByLabel` from Testing Library philosophy.
-- For deeper testing guidance (mock patterns, fixture creation, Overpass interception), see [docs/testing.md](docs/testing.md) and [docs/testing-mocks.md](docs/testing-mocks.md).
-
-## Known UI Checkpoints
-
-When the app is running with the bundled CAS server, a healthy load should show:
-
-- Page title: `Map Generator for Jet Lag The Game: Hide and Seek`.
-- Main map with Leaflet zoom/draw/print controls.
-- Left Questions sidebar with question cards and an Add Question action.
-- Right Hiding Zone sidebar with station discovery controls.
-- Options drawer with local storage stats, CAS status, session copy/paste, and team workspace controls.
-
-The current UI may emit a Radix warning about missing dialog description/`aria-describedby`; treat it as an accessibility cleanup item, not a fatal runtime error.
+- The docs and E2E flows historically asserted visible map control text such as
+  `Fit Tokyo 23 Wards` and `Locate me`. The current controls are icon-only, so
+  keep Maestro focused on stable sheet rows and visible play-area state unless
+  native-accessible labels are added to the map buttons.
+- Photon and Overpass are live services. Keep happy-path unit tests independent
+  of those networks, and reserve live checks for manual verification.
+- Native dependency changes can require prebuild plus a dev-client rebuild even
+  when TypeScript and Jest pass.
