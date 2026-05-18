@@ -26,8 +26,10 @@ type PlayAreaState = {
     applyPreset: (playArea: PlayArea) => void;
     cacheSource: PlayAreaCacheSource;
     error: string | null;
+    isRestored: boolean;
     isLoading: boolean;
     importPlayArea: (playArea: PlayAreaImportState) => void;
+    markRestored: () => void;
     playArea: PlayArea;
     presets: PlayArea[];
 };
@@ -39,6 +41,7 @@ export function PlayAreaProvider({ children }: { children: ReactNode }) {
     const [cacheSource, setCacheSource] =
         useState<PlayAreaCacheSource>("bundled");
     const [isLoading, setIsLoading] = useState(false);
+    const [isRestored, setIsRestored] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const applyPreset = useCallback((nextPlayArea: PlayArea) => {
@@ -83,6 +86,10 @@ export function PlayAreaProvider({ children }: { children: ReactNode }) {
         }
     }, []);
 
+    const markRestored = useCallback(() => {
+        setIsRestored(true);
+    }, []);
+
     const value = useMemo<PlayAreaState>(
         () => ({
             applyPreset,
@@ -91,6 +98,8 @@ export function PlayAreaProvider({ children }: { children: ReactNode }) {
             error,
             importPlayArea,
             isLoading,
+            isRestored,
+            markRestored,
             playArea,
             presets: knownPlayAreaPresets,
         }),
@@ -101,6 +110,8 @@ export function PlayAreaProvider({ children }: { children: ReactNode }) {
             error,
             importPlayArea,
             isLoading,
+            isRestored,
+            markRestored,
             playArea,
         ],
     );

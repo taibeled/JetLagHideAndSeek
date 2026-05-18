@@ -1,4 +1,5 @@
-import { fireEvent, render } from "@testing-library/react-native";
+import { fireEvent, render, waitFor } from "@testing-library/react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, View } from "react-native";
 
 import { defaultPlayArea } from "@/features/map/playArea";
@@ -32,11 +33,12 @@ function getPayloadFromLink(link: string) {
 }
 
 describe("ImportScreen", () => {
-    beforeEach(() => {
+    beforeEach(async () => {
+        await AsyncStorage.clear();
         useRouter.mockReturnValue({ replace: jest.fn() });
     });
 
-    it("previews before mutating and applies after confirmation", () => {
+    it("previews before mutating and applies after confirmation", async () => {
         const envelope = buildAppStateEnvelope({
             gameId: "shared-game",
             hidingZones: {
@@ -57,7 +59,9 @@ describe("ImportScreen", () => {
             </AppStateProviders>,
         );
 
-        expect(screen.getByTestId("import-preview-card")).toBeTruthy();
+        await waitFor(() => {
+            expect(screen.getByTestId("import-preview-card")).toBeTruthy();
+        });
         expect(screen.getByTestId("probe-play-area").props.children).toBe(
             "Tokyo 23 Wards",
         );

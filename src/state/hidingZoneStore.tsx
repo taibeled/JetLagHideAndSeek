@@ -40,6 +40,8 @@ export type HidingZoneImportState = {
 
 type HidingZoneState = {
     addPreset: (presetId: string) => void;
+    isRestored: boolean;
+    markRestored: () => void;
     presets: HidingZonePreset[];
     radiusDisplayValue: string;
     radiusMeters: number;
@@ -67,6 +69,7 @@ export function HidingZoneProvider({ children }: { children: ReactNode }) {
     const [radiusMeters, setRadiusMeters] = useState(DEFAULT_RADIUS_METERS);
     const [radiusUnit, setRadiusUnitState] = useState<HidingZoneUnit>("m");
     const [radiusDisplayValue, setRadiusDisplayValueState] = useState("600");
+    const [isRestored, setIsRestored] = useState(false);
 
     const suggestedPresetIds = useMemo(
         () => getSuggestedPresetIds(hidingZonePresets, playArea.bbox),
@@ -144,9 +147,15 @@ export function HidingZoneProvider({ children }: { children: ReactNode }) {
         [radiusMeters],
     );
 
+    const markRestored = useCallback(() => {
+        setIsRestored(true);
+    }, []);
+
     const value = useMemo<HidingZoneState>(
         () => ({
             addPreset,
+            isRestored,
+            markRestored,
             presets: hidingZonePresets,
             radiusDisplayValue,
             radiusMeters,
@@ -167,6 +176,8 @@ export function HidingZoneProvider({ children }: { children: ReactNode }) {
         }),
         [
             addPreset,
+            isRestored,
+            markRestored,
             radiusDisplayValue,
             radiusMeters,
             radiusUnit,
