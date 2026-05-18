@@ -2,6 +2,7 @@ import { useStore } from "@nanostores/react";
 import { SidebarCloseIcon } from "lucide-react";
 
 import { AddQuestionDialog } from "@/components/AddQuestionDialog";
+import { SubwayStartDialog } from "@/components/SubwayStartDialog";
 import {
     MatchingQuestionComponent,
     MeasuringQuestionComponent,
@@ -121,6 +122,13 @@ export const QuestionSidebar = () => {
                                     Add Question
                                 </SidebarMenuButton>
                             </AddQuestionDialog>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SubwayStartDialog>
+                                <SidebarMenuButton>
+                                    Random Start Station
+                                </SidebarMenuButton>
+                            </SubwayStartDialog>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
                             <a
