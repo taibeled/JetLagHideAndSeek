@@ -24,10 +24,23 @@ function makeAppState() {
     });
 }
 
+function makeLegacyAppStateWithoutQuestions() {
+    const state = makeAppState();
+    return {
+        hidingZones: state.hidingZones,
+        metadata: state.metadata,
+        playArea: state.playArea,
+        version: state.version,
+    };
+}
+
 describe("AppStateV1 schema", () => {
     it("parses a valid full app state", () => {
-        const result = appStateV1Schema.safeParse(makeAppState());
+        const state = makeAppState();
+        const result = appStateV1Schema.safeParse(state);
+
         expect(result.success).toBe(true);
+        expect(state.questions).toEqual([]);
     });
 
     it("rejects an unknown version through the migration placeholder", () => {
@@ -49,6 +62,21 @@ describe("AppStateV1 schema", () => {
                 },
             }),
         ).toBeNull();
+    });
+
+    it("rejects non-empty questions until question schemas exist", () => {
+        expect(
+            migratePersistedAppState({
+                ...makeAppState(),
+                questions: [{ type: "radius" }],
+            }),
+        ).toBeNull();
+    });
+
+    it("migrates existing v1 app state without questions to an empty slice", () => {
+        expect(
+            migratePersistedAppState(makeLegacyAppStateWithoutQuestions()),
+        ).toEqual(makeAppState());
     });
 
     it("rejects an invalid hiding-zone shape", () => {
@@ -81,6 +109,15 @@ describe("app-state persistence", () => {
         await persistAppState(state);
 
         await expect(loadPersistedAppState()).resolves.toEqual(state);
+    });
+
+    it("loads existing v1 state without questions as an empty slice", async () => {
+        await AsyncStorage.setItem(
+            "app-state:v1",
+            JSON.stringify(makeLegacyAppStateWithoutQuestions()),
+        );
+
+        await expect(loadPersistedAppState()).resolves.toEqual(makeAppState());
     });
 
     it("returns null and cleans up corrupted JSON", async () => {

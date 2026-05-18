@@ -81,6 +81,7 @@ describe("PlayAreaProvider app-state persistence", () => {
         await waitFor(async () => {
             const persisted = await loadPersistedAppState();
             expect(persisted?.playArea.osmId).toBe(19631009);
+            expect(persisted?.questions).toEqual([]);
         });
     });
 
@@ -121,6 +122,7 @@ describe("PlayAreaProvider app-state persistence", () => {
         await waitFor(async () => {
             const persisted = await loadPersistedAppState();
             expect(persisted?.playArea.osmId).toBe(888888);
+            expect(persisted?.questions).toEqual([]);
         });
     });
 });

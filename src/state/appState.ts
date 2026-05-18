@@ -29,6 +29,8 @@ export const appStateHidingZonesSchema = z.object({
     selectedPresetIds: z.array(z.string()),
 });
 
+export const appStateQuestionsSchema = z.tuple([]);
+
 export const appStateV1Schema = z.object({
     hidingZones: appStateHidingZonesSchema,
     metadata: z.object({
@@ -36,6 +38,7 @@ export const appStateV1Schema = z.object({
         updatedAt: z.string().min(1),
     }),
     playArea: appStatePlayAreaSchema,
+    questions: appStateQuestionsSchema,
     version: z.literal(1),
 });
 
@@ -76,13 +79,31 @@ export function createAppStateV1({
             osmId: playArea.osmId,
             osmType: playArea.osmType,
         },
+        questions: [],
         version: 1,
     };
 }
 
 export function migratePersistedAppState(value: unknown): AppStateV1 | null {
-    const parsed = appStateV1Schema.safeParse(value);
+    const parsed = appStateV1Schema.safeParse(
+        addMissingQuestionsSlice(value),
+    );
     return parsed.success ? parsed.data : null;
+}
+
+function addMissingQuestionsSlice(value: unknown): unknown {
+    if (!isRecord(value)) return value;
+    if (value.version !== 1) return value;
+    if ("questions" in value) return value;
+
+    return {
+        ...value,
+        questions: [],
+    };
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 export function appStatePlayAreaToImportState(

@@ -99,6 +99,7 @@ describe("HidingZoneProvider app-state persistence", () => {
                 radiusUnit: "m",
                 selectedPresetIds: [],
             });
+            expect(persisted?.questions).toEqual([]);
         });
     });
 
@@ -129,6 +130,7 @@ describe("HidingZoneProvider app-state persistence", () => {
         await waitFor(async () => {
             const persisted = await loadPersistedAppState();
             expect(persisted?.hidingZones.radiusMeters).toBe(800);
+            expect(persisted?.questions).toEqual([]);
         });
     });
 
@@ -159,6 +161,7 @@ describe("HidingZoneProvider app-state persistence", () => {
         await waitFor(async () => {
             const persisted = await loadPersistedAppState();
             expect(persisted?.hidingZones.radiusUnit).toBe("km");
+            expect(persisted?.questions).toEqual([]);
         });
     });
 
@@ -191,6 +194,7 @@ describe("HidingZoneProvider app-state persistence", () => {
             expect(persisted?.hidingZones.selectedPresetIds).toEqual([
                 "tokyo-metro",
             ]);
+            expect(persisted?.questions).toEqual([]);
         });
     });
 
