@@ -151,9 +151,6 @@ export function minifyEnvelope(env: WireEnvelope): WireEnvelopeMinified {
 
     const payload: Record<string, unknown> = {};
     payload[FIELD_MAP.gameId] = p.gameId;
-    payload[FIELD_MAP.metadata] = {
-        [FIELD_MAP.createdAt]: p.metadata.createdAt,
-    };
 
     if (p.hidingZones) {
         payload[FIELD_MAP.hidingZones] = {
