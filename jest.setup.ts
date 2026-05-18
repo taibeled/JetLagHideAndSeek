@@ -1,5 +1,16 @@
 /// <reference types="jest" />
 
+const originalConsoleError = console.error;
+console.error = (...args: unknown[]) => {
+    if (
+        typeof args[0] === "string" &&
+        args[0].includes("was not wrapped in act(...)")
+    ) {
+        return;
+    }
+    originalConsoleError(...args);
+};
+
 jest.mock("expo-location", () => ({
     Accuracy: {
         Balanced: 3,
