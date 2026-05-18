@@ -25,6 +25,9 @@ type AppBottomSheetProps = {
     onIndexChange?: (index: number) => void;
 };
 
+const SNAP_42 = 0;
+const SNAP_88 = 1;
+
 export const AppBottomSheet = forwardRef<
     BottomSheetHandle,
     AppBottomSheetProps
@@ -32,9 +35,9 @@ export const AppBottomSheet = forwardRef<
     const sheetRef = useRef<{ snapToIndex?: (index: number) => void } | null>(
         null,
     );
-    const snapPoints = useMemo(() => ["18%", "42%", "88%"], []);
+    const snapPoints = useMemo(() => ["42%", "88%"], []);
     const [route, setRoute] = useState<SheetRouteName>("main");
-    const currentIndexRef = useRef(1);
+    const currentIndexRef = useRef(0);
     useImperativeHandle(ref, () => ({
         snapToIndex(index: number) {
             sheetRef.current?.snapToIndex?.(index);
@@ -42,8 +45,14 @@ export const AppBottomSheet = forwardRef<
     }));
 
     useEffect(() => {
-        const target = route === "play-area" || route === "hiding-zone" ? 2 : 1;
-        if (target > currentIndexRef.current) {
+        const target =
+            route === "play-area" || route === "hiding-zone"
+                ? SNAP_88
+                : SNAP_42;
+        if (
+            currentIndexRef.current === -1 ||
+            target > currentIndexRef.current
+        ) {
             sheetRef.current?.snapToIndex?.(target);
         }
     }, [route]);
@@ -51,10 +60,11 @@ export const AppBottomSheet = forwardRef<
     return (
         <Sheet
             ref={sheetRef}
-            index={1}
+            index={0}
             snapPoints={snapPoints}
             accessible={false}
             enableDynamicSizing={false}
+            enablePanDownToClose
             handleIndicatorStyle={styles.handleIndicator}
             backgroundStyle={styles.sheetBackground}
             onChange={(index: number) => {

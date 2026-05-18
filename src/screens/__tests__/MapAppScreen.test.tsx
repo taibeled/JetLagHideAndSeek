@@ -522,36 +522,36 @@ describe("MapAppScreen", () => {
         });
     });
 
-    it("tapping the map when the sheet is at index 2 snaps to index 1", () => {
+    it("tapping the map when the sheet is at index 1 (88%) snaps to index 0 (42%)", () => {
         const { __bottomSheetMethods } =
             require("@gorhom/bottom-sheet") as unknown as {
                 __bottomSheetMethods: { snapToIndex: jest.Mock };
             };
         const screen = renderWithSafeArea(<MapAppScreen />);
 
-        // Navigate to play-area — the useEffect auto-snaps to index 2 (88%)
+        // Navigate to play-area — the useEffect auto-snaps to index 1 (88%)
         fireEvent.press(screen.getByTestId("main-settings-row"));
         fireEvent.press(screen.getByTestId("settings-play-area-row"));
 
-        // Simulate the sheet settling at index 2
-        fireEvent(screen.getByTestId("bottom-sheet"), "onChange", 2);
+        // Simulate the sheet settling at index 1
+        fireEvent(screen.getByTestId("bottom-sheet"), "onChange", 1);
 
         // Fire map press
         fireEvent(screen.getByTestId("native-map"), "onPress", {
             geometry: { coordinates: [0, 0] },
         });
 
-        expect(__bottomSheetMethods.snapToIndex).toHaveBeenCalledWith(1);
+        expect(__bottomSheetMethods.snapToIndex).toHaveBeenCalledWith(0);
     });
 
-    it("does NOT snap when map is tapped at index 1 (42%)", () => {
+    it("does NOT snap when map is tapped at index 0 (42%)", () => {
         const { __bottomSheetMethods } =
             require("@gorhom/bottom-sheet") as unknown as {
                 __bottomSheetMethods: { snapToIndex: jest.Mock };
             };
         const screen = renderWithSafeArea(<MapAppScreen />);
 
-        fireEvent(screen.getByTestId("bottom-sheet"), "onChange", 1);
+        fireEvent(screen.getByTestId("bottom-sheet"), "onChange", 0);
         __bottomSheetMethods.snapToIndex.mockClear();
 
         fireEvent(screen.getByTestId("native-map"), "onPress", {
@@ -561,14 +561,14 @@ describe("MapAppScreen", () => {
         expect(__bottomSheetMethods.snapToIndex).not.toHaveBeenCalled();
     });
 
-    it("does NOT snap when map is tapped at index 0 (18%)", () => {
+    it("does NOT snap when map is tapped while sheet is closed (index -1)", () => {
         const { __bottomSheetMethods } =
             require("@gorhom/bottom-sheet") as unknown as {
                 __bottomSheetMethods: { snapToIndex: jest.Mock };
             };
         const screen = renderWithSafeArea(<MapAppScreen />);
 
-        fireEvent(screen.getByTestId("bottom-sheet"), "onChange", 0);
+        fireEvent(screen.getByTestId("bottom-sheet"), "onChange", -1);
         __bottomSheetMethods.snapToIndex.mockClear();
 
         fireEvent(screen.getByTestId("native-map"), "onPress", {
