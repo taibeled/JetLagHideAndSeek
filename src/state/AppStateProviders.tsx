@@ -8,14 +8,17 @@ import {
 import { HidingZoneProvider, useHidingZone } from "@/state/hidingZoneStore";
 import { loadPersistedAppState, persistAppState } from "@/state/persistence";
 import { PlayAreaProvider, usePlayArea } from "@/state/playAreaStore";
+import { QuestionProvider, useQuestion } from "@/state/questionStore";
 
 export function AppStateProviders({ children }: { children: ReactNode }) {
     return (
         <PlayAreaProvider>
             <HidingZoneProvider>
-                <AppStatePersistenceCoordinator>
-                    {children}
-                </AppStatePersistenceCoordinator>
+                <QuestionProvider>
+                    <AppStatePersistenceCoordinator>
+                        {children}
+                    </AppStatePersistenceCoordinator>
+                </QuestionProvider>
             </HidingZoneProvider>
         </PlayAreaProvider>
     );
@@ -24,7 +27,11 @@ export function AppStateProviders({ children }: { children: ReactNode }) {
 function AppStatePersistenceCoordinator({ children }: { children: ReactNode }) {
     const playAreaStore = usePlayArea();
     const hidingZoneStore = useHidingZone();
-    const isRestored = playAreaStore.isRestored && hidingZoneStore.isRestored;
+    const questionStore = useQuestion();
+    const isRestored =
+        playAreaStore.isRestored &&
+        hidingZoneStore.isRestored &&
+        questionStore.isRestored;
     const createdAtRef = useRef<string | null>(null);
 
     useEffect(() => {
@@ -42,10 +49,12 @@ function AppStatePersistenceCoordinator({ children }: { children: ReactNode }) {
                 hidingZoneStore.replaceSetup(
                     appStateHidingZonesToImportState(persisted.hidingZones),
                 );
+                questionStore.importQuestions(persisted.questions);
             }
 
             playAreaStore.markRestored();
             hidingZoneStore.markRestored();
+            questionStore.markRestored();
         })();
 
         return () => {
@@ -72,6 +81,7 @@ function AppStatePersistenceCoordinator({ children }: { children: ReactNode }) {
                     updatedAt: now.toISOString(),
                 },
                 playArea: playAreaStore.playArea,
+                questions: questionStore.questions,
             }),
         );
     }, [
@@ -80,6 +90,7 @@ function AppStatePersistenceCoordinator({ children }: { children: ReactNode }) {
         hidingZoneStore.selectedPresetIds,
         isRestored,
         playAreaStore.playArea,
+        questionStore.questions,
     ]);
 
     return children;

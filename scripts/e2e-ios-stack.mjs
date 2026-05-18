@@ -75,6 +75,7 @@ async function runMaestro() {
     mkdirSync(join(artifactsDir, "smoke"), { recursive: true });
     mkdirSync(join(artifactsDir, "play-area"), { recursive: true });
     mkdirSync(join(artifactsDir, "hiding-zone"), { recursive: true });
+    mkdirSync(join(artifactsDir, "radius-question"), { recursive: true });
 
     await runCommand("maestro", [
         "test",
@@ -93,6 +94,12 @@ async function runMaestro() {
         "--debug-output",
         join(artifactsDir, "hiding-zone"),
         "e2e/hiding-zone.yaml",
+    ]);
+    await runCommand("maestro", [
+        "test",
+        "--debug-output",
+        join(artifactsDir, "radius-question"),
+        "e2e/radius-question.yaml",
     ]);
 }
 

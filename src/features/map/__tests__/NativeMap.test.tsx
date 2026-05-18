@@ -5,6 +5,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { HidingZoneProvider } from "@/state/hidingZoneStore";
 import { PlayAreaProvider } from "@/state/playAreaStore";
+import { QuestionProvider } from "@/state/questionStore";
 
 import { NativeMap } from "../NativeMap";
 
@@ -26,7 +27,9 @@ function renderWithSafeArea(ui: ReactElement) {
             }}
         >
             <PlayAreaProvider>
-                <HidingZoneProvider>{ui as any}</HidingZoneProvider>
+                <HidingZoneProvider>
+                    <QuestionProvider>{ui as any}</QuestionProvider>
+                </HidingZoneProvider>
             </PlayAreaProvider>
         </SafeAreaProvider>,
     );

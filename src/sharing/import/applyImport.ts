@@ -1,5 +1,6 @@
 import type { HidingZoneImportState } from "@/state/hidingZoneStore";
 import type { PlayAreaImportState } from "@/state/playAreaStore";
+import type { QuestionsImportState } from "@/features/questions/questionTypes";
 import { knownPlayAreaPresets } from "@/features/map/playArea";
 import type { PlayAreaWireV1, WireEnvelope } from "@/sharing/wire/schema";
 
@@ -9,6 +10,9 @@ export type AppStores = {
     };
     playArea: {
         importPlayArea: (playArea: PlayAreaImportState) => void;
+    };
+    questions?: {
+        importQuestions: (questions: QuestionsImportState) => void;
     };
 };
 
@@ -25,7 +29,7 @@ export function applyImport({
         return { error: "Unsupported share link type.", ok: false };
     }
 
-    const { hidingZones, playArea } = envelope.payload;
+    const { hidingZones, playArea, questions } = envelope.payload;
     if (playArea) {
         const resolvedPlayArea = resolvePlayArea(playArea);
         if (!resolvedPlayArea) {
@@ -38,6 +42,9 @@ export function applyImport({
     }
     if (hidingZones) {
         stores.hidingZones.replaceSetup(hidingZones);
+    }
+    if (questions && stores.questions) {
+        stores.questions.importQuestions(questions);
     }
 
     return { ok: true };

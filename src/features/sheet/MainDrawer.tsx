@@ -17,6 +17,9 @@ import Animated, {
 
 import { HidingZoneScreen } from "@/features/hidingZone/HidingZoneScreen";
 import { PlayAreaScreen } from "@/features/playArea/PlayAreaScreen";
+import { AddQuestionScreen } from "@/features/questions/AddQuestionScreen";
+import { QuestionDetailScreen } from "@/features/questions/QuestionDetailScreen";
+import { QuestionsScreen } from "@/features/questions/QuestionsScreen";
 import { SettingsScreen } from "@/features/sheet/SettingsScreen";
 import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
 import { getBackTarget, getNavDirection } from "@/features/sheet/sheetNav";
@@ -43,7 +46,7 @@ type MainDrawerProps = {
 const routeContent: Record<SheetRouteName, { title: string; detail: string }> =
     {
         "add-question": {
-            detail: "Question creation will land here in a later milestone.",
+            detail: "Choose a question type to preview on the map.",
             title: "Add Question",
         },
         main: {
@@ -51,8 +54,12 @@ const routeContent: Record<SheetRouteName, { title: string; detail: string }> =
             title: "Game Setup",
         },
         questions: {
-            detail: "The question list will be wired once the state model exists.",
+            detail: "Review answers and question geometry.",
             title: "Questions",
+        },
+        "question-detail": {
+            detail: "Tune the radius and move the map pin.",
+            title: "Radius Question",
         },
         settings: {
             detail: "Play area, units, and sharing controls will live here.",
@@ -295,6 +302,33 @@ function renderRouteContent(
                     <HidingZoneScreen />
                 </View>
             );
+        case "questions":
+            return (
+                <View style={styles.fullContainer}>
+                    <View style={styles.backButtonRow}>
+                        <BackButton onPress={() => onNavigate("main")} />
+                    </View>
+                    <QuestionsScreen onNavigate={onNavigate} />
+                </View>
+            );
+        case "add-question":
+            return (
+                <View style={styles.fullContainer}>
+                    <View style={styles.backButtonRow}>
+                        <BackButton onPress={() => onNavigate("main")} />
+                    </View>
+                    <AddQuestionScreen onNavigate={onNavigate} />
+                </View>
+            );
+        case "question-detail":
+            return (
+                <View style={styles.fullContainer}>
+                    <View style={styles.backButtonRow}>
+                        <BackButton onPress={() => onNavigate("questions")} />
+                    </View>
+                    <QuestionDetailScreen />
+                </View>
+            );
         default: {
             const content = routeContent[routeName];
             return (
@@ -312,14 +346,14 @@ function renderRouteContent(
                         <DrawerAction
                             title="Questions"
                             description="Review answers and question geometry."
-                            isActive={routeName === "questions"}
+                            isActive={false}
                             onPress={() => onNavigate("questions")}
                             testID="main-questions-row"
                         />
                         <DrawerAction
                             title="Add Question"
                             description="Start a radius, thermometer, or transit question."
-                            isActive={routeName === "add-question"}
+                            isActive={false}
                             onPress={() => onNavigate("add-question")}
                             testID="main-add-question-row"
                         />

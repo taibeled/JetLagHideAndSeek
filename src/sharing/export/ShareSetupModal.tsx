@@ -11,6 +11,7 @@ import {
 } from "react-native";
 
 import type { PlayArea } from "@/features/map/playArea";
+import type { QuestionsImportState } from "@/features/questions/questionTypes";
 import type { HidingZoneExportState } from "@/sharing/export/buildEnvelope";
 import { buildAppStateEnvelope } from "@/sharing/export/buildEnvelope";
 import { buildImportLink } from "@/sharing/links/buildLink";
@@ -22,6 +23,7 @@ type ShareSetupModalProps = {
     hidingZones: HidingZoneExportState;
     onClose: () => void;
     playArea: PlayArea;
+    questions: QuestionsImportState;
     visible: boolean;
 };
 
@@ -29,6 +31,7 @@ export function ShareSetupModal({
     hidingZones,
     onClose,
     playArea,
+    questions,
     visible,
 }: ShareSetupModalProps) {
     const [debugMode, setDebugMode] = useState<false | "full" | "minified">(
@@ -49,8 +52,9 @@ export function ShareSetupModal({
             buildAppStateEnvelope({
                 hidingZones,
                 playArea,
+                questions,
             }),
-        [hidingZones, playArea],
+        [hidingZones, playArea, questions],
     );
 
     const link = useMemo(

@@ -1,5 +1,6 @@
 import type { HidingZoneUnit } from "@/features/hidingZone/hidingZoneTypes";
 import type { PlayArea } from "@/features/map/playArea";
+import type { QuestionsImportState } from "@/features/questions/questionTypes";
 import type { AppStateEnvelopeV1 } from "@/sharing/wire/schema";
 
 export type HidingZoneExportState = {
@@ -13,11 +14,13 @@ export function buildAppStateEnvelope({
     hidingZones,
     now = new Date(),
     playArea,
+    questions = [],
 }: {
     gameId?: string;
     hidingZones: HidingZoneExportState;
     now?: Date;
     playArea: PlayArea;
+    questions?: QuestionsImportState;
 }): AppStateEnvelopeV1 {
     const timestamp = now.toISOString();
 
@@ -41,6 +44,7 @@ export function buildAppStateEnvelope({
                 osmId: playArea.osmId,
                 osmType: playArea.osmType,
             },
+            questions: [...questions],
         },
         version: 1,
     };

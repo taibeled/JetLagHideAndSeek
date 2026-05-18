@@ -8,6 +8,7 @@ import { buildImportPreview } from "@/sharing/import/preview";
 import { parseImportPayload } from "@/sharing/links/parseLink";
 import { useHidingZone } from "@/state/hidingZoneStore";
 import { usePlayArea } from "@/state/playAreaStore";
+import { useQuestion } from "@/state/questionStore";
 import { colors } from "@/theme/colors";
 
 export function ImportScreen() {
@@ -15,6 +16,7 @@ export function ImportScreen() {
     const router = useRouter();
     const playAreaStore = usePlayArea();
     const hidingZoneStore = useHidingZone();
+    const questionStore = useQuestion();
     const [applyError, setApplyError] = useState<string | null>(null);
 
     const parsed = useMemo(() => parseImportPayload(d), [d]);
@@ -33,6 +35,7 @@ export function ImportScreen() {
             stores: {
                 hidingZones: hidingZoneStore,
                 playArea: playAreaStore,
+                questions: questionStore,
             },
         });
         if (!result.ok) {

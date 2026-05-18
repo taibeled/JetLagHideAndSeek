@@ -30,6 +30,17 @@ export const hidingZonesWireSchema = z.object({
     selectedPresetIds: z.array(z.string()),
 });
 
+export const radiusQuestionWireSchema = z.object({
+    center: positionSchema,
+    createdAt: z.string().min(1),
+    id: z.string().min(1),
+    radiusMeters: z.number().positive(),
+    radiusOption: z.enum(["500m", "1km", "2km", "5km", "10km", "other"]),
+    radiusUnit: z.enum(["m", "km", "mi"]),
+    type: z.literal("radius"),
+    updatedAt: z.string().min(1),
+});
+
 export const appStatePayloadSchema = z.object({
     gameId: z.string().min(1),
     hidingZones: hidingZonesWireSchema.optional(),
@@ -38,6 +49,7 @@ export const appStatePayloadSchema = z.object({
         updatedAt: z.string().min(1),
     }),
     playArea: playAreaWireSchema.optional(),
+    questions: z.array(radiusQuestionWireSchema).optional(),
 });
 
 export const appStateEnvelopeSchema = z.object({
@@ -54,4 +66,5 @@ export type AppStateEnvelopeV1 = z.infer<typeof appStateEnvelopeSchema>;
 export type AppStatePayloadV1 = z.infer<typeof appStatePayloadSchema>;
 export type HidingZonesWireV1 = z.infer<typeof hidingZonesWireSchema>;
 export type PlayAreaWireV1 = z.infer<typeof playAreaWireSchema>;
+export type RadiusQuestionWireV1 = z.infer<typeof radiusQuestionWireSchema>;
 export type WireEnvelope = z.infer<typeof wireEnvelopeSchema>;

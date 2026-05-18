@@ -4,6 +4,7 @@ import {
     FillLayer,
     LineLayer,
     MapView,
+    PointAnnotation,
     setAccessToken,
     ShapeSource,
     UserLocation,
@@ -19,6 +20,7 @@ import {
 import { colors } from "@/theme/colors";
 
 import { useHidingZone } from "@/state/hidingZoneStore";
+import { useQuestion } from "@/state/questionStore";
 import {
     type CameraHandle,
     fitCameraToBbox,
@@ -32,6 +34,7 @@ setAccessToken(null);
 
 const MLMapView = MapView as ComponentType<any>;
 const MLCamera = Camera as ComponentType<any>;
+const MLPointAnnotation = PointAnnotation as ComponentType<any>;
 const MLShapeSource = ShapeSource as ComponentType<any>;
 const MLCircleLayer = CircleLayer as ComponentType<any>;
 const MLFillLayer = FillLayer as ComponentType<any>;
@@ -40,7 +43,7 @@ const MLUserLocation = UserLocation as ComponentType<any>;
 const MAX_STATION_COLOR_RINGS = 6;
 
 type NativeMapProps = {
-    onPress?: () => void;
+    onPress?: (event?: unknown) => void;
 };
 
 export function NativeMap({ onPress }: NativeMapProps) {
@@ -48,6 +51,13 @@ export function NativeMap({ onPress }: NativeMapProps) {
     const insets = useSafeAreaInsets();
     const { height } = useSafeAreaFrame();
     const { routeFeatures, stationFeatures, zoneFeatures } = useHidingZone();
+    const {
+        activeQuestion,
+        isMovePinEnabled,
+        isQuestionSheetActive,
+        radiusFeatures,
+        setQuestionCenter,
+    } = useQuestion();
     const { playArea } = usePlayArea();
     const mapStyle = useMemo(() => buildOsmRasterStyleJson(), []);
     const fitPadding = useMemo(
@@ -66,6 +76,32 @@ export function NativeMap({ onPress }: NativeMapProps) {
     }, [fitPadding, playArea.bbox]);
 
     const fitLabel = "🗺️";
+    const shouldShowActivePin = Boolean(
+        isQuestionSheetActive && activeQuestion,
+    );
+    const canMoveActivePin =
+        isQuestionSheetActive && isMovePinEnabled && Boolean(activeQuestion);
+
+    const handleMapPress = useCallback(
+        (event?: unknown) => {
+            const coordinate = getEventCoordinate(event);
+            if (canMoveActivePin && coordinate && activeQuestion) {
+                setQuestionCenter(activeQuestion.id, coordinate);
+            }
+            onPress?.(event);
+        },
+        [activeQuestion, canMoveActivePin, onPress, setQuestionCenter],
+    );
+
+    const handlePinDrag = useCallback(
+        (payload: unknown) => {
+            const coordinate = getEventCoordinate(payload);
+            if (canMoveActivePin && coordinate && activeQuestion) {
+                setQuestionCenter(activeQuestion.id, coordinate);
+            }
+        },
+        [activeQuestion, canMoveActivePin, setQuestionCenter],
+    );
 
     return (
         <View style={styles.container}>
@@ -75,7 +111,7 @@ export function NativeMap({ onPress }: NativeMapProps) {
                 logoEnabled={false}
                 mapStyle={mapStyle}
                 onDidFinishLoadingMap={fitPlayArea}
-                onPress={onPress}
+                onPress={handleMapPress}
                 style={styles.map}
                 testID="native-map"
             >
@@ -101,6 +137,27 @@ export function NativeMap({ onPress }: NativeMapProps) {
                             lineColor: colors.tint,
                             lineOpacity: 0.55,
                             lineWidth: 1.5,
+                        }}
+                    />
+                </MLShapeSource>
+
+                <MLShapeSource
+                    id="radius-question-areas"
+                    shape={radiusFeatures}
+                >
+                    <MLFillLayer
+                        id="radius-question-areas-fill"
+                        style={{
+                            fillColor: "#e46f4d",
+                            fillOpacity: 0.16,
+                        }}
+                    />
+                    <MLLineLayer
+                        id="radius-question-areas-outline"
+                        style={{
+                            lineColor: "#e46f4d",
+                            lineOpacity: 0.8,
+                            lineWidth: 2,
                         }}
                     />
                 </MLShapeSource>
@@ -169,6 +226,21 @@ export function NativeMap({ onPress }: NativeMapProps) {
                         onUpdate={handleLocationUpdate}
                         visible
                     />
+                ) : null}
+
+                {shouldShowActivePin && activeQuestion ? (
+                    <MLPointAnnotation
+                        coordinate={activeQuestion.center}
+                        draggable={Boolean(canMoveActivePin)}
+                        id={`radius-question-pin-${activeQuestion.id}`}
+                        onDrag={handlePinDrag}
+                        onDragEnd={handlePinDrag}
+                        testID="radius-question-pin"
+                    >
+                        <View style={styles.pin}>
+                            <View style={styles.pinDot} />
+                        </View>
+                    </MLPointAnnotation>
                 ) : null}
             </MLMapView>
 
@@ -254,6 +326,22 @@ const styles = StyleSheet.create({
     map: {
         flex: 1,
     },
+    pin: {
+        alignItems: "center",
+        backgroundColor: colors.white,
+        borderColor: "#e46f4d",
+        borderRadius: 16,
+        borderWidth: 3,
+        height: 32,
+        justifyContent: "center",
+        width: 32,
+    },
+    pinDot: {
+        backgroundColor: "#e46f4d",
+        borderRadius: 5,
+        height: 10,
+        width: 10,
+    },
     subtitle: {
         color: colors.muted,
         fontSize: 14,
@@ -271,3 +359,30 @@ const styles = StyleSheet.create({
         top: 0,
     },
 });
+
+function getEventCoordinate(event: unknown): [number, number] | null {
+    if (!isRecord(event)) return null;
+
+    const directCoordinates = event.coordinates;
+    if (
+        isRecord(directCoordinates) &&
+        typeof directCoordinates.longitude === "number" &&
+        typeof directCoordinates.latitude === "number"
+    ) {
+        return [directCoordinates.longitude, directCoordinates.latitude];
+    }
+
+    const geometry = event.geometry;
+    if (isRecord(geometry) && Array.isArray(geometry.coordinates)) {
+        const [lon, lat] = geometry.coordinates;
+        if (typeof lon === "number" && typeof lat === "number") {
+            return [lon, lat];
+        }
+    }
+
+    return null;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === "object" && value !== null && !Array.isArray(value);
+}

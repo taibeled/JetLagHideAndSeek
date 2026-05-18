@@ -12,6 +12,7 @@ import { StyleSheet } from "react-native";
 
 import { MainDrawer } from "@/features/sheet/MainDrawer";
 import { SheetRouteName } from "@/features/sheet/sheetRoutes";
+import { useQuestion } from "@/state/questionStore";
 import { colors } from "@/theme/colors";
 
 const Sheet = BottomSheet as ComponentType<any>;
@@ -37,6 +38,7 @@ export const AppBottomSheet = forwardRef<
     );
     const snapPoints = useMemo(() => ["42%", "88%"], []);
     const [route, setRoute] = useState<SheetRouteName>("main");
+    const { setQuestionSheetActive } = useQuestion();
     const currentIndexRef = useRef(0);
     useImperativeHandle(ref, () => ({
         snapToIndex(index: number) {
@@ -57,6 +59,10 @@ export const AppBottomSheet = forwardRef<
         }
     }, [route]);
 
+    useEffect(() => {
+        setQuestionSheetActive(route === "question-detail");
+    }, [route, setQuestionSheetActive]);
+
     return (
         <Sheet
             ref={sheetRef}
@@ -69,6 +75,7 @@ export const AppBottomSheet = forwardRef<
             backgroundStyle={styles.sheetBackground}
             onChange={(index: number) => {
                 currentIndexRef.current = index;
+                if (index === -1) setQuestionSheetActive(false);
                 onIndexChange?.(index);
             }}
         >

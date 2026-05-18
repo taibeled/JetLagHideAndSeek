@@ -24,7 +24,12 @@ function summarizeAppState(envelope: AppStateEnvelopeV1): string {
     const presetLabel = `${hidingZones.selectedPresetIds.length} preset${
         hidingZones.selectedPresetIds.length === 1 ? "" : "s"
     }`;
+    const questionCount = envelope.payload.questions?.length ?? 0;
+    const questionLabel =
+        questionCount > 0
+            ? ` · ${questionCount} question${questionCount === 1 ? "" : "s"}`
+            : "";
     return `${playArea} · ${presetLabel} · ${Math.round(
         hidingZones.radiusMeters,
-    )} m radius`;
+    )} m radius${questionLabel}`;
 }

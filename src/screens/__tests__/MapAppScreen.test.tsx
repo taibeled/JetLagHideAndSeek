@@ -279,11 +279,8 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        expect(
-            screen.getByText(
-                "The question list will be wired once the state model exists.",
-            ),
-        ).toBeTruthy();
+        expect(screen.getByText("Question List")).toBeTruthy();
+        expect(screen.getByTestId("questions-empty-card")).toBeTruthy();
 
         fireEvent.press(screen.getByText("Back"));
         act(() => {
@@ -293,11 +290,8 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        expect(
-            screen.getByText(
-                "Question creation will land here in a later milestone.",
-            ),
-        ).toBeTruthy();
+        expect(screen.getByText("Choose a question")).toBeTruthy();
+        expect(screen.getByTestId("add-radius-question-row")).toBeTruthy();
 
         fireEvent.press(screen.getByText("Back"));
         act(() => {
@@ -310,6 +304,146 @@ describe("MapAppScreen", () => {
         expect(screen.getByText("Game Settings")).toBeTruthy();
         expect(screen.getByTestId("settings-play-area-row")).toBeTruthy();
         expect(screen.getByTestId("settings-hiding-zone-row")).toBeTruthy();
+
+        jest.useRealTimers();
+    });
+
+    it("creates a radius question and renders its radius preview", () => {
+        const screen = renderWithSafeArea(<MapAppScreen />);
+        jest.useFakeTimers();
+
+        fireEvent.press(screen.getByTestId("main-add-question-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        fireEvent.press(screen.getByTestId("add-radius-question-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+
+        expect(screen.getByText("Preview Radius")).toBeTruthy();
+        expect(screen.getByText("500m")).toBeTruthy();
+        expect(screen.getByText("1km")).toBeTruthy();
+        expect(screen.getByText("2km")).toBeTruthy();
+        expect(screen.getByText("5km")).toBeTruthy();
+        expect(screen.getByText("10km")).toBeTruthy();
+        expect(screen.getByText("Other")).toBeTruthy();
+        expect(screen.getByTestId("radius-meters").props.children).toEqual([
+            "Stored as ",
+            500,
+            " m",
+        ]);
+
+        const radiusShape = getMapShapeSource(screen, "radius-question-areas")
+            .props.shape;
+        expect(radiusShape.features).toHaveLength(1);
+        expect(radiusShape.features[0].properties.radiusMeters).toBe(500);
+
+        fireEvent.press(screen.getByTestId("radius-option-1km"));
+        expect(screen.getByTestId("radius-meters").props.children).toEqual([
+            "Stored as ",
+            1000,
+            " m",
+        ]);
+        expect(
+            getMapShapeSource(screen, "radius-question-areas").props.shape
+                .features[0].properties.radiusMeters,
+        ).toBe(1000);
+
+        jest.useRealTimers();
+    });
+
+    it("moves only the active radius pin when move-pin mode is enabled", () => {
+        const screen = renderWithSafeArea(<MapAppScreen />);
+        jest.useFakeTimers();
+
+        fireEvent.press(screen.getByTestId("main-add-question-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        fireEvent.press(screen.getByTestId("add-radius-question-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+
+        const initialPin = screen.getByTestId("radius-question-pin");
+        const initialCoordinate = initialPin.props.coordinate;
+        expect(initialPin.props.draggable).toBe(false);
+
+        fireEvent(screen.getByTestId("native-map"), "onPress", {
+            geometry: { coordinates: [139.75, 35.7] },
+        });
+        expect(
+            screen.getByTestId("radius-question-pin").props.coordinate,
+        ).toEqual(initialCoordinate);
+
+        fireEvent.press(screen.getByTestId("radius-move-pin-button"));
+        expect(screen.getByTestId("radius-question-pin").props.draggable).toBe(
+            true,
+        );
+
+        fireEvent(screen.getByTestId("native-map"), "onPress", {
+            geometry: { coordinates: [139.75, 35.7] },
+        });
+        expect(
+            screen.getByTestId("radius-question-pin").props.coordinate,
+        ).toEqual([139.75, 35.7]);
+
+        fireEvent(screen.getByTestId("radius-question-pin"), "onDragEnd", {
+            geometry: { coordinates: [139.8, 35.72] },
+        });
+        expect(
+            screen.getByTestId("radius-question-pin").props.coordinate,
+        ).toEqual([139.8, 35.72]);
+
+        fireEvent.press(screen.getByText("Back"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        expect(screen.queryByTestId("radius-question-pin")).toBeNull();
+
+        jest.useRealTimers();
+    });
+
+    it("shows nearest selected station distance in the radius info box", async () => {
+        const screen = renderWithSafeArea(<MapAppScreen />);
+        jest.useFakeTimers();
+
+        fireEvent.press(screen.getByTestId("main-settings-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        fireEvent.press(screen.getByTestId("settings-hiding-zone-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        fireEvent.press(screen.getByTestId("hiding-zone-preset-tokyo-metro"));
+
+        fireEvent.press(screen.getByText("Back"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        fireEvent.press(screen.getByText("Back"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        fireEvent.press(screen.getByTestId("main-add-question-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        fireEvent.press(screen.getByTestId("add-radius-question-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+
+        await waitFor(() => {
+            expect(
+                String(
+                    screen.getByTestId("radius-info-box").props
+                        .accessibilityLabel,
+                ),
+            ).toContain("from ");
+        });
 
         jest.useRealTimers();
     });

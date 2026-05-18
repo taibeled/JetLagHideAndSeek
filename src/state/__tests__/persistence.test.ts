@@ -34,6 +34,19 @@ function makeLegacyAppStateWithoutQuestions() {
     };
 }
 
+function makeRadiusQuestion() {
+    return {
+        center: defaultPlayArea.center,
+        createdAt: "2026-05-18T00:00:00.000Z",
+        id: "q-1",
+        radiusMeters: 500,
+        radiusOption: "500m" as const,
+        radiusUnit: "m" as const,
+        type: "radius" as const,
+        updatedAt: "2026-05-18T00:00:00.000Z",
+    };
+}
+
 describe("AppStateV1 schema", () => {
     it("parses a valid full app state", () => {
         const state = makeAppState();
@@ -64,11 +77,16 @@ describe("AppStateV1 schema", () => {
         ).toBeNull();
     });
 
-    it("rejects non-empty questions until question schemas exist", () => {
+    it("accepts radius questions", () => {
+        const state = { ...makeAppState(), questions: [makeRadiusQuestion()] };
+        expect(migratePersistedAppState(state)).toEqual(state);
+    });
+
+    it("rejects invalid question shapes", () => {
         expect(
             migratePersistedAppState({
                 ...makeAppState(),
-                questions: [{ type: "radius" }],
+                questions: [{ ...makeRadiusQuestion(), radiusMeters: -1 }],
             }),
         ).toBeNull();
     });

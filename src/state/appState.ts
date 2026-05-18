@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import type { GeoJsonFeatureCollection } from "@/features/map/geojsonTypes";
+import type { QuestionsImportState } from "@/features/questions/questionTypes";
 import type { HidingZoneImportState } from "@/state/hidingZoneStore";
 import type { PlayAreaImportState } from "@/state/playAreaStore";
 
@@ -29,7 +30,18 @@ export const appStateHidingZonesSchema = z.object({
     selectedPresetIds: z.array(z.string()),
 });
 
-export const appStateQuestionsSchema = z.tuple([]);
+export const appStateRadiusQuestionSchema = z.object({
+    center: positionSchema,
+    createdAt: z.string().min(1),
+    id: z.string().min(1),
+    radiusMeters: z.number().positive(),
+    radiusOption: z.enum(["500m", "1km", "2km", "5km", "10km", "other"]),
+    radiusUnit: z.enum(["m", "km", "mi"]),
+    type: z.literal("radius"),
+    updatedAt: z.string().min(1),
+});
+
+export const appStateQuestionsSchema = z.array(appStateRadiusQuestionSchema);
 
 export const appStateV1Schema = z.object({
     hidingZones: appStateHidingZonesSchema,
@@ -51,6 +63,7 @@ export function createAppStateV1({
     metadata,
     now = new Date(),
     playArea,
+    questions,
 }: {
     hidingZones: HidingZoneImportState;
     metadata?: {
@@ -59,6 +72,7 @@ export function createAppStateV1({
     };
     now?: Date;
     playArea: PlayAreaImportState;
+    questions?: QuestionsImportState;
 }): AppStateV1 {
     const timestamp = now.toISOString();
     return {
@@ -79,15 +93,13 @@ export function createAppStateV1({
             osmId: playArea.osmId,
             osmType: playArea.osmType,
         },
-        questions: [],
+        questions: questions ? [...questions] : [],
         version: 1,
     };
 }
 
 export function migratePersistedAppState(value: unknown): AppStateV1 | null {
-    const parsed = appStateV1Schema.safeParse(
-        addMissingQuestionsSlice(value),
-    );
+    const parsed = appStateV1Schema.safeParse(addMissingQuestionsSlice(value));
     return parsed.success ? parsed.data : null;
 }
 

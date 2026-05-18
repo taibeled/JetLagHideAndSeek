@@ -7,13 +7,16 @@ export const FIELD_MAP = {
     createdAt: "c",
     gameId: "g",
     hidingZones: "h",
+    id: "i",
     kind: "k",
     label: "l",
     metadata: "m",
     osmId: "o",
     payload: "p",
     playArea: "a",
+    questions: "q",
     radiusMeters: "r",
+    radiusOption: "d",
     selectedPresetIds: "s",
     version: "v",
 } as const;
@@ -44,6 +47,15 @@ const hidingZonesMinifiedSchema = z.object({
     [FIELD_MAP.selectedPresetIds]: z.array(z.string()),
 });
 
+const radiusQuestionMinifiedSchema = z.object({
+    [FIELD_MAP.center]: compactCoordSchema,
+    [FIELD_MAP.id]: z.string().min(1).optional(),
+    [FIELD_MAP.radiusMeters]: z.number().positive(),
+    [FIELD_MAP.radiusOption]: z
+        .enum(["500m", "1km", "2km", "5km", "10km", "other"])
+        .optional(),
+});
+
 const metadataMinifiedSchema = z.object({
     [FIELD_MAP.createdAt]: z.string().min(1),
 });
@@ -53,6 +65,7 @@ const appStatePayloadMinifiedSchema = z.object({
     [FIELD_MAP.hidingZones]: hidingZonesMinifiedSchema.optional(),
     [FIELD_MAP.metadata]: metadataMinifiedSchema,
     [FIELD_MAP.playArea]: playAreaMinifiedSchema.optional(),
+    [FIELD_MAP.questions]: z.array(radiusQuestionMinifiedSchema).optional(),
 });
 
 const appStateEnvelopeMinifiedSchema = z.object({
@@ -173,6 +186,18 @@ export function minifyEnvelope(env: WireEnvelope): WireEnvelopeMinified {
         };
     }
 
+    if (p.questions && p.questions.length > 0) {
+        payload[FIELD_MAP.questions] = p.questions.map((question) => ({
+            [FIELD_MAP.center]: compactCoord(
+                question.center[0],
+                question.center[1],
+            ),
+            [FIELD_MAP.id]: question.id,
+            [FIELD_MAP.radiusMeters]: question.radiusMeters,
+            [FIELD_MAP.radiusOption]: question.radiusOption,
+        }));
+    }
+
     mini[FIELD_MAP.payload] = payload;
     return mini as unknown as WireEnvelopeMinified;
 }
@@ -219,6 +244,26 @@ export function unminifyEnvelope(
             osmId: pa[FIELD_MAP.osmId],
             osmType: "R",
         };
+    }
+
+    if (p[FIELD_MAP.questions]) {
+        payload.questions = p[FIELD_MAP.questions]!.map((question, index) => {
+            const [lon, lat] = uncompactCoord(
+                question[FIELD_MAP.center][0],
+                question[FIELD_MAP.center][1],
+            );
+            const createdAt = metadata[FIELD_MAP.createdAt];
+            return {
+                center: [lon, lat],
+                createdAt,
+                id: question[FIELD_MAP.id] ?? `q-imported-${index + 1}`,
+                radiusMeters: question[FIELD_MAP.radiusMeters],
+                radiusOption: question[FIELD_MAP.radiusOption] ?? "other",
+                radiusUnit: "m",
+                type: "radius",
+                updatedAt: createdAt,
+            };
+        });
     }
 
     full.payload = payload;
