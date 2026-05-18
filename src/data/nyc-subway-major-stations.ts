@@ -1369,7 +1369,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
         lng: -73.9615,
         lines: ["A", "B", "C"],
         accessible: true,
-        junction: true,
+        junction: false,
         express: false,
     },
     {
@@ -1409,7 +1409,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
         lng: -73.9549,
         lines: ["A", "B", "C"],
         accessible: false,
-        junction: true,
+        junction: false,
         express: false,
     },
     {
@@ -1479,7 +1479,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
         lng: -73.9476,
         lines: ["A", "B", "C"],
         accessible: false,
-        junction: true,
+        junction: false,
         express: false,
     },
     {
@@ -1799,7 +1799,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
         lng: -73.9764,
         lines: ["A", "B", "C"],
         accessible: true,
-        junction: true,
+        junction: false,
         express: false,
     },
     {
@@ -1829,7 +1829,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
         lng: -73.9721,
         lines: ["A", "B", "C"],
         accessible: false,
-        junction: true,
+        junction: false,
         express: false,
     },
     {
@@ -1859,7 +1859,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
         lng: -73.9689,
         lines: ["A", "B", "C"],
         accessible: true,
-        junction: true,
+        junction: false,
         express: false,
     },
     {
@@ -1899,7 +1899,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
         lng: -73.9647,
         lines: ["A", "B", "C"],
         accessible: true,
-        junction: true,
+        junction: false,
         express: false,
     },
     {
@@ -1979,7 +1979,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
         lng: -73.9582,
         lines: ["A", "B", "C"],
         accessible: false,
-        junction: true,
+        junction: false,
         express: false,
     },
     {
