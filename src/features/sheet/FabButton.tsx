@@ -5,13 +5,12 @@ import { colors } from "@/theme/colors";
 
 type FabButtonProps = {
     onPress: () => void;
-    visible: boolean;
 };
 
 const DOT_SIZE = 8;
 const DOT_GAP = 4;
 
-export function FabButton({ onPress, visible }: FabButtonProps) {
+export function FabButton({ onPress }: FabButtonProps) {
     const insets = useSafeAreaInsets();
 
     return (
