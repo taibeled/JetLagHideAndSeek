@@ -180,7 +180,7 @@ export function NativeMap({ onPress }: NativeMapProps) {
                 style={[
                     styles.controls,
                     {
-                        top: insets.top + 16,
+                        top: insets.top + 60,
                     },
                 ]}
             >
