@@ -213,6 +213,16 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
         express: true,
     },
     {
+        name: "Bedford Park Blvd",
+        borough: "Bronx",
+        lat: 40.8732,
+        lng: -73.8871,
+        lines: ["B", "D"],
+        accessible: false,
+        junction: false,
+        express: true,
+    },
+    {
         name: "Bronx Park East",
         borough: "Bronx",
         lat: 40.8488,
@@ -300,7 +310,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
         lines: ["B", "D"],
         accessible: true,
         junction: false,
-        express: false,
+        express: true,
     },
     {
         name: "Freeman St",
@@ -363,6 +373,16 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
         express: true,
     },
     {
+        name: "Kingsbridge Rd",
+        borough: "Bronx",
+        lat: 40.867,
+        lng: -73.8935,
+        lines: ["B", "D"],
+        accessible: false,
+        junction: false,
+        express: true,
+    },
+    {
         name: "Nereid Av",
         borough: "Bronx",
         lat: 40.8984,
@@ -370,6 +390,16 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
         lines: ["2", "5"],
         accessible: false,
         junction: true,
+        express: true,
+    },
+    {
+        name: "Norwood-205 St",
+        borough: "Bronx",
+        lat: 40.8748,
+        lng: -73.8789,
+        lines: ["D"],
+        accessible: false,
+        junction: false,
         express: true,
     },
     {
@@ -410,6 +440,16 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
         lines: ["2", "5"],
         accessible: false,
         junction: true,
+        express: true,
+    },
+    {
+        name: "Tremont Av",
+        borough: "Bronx",
+        lat: 40.8504,
+        lng: -73.9052,
+        lines: ["B", "D"],
+        accessible: false,
+        junction: false,
         express: true,
     },
     {
@@ -540,7 +580,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
         lines: ["B", "Q"],
         accessible: false,
         junction: true,
-        express: false,
+        express: true,
     },
     {
         name: "7 Av",
@@ -760,7 +800,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
         lines: ["B", "Q"],
         accessible: false,
         junction: true,
-        express: false,
+        express: true,
     },
     {
         name: "Broadway Junction",
@@ -800,7 +840,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
         lines: ["B", "Q"],
         accessible: false,
         junction: true,
-        express: false,
+        express: true,
     },
     {
         name: "Church Av",
@@ -850,7 +890,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
         lines: ["B", "D", "N", "Q", "R", "W"],
         accessible: true,
         junction: true,
-        express: false,
+        express: true,
     },
     {
         name: "Ditmas Av",
@@ -1010,7 +1050,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
         lines: ["B", "Q"],
         accessible: false,
         junction: true,
-        express: false,
+        express: true,
     },
     {
         name: "Kings Hwy",
@@ -1130,7 +1170,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
         lines: ["B", "Q"],
         accessible: false,
         junction: true,
-        express: false,
+        express: true,
     },
     {
         name: "Nostrand Av",
@@ -1190,7 +1230,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
         lines: ["B", "Q"],
         accessible: false,
         junction: true,
-        express: false,
+        express: true,
     },
     {
         name: "Rockaway Av",
@@ -1220,7 +1260,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
         lines: ["B", "Q"],
         accessible: false,
         junction: true,
-        express: false,
+        express: true,
     },
     {
         name: "Smith-9 Sts",
@@ -1510,7 +1550,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
         lines: ["A", "B", "C", "D"],
         accessible: true,
         junction: true,
-        express: false,
+        express: true,
     },
     {
         name: "2 Av",
