@@ -1,16 +1,22 @@
 appId: com.hinoka.hideandseek.v2
 ---
-- launchApp
+- launchApp:
+      clearState: true
+- openLink: "jetlag-hide-seek-v2://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8081&disableOnboarding=1"
 - runFlow:
       when:
           visible: "Open"
       commands:
           - tapOn: "Open"
-- runFlow:
-      when:
-          visible: "Continue"
-      commands:
-          - tapOn: "Continue"
+- extendedWaitUntil:
+      visible: "Continue"
+      timeout: 10000
+- tapOn: "Continue"
+- extendedWaitUntil:
+      visible: "Connected to:"
+      timeout: 10000
+- tapOn:
+      point: "91%,48%"
 - extendedWaitUntil:
       visible: "Tokyo 23 Wards"
       timeout: 60000
