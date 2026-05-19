@@ -97,6 +97,9 @@ export function QuestionDetailScreen() {
             <Text style={styles.detail}>
                 Compare a radius against the current map setup.
             </Text>
+            <Text style={styles.metadata} testID="radius-pin-help">
+                {pinHelpText}
+            </Text>
 
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Radius</Text>

@@ -1,12 +1,13 @@
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import type { ComponentProps } from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 
 type SheetScrollViewProps = {
-    children?: ComponentProps<typeof ScrollView>["children"];
+    children?: ComponentProps<typeof BottomSheetScrollView>["children"];
     contentContainerStyle?: ComponentProps<
-        typeof ScrollView
+        typeof BottomSheetScrollView
     >["contentContainerStyle"];
-    style?: ComponentProps<typeof ScrollView>["style"];
+    style?: ComponentProps<typeof BottomSheetScrollView>["style"];
 };
 
 export function SheetScrollView({
@@ -15,14 +16,14 @@ export function SheetScrollView({
     style,
 }: SheetScrollViewProps) {
     return (
-        <ScrollView
+        <BottomSheetScrollView
             style={[styles.scroll, style]}
             contentContainerStyle={[styles.content, contentContainerStyle]}
             keyboardShouldPersistTaps="handled"
             scrollIndicatorInsets={{ right: 4 }}
         >
             {children}
-        </ScrollView>
+        </BottomSheetScrollView>
     );
 }
 

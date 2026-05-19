@@ -30,14 +30,22 @@ appId: com.hinoka.hideandseek.v2
 - extendedWaitUntil:
       visible: "Preview Radius"
       timeout: 10000
-- assertVisible: "500m"
-- assertVisible: "1km"
-- assertVisible: "2km"
-- assertVisible: "5km"
-- assertVisible: "10km"
-- assertVisible: "Other"
-- assertVisible: "Unlocked"
-- assertVisible: "Select hiding-zone presets to compare against nearby stations."
+- assertVisible:
+      id: "radius-option-500m"
+- assertVisible:
+      id: "radius-option-1km"
+- assertVisible:
+      id: "radius-option-2km"
+- assertVisible:
+      id: "radius-option-5km"
+- assertVisible:
+      id: "radius-option-10km"
+- assertVisible:
+      id: "radius-option-other"
+- assertVisible:
+      id: "radius-pin-lock-button"
+- assertVisible:
+      id: "radius-pin-help"
 - tapOn:
       point: "48%,31%"
 - tapOn:

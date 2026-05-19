@@ -201,7 +201,7 @@ jest.mock("react-native-gesture-handler", () => {
 
 jest.mock("@gorhom/bottom-sheet", () => {
     const React = require("react");
-    const { View } = require("react-native");
+    const { ScrollView, View } = require("react-native");
 
     const bottomSheetMethods = {
         snapToIndex: jest.fn(),
@@ -222,6 +222,12 @@ jest.mock("@gorhom/bottom-sheet", () => {
             React.createElement(
                 View,
                 { ...props, testID: "bottom-sheet-view" },
+                children,
+            ),
+        BottomSheetScrollView: ({ children, ...props }) =>
+            React.createElement(
+                ScrollView,
+                { ...props, testID: "bottom-sheet-scroll-view" },
                 children,
             ),
         default: BottomSheet,
