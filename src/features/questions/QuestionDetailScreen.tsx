@@ -5,6 +5,7 @@ import {
     findNearestStation,
     formatStationDistance,
 } from "@/features/questions/questionGeometry";
+import { requestUserCoordinate } from "@/features/map/useUserLocation";
 import {
     type RadiusOption,
     radiusPresetOptions,
@@ -31,6 +32,7 @@ export function QuestionDetailScreen({
         deleteQuestion,
         isPinLocked,
         setPinLocked,
+        setQuestionCenter,
         setRadiusOption,
         setRadiusUnit,
         setRadiusValue,
@@ -71,6 +73,12 @@ export function QuestionDetailScreen({
         deleteQuestion(activeQuestion.id);
         onNavigate("questions");
     };
+    const handleSetToMyLocation = async () => {
+        const result = await requestUserCoordinate();
+        if (result.coordinate) {
+            setQuestionCenter(activeQuestion.id, result.coordinate);
+        }
+    };
 
     return (
         <SheetScrollView
@@ -80,7 +88,6 @@ export function QuestionDetailScreen({
             <View style={styles.headerRow}>
                 <View style={styles.headerCopy}>
                     <Text style={styles.eyebrow}>Radius Question</Text>
-                    <Text style={styles.title}>Preview Radius</Text>
                 </View>
                 <Pressable
                     accessibilityLabel={
@@ -212,6 +219,22 @@ export function QuestionDetailScreen({
                     {activeQuestion.center[1].toFixed(5)},{" "}
                     {activeQuestion.center[0].toFixed(5)}
                 </Text>
+                <Pressable
+                    accessibilityLabel="Set radius pin to my location"
+                    accessibilityRole="button"
+                    onPress={() => {
+                        void handleSetToMyLocation();
+                    }}
+                    style={({ pressed }) => [
+                        styles.locationButton,
+                        pressed ? styles.actionPressed : null,
+                    ]}
+                    testID="radius-set-to-location-button"
+                >
+                    <Text style={styles.locationButtonText}>
+                        Set to My Location
+                    </Text>
+                </Pressable>
             </View>
 
             <View
@@ -359,6 +382,22 @@ const styles = StyleSheet.create({
     },
     lockButtonTextActive: {
         color: colors.white,
+    },
+    locationButton: {
+        alignItems: "center",
+        backgroundColor: colors.card,
+        borderColor: colors.border,
+        borderRadius: 8,
+        borderWidth: 1,
+        justifyContent: "center",
+        marginTop: 12,
+        minHeight: 46,
+        paddingHorizontal: 14,
+    },
+    locationButtonText: {
+        color: colors.ink,
+        fontSize: 15,
+        fontWeight: "800",
     },
     optionGrid: {
         flexDirection: "row",

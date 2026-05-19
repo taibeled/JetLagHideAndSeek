@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
+import { requestUserCoordinate } from "@/features/map/useUserLocation";
 import { SheetScrollView } from "@/features/sheet/SheetScrollView";
 import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
 import { usePlayArea } from "@/state/playAreaStore";
@@ -14,8 +15,9 @@ export function AddQuestionScreen({ onNavigate }: AddQuestionScreenProps) {
     const { playArea } = usePlayArea();
     const { createRadiusQuestion } = useQuestion();
 
-    const addRadiusQuestion = () => {
-        createRadiusQuestion(playArea.center);
+    const addRadiusQuestion = async () => {
+        const result = await requestUserCoordinate();
+        createRadiusQuestion(result.coordinate ?? playArea.center);
         onNavigate("question-detail");
     };
 
@@ -30,7 +32,9 @@ export function AddQuestionScreen({ onNavigate }: AddQuestionScreenProps) {
             <Pressable
                 accessibilityLabel="Add radius question"
                 accessibilityRole="button"
-                onPress={addRadiusQuestion}
+                onPress={() => {
+                    void addRadiusQuestion();
+                }}
                 style={({ pressed }) => [
                     styles.optionRow,
                     pressed ? styles.actionPressed : null,

@@ -143,6 +143,18 @@ function renderWithSafeArea(ui: ReactElement) {
     );
 }
 
+async function pressAddRadiusQuestion(screen: ReturnType<typeof render>) {
+    await act(async () => {
+        fireEvent.press(screen.getByTestId("add-radius-question-row"));
+    });
+    act(() => {
+        jest.advanceTimersByTime(300);
+    });
+    await waitFor(() => {
+        expect(screen.getByText("Preview Radius")).toBeTruthy();
+    });
+}
+
 describe("MapAppScreen", () => {
     beforeEach(async () => {
         jest.clearAllMocks();
@@ -308,7 +320,7 @@ describe("MapAppScreen", () => {
         jest.useRealTimers();
     });
 
-    it("creates a radius question and renders its radius preview", () => {
+    it("creates a radius question at the current location and renders its radius preview", async () => {
         const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
 
@@ -320,10 +332,7 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        fireEvent.press(screen.getByTestId("add-radius-question-row"));
-        act(() => {
-            jest.advanceTimersByTime(300);
-        });
+        await pressAddRadiusQuestion(screen);
 
         expect(screen.getByText("Preview Radius")).toBeTruthy();
         expect(screen.getByText("500m")).toBeTruthy();
@@ -342,6 +351,13 @@ describe("MapAppScreen", () => {
             500,
             " m",
         ]);
+        expect(
+            screen.getByTestId("radius-center-summary").props.children,
+        ).toEqual(["35.67620", ",", " ", "139.65030"]);
+        expect(
+            getMapShapeSource(screen, "radius-question-active-pin").props.shape
+                .features[0].geometry.coordinates,
+        ).toEqual([139.6503, 35.6762]);
 
         const radiusShape = getMapShapeSource(screen, "radius-question-areas")
             .props.shape;
@@ -384,7 +400,7 @@ describe("MapAppScreen", () => {
         jest.useRealTimers();
     });
 
-    it("deletes a radius question from the detail sheet", () => {
+    it("deletes a radius question from the detail sheet", async () => {
         const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
 
@@ -396,10 +412,7 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        fireEvent.press(screen.getByTestId("add-radius-question-row"));
-        act(() => {
-            jest.advanceTimersByTime(300);
-        });
+        await pressAddRadiusQuestion(screen);
 
         expect(
             getMapShapeSource(screen, "radius-question-areas").props.shape
@@ -421,7 +434,7 @@ describe("MapAppScreen", () => {
         jest.useRealTimers();
     });
 
-    it("deletes a radius question from the question list swipe action", () => {
+    it("deletes a radius question from the question list swipe action", async () => {
         const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
 
@@ -433,10 +446,7 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        fireEvent.press(screen.getByTestId("add-radius-question-row"));
-        act(() => {
-            jest.advanceTimersByTime(300);
-        });
+        await pressAddRadiusQuestion(screen);
 
         fireEvent.press(screen.getByText("Back"));
         act(() => {
@@ -470,10 +480,7 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        fireEvent.press(screen.getByTestId("add-radius-question-row"));
-        act(() => {
-            jest.advanceTimersByTime(300);
-        });
+        await pressAddRadiusQuestion(screen);
 
         fireEvent(screen.getByTestId("native-map"), "onPress", {
             geometry: { coordinates: [139.75, 35.7] },
@@ -483,6 +490,18 @@ describe("MapAppScreen", () => {
                 getMapShapeSource(screen, "radius-question-active-pin").props
                     .shape.features[0].geometry.coordinates,
             ).toEqual([139.75, 35.7]);
+        });
+
+        await act(async () => {
+            fireEvent.press(
+                screen.getByTestId("radius-set-to-location-button"),
+            );
+        });
+        await waitFor(() => {
+            expect(
+                getMapShapeSource(screen, "radius-question-active-pin").props
+                    .shape.features[0].geometry.coordinates,
+            ).toEqual([139.6503, 35.6762]);
         });
 
         fireEvent.press(screen.getByText("Back"));
@@ -509,10 +528,7 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        fireEvent.press(screen.getByTestId("add-radius-question-row"));
-        act(() => {
-            jest.advanceTimersByTime(300);
-        });
+        await pressAddRadiusQuestion(screen);
 
         const initialCoordinate = getMapShapeSource(
             screen,
@@ -574,10 +590,7 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        fireEvent.press(screen.getByTestId("add-radius-question-row"));
-        act(() => {
-            jest.advanceTimersByTime(300);
-        });
+        await pressAddRadiusQuestion(screen);
 
         await waitFor(() => {
             expect(
@@ -902,7 +915,7 @@ describe("MapAppScreen", () => {
 
     // -- Drag gesture integration tests --
 
-    function navigateToUnlockedQuestionSheet(
+    async function navigateToUnlockedQuestionSheet(
         screen: ReturnType<typeof render>,
     ) {
         jest.useFakeTimers();
@@ -914,10 +927,7 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        fireEvent.press(screen.getByTestId("add-radius-question-row"));
-        act(() => {
-            jest.advanceTimersByTime(300);
-        });
+        await pressAddRadiusQuestion(screen);
     }
 
     function cleanupMovePinTest() {
@@ -925,10 +935,10 @@ describe("MapAppScreen", () => {
         jest.useRealTimers();
     }
 
-    function navigateToMovePinAndUseRealTimers(
+    async function navigateToMovePinAndUseRealTimers(
         screen: ReturnType<typeof render>,
     ) {
-        navigateToUnlockedQuestionSheet(screen);
+        await navigateToUnlockedQuestionSheet(screen);
         jest.useRealTimers();
     }
 
@@ -962,7 +972,7 @@ describe("MapAppScreen", () => {
 
         it("tapping the map to move the pin works while the sheet is unlocked", async () => {
             const screen = renderWithSafeArea(<MapAppScreen />);
-            navigateToUnlockedQuestionSheet(screen);
+            await navigateToUnlockedQuestionSheet(screen);
 
             fireEvent(screen.getByTestId("native-map"), "onPress", {
                 geometry: { coordinates: [139.75, 35.7] },
@@ -997,7 +1007,7 @@ describe("MapAppScreen", () => {
             __mapMethods.getPointInView.mockResolvedValue([100, 500]);
 
             const screen = renderWithSafeArea(<MapAppScreen />);
-            navigateToMovePinAndUseRealTimers(screen);
+            await navigateToMovePinAndUseRealTimers(screen);
 
             expect(__gestureCallbacks.onStart).toBeTruthy();
 
@@ -1031,7 +1041,7 @@ describe("MapAppScreen", () => {
             __mapMethods.getPointInView.mockResolvedValue([100, 500]);
 
             const screen = renderWithSafeArea(<MapAppScreen />);
-            navigateToMovePinAndUseRealTimers(screen);
+            await navigateToMovePinAndUseRealTimers(screen);
 
             const onStartFn =
                 __gestureCallbacks.onStart.getMockImplementation();
@@ -1069,7 +1079,7 @@ describe("MapAppScreen", () => {
             ]);
 
             const screen = renderWithSafeArea(<MapAppScreen />);
-            navigateToMovePinAndUseRealTimers(screen);
+            await navigateToMovePinAndUseRealTimers(screen);
 
             // Start drag near pin
             const onStartFn =
@@ -1120,7 +1130,7 @@ describe("MapAppScreen", () => {
             __mapMethods.getCoordinateFromView.mockResolvedValue([140.0, 36.0]);
 
             const screen = renderWithSafeArea(<MapAppScreen />);
-            navigateToMovePinAndUseRealTimers(screen);
+            await navigateToMovePinAndUseRealTimers(screen);
 
             await act(async () => {
                 const onStartFn =
@@ -1189,7 +1199,7 @@ describe("MapAppScreen", () => {
             __mapMethods.getPointInView.mockResolvedValue([100, 500]);
 
             const screen = renderWithSafeArea(<MapAppScreen />);
-            navigateToMovePinAndUseRealTimers(screen);
+            await navigateToMovePinAndUseRealTimers(screen);
 
             await act(async () => {
                 const onStartFn =
