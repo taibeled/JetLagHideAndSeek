@@ -21,7 +21,12 @@ appId: com.hinoka.hideandseek.v2
       visible: "Tokyo 23 Wards"
       timeout: 60000
 - tapOn:
-      id: "main-add-question-row"
+      id: "main-questions-row"
+- extendedWaitUntil:
+      visible: "Question List"
+      timeout: 10000
+- tapOn:
+      id: "questions-add-question-row"
 - extendedWaitUntil:
       visible: "Choose a question"
       timeout: 10000

@@ -87,6 +87,25 @@ export function QuestionsScreen({ onNavigate }: QuestionsScreenProps) {
                     ))}
                 </View>
             )}
+
+            <Pressable
+                accessibilityLabel="Add question"
+                accessibilityRole="button"
+                onPress={() => onNavigate("add-question")}
+                style={({ pressed }) => [
+                    styles.addQuestionRow,
+                    pressed ? styles.actionPressed : null,
+                ]}
+                testID="questions-add-question-row"
+            >
+                <View style={styles.questionCopy}>
+                    <Text style={styles.questionTitle}>Add Question</Text>
+                    <Text style={styles.metadata}>
+                        Start a radius, thermometer, or transit question.
+                    </Text>
+                </View>
+                <Text style={styles.chevron}>›</Text>
+            </Pressable>
         </SheetScrollView>
     );
 }
@@ -94,6 +113,20 @@ export function QuestionsScreen({ onNavigate }: QuestionsScreenProps) {
 const styles = StyleSheet.create({
     actionPressed: {
         opacity: 0.72,
+    },
+    addQuestionRow: {
+        alignItems: "center",
+        backgroundColor: colors.card,
+        borderColor: colors.border,
+        borderRadius: 8,
+        borderWidth: 1,
+        flexDirection: "row",
+        gap: 12,
+        justifyContent: "space-between",
+        marginTop: 16,
+        minHeight: 64,
+        paddingHorizontal: 16,
+        paddingVertical: 10,
     },
     chevron: {
         color: colors.muted,

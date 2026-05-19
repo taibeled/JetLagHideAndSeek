@@ -315,7 +315,7 @@ function renderRouteContent(
             return (
                 <View style={styles.fullContainer}>
                     <View style={styles.backButtonRow}>
-                        <BackButton onPress={() => onNavigate("main")} />
+                        <BackButton onPress={() => onNavigate("questions")} />
                     </View>
                     <AddQuestionScreen onNavigate={onNavigate} />
                 </View>
@@ -349,13 +349,6 @@ function renderRouteContent(
                             isActive={false}
                             onPress={() => onNavigate("questions")}
                             testID="main-questions-row"
-                        />
-                        <DrawerAction
-                            title="Add Question"
-                            description="Start a radius, thermometer, or transit question."
-                            isActive={false}
-                            onPress={() => onNavigate("add-question")}
-                            testID="main-add-question-row"
                         />
                         <DrawerAction
                             title="Settings"

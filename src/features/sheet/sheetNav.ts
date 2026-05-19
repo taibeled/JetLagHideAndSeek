@@ -3,8 +3,8 @@ import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
 const routeDepth: Record<SheetRouteName, number> = {
     main: 0,
     questions: 1,
-    "add-question": 1,
-    "question-detail": 2,
+    "add-question": 2,
+    "question-detail": 3,
     settings: 1,
     "play-area": 2,
     "hiding-zone": 2,
@@ -22,9 +22,10 @@ export function getBackTarget(route: SheetRouteName): SheetRouteName | null {
         case "main":
             return null;
         case "questions":
-        case "add-question":
         case "settings":
             return "main";
+        case "add-question":
+            return "questions";
         case "question-detail":
             return "questions";
         case "play-area":

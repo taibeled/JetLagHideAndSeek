@@ -282,17 +282,17 @@ describe("MapAppScreen", () => {
         expect(screen.getByText("Question List")).toBeTruthy();
         expect(screen.getByTestId("questions-empty-card")).toBeTruthy();
 
-        fireEvent.press(screen.getByText("Back"));
-        act(() => {
-            jest.advanceTimersByTime(300);
-        });
-        fireEvent.press(screen.getByText("Add Question"));
+        fireEvent.press(screen.getByTestId("questions-add-question-row"));
         act(() => {
             jest.advanceTimersByTime(300);
         });
         expect(screen.getByText("Choose a question")).toBeTruthy();
         expect(screen.getByTestId("add-radius-question-row")).toBeTruthy();
 
+        fireEvent.press(screen.getByText("Back"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
         fireEvent.press(screen.getByText("Back"));
         act(() => {
             jest.advanceTimersByTime(300);
@@ -312,7 +312,11 @@ describe("MapAppScreen", () => {
         const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
 
-        fireEvent.press(screen.getByTestId("main-add-question-row"));
+        fireEvent.press(screen.getByTestId("main-questions-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        fireEvent.press(screen.getByTestId("questions-add-question-row"));
         act(() => {
             jest.advanceTimersByTime(300);
         });
@@ -384,7 +388,11 @@ describe("MapAppScreen", () => {
         const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
 
-        fireEvent.press(screen.getByTestId("main-add-question-row"));
+        fireEvent.press(screen.getByTestId("main-questions-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        fireEvent.press(screen.getByTestId("questions-add-question-row"));
         act(() => {
             jest.advanceTimersByTime(300);
         });
@@ -417,7 +425,11 @@ describe("MapAppScreen", () => {
         const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
 
-        fireEvent.press(screen.getByTestId("main-add-question-row"));
+        fireEvent.press(screen.getByTestId("main-questions-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        fireEvent.press(screen.getByTestId("questions-add-question-row"));
         act(() => {
             jest.advanceTimersByTime(300);
         });
@@ -450,7 +462,11 @@ describe("MapAppScreen", () => {
         const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
 
-        fireEvent.press(screen.getByTestId("main-add-question-row"));
+        fireEvent.press(screen.getByTestId("main-questions-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        fireEvent.press(screen.getByTestId("questions-add-question-row"));
         act(() => {
             jest.advanceTimersByTime(300);
         });
@@ -485,7 +501,11 @@ describe("MapAppScreen", () => {
         const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
 
-        fireEvent.press(screen.getByTestId("main-add-question-row"));
+        fireEvent.press(screen.getByTestId("main-questions-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        fireEvent.press(screen.getByTestId("questions-add-question-row"));
         act(() => {
             jest.advanceTimersByTime(300);
         });
@@ -546,7 +566,11 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        fireEvent.press(screen.getByTestId("main-add-question-row"));
+        fireEvent.press(screen.getByTestId("main-questions-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        fireEvent.press(screen.getByTestId("questions-add-question-row"));
         act(() => {
             jest.advanceTimersByTime(300);
         });
@@ -882,7 +906,11 @@ describe("MapAppScreen", () => {
         screen: ReturnType<typeof render>,
     ) {
         jest.useFakeTimers();
-        fireEvent.press(screen.getByTestId("main-add-question-row"));
+        fireEvent.press(screen.getByTestId("main-questions-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        fireEvent.press(screen.getByTestId("questions-add-question-row"));
         act(() => {
             jest.advanceTimersByTime(300);
         });
