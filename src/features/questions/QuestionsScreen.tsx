@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 
+import { getQuestionDefinition } from "@/features/questions/questionCatalog";
 import { SheetScrollView } from "@/features/sheet/SheetScrollView";
 import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
 import { useQuestion } from "@/state/questionStore";
@@ -23,68 +24,75 @@ export function QuestionsScreen({ onNavigate }: QuestionsScreenProps) {
             <Text style={styles.eyebrow}>Questions</Text>
             <Text style={styles.title}>Question List</Text>
             <Text style={styles.detail}>
-                Review radius previews and reopen their map pins.
+                Review question previews and reopen their map pins.
             </Text>
 
             {questions.length === 0 ? (
                 <View style={styles.emptyCard} testID="questions-empty-card">
                     <Text style={styles.emptyTitle}>No questions yet</Text>
                     <Text style={styles.metadata}>
-                        Add a radius question to preview an area on the map.
+                        Add a radar question to preview an area on the map.
                     </Text>
                 </View>
             ) : (
                 <View style={styles.list}>
-                    {questions.map((question, index) => (
-                        <Swipeable
-                            key={question.id}
-                            overshootRight={false}
-                            renderRightActions={() => (
-                                <View style={styles.deleteActionWrapper}>
-                                    <Pressable
-                                        accessibilityLabel={`Delete radius question ${index + 1}`}
-                                        accessibilityRole="button"
-                                        onPress={() =>
-                                            deleteQuestion(question.id)
-                                        }
-                                        style={({ pressed }) => [
-                                            styles.deleteAction,
-                                            pressed
-                                                ? styles.actionPressed
-                                                : null,
-                                        ]}
-                                        testID={`question-delete-${question.id}`}
-                                    >
-                                        <Text style={styles.deleteActionText}>
-                                            Delete
-                                        </Text>
-                                    </Pressable>
-                                </View>
-                            )}
-                        >
-                            <Pressable
-                                accessibilityLabel={`Open radius question ${index + 1}`}
-                                accessibilityRole="button"
-                                onPress={() => openQuestion(question.id)}
-                                style={({ pressed }) => [
-                                    styles.questionRow,
-                                    pressed ? styles.actionPressed : null,
-                                ]}
-                                testID={`question-row-${question.id}`}
+                    {questions.map((question, index) => {
+                        const definition = getQuestionDefinition(question.type);
+                        return (
+                            <Swipeable
+                                key={question.id}
+                                overshootRight={false}
+                                renderRightActions={() => (
+                                    <View style={styles.deleteActionWrapper}>
+                                        <Pressable
+                                            accessibilityLabel={`Delete ${definition.listTitle.toLowerCase()} question ${index + 1}`}
+                                            accessibilityRole="button"
+                                            onPress={() =>
+                                                deleteQuestion(question.id)
+                                            }
+                                            style={({ pressed }) => [
+                                                styles.deleteAction,
+                                                pressed
+                                                    ? styles.actionPressed
+                                                    : null,
+                                            ]}
+                                            testID={`question-delete-${question.id}`}
+                                        >
+                                            <Text
+                                                style={styles.deleteActionText}
+                                            >
+                                                Delete
+                                            </Text>
+                                        </Pressable>
+                                    </View>
+                                )}
                             >
-                                <View style={styles.questionCopy}>
-                                    <Text style={styles.questionTitle}>
-                                        Radius Question {index + 1}
-                                    </Text>
-                                    <Text style={styles.metadata}>
-                                        {Math.round(question.radiusMeters)} m
-                                        radius
-                                    </Text>
-                                </View>
-                                <Text style={styles.chevron}>›</Text>
-                            </Pressable>
-                        </Swipeable>
-                    ))}
+                                <Pressable
+                                    accessibilityLabel={`Open ${definition.listTitle.toLowerCase()} question ${index + 1}`}
+                                    accessibilityRole="button"
+                                    onPress={() => openQuestion(question.id)}
+                                    style={({ pressed }) => [
+                                        styles.questionRow,
+                                        pressed ? styles.actionPressed : null,
+                                    ]}
+                                    testID={`question-row-${question.id}`}
+                                >
+                                    <View style={styles.questionCopy}>
+                                        <Text style={styles.questionTitle}>
+                                            {definition.title} {index + 1}
+                                        </Text>
+                                        <Text style={styles.metadata}>
+                                            {definition.summary(
+                                                question,
+                                                index,
+                                            )}
+                                        </Text>
+                                    </View>
+                                    <Text style={styles.chevron}>›</Text>
+                                </Pressable>
+                            </Swipeable>
+                        );
+                    })}
                 </View>
             )}
 
@@ -100,9 +108,7 @@ export function QuestionsScreen({ onNavigate }: QuestionsScreenProps) {
             >
                 <View style={styles.questionCopy}>
                     <Text style={styles.questionTitle}>Add Question</Text>
-                    <Text style={styles.metadata}>
-                        Start a radius, thermometer, or transit question.
-                    </Text>
+                    <Text style={styles.metadata}>Start a radar question.</Text>
                 </View>
                 <Text style={styles.chevron}>›</Text>
             </Pressable>

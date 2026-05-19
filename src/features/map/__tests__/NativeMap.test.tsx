@@ -114,26 +114,26 @@ describe("NativeMap", () => {
 
         const pinSource = screen
             .getAllByTestId("map-shape-source")
-            .find((s) => s.props.id === "radius-question-active-pin");
+            .find((s) => s.props.id === "question-active-pin");
         expect(pinSource).toBeTruthy();
 
         const dragLayer = screen
             .getAllByTestId("map-circle-layer")
-            .find((l) => l.props.id === "radius-question-active-pin-drag-glow");
+            .find((l) => l.props.id === "question-active-pin-drag-glow");
         expect(dragLayer).toBeTruthy();
         expect(dragLayer?.props.style.circleBlur).toBeGreaterThan(0);
         expect(dragLayer?.props.style.circleStrokeWidth).toBeUndefined();
 
         const images = screen
             .getAllByTestId("map-images")
-            .find((l) => l.props.images["radius-question-pin"]);
+            .find((l) => l.props.images["question-pin"]);
         expect(images).toBeTruthy();
 
         const iconLayer = screen
             .getAllByTestId("map-symbol-layer")
-            .find((l) => l.props.id === "radius-question-active-pin-icon");
+            .find((l) => l.props.id === "question-active-pin-icon");
         expect(iconLayer).toBeTruthy();
-        expect(iconLayer?.props.style.iconImage).toBe("radius-question-pin");
+        expect(iconLayer?.props.style.iconImage).toBe("question-pin");
     });
 });
 

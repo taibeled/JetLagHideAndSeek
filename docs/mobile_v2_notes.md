@@ -43,7 +43,7 @@ Keep these from the mobile branch:
    Do not use Leaflet-in-WebView for this version. MapLibre RN is the right choice for “idiomatic app patterns,” native map gestures, native layers, and Apple Maps-like UI.
 
 3. **Pure game/domain logic**
-   Reuse `src/maps/schema.ts`, the question schemas, and the pure geometry functions under `src/maps/`. The old app already separates most map math into `src/maps`, with question families like radius, thermometer, tentacles, matching, and measuring.
+   Reuse `src/maps/schema.ts`, the question schemas, and the pure geometry functions under `src/maps/`. The old app already separates most map math into `src/maps`, with question families like radar, thermometer, tentacles, matching, and measuring.
 
 4. **Mobile storage lessons**
    The mobile branch’s AsyncStorage/Nanostores bridge is worth keeping or learning from. It configures `@nanostores/persistent` before importing atoms, mirrors AsyncStorage into memory, and exposes `storageReady` so first render sees persisted values. The root layout already waits for `storageReady` before rendering.
@@ -109,7 +109,7 @@ mobile_v2/
         AddQuestionModal.tsx
         QuestionDetailScreen.tsx
         editors/
-          RadiusEditor.tsx
+          RadarEditor.tsx
           ThermometerEditor.tsx
           TentaclesEditor.tsx
           MatchingEditor.tsx
@@ -354,7 +354,7 @@ Add Question
   opens Question Detail
 ```
 
-Do radius first. Then thermometer. Then the others.
+Do radar first. Then thermometer. Then the others.
 
 ### Milestone 6: map-pick mode
 
@@ -504,9 +504,9 @@ Your first “real” vertical slice should be:
 2. Bottom sheet at compact snap point
 3. Main drawer has Questions / Add Question / Settings
 4. Settings can set one play area
-5. Add Question can create a radius question
+5. Add Question can create a radar question
 6. Question Detail can pick center on map
-7. Radius renders on map
+7. Radar renders on map
 8. App state can copy/paste as JSON
 ```
 

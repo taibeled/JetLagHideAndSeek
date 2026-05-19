@@ -144,15 +144,15 @@ function renderWithSafeArea(ui: ReactElement) {
     );
 }
 
-async function pressAddRadiusQuestion(screen: ReturnType<typeof render>) {
+async function pressAddRadarQuestion(screen: ReturnType<typeof render>) {
     await act(async () => {
-        fireEvent.press(screen.getByTestId("add-radius-question-row"));
+        fireEvent.press(screen.getByTestId("add-radar-question-row"));
     });
     act(() => {
         jest.advanceTimersByTime(300);
     });
     await waitFor(() => {
-        expect(screen.getByText("Radius Question")).toBeTruthy();
+        expect(screen.getByText("Radar Question")).toBeTruthy();
     });
 }
 
@@ -300,7 +300,7 @@ describe("MapAppScreen", () => {
             jest.advanceTimersByTime(300);
         });
         expect(screen.getByText("Choose a question")).toBeTruthy();
-        expect(screen.getByTestId("add-radius-question-row")).toBeTruthy();
+        expect(screen.getByTestId("add-radar-question-row")).toBeTruthy();
 
         fireEvent.press(screen.getByText("Back"));
         act(() => {
@@ -321,7 +321,7 @@ describe("MapAppScreen", () => {
         jest.useRealTimers();
     });
 
-    it("creates a radius question at the current location and renders its radius preview", async () => {
+    it("creates a radar question at the current location and renders its radar preview", async () => {
         const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
 
@@ -333,76 +333,80 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        await pressAddRadiusQuestion(screen);
+        await pressAddRadarQuestion(screen);
 
-        expect(screen.getByText("Radius Question")).toBeTruthy();
+        expect(screen.getByText("Radar Question")).toBeTruthy();
         expect(screen.getByText("500m")).toBeTruthy();
         expect(screen.getByText("1km")).toBeTruthy();
         expect(screen.getByText("2km")).toBeTruthy();
         expect(screen.getByText("5km")).toBeTruthy();
         expect(screen.getByText("10km")).toBeTruthy();
         expect(screen.getByText("Other")).toBeTruthy();
-        expect(screen.getByTestId("radius-pin-lock-button")).toBeTruthy();
+        expect(screen.getByTestId("radar-pin-lock-button")).toBeTruthy();
         expect(screen.getByText("🔓")).toBeTruthy();
         expect(
-            screen.getByTestId("radius-pin-lock-button").props
+            screen.getByTestId("radar-pin-lock-button").props
                 .accessibilityLabel,
-        ).toBe("Lock radius pin");
-        expect(screen.getByTestId("radius-meters").props.children).toEqual([
-            "Current radius ",
-            500,
-            " m",
-        ]);
+        ).toBe("Lock radar pin");
         expect(
-            screen.getByTestId("radius-center-summary").props.children,
+            screen.getByTestId("radar-distance-meters").props.children,
+        ).toEqual(["Current distance ", 500, " m"]);
+        expect(
+            screen.getByTestId("radar-center-summary").props.children,
         ).toEqual(["35.67620", ",", " ", "139.65030"]);
         expect(
-            getMapShapeSource(screen, "radius-question-active-pin").props.shape
+            getMapShapeSource(screen, "question-active-pin").props.shape
                 .features[0].geometry.coordinates,
         ).toEqual([139.6503, 35.6762]);
 
-        const radiusShape = getMapShapeSource(screen, "radius-question-areas")
+        const radarShape = getMapShapeSource(screen, "radar-question-areas")
             .props.shape;
-        expect(radiusShape.features).toHaveLength(1);
-        expect(radiusShape.features[0].properties.radiusMeters).toBe(500);
+        expect(radarShape.features).toHaveLength(1);
+        expect(radarShape.features[0].properties.distanceMeters).toBe(500);
 
-        fireEvent.press(screen.getByTestId("radius-option-1km"));
-        expect(screen.getByTestId("radius-meters").props.children).toEqual([
-            "Current radius ",
-            1000,
-            " m",
-        ]);
+        fireEvent.press(screen.getByTestId("radar-distance-option-1km"));
         expect(
-            getMapShapeSource(screen, "radius-question-areas").props.shape
-                .features[0].properties.radiusMeters,
+            screen.getByTestId("radar-distance-meters").props.children,
+        ).toEqual(["Current distance ", 1000, " m"]);
+        expect(
+            getMapShapeSource(screen, "radar-question-areas").props.shape
+                .features[0].properties.distanceMeters,
         ).toBe(1000);
 
-        fireEvent.press(screen.getByTestId("radius-option-other"));
-        expect(screen.getByTestId("radius-custom-input").props.value).toBe("");
-        expect(screen.getByTestId("radius-custom-empty-help")).toBeTruthy();
+        fireEvent.press(screen.getByTestId("radar-distance-option-other"));
+        expect(
+            screen.getByTestId("radar-distance-custom-input").props.value,
+        ).toBe("");
+        expect(
+            screen.getByTestId("radar-distance-custom-empty-help"),
+        ).toBeTruthy();
 
-        fireEvent.changeText(screen.getByTestId("radius-custom-input"), "750");
-        expect(screen.getByTestId("radius-custom-input").props.value).toBe(
+        fireEvent.changeText(
+            screen.getByTestId("radar-distance-custom-input"),
             "750",
         );
-        expect(screen.getByTestId("radius-meters").props.children).toEqual([
-            "Current radius ",
-            750,
-            " m",
-        ]);
+        expect(
+            screen.getByTestId("radar-distance-custom-input").props.value,
+        ).toBe("750");
+        expect(
+            screen.getByTestId("radar-distance-meters").props.children,
+        ).toEqual(["Current distance ", 750, " m"]);
 
-        fireEvent.changeText(screen.getByTestId("radius-custom-input"), "");
-        expect(screen.getByTestId("radius-custom-input").props.value).toBe("");
-        expect(screen.getByTestId("radius-meters").props.children).toEqual([
-            "Current radius ",
-            750,
-            " m",
-        ]);
+        fireEvent.changeText(
+            screen.getByTestId("radar-distance-custom-input"),
+            "",
+        );
+        expect(
+            screen.getByTestId("radar-distance-custom-input").props.value,
+        ).toBe("");
+        expect(
+            screen.getByTestId("radar-distance-meters").props.children,
+        ).toEqual(["Current distance ", 750, " m"]);
 
         jest.useRealTimers();
     });
 
-    it("deletes a radius question from the detail sheet", async () => {
+    it("deletes a radar question from the detail sheet", async () => {
         const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
 
@@ -414,10 +418,10 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        await pressAddRadiusQuestion(screen);
+        await pressAddRadarQuestion(screen);
 
         expect(
-            getMapShapeSource(screen, "radius-question-areas").props.shape
+            getMapShapeSource(screen, "radar-question-areas").props.shape
                 .features,
         ).toHaveLength(1);
 
@@ -429,14 +433,14 @@ describe("MapAppScreen", () => {
         expect(screen.getByText("Question List")).toBeTruthy();
         expect(screen.getByTestId("questions-empty-card")).toBeTruthy();
         expect(
-            getMapShapeSource(screen, "radius-question-areas").props.shape
+            getMapShapeSource(screen, "radar-question-areas").props.shape
                 .features,
         ).toHaveLength(0);
 
         jest.useRealTimers();
     });
 
-    it("deletes a radius question from the question list swipe action", async () => {
+    it("deletes a radar question from the question list swipe action", async () => {
         const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
 
@@ -448,7 +452,7 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        await pressAddRadiusQuestion(screen);
+        await pressAddRadarQuestion(screen);
 
         fireEvent.press(screen.getByText("Back"));
         act(() => {
@@ -456,21 +460,21 @@ describe("MapAppScreen", () => {
         });
 
         expect(screen.getByText("Question List")).toBeTruthy();
-        expect(screen.getByText("Radius Question 1")).toBeTruthy();
+        expect(screen.getByText("Radar Question 1")).toBeTruthy();
 
         fireEvent.press(screen.getByText("Delete"));
 
-        expect(screen.queryByText("Radius Question 1")).toBeNull();
+        expect(screen.queryByText("Radar Question 1")).toBeNull();
         expect(screen.getByTestId("questions-empty-card")).toBeTruthy();
         expect(
-            getMapShapeSource(screen, "radius-question-areas").props.shape
+            getMapShapeSource(screen, "radar-question-areas").props.shape
                 .features,
         ).toHaveLength(0);
 
         jest.useRealTimers();
     });
 
-    it("moves only the active radius pin source while the question sheet is open and unlocked", async () => {
+    it("moves only the active radar pin source while the question sheet is open and unlocked", async () => {
         const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
 
@@ -482,27 +486,25 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        await pressAddRadiusQuestion(screen);
+        await pressAddRadarQuestion(screen);
 
         fireEvent(screen.getByTestId("native-map"), "onPress", {
             geometry: { coordinates: [139.75, 35.7] },
         });
         await waitFor(() => {
             expect(
-                getMapShapeSource(screen, "radius-question-active-pin").props
-                    .shape.features[0].geometry.coordinates,
+                getMapShapeSource(screen, "question-active-pin").props.shape
+                    .features[0].geometry.coordinates,
             ).toEqual([139.75, 35.7]);
         });
 
         await act(async () => {
-            fireEvent.press(
-                screen.getByTestId("radius-set-to-location-button"),
-            );
+            fireEvent.press(screen.getByTestId("radar-set-to-location-button"));
         });
         await waitFor(() => {
             expect(
-                getMapShapeSource(screen, "radius-question-active-pin").props
-                    .shape.features[0].geometry.coordinates,
+                getMapShapeSource(screen, "question-active-pin").props.shape
+                    .features[0].geometry.coordinates,
             ).toEqual([139.6503, 35.6762]);
         });
 
@@ -511,14 +513,14 @@ describe("MapAppScreen", () => {
             jest.advanceTimersByTime(300);
         });
         expect(
-            getMapShapeSource(screen, "radius-question-active-pin").props.shape
+            getMapShapeSource(screen, "question-active-pin").props.shape
                 .features,
         ).toHaveLength(0);
 
         jest.useRealTimers();
     });
 
-    it("keeps the active radius pin fixed when locked", async () => {
+    it("keeps the active radar pin fixed when locked", async () => {
         const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
 
@@ -530,16 +532,16 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        await pressAddRadiusQuestion(screen);
+        await pressAddRadarQuestion(screen);
 
         const initialCoordinate = getMapShapeSource(
             screen,
-            "radius-question-active-pin",
+            "question-active-pin",
         ).props.shape.features[0].geometry.coordinates;
 
-        fireEvent.press(screen.getByTestId("radius-pin-lock-button"));
+        fireEvent.press(screen.getByTestId("radar-pin-lock-button"));
         expect(
-            screen.getByTestId("radius-pin-lock-button").props
+            screen.getByTestId("radar-pin-lock-button").props
                 .accessibilityState,
         ).toEqual({ selected: true });
 
@@ -551,19 +553,19 @@ describe("MapAppScreen", () => {
         });
 
         expect(
-            getMapShapeSource(screen, "radius-question-active-pin").props.shape
+            getMapShapeSource(screen, "question-active-pin").props.shape
                 .features[0].geometry.coordinates,
         ).toEqual(initialCoordinate);
         expect(screen.getByText("🔒")).toBeTruthy();
         expect(
-            screen.getByTestId("radius-pin-lock-button").props
+            screen.getByTestId("radar-pin-lock-button").props
                 .accessibilityLabel,
-        ).toBe("Unlock radius pin");
+        ).toBe("Unlock radar pin");
 
         jest.useRealTimers();
     });
 
-    it("shows nearest selected station distance in the radius info box", async () => {
+    it("shows nearest selected station distance in the radar info box", async () => {
         const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
 
@@ -593,12 +595,12 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        await pressAddRadiusQuestion(screen);
+        await pressAddRadarQuestion(screen);
 
         await waitFor(() => {
             expect(
                 String(
-                    screen.getByTestId("radius-info-box").props
+                    screen.getByTestId("radar-info-box").props
                         .accessibilityLabel,
                 ),
             ).toContain("from ");
@@ -946,7 +948,7 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        await pressAddRadiusQuestion(screen);
+        await pressAddRadarQuestion(screen);
     }
 
     function cleanupMovePinTest() {
@@ -1002,8 +1004,8 @@ describe("MapAppScreen", () => {
             });
             await waitFor(() => {
                 expect(
-                    getMapShapeSource(screen, "radius-question-active-pin")
-                        .props.shape.features[0].geometry.coordinates,
+                    getMapShapeSource(screen, "question-active-pin").props.shape
+                        .features[0].geometry.coordinates,
                 ).toEqual([139.75, 35.7]);
             });
 
@@ -1122,7 +1124,7 @@ describe("MapAppScreen", () => {
             await waitFor(() => {
                 const pinShape = getMapShapeSource(
                     screen,
-                    "radius-question-active-pin",
+                    "question-active-pin",
                 ).props.shape;
                 expect(pinShape.features[0].geometry.coordinates).toEqual([
                     139.8, 35.68,
@@ -1171,7 +1173,7 @@ describe("MapAppScreen", () => {
             await waitFor(() => {
                 const pinShape = getMapShapeSource(
                     screen,
-                    "radius-question-active-pin",
+                    "question-active-pin",
                 ).props.shape;
                 expect(pinShape.features[0].geometry.coordinates).toEqual([
                     140.0, 36.0,
@@ -1189,7 +1191,7 @@ describe("MapAppScreen", () => {
             await waitFor(() => {
                 const pinShape = getMapShapeSource(
                     screen,
-                    "radius-question-active-pin",
+                    "question-active-pin",
                 ).props.shape;
                 expect(pinShape.features[0].geometry.coordinates).toEqual([
                     140.0, 36.0,
@@ -1253,8 +1255,8 @@ describe("MapAppScreen", () => {
             });
 
             expect(
-                getMapShapeSource(screen, "radius-question-active-pin").props
-                    .shape.features,
+                getMapShapeSource(screen, "question-active-pin").props.shape
+                    .features,
             ).toHaveLength(0);
 
             cleanupMovePinTest();

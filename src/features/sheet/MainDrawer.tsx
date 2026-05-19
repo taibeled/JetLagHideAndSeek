@@ -20,7 +20,7 @@ import { PlayAreaScreen } from "@/features/playArea/PlayAreaScreen";
 import { AddQuestionScreen } from "@/features/questions/AddQuestionScreen";
 import {
     QuestionDetailScreen,
-    RadiusPinLockButton,
+    QuestionPinLockButton,
 } from "@/features/questions/QuestionDetailScreen";
 import { QuestionsScreen } from "@/features/questions/QuestionsScreen";
 import { SettingsScreen } from "@/features/sheet/SettingsScreen";
@@ -61,8 +61,8 @@ const routeContent: Record<SheetRouteName, { title: string; detail: string }> =
             title: "Questions",
         },
         "question-detail": {
-            detail: "Tune the radius and move the map pin.",
-            title: "Radius Question",
+            detail: "Tune the distance and move the map pin.",
+            title: "Radar Question",
         },
         settings: {
             detail: "Play area, units, and sharing controls will live here.",
@@ -328,7 +328,7 @@ function renderRouteContent(
                 <View style={styles.fullContainer}>
                     <View style={styles.backButtonRow}>
                         <BackButton onPress={() => onNavigate("questions")} />
-                        <RadiusPinLockButton />
+                        <QuestionPinLockButton />
                     </View>
                     <QuestionDetailScreen onNavigate={onNavigate} />
                 </View>

@@ -52,7 +52,18 @@ const radiusQuestionMinifiedSchema = z.object({
     [FIELD_MAP.id]: z.string().min(1).optional(),
     [FIELD_MAP.radiusMeters]: z.number().positive(),
     [FIELD_MAP.radiusOption]: z
-        .enum(["500m", "1km", "2km", "5km", "10km", "other"])
+        .enum([
+            "500m",
+            "1km",
+            "2km",
+            "5km",
+            "10km",
+            "15km",
+            "40km",
+            "80km",
+            "150km",
+            "other",
+        ])
         .optional(),
 });
 
@@ -193,8 +204,8 @@ export function minifyEnvelope(env: WireEnvelope): WireEnvelopeMinified {
                 question.center[1],
             ),
             [FIELD_MAP.id]: question.id,
-            [FIELD_MAP.radiusMeters]: question.radiusMeters,
-            [FIELD_MAP.radiusOption]: question.radiusOption,
+            [FIELD_MAP.radiusMeters]: question.distanceMeters,
+            [FIELD_MAP.radiusOption]: question.distanceOption,
         }));
     }
 
@@ -257,10 +268,10 @@ export function unminifyEnvelope(
                 center: [lon, lat],
                 createdAt,
                 id: question[FIELD_MAP.id] ?? `q-imported-${index + 1}`,
-                radiusMeters: question[FIELD_MAP.radiusMeters],
-                radiusOption: question[FIELD_MAP.radiusOption] ?? "other",
-                radiusUnit: "m",
-                type: "radius",
+                distanceMeters: question[FIELD_MAP.radiusMeters],
+                distanceOption: question[FIELD_MAP.radiusOption] ?? "other",
+                distanceUnit: "m",
+                type: "radar",
                 updatedAt: createdAt,
             };
         });

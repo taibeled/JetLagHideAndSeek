@@ -30,16 +30,51 @@ export const hidingZonesWireSchema = z.object({
     selectedPresetIds: z.array(z.string()),
 });
 
-export const radiusQuestionWireSchema = z.object({
+const radarDistanceOptionSchema = z.enum([
+    "500m",
+    "1km",
+    "2km",
+    "5km",
+    "10km",
+    "15km",
+    "40km",
+    "80km",
+    "150km",
+    "other",
+]);
+
+export const radarQuestionWireSchema = z.object({
     center: positionSchema,
     createdAt: z.string().min(1),
+    distanceMeters: z.number().positive(),
+    distanceOption: radarDistanceOptionSchema,
+    distanceUnit: z.enum(["m", "km", "mi"]),
     id: z.string().min(1),
-    radiusMeters: z.number().positive(),
-    radiusOption: z.enum(["500m", "1km", "2km", "5km", "10km", "other"]),
-    radiusUnit: z.enum(["m", "km", "mi"]),
-    type: z.literal("radius"),
+    type: z.literal("radar"),
     updatedAt: z.string().min(1),
 });
+
+const legacyRadiusQuestionWireSchema = z
+    .object({
+        center: positionSchema,
+        createdAt: z.string().min(1),
+        id: z.string().min(1),
+        radiusMeters: z.number().positive(),
+        radiusOption: radarDistanceOptionSchema,
+        radiusUnit: z.enum(["m", "km", "mi"]),
+        type: z.literal("radius"),
+        updatedAt: z.string().min(1),
+    })
+    .transform((question) => ({
+        center: question.center,
+        createdAt: question.createdAt,
+        distanceMeters: question.radiusMeters,
+        distanceOption: question.radiusOption,
+        distanceUnit: question.radiusUnit,
+        id: question.id,
+        type: "radar" as const,
+        updatedAt: question.updatedAt,
+    }));
 
 export const appStatePayloadSchema = z.object({
     gameId: z.string().min(1),
@@ -49,7 +84,11 @@ export const appStatePayloadSchema = z.object({
         updatedAt: z.string().min(1),
     }),
     playArea: playAreaWireSchema.optional(),
-    questions: z.array(radiusQuestionWireSchema).optional(),
+    questions: z
+        .array(
+            z.union([radarQuestionWireSchema, legacyRadiusQuestionWireSchema]),
+        )
+        .optional(),
 });
 
 export const appStateEnvelopeSchema = z.object({
@@ -66,5 +105,5 @@ export type AppStateEnvelopeV1 = z.infer<typeof appStateEnvelopeSchema>;
 export type AppStatePayloadV1 = z.infer<typeof appStatePayloadSchema>;
 export type HidingZonesWireV1 = z.infer<typeof hidingZonesWireSchema>;
 export type PlayAreaWireV1 = z.infer<typeof playAreaWireSchema>;
-export type RadiusQuestionWireV1 = z.infer<typeof radiusQuestionWireSchema>;
+export type RadarQuestionWireV1 = z.infer<typeof radarQuestionWireSchema>;
 export type WireEnvelope = z.infer<typeof wireEnvelopeSchema>;

@@ -6,13 +6,13 @@ import { defaultPlayArea } from "@/features/map/playArea";
 import { createAppStateV1 } from "@/state/appState";
 import { AppStateProviders } from "@/state/AppStateProviders";
 import { loadPersistedAppState, persistAppState } from "@/state/persistence";
-import { useQuestion } from "@/state/questionStore";
+import { updateRadarDistanceOption, useQuestion } from "@/state/questionStore";
 
 function Probe() {
     const {
         activeQuestion,
         activeQuestionId,
-        createRadiusQuestion,
+        createQuestion,
         deleteQuestion,
         isPinLocked,
         isQuestionSheetActive,
@@ -20,7 +20,7 @@ function Probe() {
         questions,
         setPinLocked,
         setQuestionSheetActive,
-        setRadiusOption,
+        updateQuestion,
     } = useQuestion();
 
     return (
@@ -31,11 +31,15 @@ function Probe() {
             <Text testID="probe-question-ids">
                 {questions.map((question) => question.id).join(",")}
             </Text>
-            <Text testID="probe-radius">
-                {activeQuestion?.radiusMeters ?? "none"}
+            <Text testID="probe-distance">
+                {activeQuestion?.type === "radar"
+                    ? activeQuestion.distanceMeters
+                    : "none"}
             </Text>
             <Text testID="probe-option">
-                {activeQuestion?.radiusOption ?? "none"}
+                {activeQuestion?.type === "radar"
+                    ? activeQuestion.distanceOption
+                    : "none"}
             </Text>
             <Text testID="probe-sheet-active">
                 {String(isQuestionSheetActive)}
@@ -44,7 +48,9 @@ function Probe() {
             <Pressable
                 accessibilityRole="button"
                 testID="action-create"
-                onPress={() => createRadiusQuestion(defaultPlayArea.center)}
+                onPress={() =>
+                    createQuestion("radar", { center: defaultPlayArea.center })
+                }
             />
             <Pressable
                 accessibilityRole="button"
@@ -70,7 +76,11 @@ function Probe() {
                 testID="action-option-1km"
                 onPress={() =>
                     activeQuestion
-                        ? setRadiusOption(activeQuestion.id, "1km")
+                        ? updateQuestion(activeQuestion.id, (question) =>
+                              question.type === "radar"
+                                  ? updateRadarDistanceOption(question, "1km")
+                                  : question,
+                          )
                         : null
                 }
             />
@@ -101,7 +111,7 @@ describe("QuestionProvider", () => {
         await AsyncStorage.clear();
     });
 
-    it("creates a default 500m radius question", async () => {
+    it("creates a default 500m radar question", async () => {
         const screen = renderProvider();
 
         await waitFor(() => {
@@ -115,11 +125,11 @@ describe("QuestionProvider", () => {
         });
 
         expect(screen.getByTestId("probe-count")).toHaveTextContent("1");
-        expect(screen.getByTestId("probe-radius")).toHaveTextContent("500");
+        expect(screen.getByTestId("probe-distance")).toHaveTextContent("500");
         expect(screen.getByTestId("probe-option")).toHaveTextContent("500m");
     });
 
-    it("updates preset radius options and persists questions", async () => {
+    it("updates preset radar distance options and persists questions", async () => {
         const screen = renderProvider();
 
         await waitFor(() => {
@@ -137,12 +147,12 @@ describe("QuestionProvider", () => {
 
         await waitFor(async () => {
             const persisted = await loadPersistedAppState();
-            expect(persisted?.questions[0].radiusMeters).toBe(1000);
-            expect(persisted?.questions[0].radiusOption).toBe("1km");
+            expect(persisted?.questions[0].distanceMeters).toBe(1000);
+            expect(persisted?.questions[0].distanceOption).toBe("1km");
         });
     });
 
-    it("restores persisted radius questions", async () => {
+    it("restores persisted radar questions", async () => {
         await persistAppState(
             createAppStateV1({
                 hidingZones: {
@@ -155,11 +165,11 @@ describe("QuestionProvider", () => {
                     {
                         center: defaultPlayArea.center,
                         createdAt: "2026-05-18T00:00:00.000Z",
+                        distanceMeters: 2000,
+                        distanceOption: "2km",
+                        distanceUnit: "m",
                         id: "q-1",
-                        radiusMeters: 2000,
-                        radiusOption: "2km",
-                        radiusUnit: "m",
-                        type: "radius",
+                        type: "radar",
                         updatedAt: "2026-05-18T00:00:00.000Z",
                     },
                 ],

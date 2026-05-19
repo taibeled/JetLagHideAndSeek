@@ -23,7 +23,7 @@ import {
 import { colors } from "@/theme/colors";
 
 import { useHidingZone } from "@/state/hidingZoneStore";
-import { useQuestion } from "@/state/questionStore";
+import { updateRadarQuestionCenter, useQuestion } from "@/state/questionStore";
 import {
     type CameraHandle,
     fitCameraToBbox,
@@ -33,7 +33,7 @@ import type { Position } from "./geojsonTypes";
 import { buildOsmRasterStyleJson } from "./mapStyle";
 import { useUserLocation } from "./useUserLocation";
 import { usePlayArea } from "@/state/playAreaStore";
-import radiusQuestionPinImage from "../../../assets/map/radius-question-pin.png";
+import questionPinImage from "../../../assets/map/question-pin.png";
 
 setAccessToken(null);
 
@@ -62,8 +62,8 @@ export function NativeMap({ onPress }: NativeMapProps) {
         activeQuestion,
         isPinLocked,
         isQuestionSheetActive,
-        radiusFeatures,
-        setQuestionCenter,
+        questionMapRenderState,
+        updateQuestion,
     } = useQuestion();
     const { playArea } = usePlayArea();
 
@@ -75,8 +75,8 @@ export function NativeMap({ onPress }: NativeMapProps) {
     const draftCoordinate = isDraggingMovePin
         ? draftPinCoordinateRef.current
         : null;
-    const radiusQuestionPinImages = useMemo(
-        () => ({ "radius-question-pin": radiusQuestionPinImage }),
+    const questionPinImages = useMemo(
+        () => ({ "question-pin": questionPinImage }),
         [],
     );
     const mapStyle = useMemo(() => buildOsmRasterStyleJson(), []);
@@ -97,10 +97,12 @@ export function NativeMap({ onPress }: NativeMapProps) {
 
     const fitLabel = "🗺️";
     const shouldShowActivePin = Boolean(
-        isQuestionSheetActive && activeQuestion,
+        isQuestionSheetActive && activeQuestion?.type === "radar",
     );
     const canMoveActivePin =
-        isQuestionSheetActive && !isPinLocked && Boolean(activeQuestion);
+        isQuestionSheetActive &&
+        !isPinLocked &&
+        activeQuestion?.type === "radar";
 
     const cleanupDrag = useCallback(() => {
         isDraggingRef.current = false;
@@ -149,7 +151,8 @@ export function NativeMap({ onPress }: NativeMapProps) {
 
     const handleDragStart = useCallback(
         async (absoluteX: number, absoluteY: number) => {
-            const pinCoord = activeQuestion?.center;
+            const pinCoord =
+                activeQuestion?.type === "radar" ? activeQuestion.center : null;
             if (!pinCoord || !mapRef.current) {
                 isDraggingRef.current = false;
                 return;
@@ -185,12 +188,16 @@ export function NativeMap({ onPress }: NativeMapProps) {
         if (
             isDraggingRef.current &&
             draftPinCoordinateRef.current &&
-            activeQuestion?.id
+            activeQuestion?.type === "radar"
         ) {
-            setQuestionCenter(activeQuestion.id, draftPinCoordinateRef.current);
+            const questionId = activeQuestion.id;
+            const nextCenter = draftPinCoordinateRef.current;
+            updateQuestion(questionId, (question) =>
+                updateRadarQuestionCenter(question, nextCenter),
+            );
         }
         cleanupDrag();
-    }, [activeQuestion, setQuestionCenter, cleanupDrag]);
+    }, [activeQuestion, updateQuestion, cleanupDrag]);
 
     const handleDragFinalize = useCallback(() => {
         cleanupDrag();
@@ -228,7 +235,10 @@ export function NativeMap({ onPress }: NativeMapProps) {
                           {
                               geometry: {
                                   coordinates:
-                                      draftCoordinate ?? activeQuestion.center,
+                                      draftCoordinate ??
+                                      (activeQuestion.type === "radar"
+                                          ? activeQuestion.center
+                                          : [0, 0]),
                                   type: "Point" as const,
                               },
                               properties: {
@@ -258,12 +268,14 @@ export function NativeMap({ onPress }: NativeMapProps) {
             if (canMoveActivePin && coordinate && activeQuestion) {
                 const questionId = activeQuestion.id;
                 setTimeout(() => {
-                    setQuestionCenter(questionId, coordinate);
+                    updateQuestion(questionId, (question) =>
+                        updateRadarQuestionCenter(question, coordinate),
+                    );
                 }, 0);
             }
             onPress?.(event);
         },
-        [activeQuestion, canMoveActivePin, onPress, setQuestionCenter],
+        [activeQuestion, canMoveActivePin, onPress, updateQuestion],
     );
 
     return (
@@ -308,19 +320,19 @@ export function NativeMap({ onPress }: NativeMapProps) {
                     </MLShapeSource>
 
                     <MLShapeSource
-                        id="radius-question-areas"
+                        id="radar-question-areas"
                         onPress={handleMapPress}
-                        shape={radiusFeatures}
+                        shape={questionMapRenderState.radarAreaFeatures}
                     >
                         <MLFillLayer
-                            id="radius-question-areas-fill"
+                            id="radar-question-areas-fill"
                             style={{
                                 fillColor: "#e46f4d",
                                 fillOpacity: 0.16,
                             }}
                         />
                         <MLLineLayer
-                            id="radius-question-areas-outline"
+                            id="radar-question-areas-outline"
                             style={{
                                 lineColor: "#e46f4d",
                                 lineOpacity: 0.8,
@@ -398,18 +410,20 @@ export function NativeMap({ onPress }: NativeMapProps) {
                         />
                     ) : null}
 
-                    <MLImages images={radiusQuestionPinImages} />
+                    <MLImages images={questionPinImages} />
 
                     <MLShapeSource
-                        id="radius-question-active-pin"
+                        id="question-active-pin"
                         onPress={handleMapPress}
                         shape={activePinFeature}
                     >
                         <MLCircleLayer
-                            id="radius-question-active-pin-drag-glow"
+                            id="question-active-pin-drag-glow"
                             style={{
                                 circleBlur: 0.75,
-                                circleColor: isDraggingMovePin ? "#ffffff" : "#e46f4d",
+                                circleColor: isDraggingMovePin
+                                    ? "#ffffff"
+                                    : "#e46f4d",
                                 circleOpacity: canMoveActivePin
                                     ? isDraggingMovePin
                                         ? 0.42
@@ -420,12 +434,12 @@ export function NativeMap({ onPress }: NativeMapProps) {
                             }}
                         />
                         <MLSymbolLayer
-                            id="radius-question-active-pin-icon"
+                            id="question-active-pin-icon"
                             style={{
                                 iconAllowOverlap: true,
                                 iconAnchor: "bottom",
                                 iconIgnorePlacement: true,
-                                iconImage: "radius-question-pin",
+                                iconImage: "question-pin",
                                 iconSize: 0.42,
                             }}
                         />

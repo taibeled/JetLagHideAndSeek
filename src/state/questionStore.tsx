@@ -9,24 +9,28 @@ import {
 
 import type { HidingZoneUnit } from "@/features/hidingZone/hidingZoneTypes";
 import {
-    buildRadiusQuestionFeatureCollection,
+    buildQuestionMapRenderState,
     fromMeters,
     toMeters,
 } from "@/features/questions/questionGeometry";
 import {
+    type ImplementedQuestionType,
+    type QuestionMapRenderState,
     type QuestionState,
     type QuestionsImportState,
-    type RadiusOption,
-    type RadiusQuestion,
-    type RadiusQuestionFeatureCollection,
-    radiusOptionMeters,
+    type RadarDistanceOption,
+    type RadarQuestion,
+    radarDistanceOptionMeters,
 } from "@/features/questions/questionTypes";
 import type { Position } from "@/features/map/geojsonTypes";
 
 type QuestionStateValue = {
-    activeQuestion: RadiusQuestion | null;
+    activeQuestion: QuestionState | null;
     activeQuestionId: string | null;
-    createRadiusQuestion: (center: Position) => RadiusQuestion;
+    createQuestion: (
+        type: ImplementedQuestionType,
+        options: { center: Position },
+    ) => QuestionState;
     deleteQuestion: (questionId: string) => void;
     importQuestions: (questions: QuestionsImportState) => void;
     importQuestionSettings: (settings: QuestionSettingsImportState) => void;
@@ -34,15 +38,15 @@ type QuestionStateValue = {
     isQuestionSheetActive: boolean;
     isRestored: boolean;
     markRestored: () => void;
+    questionMapRenderState: QuestionMapRenderState;
     questions: QuestionState[];
-    radiusFeatures: RadiusQuestionFeatureCollection;
     setActiveQuestionId: (questionId: string | null) => void;
     setPinLocked: (isLocked: boolean) => void;
-    setQuestionCenter: (questionId: string, center: Position) => void;
     setQuestionSheetActive: (isActive: boolean) => void;
-    setRadiusOption: (questionId: string, option: RadiusOption) => void;
-    setRadiusUnit: (questionId: string, unit: HidingZoneUnit) => void;
-    setRadiusValue: (questionId: string, value: string) => void;
+    updateQuestion: (
+        questionId: string,
+        updater: (question: QuestionState) => QuestionState,
+    ) => void;
 };
 
 export type QuestionSettingsImportState = {
@@ -67,15 +71,15 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
             null,
         [activeQuestionId, questions],
     );
-    const radiusFeatures = useMemo(
-        () => buildRadiusQuestionFeatureCollection(questions),
+    const questionMapRenderState = useMemo(
+        () => buildQuestionMapRenderState(questions),
         [questions],
     );
 
     const updateQuestion = useCallback(
         (
             questionId: string,
-            updater: (question: RadiusQuestion) => RadiusQuestion,
+            updater: (question: QuestionState) => QuestionState,
         ) => {
             setQuestions((current) =>
                 current.map((question) =>
@@ -86,23 +90,17 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
         [],
     );
 
-    const createRadiusQuestion = useCallback((center: Position) => {
-        const now = new Date().toISOString();
-        const question: RadiusQuestion = {
-            center,
-            createdAt: now,
-            id: createQuestionId(),
-            radiusMeters: radiusOptionMeters["500m"],
-            radiusOption: "500m",
-            radiusUnit: "m",
-            type: "radius",
-            updatedAt: now,
-        };
-        setQuestions((current) => [...current, question]);
-        setActiveQuestionIdState(question.id);
-        setQuestionSheetActiveState(true);
-        return question;
-    }, []);
+    const createQuestion = useCallback(
+        (type: ImplementedQuestionType, options: { center: Position }) => {
+            const now = new Date().toISOString();
+            const question = createDefaultQuestion(type, options.center, now);
+            setQuestions((current) => [...current, question]);
+            setActiveQuestionIdState(question.id);
+            setQuestionSheetActiveState(true);
+            return question;
+        },
+        [],
+    );
 
     const deleteQuestion = useCallback((questionId: string) => {
         setQuestions((current) => {
@@ -118,7 +116,7 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
 
     const importQuestions = useCallback(
         (nextQuestions: QuestionsImportState) => {
-            setQuestions(nextQuestions);
+            setQuestions(nextQuestions.map(normalizeQuestionState));
             setActiveQuestionIdState(null);
         },
         [],
@@ -143,68 +141,6 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
         [],
     );
 
-    const setQuestionCenter = useCallback(
-        (questionId: string, center: Position) => {
-            updateQuestion(questionId, (question) => ({
-                ...question,
-                center,
-                updatedAt: new Date().toISOString(),
-            }));
-        },
-        [updateQuestion],
-    );
-
-    const setRadiusOption = useCallback(
-        (questionId: string, option: RadiusOption) => {
-            updateQuestion(questionId, (question) => {
-                const now = new Date().toISOString();
-                if (option === "other") {
-                    return {
-                        ...question,
-                        radiusOption: option,
-                        updatedAt: now,
-                    };
-                }
-                return {
-                    ...question,
-                    radiusMeters: radiusOptionMeters[option],
-                    radiusOption: option,
-                    radiusUnit: "m",
-                    updatedAt: now,
-                };
-            });
-        },
-        [updateQuestion],
-    );
-
-    const setRadiusValue = useCallback(
-        (questionId: string, value: string) => {
-            updateQuestion(questionId, (question) => {
-                const meters = toMeters(value, question.radiusUnit);
-                if (meters === null) return question;
-                return {
-                    ...question,
-                    radiusMeters: meters,
-                    radiusOption: "other",
-                    updatedAt: new Date().toISOString(),
-                };
-            });
-        },
-        [updateQuestion],
-    );
-
-    const setRadiusUnit = useCallback(
-        (questionId: string, unit: HidingZoneUnit) => {
-            updateQuestion(questionId, (question) => ({
-                ...question,
-                radiusOption: "other",
-                radiusUnit: unit,
-                updatedAt: new Date().toISOString(),
-            }));
-        },
-        [updateQuestion],
-    );
-
     const markRestored = useCallback(() => {
         setIsRestored(true);
     }, []);
@@ -213,7 +149,7 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
         () => ({
             activeQuestion,
             activeQuestionId,
-            createRadiusQuestion,
+            createQuestion,
             deleteQuestion,
             importQuestionSettings,
             importQuestions,
@@ -221,20 +157,17 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
             isQuestionSheetActive,
             isRestored,
             markRestored,
+            questionMapRenderState,
             questions,
-            radiusFeatures,
             setActiveQuestionId,
             setPinLocked,
-            setQuestionCenter,
             setQuestionSheetActive,
-            setRadiusOption,
-            setRadiusUnit,
-            setRadiusValue,
+            updateQuestion,
         }),
         [
             activeQuestion,
             activeQuestionId,
-            createRadiusQuestion,
+            createQuestion,
             deleteQuestion,
             importQuestionSettings,
             importQuestions,
@@ -242,15 +175,12 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
             isQuestionSheetActive,
             isRestored,
             markRestored,
+            questionMapRenderState,
             questions,
-            radiusFeatures,
             setActiveQuestionId,
             setPinLocked,
-            setQuestionCenter,
             setQuestionSheetActive,
-            setRadiusOption,
-            setRadiusUnit,
-            setRadiusValue,
+            updateQuestion,
         ],
     );
 
@@ -269,19 +199,132 @@ export function useQuestion() {
     return context;
 }
 
-export function getRadiusDisplayValue(question: RadiusQuestion): string {
-    return fromMeters(question.radiusMeters, question.radiusUnit);
+export function getRadarDistanceDisplayValue(question: RadarQuestion): string {
+    return fromMeters(question.distanceMeters, question.distanceUnit);
 }
 
-export function getRadiusDisplayValueForUnit(
-    question: RadiusQuestion,
+export function getRadarDistanceDisplayValueForUnit(
+    question: RadarQuestion,
     unit: HidingZoneUnit,
 ): string {
-    return fromMeters(question.radiusMeters, unit);
+    return fromMeters(question.distanceMeters, unit);
+}
+
+export function updateRadarQuestionCenter(
+    question: QuestionState,
+    center: Position,
+): QuestionState {
+    if (question.type !== "radar") return question;
+    return {
+        ...question,
+        center,
+        updatedAt: new Date().toISOString(),
+    };
+}
+
+export function updateRadarDistanceOption(
+    question: RadarQuestion,
+    option: RadarDistanceOption,
+): RadarQuestion {
+    const now = new Date().toISOString();
+    if (option === "other") {
+        return {
+            ...question,
+            distanceOption: option,
+            updatedAt: now,
+        };
+    }
+    return {
+        ...question,
+        distanceMeters: radarDistanceOptionMeters[option],
+        distanceOption: option,
+        distanceUnit: "m",
+        updatedAt: now,
+    };
+}
+
+export function updateRadarDistanceValue(
+    question: RadarQuestion,
+    value: string,
+): RadarQuestion {
+    const meters = toMeters(value, question.distanceUnit);
+    if (meters === null) return question;
+    return {
+        ...question,
+        distanceMeters: meters,
+        distanceOption: "other",
+        updatedAt: new Date().toISOString(),
+    };
+}
+
+export function updateRadarDistanceUnit(
+    question: RadarQuestion,
+    unit: HidingZoneUnit,
+): RadarQuestion {
+    return {
+        ...question,
+        distanceOption: "other",
+        distanceUnit: unit,
+        updatedAt: new Date().toISOString(),
+    };
 }
 
 function createQuestionId(): string {
     return `q-${Date.now().toString(36)}-${Math.random()
         .toString(36)
         .slice(2, 8)}`;
+}
+
+function createDefaultQuestion(
+    type: ImplementedQuestionType,
+    center: Position,
+    now: string,
+): QuestionState {
+    switch (type) {
+        case "radar":
+            return {
+                center,
+                createdAt: now,
+                distanceMeters: radarDistanceOptionMeters["500m"],
+                distanceOption: "500m",
+                distanceUnit: "m",
+                id: createQuestionId(),
+                type: "radar",
+                updatedAt: now,
+            };
+    }
+}
+
+function normalizeQuestionState(question: unknown): QuestionState {
+    if (isLegacyRadiusQuestion(question)) {
+        return {
+            center: question.center,
+            createdAt: question.createdAt,
+            distanceMeters: question.radiusMeters,
+            distanceOption: question.radiusOption,
+            distanceUnit: question.radiusUnit,
+            id: question.id,
+            type: "radar",
+            updatedAt: question.updatedAt,
+        };
+    }
+    return question as QuestionState;
+}
+
+function isLegacyRadiusQuestion(value: unknown): value is {
+    center: Position;
+    createdAt: string;
+    id: string;
+    radiusMeters: number;
+    radiusOption: RadarDistanceOption;
+    radiusUnit: HidingZoneUnit;
+    type: "radius";
+    updatedAt: string;
+} {
+    return (
+        typeof value === "object" &&
+        value !== null &&
+        "type" in value &&
+        value.type === "radius"
+    );
 }

@@ -267,6 +267,29 @@ describe("minifyEnvelope", () => {
             ],
         ).toEqual([]);
     });
+
+    it("writes radar questions with compact distance fields", () => {
+        const envelope = makeEnvelope({
+            questions: [
+                {
+                    center: [139.7, 35.7],
+                    createdAt: "2026-05-17T00:00:00.000Z",
+                    distanceMeters: 15000,
+                    distanceOption: "15km",
+                    distanceUnit: "m",
+                    id: "q-1",
+                    type: "radar",
+                    updatedAt: "2026-05-17T00:00:00.000Z",
+                },
+            ],
+        });
+        const mini = minifyEnvelope(envelope);
+        const json = JSON.parse(canonicalize(mini));
+
+        expect(json.p.q[0].i).toBe("q-1");
+        expect(json.p.q[0].r).toBe(15000);
+        expect(json.p.q[0].d).toBe("15km");
+    });
 });
 
 describe("unminifyEnvelope", () => {
@@ -292,6 +315,35 @@ describe("unminifyEnvelope", () => {
         const center = restored.payload.playArea!.center;
         expect(center[0]).toBeCloseTo(139.7, 4);
         expect(center[1]).toBeCloseTo(35.7, 4);
+    });
+
+    it("restores minified questions as radar questions", () => {
+        const restored = unminifyEnvelope(
+            minifyEnvelope(
+                makeEnvelope({
+                    questions: [
+                        {
+                            center: [139.7, 35.7],
+                            createdAt: "2026-05-17T00:00:00.000Z",
+                            distanceMeters: 40000,
+                            distanceOption: "40km",
+                            distanceUnit: "m",
+                            id: "q-1",
+                            type: "radar",
+                            updatedAt: "2026-05-17T00:00:00.000Z",
+                        },
+                    ],
+                }),
+            ),
+        );
+
+        expect(restored.payload.questions?.[0]).toMatchObject({
+            distanceMeters: 40000,
+            distanceOption: "40km",
+            distanceUnit: "m",
+            id: "q-1",
+            type: "radar",
+        });
     });
 });
 

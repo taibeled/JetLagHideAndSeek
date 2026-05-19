@@ -31,27 +31,27 @@ appId: com.hinoka.hideandseek.v2
       visible: "Choose a question"
       timeout: 10000
 - tapOn:
-      id: "add-radius-question-row"
+      id: "add-radar-question-row"
 - extendedWaitUntil:
-      visible: "Radius Question"
+      visible: "Radar Question"
       timeout: 10000
 - assertVisible:
-      id: "radius-option-500m"
+      id: "radar-distance-option-500m"
 - assertVisible:
-      id: "radius-option-1km"
+      id: "radar-distance-option-1km"
 - assertVisible:
-      id: "radius-option-2km"
+      id: "radar-distance-option-2km"
 - assertVisible:
-      id: "radius-option-5km"
+      id: "radar-distance-option-5km"
 - assertVisible:
-      id: "radius-option-10km"
+      id: "radar-distance-option-10km"
 - assertVisible:
-      id: "radius-option-other"
+      id: "radar-distance-option-other"
 - assertVisible:
-      id: "radius-pin-lock-button"
+      id: "radar-pin-lock-button"
 - tapOn:
       point: "48%,31%"
 - tapOn:
-      id: "radius-option-1km"
-- assertVisible: "Current radius 1000 m"
-- takeScreenshot: e2e/artifacts/radius-question/radius-question-map
+      id: "radar-distance-option-1km"
+- assertVisible: "Current distance 1000 m"
+- takeScreenshot: e2e/artifacts/radar-question/radar-question-map

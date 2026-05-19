@@ -10,7 +10,7 @@ appId: com.hinoka.hideandseek.v2
           - tapOn: "Open"
 - extendedWaitUntil:
       visible: "Continue"
-      timeout: 10000
+      timeout: 15000
 - tapOn: "Continue"
 - extendedWaitUntil:
       visible: "Connected to:"

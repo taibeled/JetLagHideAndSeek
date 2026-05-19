@@ -11,9 +11,9 @@ patterns wholesale.
   and `app/index.tsx` renders `src/screens/MapAppScreen.tsx`.
 - Main screen: `MapAppScreen` composes `NativeMap` and `AppBottomSheet` inside
   `PlayAreaProvider` and `HidingZoneProvider`.
-- Current milestone: MapLibre map plus Settings -> Play Area and Settings ->
-  Hiding Zones. Question state, copy/paste wire format, and persistence of the
-  selected play area/hiding zones are still future work.
+- Current milestone: MapLibre map plus Settings -> Play Area, Settings ->
+  Hiding Zones, and Questions -> Radar. App-state persistence and the
+  copy/paste wire format cover play area, hiding zones, and radar questions.
 - Default play area: Tokyo 23 Wards, OSM relation `19631009`, loaded from
   `assets/default-zones/tokyo.json`.
 - Deterministic E2E play-area fixture: Osaka, OSM relation `358674`, loaded from
@@ -79,6 +79,8 @@ LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 pnpm exec expo run:ios --device "iPhone 16 P
 - `src/features/playArea/`: Play Area settings UI and Photon search mapping.
 - `src/features/hidingZone/`: Hiding Zones settings UI, preset data adapters,
   radius/unit helpers, and derived GeoJSON overlays.
+- `src/features/questions/`: question catalog, radar question UI/controller,
+  question map render-state helpers, and future question type definitions.
 - `src/state/`: React state providers. Keep them mobile-specific.
 - `data/odpt/`: ODPT source config, fetch script, attribution docs, ignored
   download cache, and checked-in processed preset JSON.
@@ -157,8 +159,7 @@ put that state in a focused feature/store and let the map render derived data.
   (`osm_type === "R"`). Tests should exercise mapping/deduping without network.
 - When accepting direct relation IDs, keep validation strict: positive safe
   integer strings only.
-- Store distances internally in meters when settings/questions land, even if
-  display units become km or miles.
+- Store distances internally in meters, even if display units are km or miles.
 
 ## Hiding Zone Rules
 
@@ -187,6 +188,31 @@ put that state in a focused feature/store and let the map render derived data.
   refreshing ODPT providers. Generated JSON also carries an attribution block.
 - `pnpm data:odpt` requires network access and `ODPT_KEY` for
   Tokyo Metro.
+
+## Question Rules
+
+- Use original game terminology: the circle question is `radar`, not `radius`.
+  Hiding-zone station buffers are still radius-based, so keep that terminology
+  in hiding-zone code and UI.
+- The generic question shape lives in `src/features/questions/questionTypes.ts`
+  and `src/features/questions/questionCatalog.ts`. Add new question families to
+  the catalog first, and expose them in Add Question only once their UI/state
+  behavior is implemented.
+- `QuestionDetailScreen` should stay a thin host that dispatches by question
+  type. Keep type-specific editing logic in focused detail components/hooks,
+  like `useRadarDistanceDraftInput`.
+- `QuestionProvider` exposes generic creation/update/delete state. Prefer
+  `createQuestion` and `updateQuestion` plus type-specific helpers over adding
+  one-off global setters for each question family.
+- Radar questions store `distanceMeters`, `distanceOption`, and `distanceUnit`.
+  Presets are `500m`, `1km`, `2km`, `5km`, `10km`, `15km`, `40km`, `80km`,
+  `150km`, plus `other`.
+- Legacy persisted/shared `type: "radius"` question payloads are normalized to
+  `type: "radar"` on restore/import. Preserve this compatibility unless the
+  app-state/wire version is intentionally bumped.
+- Question map overlays should come from derived question render state before
+  reaching `NativeMap`. Keep MapLibre layer ordering conservative, and avoid
+  teaching `NativeMap` every future question family directly.
 
 ## Testing Expectations
 

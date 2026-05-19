@@ -5,27 +5,38 @@ import type { Position } from "@/features/map/geojsonTypes";
 
 import type {
     NearestStationInfo,
-    RadiusQuestionFeatureCollection,
+    QuestionMapRenderState,
     QuestionState,
+    RadarQuestionFeatureCollection,
 } from "./questionTypes";
 
 const EARTH_RADIUS_METERS = 6371008.8;
 const METERS_PER_MILE = 1609.344;
 
-export function buildRadiusQuestionFeatureCollection(
+export function buildQuestionMapRenderState(
     questions: QuestionState[],
-): RadiusQuestionFeatureCollection {
+): QuestionMapRenderState {
     return {
-        features: questions.map((question) =>
-            circle(question.center, question.radiusMeters / 1000, {
-                properties: {
-                    id: question.id,
-                    radiusMeters: question.radiusMeters,
-                },
-                steps: 64,
-                units: "kilometers",
-            }),
-        ),
+        radarAreaFeatures: buildRadarQuestionFeatureCollection(questions),
+    };
+}
+
+export function buildRadarQuestionFeatureCollection(
+    questions: QuestionState[],
+): RadarQuestionFeatureCollection {
+    return {
+        features: questions
+            .filter((question) => question.type === "radar")
+            .map((question) =>
+                circle(question.center, question.distanceMeters / 1000, {
+                    properties: {
+                        distanceMeters: question.distanceMeters,
+                        id: question.id,
+                    },
+                    steps: 64,
+                    units: "kilometers",
+                }),
+            ),
         type: "FeatureCollection",
     };
 }

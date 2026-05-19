@@ -12,18 +12,34 @@ import type {
 } from "@/features/hidingZone/hidingZoneTypes";
 import type { Position } from "@/features/map/geojsonTypes";
 
-export type RadiusOption = "500m" | "1km" | "2km" | "5km" | "10km" | "other";
+export type QuestionType =
+    | "radar"
+    | "matching"
+    | "measuring"
+    | "thermometer"
+    | "tentacles";
 
-export const radiusPresetOptions: Exclude<RadiusOption, "other">[] = [
-    "500m",
-    "1km",
-    "2km",
-    "5km",
-    "10km",
-];
+export type ImplementedQuestionType = "radar";
 
-export const radiusOptionMeters: Record<
-    Exclude<RadiusOption, "other">,
+export type RadarDistanceOption =
+    | "500m"
+    | "1km"
+    | "2km"
+    | "5km"
+    | "10km"
+    | "15km"
+    | "40km"
+    | "80km"
+    | "150km"
+    | "other";
+
+export const radarDistancePresetOptions: Exclude<
+    RadarDistanceOption,
+    "other"
+>[] = ["500m", "1km", "2km", "5km", "10km", "15km", "40km", "80km", "150km"];
+
+export const radarDistanceOptionMeters: Record<
+    Exclude<RadarDistanceOption, "other">,
     number
 > = {
     "500m": 500,
@@ -31,40 +47,49 @@ export const radiusOptionMeters: Record<
     "2km": 2000,
     "5km": 5000,
     "10km": 10000,
+    "15km": 15000,
+    "40km": 40000,
+    "80km": 80000,
+    "150km": 150000,
 };
 
-export type RadiusQuestion = {
-    center: Position;
+export type BaseQuestion = {
     createdAt: string;
     id: string;
-    radiusMeters: number;
-    radiusOption: RadiusOption;
-    radiusUnit: HidingZoneUnit;
-    type: "radius";
+    type: QuestionType;
     updatedAt: string;
 };
 
-export type QuestionState = RadiusQuestion;
+export type RadarQuestion = BaseQuestion & {
+    center: Position;
+    distanceMeters: number;
+    distanceOption: RadarDistanceOption;
+    distanceUnit: HidingZoneUnit;
+    type: "radar";
+};
+
+export type QuestionState = RadarQuestion;
 export type QuestionsImportState = QuestionState[];
 
-export type RadiusQuestionFeatureProperties = {
+export type RadarQuestionFeatureProperties = {
+    distanceMeters: number;
     id: string;
-    radiusMeters: number;
 };
 
-export type RadiusQuestionFeatureCollection = FeatureCollection<
+export type RadarQuestionFeatureCollection = FeatureCollection<
     Polygon | MultiPolygon,
-    RadiusQuestionFeatureProperties
+    RadarQuestionFeatureProperties
 >;
 
-export type RadiusQuestionPinProperties = {
+export type QuestionPinProperties = {
     id: string;
 };
 
-export type RadiusQuestionPinFeature = Feature<
-    Point,
-    RadiusQuestionPinProperties
->;
+export type QuestionPinFeature = Feature<Point, QuestionPinProperties>;
+
+export type QuestionMapRenderState = {
+    radarAreaFeatures: RadarQuestionFeatureCollection;
+};
 
 export type NearestStationInfo = {
     distanceMeters: number;

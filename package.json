@@ -15,7 +15,7 @@
         "data:odpt": "node data/odpt/scripts/fetch-odpt.mjs",
         "typecheck": "tsc --noEmit",
         "test": "jest",
-        "test:e2e:ios": "maestro test e2e/smoke.yaml && maestro test e2e/play-area.yaml && maestro test e2e/hiding-zone.yaml && maestro test e2e/radius-question.yaml",
+        "test:e2e:ios": "maestro test e2e/smoke.yaml && maestro test e2e/play-area.yaml && maestro test e2e/hiding-zone.yaml && maestro test e2e/radar-question.yaml",
         "test:e2e:ios:stack": "node scripts/e2e-ios-stack.mjs"
     },
     "dependencies": {

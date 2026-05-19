@@ -87,10 +87,11 @@ Testing added in this milestone:
 
 ## Milestone 5 Questions
 
-- Radius questions are preview-only. They persist in app state, render map circles, and expose the active question pin only while the question detail sheet is active.
+- Radar questions are preview-only. They persist in app state, render map circles, and expose the active question pin only while the question detail sheet is active.
 - Pin movement is scoped by sheet state: leaving question detail or closing the sheet disables move-pin mode.
-- Radius options are fixed presets (`500m`, `1km`, `2km`, `5km`, `10km`) plus `Other` for custom values.
-- The radius question info box compares the pin to selected hiding-zone stations; with no selected presets it shows an empty-state hint.
+- Radar distance options are fixed presets (`500m`, `1km`, `2km`, `5km`, `10km`, `15km`, `40km`, `80km`, `150km`) plus `Other` for custom values.
+- The radar question info box compares the pin to selected hiding-zone stations; with no selected presets it shows an empty-state hint.
+- Legacy persisted/shared `type: "radius"` questions are normalized to `type: "radar"` on import and restore.
 - MapLibre Jest mocks now include `FillLayer` and `CircleLayer`.
 
 Native/dependency setup matters:

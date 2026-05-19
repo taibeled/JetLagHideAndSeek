@@ -1,24 +1,29 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 import type { HidingZoneUnit } from "@/features/hidingZone/hidingZoneTypes";
+import { getQuestionDefinition } from "@/features/questions/questionCatalog";
 import {
     findNearestStation,
     formatStationDistance,
 } from "@/features/questions/questionGeometry";
 import { requestUserCoordinate } from "@/features/map/useUserLocation";
 import {
-    type RadiusOption,
-    radiusPresetOptions,
+    type RadarDistanceOption,
+    type RadarQuestion,
+    radarDistancePresetOptions,
 } from "@/features/questions/questionTypes";
-import { useRadiusDraftInput } from "@/features/questions/useRadiusDraftInput";
+import { useRadarDistanceDraftInput } from "@/features/questions/useRadarDistanceDraftInput";
 import { SheetScrollView } from "@/features/sheet/SheetScrollView";
 import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
 import { useHidingZone } from "@/state/hidingZoneStore";
-import { useQuestion } from "@/state/questionStore";
+import { updateRadarQuestionCenter, useQuestion } from "@/state/questionStore";
 import { colors } from "@/theme/colors";
 
 const units: HidingZoneUnit[] = ["m", "km", "mi"];
-const allRadiusOptions: RadiusOption[] = [...radiusPresetOptions, "other"];
+const allDistanceOptions: RadarDistanceOption[] = [
+    ...radarDistancePresetOptions,
+    "other",
+];
 
 type QuestionDetailScreenProps = {
     onNavigate: (route: SheetRouteName) => void;
@@ -27,28 +32,7 @@ type QuestionDetailScreenProps = {
 export function QuestionDetailScreen({
     onNavigate,
 }: QuestionDetailScreenProps) {
-    const {
-        activeQuestion,
-        deleteQuestion,
-        setQuestionCenter,
-        setRadiusOption,
-        setRadiusUnit,
-        setRadiusValue,
-    } = useQuestion();
-    const { selectedStations } = useHidingZone();
-    const {
-        customRadiusInputRef,
-        customRadiusValue,
-        emptyRadiusHelpText,
-        handleCustomRadiusChange,
-        handleRadiusOptionPress,
-        handleRadiusUnitPress,
-    } = useRadiusDraftInput({
-        activeQuestion,
-        setRadiusOption,
-        setRadiusUnit,
-        setRadiusValue,
-    });
+    const { activeQuestion, deleteQuestion, updateQuestion } = useQuestion();
 
     if (!activeQuestion) {
         return (
@@ -56,22 +40,16 @@ export function QuestionDetailScreen({
                 <Text style={styles.eyebrow}>Question</Text>
                 <Text style={styles.title}>No Question Selected</Text>
                 <Text style={styles.detail}>
-                    Return to the question list and choose a radius question.
+                    Return to the question list and choose a question.
                 </Text>
             </SheetScrollView>
         );
     }
 
-    const nearest = findNearestStation(activeQuestion.center, selectedStations);
+    const definition = getQuestionDefinition(activeQuestion.type);
     const handleDeleteQuestion = () => {
         deleteQuestion(activeQuestion.id);
         onNavigate("questions");
-    };
-    const handleSetToMyLocation = async () => {
-        const result = await requestUserCoordinate();
-        if (result.coordinate) {
-            setQuestionCenter(activeQuestion.id, result.coordinate);
-        }
     };
 
     return (
@@ -79,137 +57,19 @@ export function QuestionDetailScreen({
             contentContainerStyle={styles.scrollContent}
             style={styles.container}
         >
-            <Text style={styles.eyebrow}>Radius Question</Text>
-            <Text style={styles.detail}>
-                Compare a radius against the current map setup.
-            </Text>
-
-            <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Radius</Text>
-                <View style={styles.optionGrid}>
-                    {allRadiusOptions.map((option) => (
-                        <Pressable
-                            accessibilityLabel={`Radius ${getOptionLabel(option)}`}
-                            accessibilityRole="button"
-                            key={option}
-                            onPress={() => handleRadiusOptionPress(option)}
-                            style={({ pressed }) => [
-                                styles.radiusOption,
-                                activeQuestion.radiusOption === option
-                                    ? styles.radiusOptionActive
-                                    : null,
-                                pressed ? styles.actionPressed : null,
-                            ]}
-                            testID={`radius-option-${option}`}
-                        >
-                            <Text
-                                style={[
-                                    styles.radiusOptionText,
-                                    activeQuestion.radiusOption === option
-                                        ? styles.radiusOptionTextActive
-                                        : null,
-                                ]}
-                            >
-                                {getOptionLabel(option)}
-                            </Text>
-                        </Pressable>
-                    ))}
-                </View>
-
-                {activeQuestion.radiusOption === "other" ? (
-                    <>
-                        <View style={styles.customRadiusRow}>
-                            <TextInput
-                                accessibilityLabel="Custom radius"
-                                keyboardType="decimal-pad"
-                                onChangeText={handleCustomRadiusChange}
-                                ref={customRadiusInputRef}
-                                style={styles.customRadiusInput}
-                                testID="radius-custom-input"
-                                value={customRadiusValue}
-                            />
-                            <View style={styles.segmentedControl}>
-                                {units.map((unit) => (
-                                    <Pressable
-                                        accessibilityRole="button"
-                                        key={unit}
-                                        onPress={() =>
-                                            handleRadiusUnitPress(unit)
-                                        }
-                                        style={({ pressed }) => [
-                                            styles.unitButton,
-                                            activeQuestion.radiusUnit === unit
-                                                ? styles.unitButtonActive
-                                                : null,
-                                            pressed
-                                                ? styles.actionPressed
-                                                : null,
-                                        ]}
-                                        testID={`radius-unit-${unit}`}
-                                    >
-                                        <Text
-                                            style={[
-                                                styles.unitButtonText,
-                                                activeQuestion.radiusUnit ===
-                                                unit
-                                                    ? styles.unitButtonTextActive
-                                                    : null,
-                                            ]}
-                                        >
-                                            {unit}
-                                        </Text>
-                                    </Pressable>
-                                ))}
-                            </View>
-                        </View>
-                        {emptyRadiusHelpText ? (
-                            <Text
-                                style={styles.metadata}
-                                testID="radius-custom-empty-help"
-                            >
-                                {emptyRadiusHelpText}
-                            </Text>
-                        ) : null}
-                    </>
-                ) : null}
-
-                <Text style={styles.metadata} testID="radius-meters">
-                    Current radius {Math.round(activeQuestion.radiusMeters)} m
-                </Text>
-            </View>
-
-            <View style={styles.section}>
-                <Text style={styles.metadata} testID="radius-center-summary">
-                    {activeQuestion.center[1].toFixed(5)},{" "}
-                    {activeQuestion.center[0].toFixed(5)}
-                </Text>
-                <Pressable
-                    accessibilityLabel="Set radius pin to my location"
-                    accessibilityRole="button"
-                    onPress={() => {
-                        void handleSetToMyLocation();
-                    }}
-                    style={({ pressed }) => [
-                        styles.locationButton,
-                        pressed ? styles.actionPressed : null,
-                    ]}
-                    testID="radius-set-to-location-button"
-                >
-                    <Text style={styles.locationButtonText}>
-                        Set to My Location
+            {activeQuestion.type === "radar" ? (
+                <RadarQuestionDetailScreen
+                    question={activeQuestion}
+                    updateQuestion={updateQuestion}
+                />
+            ) : (
+                <>
+                    <Text style={styles.eyebrow}>{definition.listTitle}</Text>
+                    <Text style={styles.detail}>
+                        This question type is not implemented yet.
                     </Text>
-                </Pressable>
-            </View>
-
-            <View
-                accessible
-                accessibilityLabel={getInfoText(nearest)}
-                style={styles.infoBox}
-                testID="radius-info-box"
-            >
-                <Text style={styles.infoLabel}>Info</Text>
-                <Text style={styles.infoText}>{getInfoText(nearest)}</Text>
-            </View>
+                </>
+            )}
 
             <Pressable
                 accessibilityLabel="Delete question"
@@ -227,10 +87,178 @@ export function QuestionDetailScreen({
     );
 }
 
-export function RadiusPinLockButton() {
+type RadarQuestionDetailScreenProps = {
+    question: RadarQuestion;
+    updateQuestion: ReturnType<typeof useQuestion>["updateQuestion"];
+};
+
+function RadarQuestionDetailScreen({
+    question,
+    updateQuestion,
+}: RadarQuestionDetailScreenProps) {
+    const { selectedStations } = useHidingZone();
+    const {
+        customDistanceInputRef,
+        customDistanceValue,
+        emptyDistanceHelpText,
+        handleCustomDistanceChange,
+        handleDistanceOptionPress,
+        handleDistanceUnitPress,
+    } = useRadarDistanceDraftInput({
+        activeQuestion: question,
+        updateQuestion,
+    });
+
+    const nearest = findNearestStation(question.center, selectedStations);
+    const handleSetToMyLocation = async () => {
+        const result = await requestUserCoordinate();
+        if (result.coordinate) {
+            updateQuestion(question.id, (current) =>
+                updateRadarQuestionCenter(current, result.coordinate!),
+            );
+        }
+    };
+
+    return (
+        <>
+            <Text style={styles.eyebrow}>Radar Question</Text>
+            <Text style={styles.detail}>
+                Ask whether the hider is within a distance of you.
+            </Text>
+
+            <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Distance</Text>
+                <View style={styles.optionGrid}>
+                    {allDistanceOptions.map((option) => (
+                        <Pressable
+                            accessibilityLabel={`Radar distance ${getOptionLabel(option)}`}
+                            accessibilityRole="button"
+                            key={option}
+                            onPress={() => handleDistanceOptionPress(option)}
+                            style={({ pressed }) => [
+                                styles.distanceOption,
+                                question.distanceOption === option
+                                    ? styles.distanceOptionActive
+                                    : null,
+                                pressed ? styles.actionPressed : null,
+                            ]}
+                            testID={`radar-distance-option-${option}`}
+                        >
+                            <Text
+                                style={[
+                                    styles.distanceOptionText,
+                                    question.distanceOption === option
+                                        ? styles.distanceOptionTextActive
+                                        : null,
+                                ]}
+                            >
+                                {getOptionLabel(option)}
+                            </Text>
+                        </Pressable>
+                    ))}
+                </View>
+
+                {question.distanceOption === "other" ? (
+                    <>
+                        <View style={styles.customDistanceRow}>
+                            <TextInput
+                                accessibilityLabel="Custom radar distance"
+                                keyboardType="decimal-pad"
+                                onChangeText={handleCustomDistanceChange}
+                                ref={customDistanceInputRef}
+                                style={styles.customDistanceInput}
+                                testID="radar-distance-custom-input"
+                                value={customDistanceValue}
+                            />
+                            <View style={styles.segmentedControl}>
+                                {units.map((unit) => (
+                                    <Pressable
+                                        accessibilityRole="button"
+                                        key={unit}
+                                        onPress={() =>
+                                            handleDistanceUnitPress(unit)
+                                        }
+                                        style={({ pressed }) => [
+                                            styles.unitButton,
+                                            question.distanceUnit === unit
+                                                ? styles.unitButtonActive
+                                                : null,
+                                            pressed
+                                                ? styles.actionPressed
+                                                : null,
+                                        ]}
+                                        testID={`radar-distance-unit-${unit}`}
+                                    >
+                                        <Text
+                                            style={[
+                                                styles.unitButtonText,
+                                                question.distanceUnit === unit
+                                                    ? styles.unitButtonTextActive
+                                                    : null,
+                                            ]}
+                                        >
+                                            {unit}
+                                        </Text>
+                                    </Pressable>
+                                ))}
+                            </View>
+                        </View>
+                        {emptyDistanceHelpText ? (
+                            <Text
+                                style={styles.metadata}
+                                testID="radar-distance-custom-empty-help"
+                            >
+                                {emptyDistanceHelpText}
+                            </Text>
+                        ) : null}
+                    </>
+                ) : null}
+
+                <Text style={styles.metadata} testID="radar-distance-meters">
+                    Current distance {Math.round(question.distanceMeters)} m
+                </Text>
+            </View>
+
+            <View style={styles.section}>
+                <Text style={styles.metadata} testID="radar-center-summary">
+                    {question.center[1].toFixed(5)},{" "}
+                    {question.center[0].toFixed(5)}
+                </Text>
+                <Pressable
+                    accessibilityLabel="Set radar pin to my location"
+                    accessibilityRole="button"
+                    onPress={() => {
+                        void handleSetToMyLocation();
+                    }}
+                    style={({ pressed }) => [
+                        styles.locationButton,
+                        pressed ? styles.actionPressed : null,
+                    ]}
+                    testID="radar-set-to-location-button"
+                >
+                    <Text style={styles.locationButtonText}>
+                        Set to My Location
+                    </Text>
+                </Pressable>
+            </View>
+
+            <View
+                accessible
+                accessibilityLabel={getInfoText(nearest)}
+                style={styles.infoBox}
+                testID="radar-info-box"
+            >
+                <Text style={styles.infoLabel}>Info</Text>
+                <Text style={styles.infoText}>{getInfoText(nearest)}</Text>
+            </View>
+        </>
+    );
+}
+
+export function QuestionPinLockButton() {
     const { activeQuestion, isPinLocked, setPinLocked } = useQuestion();
 
-    if (!activeQuestion) {
+    if (!activeQuestion || activeQuestion.type !== "radar") {
         return null;
     }
 
@@ -239,7 +267,7 @@ export function RadiusPinLockButton() {
     return (
         <Pressable
             accessibilityLabel={
-                isPinLocked ? "Unlock radius pin" : "Lock radius pin"
+                isPinLocked ? "Unlock radar pin" : "Lock radar pin"
             }
             accessibilityRole="button"
             accessibilityState={{ selected: isPinLocked }}
@@ -249,7 +277,7 @@ export function RadiusPinLockButton() {
                 isPinLocked ? styles.lockButtonActive : null,
                 pressed ? styles.actionPressed : null,
             ]}
-            testID="radius-pin-lock-button"
+            testID="radar-pin-lock-button"
         >
             <Text
                 style={[
@@ -263,7 +291,7 @@ export function RadiusPinLockButton() {
     );
 }
 
-function getOptionLabel(option: RadiusOption) {
+function getOptionLabel(option: RadarDistanceOption) {
     return option === "other" ? "Other" : option;
 }
 
@@ -279,7 +307,7 @@ const styles = StyleSheet.create({
         opacity: 0.72,
     },
     container: {},
-    customRadiusInput: {
+    customDistanceInput: {
         backgroundColor: colors.white,
         borderColor: colors.border,
         borderRadius: 8,
@@ -290,7 +318,7 @@ const styles = StyleSheet.create({
         minHeight: 48,
         paddingHorizontal: 14,
     },
-    customRadiusRow: {
+    customDistanceRow: {
         alignItems: "center",
         flexDirection: "row",
         gap: 10,
@@ -401,7 +429,7 @@ const styles = StyleSheet.create({
         fontWeight: "700",
         lineHeight: 21,
     },
-    radiusOption: {
+    distanceOption: {
         alignItems: "center",
         backgroundColor: colors.card,
         borderColor: colors.border,
@@ -412,16 +440,16 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         justifyContent: "center",
     },
-    radiusOptionActive: {
+    distanceOptionActive: {
         backgroundColor: colors.button,
         borderColor: colors.button,
     },
-    radiusOptionText: {
+    distanceOptionText: {
         color: colors.ink,
         fontSize: 14,
         fontWeight: "800",
     },
-    radiusOptionTextActive: {
+    distanceOptionTextActive: {
         color: colors.white,
     },
     scrollContent: {

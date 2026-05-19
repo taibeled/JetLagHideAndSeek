@@ -34,7 +34,20 @@ function makeLegacyAppStateWithoutQuestions() {
     };
 }
 
-function makeRadiusQuestion() {
+function makeRadarQuestion() {
+    return {
+        center: defaultPlayArea.center,
+        createdAt: "2026-05-18T00:00:00.000Z",
+        distanceMeters: 500,
+        distanceOption: "500m" as const,
+        distanceUnit: "m" as const,
+        id: "q-1",
+        type: "radar" as const,
+        updatedAt: "2026-05-18T00:00:00.000Z",
+    };
+}
+
+function makeLegacyRadiusQuestion() {
     return {
         center: defaultPlayArea.center,
         createdAt: "2026-05-18T00:00:00.000Z",
@@ -78,9 +91,19 @@ describe("AppStateV1 schema", () => {
         ).toBeNull();
     });
 
-    it("accepts radius questions", () => {
-        const state = { ...makeAppState(), questions: [makeRadiusQuestion()] };
+    it("accepts radar questions", () => {
+        const state = { ...makeAppState(), questions: [makeRadarQuestion()] };
         expect(migratePersistedAppState(state)).toEqual(state);
+    });
+
+    it("migrates legacy radius questions to radar questions", () => {
+        const state = {
+            ...makeAppState(),
+            questions: [makeLegacyRadiusQuestion()],
+        };
+        expect(migratePersistedAppState(state)?.questions).toEqual([
+            makeRadarQuestion(),
+        ]);
     });
 
     it("accepts question settings", () => {
@@ -95,7 +118,7 @@ describe("AppStateV1 schema", () => {
         expect(
             migratePersistedAppState({
                 ...makeAppState(),
-                questions: [{ ...makeRadiusQuestion(), radiusMeters: -1 }],
+                questions: [{ ...makeRadarQuestion(), distanceMeters: -1 }],
             }),
         ).toBeNull();
     });

@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
+import { implementedQuestionTypes } from "@/features/questions/questionCatalog";
 import { requestUserCoordinate } from "@/features/map/useUserLocation";
 import { SheetScrollView } from "@/features/sheet/SheetScrollView";
 import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
@@ -13,11 +14,13 @@ type AddQuestionScreenProps = {
 
 export function AddQuestionScreen({ onNavigate }: AddQuestionScreenProps) {
     const { playArea } = usePlayArea();
-    const { createRadiusQuestion } = useQuestion();
+    const { createQuestion } = useQuestion();
 
-    const addRadiusQuestion = async () => {
+    const addRadarQuestion = async () => {
         const result = await requestUserCoordinate();
-        createRadiusQuestion(result.coordinate ?? playArea.center);
+        createQuestion("radar", {
+            center: result.coordinate ?? playArea.center,
+        });
         onNavigate("question-detail");
     };
 
@@ -26,29 +29,34 @@ export function AddQuestionScreen({ onNavigate }: AddQuestionScreenProps) {
             <Text style={styles.eyebrow}>Add Question</Text>
             <Text style={styles.title}>Choose a question</Text>
             <Text style={styles.detail}>
-                Start with a radius preview around a movable map pin.
+                Start with a radar question around a movable map pin.
             </Text>
 
-            <Pressable
-                accessibilityLabel="Add radius question"
-                accessibilityRole="button"
-                onPress={() => {
-                    void addRadiusQuestion();
-                }}
-                style={({ pressed }) => [
-                    styles.optionRow,
-                    pressed ? styles.actionPressed : null,
-                ]}
-                testID="add-radius-question-row"
-            >
-                <View style={styles.optionCopy}>
-                    <Text style={styles.optionTitle}>Radius</Text>
-                    <Text style={styles.metadata}>
-                        Preview 500m, 1km, 2km, 5km, 10km, or custom.
-                    </Text>
-                </View>
-                <Text style={styles.chevron}>›</Text>
-            </Pressable>
+            {implementedQuestionTypes.map((type) =>
+                type === "radar" ? (
+                    <Pressable
+                        accessibilityLabel="Add radar question"
+                        accessibilityRole="button"
+                        key={type}
+                        onPress={() => {
+                            void addRadarQuestion();
+                        }}
+                        style={({ pressed }) => [
+                            styles.optionRow,
+                            pressed ? styles.actionPressed : null,
+                        ]}
+                        testID="add-radar-question-row"
+                    >
+                        <View style={styles.optionCopy}>
+                            <Text style={styles.optionTitle}>Radar</Text>
+                            <Text style={styles.metadata}>
+                                Preview a distance from a movable map pin.
+                            </Text>
+                        </View>
+                        <Text style={styles.chevron}>›</Text>
+                    </Pressable>
+                ) : null,
+            )}
         </SheetScrollView>
     );
 }
