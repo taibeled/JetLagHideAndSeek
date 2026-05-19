@@ -36,12 +36,11 @@ appId: com.hinoka.hideandseek.v2
 - assertVisible: "5km"
 - assertVisible: "10km"
 - assertVisible: "Other"
+- assertVisible: "Unlocked"
 - assertVisible: "Select hiding-zone presets to compare against nearby stations."
-- tapOn:
-      id: "radius-move-pin-button"
 - tapOn:
       point: "48%,31%"
 - tapOn:
       id: "radius-option-1km"
-- assertVisible: "Stored as 1000 m"
+- assertVisible: "Current radius 1000 m"
 - takeScreenshot: e2e/artifacts/radius-question/radius-question-map

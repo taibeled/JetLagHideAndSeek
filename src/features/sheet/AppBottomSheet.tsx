@@ -26,8 +26,13 @@ type AppBottomSheetProps = {
     onIndexChange?: (index: number) => void;
 };
 
-const SNAP_42 = 0;
-const SNAP_88 = 1;
+export const SHEET_SNAP_INDEX = {
+    compact: 0,
+    large: 2,
+    medium: 1,
+} as const;
+
+const SHEET_SNAP_POINTS = ["18%", "42%", "88%"] as const;
 
 export const AppBottomSheet = forwardRef<
     BottomSheetHandle,
@@ -36,10 +41,10 @@ export const AppBottomSheet = forwardRef<
     const sheetRef = useRef<{ snapToIndex?: (index: number) => void } | null>(
         null,
     );
-    const snapPoints = useMemo(() => ["42%", "88%"], []);
+    const snapPoints = useMemo(() => [...SHEET_SNAP_POINTS], []);
     const [route, setRoute] = useState<SheetRouteName>("main");
     const { setQuestionSheetActive } = useQuestion();
-    const currentIndexRef = useRef(0);
+    const currentIndexRef = useRef<number>(SHEET_SNAP_INDEX.medium);
     useImperativeHandle(ref, () => ({
         snapToIndex(index: number) {
             sheetRef.current?.snapToIndex?.(index);
@@ -47,10 +52,7 @@ export const AppBottomSheet = forwardRef<
     }));
 
     useEffect(() => {
-        const target =
-            route === "play-area" || route === "hiding-zone"
-                ? SNAP_88
-                : SNAP_42;
+        const target = getRouteSnapIndex(route);
         if (
             currentIndexRef.current === -1 ||
             target > currentIndexRef.current
@@ -66,7 +68,7 @@ export const AppBottomSheet = forwardRef<
     return (
         <Sheet
             ref={sheetRef}
-            index={0}
+            index={SHEET_SNAP_INDEX.medium}
             snapPoints={snapPoints}
             accessible={false}
             enableDynamicSizing={false}
@@ -75,7 +77,9 @@ export const AppBottomSheet = forwardRef<
             backgroundStyle={styles.sheetBackground}
             onChange={(index: number) => {
                 currentIndexRef.current = index;
-                if (index === -1) setQuestionSheetActive(false);
+                setQuestionSheetActive(
+                    index !== -1 && route === "question-detail",
+                );
                 onIndexChange?.(index);
             }}
         >
@@ -85,6 +89,12 @@ export const AppBottomSheet = forwardRef<
         </Sheet>
     );
 });
+
+function getRouteSnapIndex(route: SheetRouteName): number {
+    return route === "play-area" || route === "hiding-zone"
+        ? SHEET_SNAP_INDEX.large
+        : SHEET_SNAP_INDEX.medium;
+}
 
 const styles = StyleSheet.create({
     content: {

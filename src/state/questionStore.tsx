@@ -28,19 +28,24 @@ type QuestionStateValue = {
     activeQuestionId: string | null;
     createRadiusQuestion: (center: Position) => RadiusQuestion;
     importQuestions: (questions: QuestionsImportState) => void;
-    isMovePinEnabled: boolean;
+    importQuestionSettings: (settings: QuestionSettingsImportState) => void;
+    isPinLocked: boolean;
     isQuestionSheetActive: boolean;
     isRestored: boolean;
     markRestored: () => void;
     questions: QuestionState[];
     radiusFeatures: RadiusQuestionFeatureCollection;
     setActiveQuestionId: (questionId: string | null) => void;
-    setMovePinEnabled: (enabled: boolean) => void;
+    setPinLocked: (isLocked: boolean) => void;
     setQuestionCenter: (questionId: string, center: Position) => void;
     setQuestionSheetActive: (isActive: boolean) => void;
     setRadiusOption: (questionId: string, option: RadiusOption) => void;
     setRadiusUnit: (questionId: string, unit: HidingZoneUnit) => void;
     setRadiusValue: (questionId: string, value: string) => void;
+};
+
+export type QuestionSettingsImportState = {
+    isPinLocked: boolean;
 };
 
 const QuestionContext = createContext<QuestionStateValue | null>(null);
@@ -52,7 +57,7 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
     >(null);
     const [isQuestionSheetActive, setQuestionSheetActiveState] =
         useState(false);
-    const [isMovePinEnabled, setMovePinEnabledState] = useState(false);
+    const [isPinLocked, setPinLockedState] = useState(false);
     const [isRestored, setIsRestored] = useState(false);
 
     const activeQuestion = useMemo(
@@ -95,7 +100,6 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
         setQuestions((current) => [...current, question]);
         setActiveQuestionIdState(question.id);
         setQuestionSheetActiveState(true);
-        setMovePinEnabledState(false);
         return question;
     }, []);
 
@@ -103,24 +107,28 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
         (nextQuestions: QuestionsImportState) => {
             setQuestions(nextQuestions);
             setActiveQuestionIdState(null);
-            setMovePinEnabledState(false);
         },
         [],
     );
 
     const setActiveQuestionId = useCallback((questionId: string | null) => {
         setActiveQuestionIdState(questionId);
-        setMovePinEnabledState(false);
     }, []);
 
     const setQuestionSheetActive = useCallback((isActive: boolean) => {
         setQuestionSheetActiveState(isActive);
-        if (!isActive) setMovePinEnabledState(false);
     }, []);
 
-    const setMovePinEnabled = useCallback((enabled: boolean) => {
-        setMovePinEnabledState(enabled);
+    const setPinLocked = useCallback((isLocked: boolean) => {
+        setPinLockedState(isLocked);
     }, []);
+
+    const importQuestionSettings = useCallback(
+        (settings: QuestionSettingsImportState) => {
+            setPinLockedState(settings.isPinLocked);
+        },
+        [],
+    );
 
     const setQuestionCenter = useCallback(
         (questionId: string, center: Position) => {
@@ -193,15 +201,16 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
             activeQuestion,
             activeQuestionId,
             createRadiusQuestion,
+            importQuestionSettings,
             importQuestions,
-            isMovePinEnabled,
+            isPinLocked,
             isQuestionSheetActive,
             isRestored,
             markRestored,
             questions,
             radiusFeatures,
             setActiveQuestionId,
-            setMovePinEnabled,
+            setPinLocked,
             setQuestionCenter,
             setQuestionSheetActive,
             setRadiusOption,
@@ -212,15 +221,16 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
             activeQuestion,
             activeQuestionId,
             createRadiusQuestion,
+            importQuestionSettings,
             importQuestions,
-            isMovePinEnabled,
+            isPinLocked,
             isQuestionSheetActive,
             isRestored,
             markRestored,
             questions,
             radiusFeatures,
             setActiveQuestionId,
-            setMovePinEnabled,
+            setPinLocked,
             setQuestionCenter,
             setQuestionSheetActive,
             setRadiusOption,
@@ -246,6 +256,13 @@ export function useQuestion() {
 
 export function getRadiusDisplayValue(question: RadiusQuestion): string {
     return fromMeters(question.radiusMeters, question.radiusUnit);
+}
+
+export function getRadiusDisplayValueForUnit(
+    question: RadiusQuestion,
+    unit: HidingZoneUnit,
+): string {
+    return fromMeters(question.radiusMeters, unit);
 }
 
 function createQuestionId(): string {

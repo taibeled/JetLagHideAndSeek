@@ -12,11 +12,11 @@ function Probe() {
     const {
         activeQuestion,
         createRadiusQuestion,
-        isMovePinEnabled,
+        isPinLocked,
         isQuestionSheetActive,
         isRestored,
         questions,
-        setMovePinEnabled,
+        setPinLocked,
         setQuestionSheetActive,
         setRadiusOption,
     } = useQuestion();
@@ -34,7 +34,7 @@ function Probe() {
             <Text testID="probe-sheet-active">
                 {String(isQuestionSheetActive)}
             </Text>
-            <Text testID="probe-moving">{String(isMovePinEnabled)}</Text>
+            <Text testID="probe-locked">{String(isPinLocked)}</Text>
             <Pressable
                 accessibilityRole="button"
                 testID="action-create"
@@ -57,7 +57,7 @@ function Probe() {
             <Pressable
                 accessibilityRole="button"
                 testID="action-moving"
-                onPress={() => setMovePinEnabled(true)}
+                onPress={() => setPinLocked(true)}
             />
         </View>
     );
@@ -152,7 +152,7 @@ describe("QuestionProvider", () => {
         expect(screen.getByTestId("probe-count")).toHaveTextContent("1");
     });
 
-    it("disables moving when the question sheet becomes inactive", async () => {
+    it("keeps the pin lock preference when the question sheet becomes inactive", async () => {
         const screen = renderProvider();
 
         await waitFor(() => {
@@ -166,12 +166,31 @@ describe("QuestionProvider", () => {
             fireEvent.press(screen.getByTestId("action-moving"));
         });
 
-        expect(screen.getByTestId("probe-moving")).toHaveTextContent("true");
+        expect(screen.getByTestId("probe-locked")).toHaveTextContent("true");
 
         act(() => {
             fireEvent.press(screen.getByTestId("action-sheet-inactive"));
         });
 
-        expect(screen.getByTestId("probe-moving")).toHaveTextContent("false");
+        expect(screen.getByTestId("probe-locked")).toHaveTextContent("true");
+    });
+
+    it("persists the pin lock preference", async () => {
+        const screen = renderProvider();
+
+        await waitFor(() => {
+            expect(screen.getByTestId("probe-restored")).toHaveTextContent(
+                "true",
+            );
+        });
+
+        act(() => {
+            fireEvent.press(screen.getByTestId("action-moving"));
+        });
+
+        await waitFor(async () => {
+            const persisted = await loadPersistedAppState();
+            expect(persisted?.questionSettings.isPinLocked).toBe(true);
+        });
     });
 });

@@ -9,9 +9,10 @@ import {
     type RadiusOption,
     radiusPresetOptions,
 } from "@/features/questions/questionTypes";
+import { useRadiusDraftInput } from "@/features/questions/useRadiusDraftInput";
 import { SheetScrollView } from "@/features/sheet/SheetScrollView";
 import { useHidingZone } from "@/state/hidingZoneStore";
-import { getRadiusDisplayValue, useQuestion } from "@/state/questionStore";
+import { useQuestion } from "@/state/questionStore";
 import { colors } from "@/theme/colors";
 
 const units: HidingZoneUnit[] = ["m", "km", "mi"];
@@ -20,13 +21,26 @@ const allRadiusOptions: RadiusOption[] = [...radiusPresetOptions, "other"];
 export function QuestionDetailScreen() {
     const {
         activeQuestion,
-        isMovePinEnabled,
-        setMovePinEnabled,
+        isPinLocked,
+        setPinLocked,
         setRadiusOption,
         setRadiusUnit,
         setRadiusValue,
     } = useQuestion();
     const { selectedStations } = useHidingZone();
+    const {
+        customRadiusInputRef,
+        customRadiusValue,
+        emptyRadiusHelpText,
+        handleCustomRadiusChange,
+        handleRadiusOptionPress,
+        handleRadiusUnitPress,
+    } = useRadiusDraftInput({
+        activeQuestion,
+        setRadiusOption,
+        setRadiusUnit,
+        setRadiusValue,
+    });
 
     if (!activeQuestion) {
         return (
@@ -41,17 +55,47 @@ export function QuestionDetailScreen() {
     }
 
     const nearest = findNearestStation(activeQuestion.center, selectedStations);
-    const customValue = getRadiusDisplayValue(activeQuestion);
+    const pinLockLabel = isPinLocked ? "Locked" : "Unlocked";
+    const pinHelpText = isPinLocked
+        ? "Pin locked. Unlock to move the preview pin."
+        : "Pin unlocked. Tap the map or long-press the pin to move it.";
 
     return (
         <SheetScrollView
             contentContainerStyle={styles.scrollContent}
             style={styles.container}
         >
-            <Text style={styles.eyebrow}>Radius Question</Text>
-            <Text style={styles.title}>Preview Radius</Text>
+            <View style={styles.headerRow}>
+                <View style={styles.headerCopy}>
+                    <Text style={styles.eyebrow}>Radius Question</Text>
+                    <Text style={styles.title}>Preview Radius</Text>
+                </View>
+                <Pressable
+                    accessibilityLabel={
+                        isPinLocked ? "Unlock radius pin" : "Lock radius pin"
+                    }
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: isPinLocked }}
+                    onPress={() => setPinLocked(!isPinLocked)}
+                    style={({ pressed }) => [
+                        styles.lockButton,
+                        isPinLocked ? styles.lockButtonActive : null,
+                        pressed ? styles.actionPressed : null,
+                    ]}
+                    testID="radius-pin-lock-button"
+                >
+                    <Text
+                        style={[
+                            styles.lockButtonText,
+                            isPinLocked ? styles.lockButtonTextActive : null,
+                        ]}
+                    >
+                        {pinLockLabel}
+                    </Text>
+                </Pressable>
+            </View>
             <Text style={styles.detail}>
-                Move the pin and compare a radius against the current map setup.
+                Compare a radius against the current map setup.
             </Text>
 
             <View style={styles.section}>
@@ -62,9 +106,7 @@ export function QuestionDetailScreen() {
                             accessibilityLabel={`Radius ${getOptionLabel(option)}`}
                             accessibilityRole="button"
                             key={option}
-                            onPress={() =>
-                                setRadiusOption(activeQuestion.id, option)
-                            }
+                            onPress={() => handleRadiusOptionPress(option)}
                             style={({ pressed }) => [
                                 styles.radiusOption,
                                 activeQuestion.radiusOption === option
@@ -89,83 +131,68 @@ export function QuestionDetailScreen() {
                 </View>
 
                 {activeQuestion.radiusOption === "other" ? (
-                    <View style={styles.customRadiusRow}>
-                        <TextInput
-                            accessibilityLabel="Custom radius"
-                            keyboardType="decimal-pad"
-                            onChangeText={(value) =>
-                                setRadiusValue(activeQuestion.id, value)
-                            }
-                            style={styles.customRadiusInput}
-                            testID="radius-custom-input"
-                            value={customValue}
-                        />
-                        <View style={styles.segmentedControl}>
-                            {units.map((unit) => (
-                                <Pressable
-                                    accessibilityRole="button"
-                                    key={unit}
-                                    onPress={() =>
-                                        setRadiusUnit(activeQuestion.id, unit)
-                                    }
-                                    style={({ pressed }) => [
-                                        styles.unitButton,
-                                        activeQuestion.radiusUnit === unit
-                                            ? styles.unitButtonActive
-                                            : null,
-                                        pressed ? styles.actionPressed : null,
-                                    ]}
-                                    testID={`radius-unit-${unit}`}
-                                >
-                                    <Text
-                                        style={[
-                                            styles.unitButtonText,
+                    <>
+                        <View style={styles.customRadiusRow}>
+                            <TextInput
+                                accessibilityLabel="Custom radius"
+                                keyboardType="decimal-pad"
+                                onChangeText={handleCustomRadiusChange}
+                                ref={customRadiusInputRef}
+                                style={styles.customRadiusInput}
+                                testID="radius-custom-input"
+                                value={customRadiusValue}
+                            />
+                            <View style={styles.segmentedControl}>
+                                {units.map((unit) => (
+                                    <Pressable
+                                        accessibilityRole="button"
+                                        key={unit}
+                                        onPress={() =>
+                                            handleRadiusUnitPress(unit)
+                                        }
+                                        style={({ pressed }) => [
+                                            styles.unitButton,
                                             activeQuestion.radiusUnit === unit
-                                                ? styles.unitButtonTextActive
+                                                ? styles.unitButtonActive
+                                                : null,
+                                            pressed
+                                                ? styles.actionPressed
                                                 : null,
                                         ]}
+                                        testID={`radius-unit-${unit}`}
                                     >
-                                        {unit}
-                                    </Text>
-                                </Pressable>
-                            ))}
+                                        <Text
+                                            style={[
+                                                styles.unitButtonText,
+                                                activeQuestion.radiusUnit ===
+                                                unit
+                                                    ? styles.unitButtonTextActive
+                                                    : null,
+                                            ]}
+                                        >
+                                            {unit}
+                                        </Text>
+                                    </Pressable>
+                                ))}
+                            </View>
                         </View>
-                    </View>
+                        {emptyRadiusHelpText ? (
+                            <Text
+                                style={styles.metadata}
+                                testID="radius-custom-empty-help"
+                            >
+                                {emptyRadiusHelpText}
+                            </Text>
+                        ) : null}
+                    </>
                 ) : null}
 
                 <Text style={styles.metadata} testID="radius-meters">
-                    Stored as {Math.round(activeQuestion.radiusMeters)} m
+                    Current radius {Math.round(activeQuestion.radiusMeters)} m
                 </Text>
             </View>
 
             <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Pin</Text>
-                <Pressable
-                    accessibilityLabel={
-                        isMovePinEnabled
-                            ? "Stop moving radius pin"
-                            : "Move radius pin"
-                    }
-                    accessibilityRole="button"
-                    onPress={() => setMovePinEnabled(!isMovePinEnabled)}
-                    style={({ pressed }) => [
-                        styles.movePinButton,
-                        isMovePinEnabled ? styles.movePinButtonActive : null,
-                        pressed ? styles.actionPressed : null,
-                    ]}
-                    testID="radius-move-pin-button"
-                >
-                    <Text
-                        style={[
-                            styles.movePinButtonText,
-                            isMovePinEnabled
-                                ? styles.movePinButtonTextActive
-                                : null,
-                        ]}
-                    >
-                        {isMovePinEnabled ? "Moving Pin" : "Move Pin"}
-                    </Text>
-                </Pressable>
                 <Text style={styles.metadata} testID="radius-center-summary">
                     {activeQuestion.center[1].toFixed(5)},{" "}
                     {activeQuestion.center[0].toFixed(5)}
@@ -259,32 +286,48 @@ const styles = StyleSheet.create({
         lineHeight: 18,
         marginTop: 8,
     },
-    movePinButton: {
+    headerCopy: {
+        flex: 1,
+        minWidth: 0,
+    },
+    headerRow: {
+        alignItems: "flex-start",
+        flexDirection: "row",
+        gap: 12,
+    },
+    lockButton: {
         alignItems: "center",
         backgroundColor: colors.card,
         borderColor: colors.border,
         borderRadius: 8,
         borderWidth: 1,
         justifyContent: "center",
-        minHeight: 48,
-        paddingHorizontal: 16,
+        minHeight: 42,
+        minWidth: 94,
+        paddingHorizontal: 12,
     },
-    movePinButtonActive: {
+    lockButtonActive: {
         backgroundColor: colors.button,
         borderColor: colors.button,
     },
-    movePinButtonText: {
+    lockButtonText: {
         color: colors.ink,
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: "800",
     },
-    movePinButtonTextActive: {
+    lockButtonTextActive: {
         color: colors.white,
     },
     optionGrid: {
         flexDirection: "row",
         flexWrap: "wrap",
         gap: 8,
+    },
+    pinHelp: {
+        color: colors.ink,
+        fontSize: 15,
+        fontWeight: "700",
+        lineHeight: 21,
     },
     radiusOption: {
         alignItems: "center",

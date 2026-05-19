@@ -5,6 +5,7 @@ import { StyleSheet, View } from "react-native";
 import { NativeMap } from "@/features/map/NativeMap";
 import {
     AppBottomSheet,
+    SHEET_SNAP_INDEX,
     type BottomSheetHandle,
 } from "@/features/sheet/AppBottomSheet";
 import { FabButton } from "@/features/sheet/FabButton";
@@ -12,11 +13,11 @@ import { colors } from "@/theme/colors";
 
 export function MapAppScreen() {
     const bottomSheetRef = useRef<BottomSheetHandle>(null);
-    const sheetIndexRef = useRef(0);
+    const sheetIndexRef = useRef<number>(SHEET_SNAP_INDEX.medium);
 
     const handleMapPress = useCallback(() => {
-        if (sheetIndexRef.current === 1) {
-            bottomSheetRef.current?.snapToIndex(0);
+        if (sheetIndexRef.current === SHEET_SNAP_INDEX.large) {
+            bottomSheetRef.current?.snapToIndex(SHEET_SNAP_INDEX.compact);
         }
     }, []);
 
@@ -25,7 +26,7 @@ export function MapAppScreen() {
     }, []);
 
     const handleFabPress = useCallback(() => {
-        bottomSheetRef.current?.snapToIndex(0);
+        bottomSheetRef.current?.snapToIndex(SHEET_SNAP_INDEX.medium);
     }, []);
 
     return (

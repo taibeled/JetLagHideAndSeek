@@ -3,6 +3,7 @@ import { type ReactNode, useEffect, useRef } from "react";
 import {
     appStateHidingZonesToImportState,
     appStatePlayAreaToImportState,
+    appStateQuestionSettingsToImportState,
     createAppStateV1,
 } from "@/state/appState";
 import { HidingZoneProvider, useHidingZone } from "@/state/hidingZoneStore";
@@ -50,6 +51,11 @@ function AppStatePersistenceCoordinator({ children }: { children: ReactNode }) {
                     appStateHidingZonesToImportState(persisted.hidingZones),
                 );
                 questionStore.importQuestions(persisted.questions);
+                questionStore.importQuestionSettings(
+                    appStateQuestionSettingsToImportState(
+                        persisted.questionSettings,
+                    ),
+                );
             }
 
             playAreaStore.markRestored();
@@ -81,6 +87,9 @@ function AppStatePersistenceCoordinator({ children }: { children: ReactNode }) {
                     updatedAt: now.toISOString(),
                 },
                 playArea: playAreaStore.playArea,
+                questionSettings: {
+                    isPinLocked: questionStore.isPinLocked,
+                },
                 questions: questionStore.questions,
             }),
         );
@@ -90,6 +99,7 @@ function AppStatePersistenceCoordinator({ children }: { children: ReactNode }) {
         hidingZoneStore.selectedPresetIds,
         isRestored,
         playAreaStore.playArea,
+        questionStore.isPinLocked,
         questionStore.questions,
     ]);
 

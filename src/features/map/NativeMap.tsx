@@ -2,10 +2,12 @@ import {
     Camera,
     CircleLayer,
     FillLayer,
+    Images,
     LineLayer,
     MapView,
     setAccessToken,
     ShapeSource,
+    SymbolLayer,
     UserLocation,
 } from "@maplibre/maplibre-react-native";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -31,6 +33,7 @@ import type { Position } from "./geojsonTypes";
 import { buildOsmRasterStyleJson } from "./mapStyle";
 import { useUserLocation } from "./useUserLocation";
 import { usePlayArea } from "@/state/playAreaStore";
+import radiusQuestionPinImage from "../../../assets/map/radius-question-pin.png";
 
 setAccessToken(null);
 
@@ -39,7 +42,9 @@ const MLCamera = Camera as ComponentType<any>;
 const MLShapeSource = ShapeSource as ComponentType<any>;
 const MLCircleLayer = CircleLayer as ComponentType<any>;
 const MLFillLayer = FillLayer as ComponentType<any>;
+const MLImages = Images as ComponentType<any>;
 const MLLineLayer = LineLayer as ComponentType<any>;
+const MLSymbolLayer = SymbolLayer as ComponentType<any>;
 const MLUserLocation = UserLocation as ComponentType<any>;
 const MAX_STATION_COLOR_RINGS = 6;
 
@@ -55,7 +60,7 @@ export function NativeMap({ onPress }: NativeMapProps) {
     const { routeFeatures, stationFeatures, zoneFeatures } = useHidingZone();
     const {
         activeQuestion,
-        isMovePinEnabled,
+        isPinLocked,
         isQuestionSheetActive,
         radiusFeatures,
         setQuestionCenter,
@@ -70,6 +75,10 @@ export function NativeMap({ onPress }: NativeMapProps) {
     const draftCoordinate = isDraggingMovePin
         ? draftPinCoordinateRef.current
         : null;
+    const radiusQuestionPinImages = useMemo(
+        () => ({ "radius-question-pin": radiusQuestionPinImage }),
+        [],
+    );
     const mapStyle = useMemo(() => buildOsmRasterStyleJson(), []);
     const fitPadding = useMemo(
         () =>
@@ -91,7 +100,7 @@ export function NativeMap({ onPress }: NativeMapProps) {
         isQuestionSheetActive && activeQuestion,
     );
     const canMoveActivePin =
-        isQuestionSheetActive && isMovePinEnabled && Boolean(activeQuestion);
+        isQuestionSheetActive && !isPinLocked && Boolean(activeQuestion);
 
     const cleanupDrag = useCallback(() => {
         isDraggingRef.current = false;
@@ -224,6 +233,8 @@ export function NativeMap({ onPress }: NativeMapProps) {
                               },
                               properties: {
                                   id: activeQuestion.id,
+                                  isDragging: isDraggingMovePin,
+                                  isUnlocked: canMoveActivePin,
                               },
                               type: "Feature" as const,
                           },
@@ -231,7 +242,14 @@ export function NativeMap({ onPress }: NativeMapProps) {
                       type: "FeatureCollection" as const,
                   }
                 : { features: [], type: "FeatureCollection" as const },
-        [activeQuestion, draftCoordinate, shouldShowActivePin, tick],
+        [
+            activeQuestion,
+            canMoveActivePin,
+            draftCoordinate,
+            isDraggingMovePin,
+            shouldShowActivePin,
+            tick,
+        ],
     );
 
     const handleMapPress = useCallback(
@@ -380,27 +398,35 @@ export function NativeMap({ onPress }: NativeMapProps) {
                         />
                     ) : null}
 
+                    <MLImages images={radiusQuestionPinImages} />
+
                     <MLShapeSource
                         id="radius-question-active-pin"
                         onPress={handleMapPress}
                         shape={activePinFeature}
                     >
                         <MLCircleLayer
-                            id="radius-question-active-pin-halo"
-                            style={{
-                                circleColor: colors.white,
-                                circleOpacity: 1,
-                                circleRadius: 13,
-                                circleStrokeColor: "#e46f4d",
-                                circleStrokeWidth: 3,
-                            }}
-                        />
-                        <MLCircleLayer
-                            id="radius-question-active-pin-dot"
+                            id="radius-question-active-pin-drag-ring"
                             style={{
                                 circleColor: "#e46f4d",
-                                circleOpacity: 1,
-                                circleRadius: 5,
+                                circleOpacity: canMoveActivePin ? 0.18 : 0,
+                                circleRadius: isDraggingMovePin ? 28 : 22,
+                                circleStrokeColor: "#e46f4d",
+                                circleStrokeOpacity: canMoveActivePin
+                                    ? 0.65
+                                    : 0,
+                                circleStrokeWidth: isDraggingMovePin ? 3 : 2,
+                                circleTranslate: [0, -31],
+                            }}
+                        />
+                        <MLSymbolLayer
+                            id="radius-question-active-pin-icon"
+                            style={{
+                                iconAllowOverlap: true,
+                                iconAnchor: "bottom",
+                                iconIgnorePlacement: true,
+                                iconImage: "radius-question-pin",
+                                iconSize: 0.42,
                             }}
                         />
                     </MLShapeSource>

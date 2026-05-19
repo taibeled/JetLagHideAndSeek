@@ -4,6 +4,7 @@ import type { GeoJsonFeatureCollection } from "@/features/map/geojsonTypes";
 import type { QuestionsImportState } from "@/features/questions/questionTypes";
 import type { HidingZoneImportState } from "@/state/hidingZoneStore";
 import type { PlayAreaImportState } from "@/state/playAreaStore";
+import type { QuestionSettingsImportState } from "@/state/questionStore";
 
 const positionSchema = z.tuple([z.number(), z.number()]);
 const bboxSchema = z.tuple([z.number(), z.number(), z.number(), z.number()]);
@@ -43,6 +44,10 @@ export const appStateRadiusQuestionSchema = z.object({
 
 export const appStateQuestionsSchema = z.array(appStateRadiusQuestionSchema);
 
+export const appStateQuestionSettingsSchema = z.object({
+    isPinLocked: z.boolean(),
+});
+
 export const appStateV1Schema = z.object({
     hidingZones: appStateHidingZonesSchema,
     metadata: z.object({
@@ -50,6 +55,7 @@ export const appStateV1Schema = z.object({
         updatedAt: z.string().min(1),
     }),
     playArea: appStatePlayAreaSchema,
+    questionSettings: appStateQuestionSettingsSchema,
     questions: appStateQuestionsSchema,
     version: z.literal(1),
 });
@@ -57,12 +63,16 @@ export const appStateV1Schema = z.object({
 export type AppStateV1 = z.infer<typeof appStateV1Schema>;
 export type AppStateHidingZonesV1 = z.infer<typeof appStateHidingZonesSchema>;
 export type AppStatePlayAreaV1 = z.infer<typeof appStatePlayAreaSchema>;
+export type AppStateQuestionSettingsV1 = z.infer<
+    typeof appStateQuestionSettingsSchema
+>;
 
 export function createAppStateV1({
     hidingZones,
     metadata,
     now = new Date(),
     playArea,
+    questionSettings,
     questions,
 }: {
     hidingZones: HidingZoneImportState;
@@ -72,6 +82,7 @@ export function createAppStateV1({
     };
     now?: Date;
     playArea: PlayAreaImportState;
+    questionSettings?: QuestionSettingsImportState;
     questions?: QuestionsImportState;
 }): AppStateV1 {
     const timestamp = now.toISOString();
@@ -93,24 +104,30 @@ export function createAppStateV1({
             osmId: playArea.osmId,
             osmType: playArea.osmType,
         },
+        questionSettings: {
+            isPinLocked: questionSettings?.isPinLocked ?? false,
+        },
         questions: questions ? [...questions] : [],
         version: 1,
     };
 }
 
 export function migratePersistedAppState(value: unknown): AppStateV1 | null {
-    const parsed = appStateV1Schema.safeParse(addMissingQuestionsSlice(value));
+    const parsed = appStateV1Schema.safeParse(addMissingV1Slices(value));
     return parsed.success ? parsed.data : null;
 }
 
-function addMissingQuestionsSlice(value: unknown): unknown {
+function addMissingV1Slices(value: unknown): unknown {
     if (!isRecord(value)) return value;
     if (value.version !== 1) return value;
-    if ("questions" in value) return value;
 
     return {
         ...value,
-        questions: [],
+        questionSettings:
+            "questionSettings" in value
+                ? value.questionSettings
+                : { isPinLocked: false },
+        questions: "questions" in value ? value.questions : [],
     };
 }
 
@@ -138,5 +155,13 @@ export function appStateHidingZonesToImportState(
         radiusMeters: hidingZones.radiusMeters,
         radiusUnit: hidingZones.radiusUnit,
         selectedPresetIds: [...hidingZones.selectedPresetIds],
+    };
+}
+
+export function appStateQuestionSettingsToImportState(
+    questionSettings: AppStateQuestionSettingsV1,
+): QuestionSettingsImportState {
+    return {
+        isPinLocked: questionSettings.isPinLocked,
     };
 }

@@ -53,6 +53,7 @@ describe("AppStateV1 schema", () => {
         const result = appStateV1Schema.safeParse(state);
 
         expect(result.success).toBe(true);
+        expect(state.questionSettings).toEqual({ isPinLocked: false });
         expect(state.questions).toEqual([]);
     });
 
@@ -82,6 +83,14 @@ describe("AppStateV1 schema", () => {
         expect(migratePersistedAppState(state)).toEqual(state);
     });
 
+    it("accepts question settings", () => {
+        const state = {
+            ...makeAppState(),
+            questionSettings: { isPinLocked: true },
+        };
+        expect(migratePersistedAppState(state)).toEqual(state);
+    });
+
     it("rejects invalid question shapes", () => {
         expect(
             migratePersistedAppState({
@@ -91,7 +100,7 @@ describe("AppStateV1 schema", () => {
         ).toBeNull();
     });
 
-    it("migrates existing v1 app state without questions to an empty slice", () => {
+    it("migrates existing v1 app state without question slices to defaults", () => {
         expect(
             migratePersistedAppState(makeLegacyAppStateWithoutQuestions()),
         ).toEqual(makeAppState());
@@ -129,7 +138,7 @@ describe("app-state persistence", () => {
         await expect(loadPersistedAppState()).resolves.toEqual(state);
     });
 
-    it("loads existing v1 state without questions as an empty slice", async () => {
+    it("loads existing v1 state without question slices as defaults", async () => {
         await AsyncStorage.setItem(
             "app-state:v1",
             JSON.stringify(makeLegacyAppStateWithoutQuestions()),

@@ -328,8 +328,13 @@ describe("MapAppScreen", () => {
         expect(screen.getByText("5km")).toBeTruthy();
         expect(screen.getByText("10km")).toBeTruthy();
         expect(screen.getByText("Other")).toBeTruthy();
+        expect(screen.getByTestId("radius-pin-lock-button")).toBeTruthy();
+        expect(screen.getByText("Unlocked")).toBeTruthy();
+        expect(screen.getByTestId("radius-pin-help").props.children).toBe(
+            "Pin unlocked. Tap the map or long-press the pin to move it.",
+        );
         expect(screen.getByTestId("radius-meters").props.children).toEqual([
-            "Stored as ",
+            "Current radius ",
             500,
             " m",
         ]);
@@ -341,7 +346,7 @@ describe("MapAppScreen", () => {
 
         fireEvent.press(screen.getByTestId("radius-option-1km"));
         expect(screen.getByTestId("radius-meters").props.children).toEqual([
-            "Stored as ",
+            "Current radius ",
             1000,
             " m",
         ]);
@@ -350,10 +355,32 @@ describe("MapAppScreen", () => {
                 .features[0].properties.radiusMeters,
         ).toBe(1000);
 
+        fireEvent.press(screen.getByTestId("radius-option-other"));
+        expect(screen.getByTestId("radius-custom-input").props.value).toBe("");
+        expect(screen.getByTestId("radius-custom-empty-help")).toBeTruthy();
+
+        fireEvent.changeText(screen.getByTestId("radius-custom-input"), "750");
+        expect(screen.getByTestId("radius-custom-input").props.value).toBe(
+            "750",
+        );
+        expect(screen.getByTestId("radius-meters").props.children).toEqual([
+            "Current radius ",
+            750,
+            " m",
+        ]);
+
+        fireEvent.changeText(screen.getByTestId("radius-custom-input"), "");
+        expect(screen.getByTestId("radius-custom-input").props.value).toBe("");
+        expect(screen.getByTestId("radius-meters").props.children).toEqual([
+            "Current radius ",
+            750,
+            " m",
+        ]);
+
         jest.useRealTimers();
     });
 
-    it("moves only the active radius pin source when move-pin mode is enabled", async () => {
+    it("moves only the active radius pin source while the question sheet is open and unlocked", async () => {
         const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
 
@@ -365,26 +392,6 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-
-        const initialPinSource = getMapShapeSource(
-            screen,
-            "radius-question-active-pin",
-        );
-        const initialCoordinate =
-            initialPinSource.props.shape.features[0].geometry.coordinates;
-
-        fireEvent(screen.getByTestId("native-map"), "onPress", {
-            geometry: { coordinates: [139.75, 35.7] },
-        });
-        act(() => {
-            jest.runOnlyPendingTimers();
-        });
-        expect(
-            getMapShapeSource(screen, "radius-question-active-pin").props.shape
-                .features[0].geometry.coordinates,
-        ).toEqual(initialCoordinate);
-
-        fireEvent.press(screen.getByTestId("radius-move-pin-button"));
 
         fireEvent(screen.getByTestId("native-map"), "onPress", {
             geometry: { coordinates: [139.75, 35.7] },
@@ -404,6 +411,49 @@ describe("MapAppScreen", () => {
             getMapShapeSource(screen, "radius-question-active-pin").props.shape
                 .features,
         ).toHaveLength(0);
+
+        jest.useRealTimers();
+    });
+
+    it("keeps the active radius pin fixed when locked", async () => {
+        const screen = renderWithSafeArea(<MapAppScreen />);
+        jest.useFakeTimers();
+
+        fireEvent.press(screen.getByTestId("main-add-question-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        fireEvent.press(screen.getByTestId("add-radius-question-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+
+        const initialCoordinate = getMapShapeSource(
+            screen,
+            "radius-question-active-pin",
+        ).props.shape.features[0].geometry.coordinates;
+
+        fireEvent.press(screen.getByTestId("radius-pin-lock-button"));
+        expect(
+            screen.getByTestId("radius-pin-lock-button").props
+                .accessibilityState,
+        ).toEqual({ selected: true });
+
+        fireEvent(screen.getByTestId("native-map"), "onPress", {
+            geometry: { coordinates: [139.75, 35.7] },
+        });
+        act(() => {
+            jest.runOnlyPendingTimers();
+        });
+
+        expect(
+            getMapShapeSource(screen, "radius-question-active-pin").props.shape
+                .features[0].geometry.coordinates,
+        ).toEqual(initialCoordinate);
+        expect(screen.getByText("Locked")).toBeTruthy();
+        expect(screen.getByTestId("radius-pin-help").props.children).toBe(
+            "Pin locked. Unlock to move the preview pin.",
+        );
 
         jest.useRealTimers();
     });
@@ -659,19 +709,18 @@ describe("MapAppScreen", () => {
         });
     });
 
-    it("tapping the map when the sheet is at index 1 (88%) snaps to index 0 (42%)", () => {
+    it("tapping the map when the sheet is at index 2 (88%) snaps to index 0 (18%)", () => {
         const { __bottomSheetMethods } =
             require("@gorhom/bottom-sheet") as unknown as {
                 __bottomSheetMethods: { snapToIndex: jest.Mock };
             };
         const screen = renderWithSafeArea(<MapAppScreen />);
 
-        // Navigate to play-area — the useEffect auto-snaps to index 1 (88%)
+        // Navigate to play-area; the useEffect auto-snaps to index 2 (88%).
         fireEvent.press(screen.getByTestId("main-settings-row"));
         fireEvent.press(screen.getByTestId("settings-play-area-row"));
 
-        // Simulate the sheet settling at index 1
-        fireEvent(screen.getByTestId("bottom-sheet"), "onChange", 1);
+        fireEvent(screen.getByTestId("bottom-sheet"), "onChange", 2);
 
         // Fire map press
         fireEvent(screen.getByTestId("native-map"), "onPress", {
@@ -681,14 +730,14 @@ describe("MapAppScreen", () => {
         expect(__bottomSheetMethods.snapToIndex).toHaveBeenCalledWith(0);
     });
 
-    it("does NOT snap when map is tapped at index 0 (42%)", () => {
+    it("does NOT snap when map is tapped at index 1 (42%)", () => {
         const { __bottomSheetMethods } =
             require("@gorhom/bottom-sheet") as unknown as {
                 __bottomSheetMethods: { snapToIndex: jest.Mock };
             };
         const screen = renderWithSafeArea(<MapAppScreen />);
 
-        fireEvent(screen.getByTestId("bottom-sheet"), "onChange", 0);
+        fireEvent(screen.getByTestId("bottom-sheet"), "onChange", 1);
         __bottomSheetMethods.snapToIndex.mockClear();
 
         fireEvent(screen.getByTestId("native-map"), "onPress", {
@@ -763,7 +812,9 @@ describe("MapAppScreen", () => {
 
     // -- Drag gesture integration tests --
 
-    function navigateToMovePinMode(screen: ReturnType<typeof render>) {
+    function navigateToUnlockedQuestionSheet(
+        screen: ReturnType<typeof render>,
+    ) {
         jest.useFakeTimers();
         fireEvent.press(screen.getByTestId("main-add-question-row"));
         act(() => {
@@ -773,7 +824,6 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        fireEvent.press(screen.getByTestId("radius-move-pin-button"));
     }
 
     function cleanupMovePinTest() {
@@ -784,7 +834,7 @@ describe("MapAppScreen", () => {
     function navigateToMovePinAndUseRealTimers(
         screen: ReturnType<typeof render>,
     ) {
-        navigateToMovePinMode(screen);
+        navigateToUnlockedQuestionSheet(screen);
         jest.useRealTimers();
     }
 
@@ -816,9 +866,9 @@ describe("MapAppScreen", () => {
             jest.restoreAllMocks();
         });
 
-        it("tapping the map to move the pin still works when move-pin is enabled", async () => {
+        it("tapping the map to move the pin works while the sheet is unlocked", async () => {
             const screen = renderWithSafeArea(<MapAppScreen />);
-            navigateToMovePinMode(screen);
+            navigateToUnlockedQuestionSheet(screen);
 
             fireEvent(screen.getByTestId("native-map"), "onPress", {
                 geometry: { coordinates: [139.75, 35.7] },
@@ -1067,9 +1117,8 @@ describe("MapAppScreen", () => {
                 jest.advanceTimersByTime(300);
             });
 
-            // Back on add-question screen, move-pin is still technically "enabled"
-            // but canMoveActivePin is false because isQuestionSheetActive is false
-            // The cleanup useEffect should have fired
+            // Back on add-question screen, the lock preference is still unlocked,
+            // but canMoveActivePin is false because isQuestionSheetActive is false.
             const mapView = screen.getByTestId("native-map");
             expect(mapView.props.scrollEnabled).toBe(true);
 
@@ -1088,17 +1137,12 @@ describe("MapAppScreen", () => {
             cleanupMovePinTest();
         });
 
-        it("ignores drag gesture when move pin mode is disabled", () => {
+        it("ignores drag gesture when the question sheet is not open", () => {
             const screen = renderWithSafeArea(<MapAppScreen />);
 
-            // Without navigating to question-detail or enabling move-pin,
-            // check that the map has scrollEnabled=true
             const mapView = screen.getByTestId("native-map");
             expect(mapView.props.scrollEnabled).toBe(true);
 
-            // Gesture should have been created with .enabled(false)
-            // but the mock stores callbacks anyway; the real NativeMap
-            // enables/disables based on canMoveActivePin
             expect(mapView.props.scrollEnabled).toBe(true);
         });
     });

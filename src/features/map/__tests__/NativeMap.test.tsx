@@ -109,7 +109,7 @@ describe("NativeMap", () => {
         expect(mapView.props.scrollEnabled).toBe(true);
     });
 
-    it("renders the movable pin as ShapeSource + CircleLayer with stable ids", () => {
+    it("renders the movable pin as ShapeSource layers with stable ids", () => {
         const screen = renderWithSafeArea(<NativeMap />);
 
         const pinSource = screen
@@ -117,15 +117,21 @@ describe("NativeMap", () => {
             .find((s) => s.props.id === "radius-question-active-pin");
         expect(pinSource).toBeTruthy();
 
-        const haloLayer = screen
+        const dragLayer = screen
             .getAllByTestId("map-circle-layer")
-            .find((l) => l.props.id === "radius-question-active-pin-halo");
-        expect(haloLayer).toBeTruthy();
+            .find((l) => l.props.id === "radius-question-active-pin-drag-ring");
+        expect(dragLayer).toBeTruthy();
 
-        const dotLayer = screen
-            .getAllByTestId("map-circle-layer")
-            .find((l) => l.props.id === "radius-question-active-pin-dot");
-        expect(dotLayer).toBeTruthy();
+        const images = screen
+            .getAllByTestId("map-images")
+            .find((l) => l.props.images["radius-question-pin"]);
+        expect(images).toBeTruthy();
+
+        const iconLayer = screen
+            .getAllByTestId("map-symbol-layer")
+            .find((l) => l.props.id === "radius-question-active-pin-icon");
+        expect(iconLayer).toBeTruthy();
+        expect(iconLayer?.props.style.iconImage).toBe("radius-question-pin");
     });
 });
 
