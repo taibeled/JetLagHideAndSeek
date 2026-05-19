@@ -33,7 +33,7 @@ appId: com.hinoka.hideandseek.v2
 - tapOn:
       id: "add-radius-question-row"
 - extendedWaitUntil:
-      visible: "Preview Radius"
+      visible: "Radius Question"
       timeout: 10000
 - assertVisible:
       id: "radius-option-500m"
@@ -49,8 +49,6 @@ appId: com.hinoka.hideandseek.v2
       id: "radius-option-other"
 - assertVisible:
       id: "radius-pin-lock-button"
-- assertVisible:
-      id: "radius-pin-help"
 - tapOn:
       point: "48%,31%"
 - tapOn:

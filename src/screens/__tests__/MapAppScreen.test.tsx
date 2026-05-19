@@ -2,6 +2,7 @@ import { act, fireEvent, render, waitFor } from "@testing-library/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import osmtogeojson from "osmtogeojson";
 import type { ReactElement } from "react";
+import { Keyboard } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { hidingZonePresets } from "@/features/hidingZone/hidingZoneData";
@@ -151,7 +152,7 @@ async function pressAddRadiusQuestion(screen: ReturnType<typeof render>) {
         jest.advanceTimersByTime(300);
     });
     await waitFor(() => {
-        expect(screen.getByText("Preview Radius")).toBeTruthy();
+        expect(screen.getByText("Radius Question")).toBeTruthy();
     });
 }
 
@@ -334,7 +335,7 @@ describe("MapAppScreen", () => {
         });
         await pressAddRadiusQuestion(screen);
 
-        expect(screen.getByText("Preview Radius")).toBeTruthy();
+        expect(screen.getByText("Radius Question")).toBeTruthy();
         expect(screen.getByText("500m")).toBeTruthy();
         expect(screen.getByText("1km")).toBeTruthy();
         expect(screen.getByText("2km")).toBeTruthy();
@@ -342,10 +343,11 @@ describe("MapAppScreen", () => {
         expect(screen.getByText("10km")).toBeTruthy();
         expect(screen.getByText("Other")).toBeTruthy();
         expect(screen.getByTestId("radius-pin-lock-button")).toBeTruthy();
-        expect(screen.getByText("Unlocked")).toBeTruthy();
-        expect(screen.getByTestId("radius-pin-help").props.children).toBe(
-            "Pin unlocked. Tap the map or long-press the pin to move it.",
-        );
+        expect(screen.getByText("🔓")).toBeTruthy();
+        expect(
+            screen.getByTestId("radius-pin-lock-button").props
+                .accessibilityLabel,
+        ).toBe("Lock radius pin");
         expect(screen.getByTestId("radius-meters").props.children).toEqual([
             "Current radius ",
             500,
@@ -552,10 +554,11 @@ describe("MapAppScreen", () => {
             getMapShapeSource(screen, "radius-question-active-pin").props.shape
                 .features[0].geometry.coordinates,
         ).toEqual(initialCoordinate);
-        expect(screen.getByText("Locked")).toBeTruthy();
-        expect(screen.getByTestId("radius-pin-help").props.children).toBe(
-            "Pin locked. Unlock to move the preview pin.",
-        );
+        expect(screen.getByText("🔒")).toBeTruthy();
+        expect(
+            screen.getByTestId("radius-pin-lock-button").props
+                .accessibilityLabel,
+        ).toBe("Unlock radius pin");
 
         jest.useRealTimers();
     });
@@ -865,6 +868,22 @@ describe("MapAppScreen", () => {
         });
 
         expect(__bottomSheetMethods.snapToIndex).not.toHaveBeenCalled();
+    });
+
+    it("dismisses the keyboard when the sheet snaps compact or closes", () => {
+        const keyboardDismiss = jest.spyOn(Keyboard, "dismiss");
+        const screen = renderWithSafeArea(<MapAppScreen />);
+
+        fireEvent(screen.getByTestId("bottom-sheet"), "onChange", 1);
+        expect(keyboardDismiss).not.toHaveBeenCalled();
+
+        fireEvent(screen.getByTestId("bottom-sheet"), "onChange", 0);
+        expect(keyboardDismiss).toHaveBeenCalledTimes(1);
+
+        fireEvent(screen.getByTestId("bottom-sheet"), "onChange", -1);
+        expect(keyboardDismiss).toHaveBeenCalledTimes(2);
+
+        keyboardDismiss.mockRestore();
     });
 
     it("shows direct relation validation errors without fetching", async () => {

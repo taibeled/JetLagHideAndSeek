@@ -30,8 +30,6 @@ export function QuestionDetailScreen({
     const {
         activeQuestion,
         deleteQuestion,
-        isPinLocked,
-        setPinLocked,
         setQuestionCenter,
         setRadiusOption,
         setRadiusUnit,
@@ -65,10 +63,6 @@ export function QuestionDetailScreen({
     }
 
     const nearest = findNearestStation(activeQuestion.center, selectedStations);
-    const pinLockLabel = isPinLocked ? "Locked" : "Unlocked";
-    const pinHelpText = isPinLocked
-        ? "Pin locked. Unlock to move the preview pin."
-        : "Pin unlocked. Tap the map or long-press the pin to move it.";
     const handleDeleteQuestion = () => {
         deleteQuestion(activeQuestion.id);
         onNavigate("questions");
@@ -85,39 +79,9 @@ export function QuestionDetailScreen({
             contentContainerStyle={styles.scrollContent}
             style={styles.container}
         >
-            <View style={styles.headerRow}>
-                <View style={styles.headerCopy}>
-                    <Text style={styles.eyebrow}>Radius Question</Text>
-                </View>
-                <Pressable
-                    accessibilityLabel={
-                        isPinLocked ? "Unlock radius pin" : "Lock radius pin"
-                    }
-                    accessibilityRole="button"
-                    accessibilityState={{ selected: isPinLocked }}
-                    onPress={() => setPinLocked(!isPinLocked)}
-                    style={({ pressed }) => [
-                        styles.lockButton,
-                        isPinLocked ? styles.lockButtonActive : null,
-                        pressed ? styles.actionPressed : null,
-                    ]}
-                    testID="radius-pin-lock-button"
-                >
-                    <Text
-                        style={[
-                            styles.lockButtonText,
-                            isPinLocked ? styles.lockButtonTextActive : null,
-                        ]}
-                    >
-                        {pinLockLabel}
-                    </Text>
-                </Pressable>
-            </View>
+            <Text style={styles.eyebrow}>Radius Question</Text>
             <Text style={styles.detail}>
                 Compare a radius against the current map setup.
-            </Text>
-            <Text style={styles.metadata} testID="radius-pin-help">
-                {pinHelpText}
             </Text>
 
             <View style={styles.section}>
@@ -263,6 +227,42 @@ export function QuestionDetailScreen({
     );
 }
 
+export function RadiusPinLockButton() {
+    const { activeQuestion, isPinLocked, setPinLocked } = useQuestion();
+
+    if (!activeQuestion) {
+        return null;
+    }
+
+    const pinLockLabel = isPinLocked ? "🔒" : "🔓";
+
+    return (
+        <Pressable
+            accessibilityLabel={
+                isPinLocked ? "Unlock radius pin" : "Lock radius pin"
+            }
+            accessibilityRole="button"
+            accessibilityState={{ selected: isPinLocked }}
+            onPress={() => setPinLocked(!isPinLocked)}
+            style={({ pressed }) => [
+                styles.lockButton,
+                isPinLocked ? styles.lockButtonActive : null,
+                pressed ? styles.actionPressed : null,
+            ]}
+            testID="radius-pin-lock-button"
+        >
+            <Text
+                style={[
+                    styles.lockButtonText,
+                    isPinLocked ? styles.lockButtonTextActive : null,
+                ]}
+            >
+                {pinLockLabel}
+            </Text>
+        </Pressable>
+    );
+}
+
 function getOptionLabel(option: RadiusOption) {
     return option === "other" ? "Other" : option;
 }
@@ -350,15 +350,6 @@ const styles = StyleSheet.create({
         fontSize: 13,
         lineHeight: 18,
         marginTop: 8,
-    },
-    headerCopy: {
-        flex: 1,
-        minWidth: 0,
-    },
-    headerRow: {
-        alignItems: "flex-start",
-        flexDirection: "row",
-        gap: 12,
     },
     lockButton: {
         alignItems: "center",

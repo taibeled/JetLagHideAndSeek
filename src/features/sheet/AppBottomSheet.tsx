@@ -8,7 +8,7 @@ import {
     useRef,
     useState,
 } from "react";
-import { StyleSheet } from "react-native";
+import { Keyboard, StyleSheet } from "react-native";
 
 import { MainDrawer } from "@/features/sheet/MainDrawer";
 import { SheetRouteName } from "@/features/sheet/sheetRoutes";
@@ -76,6 +76,9 @@ export const AppBottomSheet = forwardRef<
             handleIndicatorStyle={styles.handleIndicator}
             backgroundStyle={styles.sheetBackground}
             onChange={(index: number) => {
+                if (index === SHEET_SNAP_INDEX.compact || index === -1) {
+                    Keyboard.dismiss();
+                }
                 currentIndexRef.current = index;
                 setQuestionSheetActive(
                     index !== -1 && route === "question-detail",

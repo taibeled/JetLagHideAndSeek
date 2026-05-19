@@ -18,7 +18,10 @@ import Animated, {
 import { HidingZoneScreen } from "@/features/hidingZone/HidingZoneScreen";
 import { PlayAreaScreen } from "@/features/playArea/PlayAreaScreen";
 import { AddQuestionScreen } from "@/features/questions/AddQuestionScreen";
-import { QuestionDetailScreen } from "@/features/questions/QuestionDetailScreen";
+import {
+    QuestionDetailScreen,
+    RadiusPinLockButton,
+} from "@/features/questions/QuestionDetailScreen";
 import { QuestionsScreen } from "@/features/questions/QuestionsScreen";
 import { SettingsScreen } from "@/features/sheet/SettingsScreen";
 import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
@@ -325,6 +328,7 @@ function renderRouteContent(
                 <View style={styles.fullContainer}>
                     <View style={styles.backButtonRow}>
                         <BackButton onPress={() => onNavigate("questions")} />
+                        <RadiusPinLockButton />
                     </View>
                     <QuestionDetailScreen onNavigate={onNavigate} />
                 </View>
@@ -456,10 +460,14 @@ const styles = StyleSheet.create({
     },
     backButton: {
         alignSelf: "flex-start",
-        marginBottom: 8,
         paddingVertical: 4,
     },
     backButtonRow: {
+        alignItems: "center",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        minHeight: 42,
+        paddingBottom: 8,
         paddingHorizontal: 20,
     },
     fullContainer: {
