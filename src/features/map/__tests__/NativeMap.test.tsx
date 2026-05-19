@@ -101,4 +101,51 @@ describe("NativeMap", () => {
             });
         });
     });
+
+    it("passes scrollEnabled to the map view", () => {
+        const screen = renderWithSafeArea(<NativeMap />);
+
+        const mapView = screen.getByTestId("native-map");
+        expect(mapView.props.scrollEnabled).toBe(true);
+    });
+
+    it("renders the movable pin as ShapeSource + CircleLayer with stable ids", () => {
+        const screen = renderWithSafeArea(<NativeMap />);
+
+        const pinSource = screen
+            .getAllByTestId("map-shape-source")
+            .find((s) => s.props.id === "radius-question-active-pin");
+        expect(pinSource).toBeTruthy();
+
+        const haloLayer = screen
+            .getAllByTestId("map-circle-layer")
+            .find((l) => l.props.id === "radius-question-active-pin-halo");
+        expect(haloLayer).toBeTruthy();
+
+        const dotLayer = screen
+            .getAllByTestId("map-circle-layer")
+            .find((l) => l.props.id === "radius-question-active-pin-dot");
+        expect(dotLayer).toBeTruthy();
+    });
+});
+
+describe("movable pin regression", () => {
+    const excluded = [
+        "PointAnnotation",
+        "ViewAnnotation",
+        "MarkerView",
+        "Marker",
+    ];
+
+    it("does not import PointAnnotation, ViewAnnotation, MarkerView, or Marker in NativeMap", () => {
+        const { readFileSync } = require("fs");
+        const { resolve } = require("path");
+        const source = readFileSync(
+            resolve(process.cwd(), "src", "features", "map", "NativeMap.tsx"),
+            "utf-8",
+        );
+        for (const name of excluded) {
+            expect(source).not.toContain(name);
+        }
+    });
 });

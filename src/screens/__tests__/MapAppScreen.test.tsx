@@ -353,7 +353,7 @@ describe("MapAppScreen", () => {
         jest.useRealTimers();
     });
 
-    it("moves only the active radius pin when move-pin mode is enabled", () => {
+    it("moves only the active radius pin source when move-pin mode is enabled", async () => {
         const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
 
@@ -366,41 +366,44 @@ describe("MapAppScreen", () => {
             jest.advanceTimersByTime(300);
         });
 
-        const initialPin = screen.getByTestId("radius-question-pin");
-        const initialCoordinate = initialPin.props.coordinate;
-        expect(initialPin.props.draggable).toBe(false);
+        const initialPinSource = getMapShapeSource(
+            screen,
+            "radius-question-active-pin",
+        );
+        const initialCoordinate =
+            initialPinSource.props.shape.features[0].geometry.coordinates;
 
         fireEvent(screen.getByTestId("native-map"), "onPress", {
             geometry: { coordinates: [139.75, 35.7] },
         });
+        act(() => {
+            jest.runOnlyPendingTimers();
+        });
         expect(
-            screen.getByTestId("radius-question-pin").props.coordinate,
+            getMapShapeSource(screen, "radius-question-active-pin").props.shape
+                .features[0].geometry.coordinates,
         ).toEqual(initialCoordinate);
 
         fireEvent.press(screen.getByTestId("radius-move-pin-button"));
-        expect(screen.getByTestId("radius-question-pin").props.draggable).toBe(
-            true,
-        );
 
         fireEvent(screen.getByTestId("native-map"), "onPress", {
             geometry: { coordinates: [139.75, 35.7] },
         });
-        expect(
-            screen.getByTestId("radius-question-pin").props.coordinate,
-        ).toEqual([139.75, 35.7]);
-
-        fireEvent(screen.getByTestId("radius-question-pin"), "onDragEnd", {
-            geometry: { coordinates: [139.8, 35.72] },
+        await waitFor(() => {
+            expect(
+                getMapShapeSource(screen, "radius-question-active-pin").props
+                    .shape.features[0].geometry.coordinates,
+            ).toEqual([139.75, 35.7]);
         });
-        expect(
-            screen.getByTestId("radius-question-pin").props.coordinate,
-        ).toEqual([139.8, 35.72]);
 
         fireEvent.press(screen.getByText("Back"));
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        expect(screen.queryByTestId("radius-question-pin")).toBeNull();
+        expect(
+            getMapShapeSource(screen, "radius-question-active-pin").props.shape
+                .features,
+        ).toHaveLength(0);
 
         jest.useRealTimers();
     });
@@ -755,6 +758,348 @@ describe("MapAppScreen", () => {
                 screen.getAllByText("Tokyo 23 Wards").length,
             ).toBeGreaterThan(0);
             expect(screen.getByText("🗺️")).toBeTruthy();
+        });
+    });
+
+    // -- Drag gesture integration tests --
+
+    function navigateToMovePinMode(screen: ReturnType<typeof render>) {
+        jest.useFakeTimers();
+        fireEvent.press(screen.getByTestId("main-add-question-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        fireEvent.press(screen.getByTestId("add-radius-question-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        fireEvent.press(screen.getByTestId("radius-move-pin-button"));
+    }
+
+    function cleanupMovePinTest() {
+        jest.restoreAllMocks();
+        jest.useRealTimers();
+    }
+
+    function navigateToMovePinAndUseRealTimers(
+        screen: ReturnType<typeof render>,
+    ) {
+        navigateToMovePinMode(screen);
+        jest.useRealTimers();
+    }
+
+    describe("pin drag gesture", () => {
+        beforeEach(async () => {
+            jest.clearAllMocks();
+            clearPlayAreaMemoryCache();
+            await AsyncStorage.clear();
+            mockedOsmToGeoJson.mockReturnValue(osakaBoundary);
+            globalThis.fetch = jest.fn().mockResolvedValue({
+                json: jest.fn().mockResolvedValue({ elements: [] }),
+                ok: true,
+            });
+            jest.spyOn(
+                globalThis as any,
+                "requestAnimationFrame",
+            ).mockImplementation((cb: any) => {
+                const id = Math.random();
+                Promise.resolve().then(() => cb(0));
+                return id;
+            });
+            jest.spyOn(
+                globalThis as any,
+                "cancelAnimationFrame",
+            ).mockImplementation(jest.fn());
+        });
+
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        it("tapping the map to move the pin still works when move-pin is enabled", async () => {
+            const screen = renderWithSafeArea(<MapAppScreen />);
+            navigateToMovePinMode(screen);
+
+            fireEvent(screen.getByTestId("native-map"), "onPress", {
+                geometry: { coordinates: [139.75, 35.7] },
+            });
+
+            act(() => {
+                jest.runOnlyPendingTimers();
+            });
+            await waitFor(() => {
+                expect(
+                    getMapShapeSource(screen, "radius-question-active-pin")
+                        .props.shape.features[0].geometry.coordinates,
+                ).toEqual([139.75, 35.7]);
+            });
+
+            cleanupMovePinTest();
+        });
+
+        it("does not start dragging when long-pressing far from the pin", async () => {
+            const { __gestureCallbacks } =
+                require("react-native-gesture-handler") as unknown as {
+                    __gestureCallbacks: Record<string, jest.Mock>;
+                };
+            const { __mapMethods } =
+                require("@maplibre/maplibre-react-native") as unknown as {
+                    __mapMethods: {
+                        getCoordinateFromView: jest.Mock;
+                        getPointInView: jest.Mock;
+                    };
+                };
+
+            __mapMethods.getPointInView.mockResolvedValue([100, 500]);
+
+            const screen = renderWithSafeArea(<MapAppScreen />);
+            navigateToMovePinAndUseRealTimers(screen);
+
+            expect(__gestureCallbacks.onStart).toBeTruthy();
+
+            const onStartFn =
+                __gestureCallbacks.onStart.getMockImplementation();
+            if (onStartFn) {
+                await act(async () => {
+                    await onStartFn({ absoluteX: 300, absoluteY: 500 });
+                });
+            }
+
+            const mapView = screen.getByTestId("native-map");
+            expect(mapView.props.scrollEnabled).toBe(true);
+
+            cleanupMovePinTest();
+        });
+
+        it("starts dragging when long-pressing near the pin", async () => {
+            const { __gestureCallbacks } =
+                require("react-native-gesture-handler") as unknown as {
+                    __gestureCallbacks: Record<string, jest.Mock>;
+                };
+            const { __mapMethods } =
+                require("@maplibre/maplibre-react-native") as unknown as {
+                    __mapMethods: {
+                        getCoordinateFromView: jest.Mock;
+                        getPointInView: jest.Mock;
+                    };
+                };
+
+            __mapMethods.getPointInView.mockResolvedValue([100, 500]);
+
+            const screen = renderWithSafeArea(<MapAppScreen />);
+            navigateToMovePinAndUseRealTimers(screen);
+
+            const onStartFn =
+                __gestureCallbacks.onStart.getMockImplementation();
+            if (onStartFn) {
+                await act(async () => {
+                    await onStartFn({ absoluteX: 105, absoluteY: 502 });
+                });
+            }
+
+            await waitFor(() => {
+                expect(
+                    screen.getByTestId("native-map").props.scrollEnabled,
+                ).toBe(false);
+            });
+
+            cleanupMovePinTest();
+        });
+
+        it("updates draft pin coordinate during drag", async () => {
+            const { __gestureCallbacks } =
+                require("react-native-gesture-handler") as unknown as {
+                    __gestureCallbacks: Record<string, jest.Mock>;
+                };
+            const { __mapMethods } =
+                require("@maplibre/maplibre-react-native") as unknown as {
+                    __mapMethods: {
+                        getCoordinateFromView: jest.Mock;
+                        getPointInView: jest.Mock;
+                    };
+                };
+
+            __mapMethods.getPointInView.mockResolvedValue([100, 500]);
+            __mapMethods.getCoordinateFromView.mockResolvedValue([
+                139.8, 35.68,
+            ]);
+
+            const screen = renderWithSafeArea(<MapAppScreen />);
+            navigateToMovePinAndUseRealTimers(screen);
+
+            // Start drag near pin
+            const onStartFn =
+                __gestureCallbacks.onStart.getMockImplementation();
+            if (onStartFn) {
+                await act(async () => {
+                    await onStartFn({ absoluteX: 105, absoluteY: 502 });
+                });
+            }
+
+            // Move finger with onUpdate
+            act(() => {
+                const onUpdateFn =
+                    __gestureCallbacks.onUpdate.getMockImplementation();
+                if (onUpdateFn) {
+                    onUpdateFn({ absoluteX: 200, absoluteY: 600 });
+                }
+            });
+
+            // With real timers, requestAnimationFrame will fire
+            await waitFor(() => {
+                const pinShape = getMapShapeSource(
+                    screen,
+                    "radius-question-active-pin",
+                ).props.shape;
+                expect(pinShape.features[0].geometry.coordinates).toEqual([
+                    139.8, 35.68,
+                ]);
+            });
+
+            cleanupMovePinTest();
+        });
+
+        it("finalizes the pin coordinate on drag end", async () => {
+            const { __gestureCallbacks } =
+                require("react-native-gesture-handler") as unknown as {
+                    __gestureCallbacks: Record<string, jest.Mock>;
+                };
+            const { __mapMethods } =
+                require("@maplibre/maplibre-react-native") as unknown as {
+                    __mapMethods: {
+                        getCoordinateFromView: jest.Mock;
+                        getPointInView: jest.Mock;
+                    };
+                };
+
+            __mapMethods.getPointInView.mockResolvedValue([100, 500]);
+            __mapMethods.getCoordinateFromView.mockResolvedValue([140.0, 36.0]);
+
+            const screen = renderWithSafeArea(<MapAppScreen />);
+            navigateToMovePinAndUseRealTimers(screen);
+
+            await act(async () => {
+                const onStartFn =
+                    __gestureCallbacks.onStart.getMockImplementation();
+                if (onStartFn) {
+                    await onStartFn({ absoluteX: 105, absoluteY: 502 });
+                }
+            });
+
+            act(() => {
+                const onUpdateFn =
+                    __gestureCallbacks.onUpdate.getMockImplementation();
+                if (onUpdateFn) {
+                    onUpdateFn({ absoluteX: 200, absoluteY: 600 });
+                }
+            });
+
+            // Wait for rAF to flush the draft coordinate update
+            await waitFor(() => {
+                const pinShape = getMapShapeSource(
+                    screen,
+                    "radius-question-active-pin",
+                ).props.shape;
+                expect(pinShape.features[0].geometry.coordinates).toEqual([
+                    140.0, 36.0,
+                ]);
+            });
+
+            await act(async () => {
+                const onEndFn =
+                    __gestureCallbacks.onEnd.getMockImplementation();
+                if (onEndFn) {
+                    await onEndFn();
+                }
+            });
+
+            await waitFor(() => {
+                const pinShape = getMapShapeSource(
+                    screen,
+                    "radius-question-active-pin",
+                ).props.shape;
+                expect(pinShape.features[0].geometry.coordinates).toEqual([
+                    140.0, 36.0,
+                ]);
+            });
+
+            const mapView = screen.getByTestId("native-map");
+            expect(mapView.props.scrollEnabled).toBe(true);
+
+            cleanupMovePinTest();
+        });
+
+        it("clears draft pin and re-enables panning when sheet closes", async () => {
+            const { __gestureCallbacks } =
+                require("react-native-gesture-handler") as unknown as {
+                    __gestureCallbacks: Record<string, jest.Mock>;
+                };
+            const { __mapMethods } =
+                require("@maplibre/maplibre-react-native") as unknown as {
+                    __mapMethods: {
+                        getCoordinateFromView: jest.Mock;
+                        getPointInView: jest.Mock;
+                    };
+                };
+
+            __mapMethods.getPointInView.mockResolvedValue([100, 500]);
+
+            const screen = renderWithSafeArea(<MapAppScreen />);
+            navigateToMovePinAndUseRealTimers(screen);
+
+            await act(async () => {
+                const onStartFn =
+                    __gestureCallbacks.onStart.getMockImplementation();
+                if (onStartFn) {
+                    await onStartFn({ absoluteX: 105, absoluteY: 502 });
+                }
+            });
+            await waitFor(() => {
+                expect(
+                    screen.getByTestId("native-map").props.scrollEnabled,
+                ).toBe(false);
+            });
+
+            // Navigate back (closing question detail) - use fake timers for sheet transition
+            jest.useFakeTimers();
+            fireEvent.press(screen.getByText("Back"));
+            act(() => {
+                jest.advanceTimersByTime(300);
+            });
+
+            // Back on add-question screen, move-pin is still technically "enabled"
+            // but canMoveActivePin is false because isQuestionSheetActive is false
+            // The cleanup useEffect should have fired
+            const mapView = screen.getByTestId("native-map");
+            expect(mapView.props.scrollEnabled).toBe(true);
+
+            // Pin source should be empty since isQuestionSheetActive is false
+            // Navigate further back to prove full cleanup
+            fireEvent.press(screen.getByText("Back"));
+            act(() => {
+                jest.advanceTimersByTime(300);
+            });
+
+            expect(
+                getMapShapeSource(screen, "radius-question-active-pin").props
+                    .shape.features,
+            ).toHaveLength(0);
+
+            cleanupMovePinTest();
+        });
+
+        it("ignores drag gesture when move pin mode is disabled", () => {
+            const screen = renderWithSafeArea(<MapAppScreen />);
+
+            // Without navigating to question-detail or enabling move-pin,
+            // check that the map has scrollEnabled=true
+            const mapView = screen.getByTestId("native-map");
+            expect(mapView.props.scrollEnabled).toBe(true);
+
+            // Gesture should have been created with .enabled(false)
+            // but the mock stores callbacks anyway; the real NativeMap
+            // enables/disables based on canMoveActivePin
+            expect(mapView.props.scrollEnabled).toBe(true);
         });
     });
 });

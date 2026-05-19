@@ -64,6 +64,11 @@ jest.mock("@maplibre/maplibre-react-native", () => {
         setCamera: jest.fn(),
     };
 
+    const mapMethods = {
+        getCoordinateFromView: jest.fn(),
+        getPointInView: jest.fn(),
+    };
+
     const createMapComponent =
         (testID) =>
         ({ children, testID: providedTestID, ...props }) =>
@@ -72,6 +77,17 @@ jest.mock("@maplibre/maplibre-react-native", () => {
                 { ...props, testID: providedTestID ?? testID },
                 children,
             );
+
+    const MapView = React.forwardRef(
+        ({ children, testID: passedTestID, ...props }: any, ref: any) => {
+            React.useImperativeHandle(ref, () => mapMethods);
+            return React.createElement(
+                View,
+                { ...props, testID: passedTestID ?? "map-view" },
+                children,
+            );
+        },
+    );
 
     const Camera = React.forwardRef(({ children, ...props }, ref) => {
         React.useImperativeHandle(ref, () => cameraMethods);
@@ -87,11 +103,12 @@ jest.mock("@maplibre/maplibre-react-native", () => {
         CircleLayer: createMapComponent("map-circle-layer"),
         FillLayer: createMapComponent("map-fill-layer"),
         LineLayer: createMapComponent("map-line-layer"),
-        MapView: createMapComponent("map-view"),
+        MapView,
         PointAnnotation: createMapComponent("map-point-annotation"),
         ShapeSource: createMapComponent("map-shape-source"),
         UserLocation: createMapComponent("map-user-location"),
         __cameraMethods: cameraMethods,
+        __mapMethods: mapMethods,
         setAccessToken: jest.fn(),
     };
 });
@@ -136,18 +153,47 @@ jest.mock("react-native-reanimated", () => {
 });
 
 jest.mock("react-native-gesture-handler", () => {
-    const RNGH = jest.requireActual("react-native-gesture-handler");
+    const RNGH: any = jest.requireActual("react-native-gesture-handler");
+
+    const gestureCallbacksExposed: Record<string, jest.Mock> = {};
+
+    function createGestureMocks() {
+        return {
+            Pan: () => {
+                const gesture: Record<string, any> = {};
+                let isDragGesture = false;
+
+                const chainable =
+                    (name: string) =>
+                    (...args: any[]) => {
+                        if (args.length > 0 && isDragGesture) {
+                            gestureCallbacksExposed[name] = jest.fn(args[0]);
+                        }
+                        return gesture;
+                    };
+
+                gesture.activateAfterLongPress = () => {
+                    isDragGesture = true;
+                    return gesture;
+                };
+                gesture.enabled = () => gesture;
+                gesture.activeOffsetX = () => gesture;
+                gesture.onStart = chainable("onStart");
+                gesture.onUpdate = chainable("onUpdate");
+                gesture.onEnd = chainable("onEnd");
+                gesture.onFinalize = chainable("onFinalize");
+
+                return gesture;
+            },
+        };
+    }
+
     return {
         ...RNGH,
         GestureDetector: ({ children }: { children: React.ReactNode }) =>
             children,
-        Gesture: {
-            Pan: () => ({
-                activeOffsetX: () => ({
-                    onEnd: () => {},
-                }),
-            }),
-        },
+        Gesture: createGestureMocks(),
+        __gestureCallbacks: gestureCallbacksExposed,
     };
 });
 
