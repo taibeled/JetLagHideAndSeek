@@ -380,6 +380,72 @@ describe("MapAppScreen", () => {
         jest.useRealTimers();
     });
 
+    it("deletes a radius question from the detail sheet", () => {
+        const screen = renderWithSafeArea(<MapAppScreen />);
+        jest.useFakeTimers();
+
+        fireEvent.press(screen.getByTestId("main-add-question-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        fireEvent.press(screen.getByTestId("add-radius-question-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+
+        expect(
+            getMapShapeSource(screen, "radius-question-areas").props.shape
+                .features,
+        ).toHaveLength(1);
+
+        fireEvent.press(screen.getByTestId("question-detail-delete-button"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+
+        expect(screen.getByText("Question List")).toBeTruthy();
+        expect(screen.getByTestId("questions-empty-card")).toBeTruthy();
+        expect(
+            getMapShapeSource(screen, "radius-question-areas").props.shape
+                .features,
+        ).toHaveLength(0);
+
+        jest.useRealTimers();
+    });
+
+    it("deletes a radius question from the question list swipe action", () => {
+        const screen = renderWithSafeArea(<MapAppScreen />);
+        jest.useFakeTimers();
+
+        fireEvent.press(screen.getByTestId("main-add-question-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        fireEvent.press(screen.getByTestId("add-radius-question-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+
+        fireEvent.press(screen.getByText("Back"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+
+        expect(screen.getByText("Question List")).toBeTruthy();
+        expect(screen.getByText("Radius Question 1")).toBeTruthy();
+
+        fireEvent.press(screen.getByText("Delete"));
+
+        expect(screen.queryByText("Radius Question 1")).toBeNull();
+        expect(screen.getByTestId("questions-empty-card")).toBeTruthy();
+        expect(
+            getMapShapeSource(screen, "radius-question-areas").props.shape
+                .features,
+        ).toHaveLength(0);
+
+        jest.useRealTimers();
+    });
+
     it("moves only the active radius pin source while the question sheet is open and unlocked", async () => {
         const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();

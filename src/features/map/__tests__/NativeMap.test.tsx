@@ -119,8 +119,10 @@ describe("NativeMap", () => {
 
         const dragLayer = screen
             .getAllByTestId("map-circle-layer")
-            .find((l) => l.props.id === "radius-question-active-pin-drag-ring");
+            .find((l) => l.props.id === "radius-question-active-pin-drag-glow");
         expect(dragLayer).toBeTruthy();
+        expect(dragLayer?.props.style.circleBlur).toBeGreaterThan(0);
+        expect(dragLayer?.props.style.circleStrokeWidth).toBeUndefined();
 
         const images = screen
             .getAllByTestId("map-images")

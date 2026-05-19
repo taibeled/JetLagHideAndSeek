@@ -11,6 +11,7 @@ import {
 } from "@/features/questions/questionTypes";
 import { useRadiusDraftInput } from "@/features/questions/useRadiusDraftInput";
 import { SheetScrollView } from "@/features/sheet/SheetScrollView";
+import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
 import { useHidingZone } from "@/state/hidingZoneStore";
 import { useQuestion } from "@/state/questionStore";
 import { colors } from "@/theme/colors";
@@ -18,9 +19,16 @@ import { colors } from "@/theme/colors";
 const units: HidingZoneUnit[] = ["m", "km", "mi"];
 const allRadiusOptions: RadiusOption[] = [...radiusPresetOptions, "other"];
 
-export function QuestionDetailScreen() {
+type QuestionDetailScreenProps = {
+    onNavigate: (route: SheetRouteName) => void;
+};
+
+export function QuestionDetailScreen({
+    onNavigate,
+}: QuestionDetailScreenProps) {
     const {
         activeQuestion,
+        deleteQuestion,
         isPinLocked,
         setPinLocked,
         setRadiusOption,
@@ -59,6 +67,10 @@ export function QuestionDetailScreen() {
     const pinHelpText = isPinLocked
         ? "Pin locked. Unlock to move the preview pin."
         : "Pin unlocked. Tap the map or long-press the pin to move it.";
+    const handleDeleteQuestion = () => {
+        deleteQuestion(activeQuestion.id);
+        onNavigate("questions");
+    };
 
     return (
         <SheetScrollView
@@ -211,6 +223,19 @@ export function QuestionDetailScreen() {
                 <Text style={styles.infoLabel}>Info</Text>
                 <Text style={styles.infoText}>{getInfoText(nearest)}</Text>
             </View>
+
+            <Pressable
+                accessibilityLabel="Delete question"
+                accessibilityRole="button"
+                onPress={handleDeleteQuestion}
+                style={({ pressed }) => [
+                    styles.deleteButton,
+                    pressed ? styles.actionPressed : null,
+                ]}
+                testID="question-detail-delete-button"
+            >
+                <Text style={styles.deleteButtonText}>Delete Question</Text>
+            </Pressable>
         </SheetScrollView>
     );
 }
@@ -253,6 +278,20 @@ const styles = StyleSheet.create({
         fontSize: 15,
         lineHeight: 21,
         marginTop: 6,
+    },
+    deleteButton: {
+        alignItems: "center",
+        backgroundColor: "#d92d20",
+        borderRadius: 8,
+        justifyContent: "center",
+        marginTop: 18,
+        minHeight: 50,
+        paddingHorizontal: 16,
+    },
+    deleteButtonText: {
+        color: colors.white,
+        fontSize: 16,
+        fontWeight: "800",
     },
     eyebrow: {
         color: colors.tint,

@@ -199,6 +199,29 @@ jest.mock("react-native-gesture-handler", () => {
     };
 });
 
+jest.mock("react-native-gesture-handler/ReanimatedSwipeable", () => {
+    const React = require("react");
+    const { View } = require("react-native");
+
+    return {
+        __esModule: true,
+        default: ({
+            children,
+            renderRightActions,
+            ...props
+        }: {
+            children: React.ReactNode;
+            renderRightActions?: () => React.ReactNode;
+        }) =>
+            React.createElement(
+                View,
+                { ...props, testID: "swipeable-row" },
+                children,
+                renderRightActions?.(),
+            ),
+    };
+});
+
 jest.mock("@gorhom/bottom-sheet", () => {
     const React = require("react");
     const { ScrollView, View } = require("react-native");

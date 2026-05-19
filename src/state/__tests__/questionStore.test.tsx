@@ -11,7 +11,9 @@ import { useQuestion } from "@/state/questionStore";
 function Probe() {
     const {
         activeQuestion,
+        activeQuestionId,
         createRadiusQuestion,
+        deleteQuestion,
         isPinLocked,
         isQuestionSheetActive,
         isRestored,
@@ -25,6 +27,10 @@ function Probe() {
         <View>
             <Text testID="probe-restored">{String(isRestored)}</Text>
             <Text testID="probe-count">{questions.length}</Text>
+            <Text testID="probe-active-id">{activeQuestionId ?? "none"}</Text>
+            <Text testID="probe-question-ids">
+                {questions.map((question) => question.id).join(",")}
+            </Text>
             <Text testID="probe-radius">
                 {activeQuestion?.radiusMeters ?? "none"}
             </Text>
@@ -39,6 +45,25 @@ function Probe() {
                 accessibilityRole="button"
                 testID="action-create"
                 onPress={() => createRadiusQuestion(defaultPlayArea.center)}
+            />
+            <Pressable
+                accessibilityRole="button"
+                testID="action-delete-active"
+                onPress={() =>
+                    activeQuestion ? deleteQuestion(activeQuestion.id) : null
+                }
+            />
+            <Pressable
+                accessibilityRole="button"
+                testID="action-delete-first"
+                onPress={() =>
+                    questions[0] ? deleteQuestion(questions[0].id) : null
+                }
+            />
+            <Pressable
+                accessibilityRole="button"
+                testID="action-delete-unknown"
+                onPress={() => deleteQuestion("q-missing")}
             />
             <Pressable
                 accessibilityRole="button"
@@ -150,6 +175,109 @@ describe("QuestionProvider", () => {
         });
 
         expect(screen.getByTestId("probe-count")).toHaveTextContent("1");
+    });
+
+    it("deletes the active question and clears the active id", async () => {
+        const screen = renderProvider();
+
+        await waitFor(() => {
+            expect(screen.getByTestId("probe-restored")).toHaveTextContent(
+                "true",
+            );
+        });
+
+        act(() => {
+            fireEvent.press(screen.getByTestId("action-create"));
+        });
+        const questionId = screen.getByTestId("probe-active-id").props.children;
+
+        act(() => {
+            fireEvent.press(screen.getByTestId("action-delete-active"));
+        });
+
+        expect(screen.getByTestId("probe-count")).toHaveTextContent("0");
+        expect(screen.getByTestId("probe-active-id")).toHaveTextContent("none");
+        expect(screen.getByTestId("probe-question-ids")).not.toHaveTextContent(
+            questionId,
+        );
+    });
+
+    it("preserves the active question when deleting a different question", async () => {
+        const screen = renderProvider();
+
+        await waitFor(() => {
+            expect(screen.getByTestId("probe-restored")).toHaveTextContent(
+                "true",
+            );
+        });
+
+        act(() => {
+            fireEvent.press(screen.getByTestId("action-create"));
+            fireEvent.press(screen.getByTestId("action-create"));
+        });
+        const activeQuestionId =
+            screen.getByTestId("probe-active-id").props.children;
+
+        act(() => {
+            fireEvent.press(screen.getByTestId("action-delete-first"));
+        });
+
+        expect(screen.getByTestId("probe-count")).toHaveTextContent("1");
+        expect(screen.getByTestId("probe-active-id")).toHaveTextContent(
+            activeQuestionId,
+        );
+    });
+
+    it("ignores unknown question ids", async () => {
+        const screen = renderProvider();
+
+        await waitFor(() => {
+            expect(screen.getByTestId("probe-restored")).toHaveTextContent(
+                "true",
+            );
+        });
+
+        act(() => {
+            fireEvent.press(screen.getByTestId("action-create"));
+        });
+        const questionIds =
+            screen.getByTestId("probe-question-ids").props.children;
+
+        act(() => {
+            fireEvent.press(screen.getByTestId("action-delete-unknown"));
+        });
+
+        expect(screen.getByTestId("probe-count")).toHaveTextContent("1");
+        expect(screen.getByTestId("probe-question-ids")).toHaveTextContent(
+            questionIds,
+        );
+    });
+
+    it("persists deleted questions", async () => {
+        const screen = renderProvider();
+
+        await waitFor(() => {
+            expect(screen.getByTestId("probe-restored")).toHaveTextContent(
+                "true",
+            );
+        });
+
+        act(() => {
+            fireEvent.press(screen.getByTestId("action-create"));
+        });
+        await waitFor(async () => {
+            const persisted = await loadPersistedAppState();
+            expect(persisted?.questions).toHaveLength(1);
+        });
+
+        act(() => {
+            fireEvent.press(screen.getByTestId("action-delete-active"));
+        });
+
+        await waitFor(async () => {
+            const persisted = await loadPersistedAppState();
+            expect(persisted?.questions).toEqual([]);
+        });
     });
 
     it("keeps the pin lock preference when the question sheet becomes inactive", async () => {

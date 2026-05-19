@@ -326,7 +326,7 @@ function renderRouteContent(
                     <View style={styles.backButtonRow}>
                         <BackButton onPress={() => onNavigate("questions")} />
                     </View>
-                    <QuestionDetailScreen />
+                    <QuestionDetailScreen onNavigate={onNavigate} />
                 </View>
             );
         default: {

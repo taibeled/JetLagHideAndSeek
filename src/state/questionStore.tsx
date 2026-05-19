@@ -27,6 +27,7 @@ type QuestionStateValue = {
     activeQuestion: RadiusQuestion | null;
     activeQuestionId: string | null;
     createRadiusQuestion: (center: Position) => RadiusQuestion;
+    deleteQuestion: (questionId: string) => void;
     importQuestions: (questions: QuestionsImportState) => void;
     importQuestionSettings: (settings: QuestionSettingsImportState) => void;
     isPinLocked: boolean;
@@ -101,6 +102,18 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
         setActiveQuestionIdState(question.id);
         setQuestionSheetActiveState(true);
         return question;
+    }, []);
+
+    const deleteQuestion = useCallback((questionId: string) => {
+        setQuestions((current) => {
+            if (!current.some((question) => question.id === questionId)) {
+                return current;
+            }
+            return current.filter((question) => question.id !== questionId);
+        });
+        setActiveQuestionIdState((current) =>
+            current === questionId ? null : current,
+        );
     }, []);
 
     const importQuestions = useCallback(
@@ -201,6 +214,7 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
             activeQuestion,
             activeQuestionId,
             createRadiusQuestion,
+            deleteQuestion,
             importQuestionSettings,
             importQuestions,
             isPinLocked,
@@ -221,6 +235,7 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
             activeQuestion,
             activeQuestionId,
             createRadiusQuestion,
+            deleteQuestion,
             importQuestionSettings,
             importQuestions,
             isPinLocked,

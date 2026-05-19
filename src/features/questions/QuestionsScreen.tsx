@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 
 import { SheetScrollView } from "@/features/sheet/SheetScrollView";
 import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
@@ -10,7 +11,7 @@ type QuestionsScreenProps = {
 };
 
 export function QuestionsScreen({ onNavigate }: QuestionsScreenProps) {
-    const { questions, setActiveQuestionId } = useQuestion();
+    const { deleteQuestion, questions, setActiveQuestionId } = useQuestion();
 
     const openQuestion = (questionId: string) => {
         setActiveQuestionId(questionId);
@@ -35,27 +36,54 @@ export function QuestionsScreen({ onNavigate }: QuestionsScreenProps) {
             ) : (
                 <View style={styles.list}>
                     {questions.map((question, index) => (
-                        <Pressable
-                            accessibilityLabel={`Open radius question ${index + 1}`}
-                            accessibilityRole="button"
+                        <Swipeable
                             key={question.id}
-                            onPress={() => openQuestion(question.id)}
-                            style={({ pressed }) => [
-                                styles.questionRow,
-                                pressed ? styles.actionPressed : null,
-                            ]}
-                            testID={`question-row-${question.id}`}
+                            overshootRight={false}
+                            renderRightActions={() => (
+                                <View style={styles.deleteActionWrapper}>
+                                    <Pressable
+                                        accessibilityLabel={`Delete radius question ${index + 1}`}
+                                        accessibilityRole="button"
+                                        onPress={() =>
+                                            deleteQuestion(question.id)
+                                        }
+                                        style={({ pressed }) => [
+                                            styles.deleteAction,
+                                            pressed
+                                                ? styles.actionPressed
+                                                : null,
+                                        ]}
+                                        testID={`question-delete-${question.id}`}
+                                    >
+                                        <Text style={styles.deleteActionText}>
+                                            Delete
+                                        </Text>
+                                    </Pressable>
+                                </View>
+                            )}
                         >
-                            <View style={styles.questionCopy}>
-                                <Text style={styles.questionTitle}>
-                                    Radius Question {index + 1}
-                                </Text>
-                                <Text style={styles.metadata}>
-                                    {Math.round(question.radiusMeters)} m radius
-                                </Text>
-                            </View>
-                            <Text style={styles.chevron}>›</Text>
-                        </Pressable>
+                            <Pressable
+                                accessibilityLabel={`Open radius question ${index + 1}`}
+                                accessibilityRole="button"
+                                onPress={() => openQuestion(question.id)}
+                                style={({ pressed }) => [
+                                    styles.questionRow,
+                                    pressed ? styles.actionPressed : null,
+                                ]}
+                                testID={`question-row-${question.id}`}
+                            >
+                                <View style={styles.questionCopy}>
+                                    <Text style={styles.questionTitle}>
+                                        Radius Question {index + 1}
+                                    </Text>
+                                    <Text style={styles.metadata}>
+                                        {Math.round(question.radiusMeters)} m
+                                        radius
+                                    </Text>
+                                </View>
+                                <Text style={styles.chevron}>›</Text>
+                            </Pressable>
+                        </Swipeable>
                     ))}
                 </View>
             )}
@@ -77,6 +105,23 @@ const styles = StyleSheet.create({
         fontSize: 15,
         lineHeight: 21,
         marginTop: 6,
+    },
+    deleteAction: {
+        alignItems: "center",
+        backgroundColor: "#d92d20",
+        justifyContent: "center",
+        minHeight: 64,
+        paddingHorizontal: 20,
+    },
+    deleteActionText: {
+        color: colors.white,
+        fontSize: 15,
+        fontWeight: "800",
+    },
+    deleteActionWrapper: {
+        borderRadius: 8,
+        marginLeft: 8,
+        overflow: "hidden",
     },
     emptyCard: {
         backgroundColor: colors.card,

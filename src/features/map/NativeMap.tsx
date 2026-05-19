@@ -406,16 +406,16 @@ export function NativeMap({ onPress }: NativeMapProps) {
                         shape={activePinFeature}
                     >
                         <MLCircleLayer
-                            id="radius-question-active-pin-drag-ring"
+                            id="radius-question-active-pin-drag-glow"
                             style={{
-                                circleColor: "#e46f4d",
-                                circleOpacity: canMoveActivePin ? 0.18 : 0,
-                                circleRadius: isDraggingMovePin ? 28 : 22,
-                                circleStrokeColor: "#e46f4d",
-                                circleStrokeOpacity: canMoveActivePin
-                                    ? 0.65
+                                circleBlur: 0.75,
+                                circleColor: isDraggingMovePin ? "#ffffff" : "#e46f4d",
+                                circleOpacity: canMoveActivePin
+                                    ? isDraggingMovePin
+                                        ? 0.42
+                                        : 0.3
                                     : 0,
-                                circleStrokeWidth: isDraggingMovePin ? 3 : 2,
+                                circleRadius: isDraggingMovePin ? 60 : 24,
                                 circleTranslate: [0, -31],
                             }}
                         />
