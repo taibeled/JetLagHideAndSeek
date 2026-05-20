@@ -351,6 +351,11 @@ describe("MapAppScreen", () => {
         expect(screen.getByText("5km")).toBeTruthy();
         expect(screen.getByText("10km")).toBeTruthy();
         expect(screen.getByText("Other")).toBeTruthy();
+        expect(
+            screen.getByTestId("radar-answer-option-unanswered"),
+        ).toBeTruthy();
+        expect(screen.getByTestId("radar-answer-option-positive")).toBeTruthy();
+        expect(screen.getByTestId("radar-answer-option-negative")).toBeTruthy();
         expect(screen.getByTestId("radar-pin-lock-button")).toBeTruthy();
         expect(screen.getByText("🔓")).toBeTruthy();
         expect(
@@ -372,6 +377,52 @@ describe("MapAppScreen", () => {
             .props.shape;
         expect(radarShape.features).toHaveLength(1);
         expect(radarShape.features[0].properties.distanceMeters).toBe(500);
+        expect(
+            getMapShapeSource(screen, "radar-question-hit-mask").props.shape
+                .features,
+        ).toHaveLength(0);
+        expect(
+            getMapShapeSource(screen, "radar-question-miss-mask").props.shape
+                .features,
+        ).toHaveLength(0);
+        expect(
+            getMapShapeSource(screen, "radar-question-outlines").props.shape
+                .features,
+        ).toHaveLength(1);
+
+        fireEvent.press(screen.getByTestId("radar-answer-option-positive"));
+        expect(
+            screen.getByTestId("radar-answer-option-positive").props
+                .accessibilityState,
+        ).toEqual({ selected: true });
+        expect(
+            getMapShapeSource(screen, "radar-question-areas").props.shape
+                .features,
+        ).toHaveLength(0);
+        expect(
+            getMapShapeSource(screen, "radar-question-hit-mask").props.shape
+                .features,
+        ).toHaveLength(1);
+        expect(
+            getMapShapeSource(screen, "radar-question-miss-mask").props.shape
+                .features,
+        ).toHaveLength(0);
+
+        fireEvent.press(screen.getByTestId("radar-answer-option-negative"));
+        expect(
+            getMapShapeSource(screen, "radar-question-hit-mask").props.shape
+                .features,
+        ).toHaveLength(0);
+        expect(
+            getMapShapeSource(screen, "radar-question-miss-mask").props.shape
+                .features,
+        ).toHaveLength(1);
+
+        fireEvent.press(screen.getByTestId("radar-answer-option-unanswered"));
+        expect(
+            getMapShapeSource(screen, "radar-question-areas").props.shape
+                .features,
+        ).toHaveLength(1);
 
         fireEvent.press(screen.getByTestId("radar-distance-option-1km"));
         expect(
@@ -463,6 +514,7 @@ describe("MapAppScreen", () => {
         });
         await pressAddRadarQuestion(screen);
 
+        fireEvent.press(screen.getByTestId("radar-answer-option-positive"));
         fireEvent.press(screen.getByText("Back"));
         act(() => {
             jest.advanceTimersByTime(300);
@@ -470,6 +522,7 @@ describe("MapAppScreen", () => {
 
         expect(screen.getByText("Question List")).toBeTruthy();
         expect(screen.getByText("Radar Question 1")).toBeTruthy();
+        expect(screen.getByText("500 m distance · Hit")).toBeTruthy();
 
         fireEvent.press(screen.getByText("Delete"));
 

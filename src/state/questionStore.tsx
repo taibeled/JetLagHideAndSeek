@@ -8,20 +8,21 @@ import {
 } from "react";
 
 import type { HidingZoneUnit } from "@/features/hidingZone/hidingZoneTypes";
-import {
-    buildQuestionMapRenderState,
-    fromMeters,
-    toMeters,
-} from "@/features/questions/questionGeometry";
+import { buildQuestionMapRenderState } from "@/features/questions/questionGeometry";
+import { radarQuestionConfig } from "@/features/questions/radar/radarConfig";
+import { fromMeters, toMeters } from "@/features/questions/radar/radarGeometry";
 import {
     type ImplementedQuestionType,
-    type QuestionMapRenderState,
+    type QuestionAnswer,
     type QuestionState,
     type QuestionsImportState,
+} from "@/features/questions/questionTypes";
+import {
+    type QuestionMapRenderState,
     type RadarDistanceOption,
     type RadarQuestion,
     radarDistanceOptionMeters,
-} from "@/features/questions/questionTypes";
+} from "@/features/questions/radar/radarTypes";
 import type { Position } from "@/features/map/geojsonTypes";
 
 type QuestionStateValue = {
@@ -222,6 +223,17 @@ export function updateRadarQuestionCenter(
     };
 }
 
+export function updateRadarAnswer(
+    question: RadarQuestion,
+    answer: QuestionAnswer,
+): RadarQuestion {
+    return {
+        ...question,
+        answer,
+        updatedAt: new Date().toISOString(),
+    };
+}
+
 export function updateRadarDistanceOption(
     question: RadarQuestion,
     option: RadarDistanceOption,
@@ -283,6 +295,7 @@ function createDefaultQuestion(
     switch (type) {
         case "radar":
             return {
+                answer: radarQuestionConfig.defaultAnswer,
                 center,
                 createdAt: now,
                 distanceMeters: radarDistanceOptionMeters["500m"],
@@ -300,12 +313,19 @@ function normalizeQuestionState(question: unknown): QuestionState {
         return {
             center: question.center,
             createdAt: question.createdAt,
+            answer: "unanswered",
             distanceMeters: question.radiusMeters,
             distanceOption: question.radiusOption,
             distanceUnit: question.radiusUnit,
             id: question.id,
             type: "radar",
             updatedAt: question.updatedAt,
+        };
+    }
+    if (isRadarQuestionWithoutAnswer(question)) {
+        return {
+            ...question,
+            answer: "unanswered",
         };
     }
     return question as QuestionState;
@@ -326,5 +346,17 @@ function isLegacyRadiusQuestion(value: unknown): value is {
         value !== null &&
         "type" in value &&
         value.type === "radius"
+    );
+}
+
+function isRadarQuestionWithoutAnswer(
+    value: unknown,
+): value is Omit<RadarQuestion, "answer"> {
+    return (
+        typeof value === "object" &&
+        value !== null &&
+        "type" in value &&
+        value.type === "radar" &&
+        !("answer" in value)
     );
 }

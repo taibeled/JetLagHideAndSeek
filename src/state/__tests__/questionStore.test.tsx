@@ -6,7 +6,11 @@ import { defaultPlayArea } from "@/features/map/playArea";
 import { createAppStateV1 } from "@/state/appState";
 import { AppStateProviders } from "@/state/AppStateProviders";
 import { loadPersistedAppState, persistAppState } from "@/state/persistence";
-import { updateRadarDistanceOption, useQuestion } from "@/state/questionStore";
+import {
+    updateRadarAnswer,
+    updateRadarDistanceOption,
+    useQuestion,
+} from "@/state/questionStore";
 
 function Probe() {
     const {
@@ -40,6 +44,14 @@ function Probe() {
                 {activeQuestion?.type === "radar"
                     ? activeQuestion.distanceOption
                     : "none"}
+            </Text>
+            <Text testID="probe-answer">
+                {activeQuestion?.type === "radar"
+                    ? activeQuestion.answer
+                    : "none"}
+            </Text>
+            <Text testID="probe-first-answer">
+                {questions[0]?.type === "radar" ? questions[0].answer : "none"}
             </Text>
             <Text testID="probe-sheet-active">
                 {String(isQuestionSheetActive)}
@@ -79,6 +91,19 @@ function Probe() {
                         ? updateQuestion(activeQuestion.id, (question) =>
                               question.type === "radar"
                                   ? updateRadarDistanceOption(question, "1km")
+                                  : question,
+                          )
+                        : null
+                }
+            />
+            <Pressable
+                accessibilityRole="button"
+                testID="action-answer-hit"
+                onPress={() =>
+                    activeQuestion
+                        ? updateQuestion(activeQuestion.id, (question) =>
+                              question.type === "radar"
+                                  ? updateRadarAnswer(question, "positive")
                                   : question,
                           )
                         : null
@@ -127,6 +152,9 @@ describe("QuestionProvider", () => {
         expect(screen.getByTestId("probe-count")).toHaveTextContent("1");
         expect(screen.getByTestId("probe-distance")).toHaveTextContent("500");
         expect(screen.getByTestId("probe-option")).toHaveTextContent("500m");
+        expect(screen.getByTestId("probe-answer")).toHaveTextContent(
+            "unanswered",
+        );
     });
 
     it("updates preset radar distance options and persists questions", async () => {
@@ -152,6 +180,31 @@ describe("QuestionProvider", () => {
         });
     });
 
+    it("updates radar answers and persists questions", async () => {
+        const screen = renderProvider();
+
+        await waitFor(() => {
+            expect(screen.getByTestId("probe-restored")).toHaveTextContent(
+                "true",
+            );
+        });
+
+        act(() => {
+            fireEvent.press(screen.getByTestId("action-create"));
+        });
+        act(() => {
+            fireEvent.press(screen.getByTestId("action-answer-hit"));
+        });
+
+        expect(screen.getByTestId("probe-answer")).toHaveTextContent(
+            "positive",
+        );
+        await waitFor(async () => {
+            const persisted = await loadPersistedAppState();
+            expect(persisted?.questions[0].answer).toBe("positive");
+        });
+    });
+
     it("restores persisted radar questions", async () => {
         await persistAppState(
             createAppStateV1({
@@ -163,6 +216,7 @@ describe("QuestionProvider", () => {
                 playArea: defaultPlayArea,
                 questions: [
                     {
+                        answer: "negative",
                         center: defaultPlayArea.center,
                         createdAt: "2026-05-18T00:00:00.000Z",
                         distanceMeters: 2000,
@@ -185,6 +239,9 @@ describe("QuestionProvider", () => {
         });
 
         expect(screen.getByTestId("probe-count")).toHaveTextContent("1");
+        expect(screen.getByTestId("probe-first-answer")).toHaveTextContent(
+            "negative",
+        );
     });
 
     it("deletes the active question and clears the active id", async () => {

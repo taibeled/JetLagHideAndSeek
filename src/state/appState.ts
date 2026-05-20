@@ -43,8 +43,12 @@ const radarDistanceOptionSchema = z.enum([
     "150km",
     "other",
 ]);
+const questionAnswerSchema = z
+    .enum(["unanswered", "positive", "negative"])
+    .default("unanswered");
 
 export const appStateRadarQuestionSchema = z.object({
+    answer: questionAnswerSchema,
     center: positionSchema,
     createdAt: z.string().min(1),
     distanceMeters: z.number().positive(),
@@ -67,6 +71,7 @@ const appStateLegacyRadiusQuestionSchema = z
         updatedAt: z.string().min(1),
     })
     .transform((question) => ({
+        answer: "unanswered" as const,
         center: question.center,
         createdAt: question.createdAt,
         distanceMeters: question.radiusMeters,

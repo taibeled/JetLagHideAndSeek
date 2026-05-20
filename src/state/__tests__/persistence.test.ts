@@ -36,6 +36,7 @@ function makeLegacyAppStateWithoutQuestions() {
 
 function makeRadarQuestion() {
     return {
+        answer: "unanswered" as const,
         center: defaultPlayArea.center,
         createdAt: "2026-05-18T00:00:00.000Z",
         distanceMeters: 500,
@@ -101,6 +102,23 @@ describe("AppStateV1 schema", () => {
             ...makeAppState(),
             questions: [makeLegacyRadiusQuestion()],
         };
+        expect(migratePersistedAppState(state)?.questions).toEqual([
+            makeRadarQuestion(),
+        ]);
+    });
+
+    it("defaults older radar questions without answers to unanswered", () => {
+        const questionWithoutAnswer = { ...makeRadarQuestion() };
+        delete (
+            questionWithoutAnswer as Partial<
+                ReturnType<typeof makeRadarQuestion>
+            >
+        ).answer;
+        const state = {
+            ...makeAppState(),
+            questions: [questionWithoutAnswer],
+        };
+
         expect(migratePersistedAppState(state)?.questions).toEqual([
             makeRadarQuestion(),
         ]);

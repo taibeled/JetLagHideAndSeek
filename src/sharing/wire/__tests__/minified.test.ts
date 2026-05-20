@@ -272,6 +272,7 @@ describe("minifyEnvelope", () => {
         const envelope = makeEnvelope({
             questions: [
                 {
+                    answer: "positive",
                     center: [139.7, 35.7],
                     createdAt: "2026-05-17T00:00:00.000Z",
                     distanceMeters: 15000,
@@ -289,6 +290,29 @@ describe("minifyEnvelope", () => {
         expect(json.p.q[0].i).toBe("q-1");
         expect(json.p.q[0].r).toBe(15000);
         expect(json.p.q[0].d).toBe("15km");
+        expect(json.p.q[0].e).toBe("p");
+    });
+
+    it("omits unanswered radar answers from compact questions", () => {
+        const envelope = makeEnvelope({
+            questions: [
+                {
+                    answer: "unanswered",
+                    center: [139.7, 35.7],
+                    createdAt: "2026-05-17T00:00:00.000Z",
+                    distanceMeters: 15000,
+                    distanceOption: "15km",
+                    distanceUnit: "m",
+                    id: "q-1",
+                    type: "radar",
+                    updatedAt: "2026-05-17T00:00:00.000Z",
+                },
+            ],
+        });
+        const mini = minifyEnvelope(envelope);
+        const json = JSON.parse(canonicalize(mini));
+
+        expect(json.p.q[0].e).toBeUndefined();
     });
 });
 
@@ -323,6 +347,7 @@ describe("unminifyEnvelope", () => {
                 makeEnvelope({
                     questions: [
                         {
+                            answer: "negative",
                             center: [139.7, 35.7],
                             createdAt: "2026-05-17T00:00:00.000Z",
                             distanceMeters: 40000,
@@ -338,6 +363,7 @@ describe("unminifyEnvelope", () => {
         );
 
         expect(restored.payload.questions?.[0]).toMatchObject({
+            answer: "negative",
             distanceMeters: 40000,
             distanceOption: "40km",
             distanceUnit: "m",

@@ -8,11 +8,11 @@ import {
 import type { TextInput } from "react-native";
 
 import type { HidingZoneUnit } from "@/features/hidingZone/hidingZoneTypes";
+import type { QuestionState } from "@/features/questions/questionTypes";
 import type {
-    QuestionState,
     RadarDistanceOption,
     RadarQuestion,
-} from "@/features/questions/questionTypes";
+} from "@/features/questions/radar/radarTypes";
 import {
     getRadarDistanceDisplayValue,
     getRadarDistanceDisplayValueForUnit,

@@ -97,6 +97,14 @@ export function NativeMap({ onPress }: NativeMapProps) {
         () => buildHidingZoneMask(playArea.boundary, zoneFeatures),
         [playArea.boundary, zoneFeatures],
     );
+    const radarHitMask = useMemo(
+        () =>
+            buildPerFeatureOutsideMasks(
+                playArea.boundary,
+                questionMapRenderState.radar.hitMaskFeatures,
+            ),
+        [playArea.boundary, questionMapRenderState.radar.hitMaskFeatures],
+    );
     const mapStyle = useMemo(() => buildOsmRasterStyleJson(), []);
     const fitPadding = useMemo(
         () =>
@@ -361,7 +369,7 @@ export function NativeMap({ onPress }: NativeMapProps) {
                     <MLShapeSource
                         id="radar-question-areas"
                         onPress={handleMapPress}
-                        shape={questionMapRenderState.radarAreaFeatures}
+                        shape={questionMapRenderState.radar.previewFeatures}
                     >
                         <MLFillLayer
                             id="radar-question-areas-fill"
@@ -370,6 +378,41 @@ export function NativeMap({ onPress }: NativeMapProps) {
                                 fillOpacity: 0.16,
                             }}
                         />
+                    </MLShapeSource>
+
+                    <MLShapeSource
+                        id="radar-question-hit-mask"
+                        onPress={handleMapPress}
+                        shape={radarHitMask}
+                    >
+                        <MLFillLayer
+                            id="radar-question-hit-mask-fill"
+                            style={{
+                                fillColor: "#07111f",
+                                fillOpacity: 0.34,
+                            }}
+                        />
+                    </MLShapeSource>
+
+                    <MLShapeSource
+                        id="radar-question-miss-mask"
+                        onPress={handleMapPress}
+                        shape={questionMapRenderState.radar.missMaskFeatures}
+                    >
+                        <MLFillLayer
+                            id="radar-question-miss-mask-fill"
+                            style={{
+                                fillColor: "#07111f",
+                                fillOpacity: 0.34,
+                            }}
+                        />
+                    </MLShapeSource>
+
+                    <MLShapeSource
+                        id="radar-question-outlines"
+                        onPress={handleMapPress}
+                        shape={questionMapRenderState.radar.outlineFeatures}
+                    >
                         <MLLineLayer
                             id="radar-question-areas-outline"
                             style={{
@@ -572,6 +615,48 @@ function buildHidingZoneMask(
                       },
                   ]
                 : [],
+        type: "FeatureCollection",
+    };
+}
+
+function buildPerFeatureOutsideMasks(
+    playArea: PolygonFeatureCollection,
+    maskInsideAreas: PolygonFeatureCollection,
+): GeoJsonFeatureCollection {
+    const playAreaPolygons = getPolygons(playArea);
+    if (
+        playAreaPolygons.length === 0 ||
+        maskInsideAreas.features.length === 0
+    ) {
+        return { features: [], type: "FeatureCollection" };
+    }
+
+    return {
+        features: maskInsideAreas.features.flatMap((feature) => {
+            const insidePolygons = getPolygons({
+                features: [feature],
+                type: "FeatureCollection",
+            });
+            if (insidePolygons.length === 0) return [];
+
+            const maskedArea = difference(
+                playAreaPolygons as Geom,
+                ...(insidePolygons as Geom[]),
+            ) as Position[][][];
+
+            return maskedArea.length > 0
+                ? [
+                      {
+                          geometry: {
+                              coordinates: maskedArea,
+                              type: "MultiPolygon" as const,
+                          },
+                          properties: {},
+                          type: "Feature" as const,
+                      },
+                  ]
+                : [];
+        }),
         type: "FeatureCollection",
     };
 }

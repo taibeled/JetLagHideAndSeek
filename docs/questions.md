@@ -44,7 +44,7 @@
 | Border             | A 2nd Admin. Div. Border | OSM level 7, -ku       |
 | Natural            | A Body of Water          |                        |
 | Natural            | A Coastline              |                        |
-| Natural            | A Mountain               | Crossed out            |
+| Natural            | A Mountain               |                        |
 | Natural            | A Park                   |                        |
 | Places of Interest | An Amusement Park        |                        |
 | Places of Interest | A Zoo                    |                        |

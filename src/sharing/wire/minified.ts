@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { AppStateEnvelopeV1, WireEnvelope } from "./schema";
 
 export const FIELD_MAP = {
+    answer: "e",
     center: "n",
     createdAt: "c",
     gameId: "g",
@@ -48,6 +49,7 @@ const hidingZonesMinifiedSchema = z.object({
 });
 
 const radiusQuestionMinifiedSchema = z.object({
+    [FIELD_MAP.answer]: z.enum(["p", "n"]).optional(),
     [FIELD_MAP.center]: compactCoordSchema,
     [FIELD_MAP.id]: z.string().min(1).optional(),
     [FIELD_MAP.radiusMeters]: z.number().positive(),
@@ -113,6 +115,14 @@ const POLYLINE_HEADER_SIZE = 3;
 const POLYLINE_BASE_LON = 0;
 const POLYLINE_BASE_LAT = 1;
 const POLYLINE_COUNT = 2;
+const ANSWER_TO_MINIFIED = {
+    negative: "n",
+    positive: "p",
+} as const;
+const ANSWER_FROM_MINIFIED = {
+    n: "negative",
+    p: "positive",
+} as const;
 
 export type CompactPolyline = number[];
 
@@ -198,15 +208,23 @@ export function minifyEnvelope(env: WireEnvelope): WireEnvelopeMinified {
     }
 
     if (p.questions && p.questions.length > 0) {
-        payload[FIELD_MAP.questions] = p.questions.map((question) => ({
-            [FIELD_MAP.center]: compactCoord(
-                question.center[0],
-                question.center[1],
-            ),
-            [FIELD_MAP.id]: question.id,
-            [FIELD_MAP.radiusMeters]: question.distanceMeters,
-            [FIELD_MAP.radiusOption]: question.distanceOption,
-        }));
+        payload[FIELD_MAP.questions] = p.questions.map((question) => {
+            const result: Record<string, unknown> = {
+                [FIELD_MAP.center]: compactCoord(
+                    question.center[0],
+                    question.center[1],
+                ),
+                [FIELD_MAP.id]: question.id,
+                [FIELD_MAP.radiusMeters]: question.distanceMeters,
+                [FIELD_MAP.radiusOption]: question.distanceOption,
+            };
+
+            if (question.answer !== "unanswered") {
+                result[FIELD_MAP.answer] = ANSWER_TO_MINIFIED[question.answer];
+            }
+
+            return result;
+        });
     }
 
     mini[FIELD_MAP.payload] = payload;
@@ -264,7 +282,9 @@ export function unminifyEnvelope(
                 question[FIELD_MAP.center][1],
             );
             const createdAt = metadata[FIELD_MAP.createdAt];
+            const answer = question[FIELD_MAP.answer];
             return {
+                answer: answer ? ANSWER_FROM_MINIFIED[answer] : "unanswered",
                 center: [lon, lat],
                 createdAt,
                 id: question[FIELD_MAP.id] ?? `q-imported-${index + 1}`,

@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 
-import { getQuestionDefinition } from "@/features/questions/questionCatalog";
+import { getQuestionDefinition } from "@/features/questions/questionRegistry";
 import { SheetScrollView } from "@/features/sheet/SheetScrollView";
 import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
 import { useQuestion } from "@/state/questionStore";

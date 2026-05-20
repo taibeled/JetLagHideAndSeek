@@ -48,7 +48,15 @@ appId: com.hinoka.hideandseek.v2
 - assertVisible:
       id: "radar-distance-option-other"
 - assertVisible:
+      id: "radar-answer-option-unanswered"
+- assertVisible:
+      id: "radar-answer-option-positive"
+- assertVisible:
+      id: "radar-answer-option-negative"
+- assertVisible:
       id: "radar-pin-lock-button"
+- tapOn:
+      id: "radar-answer-option-positive"
 - tapOn:
       point: "48%,31%"
 - tapOn:

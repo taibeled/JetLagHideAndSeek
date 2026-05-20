@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { implementedQuestionTypes } from "@/features/questions/questionCatalog";
+import { implementedQuestionTypes } from "@/features/questions/questionRegistry";
 import { requestUserCoordinate } from "@/features/map/useUserLocation";
 import { SheetScrollView } from "@/features/sheet/SheetScrollView";
 import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
