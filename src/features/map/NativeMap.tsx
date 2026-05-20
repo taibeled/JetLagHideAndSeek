@@ -10,6 +10,7 @@ import {
     SymbolLayer,
     UserLocation,
 } from "@maplibre/maplibre-react-native";
+import { difference, type Geom } from "polyclip-ts";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ComponentType } from "react";
 import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
@@ -29,7 +30,7 @@ import {
     fitCameraToBbox,
     getTopViewportFitPadding,
 } from "./camera";
-import type { Position } from "./geojsonTypes";
+import type { GeoJsonFeatureCollection, Position } from "./geojsonTypes";
 import { buildOsmRasterStyleJson } from "./mapStyle";
 import { useUserLocation } from "./useUserLocation";
 import { usePlayArea } from "@/state/playAreaStore";
@@ -47,6 +48,15 @@ const MLLineLayer = LineLayer as ComponentType<any>;
 const MLSymbolLayer = SymbolLayer as ComponentType<any>;
 const MLUserLocation = UserLocation as ComponentType<any>;
 const MAX_STATION_COLOR_RINGS = 6;
+const ROUTE_MIN_ZOOM = 9;
+const STATION_MIN_ZOOM = 12;
+const WORLD_MASK_RING: Position[] = [
+    [-180, -85],
+    [180, -85],
+    [180, 85],
+    [-180, 85],
+    [-180, -85],
+];
 
 type NativeMapProps = {
     onPress?: (event?: unknown) => void;
@@ -78,6 +88,14 @@ export function NativeMap({ onPress }: NativeMapProps) {
     const questionPinImages = useMemo(
         () => ({ "question-pin": questionPinImage }),
         [],
+    );
+    const playAreaMask = useMemo(
+        () => buildPlayAreaMask(playArea.boundary),
+        [playArea.boundary],
+    );
+    const hidingZoneMask = useMemo(
+        () => buildHidingZoneMask(playArea.boundary, zoneFeatures),
+        [playArea.boundary, zoneFeatures],
     );
     const mapStyle = useMemo(() => buildOsmRasterStyleJson(), []);
     const fitPadding = useMemo(
@@ -301,14 +319,35 @@ export function NativeMap({ onPress }: NativeMapProps) {
                         }}
                     />
 
-                    <MLShapeSource id="hiding-zone-area" shape={zoneFeatures}>
+                    <MLShapeSource
+                        id={`play-area-outside-mask-${playArea.osmId}`}
+                        shape={playAreaMask}
+                    >
                         <MLFillLayer
-                            id="hiding-zone-area-fill"
+                            id={`play-area-outside-mask-fill-${playArea.osmId}`}
                             style={{
-                                fillColor: colors.tint,
-                                fillOpacity: 0.16,
+                                fillColor: "#07111f",
+                                fillOpacity: 0.58,
                             }}
                         />
+                    </MLShapeSource>
+
+                    {hidingZoneMask.features.length > 0 ? (
+                        <MLShapeSource
+                            id={`hiding-zone-outside-mask-${playArea.osmId}`}
+                            shape={hidingZoneMask}
+                        >
+                            <MLFillLayer
+                                id={`hiding-zone-outside-mask-fill-${playArea.osmId}`}
+                                style={{
+                                    fillColor: "#07111f",
+                                    fillOpacity: 0.3,
+                                }}
+                            />
+                        </MLShapeSource>
+                    ) : null}
+
+                    <MLShapeSource id="hiding-zone-area" shape={zoneFeatures}>
                         <MLLineLayer
                             id="hiding-zone-area-outline"
                             style={{
@@ -347,6 +386,7 @@ export function NativeMap({ onPress }: NativeMapProps) {
                     >
                         <MLLineLayer
                             id="hiding-zone-routes-line"
+                            minZoomLevel={ROUTE_MIN_ZOOM}
                             style={{
                                 lineCap: "round",
                                 lineColor: [
@@ -356,7 +396,19 @@ export function NativeMap({ onPress }: NativeMapProps) {
                                 ],
                                 lineJoin: "round",
                                 lineOpacity: 0.9,
-                                lineWidth: 4,
+                                lineWidth: [
+                                    "interpolate",
+                                    ["linear"],
+                                    ["zoom"],
+                                    6,
+                                    1,
+                                    10,
+                                    2,
+                                    13,
+                                    4,
+                                    16,
+                                    7,
+                                ],
                             }}
                         />
                     </MLShapeSource>
@@ -373,6 +425,7 @@ export function NativeMap({ onPress }: NativeMapProps) {
                                 filter={["==", ["get", "ringIndex"], ringIndex]}
                                 id={`hiding-zone-stations-ring-${ringIndex}`}
                                 key={ringIndex}
+                                minZoomLevel={STATION_MIN_ZOOM}
                                 style={{
                                     circleColor: [
                                         "to-color",
@@ -464,6 +517,157 @@ export function NativeMap({ onPress }: NativeMapProps) {
             </View>
         </GestureDetector>
     );
+}
+
+function buildPlayAreaMask(
+    boundary: GeoJsonFeatureCollection,
+): GeoJsonFeatureCollection {
+    const holes = getExteriorRings(boundary).map(orientHoleRing);
+
+    return {
+        features: [
+            {
+                geometry: {
+                    coordinates: [
+                        orientExteriorRing(WORLD_MASK_RING),
+                        ...holes,
+                    ],
+                    type: "Polygon",
+                },
+                properties: {},
+                type: "Feature",
+            },
+        ],
+        type: "FeatureCollection",
+    };
+}
+
+function buildHidingZoneMask(
+    playArea: PolygonFeatureCollection,
+    hidingZone: PolygonFeatureCollection,
+): GeoJsonFeatureCollection {
+    const playAreaPolygons = getPolygons(playArea);
+    const hidingZonePolygons = getPolygons(hidingZone);
+
+    if (playAreaPolygons.length === 0 || hidingZonePolygons.length === 0) {
+        return { features: [], type: "FeatureCollection" };
+    }
+
+    const maskedArea = difference(
+        playAreaPolygons as Geom,
+        ...(hidingZonePolygons as Geom[]),
+    ) as Position[][][];
+
+    return {
+        features:
+            maskedArea.length > 0
+                ? [
+                      {
+                          geometry: {
+                              coordinates: maskedArea,
+                              type: "MultiPolygon" as const,
+                          },
+                          properties: {},
+                          type: "Feature" as const,
+                      },
+                  ]
+                : [],
+        type: "FeatureCollection",
+    };
+}
+
+type PolygonFeatureCollection = {
+    features: PolygonFeature[];
+    type: "FeatureCollection";
+};
+
+type PolygonFeature = {
+    geometry: {
+        coordinates: unknown;
+        type: "Polygon" | "MultiPolygon";
+    };
+};
+
+function getExteriorRings(collection: PolygonFeatureCollection): Position[][] {
+    return collection.features.flatMap((feature) => {
+        const { coordinates, type } = feature.geometry;
+
+        if (type === "Polygon") {
+            const rings = Array.isArray(coordinates) ? coordinates : [];
+            const exterior = toPositionRing(rings[0]);
+            return exterior ? [exterior] : [];
+        }
+
+        const polygons = Array.isArray(coordinates) ? coordinates : [];
+        return polygons.flatMap((polygon) => {
+            const rings = Array.isArray(polygon) ? polygon : [];
+            const exterior = toPositionRing(rings[0]);
+            return exterior ? [exterior] : [];
+        });
+    });
+}
+
+function getPolygons(collection: PolygonFeatureCollection): Position[][][] {
+    return collection.features.flatMap((feature) => {
+        const { coordinates, type } = feature.geometry;
+
+        if (type === "Polygon") {
+            const polygon = toPolygon(coordinates);
+            return polygon ? [polygon] : [];
+        }
+
+        const polygons = Array.isArray(coordinates) ? coordinates : [];
+        return polygons.flatMap((polygon) => {
+            const converted = toPolygon(polygon);
+            return converted ? [converted] : [];
+        });
+    });
+}
+
+function toPolygon(value: unknown): Position[][] | null {
+    if (!Array.isArray(value)) return null;
+
+    const rings = value.flatMap((ring) => {
+        const positions = toPositionRing(ring);
+        return positions ? [positions] : [];
+    });
+
+    return rings.length > 0 ? rings : null;
+}
+
+function toPositionRing(value: unknown): Position[] | null {
+    if (!Array.isArray(value)) return null;
+
+    const ring = value.flatMap((point) => {
+        if (
+            Array.isArray(point) &&
+            typeof point[0] === "number" &&
+            typeof point[1] === "number"
+        ) {
+            return [[point[0], point[1]] as Position];
+        }
+        return [];
+    });
+
+    return ring.length > 0 ? ring : null;
+}
+
+function orientExteriorRing(ring: Position[]): Position[] {
+    return signedRingArea(ring) >= 0 ? ring : [...ring].reverse();
+}
+
+function orientHoleRing(ring: Position[]): Position[] {
+    return signedRingArea(ring) <= 0 ? ring : [...ring].reverse();
+}
+
+function signedRingArea(ring: Position[]): number {
+    let area = 0;
+    for (let index = 0; index < ring.length - 1; index += 1) {
+        const [x1, y1] = ring[index];
+        const [x2, y2] = ring[index + 1];
+        area += x1 * y2 - x2 * y1;
+    }
+    return area / 2;
 }
 
 type MapControlProps = {

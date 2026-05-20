@@ -1,9 +1,10 @@
 import { fireEvent, render, waitFor } from "@testing-library/react-native";
 import * as Location from "expo-location";
 import type { ReactElement } from "react";
+import { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { HidingZoneProvider } from "@/state/hidingZoneStore";
+import { HidingZoneProvider, useHidingZone } from "@/state/hidingZoneStore";
 import { PlayAreaProvider } from "@/state/playAreaStore";
 import { QuestionProvider } from "@/state/questionStore";
 
@@ -35,6 +36,26 @@ function renderWithSafeArea(ui: ReactElement) {
     );
 }
 
+function SelectTokyoMetroHidingZone() {
+    const { addPreset } = useHidingZone();
+
+    useEffect(() => {
+        addPreset("tokyo-metro");
+    }, [addPreset]);
+
+    return null;
+}
+
+function signedRingArea(ring: number[][]): number {
+    let area = 0;
+    for (let index = 0; index < ring.length - 1; index += 1) {
+        const [x1, y1] = ring[index];
+        const [x2, y2] = ring[index + 1];
+        area += x1 * y2 - x2 * y1;
+    }
+    return area / 2;
+}
+
 describe("NativeMap", () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -63,6 +84,85 @@ describe("NativeMap", () => {
                         layer.props.id === "play-area-boundary-line-19631009",
                 ),
         ).toBe(true);
+        expect(
+            screen
+                .getAllByTestId("map-shape-source")
+                .some(
+                    (source) =>
+                        source.props.id === "play-area-outside-mask-19631009",
+                ),
+        ).toBe(true);
+        expect(
+            screen
+                .getAllByTestId("map-fill-layer")
+                .some(
+                    (layer) =>
+                        layer.props.id ===
+                            "play-area-outside-mask-fill-19631009" &&
+                        layer.props.style.fillOpacity > 0.5,
+                ),
+        ).toBe(true);
+        expect(
+            screen
+                .getAllByTestId("map-fill-layer")
+                .some((layer) => layer.props.id === "hiding-zone-area-fill"),
+        ).toBe(false);
+    });
+
+    it("renders a lighter mask inside the play area when hiding zones are set", async () => {
+        const screen = renderWithSafeArea(
+            <>
+                <SelectTokyoMetroHidingZone />
+                <NativeMap />
+            </>,
+        );
+
+        await waitFor(() => {
+            expect(
+                screen
+                    .getAllByTestId("map-shape-source")
+                    .some(
+                        (source) =>
+                            source.props.id ===
+                            "hiding-zone-outside-mask-19631009",
+                    ),
+            ).toBe(true);
+        });
+
+        const playAreaMask = screen
+            .getAllByTestId("map-fill-layer")
+            .find(
+                (layer) =>
+                    layer.props.id === "play-area-outside-mask-fill-19631009",
+            );
+        const hidingZoneMask = screen
+            .getAllByTestId("map-fill-layer")
+            .find(
+                (layer) =>
+                    layer.props.id === "hiding-zone-outside-mask-fill-19631009",
+            );
+        const hidingZoneMaskShape = screen
+            .getAllByTestId("map-shape-source")
+            .find(
+                (source) =>
+                    source.props.id === "hiding-zone-outside-mask-19631009",
+            )?.props.shape;
+        const polygonWithCutout =
+            hidingZoneMaskShape.features[0].geometry.coordinates.find(
+                (polygon: number[][][]) => polygon.length > 1,
+            );
+        const [outerRing, firstCutoutRing] = polygonWithCutout;
+
+        expect(hidingZoneMask).toBeTruthy();
+        expect(hidingZoneMask?.props.style.fillOpacity).toBeLessThan(
+            playAreaMask?.props.style.fillOpacity,
+        );
+        expect(hidingZoneMaskShape.features[0].geometry.type).toBe(
+            "MultiPolygon",
+        );
+        expect(polygonWithCutout).toBeTruthy();
+        expect(signedRingArea(outerRing)).toBeGreaterThan(0);
+        expect(signedRingArea(firstCutoutRing)).toBeLessThan(0);
     });
 
     it("fits the camera when the map finishes loading", () => {

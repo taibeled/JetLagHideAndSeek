@@ -46,6 +46,9 @@ importers:
             osmtogeojson:
                 specifier: 3.0.0-beta.5
                 version: 3.0.0-beta.5
+            polyclip-ts:
+                specifier: ^0.16.8
+                version: 0.16.8
             qrcode:
                 specifier: ^1.5.4
                 version: 1.5.4

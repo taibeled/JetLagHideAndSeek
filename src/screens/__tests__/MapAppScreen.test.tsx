@@ -71,6 +71,15 @@ function getMapCircleLayer(screen: ReturnType<typeof render>, id: string) {
     return layer!;
 }
 
+function getMapFillLayer(screen: ReturnType<typeof render>, id: string) {
+    const layer = screen
+        .getAllByTestId("map-fill-layer")
+        .find((fillLayer) => fillLayer.props.id === id);
+
+    expect(layer).toBeTruthy();
+    return layer!;
+}
+
 function projectedRingArea(
     coordinates: number[][],
     originLatitude: number,
@@ -732,7 +741,16 @@ describe("MapAppScreen", () => {
                     .some(
                         (layer) => layer.props.id === "hiding-zone-area-fill",
                     ),
-            ).toBe(true);
+            ).toBe(false);
+            expect(
+                getMapFillLayer(
+                    screen,
+                    "hiding-zone-outside-mask-fill-19631009",
+                ).props.style.fillOpacity,
+            ).toBeLessThan(
+                getMapFillLayer(screen, "play-area-outside-mask-fill-19631009")
+                    .props.style.fillOpacity,
+            );
         });
     });
 
