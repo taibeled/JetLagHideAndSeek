@@ -55,8 +55,6 @@ must already be available; the known target has been `iPhone 16 Pro - iOS 18.3`.
 
 - Expo Go will not work. This app uses native modules, especially
   `@maplibre/maplibre-react-native` and AsyncStorage, so use a dev build.
-- Do not run Expo native commands from the monorepo root. Use the repo root or
-  `pnpm --dir mobile_v2`.
 - After adding or changing native dependencies or Expo plugins, regenerate and
   rebuild the native app:
 
