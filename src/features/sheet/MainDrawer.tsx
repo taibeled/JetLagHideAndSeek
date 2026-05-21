@@ -42,8 +42,9 @@ type SheetTransition = {
 };
 
 type MainDrawerProps = {
-    route: SheetRouteName;
     onNavigate: (route: SheetRouteName) => void;
+    route: SheetRouteName;
+    sheetIndex: number;
 };
 
 const routeContent: Record<SheetRouteName, { title: string; detail: string }> =
@@ -78,7 +79,7 @@ const routeContent: Record<SheetRouteName, { title: string; detail: string }> =
         },
     };
 
-export function MainDrawer({ route, onNavigate }: MainDrawerProps) {
+export function MainDrawer({ route, onNavigate, sheetIndex }: MainDrawerProps) {
     const [displayedRoute, setDisplayedRoute] = useState(route);
     const displayedRouteRef = useRef(route);
     const [transition, setTransition] = useState<SheetTransition | null>(null);
@@ -216,7 +217,11 @@ export function MainDrawer({ route, onNavigate }: MainDrawerProps) {
                         transition.isAnimating ? leavingStyle : null,
                     ]}
                 >
-                    {renderRouteContent(transition.from, handleNavigate)}
+                    {renderRouteContent(
+                        transition.from,
+                        handleNavigate,
+                        sheetIndex,
+                    )}
                 </Animated.View>
             ) : null}
 
@@ -238,7 +243,7 @@ export function MainDrawer({ route, onNavigate }: MainDrawerProps) {
                         : null,
                 ]}
             >
-                {renderRouteContent(currentRoute, handleNavigate)}
+                {renderRouteContent(currentRoute, handleNavigate, sheetIndex)}
             </Animated.View>
 
             {backTarget ? (
@@ -278,6 +283,7 @@ function getEnteringLayerStyle(direction: TransitionDirection) {
 function renderRouteContent(
     routeName: SheetRouteName,
     onNavigate: (route: SheetRouteName) => void,
+    sheetIndex: number,
 ) {
     switch (routeName) {
         case "settings":
@@ -330,7 +336,10 @@ function renderRouteContent(
                         <BackButton onPress={() => onNavigate("questions")} />
                         <QuestionPinLockButton />
                     </View>
-                    <QuestionDetailScreen onNavigate={onNavigate} />
+                    <QuestionDetailScreen
+                        onNavigate={onNavigate}
+                        sheetIndex={sheetIndex}
+                    />
                 </View>
             );
         default: {

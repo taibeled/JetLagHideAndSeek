@@ -1,4 +1,16 @@
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
+} from "react-native";
+import Animated, {
+    FadeIn,
+    FadeOut,
+    LinearTransition,
+} from "react-native-reanimated";
 
 import type { HidingZoneUnit } from "@/features/hidingZone/hidingZoneTypes";
 import { requestUserCoordinate } from "@/features/map/useUserLocation";
@@ -13,6 +25,7 @@ import {
     radarDistancePresetOptions,
 } from "@/features/questions/radar/radarTypes";
 import { useRadarDistanceDraftInput } from "@/features/questions/radar/useRadarDistanceDraftInput";
+import { SHEET_SNAP_INDEX } from "@/features/sheet/sheetRoutes";
 import {
     updateRadarAnswer,
     updateRadarQuestionCenter,
@@ -26,14 +39,19 @@ const allDistanceOptions: RadarDistanceOption[] = [
     ...radarDistancePresetOptions,
     "other",
 ];
+const SELECTOR_LAYOUT_TRANSITION = LinearTransition.duration(160);
+const SELECTOR_ENTERING = FadeIn.duration(120);
+const SELECTOR_EXITING = FadeOut.duration(90);
 
 type RadarQuestionDetailScreenProps = {
     question: RadarQuestion;
+    sheetIndex: number;
     updateQuestion: ReturnType<typeof useQuestion>["updateQuestion"];
 };
 
 export function RadarQuestionDetailScreen({
     question,
+    sheetIndex,
     updateQuestion,
 }: RadarQuestionDetailScreenProps) {
     const { selectedStations } = useHidingZone();
@@ -58,6 +76,7 @@ export function RadarQuestionDetailScreen({
             );
         }
     };
+    const isPreviewSnap = sheetIndex <= SHEET_SNAP_INDEX.medium;
 
     return (
         <>
@@ -68,35 +87,50 @@ export function RadarQuestionDetailScreen({
 
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Distance</Text>
-                <View style={styles.optionGrid}>
-                    {allDistanceOptions.map((option) => (
-                        <Pressable
-                            accessibilityLabel={`Radar distance ${getOptionLabel(option)}`}
-                            accessibilityRole="button"
-                            key={option}
-                            onPress={() => handleDistanceOptionPress(option)}
-                            style={({ pressed }) => [
-                                styles.distanceOption,
-                                question.distanceOption === option
-                                    ? styles.distanceOptionActive
-                                    : null,
-                                pressed ? styles.actionPressed : null,
-                            ]}
-                            testID={`radar-distance-option-${option}`}
+                <Animated.View layout={SELECTOR_LAYOUT_TRANSITION}>
+                    {isPreviewSnap ? (
+                        <Animated.View
+                            entering={SELECTOR_ENTERING}
+                            exiting={SELECTOR_EXITING}
+                            key="distance-carousel"
                         >
-                            <Text
-                                style={[
-                                    styles.distanceOptionText,
-                                    question.distanceOption === option
-                                        ? styles.distanceOptionTextActive
-                                        : null,
-                                ]}
+                            <ScrollView
+                                contentContainerStyle={
+                                    styles.optionCarouselContent
+                                }
+                                horizontal
+                                showsHorizontalScrollIndicator={false}
+                                style={styles.optionCarousel}
+                                testID="radar-distance-option-carousel"
                             >
-                                {getOptionLabel(option)}
-                            </Text>
-                        </Pressable>
-                    ))}
-                </View>
+                                {allDistanceOptions.map((option) =>
+                                    renderDistanceOption({
+                                        handleDistanceOptionPress,
+                                        option,
+                                        selectedOption: question.distanceOption,
+                                    }),
+                                )}
+                            </ScrollView>
+                        </Animated.View>
+                    ) : (
+                        <Animated.View
+                            entering={SELECTOR_ENTERING}
+                            exiting={SELECTOR_EXITING}
+                            key="distance-grid"
+                            layout={SELECTOR_LAYOUT_TRANSITION}
+                            style={styles.optionGrid}
+                            testID="radar-distance-option-grid"
+                        >
+                            {allDistanceOptions.map((option) =>
+                                renderDistanceOption({
+                                    handleDistanceOptionPress,
+                                    option,
+                                    selectedOption: question.distanceOption,
+                                }),
+                            )}
+                        </Animated.View>
+                    )}
+                </Animated.View>
 
                 {question.distanceOption === "other" ? (
                     <>
@@ -215,6 +249,45 @@ function getOptionLabel(option: RadarDistanceOption) {
     return option === "other" ? "Other" : option;
 }
 
+type RenderDistanceOptionParams = {
+    handleDistanceOptionPress: (option: RadarDistanceOption) => void;
+    option: RadarDistanceOption;
+    selectedOption: RadarDistanceOption;
+};
+
+function renderDistanceOption({
+    handleDistanceOptionPress,
+    option,
+    selectedOption,
+}: RenderDistanceOptionParams) {
+    const isSelected = selectedOption === option;
+
+    return (
+        <Pressable
+            accessibilityLabel={`Radar distance ${getOptionLabel(option)}`}
+            accessibilityRole="button"
+            key={option}
+            onPress={() => handleDistanceOptionPress(option)}
+            style={({ pressed }) => [
+                styles.distanceOption,
+                isSelected ? styles.distanceOptionActive : null,
+                pressed ? styles.actionPressed : null,
+            ]}
+            testID={`radar-distance-option-${option}`}
+        >
+            <Text
+                numberOfLines={1}
+                style={[
+                    styles.distanceOptionText,
+                    isSelected ? styles.distanceOptionTextActive : null,
+                ]}
+            >
+                {getOptionLabel(option)}
+            </Text>
+        </Pressable>
+    );
+}
+
 function getInfoText(nearest: ReturnType<typeof findNearestStation>): string {
     if (!nearest) {
         return "Select hiding-zone presets to compare against nearby stations.";
@@ -257,6 +330,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         justifyContent: "center",
         minHeight: 42,
+        minWidth: 72,
         paddingHorizontal: 8,
     },
     distanceOptionActive: {
@@ -327,6 +401,14 @@ const styles = StyleSheet.create({
         flexWrap: "wrap",
         gap: 8,
         marginTop: 10,
+    },
+    optionCarousel: {
+        marginHorizontal: -20,
+        marginTop: 10,
+    },
+    optionCarouselContent: {
+        gap: 8,
+        paddingHorizontal: 20,
     },
     section: {
         marginTop: 22,

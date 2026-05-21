@@ -11,7 +11,7 @@ import {
 import { Keyboard, StyleSheet } from "react-native";
 
 import { MainDrawer } from "@/features/sheet/MainDrawer";
-import { SheetRouteName } from "@/features/sheet/sheetRoutes";
+import { SHEET_SNAP_INDEX, SheetRouteName } from "@/features/sheet/sheetRoutes";
 import { useQuestion } from "@/state/questionStore";
 import { colors } from "@/theme/colors";
 
@@ -26,12 +26,6 @@ type AppBottomSheetProps = {
     onIndexChange?: (index: number) => void;
 };
 
-export const SHEET_SNAP_INDEX = {
-    compact: 0,
-    large: 2,
-    medium: 1,
-} as const;
-
 const SHEET_SNAP_POINTS = ["18%", "42%", "88%"] as const;
 
 export const AppBottomSheet = forwardRef<
@@ -43,6 +37,9 @@ export const AppBottomSheet = forwardRef<
     );
     const snapPoints = useMemo(() => [...SHEET_SNAP_POINTS], []);
     const [route, setRoute] = useState<SheetRouteName>("main");
+    const [sheetIndex, setSheetIndex] = useState<number>(
+        SHEET_SNAP_INDEX.medium,
+    );
     const { setQuestionSheetActive } = useQuestion();
     const currentIndexRef = useRef<number>(SHEET_SNAP_INDEX.medium);
     useImperativeHandle(ref, () => ({
@@ -80,6 +77,7 @@ export const AppBottomSheet = forwardRef<
                     Keyboard.dismiss();
                 }
                 currentIndexRef.current = index;
+                setSheetIndex(index);
                 setQuestionSheetActive(
                     index !== -1 && route === "question-detail",
                 );
@@ -87,7 +85,11 @@ export const AppBottomSheet = forwardRef<
             }}
         >
             <SheetView style={styles.content}>
-                <MainDrawer route={route} onNavigate={setRoute} />
+                <MainDrawer
+                    route={route}
+                    onNavigate={setRoute}
+                    sheetIndex={sheetIndex}
+                />
             </SheetView>
         </Sheet>
     );

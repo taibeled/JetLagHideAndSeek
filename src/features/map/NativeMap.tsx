@@ -33,7 +33,7 @@ import type { Position } from "./geojsonTypes";
 import { buildOsmRasterStyleJson } from "./mapStyle";
 import {
     asSeparateMaskConstraints,
-    buildCombinedInsideMask,
+    buildCombinedEligibilityMask,
     buildPlayAreaMask,
 } from "./maskBuilder";
 import { useUserLocation } from "./useUserLocation";
@@ -91,17 +91,21 @@ export function NativeMap({ onPress }: NativeMapProps) {
         [playArea.boundary],
     );
     const combinedInsideMask = useMemo(() => {
-        return buildCombinedInsideMask(
+        return buildCombinedEligibilityMask(
             playArea.boundary,
-            zoneFeatures,
-            ...asSeparateMaskConstraints(
-                questionMapRenderState.radar.hitMaskFeatures,
-            ),
+            [
+                zoneFeatures,
+                ...asSeparateMaskConstraints(
+                    questionMapRenderState.radar.hitMaskFeatures,
+                ),
+            ],
+            [questionMapRenderState.radar.missMaskFeatures],
         );
     }, [
         playArea.boundary,
         zoneFeatures,
         questionMapRenderState.radar.hitMaskFeatures,
+        questionMapRenderState.radar.missMaskFeatures,
     ]);
     const mapStyle = useMemo(() => buildOsmRasterStyleJson(), []);
     const fitPadding = useMemo(
@@ -338,21 +342,6 @@ export function NativeMap({ onPress }: NativeMapProps) {
                         />
                     </MLShapeSource>
 
-                    {combinedInsideMask.features.length > 0 ? (
-                        <MLShapeSource
-                            id={`combined-inside-mask-${playArea.osmId}`}
-                            shape={combinedInsideMask}
-                        >
-                            <MLFillLayer
-                                id={`combined-inside-mask-fill-${playArea.osmId}`}
-                                style={{
-                                    fillColor: "#07111f",
-                                    fillOpacity: 0.35,
-                                }}
-                            />
-                        </MLShapeSource>
-                    ) : null}
-
                     <MLShapeSource id="hiding-zone-area" shape={zoneFeatures}>
                         <MLLineLayer
                             id="hiding-zone-area-outline"
@@ -360,49 +349,6 @@ export function NativeMap({ onPress }: NativeMapProps) {
                                 lineColor: colors.tint,
                                 lineOpacity: 0.55,
                                 lineWidth: 1.5,
-                            }}
-                        />
-                    </MLShapeSource>
-
-                    <MLShapeSource
-                        id="radar-question-areas"
-                        onPress={handleMapPress}
-                        shape={questionMapRenderState.radar.previewFeatures}
-                    >
-                        <MLFillLayer
-                            id="radar-question-areas-fill"
-                            style={{
-                                fillColor: "#e46f4d",
-                                fillOpacity: 0.16,
-                            }}
-                        />
-                    </MLShapeSource>
-
-                    <MLShapeSource
-                        id="radar-question-miss-mask"
-                        onPress={handleMapPress}
-                        shape={questionMapRenderState.radar.missMaskFeatures}
-                    >
-                        <MLFillLayer
-                            id="radar-question-miss-mask-fill"
-                            style={{
-                                fillColor: "#07111f",
-                                fillOpacity: 0.34,
-                            }}
-                        />
-                    </MLShapeSource>
-
-                    <MLShapeSource
-                        id="radar-question-outlines"
-                        onPress={handleMapPress}
-                        shape={questionMapRenderState.radar.outlineFeatures}
-                    >
-                        <MLLineLayer
-                            id="radar-question-areas-outline"
-                            style={{
-                                lineColor: "#e46f4d",
-                                lineOpacity: 0.8,
-                                lineWidth: 2,
                             }}
                         />
                     </MLShapeSource>
@@ -466,6 +412,50 @@ export function NativeMap({ onPress }: NativeMapProps) {
                                 }}
                             />
                         ))}
+                    </MLShapeSource>
+
+                    {combinedInsideMask.features.length > 0 ? (
+                        <MLShapeSource
+                            id={`combined-inside-mask-${playArea.osmId}`}
+                            shape={combinedInsideMask}
+                        >
+                            <MLFillLayer
+                                id={`combined-inside-mask-fill-${playArea.osmId}`}
+                                style={{
+                                    fillColor: "#07111f",
+                                    fillOpacity: 0.35,
+                                }}
+                            />
+                        </MLShapeSource>
+                    ) : null}
+
+                    <MLShapeSource
+                        id="radar-question-areas"
+                        onPress={handleMapPress}
+                        shape={questionMapRenderState.radar.previewFeatures}
+                    >
+                        <MLFillLayer
+                            id="radar-question-areas-fill"
+                            style={{
+                                fillColor: "#e46f4d",
+                                fillOpacity: 0.16,
+                            }}
+                        />
+                    </MLShapeSource>
+
+                    <MLShapeSource
+                        id="radar-question-outlines"
+                        onPress={handleMapPress}
+                        shape={questionMapRenderState.radar.outlineFeatures}
+                    >
+                        <MLLineLayer
+                            id="radar-question-areas-outline"
+                            style={{
+                                lineColor: "#e46f4d",
+                                lineOpacity: 0.8,
+                                lineWidth: 2,
+                            }}
+                        />
                     </MLShapeSource>
 
                     <MLShapeSource

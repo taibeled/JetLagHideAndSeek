@@ -1,5 +1,6 @@
 import {
     asSeparateMaskConstraints,
+    buildCombinedEligibilityMask,
     buildCombinedInsideMask,
     buildPlayAreaMask,
     signedRingArea,
@@ -189,6 +190,66 @@ describe("buildCombinedInsideMask", () => {
             .coordinates as Position[][][];
         // The hit intersection is [4,4]-[6,6], so only that area stays bright.
         expect(polygonArea(coords)).toBeCloseTo(96, 1);
+    });
+});
+
+describe("buildCombinedEligibilityMask", () => {
+    it("darkens miss areas while leaving the rest of the required zone eligible", () => {
+        const hidingZone = makeSquareFC(1, 1, 9, 9);
+        const miss = makeSquareFC(3, 3, 5, 5);
+
+        const result = buildCombinedEligibilityMask(
+            PLAY_AREA,
+            [hidingZone],
+            [miss],
+        );
+
+        expect(result.features).toHaveLength(1);
+        expect(result.features[0].geometry.type).toBe("MultiPolygon");
+        const coords = result.features[0].geometry
+            .coordinates as Position[][][];
+        expect(polygonArea(coords)).toBeCloseTo(40, 1);
+    });
+
+    it("combines hits and misses as required intersections minus excluded areas", () => {
+        const hidingZone = makeSquareFC(1, 1, 9, 9);
+        const hit = makeSquareFC(2, 2, 8, 8);
+        const miss = makeSquareFC(4, 4, 6, 6);
+
+        const result = buildCombinedEligibilityMask(
+            PLAY_AREA,
+            [hidingZone, hit],
+            [miss],
+        );
+
+        expect(result.features).toHaveLength(1);
+        const coords = result.features[0].geometry
+            .coordinates as Position[][][];
+        // Eligible area is [2,2]-[8,8] minus [4,4]-[6,6], so mask area is 68.
+        expect(polygonArea(coords)).toBeCloseTo(68, 1);
+    });
+
+    it("uses one combined mask feature for misses without hit constraints", () => {
+        const hidingZone = makeSquareFC(1, 1, 9, 9);
+        const misses: GeoJsonFeatureCollection = {
+            features: [
+                makeSquareFeature(2, 2, 4, 4),
+                makeSquareFeature(6, 6, 8, 8),
+            ],
+            type: "FeatureCollection",
+        };
+
+        const result = buildCombinedEligibilityMask(
+            PLAY_AREA,
+            [hidingZone],
+            [misses],
+        );
+
+        expect(result.features).toHaveLength(1);
+        expect(result.features[0].geometry.type).toBe("MultiPolygon");
+        const coords = result.features[0].geometry
+            .coordinates as Position[][][];
+        expect(polygonArea(coords)).toBeCloseTo(44, 1);
     });
 });
 

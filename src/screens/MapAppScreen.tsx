@@ -5,10 +5,10 @@ import { StyleSheet, View } from "react-native";
 import { NativeMap } from "@/features/map/NativeMap";
 import {
     AppBottomSheet,
-    SHEET_SNAP_INDEX,
     type BottomSheetHandle,
 } from "@/features/sheet/AppBottomSheet";
 import { FabButton } from "@/features/sheet/FabButton";
+import { SHEET_SNAP_INDEX } from "@/features/sheet/sheetRoutes";
 import { colors } from "@/theme/colors";
 
 export function MapAppScreen() {

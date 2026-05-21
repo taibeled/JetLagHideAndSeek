@@ -9,10 +9,12 @@ import { colors } from "@/theme/colors";
 
 type QuestionDetailScreenProps = {
     onNavigate: (route: SheetRouteName) => void;
+    sheetIndex: number;
 };
 
 export function QuestionDetailScreen({
     onNavigate,
+    sheetIndex,
 }: QuestionDetailScreenProps) {
     const { activeQuestion, deleteQuestion, updateQuestion } = useQuestion();
 
@@ -42,6 +44,7 @@ export function QuestionDetailScreen({
             {activeQuestion.type === "radar" ? (
                 <RadarQuestionDetailScreen
                     question={activeQuestion}
+                    sheetIndex={sheetIndex}
                     updateQuestion={updateQuestion}
                 />
             ) : (

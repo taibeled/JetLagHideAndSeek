@@ -385,9 +385,10 @@ describe("MapAppScreen", () => {
                 .some((s) => s.props.id === "combined-inside-mask-19631009"),
         ).toBe(false);
         expect(
-            getMapShapeSource(screen, "radar-question-miss-mask").props.shape
-                .features,
-        ).toHaveLength(0);
+            screen
+                .getAllByTestId("map-shape-source")
+                .some((s) => s.props.id === "radar-question-miss-mask"),
+        ).toBe(false);
         expect(
             getMapShapeSource(screen, "radar-question-outlines").props.shape
                 .features,
@@ -407,20 +408,21 @@ describe("MapAppScreen", () => {
                 .shape.features,
         ).toHaveLength(1);
         expect(
-            getMapShapeSource(screen, "radar-question-miss-mask").props.shape
-                .features,
-        ).toHaveLength(0);
+            screen
+                .getAllByTestId("map-shape-source")
+                .some((s) => s.props.id === "radar-question-miss-mask"),
+        ).toBe(false);
 
         fireEvent.press(screen.getByTestId("radar-answer-option-negative"));
         expect(
+            getMapShapeSource(screen, "combined-inside-mask-19631009").props
+                .shape.features,
+        ).toHaveLength(1);
+        expect(
             screen
                 .getAllByTestId("map-shape-source")
-                .some((s) => s.props.id === "combined-inside-mask-19631009"),
+                .some((s) => s.props.id === "radar-question-miss-mask"),
         ).toBe(false);
-        expect(
-            getMapShapeSource(screen, "radar-question-miss-mask").props.shape
-                .features,
-        ).toHaveLength(1);
 
         fireEvent.press(screen.getByTestId("radar-answer-option-unanswered"));
         expect(
@@ -466,6 +468,49 @@ describe("MapAppScreen", () => {
         expect(
             screen.getByTestId("radar-distance-meters").props.children,
         ).toEqual(["Current distance ", 750, " m"]);
+
+        jest.useRealTimers();
+    });
+
+    it("uses a carousel for radar distance options at preview snaps and a grid at the large snap", async () => {
+        const screen = renderWithSafeArea(<MapAppScreen />);
+        jest.useFakeTimers();
+
+        fireEvent.press(screen.getByTestId("main-questions-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        fireEvent.press(screen.getByTestId("questions-add-question-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        await pressAddRadarQuestion(screen);
+
+        expect(
+            screen.getByTestId("radar-distance-option-carousel"),
+        ).toBeTruthy();
+        expect(screen.queryByTestId("radar-distance-option-grid")).toBeNull();
+
+        fireEvent.press(screen.getByTestId("radar-distance-option-1km"));
+        expect(
+            screen.getByTestId("radar-distance-meters").props.children,
+        ).toEqual(["Current distance ", 1000, " m"]);
+        expect(
+            getMapShapeSource(screen, "radar-question-areas").props.shape
+                .features[0].properties.distanceMeters,
+        ).toBe(1000);
+
+        fireEvent(screen.getByTestId("bottom-sheet"), "onChange", 2);
+        expect(screen.getByTestId("radar-distance-option-grid")).toBeTruthy();
+        expect(
+            screen.queryByTestId("radar-distance-option-carousel"),
+        ).toBeNull();
+
+        fireEvent(screen.getByTestId("bottom-sheet"), "onChange", 0);
+        expect(
+            screen.getByTestId("radar-distance-option-carousel"),
+        ).toBeTruthy();
+        expect(screen.queryByTestId("radar-distance-option-grid")).toBeNull();
 
         jest.useRealTimers();
     });

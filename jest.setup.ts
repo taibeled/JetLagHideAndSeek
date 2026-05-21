@@ -118,8 +118,13 @@ jest.mock("@maplibre/maplibre-react-native", () => {
 jest.mock("react-native-reanimated", () => {
     const { View } = require("react-native");
     const noopFn = () => {};
-    const noopAnimation = { start: noopFn, stop: noopFn };
+    const noopAnimation = {
+        duration: () => noopAnimation,
+        start: noopFn,
+        stop: noopFn,
+    };
     const createAnimation = () => noopAnimation;
+    createAnimation.duration = () => noopAnimation;
 
     return {
         __esModule: true,
@@ -151,6 +156,7 @@ jest.mock("react-native-reanimated", () => {
         SlideOutRight: createAnimation,
         FadeIn: createAnimation,
         FadeOut: createAnimation,
+        LinearTransition: createAnimation,
     };
 });
 

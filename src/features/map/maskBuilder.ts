@@ -1,4 +1,4 @@
-import { difference, intersection, type Geom } from "polyclip-ts";
+import { difference, intersection, union, type Geom } from "polyclip-ts";
 import type { GeoJsonFeatureCollection, Position } from "./geojsonTypes";
 
 export const WORLD_MASK_RING: Position[] = [
@@ -48,62 +48,93 @@ export function buildCombinedInsideMask(
     playArea: PolygonFeatureCollection,
     ...cutouts: PolygonFeatureCollection[]
 ): GeoJsonFeatureCollection {
+    return buildCombinedEligibilityMask(playArea, cutouts);
+}
+
+export function buildCombinedEligibilityMask(
+    playArea: PolygonFeatureCollection,
+    requiredConstraints: PolygonFeatureCollection[],
+    excludedAreas: PolygonFeatureCollection[] = [],
+): GeoJsonFeatureCollection {
     const playAreaPolygons = getPolygons(playArea);
 
     if (playAreaPolygons.length === 0) {
         return { features: [], type: "FeatureCollection" };
     }
 
-    const cutoutGeoms: Geom[] = [];
-    for (const cutout of cutouts) {
-        const polys = getPolygons(cutout);
-        if (polys.length === 0) continue;
-        cutoutGeoms.push(polys as Geom);
-    }
+    const requiredGeoms = getGeoms(requiredConstraints);
+    const excludedGeoms = getGeoms(excludedAreas);
 
-    if (cutoutGeoms.length === 0) {
+    if (requiredGeoms.length === 0 && excludedGeoms.length === 0) {
         return { features: [], type: "FeatureCollection" };
     }
 
-    let brightArea: Geom;
-    if (cutoutGeoms.length === 1) {
-        brightArea = cutoutGeoms[0];
+    let eligibleArea: Geom;
+    if (requiredGeoms.length === 0) {
+        eligibleArea = playAreaPolygons as Geom;
+    } else if (requiredGeoms.length === 1) {
+        eligibleArea = requiredGeoms[0];
     } else {
-        brightArea = intersection(cutoutGeoms[0], ...cutoutGeoms.slice(1));
+        eligibleArea = intersection(
+            requiredGeoms[0],
+            ...requiredGeoms.slice(1),
+        );
     }
 
-    const hasBrightArea = (brightArea as Position[][][]).some(
-        (polygon) => Array.isArray(polygon) && polygon.length > 0,
-    );
+    if (!hasGeomArea(eligibleArea)) {
+        return buildMultiPolygonFeatureCollection(playAreaPolygons);
+    }
 
-    if (!hasBrightArea) {
-        return {
-            features: [
-                {
-                    geometry: {
-                        coordinates: playAreaPolygons,
-                        type: "MultiPolygon" as const,
-                    },
-                    properties: {},
-                    type: "Feature" as const,
-                },
-            ],
-            type: "FeatureCollection",
-        };
+    if (excludedGeoms.length > 0) {
+        const excludedArea =
+            excludedGeoms.length === 1
+                ? excludedGeoms[0]
+                : union(excludedGeoms[0], ...excludedGeoms.slice(1));
+
+        if (hasGeomArea(excludedArea)) {
+            eligibleArea = difference(eligibleArea, excludedArea) as Geom;
+        }
+    }
+
+    if (!hasGeomArea(eligibleArea)) {
+        return buildMultiPolygonFeatureCollection(playAreaPolygons);
     }
 
     const maskedArea = difference(
         playAreaPolygons as Geom,
-        brightArea,
+        eligibleArea,
     ) as Position[][][];
 
+    return buildMultiPolygonFeatureCollection(maskedArea);
+}
+
+function getGeoms(collections: PolygonFeatureCollection[]): Geom[] {
+    const geoms: Geom[] = [];
+    for (const collection of collections) {
+        const polygons = getPolygons(collection);
+        if (polygons.length > 0) {
+            geoms.push(polygons as Geom);
+        }
+    }
+    return geoms;
+}
+
+function hasGeomArea(geom: Geom): boolean {
+    return (geom as Position[][][]).some(
+        (polygon) => Array.isArray(polygon) && polygon.length > 0,
+    );
+}
+
+function buildMultiPolygonFeatureCollection(
+    polygons: Position[][][],
+): GeoJsonFeatureCollection {
     return {
         features:
-            maskedArea.length > 0
+            polygons.length > 0
                 ? [
                       {
                           geometry: {
-                              coordinates: maskedArea,
+                              coordinates: polygons,
                               type: "MultiPolygon" as const,
                           },
                           properties: {},
