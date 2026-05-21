@@ -1,12 +1,11 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
+import { UnitSegmentedControl } from "@/components/UnitSegmentedControl";
 import { SheetScrollView } from "@/features/sheet/SheetScrollView";
 import { useHidingZone } from "@/state/hidingZoneStore";
 import { colors } from "@/theme/colors";
 
-import type { HidingZonePreset, HidingZoneUnit } from "./hidingZoneTypes";
-
-const units: HidingZoneUnit[] = ["m", "km", "mi"];
+import type { HidingZonePreset } from "./hidingZoneTypes";
 
 export function HidingZoneScreen() {
     const {
@@ -53,34 +52,11 @@ export function HidingZoneScreen() {
                         testID="hiding-zone-radius-input"
                         value={radiusDisplayValue}
                     />
-                    <View style={styles.segmentedControl}>
-                        {units.map((unit) => (
-                            <Pressable
-                                accessibilityRole="button"
-                                key={unit}
-                                onPress={() => setRadiusUnit(unit)}
-                                style={({ pressed }) => [
-                                    styles.unitButton,
-                                    radiusUnit === unit
-                                        ? styles.unitButtonActive
-                                        : null,
-                                    pressed ? styles.actionPressed : null,
-                                ]}
-                                testID={`hiding-zone-unit-${unit}`}
-                            >
-                                <Text
-                                    style={[
-                                        styles.unitButtonText,
-                                        radiusUnit === unit
-                                            ? styles.unitButtonTextActive
-                                            : null,
-                                    ]}
-                                >
-                                    {unit}
-                                </Text>
-                            </Pressable>
-                        ))}
-                    </View>
+                    <UnitSegmentedControl
+                        onChange={setRadiusUnit}
+                        testIDPrefix="hiding-zone-unit"
+                        value={radiusUnit}
+                    />
                 </View>
                 <Text
                     accessibilityLabel={`Stored as ${Math.round(radiusMeters)} m`}
@@ -311,36 +287,10 @@ const styles = StyleSheet.create({
         fontWeight: "800",
         marginBottom: 10,
     },
-    segmentedControl: {
-        backgroundColor: colors.card,
-        borderColor: colors.border,
-        borderRadius: 8,
-        borderWidth: 1,
-        flexDirection: "row",
-        overflow: "hidden",
-    },
     title: {
         color: colors.ink,
         fontSize: 28,
         fontWeight: "800",
         marginTop: 4,
-    },
-    unitButton: {
-        alignItems: "center",
-        justifyContent: "center",
-        minHeight: 46,
-        minWidth: 44,
-        paddingHorizontal: 10,
-    },
-    unitButtonActive: {
-        backgroundColor: colors.button,
-    },
-    unitButtonText: {
-        color: colors.ink,
-        fontSize: 14,
-        fontWeight: "800",
-    },
-    unitButtonTextActive: {
-        color: colors.white,
     },
 });

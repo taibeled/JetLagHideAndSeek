@@ -12,8 +12,8 @@ The main quality risks are:
 
 1. **Two god files:** `MainDrawer.tsx` (533 lines) and
    `RadarQuestionDetailScreen.tsx` (449 lines)
-2. **Duplicated logic:** unit conversion, UI row patterns, and legacy-radius
-   normalization appear in multiple places
+2. **Duplicated logic:** UI row patterns and legacy-radius normalization appear
+   in multiple places
 3. **Tight cross-feature coupling:** radar detail screen imports from map,
    hidingZone, and sheet; NativeMap imports question-store updaters directly
 4. **Test imbalance:** a 1,447-line integration mega-test
@@ -25,36 +25,7 @@ The main quality risks are:
 
 ## 1. Shared Primitives (High Priority, Low Risk)
 
-### 1a. `src/shared/distanceUnits.ts`
-
-**Problem:** `toMeters`, `fromMeters`, `METERS_PER_MILE`, and related formatting
-are duplicated in `hidingZone/hidingZone.ts` and `questions/radar/radarGeometry.ts`.
-The `HidingZoneUnit` type is imported by radar code despite living in hiding-zone
-types.
-
-**Action:**
-
-- Create `src/shared/distanceUnits.ts` exporting:
-    - `DistanceUnit` type (`"m" | "km" | "mi"`)
-    - `toMeters(value, unit)`, `fromMeters(meters, unit)`
-    - `METERS_PER_MILE`, `METERS_PER_KM`
-    - `formatDistanceValue(meters, unit, precision?)`
-- Re-export from both `hidingZone/` and `questions/radar/` for backwards compat
-- Move unit tests from `hidingZone.test.ts` into `shared/__tests__/distanceUnits.test.ts`
-
-### 1b. `src/components/UnitSegmentedControl.tsx`
-
-**Problem:** The m/km/mi toggle control is implemented almost line-for-line
-in both `HidingZoneScreen.tsx` and `RadarQuestionDetailScreen.tsx` (styles:
-`segmentedControl`, `unitButton`, `unitButtonActive`, plus callback wiring).
-
-**Action:**
-
-- Extract a `UnitSegmentedControl` component (~40 lines)
-- Props: `value: DistanceUnit`, `onChange: (unit: DistanceUnit) => void`
-- Delete ~25 duplicated style keys from each screen
-
-### 1c. `src/components/SheetListRow.tsx`
+### 1a. `src/components/SheetListRow.tsx`
 
 **Problem:** The pressable row pattern (card, title, description, chevron,
 `actionPressed: { opacity: 0.72 }`) is reinvented in MainDrawer, Settings,

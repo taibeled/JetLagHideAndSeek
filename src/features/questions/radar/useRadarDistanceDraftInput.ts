@@ -7,12 +7,12 @@ import {
 } from "react";
 import type { TextInput } from "react-native";
 
-import type { HidingZoneUnit } from "@/features/hidingZone/hidingZoneTypes";
 import type { QuestionState } from "@/features/questions/questionTypes";
 import type {
     RadarDistanceOption,
     RadarQuestion,
 } from "@/features/questions/radar/radarTypes";
+import type { DistanceUnit } from "@/shared/distanceUnits";
 import {
     getRadarDistanceDisplayValue,
     getRadarDistanceDisplayValueForUnit,
@@ -27,7 +27,7 @@ type RadarDistanceDraftInput = {
     emptyDistanceHelpText: string | null;
     handleCustomDistanceChange: (value: string) => void;
     handleDistanceOptionPress: (option: RadarDistanceOption) => void;
-    handleDistanceUnitPress: (unit: HidingZoneUnit) => void;
+    handleDistanceUnitPress: (unit: DistanceUnit) => void;
 };
 
 type UseRadarDistanceDraftInputParams = {
@@ -112,7 +112,7 @@ export function useRadarDistanceDraftInput({
     );
 
     const handleDistanceUnitPress = useCallback(
-        (unit: HidingZoneUnit) => {
+        (unit: DistanceUnit) => {
             updateQuestion(activeQuestion.id, (question) =>
                 question.type === "radar"
                     ? updateRadarDistanceUnit(question, unit)

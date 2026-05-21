@@ -12,12 +12,10 @@ import {
     buildHidingZoneFeatureCollection,
     buildRouteFeatureCollection,
     buildStationFeatureCollection,
-    fromMeters,
     getSelectedPresets,
     getSelectedRoutes,
     getSelectedStations,
     getSuggestedPresetIds,
-    toMeters,
 } from "@/features/hidingZone/hidingZone";
 import type {
     HidingZonePreset,
@@ -29,6 +27,7 @@ import type {
     ZoneFeatureCollection,
 } from "@/features/hidingZone/hidingZoneTypes";
 import { usePlayArea } from "@/state/playAreaStore";
+import { fromMeters, toMeters } from "@/shared/distanceUnits";
 
 const DEFAULT_RADIUS_METERS = 600;
 

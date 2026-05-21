@@ -7,10 +7,8 @@ import {
     useState,
 } from "react";
 
-import type { HidingZoneUnit } from "@/features/hidingZone/hidingZoneTypes";
 import { buildQuestionMapRenderState } from "@/features/questions/questionGeometry";
 import { radarQuestionConfig } from "@/features/questions/radar/radarConfig";
-import { fromMeters, toMeters } from "@/features/questions/radar/radarGeometry";
 import {
     type ImplementedQuestionType,
     type QuestionAnswer,
@@ -24,6 +22,11 @@ import {
     radarDistanceOptionMeters,
 } from "@/features/questions/radar/radarTypes";
 import type { Position } from "@/features/map/geojsonTypes";
+import {
+    fromMeters,
+    toMeters,
+    type DistanceUnit,
+} from "@/shared/distanceUnits";
 
 type QuestionStateValue = {
     activeQuestion: QuestionState | null;
@@ -206,7 +209,7 @@ export function getRadarDistanceDisplayValue(question: RadarQuestion): string {
 
 export function getRadarDistanceDisplayValueForUnit(
     question: RadarQuestion,
-    unit: HidingZoneUnit,
+    unit: DistanceUnit,
 ): string {
     return fromMeters(question.distanceMeters, unit);
 }
@@ -271,7 +274,7 @@ export function updateRadarDistanceValue(
 
 export function updateRadarDistanceUnit(
     question: RadarQuestion,
-    unit: HidingZoneUnit,
+    unit: DistanceUnit,
 ): RadarQuestion {
     return {
         ...question,
@@ -337,7 +340,7 @@ function isLegacyRadiusQuestion(value: unknown): value is {
     id: string;
     radiusMeters: number;
     radiusOption: RadarDistanceOption;
-    radiusUnit: HidingZoneUnit;
+    radiusUnit: DistanceUnit;
     type: "radius";
     updatedAt: string;
 } {

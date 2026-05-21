@@ -6,15 +6,13 @@ import type {
     Polygon,
 } from "geojson";
 
-import type {
-    HidingZoneUnit,
-    TransitStation,
-} from "@/features/hidingZone/hidingZoneTypes";
+import type { TransitStation } from "@/features/hidingZone/hidingZoneTypes";
 import type { Position } from "@/features/map/geojsonTypes";
 import type {
     BaseQuestion,
     QuestionAnswer,
 } from "@/features/questions/questionTypes";
+import type { DistanceUnit } from "@/shared/distanceUnits";
 
 export type RadarDistanceOption =
     | "500m"
@@ -53,7 +51,7 @@ export type RadarQuestion = BaseQuestion & {
     center: Position;
     distanceMeters: number;
     distanceOption: RadarDistanceOption;
-    distanceUnit: HidingZoneUnit;
+    distanceUnit: DistanceUnit;
     type: "radar";
 };
 

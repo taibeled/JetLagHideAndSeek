@@ -3,10 +3,8 @@ import {
     buildHidingZoneFeatureCollection,
     buildRouteFeatureCollection,
     buildStationFeatureCollection,
-    fromMeters,
     getSelectedStations,
     getSuggestedPresetIds,
-    toMeters,
 } from "../hidingZone";
 import type { HidingZonePreset } from "../hidingZoneTypes";
 
@@ -126,13 +124,6 @@ describe("hidingZone helpers", () => {
             ["tokyo-metro"],
         );
         expect(getSuggestedPresetIds([preset], [140, 36, 141, 37])).toEqual([]);
-    });
-
-    it("converts radius display values to backend meters", () => {
-        expect(toMeters("600", "m")).toBe(600);
-        expect(toMeters("0.6", "km")).toBe(600);
-        expect(Math.round(toMeters("1", "mi") ?? 0)).toBe(1609);
-        expect(fromMeters(600, "km")).toBe("0.60");
     });
 
     it("deduplicates selected stations by generated station id", () => {

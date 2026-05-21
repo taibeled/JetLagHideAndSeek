@@ -12,7 +12,7 @@ import Animated, {
     LinearTransition,
 } from "react-native-reanimated";
 
-import type { HidingZoneUnit } from "@/features/hidingZone/hidingZoneTypes";
+import { UnitSegmentedControl } from "@/components/UnitSegmentedControl";
 import { requestUserCoordinate } from "@/features/map/useUserLocation";
 import { QuestionAnswerSelector } from "@/features/questions/components/QuestionAnswerSelector";
 import {
@@ -34,7 +34,6 @@ import {
 import { useHidingZone } from "@/state/hidingZoneStore";
 import { colors } from "@/theme/colors";
 
-const units: HidingZoneUnit[] = ["m", "km", "mi"];
 const allDistanceOptions: RadarDistanceOption[] = [
     ...radarDistancePresetOptions,
     "other",
@@ -141,38 +140,11 @@ export function RadarQuestionDetailScreen({
                                 testID="radar-distance-custom-input"
                                 value={customDistanceValue}
                             />
-                            <View style={styles.segmentedControl}>
-                                {units.map((unit) => (
-                                    <Pressable
-                                        accessibilityRole="button"
-                                        key={unit}
-                                        onPress={() =>
-                                            handleDistanceUnitPress(unit)
-                                        }
-                                        style={({ pressed }) => [
-                                            styles.unitButton,
-                                            question.distanceUnit === unit
-                                                ? styles.unitButtonActive
-                                                : null,
-                                            pressed
-                                                ? styles.actionPressed
-                                                : null,
-                                        ]}
-                                        testID={`radar-distance-unit-${unit}`}
-                                    >
-                                        <Text
-                                            style={[
-                                                styles.unitButtonText,
-                                                question.distanceUnit === unit
-                                                    ? styles.unitButtonTextActive
-                                                    : null,
-                                            ]}
-                                        >
-                                            {unit}
-                                        </Text>
-                                    </Pressable>
-                                ))}
-                            </View>
+                            <UnitSegmentedControl
+                                onChange={handleDistanceUnitPress}
+                                testIDPrefix="radar-distance-unit"
+                                value={question.distanceUnit}
+                            />
                         </View>
                         {emptyDistanceHelpText ? (
                             <Text
@@ -414,33 +386,5 @@ const styles = StyleSheet.create({
         color: colors.ink,
         fontSize: 17,
         fontWeight: "800",
-    },
-    segmentedControl: {
-        backgroundColor: colors.card,
-        borderColor: colors.border,
-        borderRadius: 8,
-        borderWidth: 1,
-        flexDirection: "row",
-        gap: 4,
-        padding: 4,
-    },
-    unitButton: {
-        alignItems: "center",
-        borderRadius: 7,
-        justifyContent: "center",
-        minHeight: 38,
-        minWidth: 42,
-        paddingHorizontal: 8,
-    },
-    unitButtonActive: {
-        backgroundColor: colors.button,
-    },
-    unitButtonText: {
-        color: colors.ink,
-        fontSize: 13,
-        fontWeight: "800",
-    },
-    unitButtonTextActive: {
-        color: colors.white,
     },
 });

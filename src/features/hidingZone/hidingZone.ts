@@ -3,6 +3,10 @@ import { featureCollection } from "@turf/helpers";
 import union from "@turf/union";
 
 import type { Bbox } from "@/features/map/geojsonTypes";
+import {
+    fromMeters as fromDistanceMeters,
+    toMeters as toDistanceMeters,
+} from "@/shared/distanceUnits";
 
 import type {
     HidingZonePreset,
@@ -15,7 +19,6 @@ import type {
     ZoneFeature,
 } from "./hidingZoneTypes";
 
-const METERS_PER_MILE = 1609.344;
 const STATION_FALLBACK_COLOR = "#1f6f78";
 
 export function bboxIntersects(a: Bbox, b: Bbox): boolean {
@@ -39,22 +42,11 @@ export function getSuggestedPresetIds(
 }
 
 export function toMeters(value: string, unit: HidingZoneUnit): number | null {
-    const numericValue = Number(value);
-    if (!Number.isFinite(numericValue) || numericValue <= 0) return null;
-
-    if (unit === "km") return numericValue * 1000;
-    if (unit === "mi") return numericValue * METERS_PER_MILE;
-    return numericValue;
+    return toDistanceMeters(value, unit);
 }
 
 export function fromMeters(meters: number, unit: HidingZoneUnit): string {
-    const value =
-        unit === "km"
-            ? meters / 1000
-            : unit === "mi"
-              ? meters / METERS_PER_MILE
-              : meters;
-    return formatRadiusValue(value);
+    return fromDistanceMeters(meters, unit);
 }
 
 export function getSelectedPresets(
@@ -195,14 +187,6 @@ export function buildHidingZoneFeatureCollection(
         features: merged ? [merged] : [],
         type: "FeatureCollection",
     };
-}
-
-function formatRadiusValue(value: number): string {
-    if (Math.abs(value - Math.round(value)) < 0.000001) {
-        return String(Math.round(value));
-    }
-    if (value >= 10) return value.toFixed(1);
-    return value.toFixed(2);
 }
 
 function getStationRouteColors(

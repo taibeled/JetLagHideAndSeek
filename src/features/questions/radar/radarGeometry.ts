@@ -3,6 +3,7 @@ import circle from "@turf/circle";
 import type { TransitStation } from "@/features/hidingZone/hidingZoneTypes";
 import type { Position } from "@/features/map/geojsonTypes";
 import type { QuestionState } from "@/features/questions/questionTypes";
+export { fromMeters, toMeters } from "@/shared/distanceUnits";
 
 import type {
     NearestStationInfo,
@@ -12,7 +13,6 @@ import type {
 } from "./radarTypes";
 
 const EARTH_RADIUS_METERS = 6371008.8;
-const METERS_PER_MILE = 1609.344;
 
 export function buildRadarQuestionRenderState(
     questions: QuestionState[],
@@ -78,28 +78,6 @@ export function findNearestStation(
 export function formatStationDistance(distanceMeters: number): string {
     if (distanceMeters < 1000) return `${Math.round(distanceMeters)} meters`;
     return `${(distanceMeters / 1000).toFixed(1)} km`;
-}
-
-export function toMeters(value: string, unit: "m" | "km" | "mi") {
-    const numericValue = Number(value);
-    if (!Number.isFinite(numericValue) || numericValue <= 0) return null;
-    if (unit === "km") return numericValue * 1000;
-    if (unit === "mi") return numericValue * METERS_PER_MILE;
-    return numericValue;
-}
-
-export function fromMeters(meters: number, unit: "m" | "km" | "mi") {
-    const value =
-        unit === "km"
-            ? meters / 1000
-            : unit === "mi"
-              ? meters / METERS_PER_MILE
-              : meters;
-    if (Math.abs(value - Math.round(value)) < 0.000001) {
-        return String(Math.round(value));
-    }
-    if (value >= 10) return value.toFixed(1);
-    return value.toFixed(2);
 }
 
 function getDistanceMeters(a: Position, b: Position): number {

@@ -78,6 +78,7 @@ Runtime behavior:
 - Presets are suggested when the preset bbox intersects the current play-area bbox; suggestions are not auto-selected.
 - Preset selection is additive. Selected stations are deduplicated by stable generated station IDs.
 - Radius defaults to 600 meters. The UI can display meters, kilometers, or miles, but `HidingZoneProvider` stores meters internally.
+- Distance unit conversion and compact display formatting live in `src/shared/distanceUnits.ts`. Hiding-zone modules keep backwards-compatible re-exports, but new cross-feature code should import the shared helpers and `DistanceUnit` type directly.
 - `NativeMap` renders selected route lines, selected station points, and a merged hiding-zone fill generated with Turf circle/union helpers.
 
 Testing added in this milestone:
@@ -90,6 +91,7 @@ Testing added in this milestone:
 - Radar questions are preview-only. They persist in app state, render map circles, and expose the active question pin only while the question detail sheet is active.
 - Pin movement is scoped by sheet state: leaving question detail or closing the sheet disables move-pin mode.
 - Radar distance options are fixed presets (`500m`, `1km`, `2km`, `5km`, `10km`, `15km`, `40km`, `80km`, `150km`) plus `Other` for custom values.
+- Radar custom distance and hiding-zone radius share `src/components/UnitSegmentedControl.tsx`, preserving the existing `hiding-zone-unit-*` and `radar-distance-unit-*` test IDs.
 - The radar question info box compares the pin to selected hiding-zone stations; with no selected presets it shows an empty-state hint.
 - Legacy persisted/shared `type: "radius"` questions are normalized to `type: "radar"` on import and restore.
 - MapLibre Jest mocks now include `FillLayer` and `CircleLayer`.

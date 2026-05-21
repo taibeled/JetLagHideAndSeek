@@ -131,11 +131,17 @@ Custom stack transitions (Reanimated shared values, dual-layer enter/leave, clea
 
 #### M-2: Duplicated UI patterns across screens
 
-Eyebrow / title / detail typography, settings-style action rows, segmented controls, and destructive buttons are reimplemented with near-identical `StyleSheet` blocks in `MainDrawer`, `SettingsScreen`, `PlayAreaScreen`, `HidingZoneScreen`, `QuestionsScreen`, and radar detail.
+Eyebrow / title / detail typography, settings-style action rows, and
+destructive buttons are reimplemented with near-identical `StyleSheet` blocks in
+`MainDrawer`, `SettingsScreen`, `PlayAreaScreen`, `HidingZoneScreen`,
+`QuestionsScreen`, and radar detail. The `m`/`km`/`mi` segmented unit control has
+since been extracted to `src/components/UnitSegmentedControl.tsx`.
 
 **Impact:** Visual drift and repetitive styling changes.
 
-**Recommendation:** Small shared primitives (`SheetHeader`, `SettingsRow`, `SegmentedControl`, `DestructiveButton`) in `src/features/sheet/components/` or `src/ui/`. Keep them dumb and styled from `colors.ts`.
+**Recommendation:** Small shared primitives (`SheetHeader`, `SettingsRow`,
+`DestructiveButton`) in `src/features/sheet/components/` or `src/ui/`. Keep them
+dumb and styled from `colors.ts`.
 
 #### M-3: Context stores bundle large derived values
 

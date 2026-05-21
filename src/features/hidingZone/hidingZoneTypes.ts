@@ -9,8 +9,9 @@ import type {
 } from "geojson";
 
 import type { Bbox } from "@/features/map/geojsonTypes";
+import type { DistanceUnit } from "@/shared/distanceUnits";
 
-export type HidingZoneUnit = "m" | "km" | "mi";
+export type HidingZoneUnit = DistanceUnit;
 
 export type TransitRoute = {
     color: string;
