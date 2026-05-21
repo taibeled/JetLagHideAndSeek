@@ -36,4 +36,40 @@ describe("requestUserCoordinate", () => {
         });
         expect(locationModule.getCurrentPositionAsync).not.toHaveBeenCalled();
     });
+
+    it("returns unavailable when the GPS fix fails", async () => {
+        const locationModule = {
+            Accuracy: { Balanced: 3 },
+            getCurrentPositionAsync: jest
+                .fn()
+                .mockRejectedValue(new Error("Cannot obtain current location")),
+            requestForegroundPermissionsAsync: jest
+                .fn()
+                .mockResolvedValue({ status: "granted" }),
+        };
+
+        await expect(requestUserCoordinate(locationModule)).resolves.toEqual({
+            coordinate: null,
+            status: "unavailable",
+        });
+        expect(locationModule.getCurrentPositionAsync).toHaveBeenCalledWith({
+            accuracy: 3,
+        });
+    });
+
+    it("returns unavailable when the permission request fails", async () => {
+        const locationModule = {
+            Accuracy: { Balanced: 3 },
+            getCurrentPositionAsync: jest.fn(),
+            requestForegroundPermissionsAsync: jest
+                .fn()
+                .mockRejectedValue(new Error("Location module unavailable")),
+        };
+
+        await expect(requestUserCoordinate(locationModule)).resolves.toEqual({
+            coordinate: null,
+            status: "unavailable",
+        });
+        expect(locationModule.getCurrentPositionAsync).not.toHaveBeenCalled();
+    });
 });

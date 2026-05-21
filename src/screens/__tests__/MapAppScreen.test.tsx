@@ -1,11 +1,13 @@
 import { act, fireEvent, render, waitFor } from "@testing-library/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Location from "expo-location";
 import osmtogeojson from "osmtogeojson";
 import type { ReactElement } from "react";
 import { Keyboard } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { hidingZonePresets } from "@/features/hidingZone/hidingZoneData";
+import { defaultPlayArea } from "@/features/map/playArea";
 import { clearPlayAreaMemoryCache } from "@/features/map/playAreaBoundary";
 import { AppStateProviders } from "@/state/AppStateProviders";
 
@@ -468,6 +470,40 @@ describe("MapAppScreen", () => {
         jest.useRealTimers();
     });
 
+    it("creates a radar question at the play-area center when location is unavailable", async () => {
+        jest.mocked(Location.getCurrentPositionAsync).mockRejectedValueOnce(
+            new Error("Cannot obtain current location"),
+        );
+        const screen = renderWithSafeArea(<MapAppScreen />);
+        jest.useFakeTimers();
+
+        fireEvent.press(screen.getByTestId("main-questions-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        fireEvent.press(screen.getByTestId("questions-add-question-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        await pressAddRadarQuestion(screen);
+
+        expect(screen.getByText("Radar Question")).toBeTruthy();
+        expect(
+            getMapShapeSource(screen, "question-active-pin").props.shape
+                .features[0].geometry.coordinates,
+        ).toEqual(defaultPlayArea.center);
+        expect(
+            screen.getByTestId("radar-center-summary").props.children,
+        ).toEqual([
+            defaultPlayArea.center[1].toFixed(5),
+            ",",
+            " ",
+            defaultPlayArea.center[0].toFixed(5),
+        ]);
+
+        jest.useRealTimers();
+    });
+
     it("deletes a radar question from the detail sheet", async () => {
         const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
@@ -571,6 +607,27 @@ describe("MapAppScreen", () => {
                     .features[0].geometry.coordinates,
             ).toEqual([139.6503, 35.6762]);
         });
+
+        jest.mocked(Location.getCurrentPositionAsync).mockRejectedValueOnce(
+            new Error("Cannot obtain current location"),
+        );
+        fireEvent(screen.getByTestId("native-map"), "onPress", {
+            geometry: { coordinates: [139.8, 35.71] },
+        });
+        await waitFor(() => {
+            expect(
+                getMapShapeSource(screen, "question-active-pin").props.shape
+                    .features[0].geometry.coordinates,
+            ).toEqual([139.8, 35.71]);
+        });
+
+        await act(async () => {
+            fireEvent.press(screen.getByTestId("radar-set-to-location-button"));
+        });
+        expect(
+            getMapShapeSource(screen, "question-active-pin").props.shape
+                .features[0].geometry.coordinates,
+        ).toEqual([139.8, 35.71]);
 
         fireEvent.press(screen.getByText("Back"));
         act(() => {
