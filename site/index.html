@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        <meta
+            name="description"
+            content="Hide & Seek Mapper helps Jet Lag-style hide and seek games share play areas, hiding zones, and question state."
+        />
+        <title>Hide &amp; Seek Mapper</title>
+        <style>
+            :root {
+                color-scheme: light;
+                --bg: #f5f7f4;
+                --ink: #17211b;
+                --muted: #657268;
+                --line: #d9dfd8;
+                --panel: #ffffff;
+                --soft: #ecf1eb;
+                --green: #176b4d;
+                --green-deep: #0f4f39;
+                --blue: #315f83;
+                --gold: #b6862f;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                background:
+                    linear-gradient(
+                        180deg,
+                        rgba(255, 255, 255, 0.72),
+                        var(--bg)
+                    ),
+                    var(--bg);
+                color: var(--ink);
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+                line-height: 1.45;
+                margin: 0;
+                min-height: 100vh;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+
+            .page {
+                margin: 0 auto;
+                max-width: 1120px;
+                min-height: 100vh;
+                padding: 28px 22px 36px;
+            }
+
+            header {
+                align-items: center;
+                display: flex;
+                justify-content: space-between;
+                gap: 18px;
+                margin-bottom: 54px;
+            }
+
+            .brand {
+                align-items: center;
+                display: flex;
+                gap: 12px;
+                min-width: 0;
+            }
+
+            .brand img {
+                border-radius: 8px;
+                height: 42px;
+                width: 42px;
+            }
+
+            .brand span {
+                font-size: 16px;
+                font-weight: 800;
+                white-space: nowrap;
+            }
+
+            .github-link {
+                align-items: center;
+                border: 1px solid var(--line);
+                border-radius: 8px;
+                display: inline-flex;
+                font-size: 14px;
+                font-weight: 800;
+                gap: 8px;
+                min-height: 42px;
+                padding: 10px 14px;
+            }
+
+            main {
+                align-items: center;
+                display: grid;
+                gap: 44px;
+                grid-template-columns: minmax(0, 1fr) 360px;
+            }
+
+            .copy {
+                max-width: 650px;
+            }
+
+            .eyebrow {
+                color: var(--green);
+                font-size: 13px;
+                font-weight: 900;
+                letter-spacing: 0;
+                margin-bottom: 12px;
+                text-transform: uppercase;
+            }
+
+            h1 {
+                font-size: clamp(42px, 8vw, 74px);
+                letter-spacing: 0;
+                line-height: 0.96;
+                margin: 0 0 22px;
+                max-width: 760px;
+            }
+
+            .lede {
+                color: var(--muted);
+                font-size: 20px;
+                margin: 0 0 30px;
+                max-width: 610px;
+            }
+
+            .actions {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+                margin-bottom: 28px;
+            }
+
+            .button {
+                align-items: center;
+                border-radius: 8px;
+                display: inline-flex;
+                font-weight: 900;
+                justify-content: center;
+                min-height: 50px;
+                padding: 13px 16px;
+            }
+
+            .primary {
+                background: var(--green);
+                color: #ffffff;
+            }
+
+            .primary:active {
+                background: var(--green-deep);
+            }
+
+            .disabled {
+                background: var(--soft);
+                border: 1px solid var(--line);
+                color: #7a847d;
+                cursor: not-allowed;
+            }
+
+            .status {
+                display: block;
+                font-size: 12px;
+                font-weight: 800;
+                line-height: 1.2;
+                margin-left: 8px;
+                text-transform: uppercase;
+            }
+
+            .notes {
+                color: var(--muted);
+                display: grid;
+                font-size: 15px;
+                gap: 8px;
+                margin: 0;
+                padding: 0;
+            }
+
+            .notes li {
+                list-style: none;
+            }
+
+            .visual {
+                background: var(--panel);
+                border: 1px solid var(--line);
+                border-radius: 8px;
+                box-shadow: 0 22px 70px rgba(23, 33, 27, 0.12);
+                overflow: hidden;
+            }
+
+            .phone-top {
+                align-items: center;
+                border-bottom: 1px solid var(--line);
+                display: flex;
+                gap: 10px;
+                padding: 14px;
+            }
+
+            .phone-top img {
+                border-radius: 8px;
+                height: 34px;
+                width: 34px;
+            }
+
+            .phone-top strong {
+                display: block;
+                font-size: 14px;
+            }
+
+            .phone-top span {
+                color: var(--muted);
+                display: block;
+                font-size: 12px;
+            }
+
+            .map {
+                aspect-ratio: 0.82;
+                background:
+                    linear-gradient(
+                        90deg,
+                        transparent 49%,
+                        rgba(49, 95, 131, 0.18) 50%,
+                        transparent 51%
+                    ),
+                    linear-gradient(
+                        0deg,
+                        transparent 49%,
+                        rgba(49, 95, 131, 0.14) 50%,
+                        transparent 51%
+                    ),
+                    #dfe9df;
+                background-size:
+                    90px 90px,
+                    90px 90px,
+                    auto;
+                padding: 22px;
+                position: relative;
+            }
+
+            .route {
+                background: var(--blue);
+                border-radius: 999px;
+                height: 10px;
+                left: 42px;
+                position: absolute;
+                right: 52px;
+                top: 112px;
+                transform: rotate(-24deg);
+            }
+
+            .route.alt {
+                background: var(--gold);
+                left: 58px;
+                right: 34px;
+                top: 198px;
+                transform: rotate(20deg);
+            }
+
+            .zone {
+                background: rgba(23, 107, 77, 0.2);
+                border: 2px solid rgba(23, 107, 77, 0.55);
+                border-radius: 50%;
+                height: 178px;
+                left: 82px;
+                position: absolute;
+                top: 122px;
+                width: 178px;
+            }
+
+            .pin {
+                background: var(--green);
+                border: 4px solid #ffffff;
+                border-radius: 50%;
+                box-shadow: 0 8px 18px rgba(23, 33, 27, 0.28);
+                height: 28px;
+                left: 166px;
+                position: absolute;
+                top: 196px;
+                width: 28px;
+            }
+
+            .sheet {
+                background: #ffffff;
+                border-radius: 8px 8px 0 0;
+                bottom: 0;
+                box-shadow: 0 -12px 36px rgba(23, 33, 27, 0.14);
+                left: 0;
+                padding: 14px 16px 18px;
+                position: absolute;
+                right: 0;
+            }
+
+            .handle {
+                background: var(--line);
+                border-radius: 999px;
+                height: 4px;
+                margin: 0 auto 14px;
+                width: 42px;
+            }
+
+            .row {
+                align-items: center;
+                display: flex;
+                justify-content: space-between;
+                gap: 12px;
+                padding: 10px 0;
+            }
+
+            .row + .row {
+                border-top: 1px solid var(--line);
+            }
+
+            .row strong {
+                font-size: 14px;
+            }
+
+            .row span {
+                color: var(--muted);
+                font-size: 13px;
+            }
+
+            @media (max-width: 820px) {
+                .page {
+                    padding-top: 20px;
+                }
+
+                header {
+                    margin-bottom: 34px;
+                }
+
+                main {
+                    grid-template-columns: 1fr;
+                }
+
+                .visual {
+                    margin: 0 auto;
+                    max-width: 380px;
+                    width: 100%;
+                }
+            }
+
+            @media (max-width: 520px) {
+                header {
+                    align-items: flex-start;
+                    flex-direction: column;
+                }
+
+                .github-link,
+                .button {
+                    width: 100%;
+                }
+
+                .actions {
+                    display: grid;
+                }
+
+                .lede {
+                    font-size: 18px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="page">
+            <header>
+                <a class="brand" href="/" aria-label="Hide & Seek Mapper home">
+                    <img src="/assets/icon.png" alt="" />
+                    <span>Hide &amp; Seek Mapper</span>
+                </a>
+                <a
+                    class="github-link"
+                    href="https://github.com/kagelump/JetLagHideAndSeek"
+                    >GitHub</a
+                >
+            </header>
+
+            <main>
+                <section class="copy">
+                    <div class="eyebrow">Mobile mapper for hide and seek</div>
+                    <h1>
+                        Plan the play area. Share the setup. Keep the game
+                        moving.
+                    </h1>
+                    <p class="lede">
+                        A local-first Expo app for Jet Lag-style hide and seek:
+                        native maps, hiding-zone overlays, radar questions, and
+                        share links built for chat and QR codes.
+                    </p>
+                    <div class="actions" aria-label="Download links">
+                        <a
+                            class="button primary"
+                            href="https://github.com/kagelump/JetLagHideAndSeek"
+                            >View on GitHub</a
+                        >
+                        <span class="button disabled" aria-disabled="true"
+                            >App Store
+                            <span class="status">Not ready yet</span></span
+                        >
+                        <span class="button disabled" aria-disabled="true"
+                            >Google Play
+                            <span class="status">Not ready yet</span></span
+                        >
+                    </div>
+                    <ul class="notes">
+                        <li>App-store builds are not published yet.</li>
+                        <li>
+                            Shared setup links open the app when a compatible
+                            build is installed.
+                        </li>
+                    </ul>
+                </section>
+
+                <section class="visual" aria-label="App preview">
+                    <div class="phone-top">
+                        <img src="/assets/icon.png" alt="" />
+                        <div>
+                            <strong>Tokyo 23 Wards</strong>
+                            <span>Play area and hiding zones</span>
+                        </div>
+                    </div>
+                    <div class="map">
+                        <div class="route"></div>
+                        <div class="route alt"></div>
+                        <div class="zone"></div>
+                        <div class="pin"></div>
+                        <div class="sheet">
+                            <div class="handle"></div>
+                            <div class="row">
+                                <strong>Share setup</strong>
+                                <span>HTTPS + QR</span>
+                            </div>
+                            <div class="row">
+                                <strong>Radar question</strong>
+                                <span>1 km</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </body>
+</html>
