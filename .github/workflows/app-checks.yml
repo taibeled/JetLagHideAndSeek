@@ -9,11 +9,13 @@ on:
             - "docs/**"
             - "e2e/**"
             - "scripts/**"
+            - "site/**"
             - "src/**"
             - "package.json"
             - "pnpm-lock.yaml"
             - "pnpm-workspace.yaml"
             - "app.json"
+            - "app.config.ts"
             - "babel.config.js"
             - "eslint.config.js"
             - "jest.config.js"
@@ -23,6 +25,7 @@ on:
             - ".prettierrc"
             - ".editorconfig"
             - ".github/workflows/app-checks.yml"
+            - ".github/workflows/pages.yml"
     push:
         branches:
             - master
@@ -33,11 +36,13 @@ on:
             - "docs/**"
             - "e2e/**"
             - "scripts/**"
+            - "site/**"
             - "src/**"
             - "package.json"
             - "pnpm-lock.yaml"
             - "pnpm-workspace.yaml"
             - "app.json"
+            - "app.config.ts"
             - "babel.config.js"
             - "eslint.config.js"
             - "jest.config.js"
@@ -47,6 +52,7 @@ on:
             - ".prettierrc"
             - ".editorconfig"
             - ".github/workflows/app-checks.yml"
+            - ".github/workflows/pages.yml"
 
 jobs:
     check:

@@ -38,7 +38,7 @@ describe("SettingsScreen sharing", () => {
         expect(screen.getByTestId("share-setup-summary")).toBeTruthy();
         expect(screen.getByTestId("share-setup-qr")).toBeTruthy();
         expect(
-            screen.getByText(/^jetlag-hide-seek-v2:\/\/import\?d=/),
+            screen.getByText(/^https:\/\/jetlag\.hinoka\.org\/i\/\?d=/),
         ).toBeTruthy();
         expect(screen.getByTestId("share-setup-copy-button")).toBeTruthy();
         expect(screen.getByTestId("share-setup-native-button")).toBeTruthy();
@@ -52,7 +52,7 @@ describe("SettingsScreen sharing", () => {
         fireEvent.press(screen.getByTestId("settings-share-button"));
 
         expect(
-            screen.getByText(/^jetlag-hide-seek-v2:\/\/import\?d=/),
+            screen.getByText(/^https:\/\/jetlag\.hinoka\.org\/i\/\?d=/),
         ).toBeTruthy();
 
         const linkArea = screen.getByTestId("share-setup-link");
@@ -67,7 +67,7 @@ describe("SettingsScreen sharing", () => {
 
         tripleTap(linkArea);
         expect(
-            screen.getByText(/^jetlag-hide-seek-v2:\/\/import\?d=/),
+            screen.getByText(/^https:\/\/jetlag\.hinoka\.org\/i\/\?d=/),
         ).toBeTruthy();
     });
 });

@@ -1,0 +1,49 @@
+name: Share Link Pages
+
+on:
+    push:
+        branches:
+            - master
+        paths:
+            - "site/**"
+            - "scripts/build-share-site-config.mjs"
+            - ".github/workflows/pages.yml"
+    workflow_dispatch:
+
+permissions:
+    contents: read
+    pages: write
+    id-token: write
+
+concurrency:
+    group: pages
+    cancel-in-progress: false
+
+jobs:
+    deploy:
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+
+            - name: Build verification files
+              env:
+                  APP_LINK_DOMAIN: ${{ vars.APP_LINK_DOMAIN }}
+                  APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+                  ANDROID_SHA256_CERT_FINGERPRINTS: ${{ secrets.ANDROID_SHA256_CERT_FINGERPRINTS }}
+              run: node scripts/build-share-site-config.mjs
+
+            - uses: actions/configure-pages@v5
+
+            - uses: actions/upload-pages-artifact@v3
+              with:
+                  path: site
+
+            - id: deployment
+              uses: actions/deploy-pages@v4

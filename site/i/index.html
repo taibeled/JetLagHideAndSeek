@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        <title>Open Hide &amp; Seek Mapper</title>
+        <style>
+            :root {
+                color-scheme: light;
+                --bg: #f6f7f4;
+                --card: #ffffff;
+                --ink: #17211b;
+                --muted: #66736b;
+                --border: #d9dfd8;
+                --button: #176b4d;
+                --button-pressed: #12553d;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                align-items: center;
+                background: var(--bg);
+                color: var(--ink);
+                display: flex;
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+                justify-content: center;
+                line-height: 1.45;
+                margin: 0;
+                min-height: 100vh;
+                padding: 24px;
+            }
+
+            main {
+                background: var(--card);
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                max-width: 480px;
+                padding: 24px;
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 26px;
+                line-height: 1.15;
+                margin: 0 0 10px;
+            }
+
+            p {
+                color: var(--muted);
+                font-size: 16px;
+                margin: 0 0 18px;
+            }
+
+            .actions {
+                display: grid;
+                gap: 10px;
+            }
+
+            a,
+            button {
+                align-items: center;
+                border-radius: 8px;
+                display: flex;
+                font: inherit;
+                font-weight: 700;
+                justify-content: center;
+                min-height: 48px;
+                padding: 12px 14px;
+                text-decoration: none;
+                width: 100%;
+            }
+
+            a {
+                background: var(--button);
+                color: #ffffff;
+            }
+
+            a:active {
+                background: var(--button-pressed);
+            }
+
+            button {
+                background: #eef2ed;
+                border: 1px solid var(--border);
+                color: var(--ink);
+                cursor: pointer;
+            }
+
+            .error {
+                color: #b42318;
+                display: none;
+            }
+
+            .status {
+                color: var(--muted);
+                font-size: 14px;
+                margin-top: 12px;
+                min-height: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <h1>Open Hide &amp; Seek Mapper</h1>
+            <p id="detail">
+                This shared setup opens in the Hide &amp; Seek Mapper app.
+            </p>
+            <p class="error" id="error">
+                This share link is missing its setup payload.
+            </p>
+            <div class="actions" id="actions">
+                <a href="#" id="openLink">Open in app</a>
+                <button type="button" id="copyLink">Copy link</button>
+            </div>
+            <div class="status" id="status" aria-live="polite"></div>
+        </main>
+
+        <script>
+            const params = new URLSearchParams(window.location.search);
+            const payload = params.get("d");
+            const detail = document.getElementById("detail");
+            const error = document.getElementById("error");
+            const actions = document.getElementById("actions");
+            const openLink = document.getElementById("openLink");
+            const copyLink = document.getElementById("copyLink");
+            const status = document.getElementById("status");
+
+            if (!payload) {
+                detail.style.display = "none";
+                error.style.display = "block";
+                actions.style.display = "none";
+            } else {
+                const appUrl = `jetlag-hide-seek-v2://import?d=${encodeURIComponent(payload)}`;
+                openLink.href = appUrl;
+
+                window.setTimeout(() => {
+                    window.location.href = appUrl;
+                }, 250);
+
+                copyLink.addEventListener("click", async () => {
+                    try {
+                        await navigator.clipboard.writeText(
+                            window.location.href,
+                        );
+                        status.textContent = "Link copied.";
+                    } catch {
+                        status.textContent =
+                            "Copy is unavailable in this browser.";
+                    }
+                });
+            }
+        </script>
+    </body>
+</html>

@@ -41,7 +41,7 @@ module.exports = [
         },
     },
     {
-        files: ["**/*.{js,ts,tsx}"],
+        files: ["**/*.{js,mjs,ts,tsx}"],
         languageOptions: {
             globals: {
                 ...globals.es2022,
@@ -54,6 +54,12 @@ module.exports = [
             "react/prop-types": "off",
             "@typescript-eslint/no-explicit-any": "off",
             "@typescript-eslint/no-require-imports": "off",
+        },
+    },
+    {
+        files: ["**/*.mjs"],
+        rules: {
+            "no-redeclare": "off",
         },
     },
     eslintConfigPrettier,

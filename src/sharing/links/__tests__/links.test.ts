@@ -21,6 +21,20 @@ const envelope = buildAppStateEnvelope({
 });
 
 describe("sharing links", () => {
+    it("builds and parses https import links", () => {
+        const link = buildImportLink({ envelope, mode: "https" });
+
+        expect(link).toMatch(/^https:\/\/jetlag\.hinoka\.org\/i\/\?d=/);
+
+        const parsed = parseImportLink(link);
+        expect(parsed.ok).toBe(true);
+        if (parsed.ok) {
+            expect(parsed.source).toBe("payload");
+            expect(parsed.envelope.kind).toBe("app-state");
+            expect(parsed.envelope.payload.gameId).toBe("game-1");
+        }
+    });
+
     it("builds and parses custom-scheme import links", () => {
         const link = buildImportLink({ envelope, mode: "custom-scheme" });
 
@@ -42,5 +56,20 @@ describe("sharing links", () => {
             expect(result.payload.hidingZones?.radiusUnit).toBe("m");
             expect(result.payload.playArea?.osmType).toBe("R");
         }
+    });
+
+    it("parses https import links with either /i or /i/ path shapes", () => {
+        const link = buildImportLink({ envelope, mode: "https" });
+        const withoutTrailingSlash = link.replace("/i/?", "/i?");
+
+        expect(parseImportLink(link).ok).toBe(true);
+        expect(parseImportLink(withoutTrailingSlash).ok).toBe(true);
+    });
+
+    it("returns a missing payload error for import links without d", () => {
+        expect(parseImportLink("https://jetlag.hinoka.org/i/")).toEqual({
+            error: { code: "missing-payload" },
+            ok: false,
+        });
     });
 });

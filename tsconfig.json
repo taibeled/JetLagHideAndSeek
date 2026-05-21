@@ -8,7 +8,7 @@
             "@/*": ["src/*"]
         },
         "typeRoots": ["./node_modules/@types", "../node_modules/@types"],
-        "types": ["jest"]
+        "types": ["jest", "node"]
     },
     "include": ["app/**/*.ts", "app/**/*.tsx", "src/**/*.ts", "src/**/*.tsx"]
 }

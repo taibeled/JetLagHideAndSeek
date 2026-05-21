@@ -1,0 +1,26 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appIDs": [
+          "TEAMID.com.raycatdev.hideandseek.v2"
+        ],
+        "components": [
+          {
+            "/": "/i/*",
+            "comment": "Open Hide & Seek Mapper import links."
+          },
+          {
+            "/": "/i",
+            "comment": "Open Hide & Seek Mapper import links."
+          }
+        ],
+        "paths": [
+          "/i/*",
+          "/i"
+        ]
+      }
+    ]
+  }
+}

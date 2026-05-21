@@ -13,6 +13,7 @@
         "format:check": "prettier . --check",
         "check": "pnpm lint && pnpm format:check && pnpm typecheck",
         "data:odpt": "node data/odpt/scripts/fetch-odpt.mjs",
+        "site:build": "node scripts/build-share-site-config.mjs",
         "typecheck": "tsc --noEmit",
         "test": "jest",
         "test:e2e:ios": "maestro test e2e/smoke.yaml && maestro test e2e/play-area.yaml && maestro test e2e/hiding-zone.yaml && maestro test e2e/radar-question.yaml",

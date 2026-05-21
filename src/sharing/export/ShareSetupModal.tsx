@@ -58,7 +58,7 @@ export function ShareSetupModal({
     );
 
     const link = useMemo(
-        () => buildImportLink({ envelope, mode: "custom-scheme" }),
+        () => buildImportLink({ envelope, mode: "https" }),
         [envelope],
     );
     const canShowQr = link.length <= 2500;

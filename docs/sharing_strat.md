@@ -757,6 +757,44 @@ Host:
 /.well-known/assetlinks.json
 ```
 
+## 10.4 Static redirect site implementation
+
+Production HTTPS links are served from the custom-domain static site in `site/`.
+The canonical setup URL is:
+
+```text
+https://jetlag.hinoka.org/i/?d=<encoded-envelope>
+```
+
+The native app has matching `/i/` and `/import` import routes. Verified iOS
+Universal Links and Android App Links open `/i/` directly in the app. Browser
+fallbacks render `site/i/index.html`, which validates that `d` exists, attempts
+to open `jetlag-hide-seek-v2://import?d=<encoded-envelope>`, and offers manual
+open/copy actions without decoding or applying the payload.
+
+`scripts/build-share-site-config.mjs` regenerates:
+
+```text
+site/CNAME
+site/.well-known/apple-app-site-association
+site/.well-known/assetlinks.json
+```
+
+Use these environment variables when publishing production verification files:
+
+```text
+APP_LINK_DOMAIN
+APPLE_TEAM_ID
+IOS_BUNDLE_IDENTIFIER
+ANDROID_PACKAGE_NAME
+ANDROID_SHA256_CERT_FINGERPRINTS
+```
+
+`app.config.ts` reads `EXPO_PUBLIC_APP_LINK_DOMAIN` for native associated-domain
+and Android intent-filter config. `src/config/appLinks.ts` reads
+`EXPO_PUBLIC_APP_LINK_BASE_URL` or `EXPO_PUBLIC_APP_LINK_DOMAIN` for generated
+share links, defaulting to `https://jetlag.hinoka.org`.
+
 ## 11. User flows
 
 ## 11.1 Share initial game setup
