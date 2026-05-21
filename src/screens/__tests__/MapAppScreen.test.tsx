@@ -169,6 +169,7 @@ async function pressAddRadarQuestion(screen: ReturnType<typeof render>) {
 
 describe("MapAppScreen", () => {
     beforeEach(async () => {
+        jest.useRealTimers();
         jest.clearAllMocks();
         clearPlayAreaMemoryCache();
         await AsyncStorage.clear();
@@ -177,6 +178,10 @@ describe("MapAppScreen", () => {
             json: jest.fn().mockResolvedValue({ elements: [] }),
             ok: true,
         });
+    });
+
+    afterEach(() => {
+        jest.useRealTimers();
     });
 
     it("renders the native map and bottom sheet", () => {
@@ -296,8 +301,8 @@ describe("MapAppScreen", () => {
     });
 
     it("keeps bottom-sheet navigation working", () => {
-        const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
+        const screen = renderWithSafeArea(<MapAppScreen />);
 
         fireEvent.press(screen.getByText("Questions"));
         act(() => {
@@ -328,13 +333,11 @@ describe("MapAppScreen", () => {
         expect(screen.getByText("Game Settings")).toBeTruthy();
         expect(screen.getByTestId("settings-play-area-row")).toBeTruthy();
         expect(screen.getByTestId("settings-hiding-zone-row")).toBeTruthy();
-
-        jest.useRealTimers();
     });
 
     it("creates a radar question at the current location and renders its radar preview", async () => {
-        const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
+        const screen = renderWithSafeArea(<MapAppScreen />);
 
         fireEvent.press(screen.getByTestId("main-questions-row"));
         act(() => {
@@ -468,13 +471,11 @@ describe("MapAppScreen", () => {
         expect(
             screen.getByTestId("radar-distance-meters").props.children,
         ).toEqual(["Current distance ", 750, " m"]);
-
-        jest.useRealTimers();
     });
 
     it("uses a carousel for radar distance options at preview snaps and a grid at the large snap", async () => {
-        const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
+        const screen = renderWithSafeArea(<MapAppScreen />);
 
         fireEvent.press(screen.getByTestId("main-questions-row"));
         act(() => {
@@ -511,16 +512,14 @@ describe("MapAppScreen", () => {
             screen.getByTestId("radar-distance-option-carousel"),
         ).toBeTruthy();
         expect(screen.queryByTestId("radar-distance-option-grid")).toBeNull();
-
-        jest.useRealTimers();
     });
 
     it("creates a radar question at the play-area center when location is unavailable", async () => {
         jest.mocked(Location.getCurrentPositionAsync).mockRejectedValueOnce(
             new Error("Cannot obtain current location"),
         );
-        const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
+        const screen = renderWithSafeArea(<MapAppScreen />);
 
         fireEvent.press(screen.getByTestId("main-questions-row"));
         act(() => {
@@ -545,13 +544,11 @@ describe("MapAppScreen", () => {
             " ",
             defaultPlayArea.center[0].toFixed(5),
         ]);
-
-        jest.useRealTimers();
     });
 
     it("deletes a radar question from the detail sheet", async () => {
-        const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
+        const screen = renderWithSafeArea(<MapAppScreen />);
 
         fireEvent.press(screen.getByTestId("main-questions-row"));
         act(() => {
@@ -579,13 +576,11 @@ describe("MapAppScreen", () => {
             getMapShapeSource(screen, "radar-question-areas").props.shape
                 .features,
         ).toHaveLength(0);
-
-        jest.useRealTimers();
     });
 
     it("deletes a radar question from the question list swipe action", async () => {
-        const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
+        const screen = renderWithSafeArea(<MapAppScreen />);
 
         fireEvent.press(screen.getByTestId("main-questions-row"));
         act(() => {
@@ -615,13 +610,11 @@ describe("MapAppScreen", () => {
             getMapShapeSource(screen, "radar-question-areas").props.shape
                 .features,
         ).toHaveLength(0);
-
-        jest.useRealTimers();
     });
 
     it("moves only the active radar pin source while the question sheet is open and unlocked", async () => {
-        const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
+        const screen = renderWithSafeArea(<MapAppScreen />);
 
         fireEvent.press(screen.getByTestId("main-questions-row"));
         act(() => {
@@ -682,13 +675,11 @@ describe("MapAppScreen", () => {
             getMapShapeSource(screen, "question-active-pin").props.shape
                 .features,
         ).toHaveLength(0);
-
-        jest.useRealTimers();
     });
 
     it("keeps the active radar pin fixed when locked", async () => {
-        const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
+        const screen = renderWithSafeArea(<MapAppScreen />);
 
         fireEvent.press(screen.getByTestId("main-questions-row"));
         act(() => {
@@ -727,13 +718,11 @@ describe("MapAppScreen", () => {
             screen.getByTestId("radar-pin-lock-button").props
                 .accessibilityLabel,
         ).toBe("Unlock radar pin");
-
-        jest.useRealTimers();
     });
 
     it("shows nearest selected station distance in the radar info box", async () => {
-        const screen = renderWithSafeArea(<MapAppScreen />);
         jest.useFakeTimers();
+        const screen = renderWithSafeArea(<MapAppScreen />);
 
         fireEvent.press(screen.getByTestId("main-settings-row"));
         act(() => {
@@ -771,8 +760,6 @@ describe("MapAppScreen", () => {
                 ),
             ).toContain("from ");
         });
-
-        jest.useRealTimers();
     });
 
     it("suggests Tokyo hiding-zone presets without auto-selecting them", () => {
