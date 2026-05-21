@@ -10,7 +10,6 @@ import {
     SymbolLayer,
     UserLocation,
 } from "@maplibre/maplibre-react-native";
-import { difference, type Geom } from "polyclip-ts";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ComponentType } from "react";
 import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
@@ -30,8 +29,13 @@ import {
     fitCameraToBbox,
     getTopViewportFitPadding,
 } from "./camera";
-import type { GeoJsonFeatureCollection, Position } from "./geojsonTypes";
+import type { Position } from "./geojsonTypes";
 import { buildOsmRasterStyleJson } from "./mapStyle";
+import {
+    asSeparateMaskConstraints,
+    buildCombinedInsideMask,
+    buildPlayAreaMask,
+} from "./maskBuilder";
 import { useUserLocation } from "./useUserLocation";
 import { usePlayArea } from "@/state/playAreaStore";
 import questionPinImage from "../../../assets/map/question-pin.png";
@@ -50,13 +54,6 @@ const MLUserLocation = UserLocation as ComponentType<any>;
 const MAX_STATION_COLOR_RINGS = 6;
 const ROUTE_MIN_ZOOM = 9;
 const STATION_MIN_ZOOM = 12;
-const WORLD_MASK_RING: Position[] = [
-    [-180, -85],
-    [180, -85],
-    [180, 85],
-    [-180, 85],
-    [-180, -85],
-];
 
 type NativeMapProps = {
     onPress?: (event?: unknown) => void;
@@ -93,18 +90,19 @@ export function NativeMap({ onPress }: NativeMapProps) {
         () => buildPlayAreaMask(playArea.boundary),
         [playArea.boundary],
     );
-    const hidingZoneMask = useMemo(
-        () => buildHidingZoneMask(playArea.boundary, zoneFeatures),
-        [playArea.boundary, zoneFeatures],
-    );
-    const radarHitMask = useMemo(
-        () =>
-            buildPerFeatureOutsideMasks(
-                playArea.boundary,
+    const combinedInsideMask = useMemo(() => {
+        return buildCombinedInsideMask(
+            playArea.boundary,
+            zoneFeatures,
+            ...asSeparateMaskConstraints(
                 questionMapRenderState.radar.hitMaskFeatures,
             ),
-        [playArea.boundary, questionMapRenderState.radar.hitMaskFeatures],
-    );
+        );
+    }, [
+        playArea.boundary,
+        zoneFeatures,
+        questionMapRenderState.radar.hitMaskFeatures,
+    ]);
     const mapStyle = useMemo(() => buildOsmRasterStyleJson(), []);
     const fitPadding = useMemo(
         () =>
@@ -340,16 +338,16 @@ export function NativeMap({ onPress }: NativeMapProps) {
                         />
                     </MLShapeSource>
 
-                    {hidingZoneMask.features.length > 0 ? (
+                    {combinedInsideMask.features.length > 0 ? (
                         <MLShapeSource
-                            id={`hiding-zone-outside-mask-${playArea.osmId}`}
-                            shape={hidingZoneMask}
+                            id={`combined-inside-mask-${playArea.osmId}`}
+                            shape={combinedInsideMask}
                         >
                             <MLFillLayer
-                                id={`hiding-zone-outside-mask-fill-${playArea.osmId}`}
+                                id={`combined-inside-mask-fill-${playArea.osmId}`}
                                 style={{
                                     fillColor: "#07111f",
-                                    fillOpacity: 0.3,
+                                    fillOpacity: 0.35,
                                 }}
                             />
                         </MLShapeSource>
@@ -376,20 +374,6 @@ export function NativeMap({ onPress }: NativeMapProps) {
                             style={{
                                 fillColor: "#e46f4d",
                                 fillOpacity: 0.16,
-                            }}
-                        />
-                    </MLShapeSource>
-
-                    <MLShapeSource
-                        id="radar-question-hit-mask"
-                        onPress={handleMapPress}
-                        shape={radarHitMask}
-                    >
-                        <MLFillLayer
-                            id="radar-question-hit-mask-fill"
-                            style={{
-                                fillColor: "#07111f",
-                                fillOpacity: 0.34,
                             }}
                         />
                     </MLShapeSource>
@@ -560,199 +544,6 @@ export function NativeMap({ onPress }: NativeMapProps) {
             </View>
         </GestureDetector>
     );
-}
-
-function buildPlayAreaMask(
-    boundary: GeoJsonFeatureCollection,
-): GeoJsonFeatureCollection {
-    const holes = getExteriorRings(boundary).map(orientHoleRing);
-
-    return {
-        features: [
-            {
-                geometry: {
-                    coordinates: [
-                        orientExteriorRing(WORLD_MASK_RING),
-                        ...holes,
-                    ],
-                    type: "Polygon",
-                },
-                properties: {},
-                type: "Feature",
-            },
-        ],
-        type: "FeatureCollection",
-    };
-}
-
-function buildHidingZoneMask(
-    playArea: PolygonFeatureCollection,
-    hidingZone: PolygonFeatureCollection,
-): GeoJsonFeatureCollection {
-    const playAreaPolygons = getPolygons(playArea);
-    const hidingZonePolygons = getPolygons(hidingZone);
-
-    if (playAreaPolygons.length === 0 || hidingZonePolygons.length === 0) {
-        return { features: [], type: "FeatureCollection" };
-    }
-
-    const maskedArea = difference(
-        playAreaPolygons as Geom,
-        ...(hidingZonePolygons as Geom[]),
-    ) as Position[][][];
-
-    return {
-        features:
-            maskedArea.length > 0
-                ? [
-                      {
-                          geometry: {
-                              coordinates: maskedArea,
-                              type: "MultiPolygon" as const,
-                          },
-                          properties: {},
-                          type: "Feature" as const,
-                      },
-                  ]
-                : [],
-        type: "FeatureCollection",
-    };
-}
-
-function buildPerFeatureOutsideMasks(
-    playArea: PolygonFeatureCollection,
-    maskInsideAreas: PolygonFeatureCollection,
-): GeoJsonFeatureCollection {
-    const playAreaPolygons = getPolygons(playArea);
-    if (
-        playAreaPolygons.length === 0 ||
-        maskInsideAreas.features.length === 0
-    ) {
-        return { features: [], type: "FeatureCollection" };
-    }
-
-    return {
-        features: maskInsideAreas.features.flatMap((feature) => {
-            const insidePolygons = getPolygons({
-                features: [feature],
-                type: "FeatureCollection",
-            });
-            if (insidePolygons.length === 0) return [];
-
-            const maskedArea = difference(
-                playAreaPolygons as Geom,
-                ...(insidePolygons as Geom[]),
-            ) as Position[][][];
-
-            return maskedArea.length > 0
-                ? [
-                      {
-                          geometry: {
-                              coordinates: maskedArea,
-                              type: "MultiPolygon" as const,
-                          },
-                          properties: {},
-                          type: "Feature" as const,
-                      },
-                  ]
-                : [];
-        }),
-        type: "FeatureCollection",
-    };
-}
-
-type PolygonFeatureCollection = {
-    features: PolygonFeature[];
-    type: "FeatureCollection";
-};
-
-type PolygonFeature = {
-    geometry: {
-        coordinates: unknown;
-        type: "Polygon" | "MultiPolygon";
-    };
-};
-
-function getExteriorRings(collection: PolygonFeatureCollection): Position[][] {
-    return collection.features.flatMap((feature) => {
-        const { coordinates, type } = feature.geometry;
-
-        if (type === "Polygon") {
-            const rings = Array.isArray(coordinates) ? coordinates : [];
-            const exterior = toPositionRing(rings[0]);
-            return exterior ? [exterior] : [];
-        }
-
-        const polygons = Array.isArray(coordinates) ? coordinates : [];
-        return polygons.flatMap((polygon) => {
-            const rings = Array.isArray(polygon) ? polygon : [];
-            const exterior = toPositionRing(rings[0]);
-            return exterior ? [exterior] : [];
-        });
-    });
-}
-
-function getPolygons(collection: PolygonFeatureCollection): Position[][][] {
-    return collection.features.flatMap((feature) => {
-        const { coordinates, type } = feature.geometry;
-
-        if (type === "Polygon") {
-            const polygon = toPolygon(coordinates);
-            return polygon ? [polygon] : [];
-        }
-
-        const polygons = Array.isArray(coordinates) ? coordinates : [];
-        return polygons.flatMap((polygon) => {
-            const converted = toPolygon(polygon);
-            return converted ? [converted] : [];
-        });
-    });
-}
-
-function toPolygon(value: unknown): Position[][] | null {
-    if (!Array.isArray(value)) return null;
-
-    const rings = value.flatMap((ring) => {
-        const positions = toPositionRing(ring);
-        return positions ? [positions] : [];
-    });
-
-    return rings.length > 0 ? rings : null;
-}
-
-function toPositionRing(value: unknown): Position[] | null {
-    if (!Array.isArray(value)) return null;
-
-    const ring = value.flatMap((point) => {
-        if (
-            Array.isArray(point) &&
-            typeof point[0] === "number" &&
-            typeof point[1] === "number"
-        ) {
-            return [[point[0], point[1]] as Position];
-        }
-        return [];
-    });
-
-    return ring.length > 0 ? ring : null;
-}
-
-function orientExteriorRing(ring: Position[]): Position[] {
-    return signedRingArea(ring) >= 0 ? ring : [...ring].reverse();
-}
-
-function orientHoleRing(ring: Position[]): Position[] {
-    return signedRingArea(ring) <= 0 ? ring : [...ring].reverse();
-}
-
-function signedRingArea(ring: Position[]): number {
-    let area = 0;
-    for (let index = 0; index < ring.length - 1; index += 1) {
-        const [x1, y1] = ring[index];
-        const [x2, y2] = ring[index + 1];
-        area += x1 * y2 - x2 * y1;
-    }
-    return area / 2;
 }
 
 type MapControlProps = {

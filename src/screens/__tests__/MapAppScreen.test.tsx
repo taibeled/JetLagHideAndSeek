@@ -378,9 +378,10 @@ describe("MapAppScreen", () => {
         expect(radarShape.features).toHaveLength(1);
         expect(radarShape.features[0].properties.distanceMeters).toBe(500);
         expect(
-            getMapShapeSource(screen, "radar-question-hit-mask").props.shape
-                .features,
-        ).toHaveLength(0);
+            screen
+                .getAllByTestId("map-shape-source")
+                .some((s) => s.props.id === "combined-inside-mask-19631009"),
+        ).toBe(false);
         expect(
             getMapShapeSource(screen, "radar-question-miss-mask").props.shape
                 .features,
@@ -400,8 +401,8 @@ describe("MapAppScreen", () => {
                 .features,
         ).toHaveLength(0);
         expect(
-            getMapShapeSource(screen, "radar-question-hit-mask").props.shape
-                .features,
+            getMapShapeSource(screen, "combined-inside-mask-19631009").props
+                .shape.features,
         ).toHaveLength(1);
         expect(
             getMapShapeSource(screen, "radar-question-miss-mask").props.shape
@@ -410,9 +411,10 @@ describe("MapAppScreen", () => {
 
         fireEvent.press(screen.getByTestId("radar-answer-option-negative"));
         expect(
-            getMapShapeSource(screen, "radar-question-hit-mask").props.shape
-                .features,
-        ).toHaveLength(0);
+            screen
+                .getAllByTestId("map-shape-source")
+                .some((s) => s.props.id === "combined-inside-mask-19631009"),
+        ).toBe(false);
         expect(
             getMapShapeSource(screen, "radar-question-miss-mask").props.shape
                 .features,
@@ -796,10 +798,8 @@ describe("MapAppScreen", () => {
                     ),
             ).toBe(false);
             expect(
-                getMapFillLayer(
-                    screen,
-                    "hiding-zone-outside-mask-fill-19631009",
-                ).props.style.fillOpacity,
+                getMapFillLayer(screen, "combined-inside-mask-fill-19631009")
+                    .props.style.fillOpacity,
             ).toBeLessThan(
                 getMapFillLayer(screen, "play-area-outside-mask-fill-19631009")
                     .props.style.fillOpacity,
