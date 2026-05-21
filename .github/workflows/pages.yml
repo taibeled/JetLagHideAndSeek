@@ -1,6 +1,7 @@
 name: Share Link Pages
 
 # Deploys the static app-link fallback site for jetlag.hinoka.org.
+# GitHub Pages must be enabled with GitHub Actions as the source.
 
 on:
     push:
