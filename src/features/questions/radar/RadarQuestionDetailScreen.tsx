@@ -81,9 +81,6 @@ export function RadarQuestionDetailScreen({
     return (
         <>
             <Text style={styles.eyebrow}>Radar Question</Text>
-            <Text style={styles.detail}>
-                Ask whether the hider is within a distance of you.
-            </Text>
 
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Distance</Text>
