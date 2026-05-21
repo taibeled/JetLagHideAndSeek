@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
+import { SheetListRow } from "@/components/SheetListRow";
 import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
 import { ShareSetupModal } from "@/sharing/export/ShareSetupModal";
 import { useHidingZone } from "@/state/hidingZoneStore";
@@ -41,43 +42,21 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
             </Text>
 
             <View style={styles.actions}>
-                <Pressable
+                <SheetListRow
                     accessibilityLabel="Open Play Area settings"
-                    accessibilityRole="button"
+                    description={`${playArea.label} · ${cacheSource}`}
                     onPress={() => onNavigate("play-area")}
-                    style={({ pressed }) => [
-                        styles.action,
-                        pressed ? styles.actionPressed : null,
-                    ]}
                     testID="settings-play-area-row"
-                >
-                    <View style={styles.actionCopy}>
-                        <Text style={styles.actionTitle}>Play Area</Text>
-                        <Text style={styles.actionDescription}>
-                            {playArea.label} · {cacheSource}
-                        </Text>
-                    </View>
-                    <Text style={styles.chevron}>›</Text>
-                </Pressable>
+                    title="Play Area"
+                />
 
-                <Pressable
+                <SheetListRow
                     accessibilityLabel="Open Hiding Zones settings"
-                    accessibilityRole="button"
+                    description="Eligible transit stations for the hiding zone."
                     onPress={() => onNavigate("hiding-zone")}
-                    style={({ pressed }) => [
-                        styles.action,
-                        pressed ? styles.actionPressed : null,
-                    ]}
                     testID="settings-hiding-zone-row"
-                >
-                    <View style={styles.actionCopy}>
-                        <Text style={styles.actionTitle}>Hiding Zones</Text>
-                        <Text style={styles.actionDescription}>
-                            Eligible transit stations for the hiding zone.
-                        </Text>
-                    </View>
-                    <Text style={styles.chevron}>›</Text>
-                </Pressable>
+                    title="Hiding Zones"
+                />
             </View>
             <ShareSetupModal
                 hidingZones={{
@@ -95,44 +74,12 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
 }
 
 const styles = StyleSheet.create({
-    action: {
-        alignItems: "center",
-        backgroundColor: colors.card,
-        borderColor: colors.border,
-        borderRadius: 8,
-        borderWidth: 1,
-        flexDirection: "row",
-        gap: 12,
-        justifyContent: "space-between",
-        minHeight: 72,
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-    },
-    actionCopy: {
-        flex: 1,
-    },
-    actionDescription: {
-        color: colors.muted,
-        fontSize: 13,
-        lineHeight: 18,
-        marginTop: 2,
-    },
     actionPressed: {
         opacity: 0.72,
     },
     actions: {
         gap: 10,
         marginTop: 18,
-    },
-    actionTitle: {
-        color: colors.ink,
-        fontSize: 17,
-        fontWeight: "700",
-    },
-    chevron: {
-        color: colors.muted,
-        fontSize: 28,
-        lineHeight: 28,
     },
     container: {
         flex: 1,
