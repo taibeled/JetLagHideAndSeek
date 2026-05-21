@@ -44,10 +44,6 @@ appId: com.hinoka.hideandseek.v2
 - assertVisible:
       id: "radar-distance-option-5km"
 - assertVisible:
-      id: "radar-distance-option-10km"
-- assertVisible:
-      id: "radar-distance-option-other"
-- assertVisible:
       id: "radar-answer-option-unanswered"
 - assertVisible:
       id: "radar-answer-option-positive"
@@ -56,10 +52,15 @@ appId: com.hinoka.hideandseek.v2
 - assertVisible:
       id: "radar-pin-lock-button"
 - tapOn:
-      id: "radar-answer-option-positive"
+      id: "radar-answer-option-negative"
 - tapOn:
       point: "48%,31%"
 - tapOn:
       id: "radar-distance-option-1km"
 - assertVisible: "Current distance 1000 m"
-- takeScreenshot: e2e/artifacts/radar-question/radar-question-map
+- takeScreenshot: e2e/artifacts/radar-question/radar-question-miss-map
+- tapOn: "Back"
+- extendedWaitUntil:
+      visible: "Question List"
+      timeout: 10000
+- assertVisible: "Open radar question 1"
