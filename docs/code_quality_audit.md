@@ -58,14 +58,14 @@ pnpm test    # 21 suites, 162 tests — passed
 
 ### Code health signals
 
-| Signal | Status |
-|--------|--------|
-| ESLint (incl. `eslint-plugin-rn-a11y`) | Pass |
-| Prettier | Pass |
-| TypeScript `strict: true` | Pass |
-| `@ts-ignore` / `eslint-disable` in `src/` | None found |
-| `console.log` in `src/` | None found |
-| Path alias `@/*` | Consistent usage |
+| Signal                                    | Status           |
+| ----------------------------------------- | ---------------- |
+| ESLint (incl. `eslint-plugin-rn-a11y`)    | Pass             |
+| Prettier                                  | Pass             |
+| TypeScript `strict: true`                 | Pass             |
+| `@ts-ignore` / `eslint-disable` in `src/` | None found       |
+| `console.log` in `src/`                   | None found       |
+| Path alias `@/*`                          | Consistent usage |
 
 ### Testing
 
@@ -102,7 +102,7 @@ Findings are grouped by severity:
 - Top chrome and icon-only map controls
 - User location integration
 
-This partially contradicts the stated direction in `AGENTS.md`: *"Avoid teaching NativeMap every future question family directly"* and *"Keep MapAppScreen as a coordinator."*
+This partially contradicts the stated direction in `AGENTS.md`: _"Avoid teaching NativeMap every future question family directly"_ and _"Keep MapAppScreen as a coordinator."_
 
 **Impact:** Each new question type adds layers, gestures, and conditionals here. Review and test surface grows quickly.
 
@@ -240,19 +240,19 @@ The effect depends on `playAreaStore.playArea`. Any new object reference trigger
 
 ### 5. Testing gaps
 
-| Area | Unit / component tests | E2E |
-|------|------------------------|-----|
-| Map domain (camera, masks, play area) | Strong | Partial |
-| State stores | Strong | — |
-| Wire format / import | Strong | — |
-| `NativeMap` | Moderate | — |
-| `MapAppScreen` integration | Very large single file | Maestro |
-| `PlayAreaScreen` | None | Maestro (coordinates) |
-| `HidingZoneScreen` | None | Maestro |
-| `MainDrawer` transitions | None | — |
-| `RadarQuestionDetailScreen` | None | Maestro |
-| `ShareSetupModal` | None | — |
-| `QuestionsScreen` / swipe delete | None | — |
+| Area                                  | Unit / component tests | E2E                   |
+| ------------------------------------- | ---------------------- | --------------------- |
+| Map domain (camera, masks, play area) | Strong                 | Partial               |
+| State stores                          | Strong                 | —                     |
+| Wire format / import                  | Strong                 | —                     |
+| `NativeMap`                           | Moderate               | —                     |
+| `MapAppScreen` integration            | Very large single file | Maestro               |
+| `PlayAreaScreen`                      | None                   | Maestro (coordinates) |
+| `HidingZoneScreen`                    | None                   | Maestro               |
+| `MainDrawer` transitions              | None                   | —                     |
+| `RadarQuestionDetailScreen`           | None                   | Maestro               |
+| `ShareSetupModal`                     | None                   | —                     |
+| `QuestionsScreen` / swipe delete      | None                   | —                     |
 
 **Recommendation priorities:**
 
@@ -274,12 +274,12 @@ The effect depends on `playAreaStore.playArea`. Any new object reference trigger
 
 Examples:
 
-| Location | Color | Purpose |
-|----------|-------|---------|
-| `NativeMap.tsx` | `#07111f`, `#e46f4d`, `#ffffff` | Masks, radar, pin glow |
-| `MainDrawer.tsx` | `#e6f2ef` | Active action background |
-| `QuestionDetailScreen.tsx` | `#d92d20` | Delete button |
-| `AppBottomSheet.tsx` | `#b8b1a4` | Handle indicator |
+| Location                   | Color                           | Purpose                  |
+| -------------------------- | ------------------------------- | ------------------------ |
+| `NativeMap.tsx`            | `#07111f`, `#e46f4d`, `#ffffff` | Masks, radar, pin glow   |
+| `MainDrawer.tsx`           | `#e6f2ef`                       | Active action background |
+| `QuestionDetailScreen.tsx` | `#d92d20`                       | Delete button            |
+| `AppBottomSheet.tsx`       | `#b8b1a4`                       | Handle indicator         |
 
 **Recommendation:** Extend `src/theme/colors.ts` with semantic tokens (`mapMask`, `radarAccent`, `destructive`, `sheetHandle`) and reference them from components.
 
@@ -289,7 +289,7 @@ Examples:
 
 #### M-1: Doc drift on persistence milestone
 
-`docs/implementation_notes.md` still states play area and hiding zones are *"not persisted yet"* in places, while `AppStateProviders` + `persistence.ts` now persist full app state v1. `AGENTS.md` also mixes milestone language.
+`docs/implementation_notes.md` still states play area and hiding zones are _"not persisted yet"_ in places, while `AppStateProviders` + `persistence.ts` now persist full app state v1. `AGENTS.md` also mixes milestone language.
 
 **Recommendation:** Update milestone docs to reflect current persistence behavior and what remains (e.g. UI settings, hider mode).
 
@@ -307,18 +307,18 @@ Examples:
 
 ## React Native idioms checklist
 
-| Practice | Verdict | Notes |
-|----------|---------|-------|
-| Safe area handling | Good | `useSafeAreaInsets`, `useSafeAreaFrame`, FAB offset |
-| Gesture handler root | Good | Imported first in `_layout.tsx` |
-| Keyboard dismiss on sheet collapse | Good | `AppBottomSheet` |
-| Pressable vs TouchableOpacity | Good | Pressable used consistently |
-| Accessibility roles/labels | Mixed | Strong on sheet rows; weak on map emoji controls |
-| Reanimated + worklets | Good | `runOnJS` used for gesture callbacks |
-| Image assets | Good | Bundled question pin PNG |
-| Platform-specific shadows | Good | `Platform.select` in map controls |
-| Hermes / new architecture | Not audited | Expo 54 defaults assumed |
-| Android parity | Unknown | E2E and docs focus on iOS |
+| Practice                           | Verdict     | Notes                                               |
+| ---------------------------------- | ----------- | --------------------------------------------------- |
+| Safe area handling                 | Good        | `useSafeAreaInsets`, `useSafeAreaFrame`, FAB offset |
+| Gesture handler root               | Good        | Imported first in `_layout.tsx`                     |
+| Keyboard dismiss on sheet collapse | Good        | `AppBottomSheet`                                    |
+| Pressable vs TouchableOpacity      | Good        | Pressable used consistently                         |
+| Accessibility roles/labels         | Mixed       | Strong on sheet rows; weak on map emoji controls    |
+| Reanimated + worklets              | Good        | `runOnJS` used for gesture callbacks                |
+| Image assets                       | Good        | Bundled question pin PNG                            |
+| Platform-specific shadows          | Good        | `Platform.select` in map controls                   |
+| Hermes / new architecture          | Not audited | Expo 54 defaults assumed                            |
+| Android parity                     | Unknown     | E2E and docs focus on iOS                           |
 
 ---
 

@@ -33,11 +33,12 @@ The `HidingZoneUnit` type is imported by radar code despite living in hiding-zon
 types.
 
 **Action:**
+
 - Create `src/shared/distanceUnits.ts` exporting:
-  - `DistanceUnit` type (`"m" | "km" | "mi"`)
-  - `toMeters(value, unit)`, `fromMeters(meters, unit)`
-  - `METERS_PER_MILE`, `METERS_PER_KM`
-  - `formatDistanceValue(meters, unit, precision?)`
+    - `DistanceUnit` type (`"m" | "km" | "mi"`)
+    - `toMeters(value, unit)`, `fromMeters(meters, unit)`
+    - `METERS_PER_MILE`, `METERS_PER_KM`
+    - `formatDistanceValue(meters, unit, precision?)`
 - Re-export from both `hidingZone/` and `questions/radar/` for backwards compat
 - Move unit tests from `hidingZone.test.ts` into `shared/__tests__/distanceUnits.test.ts`
 
@@ -48,6 +49,7 @@ in both `HidingZoneScreen.tsx` and `RadarQuestionDetailScreen.tsx` (styles:
 `segmentedControl`, `unitButton`, `unitButtonActive`, plus callback wiring).
 
 **Action:**
+
 - Extract a `UnitSegmentedControl` component (~40 lines)
 - Props: `value: DistanceUnit`, `onChange: (unit: DistanceUnit) => void`
 - Delete ~25 duplicated style keys from each screen
@@ -59,6 +61,7 @@ in both `HidingZoneScreen.tsx` and `RadarQuestionDetailScreen.tsx` (styles:
 PlayArea, Questions, HidingZone, and AddQuestion — at least 10 instances.
 
 **Action:**
+
 - Extract `SheetListRow` with props: `title`, `description?`, `onPress`,
   `trailing?` (for chevron/icon), `destructive?`
 - Migrate one screen at a time (Settings is the safest starting point)
@@ -70,6 +73,7 @@ PlayArea, Questions, HidingZone, and AddQuestion — at least 10 instances.
 ### Problem
 
 533 lines owning:
+
 - Route → component switch (`renderRouteContent`)
 - Reanimated slide transitions
 - BackHandler + edge-swipe gesture
@@ -94,7 +98,7 @@ src/features/sheet/
 ### Migration Steps
 
 1. Extract `routeRegistry.ts` — a declarative table of `{ route, component,
-   backTarget, snapIndex, headerAccessory? }`. `MainDrawer` becomes a lookup
+backTarget, snapIndex, headerAccessory? }`. `MainDrawer` becomes a lookup
    instead of a switch.
 2. Extract `useSheetTransition` — owns `Animated.Value`, `runTransition`,
    BackHandler listener, edge-swipe pan gesture.
@@ -112,6 +116,7 @@ src/features/sheet/
 ### Problem
 
 449 lines combining:
+
 - Distance option picker (preset grid)
 - Custom distance input with draft state
 - Answer selector (hit/miss/unknown)
@@ -153,6 +158,7 @@ derive map GeoJSON via `useMemo` chains. Consumers that only need settings
 re-render when geometry changes.
 
 **Action:**
+
 - Extract `useHidingZoneMapLayers(store)` and `useQuestionMapLayers(store)` as
   separate hooks (or selectors) that derive GeoJSON from store state.
 - The stores expose raw state; `NativeMap` calls the render hooks.
@@ -166,6 +172,7 @@ re-render when geometry changes.
 (`normalizeQuestionState`). Two code paths must stay in sync.
 
 **Action:**
+
 - Move the canonical normalizer to `questions/radar/radarTypes.ts`
   (pure function, no store dependency).
 - Both `appState.ts` and `questionStore.tsx` call the shared normalizer.
@@ -178,6 +185,7 @@ re-render when geometry changes.
 question store file (363 lines total).
 
 **Action:**
+
 - Move them to `questions/radar/radarUpdaters.ts`.
 - `questionStore` re-exports for backwards compat or callers update imports.
 - Follows AGENTS.md guidance: "keep type-specific editing logic in focused
@@ -209,13 +217,13 @@ the same wrapper.
 
 Priority targets (descending by risk × complexity):
 
-| Module | Lines | Why |
-|--------|-------|-----|
-| `radar/radarGeometry.ts` | 124 | Pure geometry; easy to test, high correctness value |
-| `radar/useRadarDistanceDraftInput.ts` | 145 | Complex draft/sync; `renderHook` testable |
-| `sheet/sheetNav.ts` | 35 | Navigation logic used by MainDrawer |
-| `sharing/wire/schema.ts` | 102 | Zod schema validation; data integrity boundary |
-| `sharing/import/applyImport.ts` | 65 | Import correctness |
+| Module                                | Lines | Why                                                 |
+| ------------------------------------- | ----- | --------------------------------------------------- |
+| `radar/radarGeometry.ts`              | 124   | Pure geometry; easy to test, high correctness value |
+| `radar/useRadarDistanceDraftInput.ts` | 145   | Complex draft/sync; `renderHook` testable           |
+| `sheet/sheetNav.ts`                   | 35    | Navigation logic used by MainDrawer                 |
+| `sharing/wire/schema.ts`              | 102   | Zod schema validation; data integrity boundary      |
+| `sharing/import/applyImport.ts`       | 65    | Import correctness                                  |
 
 ### 5c. Jest config cleanup
 
@@ -257,14 +265,14 @@ for the background and link colors for consistency.
 
 Phases ordered by value/risk ratio:
 
-| Phase | Items | Estimated scope |
-|-------|-------|----------------|
+| Phase | Items                                                                | Estimated scope               |
+| ----- | -------------------------------------------------------------------- | ----------------------------- |
 | **1** | 1a (distanceUnits), 1b (UnitSegmentedControl), 4b (radius normalize) | ~200 lines moved/consolidated |
-| **2** | 4c (radar helpers out of store), 1c (SheetListRow) | ~150 lines extracted |
-| **3** | 2 (MainDrawer decomp) | ~450 lines reorganized |
-| **4** | 3 (RadarQuestionDetail decomp), 4a (render-state hooks) | ~400 lines reorganized |
-| **5** | 5a–5c (test split + new unit tests + config) | Test infra; no prod changes |
-| **6** | 6a–6d (hygiene) | Low-priority polish |
+| **2** | 4c (radar helpers out of store), 1c (SheetListRow)                   | ~150 lines extracted          |
+| **3** | 2 (MainDrawer decomp)                                                | ~450 lines reorganized        |
+| **4** | 3 (RadarQuestionDetail decomp), 4a (render-state hooks)              | ~400 lines reorganized        |
+| **5** | 5a–5c (test split + new unit tests + config)                         | Test infra; no prod changes   |
+| **6** | 6a–6d (hygiene)                                                      | Low-priority polish           |
 
 Each phase keeps tests green and ships independently.
 

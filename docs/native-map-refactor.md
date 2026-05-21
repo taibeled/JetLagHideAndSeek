@@ -37,16 +37,16 @@ draft coordinate state. Extract it as:
 
 ```typescript
 interface PinDragState {
-  isDragging: boolean;
-  draftCoordinate: Position | null;
-  gesture: GestureType;
+    isDragging: boolean;
+    draftCoordinate: Position | null;
+    gesture: GestureType;
 }
 
 function usePinDrag(opts: {
-  mapRef: RefObject<MapView>;
-  activeQuestion: RadarQuestion | null;
-  canMove: boolean;
-  onCommit: (questionId: string, center: Position) => void;
+    mapRef: RefObject<MapView>;
+    activeQuestion: RadarQuestion | null;
+    canMove: boolean;
+    onCommit: (questionId: string, center: Position) => void;
 }): PinDragState;
 ```
 
@@ -58,13 +58,13 @@ and `getCoordinateFromView` without rendering any MapLibre layers.
 Each logical overlay can become a small component that receives only the data it
 renders. They stay as MapLibre children (no extra `View` wrappers):
 
-| Component | Source ids | Data |
-|-----------|-----------|------|
-| `PlayAreaMaskLayers` | `play-area-outside-mask-*`, `combined-inside-mask-*` | `playArea`, `combinedInsideMask` |
-| `HidingZoneLayers` | `hiding-zone-area`, `hiding-zone-routes`, `hiding-zone-stations` | `routeFeatures`, `stationFeatures`, `zoneFeatures` |
-| `RadarQuestionLayers` | `radar-question-areas`, `radar-question-miss-mask`, `radar-question-outlines` | `questionMapRenderState.radar` |
-| `ActivePinLayer` | `question-active-pin` | `activePinFeature`, drag state |
-| `PlayAreaBoundaryLayer` | `play-area-boundary-*` | `playArea.boundary` |
+| Component               | Source ids                                                                    | Data                                               |
+| ----------------------- | ----------------------------------------------------------------------------- | -------------------------------------------------- |
+| `PlayAreaMaskLayers`    | `play-area-outside-mask-*`, `combined-inside-mask-*`                          | `playArea`, `combinedInsideMask`                   |
+| `HidingZoneLayers`      | `hiding-zone-area`, `hiding-zone-routes`, `hiding-zone-stations`              | `routeFeatures`, `stationFeatures`, `zoneFeatures` |
+| `RadarQuestionLayers`   | `radar-question-areas`, `radar-question-miss-mask`, `radar-question-outlines` | `questionMapRenderState.radar`                     |
+| `ActivePinLayer`        | `question-active-pin`                                                         | `activePinFeature`, drag state                     |
+| `PlayAreaBoundaryLayer` | `play-area-boundary-*`                                                        | `playArea.boundary`                                |
 
 Each file is ~40–80 lines, easily scannable, and testable with the existing mock
 infrastructure (assert `ShapeSource.shape` props in isolation).
