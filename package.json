@@ -42,6 +42,7 @@
         "react-native-safe-area-context": "~5.6.0",
         "react-native-screens": "~4.16.0",
         "react-native-svg": "15.15.3",
+        "semver": "^7.8.0",
         "zod": "^3.25.28"
     },
     "devDependencies": {
