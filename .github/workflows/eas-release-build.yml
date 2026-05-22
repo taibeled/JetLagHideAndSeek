@@ -1,0 +1,50 @@
+name: EAS Release Build
+
+on:
+    push:
+        tags:
+            - "v*"
+
+permissions:
+    contents: read
+
+concurrency:
+    group: eas-release-${{ github.ref }}
+    cancel-in-progress: false
+
+jobs:
+    build:
+        name: Build iOS and Android
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+
+            - name: Install pnpm
+              run: npm install -g pnpm
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Validate release tag
+              run: |
+                  node -e 'const tag = process.env.GITHUB_REF_NAME || ""; const version = require("./app.json").expo.version; const expectedTag = `v${version}`; if (tag !== expectedTag) { console.error(`Release tag ${tag} does not match app.json Expo version ${version}. Expected ${expectedTag}.`); process.exit(1); }'
+
+            - name: Check
+              run: pnpm check
+
+            - name: Test
+              run: pnpm test
+
+            - name: Setup EAS
+              uses: expo/expo-github-action@v8
+              with:
+                  eas-version: latest
+                  token: ${{ secrets.EXPO_TOKEN }}
+                  packager: pnpm
+
+            - name: Build production apps
+              run: eas build --platform all --profile production --non-interactive

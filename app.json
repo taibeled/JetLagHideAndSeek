@@ -3,7 +3,7 @@
         "name": "Hide & Seek Mapper v2",
         "slug": "jet-lag-hide-and-seek-v2",
         "scheme": "jetlag-hide-seek-v2",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "orientation": "portrait",
         "icon": "./assets/icon.png",
         "userInterfaceStyle": "light",
