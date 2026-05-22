@@ -57,6 +57,15 @@ export const radarQuestionWireSchema = z.object({
     type: z.literal("radar"),
     updatedAt: z.string().min(1),
 });
+export const matchingQuestionWireSchema = z.object({
+    answer: questionAnswerSchema,
+    createdAt: z.string().min(1),
+    id: z.string().min(1),
+    lineId: z.string().min(1).nullable(),
+    lineName: z.string().min(1).nullable(),
+    type: z.literal("matching"),
+    updatedAt: z.string().min(1),
+});
 
 const legacyRadiusQuestionWireSchema = z
     .object({
@@ -91,7 +100,11 @@ export const appStatePayloadSchema = z.object({
     playArea: playAreaWireSchema.optional(),
     questions: z
         .array(
-            z.union([radarQuestionWireSchema, legacyRadiusQuestionWireSchema]),
+            z.union([
+                radarQuestionWireSchema,
+                legacyRadiusQuestionWireSchema,
+                matchingQuestionWireSchema,
+            ]),
         )
         .optional(),
 });

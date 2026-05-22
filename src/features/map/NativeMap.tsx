@@ -80,14 +80,22 @@ export function NativeMap({ onPress }: NativeMapProps) {
                 ...asSeparateMaskConstraints(
                     questionMapRenderState.radar.hitMaskFeatures,
                 ),
+                ...asSeparateMaskConstraints(
+                    questionMapRenderState.transitLine.hitMaskFeatures,
+                ),
             ],
-            [questionMapRenderState.radar.missMaskFeatures],
+            [
+                questionMapRenderState.radar.missMaskFeatures,
+                questionMapRenderState.transitLine.missMaskFeatures,
+            ],
         );
     }, [
         playArea.boundary,
         zoneFeatures,
         questionMapRenderState.radar.hitMaskFeatures,
         questionMapRenderState.radar.missMaskFeatures,
+        questionMapRenderState.transitLine.hitMaskFeatures,
+        questionMapRenderState.transitLine.missMaskFeatures,
     ]);
     const mapStyle = useMemo(() => buildOsmRasterStyleJson(), []);
     const fitPadding = useMemo(

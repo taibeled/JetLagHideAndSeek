@@ -22,6 +22,7 @@ import {
     radarDistanceOptionMeters,
 } from "@/features/questions/radar/radarTypes";
 import type { Position } from "@/features/map/geojsonTypes";
+import { useHidingZone } from "@/state/hidingZoneStore";
 import {
     fromMeters,
     toMeters,
@@ -60,6 +61,7 @@ export type QuestionSettingsImportState = {
 const QuestionContext = createContext<QuestionStateValue | null>(null);
 
 export function QuestionProvider({ children }: { children: ReactNode }) {
+    const { radiusMeters, selectedStations } = useHidingZone();
     const [questions, setQuestions] = useState<QuestionState[]>([]);
     const [activeQuestionId, setActiveQuestionIdState] = useState<
         string | null
@@ -76,8 +78,13 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
         [activeQuestionId, questions],
     );
     const questionMapRenderState = useMemo(
-        () => buildQuestionMapRenderState(questions),
-        [questions],
+        () =>
+            buildQuestionMapRenderState(
+                questions,
+                selectedStations,
+                radiusMeters,
+            ),
+        [questions, radiusMeters, selectedStations],
     );
 
     const updateQuestion = useCallback(
@@ -306,6 +313,16 @@ function createDefaultQuestion(
                 distanceUnit: "m",
                 id: createQuestionId(),
                 type: "radar",
+                updatedAt: now,
+            };
+        case "matching":
+            return {
+                answer: "unanswered",
+                createdAt: now,
+                id: createQuestionId(),
+                lineId: null,
+                lineName: null,
+                type: "matching",
                 updatedAt: now,
             };
     }

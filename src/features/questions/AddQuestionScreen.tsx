@@ -55,6 +55,31 @@ export function AddQuestionScreen({ onNavigate }: AddQuestionScreenProps) {
                         </View>
                         <Text style={styles.chevron}>›</Text>
                     </Pressable>
+                ) : type === "matching" ? (
+                    <Pressable
+                        accessibilityLabel="Add transit line question"
+                        accessibilityRole="button"
+                        key={type}
+                        onPress={() => {
+                            createQuestion("matching", {
+                                center: playArea.center,
+                            });
+                            onNavigate("question-detail");
+                        }}
+                        style={({ pressed }) => [
+                            styles.optionRow,
+                            pressed ? styles.actionPressed : null,
+                        ]}
+                        testID="add-matching-question-row"
+                    >
+                        <View style={styles.optionCopy}>
+                            <Text style={styles.optionTitle}>Transit Line</Text>
+                            <Text style={styles.metadata}>
+                                Ask if the hider is on a specific transit line.
+                            </Text>
+                        </View>
+                        <Text style={styles.chevron}>›</Text>
+                    </Pressable>
                 ) : null,
             )}
         </SheetScrollView>

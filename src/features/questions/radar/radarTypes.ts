@@ -12,6 +12,7 @@ import type {
     BaseQuestion,
     QuestionAnswer,
 } from "@/features/questions/questionTypes";
+import type { TransitLineQuestionFeatureCollection } from "@/features/questions/transitLine/transitLineTypes";
 import type { DistanceUnit } from "@/shared/distanceUnits";
 
 export type RadarDistanceOption =
@@ -82,6 +83,10 @@ export type RadarQuestionRenderState = {
 export type QuestionMapRenderState = {
     radar: RadarQuestionRenderState;
     radarAreaFeatures: RadarQuestionFeatureCollection;
+    transitLine: {
+        hitMaskFeatures: TransitLineQuestionFeatureCollection;
+        missMaskFeatures: TransitLineQuestionFeatureCollection;
+    };
 };
 
 export type NearestStationInfo = {

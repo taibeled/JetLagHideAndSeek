@@ -58,6 +58,15 @@ export const appStateRadarQuestionSchema = z.object({
     type: z.literal("radar"),
     updatedAt: z.string().min(1),
 });
+const appStateMatchingQuestionSchema = z.object({
+    answer: questionAnswerSchema,
+    createdAt: z.string().min(1),
+    id: z.string().min(1),
+    lineId: z.string().min(1).nullable(),
+    lineName: z.string().min(1).nullable(),
+    type: z.literal("matching"),
+    updatedAt: z.string().min(1),
+});
 
 const appStateLegacyRadiusQuestionSchema = z
     .object({
@@ -83,7 +92,11 @@ const appStateLegacyRadiusQuestionSchema = z
     }));
 
 export const appStateQuestionsSchema = z.array(
-    z.union([appStateRadarQuestionSchema, appStateLegacyRadiusQuestionSchema]),
+    z.union([
+        appStateRadarQuestionSchema,
+        appStateLegacyRadiusQuestionSchema,
+        appStateMatchingQuestionSchema,
+    ]),
 );
 
 export const appStateQuestionSettingsSchema = z.object({

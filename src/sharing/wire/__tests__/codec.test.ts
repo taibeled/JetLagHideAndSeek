@@ -102,4 +102,33 @@ describe("sharing wire codec", () => {
             expect(result.payload.playArea?.osmType).toBe("R");
         }
     });
+
+    it("encodes and decodes matching questions", () => {
+        const withMatching = {
+            ...envelope,
+            payload: {
+                ...envelope.payload,
+                questions: [
+                    {
+                        answer: "unanswered" as const,
+                        createdAt: "2026-05-17T00:00:00.000Z",
+                        id: "matching-1",
+                        lineId: "line-1",
+                        lineName: "Line 1",
+                        type: "matching" as const,
+                        updatedAt: "2026-05-17T00:00:00.000Z",
+                    },
+                ],
+            },
+        };
+
+        const payload = encodeEnvelope(withMatching);
+        const decoded = decodeEnvelopePayload(payload);
+        expect(decoded.ok).toBe(true);
+        if (decoded.ok) {
+            expect(decoded.envelope.payload.questions?.[0]).toEqual(
+                withMatching.payload.questions[0],
+            );
+        }
+    });
 });

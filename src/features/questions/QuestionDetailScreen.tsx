@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, Text } from "react-native";
 
 import { getQuestionDefinition } from "@/features/questions/questionRegistry";
 import { RadarQuestionDetailScreen } from "@/features/questions/radar/RadarQuestionDetailScreen";
+import { TransitLineQuestionDetailScreen } from "@/features/questions/transitLine/TransitLineQuestionDetailScreen";
 import { SheetScrollView } from "@/features/sheet/SheetScrollView";
 import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
 import { useQuestion } from "@/state/questionStore";
@@ -45,6 +46,11 @@ export function QuestionDetailScreen({
                 <RadarQuestionDetailScreen
                     question={activeQuestion}
                     sheetIndex={sheetIndex}
+                    updateQuestion={updateQuestion}
+                />
+            ) : activeQuestion.type === "matching" ? (
+                <TransitLineQuestionDetailScreen
+                    question={activeQuestion}
                     updateQuestion={updateQuestion}
                 />
             ) : (

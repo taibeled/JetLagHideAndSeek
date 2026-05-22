@@ -20,8 +20,8 @@ describe("questionRegistry", () => {
         );
     });
 
-    it("only exposes radar as implemented", () => {
-        expect(implementedQuestionTypes).toEqual(["radar"]);
+    it("exposes implemented question types", () => {
+        expect(implementedQuestionTypes).toEqual(["matching", "radar"]);
     });
 
     it("resolves answer labels per question type", () => {
