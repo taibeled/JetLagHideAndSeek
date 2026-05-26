@@ -41,15 +41,32 @@ For local app work:
 pnpm exec expo start --dev-client --host localhost --port 8081 -c
 ```
 
-For the iOS E2E stack:
+For the local E2E stack:
 
 ```bash
+pnpm test:e2e:stack
 pnpm test:e2e:ios:stack
 ```
 
-That helper starts Metro, runs the Maestro smoke and play-area flows, writes
-debug artifacts under `mobile_v2/e2e/artifacts/`, and stops Metro. A simulator
-must already be available; the known target has been `iPhone 16 Pro - iOS 18.3`.
+That helper starts Metro, runs the Maestro flows, writes debug artifacts under
+`e2e/artifacts/`, and stops Metro. A simulator/emulator and dev build must
+already be available locally; the known iOS target has been
+`iPhone 16 Pro - iOS 18.3`.
+
+For remote device E2E on GitHub Actions:
+
+```bash
+gh workflow run "Maestro E2E" --ref my-agent-branch -f platform=android
+gh workflow run "Maestro E2E" --ref my-agent-branch -f platform=ios
+gh workflow run "Maestro E2E" --ref my-agent-branch -f platform=android -f flow=smoke
+gh run watch
+```
+
+Use this workflow to hand off final native/device checks after new code changes
+when local simulator setup is unavailable, slow, or likely to differ from CI.
+Prefer `platform=android` for a faster smoke signal, `platform=ios` for iOS
+accessibility/bottom-sheet/MapLibre risk, and `platform=all` before merging
+larger user-facing changes.
 
 ## Native Build Rules
 
@@ -231,8 +248,20 @@ For native accessibility, bottom-sheet, MapLibre, or app-start changes, run the
 Maestro stack when the simulator/dev build is available:
 
 ```bash
+pnpm test:e2e:stack
 pnpm test:e2e:ios:stack
 ```
+
+When local native E2E is not practical, use the GitHub Actions workflow as the
+final check and watch it from the shell:
+
+```bash
+gh workflow run "Maestro E2E" --ref <branch> -f platform=android
+gh run watch
+```
+
+Use `-f flow=<name>` for focused validation while iterating, and run the full
+workflow for broad UI, navigation, native dependency, or app-start changes.
 
 Jest setup already mocks MapLibre, Gorhom bottom sheet, Reanimated,
 AsyncStorage, and `expo-location` in `jest.setup.ts`. Extend those mocks in one

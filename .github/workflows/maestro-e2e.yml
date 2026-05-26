@@ -1,0 +1,162 @@
+name: Maestro E2E
+
+on:
+    workflow_dispatch:
+        inputs:
+            platform:
+                description: Platform to test
+                required: true
+                default: android
+                type: choice
+                options:
+                    - android
+                    - ios
+                    - all
+            flow:
+                description: Maestro flow to run
+                required: false
+                default: all
+                type: choice
+                options:
+                    - all
+                    - smoke
+                    - play-area
+                    - hiding-zone
+                    - radar-question
+                    - transit-line-question
+    pull_request:
+        paths:
+            - "app/**"
+            - "assets/**"
+            - "e2e/**"
+            - "scripts/**"
+            - "src/**"
+            - "package.json"
+            - "pnpm-lock.yaml"
+            - "app.json"
+            - "app.config.ts"
+            - "babel.config.js"
+            - "metro.config.js"
+            - ".github/workflows/maestro-e2e.yml"
+    push:
+        branches:
+            - master
+        paths:
+            - "app/**"
+            - "assets/**"
+            - "e2e/**"
+            - "scripts/**"
+            - "src/**"
+            - "package.json"
+            - "pnpm-lock.yaml"
+            - "app.json"
+            - "app.config.ts"
+            - "babel.config.js"
+            - "metro.config.js"
+            - ".github/workflows/maestro-e2e.yml"
+
+env:
+    CI: true
+    E2E_FLOW: ${{ github.event_name == 'workflow_dispatch' && inputs.flow || 'all' }}
+
+jobs:
+    android:
+        name: Android Maestro
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.platform == 'android' || inputs.platform == 'all' }}
+        runs-on: ubuntu-latest
+        timeout-minutes: 60
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+
+            - uses: actions/setup-java@v4
+              with:
+                  distribution: temurin
+                  java-version: 17
+
+            - name: Install pnpm
+              run: npm install -g pnpm
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Install Maestro
+              run: |
+                  curl -Ls "https://get.maestro.mobile.dev" | bash
+                  echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+
+            - name: Build, install, and test on Android
+              uses: reactivecircus/android-emulator-runner@v2
+              with:
+                  api-level: 35
+                  arch: x86_64
+                  target: google_apis
+                  emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+                  script: |
+                      pnpm exec expo prebuild --platform android --clean
+                      pnpm exec expo run:android --no-bundler
+                      pnpm test:e2e:android:stack
+
+            - name: Upload Maestro artifacts
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: maestro-e2e-android
+                  path: e2e/artifacts
+                  if-no-files-found: ignore
+
+    ios:
+        name: iOS Maestro
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.platform == 'ios' || inputs.platform == 'all' }}
+        runs-on: macos-15
+        timeout-minutes: 75
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+
+            - uses: actions/setup-java@v4
+              with:
+                  distribution: temurin
+                  java-version: 17
+
+            - name: Install pnpm
+              run: npm install -g pnpm
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Install Maestro
+              run: |
+                  curl -Ls "https://get.maestro.mobile.dev" | bash
+                  echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+
+            - name: Select iOS simulator
+              run: |
+                  xcrun simctl list devices available
+                  IOS_SIMULATOR="iPhone 16 Pro"
+                  if ! xcrun simctl list devices available | grep -q "$IOS_SIMULATOR"; then
+                      IOS_SIMULATOR="iPhone 16"
+                  fi
+                  echo "IOS_SIMULATOR=$IOS_SIMULATOR" >> "$GITHUB_ENV"
+
+            - name: Build and install iOS dev client
+              run: |
+                  LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 pnpm exec expo prebuild --platform ios --clean
+                  LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 pnpm exec expo run:ios --simulator "$IOS_SIMULATOR" --no-bundler
+
+            - name: Run Maestro
+              run: pnpm test:e2e:ios:stack
+
+            - name: Upload Maestro artifacts
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: maestro-e2e-ios
+                  path: e2e/artifacts
+                  if-no-files-found: ignore

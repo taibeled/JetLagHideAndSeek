@@ -16,7 +16,11 @@
         "site:build": "node scripts/build-share-site-config.mjs",
         "typecheck": "tsc --noEmit",
         "test": "jest",
-        "test:e2e:ios": "maestro test e2e/smoke.yaml && maestro test e2e/play-area.yaml && maestro test e2e/hiding-zone.yaml && maestro test e2e/radar-question.yaml && maestro test e2e/transit-line-question.yaml",
+        "test:e2e": "maestro test e2e/smoke.yaml && maestro test e2e/play-area.yaml && maestro test e2e/hiding-zone.yaml && maestro test e2e/radar-question.yaml && maestro test e2e/transit-line-question.yaml",
+        "test:e2e:stack": "node scripts/e2e-maestro-stack.mjs",
+        "test:e2e:android": "pnpm test:e2e",
+        "test:e2e:android:stack": "pnpm test:e2e:stack",
+        "test:e2e:ios": "pnpm test:e2e",
         "test:e2e:ios:stack": "node scripts/e2e-ios-stack.mjs"
     },
     "dependencies": {

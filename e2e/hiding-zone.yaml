@@ -1,4 +1,4 @@
-appId: com.hinoka.hideandseek.v2
+appId: com.raycatdev.hideandseek.v2
 ---
 - launchApp:
       clearState: true

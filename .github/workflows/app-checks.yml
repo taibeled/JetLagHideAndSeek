@@ -24,8 +24,7 @@ on:
             - "tsconfig.json"
             - ".prettierrc"
             - ".editorconfig"
-            - ".github/workflows/app-checks.yml"
-            - ".github/workflows/pages.yml"
+            - ".github/workflows/*.yml"
     push:
         branches:
             - master
@@ -51,8 +50,7 @@ on:
             - "tsconfig.json"
             - ".prettierrc"
             - ".editorconfig"
-            - ".github/workflows/app-checks.yml"
-            - ".github/workflows/pages.yml"
+            - ".github/workflows/*.yml"
 
 jobs:
     check:

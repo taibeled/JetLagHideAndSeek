@@ -27,6 +27,9 @@ E2E notes:
 - Maestro is installed at `~/.maestro/bin/maestro`; add it to `PATH` if `maestro` is not found.
 - Start Metro first: `pnpm exec expo start --dev-client --host localhost --port 8081 -c`.
 - The smoke flow handles Expo dev-client first-run prompts conditionally, then asserts the map has loaded the default `Tokyo 23 Wards` label and the main settings row is targetable. The map controls are icon-only, so Maestro should not assert old visible copy such as `Fit Tokyo 23 Wards` or `Locate me`.
+- GitHub Actions has a manually dispatchable `Maestro E2E` workflow. Agents can hand off device tests with `gh workflow run "Maestro E2E" --ref <branch> -f platform=android` or `platform=ios`, then follow it with `gh run watch`.
+- The workflow also accepts `-f flow=smoke`, `play-area`, `hiding-zone`, `radar-question`, or `transit-line-question` for focused runs. Omit it, or pass `flow=all`, to run every Maestro flow.
+- The e2e flows target the Expo app IDs from `app.json`: `com.raycatdev.hideandseek.v2` on both iOS and Android. If the bundle/package ID changes, update the Maestro `appId` headers together with `app.json`.
 
 ## Milestone 3: Play-Area Settings
 
@@ -52,7 +55,7 @@ Bottom-sheet and E2E accessibility notes:
 
 E2E stack helper:
 
-- `pnpm test:e2e:ios:stack` runs `scripts/e2e-ios-stack.mjs`, starts Metro on port 8081, runs smoke, play-area, and hiding-zone Maestro flows with debug artifacts under `e2e/artifacts/`, and shuts Metro down afterward.
+- `pnpm test:e2e:stack` runs `scripts/e2e-maestro-stack.mjs`, starts Metro on port 8081, runs all Maestro flows with debug artifacts under `e2e/artifacts/`, and shuts Metro down afterward. `pnpm test:e2e:ios:stack` remains as an iOS-named compatibility alias.
 - The default-state Maestro flows launch with `clearState: true` so persisted AsyncStorage setup from prior flows or manual runs does not leak into default assertions. Because that also clears Expo dev-client's remembered server URL, each flow then opens `jetlag-hide-seek-v2://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8081&disableOnboarding=1` explicitly, dismisses the development-menu intro, and closes the dev menu before app assertions. Add separate persistence-specific flows when testing relaunch behavior.
 - The simulator must be booted/available before the stack run. The known working target is `iPhone 16 Pro - iOS 18.3`.
 
