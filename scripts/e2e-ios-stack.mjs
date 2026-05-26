@@ -72,35 +72,32 @@ async function waitForMetro() {
 }
 
 async function runMaestro() {
-    mkdirSync(join(artifactsDir, "smoke"), { recursive: true });
-    mkdirSync(join(artifactsDir, "play-area"), { recursive: true });
-    mkdirSync(join(artifactsDir, "hiding-zone"), { recursive: true });
-    mkdirSync(join(artifactsDir, "radar-question"), { recursive: true });
+    const flows = [
+        { artifactSubdir: "smoke", flowPath: "e2e/smoke.yaml" },
+        { artifactSubdir: "play-area", flowPath: "e2e/play-area.yaml" },
+        { artifactSubdir: "hiding-zone", flowPath: "e2e/hiding-zone.yaml" },
+        {
+            artifactSubdir: "radar-question",
+            flowPath: "e2e/radar-question.yaml",
+        },
+        {
+            artifactSubdir: "transit-line-question",
+            flowPath: "e2e/transit-line-question.yaml",
+        },
+    ];
 
-    await runCommand("maestro", [
-        "test",
-        "--debug-output",
-        join(artifactsDir, "smoke"),
-        "e2e/smoke.yaml",
-    ]);
-    await runCommand("maestro", [
-        "test",
-        "--debug-output",
-        join(artifactsDir, "play-area"),
-        "e2e/play-area.yaml",
-    ]);
-    await runCommand("maestro", [
-        "test",
-        "--debug-output",
-        join(artifactsDir, "hiding-zone"),
-        "e2e/hiding-zone.yaml",
-    ]);
-    await runCommand("maestro", [
-        "test",
-        "--debug-output",
-        join(artifactsDir, "radar-question"),
-        "e2e/radar-question.yaml",
-    ]);
+    for (const flow of flows) {
+        mkdirSync(join(artifactsDir, flow.artifactSubdir), {
+            recursive: true,
+        });
+
+        await runCommand("maestro", [
+            "test",
+            "--debug-output",
+            join(artifactsDir, flow.artifactSubdir),
+            flow.flowPath,
+        ]);
+    }
 }
 
 async function runCommand(command, args) {

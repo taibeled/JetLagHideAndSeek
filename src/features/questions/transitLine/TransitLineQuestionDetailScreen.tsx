@@ -27,6 +27,27 @@ export function TransitLineQuestionDetailScreen({
             <Text style={styles.detail}>
                 Are you on the selected transit line?
             </Text>
+
+            <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Answer</Text>
+                <QuestionAnswerSelector
+                    answer={question.answer}
+                    onChange={(answer) =>
+                        updateQuestion(question.id, (current) =>
+                            current.type === "matching"
+                                ? {
+                                      ...current,
+                                      answer,
+                                      updatedAt: new Date().toISOString(),
+                                  }
+                                : current,
+                        )
+                    }
+                    questionType={question.type}
+                    testIDPrefix="matching-answer-option"
+                />
+            </View>
+
             <View style={styles.optionList}>
                 {lineOptions.map((line) => {
                     const isSelected = line.id === question.lineId;
@@ -60,22 +81,6 @@ export function TransitLineQuestionDetailScreen({
                     );
                 })}
             </View>
-            <QuestionAnswerSelector
-                answer={question.answer}
-                onChange={(answer) =>
-                    updateQuestion(question.id, (current) =>
-                        current.type === "matching"
-                            ? {
-                                  ...current,
-                                  answer,
-                                  updatedAt: new Date().toISOString(),
-                              }
-                            : current,
-                    )
-                }
-                questionType={question.type}
-                testIDPrefix="matching-answer-option"
-            />
         </>
     );
 }
@@ -102,5 +107,13 @@ const styles = StyleSheet.create({
     },
     meta: { color: colors.muted, fontSize: 12, marginTop: 2 },
     optionList: { gap: 8, marginTop: 16 },
+    section: {
+        marginTop: 18,
+    },
+    sectionTitle: {
+        color: colors.ink,
+        fontSize: 16,
+        fontWeight: "800",
+    },
     title: { color: colors.ink, fontSize: 24, fontWeight: "800", marginTop: 4 },
 });

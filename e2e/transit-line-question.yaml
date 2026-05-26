@@ -33,6 +33,13 @@ appId: com.hinoka.hideandseek.v2
 - tapOn:
       id: "hiding-zone-preset-tokyo-metro"
 - tapOn: "Back"
+- extendedWaitUntil:
+      visible: "Game Settings"
+      timeout: 10000
+- tapOn: "Back"
+- extendedWaitUntil:
+      visible: "Game Setup"
+      timeout: 10000
 - tapOn:
       id: "main-questions-row"
 - extendedWaitUntil:
@@ -55,9 +62,9 @@ appId: com.hinoka.hideandseek.v2
 - assertVisible:
       id: "matching-answer-option-negative"
 - assertVisible:
-      id: "transit-line-option-1"
+      id: "transit-line-option-2"
 - tapOn:
-      id: "transit-line-option-1"
+      id: "transit-line-option-2"
 - tapOn:
       id: "matching-answer-option-positive"
 - takeScreenshot: e2e/artifacts/transit-line-question/transit-line-hit-map
