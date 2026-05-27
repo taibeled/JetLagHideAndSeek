@@ -113,6 +113,7 @@ jobs:
                   name: maestro-e2e-android
                   path: e2e/artifacts
                   if-no-files-found: ignore
+                  include-hidden-files: true
 
     ios:
         name: iOS Maestro
@@ -166,3 +167,4 @@ jobs:
                   name: maestro-e2e-ios
                   path: e2e/artifacts
                   if-no-files-found: ignore
+                  include-hidden-files: true

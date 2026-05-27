@@ -1,7 +1,6 @@
 appId: com.raycatdev.hideandseek.v2
 ---
-- launchApp:
-      clearState: true
+- clearState
 - openLink: "jetlag-hide-seek-v2://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8081&disableOnboarding=1"
 - runFlow:
       when:

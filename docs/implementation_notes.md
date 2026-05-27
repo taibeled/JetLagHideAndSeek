@@ -57,7 +57,7 @@ Bottom-sheet and E2E accessibility notes:
 E2E stack helper:
 
 - `pnpm test:e2e:stack` runs `scripts/e2e-maestro-stack.mjs`, starts Metro on port 8081, runs all Maestro flows with debug artifacts under `e2e/artifacts/`, and shuts Metro down afterward. `pnpm test:e2e:ios:stack` remains as an iOS-named compatibility alias.
-- The default-state Maestro flows launch with `clearState: true` so persisted AsyncStorage setup from prior flows or manual runs does not leak into default assertions. Because that also clears Expo dev-client's remembered server URL, each flow then opens `jetlag-hide-seek-v2://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8081&disableOnboarding=1` explicitly, dismisses the development-menu intro, and closes the dev menu before app assertions. Add separate persistence-specific flows when testing relaunch behavior.
+- The default-state Maestro flows call `clearState`, then open `jetlag-hide-seek-v2://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8081&disableOnboarding=1` explicitly, dismiss the development-menu intro, and close the dev menu before app assertions. This avoids depending on a plain Android `launchApp` for Expo dev-client startup while still preventing persisted AsyncStorage setup from leaking into default assertions. Add separate persistence-specific flows when testing relaunch behavior.
 - The simulator must be booted/available before the stack run. The known working target is `iPhone 16 Pro - iOS 18.3`.
 
 Testing added in this milestone:
