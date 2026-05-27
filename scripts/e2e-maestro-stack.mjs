@@ -12,6 +12,12 @@ const artifactsDir = join(projectRoot, "e2e", "artifacts");
 const maestroBin = join(process.env.HOME ?? "", ".maestro", "bin");
 const pathSeparator = platform() === "win32" ? ";" : ":";
 const selectedFlow = process.env.E2E_FLOW ?? "all";
+const devClientHost =
+    process.env.E2E_DEV_CLIENT_HOST ??
+    (platform() === "linux" ? "10.0.2.2" : "127.0.0.1");
+const devClientBundleUrl = encodeURIComponent(
+    `http://${devClientHost}:${metroPort}`,
+);
 
 const flows = [
     { name: "smoke", artifactSubdir: "smoke", flowPath: "e2e/smoke.yaml" },
@@ -40,6 +46,7 @@ const flows = [
 const env = {
     ...process.env,
     PATH: `${maestroBin}${pathSeparator}${process.env.PATH ?? ""}`,
+    MAESTRO_DEV_CLIENT_URL: `jetlag-hide-seek-v2://expo-development-client/?url=${devClientBundleUrl}&disableOnboarding=1`,
 };
 
 const metro = spawn(
