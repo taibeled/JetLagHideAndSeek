@@ -29,7 +29,7 @@ appId: com.raycatdev.hideandseek.v2
       commands:
           - tapOn: "Open bottom sheet"
 - extendedWaitUntil:
-      id: "main-questions-row"
+      visible: "Game Setup"
       timeout: 10000
 - tapOn:
       id: "main-questions-row"
