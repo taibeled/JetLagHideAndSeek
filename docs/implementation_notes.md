@@ -29,6 +29,7 @@ E2E notes:
 - The smoke flow handles Expo dev-client first-run prompts conditionally, then asserts the map has loaded the default `Tokyo 23 Wards` label and the main settings row is targetable. The map controls are icon-only, so Maestro should not assert old visible copy such as `Fit Tokyo 23 Wards` or `Locate me`.
 - GitHub Actions has a manually dispatchable `Maestro E2E` workflow. Agents can hand off device tests with `gh workflow run "Maestro E2E" --ref <branch> -f platform=android` or `platform=ios`, then follow it with `gh run watch`.
 - The workflow also accepts `-f flow=smoke`, `play-area`, `hiding-zone`, `radar-question`, or `transit-line-question` for focused runs. Omit it, or pass `flow=all`, to run every Maestro flow.
+- Android CI must enable KVM before `reactivecircus/android-emulator-runner`. If a run fails before `expo prebuild` with repeated `adb shell getprop sys.boot_completed`, a very slow boot time, and `adb` exit code 224 after `shell input keyevent 82`, suspect missing or broken VM acceleration rather than a Maestro flow failure.
 - The e2e flows target the Expo app IDs from `app.json`: `com.raycatdev.hideandseek.v2` on both iOS and Android. If the bundle/package ID changes, update the Maestro `appId` headers together with `app.json`.
 
 ## Milestone 3: Play-Area Settings
