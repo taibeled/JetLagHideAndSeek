@@ -23,6 +23,14 @@ appId: com.raycatdev.hideandseek.v2
 - extendedWaitUntil:
       visible: "Tokyo 23 Wards"
       timeout: 120000
+- runFlow:
+      when:
+          visible: "Open bottom sheet"
+      commands:
+          - tapOn: "Open bottom sheet"
+- extendedWaitUntil:
+      id: "main-questions-row"
+      timeout: 10000
 - tapOn:
       id: "main-questions-row"
 - extendedWaitUntil:
