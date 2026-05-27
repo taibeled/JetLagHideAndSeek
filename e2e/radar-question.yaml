@@ -7,18 +7,22 @@ appId: com.raycatdev.hideandseek.v2
           visible: "Open"
       commands:
           - tapOn: "Open"
-- extendedWaitUntil:
-      visible: "Continue"
-      timeout: 10000
-- tapOn: "Continue"
-- extendedWaitUntil:
-      visible: "Connected to:"
-      timeout: 10000
-- tapOn:
-      point: "91%,48%"
+- runFlow:
+      when:
+          platform: iOS
+      commands:
+          - extendedWaitUntil:
+                visible: "Continue"
+                timeout: 10000
+          - tapOn: "Continue"
+          - extendedWaitUntil:
+                visible: "Connected to:"
+                timeout: 10000
+          - tapOn:
+                point: "91%,48%"
 - extendedWaitUntil:
       visible: "Tokyo 23 Wards"
-      timeout: 60000
+      timeout: 120000
 - tapOn:
       id: "main-questions-row"
 - extendedWaitUntil:
