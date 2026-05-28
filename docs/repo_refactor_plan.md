@@ -1,5 +1,9 @@
 # Repo Refactor Plan: Promote `mobile_v2` to Root
 
+> **Historical planning document.** The Expo app has already been promoted to
+> the repository root. Keep this file as a record of the structural migration;
+> do not treat the implementation checklist below as active work.
+
 ## Goal
 
 Make this repository a single Expo app repository centered on the current

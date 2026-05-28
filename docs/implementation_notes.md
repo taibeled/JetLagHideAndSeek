@@ -36,7 +36,7 @@ E2E notes:
 
 Milestone 3 adds Settings → Play Area in the bottom sheet. The app still starts with Tokyo 23 Wards, but the current in-memory play area can now be changed by Photon relation search or by entering a direct OSM relation ID. The direct-ID acceptance path uses Osaka relation `358674`.
 
-Fetched relation boundaries are loaded from Overpass using `out geom`, converted with `osmtogeojson`, filtered to polygonal geometry, and cached in AsyncStorage under relation-specific boundary keys. Osaka relation `358674` is also checked in at `assets/default-zones/osaka.json` as a bundled boundary so the direct-ID path and Maestro flow can run deterministically without depending on Overpass. The selected play area itself is not persisted yet; that remains part of the milestone 4 wire/persistence work.
+Fetched relation boundaries are loaded from Overpass using `out geom`, converted with `osmtogeojson`, filtered to polygonal geometry, and cached in AsyncStorage under relation-specific boundary keys. Osaka relation `358674` is also checked in at `assets/default-zones/osaka.json` as a bundled boundary so the direct-ID path and Maestro flow can run deterministically without depending on Overpass. The selected play area is now also included in the app-state v1 snapshot restored by `AppStateProviders`.
 
 Map rendering now reads from the mobile play-area provider instead of hard-coded Tokyo metadata, so the map label, boundary source, camera fit target, and Fit button follow the applied area.
 
@@ -70,7 +70,7 @@ Testing added in this milestone:
 
 ## Milestone 4: Hiding-Zone Presets
 
-Milestone 4 adds Settings → Hiding Zones and map overlays for selected transit presets. The app now wraps the map and bottom sheet in both `PlayAreaProvider` and `HidingZoneProvider`; hiding-zone state is still in memory only.
+Milestone 4 adds Settings → Hiding Zones and map overlays for selected transit presets. The app now wraps the map and bottom sheet in both `PlayAreaProvider` and `HidingZoneProvider`; hiding-zone setup is included in the app-state v1 snapshot restored by `AppStateProviders`.
 
 Tokyo Metro and Toei Subway presets are generated from ODPT GTFS files. The refresh script and config live under `data/odpt/`:
 
