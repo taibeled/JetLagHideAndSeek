@@ -192,6 +192,16 @@ describe("MapAppScreen", () => {
         expect(screen.getByText("Game Setup")).toBeTruthy();
     });
 
+    it("hides the sheet opener from accessibility while the sheet covers it", () => {
+        const screen = renderWithSafeArea(<MapAppScreen />);
+
+        expect(screen.queryByLabelText("Open bottom sheet")).toBeNull();
+
+        fireEvent(screen.getByTestId("bottom-sheet"), "onChange", -1);
+
+        expect(screen.getByLabelText("Open bottom sheet")).toBeTruthy();
+    });
+
     it("starts with empty hiding-zone map sources", () => {
         const screen = renderWithSafeArea(<MapAppScreen />);
 

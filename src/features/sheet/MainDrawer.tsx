@@ -350,9 +350,24 @@ function renderRouteContent(
                         {routeName !== "main" ? (
                             <BackButton onPress={() => onNavigate("main")} />
                         ) : null}
-                        <Text style={styles.eyebrow}>Mobile v2</Text>
-                        <Text style={styles.title}>{content.title}</Text>
-                        <Text style={styles.detail}>{content.detail}</Text>
+                        <Text
+                            style={styles.eyebrow}
+                            accessibilityLabel="Mobile v2"
+                        >
+                            Mobile v2
+                        </Text>
+                        <Text
+                            style={styles.title}
+                            accessibilityLabel={content.title}
+                        >
+                            {content.title}
+                        </Text>
+                        <Text
+                            style={styles.detail}
+                            accessibilityLabel={content.detail}
+                        >
+                            {content.detail}
+                        </Text>
                     </View>
 
                     <View style={styles.actions}>
@@ -384,7 +399,9 @@ function BackButton({ onPress }: { onPress: () => void }) {
             onPress={onPress}
             style={styles.backButton}
         >
-            <Text style={styles.backText}>Back</Text>
+            <Text style={styles.backText} accessibilityLabel="Back">
+                Back
+            </Text>
         </Pressable>
     );
 }
@@ -418,8 +435,15 @@ function DrawerAction({
             testID={testID}
         >
             <View style={styles.actionCopy}>
-                <Text style={styles.actionTitle}>{title}</Text>
-                <Text style={styles.actionDescription}>{description}</Text>
+                <Text style={styles.actionTitle} accessibilityLabel={title}>
+                    {title}
+                </Text>
+                <Text
+                    style={styles.actionDescription}
+                    accessibilityLabel={description}
+                >
+                    {description}
+                </Text>
             </View>
             <Text style={styles.chevron}>›</Text>
         </Pressable>

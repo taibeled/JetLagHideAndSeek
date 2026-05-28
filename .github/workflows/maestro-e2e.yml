@@ -143,7 +143,7 @@ jobs:
                   curl -Ls "https://get.maestro.mobile.dev" | bash
                   echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
 
-            - name: Select iOS simulator
+            - name: Select and boot iOS simulator
               run: |
                   xcrun simctl list devices available
                   IOS_SIMULATOR="iPhone 16 Pro"
@@ -151,11 +151,24 @@ jobs:
                       IOS_SIMULATOR="iPhone 16"
                   fi
                   echo "IOS_SIMULATOR=$IOS_SIMULATOR" >> "$GITHUB_ENV"
+                  UDID=$(xcrun simctl list devices available | grep "$IOS_SIMULATOR (" | head -1 | sed -n 's/.*(\([A-F0-9-]*\)).*/\1/p')
+                  if [ -n "$UDID" ]; then
+                      xcrun simctl boot "$UDID" || true
+                  fi
 
             - name: Build and install iOS dev client
+              env:
+                  E2E_DISABLE_IOS_ASSOCIATED_DOMAINS: "1"
               run: |
                   LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 pnpm exec expo prebuild --platform ios --clean
-                  LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 pnpm exec expo run:ios --simulator "$IOS_SIMULATOR" --no-bundler
+                  set +e
+                  LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 pnpm exec expo run:ios --device "$IOS_SIMULATOR" --no-bundler
+                  EXIT=$?
+                  set -e
+                  if [ $EXIT -ne 0 ]; then
+                      echo "expo run:ios exited $EXIT (expected: simctl openurl may time out without Metro)"
+                      xcrun simctl listapps booted | grep -q com.raycatdev.hideandseek.v2 || exit $EXIT
+                  fi
 
             - name: Run Maestro
               run: pnpm test:e2e:ios:stack

@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { NativeMap } from "@/features/map/NativeMap";
@@ -14,6 +14,9 @@ import { colors } from "@/theme/colors";
 export function MapAppScreen() {
     const bottomSheetRef = useRef<BottomSheetHandle>(null);
     const sheetIndexRef = useRef<number>(SHEET_SNAP_INDEX.medium);
+    const [sheetIndex, setSheetIndex] = useState<number>(
+        SHEET_SNAP_INDEX.medium,
+    );
 
     const handleMapPress = useCallback(() => {
         if (sheetIndexRef.current === SHEET_SNAP_INDEX.large) {
@@ -23,6 +26,7 @@ export function MapAppScreen() {
 
     const handleSheetIndexChange = useCallback((index: number) => {
         sheetIndexRef.current = index;
+        setSheetIndex(index);
     }, []);
 
     const handleFabPress = useCallback(() => {
@@ -33,7 +37,10 @@ export function MapAppScreen() {
         <View style={styles.screen}>
             <StatusBar style="dark" />
             <NativeMap onPress={handleMapPress} />
-            <FabButton onPress={handleFabPress} />
+            <FabButton
+                accessibilityHidden={sheetIndex !== -1}
+                onPress={handleFabPress}
+            />
             <AppBottomSheet
                 ref={bottomSheetRef}
                 onIndexChange={handleSheetIndexChange}

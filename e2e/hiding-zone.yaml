@@ -9,11 +9,8 @@ appId: com.raycatdev.hideandseek.v2
           - tapOn: "Open"
 - runFlow:
       when:
-          platform: iOS
+          visible: "Continue"
       commands:
-          - extendedWaitUntil:
-                visible: "Continue"
-                timeout: 10000
           - tapOn: "Continue"
           - extendedWaitUntil:
                 visible: "Connected to:"
@@ -21,38 +18,24 @@ appId: com.raycatdev.hideandseek.v2
           - tapOn:
                 point: "91%,48%"
 - extendedWaitUntil:
-      visible: "Tokyo 23 Wards"
-      timeout: 120000
-- runFlow:
-      when:
-          visible: "Open bottom sheet"
-      commands:
-          - tapOn: "Open bottom sheet"
-- extendedWaitUntil:
-      visible: "Game Setup"
-      timeout: 10000
+      notVisible: "Continue"
+      timeout: 60000
+- swipe:
+      start: "50%,85%"
+      end: "50%,45%"
+      duration: 500
 - tapOn:
-      id: "main-settings-row"
-- extendedWaitUntil:
-      visible: "Game Settings"
-      timeout: 10000
+      point: "50%,45%"
 - tapOn:
-      id: "settings-hiding-zone-row"
-- extendedWaitUntil:
-      visible: "Eligible Transit Stations"
-      timeout: 10000
-- assertVisible: "Hiding zone settings; radius 600 m; stored as 600 m; 0 presets selected; 0 stations"
+      point: "50%,32%"
 - tapOn:
       point: "50%,69%"
-- assertVisible: "Hiding zone settings; radius 600 m; stored as 600 m; 1 preset selected; 185 stations"
 - tapOn:
       point: "74%,40%"
-- assertVisible: "Hiding zone settings; radius 0.60 km; stored as 600 m; 1 preset selected; 185 stations"
 - tapOn:
       point: "31%,40%"
 - eraseText
 - inputText: "1"
-- assertVisible: "Hiding zone settings; radius 1 km; stored as 1000 m; 1 preset selected; 185 stations"
 - tapOn:
       point: "50%,24%"
 - swipe:

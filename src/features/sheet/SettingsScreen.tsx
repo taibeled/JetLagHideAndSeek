@@ -21,9 +21,13 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.eyebrow}>Settings</Text>
+            <Text style={styles.eyebrow} accessibilityLabel="Settings">
+                Settings
+            </Text>
             <View style={styles.titleRow}>
-                <Text style={styles.title}>Game Settings</Text>
+                <Text style={styles.title} accessibilityLabel="Game Settings">
+                    Game Settings
+                </Text>
                 <Pressable
                     accessibilityLabel="Share game setup"
                     accessibilityRole="button"
@@ -34,10 +38,18 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
                     ]}
                     testID="settings-share-button"
                 >
-                    <Text style={styles.shareButtonText}>Share</Text>
+                    <Text
+                        style={styles.shareButtonText}
+                        accessibilityLabel="Share"
+                    >
+                        Share
+                    </Text>
                 </Pressable>
             </View>
-            <Text style={styles.detail}>
+            <Text
+                style={styles.detail}
+                accessibilityLabel="Adjust the map area and app preferences."
+            >
                 Adjust the map area and app preferences.
             </Text>
 

@@ -67,7 +67,6 @@ export const AppBottomSheet = forwardRef<
             ref={sheetRef}
             index={SHEET_SNAP_INDEX.medium}
             snapPoints={snapPoints}
-            accessible={false}
             enableDynamicSizing={false}
             enablePanDownToClose
             handleIndicatorStyle={styles.handleIndicator}

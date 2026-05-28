@@ -11,6 +11,7 @@
         "lint:fix": "eslint . --fix",
         "format": "prettier . --write",
         "format:check": "prettier . --check",
+        "fix": "pnpm lint:fix && pnpm format",
         "check": "pnpm lint && pnpm format:check && pnpm typecheck",
         "data:odpt": "node data/odpt/scripts/fetch-odpt.mjs",
         "site:build": "node scripts/build-share-site-config.mjs",

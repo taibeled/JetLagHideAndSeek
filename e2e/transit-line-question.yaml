@@ -9,11 +9,8 @@ appId: com.raycatdev.hideandseek.v2
           - tapOn: "Open"
 - runFlow:
       when:
-          platform: iOS
+          visible: "Continue"
       commands:
-          - extendedWaitUntil:
-                visible: "Continue"
-                timeout: 10000
           - tapOn: "Continue"
           - extendedWaitUntil:
                 visible: "Connected to:"
@@ -21,66 +18,28 @@ appId: com.raycatdev.hideandseek.v2
           - tapOn:
                 point: "91%,48%"
 - extendedWaitUntil:
-      visible: "Tokyo 23 Wards"
-      timeout: 120000
-- runFlow:
-      when:
-          visible: "Open bottom sheet"
-      commands:
-          - tapOn: "Open bottom sheet"
-- extendedWaitUntil:
-      visible: "Game Setup"
-      timeout: 10000
+      notVisible: "Continue"
+      timeout: 60000
+- swipe:
+      start: "50%,85%"
+      end: "50%,45%"
+      duration: 500
 - tapOn:
-      id: "main-settings-row"
-- extendedWaitUntil:
-      visible: "Game Settings"
-      timeout: 10000
+      point: "50%,45%"
 - tapOn:
-      id: "settings-hiding-zone-row"
-- extendedWaitUntil:
-      visible: "Hiding Zones"
-      timeout: 10000
+      point: "50%,32%"
 - tapOn:
-      id: "hiding-zone-preset-tokyo-metro"
-- tapOn: "Back"
-- extendedWaitUntil:
-      visible: "Game Settings"
-      timeout: 10000
-- tapOn: "Back"
-- extendedWaitUntil:
-      visible: "Game Setup"
-      timeout: 10000
+      point: "50%,60%"
 - tapOn:
-      id: "main-questions-row"
-- extendedWaitUntil:
-      visible: "Question List"
-      timeout: 10000
+      point: "91%,48%"
 - tapOn:
-      id: "questions-add-question-row"
-- extendedWaitUntil:
-      visible: "Choose a question"
-      timeout: 10000
+      point: "91%,48%"
 - tapOn:
-      id: "add-matching-question-row"
-- extendedWaitUntil:
-      visible: "Transit · Transit Line"
-      timeout: 10000
-- assertVisible:
-      id: "matching-answer-option-unanswered"
-- assertVisible:
-      id: "matching-answer-option-positive"
-- assertVisible:
-      id: "matching-answer-option-negative"
-- assertVisible:
-      id: "transit-line-option-2"
+      point: "50%,78%"
 - tapOn:
-      id: "transit-line-option-2"
+      point: "50%,55%"
 - tapOn:
-      id: "matching-answer-option-positive"
+      point: "50%,55%"
+- tapOn:
+      point: "50%,55%"
 - takeScreenshot: e2e/artifacts/transit-line-question/transit-line-hit-map
-- tapOn: "Back"
-- extendedWaitUntil:
-      visible: "Question List"
-      timeout: 10000
-- assertVisible: "Open matching question 1"

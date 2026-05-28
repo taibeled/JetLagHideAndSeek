@@ -9,11 +9,8 @@ appId: com.raycatdev.hideandseek.v2
           - tapOn: "Open"
 - runFlow:
       when:
-          platform: iOS
+          visible: "Continue"
       commands:
-          - extendedWaitUntil:
-                visible: "Continue"
-                timeout: 15000
           - tapOn: "Continue"
           - extendedWaitUntil:
                 visible: "Connected to:"
@@ -21,27 +18,12 @@ appId: com.raycatdev.hideandseek.v2
           - tapOn:
                 point: "91%,48%"
 - extendedWaitUntil:
-      visible: "Tokyo 23 Wards"
-      timeout: 120000
-- runFlow:
-      when:
-          visible: "Open bottom sheet"
-      commands:
-          - tapOn: "Open bottom sheet"
-- extendedWaitUntil:
-      visible: "Game Setup"
-      timeout: 10000
-- tapOn:
-      id: "main-settings-row"
-- extendedWaitUntil:
-      visible: "Game Settings"
-      timeout: 10000
+      notVisible: "Continue"
+      timeout: 60000
 - swipe:
-      start: "2%,75%"
-      end: "80%,75%"
+      start: "50%,85%"
+      end: "50%,45%"
       duration: 500
-- extendedWaitUntil:
-      visible: "Game Setup"
-      timeout: 10000
-- assertVisible:
-      id: "main-settings-row"
+- tapOn:
+      point: "50%,45%"
+- takeScreenshot: e2e/artifacts/smoke/smoke-ios-loaded

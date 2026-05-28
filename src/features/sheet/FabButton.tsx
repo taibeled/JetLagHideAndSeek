@@ -4,19 +4,27 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors } from "@/theme/colors";
 
 type FabButtonProps = {
+    accessibilityHidden?: boolean;
     onPress: () => void;
 };
 
 const DOT_SIZE = 8;
 const DOT_GAP = 4;
 
-export function FabButton({ onPress }: FabButtonProps) {
+export function FabButton({
+    accessibilityHidden = false,
+    onPress,
+}: FabButtonProps) {
     const insets = useSafeAreaInsets();
 
     return (
         <Pressable
+            accessibilityElementsHidden={accessibilityHidden}
             accessibilityLabel="Open bottom sheet"
             accessibilityRole="button"
+            importantForAccessibility={
+                accessibilityHidden ? "no-hide-descendants" : "auto"
+            }
             onPress={onPress}
             style={({ pressed }) => [
                 styles.fab,

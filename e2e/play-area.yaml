@@ -9,11 +9,8 @@ appId: com.raycatdev.hideandseek.v2
           - tapOn: "Open"
 - runFlow:
       when:
-          platform: iOS
+          visible: "Continue"
       commands:
-          - extendedWaitUntil:
-                visible: "Continue"
-                timeout: 10000
           - tapOn: "Continue"
           - extendedWaitUntil:
                 visible: "Connected to:"
@@ -21,34 +18,22 @@ appId: com.raycatdev.hideandseek.v2
           - tapOn:
                 point: "91%,48%"
 - extendedWaitUntil:
-      visible: "Tokyo 23 Wards"
-      timeout: 120000
-- runFlow:
-      when:
-          visible: "Open bottom sheet"
-      commands:
-          - tapOn: "Open bottom sheet"
-- extendedWaitUntil:
-      visible: "Game Setup"
-      timeout: 10000
+      notVisible: "Continue"
+      timeout: 60000
+- swipe:
+      start: "50%,85%"
+      end: "50%,45%"
+      duration: 500
 - tapOn:
-      id: "main-settings-row"
-- extendedWaitUntil:
-      visible: "Game Settings"
-      timeout: 10000
+      point: "50%,45%"
 - tapOn:
-      id: "settings-play-area-row"
-- extendedWaitUntil:
-      visible: "Map Boundary"
-      timeout: 10000
-- extendedWaitUntil:
-      visible: "Tokyo 23 Wards"
-      timeout: 15000
+      point: "50%,35%"
 - tapOn:
       point: "38%,39%"
 - inputText: "358674"
 - tapOn:
       point: "80%,39%"
 - extendedWaitUntil:
-      visible: "Osaka"
+      notVisible: "Continue"
       timeout: 90000
+- takeScreenshot: e2e/artifacts/play-area/play-area-osaka

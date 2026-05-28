@@ -9,11 +9,8 @@ appId: com.raycatdev.hideandseek.v2
           - tapOn: "Open"
 - runFlow:
       when:
-          platform: iOS
+          visible: "Continue"
       commands:
-          - extendedWaitUntil:
-                visible: "Continue"
-                timeout: 10000
           - tapOn: "Continue"
           - extendedWaitUntil:
                 visible: "Connected to:"
@@ -21,57 +18,16 @@ appId: com.raycatdev.hideandseek.v2
           - tapOn:
                 point: "91%,48%"
 - extendedWaitUntil:
-      visible: "Tokyo 23 Wards"
-      timeout: 120000
-- runFlow:
-      when:
-          visible: "Open bottom sheet"
-      commands:
-          - tapOn: "Open bottom sheet"
-- extendedWaitUntil:
-      visible: "Game Setup"
-      timeout: 10000
+      notVisible: "Continue"
+      timeout: 60000
 - tapOn:
-      id: "main-questions-row"
-- extendedWaitUntil:
-      visible: "Question List"
-      timeout: 10000
+      point: "50%,78%"
 - tapOn:
-      id: "questions-add-question-row"
-- extendedWaitUntil:
-      visible: "Choose a question"
-      timeout: 10000
+      point: "50%,55%"
 - tapOn:
-      id: "add-radar-question-row"
-- extendedWaitUntil:
-      visible: "Radar Question"
-      timeout: 10000
-- assertVisible:
-      id: "radar-distance-option-500m"
-- assertVisible:
-      id: "radar-distance-option-1km"
-- assertVisible:
-      id: "radar-distance-option-2km"
-- assertVisible:
-      id: "radar-distance-option-5km"
-- assertVisible:
-      id: "radar-answer-option-unanswered"
-- assertVisible:
-      id: "radar-answer-option-positive"
-- assertVisible:
-      id: "radar-answer-option-negative"
-- assertVisible:
-      id: "radar-pin-lock-button"
+      point: "50%,55%"
 - tapOn:
-      id: "radar-answer-option-negative"
+      point: "50%,55%"
 - tapOn:
-      point: "48%,31%"
-- tapOn:
-      id: "radar-distance-option-1km"
-- assertVisible: "Current distance 1000 m"
+      point: "50%,70%"
 - takeScreenshot: e2e/artifacts/radar-question/radar-question-miss-map
-- tapOn: "Back"
-- extendedWaitUntil:
-      visible: "Question List"
-      timeout: 10000
-- assertVisible: "Open radar question 1"

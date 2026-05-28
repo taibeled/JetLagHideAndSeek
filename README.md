@@ -12,7 +12,7 @@ centered on a native MapLibre map and an Apple Maps-style bottom sheet.
 - **Hiding Zone presets** — Select transit presets (Tokyo Metro, Toei Subway)
   sourced from ODPT GTFS data. Adjust the hiding radius in meters, kilometers,
   or miles.
-- **E2E-tested** — Maestro smoke, play-area, and hiding-zone flows on iOS.
+- **E2E-tested** — Maestro smoke, play-area, hiding-zone, radar-question, and transit-line-question flows on iOS and Android via GitHub Actions.
 - **Dev build required** — Uses native modules (`@maplibre/maplibre-react-native`,
   AsyncStorage, Reanimated); Expo Go will not work.
 
@@ -74,12 +74,41 @@ LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 pnpm exec expo run:ios --device "iPhone 16 P
 | `pnpm lint`               | Lint with ESLint                       |
 | `pnpm format`             | Format with Prettier                   |
 | `pnpm format:check`       | Check formatting                       |
+| `pnpm fix`                | Auto-fix lint and format issues        |
 | `pnpm typecheck`          | Run TypeScript type checking           |
 | `pnpm check`              | Lint, format check, and typecheck      |
 | `pnpm test`               | Run Jest unit and component tests      |
 | `pnpm test:e2e:ios`       | Run Maestro E2E flows                  |
 | `pnpm test:e2e:ios:stack` | Start Metro, run E2E flows, stop Metro |
 | `pnpm data:odpt`          | Regenerate ODPT hiding-zone presets    |
+
+## E2E Testing on CI
+
+Maestro E2E flows run on GitHub Actions (`Maestro E2E` workflow) against
+both iOS and Android. Use the `gh` CLI to trigger and monitor remote runs
+without leaving the terminal.
+
+```bash
+# Full test suite — local check + unit tests + remote E2E on both platforms
+pnpm check && pnpm test && gh workflow run "Maestro E2E" --ref $(git branch --show-current) -f platform=all && gh run watch
+
+# Run only E2E on a specific platform
+gh workflow run "Maestro E2E" --ref $(git branch --show-current) -f platform=ios
+gh workflow run "Maestro E2E" --ref $(git branch --show-current) -f platform=android
+
+# Run a single flow for faster iteration
+gh workflow run "Maestro E2E" --ref $(git branch --show-current) -f platform=ios -f flow=smoke
+
+# Watch the most recent workflow run
+gh run watch
+```
+
+Available flow names for `-f flow`: `smoke`, `play-area`, `hiding-zone`,
+`radar-question`, `transit-line-question`. Omit (or use `all`) to run every
+flow.
+
+A simulator/emulator and dev build must already be available when running
+locally. See `docs/implementation_notes.md` for local E2E stack setup.
 
 ## Project Structure
 
