@@ -35,12 +35,6 @@ export function HidingZoneScreen() {
             style={styles.container}
             contentContainerStyle={styles.scrollContent}
         >
-            <Text style={styles.eyebrow}>Hiding Zones</Text>
-            <Text style={styles.title}>Eligible Transit Stations</Text>
-            <Text style={styles.detail}>
-                Add day-pass transit presets and tune the station radius.
-            </Text>
-
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Station radius</Text>
                 <View style={styles.radiusRow}>
@@ -186,8 +180,8 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         borderWidth: 1,
         gap: 4,
-        marginTop: 18,
-        padding: 16,
+        marginTop: 12,
+        padding: 14,
     },
     cardLabel: {
         color: colors.tint,
@@ -202,23 +196,10 @@ const styles = StyleSheet.create({
         fontSize: 22,
         fontWeight: "800",
     },
-    detail: {
-        color: colors.muted,
-        fontSize: 15,
-        lineHeight: 21,
-        marginTop: 6,
-    },
     emptyText: {
         color: colors.muted,
         fontSize: 14,
         lineHeight: 20,
-    },
-    eyebrow: {
-        color: colors.tint,
-        fontSize: 12,
-        fontWeight: "800",
-        letterSpacing: 0,
-        textTransform: "uppercase",
     },
     metadata: {
         color: colors.muted,
@@ -245,10 +226,10 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         gap: 12,
         justifyContent: "space-between",
-        marginTop: 10,
-        minHeight: 64,
+        marginTop: 8,
+        minHeight: 58,
         paddingHorizontal: 14,
-        paddingVertical: 10,
+        paddingVertical: 8,
     },
     presetRowSelected: {
         borderColor: colors.tint,
@@ -276,21 +257,15 @@ const styles = StyleSheet.create({
     },
     scrollContent: {
         paddingHorizontal: 20,
-        paddingTop: 6,
+        paddingTop: 0,
     },
     section: {
-        marginTop: 22,
+        marginTop: 12,
     },
     sectionTitle: {
         color: colors.ink,
         fontSize: 16,
         fontWeight: "800",
         marginBottom: 10,
-    },
-    title: {
-        color: colors.ink,
-        fontSize: 28,
-        fontWeight: "800",
-        marginTop: 4,
     },
 });

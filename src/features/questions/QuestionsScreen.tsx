@@ -21,12 +21,6 @@ export function QuestionsScreen({ onNavigate }: QuestionsScreenProps) {
 
     return (
         <SheetScrollView contentContainerStyle={styles.scrollContent}>
-            <Text style={styles.eyebrow}>Questions</Text>
-            <Text style={styles.title}>Question List</Text>
-            <Text style={styles.detail}>
-                Review question previews and reopen their map pins.
-            </Text>
-
             {questions.length === 0 ? (
                 <View style={styles.emptyCard} testID="questions-empty-card">
                     <Text style={styles.emptyTitle}>No questions yet</Text>
@@ -129,27 +123,21 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         gap: 12,
         justifyContent: "space-between",
-        marginTop: 16,
-        minHeight: 64,
+        marginTop: 12,
+        minHeight: 58,
         paddingHorizontal: 16,
-        paddingVertical: 10,
+        paddingVertical: 8,
     },
     chevron: {
         color: colors.muted,
         fontSize: 28,
         lineHeight: 28,
     },
-    detail: {
-        color: colors.muted,
-        fontSize: 15,
-        lineHeight: 21,
-        marginTop: 6,
-    },
     deleteAction: {
         alignItems: "center",
         backgroundColor: "#d92d20",
         justifyContent: "center",
-        minHeight: 64,
+        minHeight: 58,
         paddingHorizontal: 20,
     },
     deleteActionText: {
@@ -168,24 +156,15 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         borderWidth: 1,
         gap: 4,
-        marginTop: 22,
-        padding: 16,
+        padding: 14,
     },
     emptyTitle: {
         color: colors.ink,
         fontSize: 18,
         fontWeight: "800",
     },
-    eyebrow: {
-        color: colors.tint,
-        fontSize: 12,
-        fontWeight: "800",
-        letterSpacing: 0,
-        textTransform: "uppercase",
-    },
     list: {
-        gap: 10,
-        marginTop: 22,
+        gap: 8,
     },
     metadata: {
         color: colors.muted,
@@ -205,9 +184,9 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         gap: 12,
         justifyContent: "space-between",
-        minHeight: 64,
+        minHeight: 58,
         paddingHorizontal: 16,
-        paddingVertical: 10,
+        paddingVertical: 8,
     },
     questionTitle: {
         color: colors.ink,
@@ -216,12 +195,6 @@ const styles = StyleSheet.create({
     },
     scrollContent: {
         paddingHorizontal: 20,
-        paddingTop: 6,
-    },
-    title: {
-        color: colors.ink,
-        fontSize: 28,
-        fontWeight: "800",
-        marginTop: 4,
+        paddingTop: 0,
     },
 });

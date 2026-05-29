@@ -75,12 +75,6 @@ export function PlayAreaScreen() {
             style={styles.container}
             contentContainerStyle={styles.scrollContent}
         >
-            <Text style={styles.eyebrow}>Play Area</Text>
-            <Text style={styles.title}>Map Boundary</Text>
-            <Text style={styles.detail}>
-                Choose the OSM relation that defines the game boundary.
-            </Text>
-
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Direct relation ID</Text>
                 <View style={styles.inputRow}>
@@ -258,8 +252,8 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         borderWidth: 1,
         gap: 4,
-        marginTop: 18,
-        padding: 16,
+        marginTop: 12,
+        padding: 14,
     },
     cardLabel: {
         color: colors.tint,
@@ -276,31 +270,18 @@ const styles = StyleSheet.create({
     container: {},
     scrollContent: {
         paddingHorizontal: 20,
-        paddingTop: 6,
+        paddingTop: 0,
     },
     currentName: {
         color: colors.ink,
         fontSize: 22,
         fontWeight: "800",
     },
-    detail: {
-        color: colors.muted,
-        fontSize: 15,
-        lineHeight: 21,
-        marginTop: 6,
-    },
     error: {
         color: "#b42318",
         fontSize: 13,
         fontWeight: "700",
         marginTop: 8,
-    },
-    eyebrow: {
-        color: colors.tint,
-        fontSize: 12,
-        fontWeight: "800",
-        letterSpacing: 0,
-        textTransform: "uppercase",
     },
     input: {
         backgroundColor: colors.white,
@@ -357,9 +338,9 @@ const styles = StyleSheet.create({
         gap: 12,
         justifyContent: "space-between",
         marginTop: 10,
-        minHeight: 64,
+        minHeight: 58,
         paddingHorizontal: 14,
-        paddingVertical: 10,
+        paddingVertical: 8,
     },
     resultTitle: {
         color: colors.ink,
@@ -367,18 +348,12 @@ const styles = StyleSheet.create({
         fontWeight: "800",
     },
     section: {
-        marginTop: 22,
+        marginTop: 12,
     },
     sectionTitle: {
         color: colors.ink,
         fontSize: 16,
         fontWeight: "800",
         marginBottom: 10,
-    },
-    title: {
-        color: colors.ink,
-        fontSize: 28,
-        fontWeight: "800",
-        marginTop: 4,
     },
 });

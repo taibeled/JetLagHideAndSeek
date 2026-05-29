@@ -21,37 +21,20 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.eyebrow} accessibilityLabel="Settings">
-                Settings
-            </Text>
-            <View style={styles.titleRow}>
-                <Text style={styles.title} accessibilityLabel="Game Settings">
-                    Game Settings
-                </Text>
-                <Pressable
-                    accessibilityLabel="Share game setup"
-                    accessibilityRole="button"
-                    onPress={() => setIsShareVisible(true)}
-                    style={({ pressed }) => [
-                        styles.shareButton,
-                        pressed ? styles.actionPressed : null,
-                    ]}
-                    testID="settings-share-button"
-                >
-                    <Text
-                        style={styles.shareButtonText}
-                        accessibilityLabel="Share"
-                    >
-                        Share
-                    </Text>
-                </Pressable>
-            </View>
-            <Text
-                style={styles.detail}
-                accessibilityLabel="Adjust the map area and app preferences."
+            <Pressable
+                accessibilityLabel="Share game setup"
+                accessibilityRole="button"
+                onPress={() => setIsShareVisible(true)}
+                style={({ pressed }) => [
+                    styles.shareButton,
+                    pressed ? styles.actionPressed : null,
+                ]}
+                testID="settings-share-button"
             >
-                Adjust the map area and app preferences.
-            </Text>
+                <Text style={styles.shareButtonText} accessibilityLabel="Share">
+                    Share
+                </Text>
+            </Pressable>
 
             <View style={styles.actions}>
                 <SheetListRow
@@ -90,48 +73,24 @@ const styles = StyleSheet.create({
         opacity: 0.72,
     },
     actions: {
-        gap: 10,
-        marginTop: 18,
+        gap: 8,
+        marginTop: 12,
     },
     container: {
         flex: 1,
         paddingHorizontal: 20,
-        paddingTop: 6,
-    },
-    detail: {
-        color: colors.muted,
-        fontSize: 15,
-        lineHeight: 21,
-        marginTop: 6,
-    },
-    eyebrow: {
-        color: colors.tint,
-        fontSize: 12,
-        fontWeight: "800",
-        letterSpacing: 0,
-        textTransform: "uppercase",
-    },
-    title: {
-        flex: 1,
-        color: colors.ink,
-        fontSize: 28,
-        fontWeight: "800",
+        paddingTop: 0,
     },
     shareButton: {
+        alignSelf: "flex-end",
         backgroundColor: colors.button,
         borderRadius: 8,
         paddingHorizontal: 14,
-        paddingVertical: 9,
+        paddingVertical: 8,
     },
     shareButtonText: {
         color: colors.white,
         fontSize: 14,
         fontWeight: "800",
-    },
-    titleRow: {
-        alignItems: "center",
-        flexDirection: "row",
-        gap: 12,
-        marginTop: 4,
     },
 });

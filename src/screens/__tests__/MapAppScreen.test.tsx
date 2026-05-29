@@ -176,11 +176,13 @@ function pressAndAdvance(screen: ReturnType<typeof render>, testID: string) {
 
 async function pressAddTransitLineQuestion(screen: ReturnType<typeof render>) {
     pressAndAdvance(screen, "add-matching-question-row");
-    expect(screen.getByText("Choose a match")).toBeTruthy();
+    expect(screen.getByLabelText("Matching")).toBeTruthy();
 
     pressAndAdvance(screen, "add-transit-line-question-row");
     await waitFor(() => {
-        expect(screen.getByText("Transit Line")).toBeTruthy();
+        expect(
+            screen.getByTestId("matching-answer-option-unanswered"),
+        ).toBeTruthy();
     });
 }
 
@@ -274,7 +276,7 @@ describe("MapAppScreen", () => {
 
         // During transition: both leaving (main) and current (settings) visible
         expect(screen.getByText("Game Setup")).toBeTruthy();
-        expect(screen.getByText("Game Settings")).toBeTruthy();
+        expect(screen.getByTestId("settings-share-button")).toBeTruthy();
 
         act(() => {
             jest.advanceTimersByTime(300);
@@ -282,7 +284,7 @@ describe("MapAppScreen", () => {
 
         // After transition: leaving screen removed
         expect(screen.queryByText("Game Setup")).toBeNull();
-        expect(screen.getByText("Game Settings")).toBeTruthy();
+        expect(screen.getByTestId("settings-share-button")).toBeTruthy();
 
         jest.useRealTimers();
     });
@@ -300,14 +302,14 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        expect(screen.getByText("Eligible Transit Stations")).toBeTruthy();
+        expect(screen.getByLabelText("Hiding Zones")).toBeTruthy();
 
         // Back: hiding-zone → settings
         fireEvent.press(screen.getByText("Back"));
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        expect(screen.getByText("Game Settings")).toBeTruthy();
+        expect(screen.getByTestId("settings-share-button")).toBeTruthy();
 
         // Back: settings → main
         fireEvent.press(screen.getByText("Back"));
@@ -321,7 +323,7 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        expect(screen.getByText("Game Settings")).toBeTruthy();
+        expect(screen.getByTestId("settings-share-button")).toBeTruthy();
         expect(screen.queryByText("Game Setup")).toBeNull();
 
         jest.useRealTimers();
@@ -335,14 +337,14 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        expect(screen.getByText("Question List")).toBeTruthy();
+        expect(screen.getByLabelText("Questions")).toBeTruthy();
         expect(screen.getByTestId("questions-empty-card")).toBeTruthy();
 
         fireEvent.press(screen.getByTestId("questions-add-question-row"));
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        expect(screen.getByText("Choose a question")).toBeTruthy();
+        expect(screen.getByLabelText("Add Question")).toBeTruthy();
         expect(screen.getByTestId("add-radar-question-row")).toBeTruthy();
         expect(screen.getByTestId("add-matching-question-row")).toBeTruthy();
 
@@ -350,7 +352,7 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        expect(screen.getByText("Choose a match")).toBeTruthy();
+        expect(screen.getByLabelText("Matching")).toBeTruthy();
         expect(
             screen.getByTestId("add-transit-line-question-row"),
         ).toBeTruthy();
@@ -359,7 +361,7 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        expect(screen.getByText("Choose a question")).toBeTruthy();
+        expect(screen.getByLabelText("Add Question")).toBeTruthy();
 
         fireEvent.press(screen.getByText("Back"));
         act(() => {
@@ -373,7 +375,7 @@ describe("MapAppScreen", () => {
         act(() => {
             jest.advanceTimersByTime(300);
         });
-        expect(screen.getByText("Game Settings")).toBeTruthy();
+        expect(screen.getByTestId("settings-share-button")).toBeTruthy();
         expect(screen.getByTestId("settings-play-area-row")).toBeTruthy();
         expect(screen.getByTestId("settings-hiding-zone-row")).toBeTruthy();
     });
@@ -544,7 +546,7 @@ describe("MapAppScreen", () => {
             jest.advanceTimersByTime(300);
         });
 
-        expect(screen.getByText("Question List")).toBeTruthy();
+        expect(screen.getByLabelText("Questions")).toBeTruthy();
         expect(screen.getByText("Transit Line 1")).toBeTruthy();
         expect(screen.getByText("Transit line: not selected")).toBeTruthy();
     });
@@ -646,7 +648,7 @@ describe("MapAppScreen", () => {
             jest.advanceTimersByTime(300);
         });
 
-        expect(screen.getByText("Question List")).toBeTruthy();
+        expect(screen.getByLabelText("Questions")).toBeTruthy();
         expect(screen.getByTestId("questions-empty-card")).toBeTruthy();
         expect(
             getMapShapeSource(screen, "radar-question-areas").props.shape
@@ -674,7 +676,7 @@ describe("MapAppScreen", () => {
             jest.advanceTimersByTime(300);
         });
 
-        expect(screen.getByText("Question List")).toBeTruthy();
+        expect(screen.getByLabelText("Questions")).toBeTruthy();
         expect(screen.getByText("Radar Question 1")).toBeTruthy();
         expect(screen.getByText("500 m distance · Hit")).toBeTruthy();
 

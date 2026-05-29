@@ -77,9 +77,9 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         gap: 12,
         justifyContent: "space-between",
-        minHeight: 72,
+        minHeight: 58,
         paddingHorizontal: 16,
-        paddingVertical: 12,
+        paddingVertical: 8,
     },
     rowDestructive: {
         borderColor: "#f4b4ae",

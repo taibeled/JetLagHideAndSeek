@@ -71,8 +71,6 @@ export function RadarQuestionDetailScreen({
 
     return (
         <>
-            <Text style={styles.eyebrow}>Radar Question</Text>
-
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Distance</Text>
                 <Animated.View layout={SELECTOR_LAYOUT_TRANSITION}>
@@ -263,13 +261,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         flexDirection: "row",
         gap: 10,
-        marginTop: 12,
-    },
-    detail: {
-        color: colors.muted,
-        fontSize: 15,
-        lineHeight: 21,
-        marginTop: 6,
+        marginTop: 10,
     },
     distanceOption: {
         alignItems: "center",
@@ -294,21 +286,14 @@ const styles = StyleSheet.create({
     distanceOptionTextActive: {
         color: colors.white,
     },
-    eyebrow: {
-        color: colors.tint,
-        fontSize: 12,
-        fontWeight: "800",
-        letterSpacing: 0,
-        textTransform: "uppercase",
-    },
     infoBox: {
         backgroundColor: "#eaf4f1",
         borderColor: colors.tint,
         borderRadius: 8,
         borderWidth: 1,
         gap: 4,
-        marginTop: 24,
-        padding: 16,
+        marginTop: 14,
+        padding: 14,
     },
     infoLabel: {
         color: colors.tint,
@@ -333,18 +318,18 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         flexWrap: "wrap",
         gap: 8,
-        marginTop: 10,
+        marginTop: 8,
     },
     optionCarousel: {
         marginHorizontal: -20,
-        marginTop: 10,
+        marginTop: 8,
     },
     optionCarouselContent: {
         gap: 8,
         paddingHorizontal: 20,
     },
     section: {
-        marginTop: 22,
+        marginTop: 12,
     },
     sectionTitle: {
         color: colors.ink,

@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+    type ReactNode,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 import {
     BackHandler,
     Dimensions,
@@ -27,6 +34,7 @@ import { QuestionsScreen } from "@/features/questions/QuestionsScreen";
 import { SettingsScreen } from "@/features/sheet/SettingsScreen";
 import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
 import { getBackTarget, getNavDirection } from "@/features/sheet/sheetNav";
+import { useQuestion } from "@/state/questionStore";
 import { colors } from "@/theme/colors";
 
 const SHEET_WIDTH = Dimensions.get("window").width;
@@ -48,43 +56,24 @@ type MainDrawerProps = {
     sheetIndex: number;
 };
 
-const routeContent: Record<SheetRouteName, { title: string; detail: string }> =
-    {
-        "add-question": {
-            detail: "Choose a question type to preview on the map.",
-            title: "Add Question",
-        },
-        matching: {
-            detail: "Choose a matching question type.",
-            title: "Matching",
-        },
-        main: {
-            detail: "Choose a workflow to start shaping the game.",
-            title: "Game Setup",
-        },
-        questions: {
-            detail: "Review answers and question geometry.",
-            title: "Questions",
-        },
-        "question-detail": {
-            detail: "Tune the distance and move the map pin.",
-            title: "Radar Question",
-        },
-        settings: {
-            detail: "Play area, units, and sharing controls will live here.",
-            title: "Settings",
-        },
-        "play-area": {
-            detail: "Choose the boundary for the game map.",
-            title: "Play Area",
-        },
-        "hiding-zone": {
-            detail: "Select eligible transit stations for the hiding zone.",
-            title: "Hiding Zones",
-        },
-    };
+const mainContent = {
+    detail: "Choose a workflow to start shaping the game.",
+    title: "Game Setup",
+};
+
+const routeEyebrows: Record<SheetRouteName, string> = {
+    "add-question": "Add Question",
+    "hiding-zone": "Hiding Zones",
+    main: "Mobile v2",
+    matching: "Matching",
+    "play-area": "Play Area",
+    questions: "Questions",
+    "question-detail": "Radar Question",
+    settings: "Settings",
+};
 
 export function MainDrawer({ route, onNavigate, sheetIndex }: MainDrawerProps) {
+    const { activeQuestion } = useQuestion();
     const [displayedRoute, setDisplayedRoute] = useState(route);
     const displayedRouteRef = useRef(route);
     const [transition, setTransition] = useState<SheetTransition | null>(null);
@@ -226,6 +215,7 @@ export function MainDrawer({ route, onNavigate, sheetIndex }: MainDrawerProps) {
                         transition.from,
                         handleNavigate,
                         sheetIndex,
+                        getRouteEyebrow(transition.from, activeQuestion?.type),
                     )}
                 </Animated.View>
             ) : null}
@@ -248,7 +238,12 @@ export function MainDrawer({ route, onNavigate, sheetIndex }: MainDrawerProps) {
                         : null,
                 ]}
             >
-                {renderRouteContent(currentRoute, handleNavigate, sheetIndex)}
+                {renderRouteContent(
+                    currentRoute,
+                    handleNavigate,
+                    sheetIndex,
+                    getRouteEyebrow(currentRoute, activeQuestion?.type),
+                )}
             </Animated.View>
 
             {backTarget ? (
@@ -289,77 +284,77 @@ function renderRouteContent(
     routeName: SheetRouteName,
     onNavigate: (route: SheetRouteName) => void,
     sheetIndex: number,
+    eyebrowLabel: string,
 ) {
     switch (routeName) {
         case "settings":
             return (
-                <View style={styles.container}>
-                    <BackButton onPress={() => onNavigate("main")} />
+                <ChildSheetShell
+                    eyebrowLabel={eyebrowLabel}
+                    onBack={() => onNavigate("main")}
+                >
                     <SettingsScreen onNavigate={onNavigate} />
-                </View>
+                </ChildSheetShell>
             );
         case "play-area":
             return (
-                <View style={styles.fullContainer}>
-                    <View style={styles.backButtonRow}>
-                        <BackButton onPress={() => onNavigate("settings")} />
-                    </View>
+                <ChildSheetShell
+                    eyebrowLabel={eyebrowLabel}
+                    onBack={() => onNavigate("settings")}
+                >
                     <PlayAreaScreen />
-                </View>
+                </ChildSheetShell>
             );
         case "hiding-zone":
             return (
-                <View style={styles.fullContainer}>
-                    <View style={styles.backButtonRow}>
-                        <BackButton onPress={() => onNavigate("settings")} />
-                    </View>
+                <ChildSheetShell
+                    eyebrowLabel={eyebrowLabel}
+                    onBack={() => onNavigate("settings")}
+                >
                     <HidingZoneScreen />
-                </View>
+                </ChildSheetShell>
             );
         case "questions":
             return (
-                <View style={styles.fullContainer}>
-                    <View style={styles.backButtonRow}>
-                        <BackButton onPress={() => onNavigate("main")} />
-                    </View>
+                <ChildSheetShell
+                    eyebrowLabel={eyebrowLabel}
+                    onBack={() => onNavigate("main")}
+                >
                     <QuestionsScreen onNavigate={onNavigate} />
-                </View>
+                </ChildSheetShell>
             );
         case "add-question":
             return (
-                <View style={styles.fullContainer}>
-                    <View style={styles.backButtonRow}>
-                        <BackButton onPress={() => onNavigate("questions")} />
-                    </View>
+                <ChildSheetShell
+                    eyebrowLabel={eyebrowLabel}
+                    onBack={() => onNavigate("questions")}
+                >
                     <AddQuestionScreen onNavigate={onNavigate} />
-                </View>
+                </ChildSheetShell>
             );
         case "matching":
             return (
-                <View style={styles.fullContainer}>
-                    <View style={styles.backButtonRow}>
-                        <BackButton
-                            onPress={() => onNavigate("add-question")}
-                        />
-                    </View>
+                <ChildSheetShell
+                    eyebrowLabel={eyebrowLabel}
+                    onBack={() => onNavigate("add-question")}
+                >
                     <MatchingQuestionScreen onNavigate={onNavigate} />
-                </View>
+                </ChildSheetShell>
             );
         case "question-detail":
             return (
-                <View style={styles.fullContainer}>
-                    <View style={styles.backButtonRow}>
-                        <BackButton onPress={() => onNavigate("questions")} />
-                        <QuestionPinLockButton />
-                    </View>
+                <ChildSheetShell
+                    accessory={<QuestionPinLockButton />}
+                    eyebrowLabel={eyebrowLabel}
+                    onBack={() => onNavigate("questions")}
+                >
                     <QuestionDetailScreen
                         onNavigate={onNavigate}
                         sheetIndex={sheetIndex}
                     />
-                </View>
+                </ChildSheetShell>
             );
         default: {
-            const content = routeContent[routeName];
             return (
                 <View style={styles.container}>
                     <View style={styles.header}>
@@ -374,15 +369,15 @@ function renderRouteContent(
                         </Text>
                         <Text
                             style={styles.title}
-                            accessibilityLabel={content.title}
+                            accessibilityLabel={mainContent.title}
                         >
-                            {content.title}
+                            {mainContent.title}
                         </Text>
                         <Text
                             style={styles.detail}
-                            accessibilityLabel={content.detail}
+                            accessibilityLabel={mainContent.detail}
                         >
-                            {content.detail}
+                            {mainContent.detail}
                         </Text>
                     </View>
 
@@ -406,6 +401,48 @@ function renderRouteContent(
             );
         }
     }
+}
+
+function getRouteEyebrow(
+    routeName: SheetRouteName,
+    activeQuestionType?: NonNullable<
+        ReturnType<typeof useQuestion>["activeQuestion"]
+    >["type"],
+) {
+    if (routeName === "question-detail") {
+        return activeQuestionType === "matching" ? "Transit" : "Radar Question";
+    }
+    return routeEyebrows[routeName];
+}
+
+function ChildSheetShell({
+    accessory,
+    children,
+    eyebrowLabel,
+    onBack,
+}: {
+    accessory?: ReactNode;
+    children: ReactNode;
+    eyebrowLabel: string;
+    onBack: () => void;
+}) {
+    return (
+        <View style={styles.fullContainer}>
+            <View style={styles.childHeader}>
+                <BackButton onPress={onBack} />
+                <Text
+                    accessibilityLabel={eyebrowLabel}
+                    style={styles.childHeaderEyebrow}
+                >
+                    {eyebrowLabel}
+                </Text>
+                {accessory ? (
+                    <View style={styles.childHeaderAccessory}>{accessory}</View>
+                ) : null}
+            </View>
+            {children}
+        </View>
+    );
 }
 
 function BackButton({ onPress }: { onPress: () => void }) {
@@ -515,13 +552,25 @@ const styles = StyleSheet.create({
         minWidth: 72,
         paddingVertical: 4,
     },
-    backButtonRow: {
+    childHeader: {
         alignItems: "center",
         flexDirection: "row",
-        justifyContent: "space-between",
-        minHeight: 42,
-        paddingBottom: 8,
+        gap: 8,
+        minHeight: 44,
+        paddingBottom: 4,
         paddingHorizontal: 20,
+    },
+    childHeaderAccessory: {
+        alignItems: "flex-end",
+        minWidth: 94,
+    },
+    childHeaderEyebrow: {
+        color: colors.tint,
+        flex: 1,
+        fontSize: 12,
+        fontWeight: "800",
+        letterSpacing: 0,
+        textTransform: "uppercase",
     },
     fullContainer: {
         flex: 1,

@@ -29,44 +29,6 @@ export function TransitLineQuestionDetailScreen({
 
     return (
         <>
-            <View accessible accessibilityLabel="Transit line question detail">
-                <Text style={styles.eyebrow}>Transit</Text>
-                <Text
-                    accessibilityLabel="Transit line question title"
-                    style={styles.title}
-                >
-                    Transit Line
-                </Text>
-                <Text style={styles.detail}>
-                    Are you on the selected transit line?
-                </Text>
-            </View>
-
-            <View style={styles.section}>
-                <Text
-                    accessibilityLabel="Transit line answer section"
-                    style={styles.sectionTitle}
-                >
-                    Answer
-                </Text>
-                <QuestionAnswerSelector
-                    answer={question.answer}
-                    onChange={(answer) =>
-                        updateQuestion(question.id, (current) =>
-                            current.type === "matching"
-                                ? {
-                                      ...current,
-                                      answer,
-                                      updatedAt: new Date().toISOString(),
-                                  }
-                                : current,
-                        )
-                    }
-                    questionType={question.type}
-                    testIDPrefix="matching-answer-option"
-                />
-            </View>
-
             <QuestionLocationSelector
                 center={question.center}
                 onCenterChange={(center) =>
@@ -131,6 +93,31 @@ export function TransitLineQuestionDetailScreen({
                     );
                 })}
             </View>
+
+            <View style={styles.section}>
+                <Text
+                    accessibilityLabel="Transit line answer section"
+                    style={styles.sectionTitle}
+                >
+                    Answer
+                </Text>
+                <QuestionAnswerSelector
+                    answer={question.answer}
+                    onChange={(answer) =>
+                        updateQuestion(question.id, (current) =>
+                            current.type === "matching"
+                                ? {
+                                      ...current,
+                                      answer,
+                                      updatedAt: new Date().toISOString(),
+                                  }
+                                : current,
+                        )
+                    }
+                    questionType={question.type}
+                    testIDPrefix="matching-answer-option"
+                />
+            </View>
         </>
     );
 }
@@ -147,13 +134,6 @@ function getLineAccessibilityLabel(line: TransitLineOption): string {
 }
 
 const styles = StyleSheet.create({
-    detail: { color: colors.muted, fontSize: 15, lineHeight: 21, marginTop: 6 },
-    eyebrow: {
-        color: colors.tint,
-        fontSize: 12,
-        fontWeight: "800",
-        textTransform: "uppercase",
-    },
     closestStation: {
         alignItems: "flex-end",
         flexShrink: 1,
@@ -181,22 +161,22 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         gap: 12,
         justifyContent: "space-between",
-        minHeight: 68,
-        padding: 12,
+        minHeight: 58,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
     },
     lineRowSelected: {
         borderColor: colors.tint,
         backgroundColor: colors.buttonSubtle,
     },
     meta: { color: colors.muted, fontSize: 12, marginTop: 2 },
-    optionList: { gap: 8, marginTop: 16 },
+    optionList: { gap: 8, marginTop: 12 },
     section: {
-        marginTop: 18,
+        marginTop: 12,
     },
     sectionTitle: {
         color: colors.ink,
         fontSize: 16,
         fontWeight: "800",
     },
-    title: { color: colors.ink, fontSize: 24, fontWeight: "800", marginTop: 4 },
 });

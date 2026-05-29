@@ -1,6 +1,5 @@
 import { Pressable, StyleSheet, Text } from "react-native";
 
-import { getQuestionDefinition } from "@/features/questions/questionRegistry";
 import { RadarQuestionDetailScreen } from "@/features/questions/radar/RadarQuestionDetailScreen";
 import { TransitLineQuestionDetailScreen } from "@/features/questions/transitLine/TransitLineQuestionDetailScreen";
 import { SheetScrollView } from "@/features/sheet/SheetScrollView";
@@ -22,16 +21,14 @@ export function QuestionDetailScreen({
     if (!activeQuestion) {
         return (
             <SheetScrollView contentContainerStyle={styles.scrollContent}>
-                <Text style={styles.eyebrow}>Question</Text>
-                <Text style={styles.title}>No Question Selected</Text>
-                <Text style={styles.detail}>
+                <Text style={styles.emptyTitle}>No Question Selected</Text>
+                <Text style={styles.emptyDetail}>
                     Return to the question list and choose a question.
                 </Text>
             </SheetScrollView>
         );
     }
 
-    const definition = getQuestionDefinition(activeQuestion.type);
     const handleDeleteQuestion = () => {
         deleteQuestion(activeQuestion.id);
         onNavigate("questions");
@@ -55,8 +52,7 @@ export function QuestionDetailScreen({
                 />
             ) : (
                 <>
-                    <Text style={styles.eyebrow}>{definition.listTitle}</Text>
-                    <Text style={styles.detail}>
+                    <Text style={styles.emptyDetail}>
                         This question type is not implemented yet.
                     </Text>
                 </>
@@ -136,18 +132,16 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "800",
     },
-    detail: {
+    emptyDetail: {
         color: colors.muted,
         fontSize: 15,
         lineHeight: 21,
-        marginTop: 6,
+        marginTop: 4,
     },
-    eyebrow: {
-        color: colors.tint,
-        fontSize: 12,
+    emptyTitle: {
+        color: colors.ink,
+        fontSize: 18,
         fontWeight: "800",
-        letterSpacing: 0,
-        textTransform: "uppercase",
     },
     lockButton: {
         alignItems: "center",
@@ -174,12 +168,6 @@ const styles = StyleSheet.create({
     },
     scrollContent: {
         paddingHorizontal: 20,
-        paddingTop: 6,
-    },
-    title: {
-        color: colors.ink,
-        fontSize: 28,
-        fontWeight: "800",
-        marginTop: 4,
+        paddingTop: 0,
     },
 });

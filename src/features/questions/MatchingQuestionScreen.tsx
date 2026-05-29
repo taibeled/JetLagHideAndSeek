@@ -25,12 +25,6 @@ export function MatchingQuestionScreen({
 
     return (
         <SheetScrollView contentContainerStyle={styles.scrollContent}>
-            <Text style={styles.eyebrow}>Matching</Text>
-            <Text style={styles.title}>Choose a match</Text>
-            <Text style={styles.detail}>
-                Ask whether the hider matches one of the nearby candidates.
-            </Text>
-
             <Pressable
                 accessibilityLabel="Add transit line question"
                 accessibilityRole="button"
@@ -62,19 +56,6 @@ const styles = StyleSheet.create({
         fontSize: 28,
         lineHeight: 28,
     },
-    detail: {
-        color: colors.muted,
-        fontSize: 15,
-        lineHeight: 21,
-        marginTop: 6,
-    },
-    eyebrow: {
-        color: colors.tint,
-        fontSize: 12,
-        fontWeight: "800",
-        letterSpacing: 0,
-        textTransform: "uppercase",
-    },
     metadata: {
         color: colors.muted,
         fontSize: 13,
@@ -93,10 +74,10 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         gap: 12,
         justifyContent: "space-between",
-        marginTop: 22,
-        minHeight: 68,
+        marginTop: 12,
+        minHeight: 58,
         paddingHorizontal: 16,
-        paddingVertical: 12,
+        paddingVertical: 8,
     },
     optionTitle: {
         color: colors.ink,
@@ -105,12 +86,6 @@ const styles = StyleSheet.create({
     },
     scrollContent: {
         paddingHorizontal: 20,
-        paddingTop: 6,
-    },
-    title: {
-        color: colors.ink,
-        fontSize: 28,
-        fontWeight: "800",
-        marginTop: 4,
+        paddingTop: 0,
     },
 });
