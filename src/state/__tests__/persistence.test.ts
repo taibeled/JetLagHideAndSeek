@@ -48,6 +48,26 @@ function makeRadarQuestion() {
     };
 }
 
+function makeMatchingQuestion() {
+    return {
+        answer: "unanswered" as const,
+        center: defaultPlayArea.center,
+        createdAt: "2026-05-18T00:00:00.000Z",
+        id: "matching-1",
+        lineId: "line-1",
+        lineName: "Line 1",
+        type: "matching" as const,
+        updatedAt: "2026-05-18T00:00:00.000Z",
+    };
+}
+
+function makeLegacyMatchingQuestionWithoutCenter() {
+    const question = makeMatchingQuestion();
+    delete (question as Partial<ReturnType<typeof makeMatchingQuestion>>)
+        .center;
+    return question;
+}
+
 function makeLegacyRadiusQuestion() {
     return {
         center: defaultPlayArea.center,
@@ -95,6 +115,24 @@ describe("AppStateV1 schema", () => {
     it("accepts radar questions", () => {
         const state = { ...makeAppState(), questions: [makeRadarQuestion()] };
         expect(migratePersistedAppState(state)).toEqual(state);
+    });
+
+    it("accepts matching questions with centers", () => {
+        const state = {
+            ...makeAppState(),
+            questions: [makeMatchingQuestion()],
+        };
+        expect(migratePersistedAppState(state)).toEqual(state);
+    });
+
+    it("backfills older matching question centers from the play area", () => {
+        const state = {
+            ...makeAppState(),
+            questions: [makeLegacyMatchingQuestionWithoutCenter()],
+        };
+        expect(migratePersistedAppState(state)?.questions).toEqual([
+            makeMatchingQuestion(),
+        ]);
     });
 
     it("migrates legacy radius questions to radar questions", () => {

@@ -9,6 +9,7 @@ import { loadPersistedAppState, persistAppState } from "@/state/persistence";
 import {
     updateRadarAnswer,
     updateRadarDistanceOption,
+    updateQuestionCenter,
     useQuestion,
 } from "@/state/questionStore";
 
@@ -50,6 +51,16 @@ function Probe() {
                     ? activeQuestion.answer
                     : "none"}
             </Text>
+            <Text testID="probe-center">
+                {activeQuestion && "center" in activeQuestion
+                    ? activeQuestion.center.join(",")
+                    : "none"}
+            </Text>
+            <Text testID="probe-matching-center">
+                {activeQuestion?.type === "matching"
+                    ? activeQuestion.center.join(",")
+                    : "none"}
+            </Text>
             <Text testID="probe-first-answer">
                 {questions[0]?.type === "radar" ? questions[0].answer : "none"}
             </Text>
@@ -62,6 +73,15 @@ function Probe() {
                 testID="action-create"
                 onPress={() =>
                     createQuestion("radar", { center: defaultPlayArea.center })
+                }
+            />
+            <Pressable
+                accessibilityRole="button"
+                testID="action-create-matching"
+                onPress={() =>
+                    createQuestion("matching", {
+                        center: defaultPlayArea.center,
+                    })
                 }
             />
             <Pressable
@@ -111,6 +131,17 @@ function Probe() {
             />
             <Pressable
                 accessibilityRole="button"
+                testID="action-center-shibuya"
+                onPress={() =>
+                    activeQuestion
+                        ? updateQuestion(activeQuestion.id, (question) =>
+                              updateQuestionCenter(question, [139.7, 35.66]),
+                          )
+                        : null
+                }
+            />
+            <Pressable
+                accessibilityRole="button"
                 testID="action-sheet-inactive"
                 onPress={() => setQuestionSheetActive(false)}
             />
@@ -154,6 +185,46 @@ describe("QuestionProvider", () => {
         expect(screen.getByTestId("probe-option")).toHaveTextContent("500m");
         expect(screen.getByTestId("probe-answer")).toHaveTextContent(
             "unanswered",
+        );
+    });
+
+    it("creates a transit line question at the provided center", async () => {
+        const screen = renderProvider();
+
+        await waitFor(() => {
+            expect(screen.getByTestId("probe-restored")).toHaveTextContent(
+                "true",
+            );
+        });
+
+        act(() => {
+            fireEvent.press(screen.getByTestId("action-create-matching"));
+        });
+
+        expect(screen.getByTestId("probe-count")).toHaveTextContent("1");
+        expect(screen.getByTestId("probe-matching-center")).toHaveTextContent(
+            defaultPlayArea.center.join(","),
+        );
+    });
+
+    it("updates question centers generically", async () => {
+        const screen = renderProvider();
+
+        await waitFor(() => {
+            expect(screen.getByTestId("probe-restored")).toHaveTextContent(
+                "true",
+            );
+        });
+
+        act(() => {
+            fireEvent.press(screen.getByTestId("action-create-matching"));
+        });
+        act(() => {
+            fireEvent.press(screen.getByTestId("action-center-shibuya"));
+        });
+
+        expect(screen.getByTestId("probe-center")).toHaveTextContent(
+            "139.7,35.66",
         );
     });
 

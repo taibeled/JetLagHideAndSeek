@@ -1,71 +1,50 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { requestUserCoordinate } from "@/features/map/useUserLocation";
 import { SheetScrollView } from "@/features/sheet/SheetScrollView";
 import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
 import { usePlayArea } from "@/state/playAreaStore";
 import { useQuestion } from "@/state/questionStore";
 import { colors } from "@/theme/colors";
 
-type AddQuestionScreenProps = {
+type MatchingQuestionScreenProps = {
     onNavigate: (route: SheetRouteName) => void;
 };
 
-export function AddQuestionScreen({ onNavigate }: AddQuestionScreenProps) {
+export function MatchingQuestionScreen({
+    onNavigate,
+}: MatchingQuestionScreenProps) {
     const { playArea } = usePlayArea();
     const { createQuestion } = useQuestion();
 
-    const addRadarQuestion = async () => {
-        const result = await requestUserCoordinate();
-        createQuestion("radar", {
-            center: result.coordinate ?? playArea.center,
+    const addTransitLineQuestion = () => {
+        createQuestion("matching", {
+            center: playArea.center,
         });
         onNavigate("question-detail");
     };
 
     return (
         <SheetScrollView contentContainerStyle={styles.scrollContent}>
-            <Text style={styles.eyebrow}>Add Question</Text>
-            <Text style={styles.title}>Choose a question</Text>
+            <Text style={styles.eyebrow}>Matching</Text>
+            <Text style={styles.title}>Choose a match</Text>
             <Text style={styles.detail}>
-                Start with a radar question around a movable map pin.
+                Ask whether the hider matches one of the nearby candidates.
             </Text>
 
             <Pressable
-                accessibilityLabel="Add radar question"
+                accessibilityLabel="Add transit line question"
                 accessibilityRole="button"
-                onPress={() => {
-                    void addRadarQuestion();
-                }}
+                onPress={addTransitLineQuestion}
                 style={({ pressed }) => [
                     styles.optionRow,
                     pressed ? styles.actionPressed : null,
                 ]}
-                testID="add-radar-question-row"
+                testID="add-transit-line-question-row"
             >
                 <View style={styles.optionCopy}>
-                    <Text style={styles.optionTitle}>Radar</Text>
+                    <Text style={styles.optionTitle}>Transit Line</Text>
                     <Text style={styles.metadata}>
-                        Preview a distance from a movable map pin.
-                    </Text>
-                </View>
-                <Text style={styles.chevron}>›</Text>
-            </Pressable>
-
-            <Pressable
-                accessibilityLabel="Open matching questions"
-                accessibilityRole="button"
-                onPress={() => onNavigate("matching")}
-                style={({ pressed }) => [
-                    styles.optionRow,
-                    pressed ? styles.actionPressed : null,
-                ]}
-                testID="add-matching-question-row"
-            >
-                <View style={styles.optionCopy}>
-                    <Text style={styles.optionTitle}>Matching</Text>
-                    <Text style={styles.metadata}>
-                        Choose a question that compares nearby candidates.
+                        Ask if the hider is on a specific transit line.
                     </Text>
                 </View>
                 <Text style={styles.chevron}>›</Text>

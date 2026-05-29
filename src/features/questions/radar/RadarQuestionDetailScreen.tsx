@@ -13,8 +13,8 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { UnitSegmentedControl } from "@/components/UnitSegmentedControl";
-import { requestUserCoordinate } from "@/features/map/useUserLocation";
 import { QuestionAnswerSelector } from "@/features/questions/components/QuestionAnswerSelector";
+import { QuestionLocationSelector } from "@/features/questions/components/QuestionLocationSelector";
 import {
     findNearestStation,
     formatStationDistance,
@@ -28,7 +28,7 @@ import { useRadarDistanceDraftInput } from "@/features/questions/radar/useRadarD
 import { SHEET_SNAP_INDEX } from "@/features/sheet/sheetRoutes";
 import {
     updateRadarAnswer,
-    updateRadarQuestionCenter,
+    updateQuestionCenter,
     useQuestion,
 } from "@/state/questionStore";
 import { useHidingZone } from "@/state/hidingZoneStore";
@@ -67,14 +67,6 @@ export function RadarQuestionDetailScreen({
     });
 
     const nearest = findNearestStation(question.center, selectedStations);
-    const handleSetToMyLocation = async () => {
-        const result = await requestUserCoordinate();
-        if (result.coordinate) {
-            updateQuestion(question.id, (current) =>
-                updateRadarQuestionCenter(current, result.coordinate!),
-            );
-        }
-    };
     const isPreviewSnap = sheetIndex <= SHEET_SNAP_INDEX.medium;
 
     return (
@@ -178,28 +170,16 @@ export function RadarQuestionDetailScreen({
                 />
             </View>
 
-            <View style={styles.section}>
-                <Text style={styles.metadata} testID="radar-center-summary">
-                    {question.center[1].toFixed(5)},{" "}
-                    {question.center[0].toFixed(5)}
-                </Text>
-                <Pressable
-                    accessibilityLabel="Set radar pin to my location"
-                    accessibilityRole="button"
-                    onPress={() => {
-                        void handleSetToMyLocation();
-                    }}
-                    style={({ pressed }) => [
-                        styles.locationButton,
-                        pressed ? styles.actionPressed : null,
-                    ]}
-                    testID="radar-set-to-location-button"
-                >
-                    <Text style={styles.locationButtonText}>
-                        Set to My Location
-                    </Text>
-                </Pressable>
-            </View>
+            <QuestionLocationSelector
+                center={question.center}
+                onCenterChange={(center) =>
+                    updateQuestion(question.id, (current) =>
+                        updateQuestionCenter(current, center),
+                    )
+                }
+                setToLocationAccessibilityLabel="Set radar pin to my location"
+                testIDPrefix="radar"
+            />
 
             <View
                 accessible
@@ -342,22 +322,6 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: "700",
         lineHeight: 21,
-    },
-    locationButton: {
-        alignItems: "center",
-        backgroundColor: colors.card,
-        borderColor: colors.border,
-        borderRadius: 8,
-        borderWidth: 1,
-        justifyContent: "center",
-        marginTop: 12,
-        minHeight: 46,
-        paddingHorizontal: 14,
-    },
-    locationButtonText: {
-        color: colors.ink,
-        fontSize: 15,
-        fontWeight: "800",
     },
     metadata: {
         color: colors.muted,

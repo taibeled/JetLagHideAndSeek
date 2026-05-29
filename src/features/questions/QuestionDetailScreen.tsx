@@ -81,16 +81,19 @@ export function QuestionDetailScreen({
 export function QuestionPinLockButton() {
     const { activeQuestion, isPinLocked, setPinLocked } = useQuestion();
 
-    if (!activeQuestion || activeQuestion.type !== "radar") {
+    if (!activeQuestion || !("center" in activeQuestion)) {
         return null;
     }
 
     const pinLockLabel = isPinLocked ? "🔒" : "🔓";
+    const questionKind = activeQuestion.type === "radar" ? "radar" : "question";
 
     return (
         <Pressable
             accessibilityLabel={
-                isPinLocked ? "Unlock radar pin" : "Lock radar pin"
+                isPinLocked
+                    ? `Unlock ${questionKind} pin`
+                    : `Lock ${questionKind} pin`
             }
             accessibilityRole="button"
             accessibilityState={{ selected: isPinLocked }}

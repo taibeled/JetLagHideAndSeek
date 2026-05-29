@@ -321,6 +321,7 @@ it("writes matching questions in compact format", () => {
         questions: [
             {
                 answer: "negative",
+                center: [139.7, 35.7],
                 createdAt: "2026-05-17T00:00:00.000Z",
                 id: "matching-1",
                 lineId: "line-1",
@@ -334,6 +335,7 @@ it("writes matching questions in compact format", () => {
     const json = JSON.parse(canonicalize(mini));
 
     expect(json.p.q[0].t).toBe("m");
+    expect(json.p.q[0].n).toEqual([139700000, 35700000]);
     expect(json.p.q[0].x).toBe("line-1");
     expect(json.p.q[0].y).toBe("Line 1");
     expect(json.p.q[0].e).toBe("n");
@@ -344,6 +346,7 @@ describe("unminifyEnvelope", () => {
             questions: [
                 {
                     answer: "positive",
+                    center: [139.7, 35.7],
                     createdAt: "2026-05-17T00:00:00.000Z",
                     id: "matching-1",
                     lineId: "line-1",
@@ -356,12 +359,39 @@ describe("unminifyEnvelope", () => {
         const restored = unminifyEnvelope(minifyEnvelope(envelope));
         expect(restored.payload.questions?.[0]).toEqual({
             answer: "positive",
+            center: [139.7, 35.7],
             createdAt: "2026-05-17T00:00:00.000Z",
             id: "matching-1",
             lineId: "line-1",
             lineName: "Line 1",
             type: "matching",
             updatedAt: "2026-05-17T00:00:00.000Z",
+        });
+    });
+
+    it("defaults legacy matching question centers to the play-area center", () => {
+        const envelope = makeEnvelope({
+            questions: [
+                {
+                    answer: "positive",
+                    center: [139.7, 35.7],
+                    createdAt: "2026-05-17T00:00:00.000Z",
+                    id: "matching-1",
+                    lineId: "line-1",
+                    lineName: "Line 1",
+                    type: "matching",
+                    updatedAt: "2026-05-17T00:00:00.000Z",
+                },
+            ],
+        });
+        const mini = minifyEnvelope(envelope);
+        delete mini.p.q?.[0].n;
+
+        const restored = unminifyEnvelope(mini);
+
+        expect(restored.payload.questions?.[0]).toMatchObject({
+            center: envelope.payload.playArea?.center,
+            type: "matching",
         });
     });
 

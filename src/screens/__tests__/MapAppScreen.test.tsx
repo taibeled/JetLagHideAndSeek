@@ -167,6 +167,23 @@ async function pressAddRadarQuestion(screen: ReturnType<typeof render>) {
     });
 }
 
+function pressAndAdvance(screen: ReturnType<typeof render>, testID: string) {
+    fireEvent.press(screen.getByTestId(testID));
+    act(() => {
+        jest.advanceTimersByTime(300);
+    });
+}
+
+async function pressAddTransitLineQuestion(screen: ReturnType<typeof render>) {
+    pressAndAdvance(screen, "add-matching-question-row");
+    expect(screen.getByText("Choose a match")).toBeTruthy();
+
+    pressAndAdvance(screen, "add-transit-line-question-row");
+    await waitFor(() => {
+        expect(screen.getByText("Transit Line")).toBeTruthy();
+    });
+}
+
 describe("MapAppScreen", () => {
     beforeEach(async () => {
         jest.useRealTimers();
@@ -327,6 +344,22 @@ describe("MapAppScreen", () => {
         });
         expect(screen.getByText("Choose a question")).toBeTruthy();
         expect(screen.getByTestId("add-radar-question-row")).toBeTruthy();
+        expect(screen.getByTestId("add-matching-question-row")).toBeTruthy();
+
+        fireEvent.press(screen.getByTestId("add-matching-question-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        expect(screen.getByText("Choose a match")).toBeTruthy();
+        expect(
+            screen.getByTestId("add-transit-line-question-row"),
+        ).toBeTruthy();
+
+        fireEvent.press(screen.getByText("Back"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        expect(screen.getByText("Choose a question")).toBeTruthy();
 
         fireEvent.press(screen.getByText("Back"));
         act(() => {
@@ -481,6 +514,39 @@ describe("MapAppScreen", () => {
         expect(
             screen.getByTestId("radar-distance-meters").props.children,
         ).toEqual(["Current distance ", 750, " m"]);
+    });
+
+    it("creates a transit line question through the matching sub sheet", async () => {
+        jest.useFakeTimers();
+        const screen = renderWithSafeArea(<MapAppScreen />);
+
+        fireEvent.press(screen.getByTestId("main-questions-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        fireEvent.press(screen.getByTestId("questions-add-question-row"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+        await pressAddTransitLineQuestion(screen);
+
+        expect(
+            screen.getByTestId("matching-answer-option-unanswered"),
+        ).toBeTruthy();
+        expect(screen.getByTestId("transit-line-center-summary")).toBeTruthy();
+        expect(
+            getMapShapeSource(screen, "question-active-pin").props.shape
+                .features[0].geometry.coordinates,
+        ).toEqual(defaultPlayArea.center);
+
+        fireEvent.press(screen.getByText("Back"));
+        act(() => {
+            jest.advanceTimersByTime(300);
+        });
+
+        expect(screen.getByText("Question List")).toBeTruthy();
+        expect(screen.getByText("Transit Line 1")).toBeTruthy();
+        expect(screen.getByText("Transit line: not selected")).toBeTruthy();
     });
 
     it("uses a carousel for radar distance options at preview snaps and a grid at the large snap", async () => {

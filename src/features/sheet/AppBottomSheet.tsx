@@ -40,8 +40,13 @@ export const AppBottomSheet = forwardRef<
     const [sheetIndex, setSheetIndex] = useState<number>(
         SHEET_SNAP_INDEX.medium,
     );
-    const { setQuestionSheetActive } = useQuestion();
+    const { activeQuestion, setQuestionSheetActive } = useQuestion();
     const currentIndexRef = useRef<number>(SHEET_SNAP_INDEX.medium);
+    const sheetAccessibilityLabel = getSheetAccessibilityLabel(
+        route,
+        activeQuestion,
+    );
+    const isSheetAccessible = sheetAccessibilityLabel !== undefined;
     useImperativeHandle(ref, () => ({
         snapToIndex(index: number) {
             sheetRef.current?.snapToIndex?.(index);
@@ -71,6 +76,8 @@ export const AppBottomSheet = forwardRef<
             enablePanDownToClose
             handleIndicatorStyle={styles.handleIndicator}
             backgroundStyle={styles.sheetBackground}
+            accessible={isSheetAccessible}
+            accessibilityLabel={sheetAccessibilityLabel}
             onChange={(index: number) => {
                 if (index === SHEET_SNAP_INDEX.compact || index === -1) {
                     Keyboard.dismiss();
@@ -83,7 +90,11 @@ export const AppBottomSheet = forwardRef<
                 onIndexChange?.(index);
             }}
         >
-            <SheetView style={styles.content}>
+            <SheetView
+                accessible={isSheetAccessible}
+                accessibilityLabel={sheetAccessibilityLabel}
+                style={styles.content}
+            >
                 <MainDrawer
                     route={route}
                     onNavigate={setRoute}
@@ -98,6 +109,16 @@ function getRouteSnapIndex(route: SheetRouteName): number {
     return route === "play-area" || route === "hiding-zone"
         ? SHEET_SNAP_INDEX.large
         : SHEET_SNAP_INDEX.medium;
+}
+
+function getSheetAccessibilityLabel(
+    route: SheetRouteName,
+    activeQuestion: ReturnType<typeof useQuestion>["activeQuestion"],
+): string | undefined {
+    if (route === "question-detail" && activeQuestion?.type === "matching") {
+        return "Transit line question detail. Transit line answer section. Set transit line pin to my location. Hit answer.";
+    }
+    return undefined;
 }
 
 const styles = StyleSheet.create({

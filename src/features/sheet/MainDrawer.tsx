@@ -18,6 +18,7 @@ import Animated, {
 import { HidingZoneScreen } from "@/features/hidingZone/HidingZoneScreen";
 import { PlayAreaScreen } from "@/features/playArea/PlayAreaScreen";
 import { AddQuestionScreen } from "@/features/questions/AddQuestionScreen";
+import { MatchingQuestionScreen } from "@/features/questions/MatchingQuestionScreen";
 import {
     QuestionDetailScreen,
     QuestionPinLockButton,
@@ -52,6 +53,10 @@ const routeContent: Record<SheetRouteName, { title: string; detail: string }> =
         "add-question": {
             detail: "Choose a question type to preview on the map.",
             title: "Add Question",
+        },
+        matching: {
+            detail: "Choose a matching question type.",
+            title: "Matching",
         },
         main: {
             detail: "Choose a workflow to start shaping the game.",
@@ -329,6 +334,17 @@ function renderRouteContent(
                     <AddQuestionScreen onNavigate={onNavigate} />
                 </View>
             );
+        case "matching":
+            return (
+                <View style={styles.fullContainer}>
+                    <View style={styles.backButtonRow}>
+                        <BackButton
+                            onPress={() => onNavigate("add-question")}
+                        />
+                    </View>
+                    <MatchingQuestionScreen onNavigate={onNavigate} />
+                </View>
+            );
         case "question-detail":
             return (
                 <View style={styles.fullContainer}>
@@ -395,13 +411,14 @@ function renderRouteContent(
 function BackButton({ onPress }: { onPress: () => void }) {
     return (
         <Pressable
+            accessible
+            accessibilityLabel="Back"
             accessibilityRole="button"
+            hitSlop={8}
             onPress={onPress}
             style={styles.backButton}
         >
-            <Text style={styles.backText} accessibilityLabel="Back">
-                Back
-            </Text>
+            <Text style={styles.backText}>Back</Text>
         </Pressable>
     );
 }
@@ -493,6 +510,9 @@ const styles = StyleSheet.create({
     },
     backButton: {
         alignSelf: "flex-start",
+        justifyContent: "center",
+        minHeight: 44,
+        minWidth: 72,
         paddingVertical: 4,
     },
     backButtonRow: {

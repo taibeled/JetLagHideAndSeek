@@ -16,7 +16,7 @@ import {
 import { colors } from "@/theme/colors";
 
 import { useHidingZone } from "@/state/hidingZoneStore";
-import { updateRadarQuestionCenter, useQuestion } from "@/state/questionStore";
+import { updateQuestionCenter, useQuestion } from "@/state/questionStore";
 import { usePlayArea } from "@/state/playAreaStore";
 
 import { ActivePinLayer } from "./ActivePinLayer";
@@ -113,27 +113,29 @@ export function NativeMap({ onPress }: NativeMapProps) {
         fitCameraToBbox(cameraRef.current, playArea.bbox, fitPadding);
     }, [fitPadding, playArea.bbox]);
 
+    const activeQuestionCenter =
+        activeQuestion && "center" in activeQuestion
+            ? activeQuestion.center
+            : null;
     const shouldShowActivePin = Boolean(
-        isQuestionSheetActive && activeQuestion?.type === "radar",
+        isQuestionSheetActive && activeQuestionCenter,
     );
-    const canMoveActivePin =
-        isQuestionSheetActive &&
-        !isPinLocked &&
-        activeQuestion?.type === "radar";
-    const radarActiveQuestion =
-        activeQuestion?.type === "radar" ? activeQuestion : null;
+    const canMoveActivePin = Boolean(
+        isQuestionSheetActive && !isPinLocked && activeQuestionCenter,
+    );
+    const movableActiveQuestion = activeQuestionCenter ? activeQuestion : null;
 
     const handlePinCommit = useCallback(
         (questionId: string, center: [number, number]) => {
             updateQuestion(questionId, (question) =>
-                updateRadarQuestionCenter(question, center),
+                updateQuestionCenter(question, center),
             );
         },
         [updateQuestion],
     );
 
     const pinDrag = usePinDrag({
-        activeQuestion: radarActiveQuestion,
+        activeQuestion: movableActiveQuestion,
         canMove: canMoveActivePin,
         mapRef,
         onCommit: handlePinCommit,
@@ -141,16 +143,14 @@ export function NativeMap({ onPress }: NativeMapProps) {
 
     const activePinFeature = useMemo(
         () =>
-            shouldShowActivePin && activeQuestion
+            shouldShowActivePin && activeQuestion && activeQuestionCenter
                 ? {
                       features: [
                           {
                               geometry: {
                                   coordinates:
                                       pinDrag.draftCoordinate ??
-                                      (activeQuestion.type === "radar"
-                                          ? activeQuestion.center
-                                          : [0, 0]),
+                                      activeQuestionCenter,
                                   type: "Point" as const,
                               },
                               properties: {
@@ -166,6 +166,7 @@ export function NativeMap({ onPress }: NativeMapProps) {
                 : { features: [], type: "FeatureCollection" as const },
         [
             activeQuestion,
+            activeQuestionCenter,
             canMoveActivePin,
             pinDrag.draftCoordinate,
             pinDrag.isDragging,
@@ -181,7 +182,7 @@ export function NativeMap({ onPress }: NativeMapProps) {
                 const questionId = activeQuestion.id;
                 setTimeout(() => {
                     updateQuestion(questionId, (question) =>
-                        updateRadarQuestionCenter(question, coordinate),
+                        updateQuestionCenter(question, coordinate),
                     );
                 }, 0);
             }

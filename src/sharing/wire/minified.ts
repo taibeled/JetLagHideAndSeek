@@ -74,6 +74,7 @@ const radarQuestionMinifiedSchema = z.object({
 
 const matchingQuestionMinifiedSchema = z.object({
     [FIELD_MAP.answer]: z.enum(["p", "n"]).optional(),
+    [FIELD_MAP.center]: compactCoordSchema.optional(),
     [FIELD_MAP.id]: z.string().min(1).optional(),
     [FIELD_MAP.questionType]: z.literal("m"),
     [FIELD_MAP.lineId]: z.string().min(1).nullable(),
@@ -248,6 +249,10 @@ export function minifyEnvelope(env: WireEnvelope): WireEnvelopeMinified {
             }
 
             const result: Record<string, unknown> = {
+                [FIELD_MAP.center]: compactCoord(
+                    question.center[0],
+                    question.center[1],
+                ),
                 [FIELD_MAP.id]: question.id,
                 [FIELD_MAP.questionType]: "m",
                 [FIELD_MAP.lineId]: question.lineId,
@@ -324,8 +329,19 @@ export function unminifyEnvelope(
                 (q[FIELD_MAP.questionType] as "r" | "m" | undefined) ?? "r";
 
             if (questionType === "m") {
+                const compactCenter = q[FIELD_MAP.center] as
+                    | [number, number]
+                    | undefined;
+                const center = compactCenter
+                    ? uncompactCoord(compactCenter[0], compactCenter[1])
+                    : ((
+                          payload.playArea as
+                              | { center?: [number, number] }
+                              | undefined
+                      )?.center ?? [0, 0]);
                 return {
                     answer: resolvedAnswer,
+                    center,
                     createdAt,
                     id:
                         (q[FIELD_MAP.id] as string | undefined) ??

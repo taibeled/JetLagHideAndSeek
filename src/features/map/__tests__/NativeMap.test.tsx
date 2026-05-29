@@ -4,9 +4,10 @@ import type { ReactElement } from "react";
 import { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+import { defaultPlayArea } from "@/features/map/playArea";
 import { HidingZoneProvider, useHidingZone } from "@/state/hidingZoneStore";
 import { PlayAreaProvider } from "@/state/playAreaStore";
-import { QuestionProvider } from "@/state/questionStore";
+import { QuestionProvider, useQuestion } from "@/state/questionStore";
 
 import { NativeMap } from "../NativeMap";
 
@@ -42,6 +43,16 @@ function SelectTokyoMetroHidingZone() {
     useEffect(() => {
         addPreset("tokyo-metro");
     }, [addPreset]);
+
+    return null;
+}
+
+function CreateTransitLineQuestion() {
+    const { createQuestion } = useQuestion();
+
+    useEffect(() => {
+        createQuestion("matching", { center: defaultPlayArea.center });
+    }, [createQuestion]);
 
     return null;
 }
@@ -232,6 +243,27 @@ describe("NativeMap", () => {
             .find((l) => l.props.id === "question-active-pin-icon");
         expect(iconLayer).toBeTruthy();
         expect(iconLayer?.props.style.iconImage).toBe("question-pin");
+    });
+
+    it("renders the active pin for transit line questions", async () => {
+        const screen = renderWithSafeArea(
+            <>
+                <CreateTransitLineQuestion />
+                <NativeMap />
+            </>,
+        );
+
+        await waitFor(() => {
+            expect(screen.getByTestId("native-map").props.scrollEnabled).toBe(
+                true,
+            );
+            expect(
+                screen
+                    .getAllByTestId("map-shape-source")
+                    .find((s) => s.props.id === "question-active-pin")?.props
+                    .shape.features[0].geometry.coordinates,
+            ).toEqual(defaultPlayArea.center);
+        });
     });
 });
 

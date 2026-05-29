@@ -1,25 +1,60 @@
 import { buildHidingZoneFeatureCollection } from "@/features/hidingZone/hidingZone";
 import type { TransitStation } from "@/features/hidingZone/hidingZoneTypes";
+import type { Position } from "@/features/map/geojsonTypes";
+import { findNearestStation } from "@/features/questions/radar/radarGeometry";
+import type { NearestStationInfo } from "@/features/questions/radar/radarTypes";
 import type { TransitLineQuestionFeatureCollection } from "@/features/questions/transitLine/transitLineTypes";
+
+export type TransitLineOption = {
+    closestStation: NearestStationInfo;
+    distanceMeters: number | null;
+    id: string;
+    name: string;
+    stationCount: number;
+};
 
 export function getTransitLineOptions(
     stations: TransitStation[],
     routeNamesById: Map<string, string>,
-): Array<{ id: string; name: string; stationCount: number }> {
-    const countById = new Map<string, number>();
+    center: Position,
+    maxDistanceMeters: number,
+): TransitLineOption[] {
+    const stationsById = new Map<string, TransitStation[]>();
     stations.forEach((station) => {
         station.routeIds.forEach((routeId) => {
-            countById.set(routeId, (countById.get(routeId) ?? 0) + 1);
+            const routeStations = stationsById.get(routeId) ?? [];
+            routeStations.push(station);
+            stationsById.set(routeId, routeStations);
         });
     });
 
-    return [...countById.entries()]
-        .map(([id, stationCount]) => ({
-            id,
-            name: routeNamesById.get(id) ?? id,
-            stationCount,
-        }))
-        .sort((a, b) => a.name.localeCompare(b.name));
+    return [...stationsById.entries()]
+        .map(([id, routeStations]) => {
+            const closestStation = findNearestStation(center, routeStations);
+            return {
+                closestStation,
+                distanceMeters: closestStation?.distanceMeters ?? null,
+                id,
+                name: routeNamesById.get(id) ?? id,
+                stationCount: routeStations.length,
+            };
+        })
+        .filter(
+            (option) =>
+                option.distanceMeters !== null &&
+                option.distanceMeters <= maxDistanceMeters,
+        )
+        .sort((a, b) => {
+            if (a.distanceMeters === null && b.distanceMeters === null) {
+                return a.name.localeCompare(b.name);
+            }
+            if (a.distanceMeters === null) return 1;
+            if (b.distanceMeters === null) return -1;
+            return (
+                a.distanceMeters - b.distanceMeters ||
+                a.name.localeCompare(b.name)
+            );
+        });
 }
 
 export function buildTransitLineMaskFeatures(

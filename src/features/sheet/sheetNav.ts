@@ -4,7 +4,8 @@ const routeDepth: Record<SheetRouteName, number> = {
     main: 0,
     questions: 1,
     "add-question": 2,
-    "question-detail": 3,
+    matching: 3,
+    "question-detail": 4,
     settings: 1,
     "play-area": 2,
     "hiding-zone": 2,
@@ -26,6 +27,8 @@ export function getBackTarget(route: SheetRouteName): SheetRouteName | null {
             return "main";
         case "add-question":
             return "questions";
+        case "matching":
+            return "add-question";
         case "question-detail":
             return "questions";
         case "play-area":

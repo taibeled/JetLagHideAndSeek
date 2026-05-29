@@ -11,15 +11,15 @@ export const matchingQuestionConfig = {
     },
     cost: "Draw 2, pick 1",
     defaultAnswer: "unanswered",
-    detail: "Compare nearest places or boundaries.",
+    detail: "Compare a candidate transit line from a movable map pin.",
     implemented: true,
-    listTitle: "Matching",
-    mapBehavior: { usesMovableAnchor: false },
+    listTitle: "Transit Line",
+    mapBehavior: { usesMovableAnchor: true },
     summary: (question) =>
         question.type === "matching" && question.lineName
             ? `Transit line: ${question.lineName}`
             : "Transit line: not selected",
     time: "5 minutes",
-    title: "Matching",
+    title: "Transit Line",
     type: "matching",
 } satisfies QuestionDefinition;

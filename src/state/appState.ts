@@ -60,6 +60,7 @@ export const appStateRadarQuestionSchema = z.object({
 });
 const appStateMatchingQuestionSchema = z.object({
     answer: questionAnswerSchema,
+    center: positionSchema,
     createdAt: z.string().min(1),
     id: z.string().min(1),
     lineId: z.string().min(1).nullable(),
@@ -175,6 +176,11 @@ export function migratePersistedAppState(value: unknown): AppStateV1 | null {
 function addMissingV1Slices(value: unknown): unknown {
     if (!isRecord(value)) return value;
     if (value.version !== 1) return value;
+    const playAreaCenter = getPlayAreaCenter(value);
+    const questions =
+        "questions" in value
+            ? addMissingQuestionCenters(value.questions, playAreaCenter)
+            : [];
 
     return {
         ...value,
@@ -182,12 +188,47 @@ function addMissingV1Slices(value: unknown): unknown {
             "questionSettings" in value
                 ? value.questionSettings
                 : { isPinLocked: false },
-        questions: "questions" in value ? value.questions : [],
+        questions,
     };
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
     return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function addMissingQuestionCenters(
+    questions: unknown,
+    fallbackCenter: unknown,
+): unknown {
+    if (!Array.isArray(questions)) return questions;
+    return questions.map((question) => {
+        if (
+            !isRecord(question) ||
+            question.type !== "matching" ||
+            "center" in question ||
+            !isPosition(fallbackCenter)
+        ) {
+            return question;
+        }
+        return {
+            ...question,
+            center: fallbackCenter,
+        };
+    });
+}
+
+function getPlayAreaCenter(value: Record<string, unknown>): unknown {
+    const playArea = value.playArea;
+    return isRecord(playArea) ? playArea.center : null;
+}
+
+function isPosition(value: unknown): value is [number, number] {
+    return (
+        Array.isArray(value) &&
+        value.length === 2 &&
+        typeof value[0] === "number" &&
+        typeof value[1] === "number"
+    );
 }
 
 export function appStatePlayAreaToImportState(

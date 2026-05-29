@@ -2,6 +2,7 @@ export type SheetRouteName =
     | "main"
     | "questions"
     | "add-question"
+    | "matching"
     | "question-detail"
     | "settings"
     | "play-area"

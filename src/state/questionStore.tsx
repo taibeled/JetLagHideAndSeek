@@ -221,17 +221,21 @@ export function getRadarDistanceDisplayValueForUnit(
     return fromMeters(question.distanceMeters, unit);
 }
 
-export function updateRadarQuestionCenter(
+export function updateQuestionCenter(
     question: QuestionState,
     center: Position,
 ): QuestionState {
-    if (question.type !== "radar") return question;
+    if (question.type !== "radar" && question.type !== "matching") {
+        return question;
+    }
     return {
         ...question,
         center,
         updatedAt: new Date().toISOString(),
     };
 }
+
+export const updateRadarQuestionCenter = updateQuestionCenter;
 
 export function updateRadarAnswer(
     question: RadarQuestion,
@@ -318,6 +322,7 @@ function createDefaultQuestion(
         case "matching":
             return {
                 answer: "unanswered",
+                center,
                 createdAt: now,
                 id: createQuestionId(),
                 lineId: null,

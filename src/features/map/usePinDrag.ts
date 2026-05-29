@@ -3,7 +3,7 @@ import type { RefObject } from "react";
 import { Gesture } from "react-native-gesture-handler";
 import { runOnJS } from "react-native-reanimated";
 
-import type { RadarQuestion } from "@/features/questions/radar/radarTypes";
+import type { QuestionState } from "@/features/questions/questionTypes";
 
 import type { Position } from "./geojsonTypes";
 
@@ -25,7 +25,7 @@ export type PinDragState = {
 };
 
 type UsePinDragOptions = {
-    activeQuestion: RadarQuestion | null;
+    activeQuestion: QuestionState | null;
     canMove: boolean;
     mapRef: RefObject<{
         getCoordinateFromView: (point: [number, number]) => Promise<Position>;
@@ -94,8 +94,9 @@ export function usePinDrag({
 
     const handleDragStart = useCallback(
         async (absoluteX: number, absoluteY: number) => {
-            const pinCoord =
-                activeQuestion?.type === "radar" ? activeQuestion.center : null;
+            const pinCoord = activeQuestion
+                ? getQuestionCenter(activeQuestion)
+                : null;
             if (!pinCoord || !mapRef.current) {
                 isDraggingRef.current = false;
                 return;
@@ -131,7 +132,8 @@ export function usePinDrag({
         if (
             isDraggingRef.current &&
             draftPinCoordinateRef.current &&
-            activeQuestion?.type === "radar"
+            activeQuestion &&
+            getQuestionCenter(activeQuestion)
         ) {
             onCommit(activeQuestion.id, draftPinCoordinateRef.current);
         }
@@ -178,4 +180,8 @@ export function usePinDrag({
         isDragging,
         revision: tick,
     };
+}
+
+function getQuestionCenter(question: QuestionState): Position | null {
+    return "center" in question ? question.center : null;
 }

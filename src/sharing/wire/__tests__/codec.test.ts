@@ -111,6 +111,7 @@ describe("sharing wire codec", () => {
                 questions: [
                     {
                         answer: "unanswered" as const,
+                        center: [139.7, 35.7] as [number, number],
                         createdAt: "2026-05-17T00:00:00.000Z",
                         id: "matching-1",
                         lineId: "line-1",

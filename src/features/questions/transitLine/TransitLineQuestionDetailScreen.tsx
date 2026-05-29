@@ -1,10 +1,12 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { QuestionAnswerSelector } from "@/features/questions/components/QuestionAnswerSelector";
+import { QuestionLocationSelector } from "@/features/questions/components/QuestionLocationSelector";
+import { formatStationDistance } from "@/features/questions/radar/radarGeometry";
 import type { TransitLineQuestion } from "@/features/questions/transitLine/transitLineTypes";
 import { getTransitLineOptions } from "@/features/questions/transitLine/transitLineQuestion";
 import { useHidingZone } from "@/state/hidingZoneStore";
-import { useQuestion } from "@/state/questionStore";
+import { updateQuestionCenter, useQuestion } from "@/state/questionStore";
 import { colors } from "@/theme/colors";
 
 export function TransitLineQuestionDetailScreen({
@@ -14,22 +16,39 @@ export function TransitLineQuestionDetailScreen({
     question: TransitLineQuestion;
     updateQuestion: ReturnType<typeof useQuestion>["updateQuestion"];
 }) {
-    const { selectedRoutes, selectedStations } = useHidingZone();
+    const { radiusMeters, selectedRoutes, selectedStations } = useHidingZone();
     const routeNames = new Map(
         selectedRoutes.map((route) => [route.id, route.name]),
     );
-    const lineOptions = getTransitLineOptions(selectedStations, routeNames);
+    const lineOptions = getTransitLineOptions(
+        selectedStations,
+        routeNames,
+        question.center,
+        radiusMeters,
+    );
 
     return (
         <>
-            <Text style={styles.eyebrow}>Matching Question</Text>
-            <Text style={styles.title}>Transit · Transit Line</Text>
-            <Text style={styles.detail}>
-                Are you on the selected transit line?
-            </Text>
+            <View accessible accessibilityLabel="Transit line question detail">
+                <Text style={styles.eyebrow}>Transit</Text>
+                <Text
+                    accessibilityLabel="Transit line question title"
+                    style={styles.title}
+                >
+                    Transit Line
+                </Text>
+                <Text style={styles.detail}>
+                    Are you on the selected transit line?
+                </Text>
+            </View>
 
             <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Answer</Text>
+                <Text
+                    accessibilityLabel="Transit line answer section"
+                    style={styles.sectionTitle}
+                >
+                    Answer
+                </Text>
                 <QuestionAnswerSelector
                     answer={question.answer}
                     onChange={(answer) =>
@@ -48,11 +67,24 @@ export function TransitLineQuestionDetailScreen({
                 />
             </View>
 
+            <QuestionLocationSelector
+                center={question.center}
+                onCenterChange={(center) =>
+                    updateQuestion(question.id, (current) =>
+                        updateQuestionCenter(current, center),
+                    )
+                }
+                setToLocationAccessibilityLabel="Set transit line pin to my location"
+                testIDPrefix="transit-line"
+            />
+
             <View style={styles.optionList}>
                 {lineOptions.map((line) => {
                     const isSelected = line.id === question.lineId;
                     return (
                         <Pressable
+                            accessibilityLabel={getLineAccessibilityLabel(line)}
+                            accessibilityRole="button"
                             key={line.id}
                             onPress={() =>
                                 updateQuestion(question.id, (current) =>
@@ -73,16 +105,45 @@ export function TransitLineQuestionDetailScreen({
                             ]}
                             testID={`transit-line-option-${line.id}`}
                         >
-                            <Text style={styles.lineName}>{line.name}</Text>
-                            <Text style={styles.meta}>
-                                {line.stationCount} stations
-                            </Text>
+                            <View style={styles.lineCopy}>
+                                <Text style={styles.lineName}>{line.name}</Text>
+                                <Text style={styles.meta}>
+                                    {line.stationCount} stations
+                                </Text>
+                            </View>
+                            <View style={styles.closestStation}>
+                                <Text
+                                    numberOfLines={1}
+                                    style={styles.closestStationName}
+                                >
+                                    {line.closestStation?.station.name ??
+                                        "No station"}
+                                </Text>
+                                <Text style={styles.closestStationDistance}>
+                                    {line.distanceMeters === null
+                                        ? "No distance"
+                                        : formatStationDistance(
+                                              line.distanceMeters,
+                                          )}
+                                </Text>
+                            </View>
                         </Pressable>
                     );
                 })}
             </View>
         </>
     );
+}
+
+type TransitLineOption = ReturnType<typeof getTransitLineOptions>[number];
+
+function getLineAccessibilityLabel(line: TransitLineOption): string {
+    const station = line.closestStation?.station.name ?? "No station";
+    const distance =
+        line.distanceMeters === null
+            ? "No distance"
+            : formatStationDistance(line.distanceMeters);
+    return `${line.name}, closest station ${station}, ${distance}`;
 }
 
 const styles = StyleSheet.create({
@@ -93,13 +154,35 @@ const styles = StyleSheet.create({
         fontWeight: "800",
         textTransform: "uppercase",
     },
+    closestStation: {
+        alignItems: "flex-end",
+        flexShrink: 1,
+        gap: 2,
+        maxWidth: "46%",
+    },
+    closestStationDistance: {
+        color: colors.tint,
+        fontSize: 13,
+        fontWeight: "800",
+    },
+    closestStationName: {
+        color: colors.ink,
+        fontSize: 13,
+        fontWeight: "700",
+    },
+    lineCopy: { flex: 1 },
     lineName: { color: colors.ink, fontSize: 16, fontWeight: "700" },
     lineRow: {
+        alignItems: "center",
         borderWidth: 1,
         borderColor: colors.border,
         borderRadius: 8,
-        padding: 12,
         backgroundColor: colors.card,
+        flexDirection: "row",
+        gap: 12,
+        justifyContent: "space-between",
+        minHeight: 68,
+        padding: 12,
     },
     lineRowSelected: {
         borderColor: colors.tint,

@@ -24,22 +24,83 @@ appId: com.raycatdev.hideandseek.v2
       start: "50%,85%"
       end: "50%,45%"
       duration: 500
+- runFlow:
+      when:
+          visible: "Continue"
+      commands:
+          - tapOn: "Continue"
+          - extendedWaitUntil:
+                visible: "Connected to:"
+                timeout: 10000
+          - tapOn:
+                point: "91%,48%"
+- extendedWaitUntil:
+      notVisible: "Continue"
+      timeout: 60000
+- assertVisible: "Tokyo 23 Wards"
+- tapOn: "Settings"
+- waitForAnimationToEnd:
+      timeout: 1000
+- tapOn: "Open Hiding Zones settings"
+- waitForAnimationToEnd:
+      timeout: 1000
+- tapOn: "Tokyo Metro, Add"
+- waitForAnimationToEnd:
+      timeout: 1000
+- assertVisible: ".*1 preset selected.*"
+- stopApp
+- openLink: ${MAESTRO_DEV_CLIENT_URL}
+- runFlow:
+      when:
+          visible: "Continue"
+      commands:
+          - tapOn: "Continue"
+          - extendedWaitUntil:
+                visible: "Connected to:"
+                timeout: 10000
+          - tapOn:
+                point: "91%,48%"
+- extendedWaitUntil:
+      notVisible: "Continue"
+      timeout: 60000
+- assertVisible: "Tokyo 23 Wards"
+- swipe:
+      start: "50%,85%"
+      end: "50%,45%"
+      duration: 500
+- runFlow:
+      when:
+          visible: "Continue"
+      commands:
+          - tapOn: "Continue"
+          - extendedWaitUntil:
+                visible: "Connected to:"
+                timeout: 10000
+          - tapOn:
+                point: "91%,48%"
+- extendedWaitUntil:
+      notVisible: "Continue"
+      timeout: 60000
+- assertVisible: "Tokyo 23 Wards"
+- tapOn: "Questions"
+- waitForAnimationToEnd:
+      timeout: 1000
+- tapOn: "Add question"
+- waitForAnimationToEnd:
+      timeout: 1000
+- tapOn: "Open matching questions"
+- waitForAnimationToEnd:
+      timeout: 1000
+- tapOn: "Add transit line question"
+- waitForAnimationToEnd:
+      timeout: 1000
+- assertVisible: ".*Transit line question detail.*"
+- assertVisible: ".*Transit line answer section.*"
+- assertVisible: ".*Set transit line pin to my location.*"
+- assertVisible: ".*Hit answer.*"
 - tapOn:
-      point: "50%,45%"
-- tapOn:
-      point: "50%,32%"
-- tapOn:
-      point: "50%,60%"
-- tapOn:
-      point: "91%,48%"
-- tapOn:
-      point: "91%,48%"
-- tapOn:
-      point: "50%,78%"
-- tapOn:
-      point: "50%,55%"
-- tapOn:
-      point: "50%,55%"
-- tapOn:
-      point: "50%,55%"
+      point: "50%,84%"
+- waitForAnimationToEnd:
+      timeout: 1000
+- assertVisible: "Tokyo 23 Wards"
 - takeScreenshot: e2e/artifacts/transit-line-question/transit-line-hit-map

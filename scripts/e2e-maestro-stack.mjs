@@ -15,6 +15,7 @@ const artifactsDir = join(projectRoot, "e2e", "artifacts");
 const maestroBin = join(process.env.HOME ?? "", ".maestro", "bin");
 const pathSeparator = platform() === "win32" ? ";" : ":";
 const selectedFlow = process.env.E2E_FLOW ?? "all";
+const maestroDevice = process.env.E2E_MAESTRO_DEVICE;
 const devClientHost =
     process.env.E2E_DEV_CLIENT_HOST ??
     (platform() === "linux" ? "10.0.2.2" : "127.0.0.1");
@@ -142,6 +143,7 @@ async function runMaestro() {
         });
 
         await runCommand("maestro", [
+            ...(maestroDevice ? ["--device", maestroDevice] : []),
             "test",
             "--debug-output",
             join(artifactsDir, flow.artifactSubdir),

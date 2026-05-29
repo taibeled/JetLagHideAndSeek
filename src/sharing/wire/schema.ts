@@ -59,6 +59,7 @@ export const radarQuestionWireSchema = z.object({
 });
 export const matchingQuestionWireSchema = z.object({
     answer: questionAnswerSchema,
+    center: positionSchema,
     createdAt: z.string().min(1),
     id: z.string().min(1),
     lineId: z.string().min(1).nullable(),
