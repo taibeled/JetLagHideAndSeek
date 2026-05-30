@@ -1,8 +1,15 @@
+import { useMemo } from "react";
+
 import type { QuestionMapRenderState } from "@/features/questions/radar/radarTypes";
 import { buildRadarQuestionRenderState } from "@/features/questions/radar/radarGeometry";
 import type { QuestionState } from "@/features/questions/questionTypes";
 import type { TransitStation } from "@/features/hidingZone/hidingZoneTypes";
 import { buildTransitLineMaskFeatures } from "@/features/questions/transitLine/transitLineQuestion";
+import {
+    useHidingZoneDerived,
+    useHidingZoneState,
+} from "@/state/hidingZoneStore";
+import { useQuestionState } from "@/state/questionStore";
 
 export function buildQuestionMapRenderState(
     questions: QuestionState[],
@@ -37,4 +44,20 @@ export function buildQuestionMapRenderState(
             ),
         },
     };
+}
+
+export function useQuestionMapRenderState(): QuestionMapRenderState {
+    const { questions } = useQuestionState();
+    const { radiusMeters } = useHidingZoneState();
+    const { selectedStations } = useHidingZoneDerived();
+
+    return useMemo(
+        () =>
+            buildQuestionMapRenderState(
+                questions,
+                selectedStations,
+                radiusMeters,
+            ),
+        [questions, selectedStations, radiusMeters],
+    );
 }

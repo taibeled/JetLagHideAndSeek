@@ -9,8 +9,14 @@ import {
     getTransitLineOptions,
     reconcileTransitLineQuestionSelection,
 } from "@/features/questions/transitLine/transitLineQuestion";
-import { useHidingZone } from "@/state/hidingZoneStore";
-import { updateQuestionCenter, useQuestion } from "@/state/questionStore";
+import {
+    useHidingZoneDerived,
+    useHidingZoneState,
+} from "@/state/hidingZoneStore";
+import {
+    updateQuestionCenter,
+    useQuestionActions,
+} from "@/state/questionStore";
 import { colors } from "@/theme/colors";
 
 export function TransitLineQuestionDetailScreen({
@@ -18,9 +24,10 @@ export function TransitLineQuestionDetailScreen({
     updateQuestion,
 }: {
     question: TransitLineQuestion;
-    updateQuestion: ReturnType<typeof useQuestion>["updateQuestion"];
+    updateQuestion: ReturnType<typeof useQuestionActions>["updateQuestion"];
 }) {
-    const { radiusMeters, selectedRoutes, selectedStations } = useHidingZone();
+    const { radiusMeters } = useHidingZoneState();
+    const { selectedRoutes, selectedStations } = useHidingZoneDerived();
     const routeNames = new Map(
         selectedRoutes.map((route) => [route.id, route.name]),
     );

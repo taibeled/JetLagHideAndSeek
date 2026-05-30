@@ -12,7 +12,7 @@ import { Keyboard, StyleSheet } from "react-native";
 
 import { MainDrawer } from "@/features/sheet/MainDrawer";
 import { SHEET_SNAP_INDEX, SheetRouteName } from "@/features/sheet/sheetRoutes";
-import { useQuestion } from "@/state/questionStore";
+import { useQuestionDerived } from "@/state/questionStore";
 import { colors } from "@/theme/colors";
 
 const Sheet = BottomSheet as ComponentType<any>;
@@ -24,6 +24,7 @@ export type BottomSheetHandle = {
 
 type AppBottomSheetProps = {
     onIndexChange?: (index: number) => void;
+    onRouteChange?: (route: SheetRouteName) => void;
 };
 
 const SHEET_SNAP_POINTS = ["18%", "42%", "88%"] as const;
@@ -31,7 +32,7 @@ const SHEET_SNAP_POINTS = ["18%", "42%", "88%"] as const;
 export const AppBottomSheet = forwardRef<
     BottomSheetHandle,
     AppBottomSheetProps
->(function AppBottomSheet({ onIndexChange }, ref) {
+>(function AppBottomSheet({ onIndexChange, onRouteChange }, ref) {
     const sheetRef = useRef<{ snapToIndex?: (index: number) => void } | null>(
         null,
     );
@@ -40,13 +41,14 @@ export const AppBottomSheet = forwardRef<
     const [sheetIndex, setSheetIndex] = useState<number>(
         SHEET_SNAP_INDEX.medium,
     );
-    const { activeQuestion, setQuestionSheetActive } = useQuestion();
+    const { activeQuestion } = useQuestionDerived();
     const currentIndexRef = useRef<number>(SHEET_SNAP_INDEX.medium);
     const sheetAccessibilityLabel = getSheetAccessibilityLabel(
         route,
         activeQuestion,
     );
     const isSheetAccessible = sheetAccessibilityLabel !== undefined;
+
     useImperativeHandle(ref, () => ({
         snapToIndex(index: number) {
             sheetRef.current?.snapToIndex?.(index);
@@ -64,8 +66,8 @@ export const AppBottomSheet = forwardRef<
     }, [route]);
 
     useEffect(() => {
-        setQuestionSheetActive(route === "question-detail");
-    }, [route, setQuestionSheetActive]);
+        onRouteChange?.(route);
+    }, [route, onRouteChange]);
 
     return (
         <Sheet
@@ -84,9 +86,6 @@ export const AppBottomSheet = forwardRef<
                 }
                 currentIndexRef.current = index;
                 setSheetIndex(index);
-                setQuestionSheetActive(
-                    index !== -1 && route === "question-detail",
-                );
                 onIndexChange?.(index);
             }}
         >
@@ -113,7 +112,7 @@ function getRouteSnapIndex(route: SheetRouteName): number {
 
 function getSheetAccessibilityLabel(
     route: SheetRouteName,
-    activeQuestion: ReturnType<typeof useQuestion>["activeQuestion"],
+    activeQuestion: ReturnType<typeof useQuestionDerived>["activeQuestion"],
 ): string | undefined {
     if (route === "question-detail" && activeQuestion?.type === "matching") {
         return "Transit line question detail. Transit line answer section. Set transit line pin to my location. Hit answer.";

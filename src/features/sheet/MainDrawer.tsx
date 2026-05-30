@@ -34,7 +34,7 @@ import { QuestionsScreen } from "@/features/questions/QuestionsScreen";
 import { SettingsScreen } from "@/features/sheet/SettingsScreen";
 import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
 import { getBackTarget, getNavDirection } from "@/features/sheet/sheetNav";
-import { useQuestion } from "@/state/questionStore";
+import { useQuestionDerived } from "@/state/questionStore";
 import { colors } from "@/theme/colors";
 
 const SHEET_WIDTH = Dimensions.get("window").width;
@@ -73,7 +73,7 @@ const routeEyebrows: Record<SheetRouteName, string> = {
 };
 
 export function MainDrawer({ route, onNavigate, sheetIndex }: MainDrawerProps) {
-    const { activeQuestion } = useQuestion();
+    const { activeQuestion } = useQuestionDerived();
     const [displayedRoute, setDisplayedRoute] = useState(route);
     const displayedRouteRef = useRef(route);
     const [transition, setTransition] = useState<SheetTransition | null>(null);
@@ -403,7 +403,7 @@ function renderRouteContent(
 function getRouteEyebrow(
     routeName: SheetRouteName,
     activeQuestionType?: NonNullable<
-        ReturnType<typeof useQuestion>["activeQuestion"]
+        ReturnType<typeof useQuestionDerived>["activeQuestion"]
     >["type"],
 ) {
     if (routeName === "question-detail") {

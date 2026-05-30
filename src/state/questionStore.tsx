@@ -7,7 +7,6 @@ import {
     useState,
 } from "react";
 
-import { buildQuestionMapRenderState } from "@/features/questions/questionGeometry";
 import { radarQuestionConfig } from "@/features/questions/radar/radarConfig";
 import {
     type ImplementedQuestionType,
@@ -16,59 +15,107 @@ import {
     type QuestionsImportState,
 } from "@/features/questions/questionTypes";
 import {
-    type QuestionMapRenderState,
     type RadarDistanceOption,
     type RadarQuestion,
     radarDistanceOptionMeters,
 } from "@/features/questions/radar/radarTypes";
 import { normalizeTransitLineQuestion } from "@/features/questions/transitLine/transitLineNormalization";
 import type { Position } from "@/features/map/geojsonTypes";
-import { useHidingZone } from "@/state/hidingZoneStore";
 import {
     fromMeters,
     toMeters,
     type DistanceUnit,
 } from "@/shared/distanceUnits";
 
+// ---------------------------------------------------------------------------
+// State context — scalar values that change frequently
+// ---------------------------------------------------------------------------
+
 type QuestionStateValue = {
-    activeQuestion: QuestionState | null;
     activeQuestionId: string | null;
+    isPinLocked: boolean;
+    isRestored: boolean;
+    questions: QuestionState[];
+};
+
+const QuestionStateContext = createContext<QuestionStateValue | null>(null);
+
+export function useQuestionState(): QuestionStateValue {
+    const context = useContext(QuestionStateContext);
+    if (!context) {
+        throw new Error(
+            "useQuestionState must be used within QuestionProvider.",
+        );
+    }
+    return context;
+}
+
+// ---------------------------------------------------------------------------
+// Actions context — stable callbacks
+// ---------------------------------------------------------------------------
+
+type QuestionActionsValue = {
     createQuestion: (
         type: ImplementedQuestionType,
         options: { center: Position },
     ) => QuestionState;
     deleteQuestion: (questionId: string) => void;
-    importQuestions: (questions: QuestionsImportState) => void;
     importQuestionSettings: (settings: QuestionSettingsImportState) => void;
-    isPinLocked: boolean;
-    isQuestionSheetActive: boolean;
-    isRestored: boolean;
+    importQuestions: (questions: QuestionsImportState) => void;
     markRestored: () => void;
-    questionMapRenderState: QuestionMapRenderState;
-    questions: QuestionState[];
     setActiveQuestionId: (questionId: string | null) => void;
     setPinLocked: (isLocked: boolean) => void;
-    setQuestionSheetActive: (isActive: boolean) => void;
     updateQuestion: (
         questionId: string,
         updater: (question: QuestionState) => QuestionState,
     ) => void;
 };
 
+const QuestionActionsContext = createContext<QuestionActionsValue | null>(null);
+
+export function useQuestionActions(): QuestionActionsValue {
+    const context = useContext(QuestionActionsContext);
+    if (!context) {
+        throw new Error(
+            "useQuestionActions must be used within QuestionProvider.",
+        );
+    }
+    return context;
+}
+
+// ---------------------------------------------------------------------------
+// Derived context — computed values derived from state
+// ---------------------------------------------------------------------------
+
+type QuestionDerivedValue = {
+    activeQuestion: QuestionState | null;
+};
+
+const QuestionDerivedContext = createContext<QuestionDerivedValue | null>(null);
+
+export function useQuestionDerived(): QuestionDerivedValue {
+    const context = useContext(QuestionDerivedContext);
+    if (!context) {
+        throw new Error(
+            "useQuestionDerived must be used within QuestionProvider.",
+        );
+    }
+    return context;
+}
+
+// ---------------------------------------------------------------------------
+// Provider
+// ---------------------------------------------------------------------------
+
 export type QuestionSettingsImportState = {
     isPinLocked: boolean;
 };
 
-const QuestionContext = createContext<QuestionStateValue | null>(null);
-
 export function QuestionProvider({ children }: { children: ReactNode }) {
-    const { radiusMeters, selectedStations } = useHidingZone();
     const [questions, setQuestions] = useState<QuestionState[]>([]);
     const [activeQuestionId, setActiveQuestionIdState] = useState<
         string | null
     >(null);
-    const [isQuestionSheetActive, setQuestionSheetActiveState] =
-        useState(false);
     const [isPinLocked, setPinLockedState] = useState(false);
     const [isRestored, setIsRestored] = useState(false);
 
@@ -77,15 +124,6 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
             questions.find((question) => question.id === activeQuestionId) ??
             null,
         [activeQuestionId, questions],
-    );
-    const questionMapRenderState = useMemo(
-        () =>
-            buildQuestionMapRenderState(
-                questions,
-                selectedStations,
-                radiusMeters,
-            ),
-        [questions, radiusMeters, selectedStations],
     );
 
     const updateQuestion = useCallback(
@@ -108,7 +146,6 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
             const question = createDefaultQuestion(type, options.center, now);
             setQuestions((current) => [...current, question]);
             setActiveQuestionIdState(question.id);
-            setQuestionSheetActiveState(true);
             return question;
         },
         [],
@@ -138,10 +175,6 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
         setActiveQuestionIdState(questionId);
     }, []);
 
-    const setQuestionSheetActive = useCallback((isActive: boolean) => {
-        setQuestionSheetActiveState(isActive);
-    }, []);
-
     const setPinLocked = useCallback((isLocked: boolean) => {
         setPinLockedState(isLocked);
     }, []);
@@ -157,59 +190,60 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
         setIsRestored(true);
     }, []);
 
-    const value = useMemo<QuestionStateValue>(
+    const stateValue = useMemo<QuestionStateValue>(
         () => ({
-            activeQuestion,
             activeQuestionId,
+            isPinLocked,
+            isRestored,
+            questions,
+        }),
+        [activeQuestionId, isPinLocked, isRestored, questions],
+    );
+
+    const actionsValue = useMemo<QuestionActionsValue>(
+        () => ({
             createQuestion,
             deleteQuestion,
             importQuestionSettings,
             importQuestions,
-            isPinLocked,
-            isQuestionSheetActive,
-            isRestored,
             markRestored,
-            questionMapRenderState,
-            questions,
             setActiveQuestionId,
             setPinLocked,
-            setQuestionSheetActive,
             updateQuestion,
         }),
         [
-            activeQuestion,
-            activeQuestionId,
             createQuestion,
             deleteQuestion,
             importQuestionSettings,
             importQuestions,
-            isPinLocked,
-            isQuestionSheetActive,
-            isRestored,
             markRestored,
-            questionMapRenderState,
-            questions,
             setActiveQuestionId,
             setPinLocked,
-            setQuestionSheetActive,
             updateQuestion,
         ],
     );
 
+    const derivedValue = useMemo<QuestionDerivedValue>(
+        () => ({
+            activeQuestion,
+        }),
+        [activeQuestion],
+    );
+
     return (
-        <QuestionContext.Provider value={value}>
-            {children}
-        </QuestionContext.Provider>
+        <QuestionStateContext.Provider value={stateValue}>
+            <QuestionActionsContext.Provider value={actionsValue}>
+                <QuestionDerivedContext.Provider value={derivedValue}>
+                    {children}
+                </QuestionDerivedContext.Provider>
+            </QuestionActionsContext.Provider>
+        </QuestionStateContext.Provider>
     );
 }
 
-export function useQuestion() {
-    const context = useContext(QuestionContext);
-    if (!context) {
-        throw new Error("useQuestion must be used within QuestionProvider.");
-    }
-    return context;
-}
+// ---------------------------------------------------------------------------
+// Pure helper functions (stateless, keep outside context)
+// ---------------------------------------------------------------------------
 
 export function getRadarDistanceDisplayValue(question: RadarQuestion): string {
     return fromMeters(question.distanceMeters, question.distanceUnit);

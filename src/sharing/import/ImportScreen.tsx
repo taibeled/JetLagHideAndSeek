@@ -6,17 +6,17 @@ import { getImportErrorMessage } from "@/sharing/errors";
 import { applyImport } from "@/sharing/import/applyImport";
 import { buildImportPreview } from "@/sharing/import/preview";
 import { parseImportPayload } from "@/sharing/links/parseLink";
-import { useHidingZone } from "@/state/hidingZoneStore";
+import { useHidingZoneActions } from "@/state/hidingZoneStore";
 import { usePlayArea } from "@/state/playAreaStore";
-import { useQuestion } from "@/state/questionStore";
+import { useQuestionActions } from "@/state/questionStore";
 import { colors } from "@/theme/colors";
 
 export function ImportScreen() {
     const { d } = useLocalSearchParams<{ d?: string | string[] }>();
     const router = useRouter();
     const playAreaStore = usePlayArea();
-    const hidingZoneStore = useHidingZone();
-    const questionStore = useQuestion();
+    const hidingZoneStore = useHidingZoneActions();
+    const questionStore = useQuestionActions();
     const [applyError, setApplyError] = useState<string | null>(null);
 
     const parsed = useMemo(() => parseImportPayload(d), [d]);

@@ -11,9 +11,9 @@ import { bytesToBase64Url } from "@/sharing/wire/base64url";
 import { canonicalize } from "@/sharing/wire/canonicalize";
 import { minifyEnvelope } from "@/sharing/wire/minified";
 import { AppStateProviders } from "@/state/AppStateProviders";
-import { useHidingZone } from "@/state/hidingZoneStore";
+import { useHidingZoneState } from "@/state/hidingZoneStore";
 import { usePlayArea } from "@/state/playAreaStore";
-import { useQuestion } from "@/state/questionStore";
+import { useQuestionState } from "@/state/questionStore";
 
 const { useLocalSearchParams, useRouter } = jest.requireMock("expo-router") as {
     useLocalSearchParams: jest.Mock;
@@ -22,8 +22,8 @@ const { useLocalSearchParams, useRouter } = jest.requireMock("expo-router") as {
 
 function StoreProbe() {
     const { playArea } = usePlayArea();
-    const { radiusMeters, selectedPresetIds } = useHidingZone();
-    const { questions } = useQuestion();
+    const { radiusMeters, selectedPresetIds } = useHidingZoneState();
+    const { questions } = useQuestionState();
     const matchingQuestion = questions.find(
         (question) => question.type === "matching",
     );

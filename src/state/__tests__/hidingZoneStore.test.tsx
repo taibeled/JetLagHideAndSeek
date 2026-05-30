@@ -8,12 +8,13 @@ import { AppStateProviders } from "@/state/AppStateProviders";
 import { loadPersistedAppState, persistAppState } from "@/state/persistence";
 import {
     type HidingZoneImportState,
-    useHidingZone,
+    useHidingZoneActions,
+    useHidingZoneState,
 } from "@/state/hidingZoneStore";
 
 function Probe() {
     const { isRestored, radiusMeters, radiusUnit, selectedPresetIds } =
-        useHidingZone();
+        useHidingZoneState();
     return (
         <View>
             <Text testID="probe-restored">{String(isRestored)}</Text>
@@ -105,11 +106,11 @@ describe("HidingZoneProvider app-state persistence", () => {
 
     it("persists when radiusMeters changes", async () => {
         let setRadiusDisplayValueFn:
-            | ReturnType<typeof useHidingZone>["setRadiusDisplayValue"]
+            | ReturnType<typeof useHidingZoneActions>["setRadiusDisplayValue"]
             | null = null;
 
         function ActionProbe() {
-            const ctx = useHidingZone();
+            const ctx = useHidingZoneActions();
             setRadiusDisplayValueFn = ctx.setRadiusDisplayValue;
             return <Probe />;
         }
@@ -136,11 +137,11 @@ describe("HidingZoneProvider app-state persistence", () => {
 
     it("persists when radiusUnit changes", async () => {
         let setRadiusUnitFn:
-            | ReturnType<typeof useHidingZone>["setRadiusUnit"]
+            | ReturnType<typeof useHidingZoneActions>["setRadiusUnit"]
             | null = null;
 
         function ActionProbe() {
-            const ctx = useHidingZone();
+            const ctx = useHidingZoneActions();
             setRadiusUnitFn = ctx.setRadiusUnit;
             return <Probe />;
         }
@@ -167,11 +168,11 @@ describe("HidingZoneProvider app-state persistence", () => {
 
     it("persists when selectedPresetIds change via togglePreset", async () => {
         let togglePresetFn:
-            | ReturnType<typeof useHidingZone>["togglePreset"]
+            | ReturnType<typeof useHidingZoneActions>["togglePreset"]
             | null = null;
 
         function ActionProbe() {
-            const ctx = useHidingZone();
+            const ctx = useHidingZoneActions();
             togglePresetFn = ctx.togglePreset;
             return <Probe />;
         }

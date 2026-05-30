@@ -2,24 +2,22 @@ import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 import { UnitSegmentedControl } from "@/components/UnitSegmentedControl";
 import { SheetScrollView } from "@/features/sheet/SheetScrollView";
-import { useHidingZone } from "@/state/hidingZoneStore";
+import {
+    useHidingZoneActions,
+    useHidingZoneDerived,
+    useHidingZoneState,
+} from "@/state/hidingZoneStore";
 import { colors } from "@/theme/colors";
 
 import type { HidingZonePreset } from "./hidingZoneTypes";
 
 export function HidingZoneScreen() {
-    const {
-        presets,
-        radiusDisplayValue,
-        radiusMeters,
-        radiusUnit,
-        selectedPresetIds,
-        selectedStations,
-        setRadiusDisplayValue,
-        setRadiusUnit,
-        suggestedPresetIds,
-        togglePreset,
-    } = useHidingZone();
+    const { radiusDisplayValue, radiusMeters, radiusUnit, selectedPresetIds } =
+        useHidingZoneState();
+    const { setRadiusDisplayValue, setRadiusUnit, togglePreset } =
+        useHidingZoneActions();
+    const { presets, selectedStations, suggestedPresetIds } =
+        useHidingZoneDerived();
     const suggestedSet = new Set(suggestedPresetIds);
     const selectedSet = new Set(selectedPresetIds);
     const suggestedPresets = presets.filter((preset) =>

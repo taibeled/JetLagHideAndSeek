@@ -10,23 +10,17 @@ import {
     updateRadarAnswer,
     updateRadarDistanceOption,
     updateQuestionCenter,
-    useQuestion,
+    useQuestionActions,
+    useQuestionDerived,
+    useQuestionState,
 } from "@/state/questionStore";
 
 function Probe() {
-    const {
-        activeQuestion,
-        activeQuestionId,
-        createQuestion,
-        deleteQuestion,
-        isPinLocked,
-        isQuestionSheetActive,
-        isRestored,
-        questions,
-        setPinLocked,
-        setQuestionSheetActive,
-        updateQuestion,
-    } = useQuestion();
+    const { activeQuestionId, isPinLocked, isRestored, questions } =
+        useQuestionState();
+    const { activeQuestion } = useQuestionDerived();
+    const { createQuestion, deleteQuestion, setPinLocked, updateQuestion } =
+        useQuestionActions();
 
     return (
         <View>
@@ -63,9 +57,6 @@ function Probe() {
             </Text>
             <Text testID="probe-first-answer">
                 {questions[0]?.type === "radar" ? questions[0].answer : "none"}
-            </Text>
-            <Text testID="probe-sheet-active">
-                {String(isQuestionSheetActive)}
             </Text>
             <Text testID="probe-locked">{String(isPinLocked)}</Text>
             <Pressable
@@ -139,11 +130,6 @@ function Probe() {
                           )
                         : null
                 }
-            />
-            <Pressable
-                accessibilityRole="button"
-                testID="action-sheet-inactive"
-                onPress={() => setQuestionSheetActive(false)}
             />
             <Pressable
                 accessibilityRole="button"
@@ -421,29 +407,6 @@ describe("QuestionProvider", () => {
             const persisted = await loadPersistedAppState();
             expect(persisted?.questions).toEqual([]);
         });
-    });
-
-    it("keeps the pin lock preference when the question sheet becomes inactive", async () => {
-        const screen = renderProvider();
-
-        await waitFor(() => {
-            expect(screen.getByTestId("probe-restored")).toHaveTextContent(
-                "true",
-            );
-        });
-
-        act(() => {
-            fireEvent.press(screen.getByTestId("action-create"));
-            fireEvent.press(screen.getByTestId("action-moving"));
-        });
-
-        expect(screen.getByTestId("probe-locked")).toHaveTextContent("true");
-
-        act(() => {
-            fireEvent.press(screen.getByTestId("action-sheet-inactive"));
-        });
-
-        expect(screen.getByTestId("probe-locked")).toHaveTextContent("true");
     });
 
     it("persists the pin lock preference", async () => {

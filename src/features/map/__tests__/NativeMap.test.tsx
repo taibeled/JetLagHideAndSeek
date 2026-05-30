@@ -5,9 +5,12 @@ import { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { defaultPlayArea } from "@/features/map/playArea";
-import { HidingZoneProvider, useHidingZone } from "@/state/hidingZoneStore";
+import {
+    HidingZoneProvider,
+    useHidingZoneActions,
+} from "@/state/hidingZoneStore";
 import { PlayAreaProvider } from "@/state/playAreaStore";
-import { QuestionProvider, useQuestion } from "@/state/questionStore";
+import { QuestionProvider, useQuestionActions } from "@/state/questionStore";
 
 import { NativeMap } from "../NativeMap";
 
@@ -38,7 +41,7 @@ function renderWithSafeArea(ui: ReactElement) {
 }
 
 function SelectTokyoMetroHidingZone() {
-    const { addPreset } = useHidingZone();
+    const { addPreset } = useHidingZoneActions();
 
     useEffect(() => {
         addPreset("tokyo-metro");
@@ -48,7 +51,7 @@ function SelectTokyoMetroHidingZone() {
 }
 
 function CreateTransitLineQuestion() {
-    const { createQuestion } = useQuestion();
+    const { createQuestion } = useQuestionActions();
 
     useEffect(() => {
         createQuestion("matching", { center: defaultPlayArea.center });
@@ -73,7 +76,9 @@ describe("NativeMap", () => {
     });
 
     it("renders the map, Tokyo boundary, and controls", () => {
-        const screen = renderWithSafeArea(<NativeMap />);
+        const screen = renderWithSafeArea(
+            <NativeMap isQuestionDetailRoute={false} />,
+        );
 
         expect(screen.getByTestId("native-map")).toBeTruthy();
         expect(screen.getByText("Tokyo 23 Wards")).toBeTruthy();
@@ -124,7 +129,7 @@ describe("NativeMap", () => {
         const screen = renderWithSafeArea(
             <>
                 <SelectTokyoMetroHidingZone />
-                <NativeMap />
+                <NativeMap isQuestionDetailRoute={false} />
             </>,
         );
 
@@ -175,7 +180,9 @@ describe("NativeMap", () => {
     });
 
     it("fits the camera when the map finishes loading", () => {
-        const screen = renderWithSafeArea(<NativeMap />);
+        const screen = renderWithSafeArea(
+            <NativeMap isQuestionDetailRoute={false} />,
+        );
 
         fireEvent(screen.getByTestId("native-map"), "onDidFinishLoadingMap");
 
@@ -194,7 +201,9 @@ describe("NativeMap", () => {
     });
 
     it("locates the user and flies the camera to the mocked coordinate", async () => {
-        const screen = renderWithSafeArea(<NativeMap />);
+        const screen = renderWithSafeArea(
+            <NativeMap isQuestionDetailRoute={false} />,
+        );
 
         fireEvent.press(screen.getByText("📍"));
 
@@ -212,14 +221,18 @@ describe("NativeMap", () => {
     });
 
     it("passes scrollEnabled to the map view", () => {
-        const screen = renderWithSafeArea(<NativeMap />);
+        const screen = renderWithSafeArea(
+            <NativeMap isQuestionDetailRoute={false} />,
+        );
 
         const mapView = screen.getByTestId("native-map");
         expect(mapView.props.scrollEnabled).toBe(true);
     });
 
     it("renders the movable pin as ShapeSource layers with stable ids", () => {
-        const screen = renderWithSafeArea(<NativeMap />);
+        const screen = renderWithSafeArea(
+            <NativeMap isQuestionDetailRoute={false} />,
+        );
 
         const pinSource = screen
             .getAllByTestId("map-shape-source")
@@ -249,7 +262,7 @@ describe("NativeMap", () => {
         const screen = renderWithSafeArea(
             <>
                 <CreateTransitLineQuestion />
-                <NativeMap />
+                <NativeMap isQuestionDetailRoute={true} />
             </>,
         );
 

@@ -15,9 +15,15 @@ import {
 
 import { colors } from "@/theme/colors";
 
-import { useHidingZone } from "@/state/hidingZoneStore";
-import { updateQuestionCenter, useQuestion } from "@/state/questionStore";
+import { useHidingZoneDerived } from "@/state/hidingZoneStore";
+import {
+    useQuestionActions,
+    useQuestionDerived,
+    useQuestionState,
+    updateQuestionCenter,
+} from "@/state/questionStore";
 import { usePlayArea } from "@/state/playAreaStore";
+import { useQuestionMapRenderState } from "@/features/questions/questionGeometry";
 
 import { ActivePinLayer } from "./ActivePinLayer";
 import {
@@ -50,22 +56,21 @@ const MLCamera = Camera as ComponentType<any>;
 const MLUserLocation = UserLocation as ComponentType<any>;
 
 type NativeMapProps = {
+    isQuestionDetailRoute: boolean;
     onPress?: (event?: unknown) => void;
 };
 
-export function NativeMap({ onPress }: NativeMapProps) {
+export function NativeMap({ isQuestionDetailRoute, onPress }: NativeMapProps) {
     const cameraRef = useRef<CameraHandle | null>(null);
     const mapRef = useRef<any>(null);
     const insets = useSafeAreaInsets();
     const { height } = useSafeAreaFrame();
-    const { routeFeatures, stationFeatures, zoneFeatures } = useHidingZone();
-    const {
-        activeQuestion,
-        isPinLocked,
-        isQuestionSheetActive,
-        questionMapRenderState,
-        updateQuestion,
-    } = useQuestion();
+    const { routeFeatures, stationFeatures, zoneFeatures } =
+        useHidingZoneDerived();
+    const { activeQuestion } = useQuestionDerived();
+    const { isPinLocked } = useQuestionState();
+    const { updateQuestion } = useQuestionActions();
+    const questionMapRenderState = useQuestionMapRenderState();
     const { playArea } = usePlayArea();
 
     const playAreaMask = useMemo(
@@ -118,10 +123,10 @@ export function NativeMap({ onPress }: NativeMapProps) {
             ? activeQuestion.center
             : null;
     const shouldShowActivePin = Boolean(
-        isQuestionSheetActive && activeQuestionCenter,
+        isQuestionDetailRoute && activeQuestionCenter,
     );
     const canMoveActivePin = Boolean(
-        isQuestionSheetActive && !isPinLocked && activeQuestionCenter,
+        isQuestionDetailRoute && !isPinLocked && activeQuestionCenter,
     );
     const movableActiveQuestion = activeQuestionCenter ? activeQuestion : null;
 

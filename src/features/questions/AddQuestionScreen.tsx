@@ -4,7 +4,7 @@ import { requestUserCoordinate } from "@/features/map/useUserLocation";
 import { SheetScrollView } from "@/features/sheet/SheetScrollView";
 import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
 import { usePlayArea } from "@/state/playAreaStore";
-import { useQuestion } from "@/state/questionStore";
+import { useQuestionActions } from "@/state/questionStore";
 import { colors } from "@/theme/colors";
 
 type AddQuestionScreenProps = {
@@ -13,7 +13,7 @@ type AddQuestionScreenProps = {
 
 export function AddQuestionScreen({ onNavigate }: AddQuestionScreenProps) {
     const { playArea } = usePlayArea();
-    const { createQuestion } = useQuestion();
+    const { createQuestion } = useQuestionActions();
 
     const addRadarQuestion = async () => {
         const result = await requestUserCoordinate();

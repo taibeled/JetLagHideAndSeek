@@ -4,9 +4,9 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SheetListRow } from "@/components/SheetListRow";
 import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
 import { ShareSetupModal } from "@/sharing/export/ShareSetupModal";
-import { useHidingZone } from "@/state/hidingZoneStore";
+import { useHidingZoneState } from "@/state/hidingZoneStore";
 import { usePlayArea } from "@/state/playAreaStore";
-import { useQuestion } from "@/state/questionStore";
+import { useQuestionState } from "@/state/questionStore";
 import { colors } from "@/theme/colors";
 
 type SettingsScreenProps = {
@@ -15,8 +15,9 @@ type SettingsScreenProps = {
 
 export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
     const { cacheSource, playArea } = usePlayArea();
-    const { radiusMeters, radiusUnit, selectedPresetIds } = useHidingZone();
-    const { questions } = useQuestion();
+    const { radiusMeters, radiusUnit, selectedPresetIds } =
+        useHidingZoneState();
+    const { questions } = useQuestionState();
     const [isShareVisible, setIsShareVisible] = useState(false);
 
     return (

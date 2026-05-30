@@ -29,9 +29,9 @@ import { SHEET_SNAP_INDEX } from "@/features/sheet/sheetRoutes";
 import {
     updateRadarAnswer,
     updateQuestionCenter,
-    useQuestion,
+    useQuestionActions,
 } from "@/state/questionStore";
-import { useHidingZone } from "@/state/hidingZoneStore";
+import { useHidingZoneDerived } from "@/state/hidingZoneStore";
 import { colors } from "@/theme/colors";
 
 const allDistanceOptions: RadarDistanceOption[] = [
@@ -45,7 +45,7 @@ const SELECTOR_EXITING = FadeOut.duration(90);
 type RadarQuestionDetailScreenProps = {
     question: RadarQuestion;
     sheetIndex: number;
-    updateQuestion: ReturnType<typeof useQuestion>["updateQuestion"];
+    updateQuestion: ReturnType<typeof useQuestionActions>["updateQuestion"];
 };
 
 export function RadarQuestionDetailScreen({
@@ -53,7 +53,7 @@ export function RadarQuestionDetailScreen({
     sheetIndex,
     updateQuestion,
 }: RadarQuestionDetailScreenProps) {
-    const { selectedStations } = useHidingZone();
+    const { selectedStations } = useHidingZoneDerived();
     const {
         customDistanceInputRef,
         customDistanceValue,

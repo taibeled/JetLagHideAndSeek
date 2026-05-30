@@ -6,10 +6,18 @@ import {
     appStateQuestionSettingsToImportState,
     createAppStateV1,
 } from "@/state/appState";
-import { HidingZoneProvider, useHidingZone } from "@/state/hidingZoneStore";
+import {
+    HidingZoneProvider,
+    useHidingZoneActions,
+    useHidingZoneState,
+} from "@/state/hidingZoneStore";
 import { loadPersistedAppState, persistAppState } from "@/state/persistence";
 import { PlayAreaProvider, usePlayArea } from "@/state/playAreaStore";
-import { QuestionProvider, useQuestion } from "@/state/questionStore";
+import {
+    QuestionProvider,
+    useQuestionActions,
+    useQuestionState,
+} from "@/state/questionStore";
 
 export function AppStateProviders({ children }: { children: ReactNode }) {
     return (
@@ -27,12 +35,14 @@ export function AppStateProviders({ children }: { children: ReactNode }) {
 
 function AppStatePersistenceCoordinator({ children }: { children: ReactNode }) {
     const playAreaStore = usePlayArea();
-    const hidingZoneStore = useHidingZone();
-    const questionStore = useQuestion();
+    const hidingZoneState = useHidingZoneState();
+    const hidingZoneActions = useHidingZoneActions();
+    const questionState = useQuestionState();
+    const questionActions = useQuestionActions();
     const isRestored =
         playAreaStore.isRestored &&
-        hidingZoneStore.isRestored &&
-        questionStore.isRestored;
+        hidingZoneState.isRestored &&
+        questionState.isRestored;
     const createdAtRef = useRef<string | null>(null);
 
     useEffect(() => {
@@ -47,11 +57,11 @@ function AppStatePersistenceCoordinator({ children }: { children: ReactNode }) {
                 playAreaStore.importPlayArea(
                     appStatePlayAreaToImportState(persisted.playArea),
                 );
-                hidingZoneStore.replaceSetup(
+                hidingZoneActions.replaceSetup(
                     appStateHidingZonesToImportState(persisted.hidingZones),
                 );
-                questionStore.importQuestions(persisted.questions);
-                questionStore.importQuestionSettings(
+                questionActions.importQuestions(persisted.questions);
+                questionActions.importQuestionSettings(
                     appStateQuestionSettingsToImportState(
                         persisted.questionSettings,
                     ),
@@ -59,8 +69,8 @@ function AppStatePersistenceCoordinator({ children }: { children: ReactNode }) {
             }
 
             playAreaStore.markRestored();
-            hidingZoneStore.markRestored();
-            questionStore.markRestored();
+            hidingZoneActions.markRestored();
+            questionActions.markRestored();
         })();
 
         return () => {
@@ -78,9 +88,9 @@ function AppStatePersistenceCoordinator({ children }: { children: ReactNode }) {
         persistAppState(
             createAppStateV1({
                 hidingZones: {
-                    radiusMeters: hidingZoneStore.radiusMeters,
-                    radiusUnit: hidingZoneStore.radiusUnit,
-                    selectedPresetIds: hidingZoneStore.selectedPresetIds,
+                    radiusMeters: hidingZoneState.radiusMeters,
+                    radiusUnit: hidingZoneState.radiusUnit,
+                    selectedPresetIds: hidingZoneState.selectedPresetIds,
                 },
                 metadata: {
                     createdAt,
@@ -88,19 +98,19 @@ function AppStatePersistenceCoordinator({ children }: { children: ReactNode }) {
                 },
                 playArea: playAreaStore.playArea,
                 questionSettings: {
-                    isPinLocked: questionStore.isPinLocked,
+                    isPinLocked: questionState.isPinLocked,
                 },
-                questions: questionStore.questions,
+                questions: questionState.questions,
             }),
         );
     }, [
-        hidingZoneStore.radiusMeters,
-        hidingZoneStore.radiusUnit,
-        hidingZoneStore.selectedPresetIds,
+        hidingZoneState.radiusMeters,
+        hidingZoneState.radiusUnit,
+        hidingZoneState.selectedPresetIds,
         isRestored,
         playAreaStore.playArea,
-        questionStore.isPinLocked,
-        questionStore.questions,
+        questionState.isPinLocked,
+        questionState.questions,
     ]);
 
     return children;

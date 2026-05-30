@@ -37,30 +37,90 @@ export type HidingZoneImportState = {
     selectedPresetIds: string[];
 };
 
-type HidingZoneState = {
-    addPreset: (presetId: string) => void;
+// ---------------------------------------------------------------------------
+// State context — scalar values that change frequently
+// ---------------------------------------------------------------------------
+
+type HidingZoneStateValue = {
     isRestored: boolean;
-    markRestored: () => void;
-    presets: HidingZonePreset[];
     radiusDisplayValue: string;
     radiusMeters: number;
     radiusUnit: HidingZoneUnit;
+    selectedPresetIds: string[];
+};
+
+const HidingZoneStateContext = createContext<HidingZoneStateValue | null>(null);
+
+export function useHidingZoneState(): HidingZoneStateValue {
+    const context = useContext(HidingZoneStateContext);
+    if (!context) {
+        throw new Error(
+            "useHidingZoneState must be used within HidingZoneProvider.",
+        );
+    }
+    return context;
+}
+
+// ---------------------------------------------------------------------------
+// Actions context — stable callbacks
+// ---------------------------------------------------------------------------
+
+type HidingZoneActionsValue = {
+    addPreset: (presetId: string) => void;
+    markRestored: () => void;
     removePreset: (presetId: string) => void;
     replaceSetup: (nextSetup: HidingZoneImportState) => void;
+    setRadiusDisplayValue: (value: string) => void;
+    setRadiusUnit: (unit: HidingZoneUnit) => void;
+    togglePreset: (presetId: string) => void;
+};
+
+const HidingZoneActionsContext = createContext<HidingZoneActionsValue | null>(
+    null,
+);
+
+export function useHidingZoneActions(): HidingZoneActionsValue {
+    const context = useContext(HidingZoneActionsContext);
+    if (!context) {
+        throw new Error(
+            "useHidingZoneActions must be used within HidingZoneProvider.",
+        );
+    }
+    return context;
+}
+
+// ---------------------------------------------------------------------------
+// Derived context — computed GeoJSON / feature collections
+// ---------------------------------------------------------------------------
+
+type HidingZoneDerivedValue = {
+    presets: HidingZonePreset[];
     routeFeatures: RouteFeatureCollection;
-    selectedPresetIds: string[];
     selectedPresets: HidingZonePreset[];
     selectedRoutes: TransitRoute[];
     selectedStations: TransitStation[];
-    setRadiusDisplayValue: (value: string) => void;
-    setRadiusUnit: (unit: HidingZoneUnit) => void;
     stationFeatures: StationFeatureCollection;
     suggestedPresetIds: string[];
-    togglePreset: (presetId: string) => void;
     zoneFeatures: ZoneFeatureCollection;
 };
 
-const HidingZoneContext = createContext<HidingZoneState | null>(null);
+const HidingZoneDerivedContext = createContext<HidingZoneDerivedValue | null>(
+    null,
+);
+
+export function useHidingZoneDerived(): HidingZoneDerivedValue {
+    const context = useContext(HidingZoneDerivedContext);
+    if (!context) {
+        throw new Error(
+            "useHidingZoneDerived must be used within HidingZoneProvider.",
+        );
+    }
+    return context;
+}
+
+// ---------------------------------------------------------------------------
+// Provider
+// ---------------------------------------------------------------------------
 
 export function HidingZoneProvider({ children }: { children: ReactNode }) {
     const { playArea } = usePlayArea();
@@ -150,65 +210,73 @@ export function HidingZoneProvider({ children }: { children: ReactNode }) {
         setIsRestored(true);
     }, []);
 
-    const value = useMemo<HidingZoneState>(
+    const stateValue = useMemo<HidingZoneStateValue>(
         () => ({
-            addPreset,
             isRestored,
-            markRestored,
-            presets: hidingZonePresets,
             radiusDisplayValue,
             radiusMeters,
             radiusUnit,
+            selectedPresetIds,
+        }),
+        [
+            isRestored,
+            radiusDisplayValue,
+            radiusMeters,
+            radiusUnit,
+            selectedPresetIds,
+        ],
+    );
+
+    const actionsValue = useMemo<HidingZoneActionsValue>(
+        () => ({
+            addPreset,
+            markRestored,
             removePreset,
             replaceSetup,
-            routeFeatures,
-            selectedPresetIds,
-            selectedPresets,
-            selectedRoutes,
-            selectedStations,
             setRadiusDisplayValue,
             setRadiusUnit,
-            stationFeatures,
-            suggestedPresetIds,
             togglePreset,
-            zoneFeatures,
         }),
         [
             addPreset,
-            isRestored,
             markRestored,
-            radiusDisplayValue,
-            radiusMeters,
-            radiusUnit,
             removePreset,
             replaceSetup,
+            setRadiusDisplayValue,
+            setRadiusUnit,
+            togglePreset,
+        ],
+    );
+
+    const derivedValue = useMemo<HidingZoneDerivedValue>(
+        () => ({
+            presets: hidingZonePresets,
             routeFeatures,
-            selectedPresetIds,
             selectedPresets,
             selectedRoutes,
             selectedStations,
-            setRadiusDisplayValue,
-            setRadiusUnit,
             stationFeatures,
             suggestedPresetIds,
-            togglePreset,
+            zoneFeatures,
+        }),
+        [
+            routeFeatures,
+            selectedPresets,
+            selectedRoutes,
+            selectedStations,
+            stationFeatures,
+            suggestedPresetIds,
             zoneFeatures,
         ],
     );
 
     return (
-        <HidingZoneContext.Provider value={value}>
-            {children}
-        </HidingZoneContext.Provider>
+        <HidingZoneStateContext.Provider value={stateValue}>
+            <HidingZoneActionsContext.Provider value={actionsValue}>
+                <HidingZoneDerivedContext.Provider value={derivedValue}>
+                    {children}
+                </HidingZoneDerivedContext.Provider>
+            </HidingZoneActionsContext.Provider>
+        </HidingZoneStateContext.Provider>
     );
-}
-
-export function useHidingZone() {
-    const context = useContext(HidingZoneContext);
-    if (!context) {
-        throw new Error(
-            "useHidingZone must be used within HidingZoneProvider.",
-        );
-    }
-    return context;
 }

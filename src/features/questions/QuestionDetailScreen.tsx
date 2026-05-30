@@ -6,7 +6,12 @@ import { RadarQuestionDetailScreen } from "@/features/questions/radar/RadarQuest
 import { TransitLineQuestionDetailScreen } from "@/features/questions/transitLine/TransitLineQuestionDetailScreen";
 import { SheetScrollView } from "@/features/sheet/SheetScrollView";
 import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
-import { updateQuestionCenter, useQuestion } from "@/state/questionStore";
+import {
+    updateQuestionCenter,
+    useQuestionActions,
+    useQuestionDerived,
+    useQuestionState,
+} from "@/state/questionStore";
 import { colors } from "@/theme/colors";
 
 type QuestionDetailScreenProps = {
@@ -16,7 +21,8 @@ type QuestionDetailScreenProps = {
 export function QuestionDetailScreen({
     sheetIndex,
 }: QuestionDetailScreenProps) {
-    const { activeQuestion, updateQuestion } = useQuestion();
+    const { activeQuestion } = useQuestionDerived();
+    const { updateQuestion } = useQuestionActions();
 
     if (!activeQuestion) {
         return (
@@ -61,13 +67,10 @@ type QuestionActionsMenuProps = {
 };
 
 export function QuestionActionsMenu({ onNavigate }: QuestionActionsMenuProps) {
-    const {
-        activeQuestion,
-        deleteQuestion,
-        isPinLocked,
-        setPinLocked,
-        updateQuestion,
-    } = useQuestion();
+    const { activeQuestion } = useQuestionDerived();
+    const { isPinLocked } = useQuestionState();
+    const { deleteQuestion, setPinLocked, updateQuestion } =
+        useQuestionActions();
     const [isVisible, setVisible] = useState(false);
 
     if (!activeQuestion || !("center" in activeQuestion)) {

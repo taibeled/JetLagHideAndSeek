@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SheetScrollView } from "@/features/sheet/SheetScrollView";
 import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
 import { usePlayArea } from "@/state/playAreaStore";
-import { useQuestion } from "@/state/questionStore";
+import { useQuestionActions } from "@/state/questionStore";
 import { colors } from "@/theme/colors";
 
 type MatchingQuestionScreenProps = {
@@ -14,7 +14,7 @@ export function MatchingQuestionScreen({
     onNavigate,
 }: MatchingQuestionScreenProps) {
     const { playArea } = usePlayArea();
-    const { createQuestion } = useQuestion();
+    const { createQuestion } = useQuestionActions();
 
     const addTransitLineQuestion = () => {
         createQuestion("matching", {
