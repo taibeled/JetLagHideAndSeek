@@ -1,6 +1,6 @@
 appId: com.raycatdev.hideandseek.v2
 ---
-- clearState
+- stopApp
 - runFlow: e2e/bootstrap.yaml
 - swipe:
       start: "50%,85%"
