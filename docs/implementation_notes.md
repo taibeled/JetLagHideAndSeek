@@ -76,6 +76,7 @@ Tokyo Metro and Toei Subway presets are generated from ODPT GTFS files. The refr
 
 - `config.yaml` defines source URLs and output paths.
 - `scripts/fetch-odpt.mjs` reads `ODPT_KEY` from the environment or `~/.env`, downloads GTFS zips into ignored `data/odpt/cache/`, parses the relevant GTFS tables, and writes `generated/hiding-zone-presets.json`.
+- Generated transit route and station contribution IDs are source-namespaced canonical IDs such as `gtfs:odpt-tokyo-metro:route:3`. Keep raw GTFS IDs in `sourceId`, and keep station `mergeKey` separate from source-object identity so future OSM adapters can use the same downstream map and question logic. Cache-only ODPT regeneration does not require `ODPT_KEY`.
 - `NOTICE.md` and `sources.md` carry ODPT/provider attribution, source links, and license/usage-rule notes. Keep these with any generated data changes.
 
 Runtime behavior:

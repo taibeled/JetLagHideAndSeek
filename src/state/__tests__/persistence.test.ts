@@ -54,7 +54,7 @@ function makeMatchingQuestion() {
         center: defaultPlayArea.center,
         createdAt: "2026-05-18T00:00:00.000Z",
         id: "matching-1",
-        lineId: "line-1",
+        lineId: "gtfs:test:route:line-1",
         lineName: "Line 1",
         type: "matching" as const,
         updatedAt: "2026-05-18T00:00:00.000Z",
@@ -123,6 +123,28 @@ describe("AppStateV1 schema", () => {
             questions: [makeMatchingQuestion()],
         };
         expect(migratePersistedAppState(state)).toEqual(state);
+    });
+
+    it("clears legacy matching line selections instead of guessing", () => {
+        const state = {
+            ...makeAppState(),
+            questions: [
+                {
+                    ...makeMatchingQuestion(),
+                    answer: "positive" as const,
+                    lineId: "tokyo-metro:3",
+                },
+            ],
+        };
+
+        expect(migratePersistedAppState(state)?.questions).toEqual([
+            {
+                ...makeMatchingQuestion(),
+                answer: "unanswered",
+                lineId: null,
+                lineName: null,
+            },
+        ]);
     });
 
     it("backfills older matching question centers from the play area", () => {

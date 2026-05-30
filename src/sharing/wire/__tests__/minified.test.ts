@@ -324,7 +324,7 @@ it("writes matching questions in compact format", () => {
                 center: [139.7, 35.7],
                 createdAt: "2026-05-17T00:00:00.000Z",
                 id: "matching-1",
-                lineId: "line-1",
+                lineId: "gtfs:test:route:line-1",
                 lineName: "Line 1",
                 type: "matching",
                 updatedAt: "2026-05-17T00:00:00.000Z",
@@ -336,7 +336,7 @@ it("writes matching questions in compact format", () => {
 
     expect(json.p.q[0].t).toBe("m");
     expect(json.p.q[0].n).toEqual([139700000, 35700000]);
-    expect(json.p.q[0].x).toBe("line-1");
+    expect(json.p.q[0].x).toBe("gtfs:test:route:line-1");
     expect(json.p.q[0].y).toBe("Line 1");
     expect(json.p.q[0].e).toBe("n");
 });
@@ -349,7 +349,7 @@ describe("unminifyEnvelope", () => {
                     center: [139.7, 35.7],
                     createdAt: "2026-05-17T00:00:00.000Z",
                     id: "matching-1",
-                    lineId: "line-1",
+                    lineId: "gtfs:test:route:line-1",
                     lineName: "Line 1",
                     type: "matching",
                     updatedAt: "2026-05-17T00:00:00.000Z",
@@ -362,11 +362,43 @@ describe("unminifyEnvelope", () => {
             center: [139.7, 35.7],
             createdAt: "2026-05-17T00:00:00.000Z",
             id: "matching-1",
-            lineId: "line-1",
+            lineId: "gtfs:test:route:line-1",
             lineName: "Line 1",
             type: "matching",
             updatedAt: "2026-05-17T00:00:00.000Z",
         });
+    });
+
+    it("clears legacy matching line selections instead of guessing", () => {
+        const envelope = makeEnvelope({
+            questions: [
+                {
+                    answer: "positive",
+                    center: [139.7, 35.7],
+                    createdAt: "2026-05-17T00:00:00.000Z",
+                    id: "matching-1",
+                    lineId: "tokyo-metro:3",
+                    lineName: "Hibiya Line",
+                    type: "matching",
+                    updatedAt: "2026-05-17T00:00:00.000Z",
+                },
+            ],
+        });
+
+        expect(
+            unminifyEnvelope(minifyEnvelope(envelope)).payload.questions,
+        ).toEqual([
+            {
+                answer: "unanswered",
+                center: [139.7, 35.7],
+                createdAt: "2026-05-17T00:00:00.000Z",
+                id: "matching-1",
+                lineId: null,
+                lineName: null,
+                type: "matching",
+                updatedAt: "2026-05-17T00:00:00.000Z",
+            },
+        ]);
     });
 
     it("defaults legacy matching question centers to the play-area center", () => {
@@ -377,7 +409,7 @@ describe("unminifyEnvelope", () => {
                     center: [139.7, 35.7],
                     createdAt: "2026-05-17T00:00:00.000Z",
                     id: "matching-1",
-                    lineId: "line-1",
+                    lineId: "gtfs:test:route:line-1",
                     lineName: "Line 1",
                     type: "matching",
                     updatedAt: "2026-05-17T00:00:00.000Z",

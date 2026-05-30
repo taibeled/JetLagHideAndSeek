@@ -114,7 +114,7 @@ describe("sharing wire codec", () => {
                         center: [139.7, 35.7] as [number, number],
                         createdAt: "2026-05-17T00:00:00.000Z",
                         id: "matching-1",
-                        lineId: "line-1",
+                        lineId: "gtfs:test:route:line-1",
                         lineName: "Line 1",
                         type: "matching" as const,
                         updatedAt: "2026-05-17T00:00:00.000Z",

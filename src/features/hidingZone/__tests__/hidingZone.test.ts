@@ -3,7 +3,6 @@ import {
     buildHidingZoneFeatureCollection,
     buildRouteFeatureCollection,
     buildStationFeatureCollection,
-    getPresetRouteId,
     getSelectedRoutes,
     getSelectedStations,
     getSuggestedPresetIds,
@@ -30,17 +29,21 @@ const preset: HidingZonePreset = {
                 ],
                 type: "MultiLineString",
             },
-            id: "route-a",
+            id: "gtfs:test:route:route-a",
             name: "Route A",
+            sourceId: "route-a",
         },
     ],
+    source: { kind: "gtfs", namespace: "test" },
     stations: [
         {
-            id: "station-a",
+            id: "gtfs:test:stop:station-a",
             lat: 35.68,
             lon: 139.76,
+            mergeKey: "station-a-merge",
             name: "Station A",
-            routeIds: ["route-a"],
+            routeIds: ["gtfs:test:route:route-a"],
+            sourceId: "station-a",
         },
     ],
 };
@@ -128,28 +131,40 @@ describe("hidingZone helpers", () => {
         expect(getSuggestedPresetIds([preset], [140, 36, 141, 37])).toEqual([]);
     });
 
-    it("deduplicates selected stations by generated station id", () => {
+    it("deduplicates selected station contributions by merge key", () => {
         const duplicatePreset: HidingZonePreset = {
             ...preset,
             id: "toei-subway",
             stations: [
                 {
                     ...preset.stations[0],
-                    routeIds: ["route-b"],
+                    id: "gtfs:toei:stop:station-b",
+                    routeIds: ["gtfs:toei:route:route-b"],
+                    sourceId: "station-b",
                 },
             ],
         };
 
         expect(getSelectedStations([preset, duplicatePreset])).toEqual([
             {
-                ...preset.stations[0],
+                id: "station-a-merge",
+                lat: 35.68,
+                lon: 139.76,
+                name: "Station A",
                 routeColors: ["#FF9500", "#009BBF"],
-                routeIds: ["toei-subway:route-b", "tokyo-metro:route-a"],
+                routeIds: [
+                    "gtfs:test:route:route-a",
+                    "gtfs:toei:route:route-b",
+                ],
+                sourceStationIds: [
+                    "gtfs:test:stop:station-a",
+                    "gtfs:toei:stop:station-b",
+                ],
             },
         ]);
     });
 
-    it("scopes route ids by preset so operator-local route ids do not collide", () => {
+    it("keeps source-adapter route ids distinct", () => {
         const collidingPreset: HidingZonePreset = {
             ...preset,
             id: "toei-subway",
@@ -157,17 +172,20 @@ describe("hidingZone helpers", () => {
                 {
                     ...preset.routes[0],
                     color: "#6CBB5A",
-                    id: "route-a",
+                    id: "gtfs:toei:route:route-a",
                     name: "Different Route A",
                 },
             ],
+            source: { kind: "gtfs", namespace: "toei" },
             stations: [
                 {
-                    id: "station-b",
+                    id: "gtfs:toei:stop:station-b",
                     lat: 35.69,
                     lon: 139.77,
+                    mergeKey: "station-b-merge",
                     name: "Station B",
-                    routeIds: ["route-a"],
+                    routeIds: ["gtfs:toei:route:route-a"],
+                    sourceId: "station-b",
                 },
             ],
         };
@@ -178,8 +196,8 @@ describe("hidingZone helpers", () => {
                 name: route.name,
             })),
         ).toEqual([
-            { id: "tokyo-metro:route-a", name: "Route A" },
-            { id: "toei-subway:route-a", name: "Different Route A" },
+            { id: "gtfs:test:route:route-a", name: "Route A" },
+            { id: "gtfs:toei:route:route-a", name: "Different Route A" },
         ]);
         expect(
             getSelectedStations([preset, collidingPreset]).map((station) => ({
@@ -188,12 +206,12 @@ describe("hidingZone helpers", () => {
             })),
         ).toEqual([
             {
-                id: "station-a",
-                routeIds: ["tokyo-metro:route-a"],
+                id: "station-a-merge",
+                routeIds: ["gtfs:test:route:route-a"],
             },
             {
-                id: "station-b",
-                routeIds: ["toei-subway:route-a"],
+                id: "station-b-merge",
+                routeIds: ["gtfs:toei:route:route-a"],
             },
         ]);
     });
@@ -214,8 +232,9 @@ describe("hidingZone helpers", () => {
                         ],
                         type: "MultiLineString",
                     },
-                    id: "route-fallback",
+                    id: "gtfs:test:route:route-fallback",
                     name: "Fallback Route",
+                    sourceId: "route-fallback",
                 },
             ],
         };
@@ -227,7 +246,7 @@ describe("hidingZone helpers", () => {
         expect(routeFeatures.features).toHaveLength(2);
         expect(routeFeatures.features[0].properties.color).toBe("#FF9500");
         expect(routeFeatures.features[0].properties.id).toBe(
-            getPresetRouteId(preset.id, "route-a"),
+            "gtfs:test:route:route-a",
         );
         expect(routeFeatures.features[1].properties.color).toBe(
             preset.defaultColor,
@@ -237,7 +256,10 @@ describe("hidingZone helpers", () => {
     it("expands station features into route-colored rings", () => {
         const stationFeatures = buildStationFeatureCollection([
             {
-                ...preset.stations[0],
+                id: "station-a",
+                lat: 35.68,
+                lon: 139.76,
+                name: "Station A",
                 routeColors: ["#FF9500", "#F62E36"],
                 routeIds: ["route-a", "route-b"],
             },

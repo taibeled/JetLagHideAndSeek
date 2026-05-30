@@ -4,12 +4,14 @@ notice: NOTICE.md
 presets:
     - id: tokyo-metro
       label: Tokyo Metro
+      namespace: odpt-tokyo-metro
       operator: TokyoMetro
       defaultColor: "#009BBF"
       url: "https://api.odpt.org/api/v4/files/TokyoMetro/data/TokyoMetro-Train-GTFS.zip?acl:consumerKey=${ODPT_KEY}"
       requiresKey: true
     - id: toei-subway
       label: Toei Subway
+      namespace: odpt-toei-subway
       operator: Toei
       defaultColor: "#6CBB5A"
       url: "https://api-public.odpt.org/api/v4/files/Toei/data/Toei-Train-GTFS.zip"

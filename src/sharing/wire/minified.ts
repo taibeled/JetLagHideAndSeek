@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { normalizeTransitLineQuestion } from "@/features/questions/transitLine/transitLineNormalization";
+
 import type { AppStateEnvelopeV1, WireEnvelope } from "./schema";
 
 export const FIELD_MAP = {
@@ -339,7 +341,7 @@ export function unminifyEnvelope(
                               | { center?: [number, number] }
                               | undefined
                       )?.center ?? [0, 0]);
-                return {
+                return normalizeTransitLineQuestion({
                     answer: resolvedAnswer,
                     center,
                     createdAt,
@@ -354,7 +356,7 @@ export function unminifyEnvelope(
                         null,
                     type: "matching",
                     updatedAt: createdAt,
-                };
+                });
             }
 
             const center = q[FIELD_MAP.center] as [number, number];

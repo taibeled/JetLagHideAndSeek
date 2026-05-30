@@ -8,6 +8,8 @@ import { fileURLToPath } from "node:url";
 import { unzipSync, strFromU8 } from "fflate";
 import YAML from "yaml";
 
+import { createGtfsRouteId, createGtfsStopId } from "./transit-identity.mjs";
+
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const odptDir = resolve(scriptDir, "..");
 const configPath = resolve(odptDir, "config.yaml");
@@ -37,7 +39,7 @@ async function main() {
     const presets = [];
     for (const source of config.presets) {
         const url = applyEnv(source.url, env);
-        if (source.requiresKey && !env.ODPT_KEY) {
+        if (!cacheOnly && source.requiresKey && !env.ODPT_KEY) {
             throw new Error(
                 `${source.id} requires ODPT_KEY in the environment or ~/.env.`,
             );
@@ -179,15 +181,21 @@ export function processGtfsTables(source, tables) {
             const lat = Number(stop.stop_lat);
             const key = stationKey(stopId, lng, lat);
             const existing = stationsByKey.get(key);
+            const canonicalRouteId = createGtfsRouteId(
+                source.namespace,
+                routeId,
+            );
             if (existing) {
-                existing.routeIds.push(routeId);
+                existing.routeIds.push(canonicalRouteId);
             } else {
                 stationsByKey.set(key, {
-                    id: key,
+                    id: createGtfsStopId(source.namespace, stopId),
                     lat,
                     lon: lng,
+                    mergeKey: key,
                     name: stop.stop_name || stopId,
-                    routeIds: [routeId],
+                    routeIds: [canonicalRouteId],
+                    sourceId: stopId,
                 });
             }
         }
@@ -219,12 +227,13 @@ export function processGtfsTables(source, tables) {
                 coordinates: routeCoordinates,
                 type: "MultiLineString",
             },
-            id: routeId,
+            id: createGtfsRouteId(source.namespace, routeId),
             name:
                 route.route_long_name ||
                 route.route_short_name ||
                 route.route_desc ||
                 routeId,
+            sourceId: routeId,
         });
     }
 
@@ -245,6 +254,10 @@ export function processGtfsTables(source, tables) {
         label: source.label,
         operator: source.operator,
         routes,
+        source: {
+            kind: "gtfs",
+            namespace: source.namespace,
+        },
         stations,
     };
 }

@@ -6,7 +6,6 @@ import type { ReactElement } from "react";
 import { Keyboard } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { getPresetRouteId } from "@/features/hidingZone/hidingZone";
 import { hidingZonePresets } from "@/features/hidingZone/hidingZoneData";
 import { defaultPlayArea } from "@/features/map/playArea";
 import { clearPlayAreaMemoryCache } from "@/features/map/playAreaBoundary";
@@ -928,7 +927,7 @@ describe("MapAppScreen", () => {
             ).toEqual(
                 tokyoMetro!.routes.map((route) => ({
                     color: route.color,
-                    id: getPresetRouteId(tokyoMetro!.id, route.id),
+                    id: route.id,
                 })),
             );
             expect(

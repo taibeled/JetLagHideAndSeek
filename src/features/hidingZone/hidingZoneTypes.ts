@@ -9,25 +9,19 @@ import type {
 } from "geojson";
 
 import type { Bbox } from "@/features/map/geojsonTypes";
+import type {
+    TransitRoute,
+    TransitSource,
+    TransitStationContribution,
+} from "@/features/transit/transitTypes";
 import type { DistanceUnit } from "@/shared/distanceUnits";
 
 export type HidingZoneUnit = DistanceUnit;
-
-export type TransitRoute = {
-    color: string;
-    geometry: MultiLineString;
-    id: string;
-    name: string;
-};
-
-export type TransitStation = {
-    id: string;
-    lat: number;
-    lon: number;
-    name: string;
-    routeColors?: string[];
-    routeIds: string[];
-};
+export type {
+    TransitRoute,
+    TransitStation,
+    TransitStationContribution,
+} from "@/features/transit/transitTypes";
 
 export type HidingZonePreset = {
     bbox: Bbox;
@@ -36,7 +30,8 @@ export type HidingZonePreset = {
     label: string;
     operator: string;
     routes: TransitRoute[];
-    stations: TransitStation[];
+    source: TransitSource;
+    stations: TransitStationContribution[];
 };
 
 export type RouteFeatureProperties = {

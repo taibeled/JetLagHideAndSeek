@@ -78,6 +78,7 @@ LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 pnpm exec expo run:ios --device "iPhone 16 P
 | `pnpm typecheck`          | Run TypeScript type checking           |
 | `pnpm check`              | Lint, format check, and typecheck      |
 | `pnpm test`               | Run Jest unit and component tests      |
+| `pnpm test:data:odpt`     | Run ODPT generator fixture tests       |
 | `pnpm test:e2e:ios`       | Run Maestro E2E flows                  |
 | `pnpm test:e2e:ios:stack` | Start Metro, run E2E flows, stop Metro |
 | `pnpm data:odpt`          | Regenerate ODPT hiding-zone presets    |

@@ -13,7 +13,7 @@
             }
         ]
     },
-    "generatedAt": "2026-05-16T14:13:25.459Z",
+    "generatedAt": "2026-05-30T02:59:41.799Z",
     "presets": [
         {
             "bbox": [139.612865, 35.632485, 139.958767, 35.78835],
@@ -156,8 +156,9 @@
                         ],
                         "type": "MultiLineString"
                     },
-                    "id": "1",
-                    "name": "銀座線"
+                    "id": "gtfs:odpt-tokyo-metro:route:1",
+                    "name": "銀座線",
+                    "sourceId": "1"
                 },
                 {
                     "color": "#F62E36",
@@ -549,8 +550,9 @@
                         ],
                         "type": "MultiLineString"
                     },
-                    "id": "2",
-                    "name": "丸ノ内線"
+                    "id": "gtfs:odpt-tokyo-metro:route:2",
+                    "name": "丸ノ内線",
+                    "sourceId": "2"
                 },
                 {
                     "color": "#B5B5AC",
@@ -747,8 +749,9 @@
                         ],
                         "type": "MultiLineString"
                     },
-                    "id": "3",
-                    "name": "日比谷線"
+                    "id": "gtfs:odpt-tokyo-metro:route:3",
+                    "name": "日比谷線",
+                    "sourceId": "3"
                 },
                 {
                     "color": "#009BBF",
@@ -946,8 +949,9 @@
                         ],
                         "type": "MultiLineString"
                     },
-                    "id": "4",
-                    "name": "東西線"
+                    "id": "gtfs:odpt-tokyo-metro:route:4",
+                    "name": "東西線",
+                    "sourceId": "4"
                 },
                 {
                     "color": "#00BB85",
@@ -1217,8 +1221,9 @@
                         ],
                         "type": "MultiLineString"
                     },
-                    "id": "5",
-                    "name": "千代田線"
+                    "id": "gtfs:odpt-tokyo-metro:route:5",
+                    "name": "千代田線",
+                    "sourceId": "5"
                 },
                 {
                     "color": "#C1A470",
@@ -1431,8 +1436,9 @@
                         ],
                         "type": "MultiLineString"
                     },
-                    "id": "6",
-                    "name": "有楽町線"
+                    "id": "gtfs:odpt-tokyo-metro:route:6",
+                    "name": "有楽町線",
+                    "sourceId": "6"
                 },
                 {
                     "color": "#8F76D6",
@@ -1575,8 +1581,9 @@
                         ],
                         "type": "MultiLineString"
                     },
-                    "id": "7",
-                    "name": "半蔵門線"
+                    "id": "gtfs:odpt-tokyo-metro:route:7",
+                    "name": "半蔵門線",
+                    "sourceId": "7"
                 },
                 {
                     "color": "#00AC9B",
@@ -1864,8 +1871,9 @@
                         ],
                         "type": "MultiLineString"
                     },
-                    "id": "8",
-                    "name": "南北線"
+                    "id": "gtfs:odpt-tokyo-metro:route:8",
+                    "name": "南北線",
+                    "sourceId": "8"
                 },
                 {
                     "color": "#9C5E31",
@@ -1980,1305 +1988,1680 @@
                         ],
                         "type": "MultiLineString"
                     },
-                    "id": "9",
-                    "name": "副都心線"
+                    "id": "gtfs:odpt-tokyo-metro:route:9",
+                    "name": "副都心線",
+                    "sourceId": "9"
                 }
             ],
+            "source": {
+                "kind": "gtfs",
+                "namespace": "odpt-tokyo-metro"
+            },
             "stations": [
                 {
-                    "id": "101:139.70267,35.65910",
+                    "id": "gtfs:odpt-tokyo-metro:stop:101",
                     "lat": 35.659097,
                     "lon": 139.702673,
+                    "mergeKey": "101:139.70267,35.65910",
                     "name": "渋谷",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:1"],
+                    "sourceId": "101"
                 },
                 {
-                    "id": "102:139.71247,35.66504",
+                    "id": "gtfs:odpt-tokyo-metro:stop:102",
                     "lat": 35.665042,
                     "lon": 139.712473,
+                    "mergeKey": "102:139.71247,35.66504",
                     "name": "表参道",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:1"],
+                    "sourceId": "102"
                 },
                 {
-                    "id": "103:139.71783,35.67037",
+                    "id": "gtfs:odpt-tokyo-metro:stop:103",
                     "lat": 35.670375,
                     "lon": 139.717825,
+                    "mergeKey": "103:139.71783,35.67037",
                     "name": "外苑前",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:1"],
+                    "sourceId": "103"
                 },
                 {
-                    "id": "104:139.72414,35.67279",
+                    "id": "gtfs:odpt-tokyo-metro:stop:104",
                     "lat": 35.67279,
                     "lon": 139.724145,
+                    "mergeKey": "104:139.72414,35.67279",
                     "name": "青山一丁目",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:1"],
+                    "sourceId": "104"
                 },
                 {
-                    "id": "105:139.73735,35.67685",
+                    "id": "gtfs:odpt-tokyo-metro:stop:105",
                     "lat": 35.676845,
                     "lon": 139.737347,
+                    "mergeKey": "105:139.73735,35.67685",
                     "name": "赤坂見附",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:1"],
+                    "sourceId": "105"
                 },
                 {
-                    "id": "106:139.74194,35.67151",
+                    "id": "gtfs:odpt-tokyo-metro:stop:106",
                     "lat": 35.671511,
                     "lon": 139.741943,
+                    "mergeKey": "106:139.74194,35.67151",
                     "name": "溜池山王",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:1"],
+                    "sourceId": "106"
                 },
                 {
-                    "id": "107:139.75012,35.67016",
+                    "id": "gtfs:odpt-tokyo-metro:stop:107",
                     "lat": 35.67016,
                     "lon": 139.75012,
+                    "mergeKey": "107:139.75012,35.67016",
                     "name": "虎ノ門",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:1"],
+                    "sourceId": "107"
                 },
                 {
-                    "id": "108:139.75851,35.66738",
+                    "id": "gtfs:odpt-tokyo-metro:stop:108",
                     "lat": 35.667382,
                     "lon": 139.758512,
+                    "mergeKey": "108:139.75851,35.66738",
                     "name": "新橋",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:1"],
+                    "sourceId": "108"
                 },
                 {
-                    "id": "109:139.76537,35.67150",
+                    "id": "gtfs:odpt-tokyo-metro:stop:109",
                     "lat": 35.6715,
                     "lon": 139.765366,
+                    "mergeKey": "109:139.76537,35.67150",
                     "name": "銀座",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:1"],
+                    "sourceId": "109"
                 },
                 {
-                    "id": "110:139.77011,35.67670",
+                    "id": "gtfs:odpt-tokyo-metro:stop:110",
                     "lat": 35.676704,
                     "lon": 139.77011,
+                    "mergeKey": "110:139.77011,35.67670",
                     "name": "京橋",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:1"],
+                    "sourceId": "110"
                 },
                 {
-                    "id": "111:139.77334,35.68188",
+                    "id": "gtfs:odpt-tokyo-metro:stop:111",
                     "lat": 35.681879,
                     "lon": 139.773335,
+                    "mergeKey": "111:139.77334,35.68188",
                     "name": "日本橋",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:1"],
+                    "sourceId": "111"
                 },
                 {
-                    "id": "112:139.77358,35.68717",
+                    "id": "gtfs:odpt-tokyo-metro:stop:112",
                     "lat": 35.687173,
                     "lon": 139.773582,
+                    "mergeKey": "112:139.77358,35.68717",
                     "name": "三越前",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:1"],
+                    "sourceId": "112"
                 },
                 {
-                    "id": "113:139.77089,35.69371",
+                    "id": "gtfs:odpt-tokyo-metro:stop:113",
                     "lat": 35.693715,
                     "lon": 139.77089,
+                    "mergeKey": "113:139.77089,35.69371",
                     "name": "神田",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:1"],
+                    "sourceId": "113"
                 },
                 {
-                    "id": "114:139.77176,35.70278",
+                    "id": "gtfs:odpt-tokyo-metro:stop:114",
                     "lat": 35.70278,
                     "lon": 139.771762,
+                    "mergeKey": "114:139.77176,35.70278",
                     "name": "末広町",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:1"],
+                    "sourceId": "114"
                 },
                 {
-                    "id": "115:139.77301,35.70777",
+                    "id": "gtfs:odpt-tokyo-metro:stop:115",
                     "lat": 35.707765,
                     "lon": 139.773011,
+                    "mergeKey": "115:139.77301,35.70777",
                     "name": "上野広小路",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:1"],
+                    "sourceId": "115"
                 },
                 {
-                    "id": "116:139.77562,35.71184",
+                    "id": "gtfs:odpt-tokyo-metro:stop:116",
                     "lat": 35.711835,
                     "lon": 139.775625,
+                    "mergeKey": "116:139.77562,35.71184",
                     "name": "上野",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:1"],
+                    "sourceId": "116"
                 },
                 {
-                    "id": "117:139.78221,35.71139",
+                    "id": "gtfs:odpt-tokyo-metro:stop:117",
                     "lat": 35.711389,
                     "lon": 139.78221,
+                    "mergeKey": "117:139.78221,35.71139",
                     "name": "稲荷町",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:1"],
+                    "sourceId": "117"
                 },
                 {
-                    "id": "118:139.79031,35.70992",
+                    "id": "gtfs:odpt-tokyo-metro:stop:118",
                     "lat": 35.709917,
                     "lon": 139.790306,
+                    "mergeKey": "118:139.79031,35.70992",
                     "name": "田原町",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:1"],
+                    "sourceId": "118"
                 },
                 {
-                    "id": "119:139.79777,35.71075",
+                    "id": "gtfs:odpt-tokyo-metro:stop:119",
                     "lat": 35.710746,
                     "lon": 139.797774,
+                    "mergeKey": "119:139.79777,35.71075",
                     "name": "浅草",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:1"],
+                    "sourceId": "119"
                 },
                 {
-                    "id": "211:139.70055,35.69245",
+                    "id": "gtfs:odpt-tokyo-metro:stop:211",
                     "lat": 35.692452,
                     "lon": 139.700548,
+                    "mergeKey": "211:139.70055,35.69245",
                     "name": "新宿",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "211"
                 },
                 {
-                    "id": "212:139.70421,35.69118",
+                    "id": "gtfs:odpt-tokyo-metro:stop:212",
                     "lat": 35.69118,
                     "lon": 139.70421,
+                    "mergeKey": "212:139.70421,35.69118",
                     "name": "新宿三丁目",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "212"
                 },
                 {
-                    "id": "213:139.71091,35.68852",
+                    "id": "gtfs:odpt-tokyo-metro:stop:213",
                     "lat": 35.688525,
                     "lon": 139.710915,
+                    "mergeKey": "213:139.71091,35.68852",
                     "name": "新宿御苑前",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "213"
                 },
                 {
-                    "id": "214:139.71932,35.68783",
+                    "id": "gtfs:odpt-tokyo-metro:stop:214",
                     "lat": 35.687835,
                     "lon": 139.719325,
+                    "mergeKey": "214:139.71932,35.68783",
                     "name": "四谷三丁目",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "214"
                 },
                 {
-                    "id": "215:139.73005,35.68420",
+                    "id": "gtfs:odpt-tokyo-metro:stop:215",
                     "lat": 35.684197,
                     "lon": 139.730047,
+                    "mergeKey": "215:139.73005,35.68420",
                     "name": "四ツ谷",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "215"
                 },
                 {
-                    "id": "216:139.73735,35.67685",
+                    "id": "gtfs:odpt-tokyo-metro:stop:216",
                     "lat": 35.676845,
                     "lon": 139.737347,
+                    "mergeKey": "216:139.73735,35.67685",
                     "name": "赤坂見附",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "216"
                 },
                 {
-                    "id": "217:139.74547,35.67493",
+                    "id": "gtfs:odpt-tokyo-metro:stop:217",
                     "lat": 35.674926,
                     "lon": 139.745473,
+                    "mergeKey": "217:139.74547,35.67493",
                     "name": "国会議事堂前",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "217"
                 },
                 {
-                    "id": "218:139.75268,35.67424",
+                    "id": "gtfs:odpt-tokyo-metro:stop:218",
                     "lat": 35.674235,
                     "lon": 139.75268,
+                    "mergeKey": "218:139.75268,35.67424",
                     "name": "霞ケ関",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "218"
                 },
                 {
-                    "id": "219:139.76388,35.67316",
+                    "id": "gtfs:odpt-tokyo-metro:stop:219",
                     "lat": 35.673159,
                     "lon": 139.763876,
+                    "mergeKey": "219:139.76388,35.67316",
                     "name": "銀座",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "219"
                 },
                 {
-                    "id": "220:139.76480,35.68194",
+                    "id": "gtfs:odpt-tokyo-metro:stop:220",
                     "lat": 35.681935,
                     "lon": 139.7648,
+                    "mergeKey": "220:139.76480,35.68194",
                     "name": "東京",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "220"
                 },
                 {
-                    "id": "221:139.76620,35.68688",
+                    "id": "gtfs:odpt-tokyo-metro:stop:221",
                     "lat": 35.686875,
                     "lon": 139.766203,
+                    "mergeKey": "221:139.76620,35.68688",
                     "name": "大手町",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "221"
                 },
                 {
-                    "id": "222:139.76746,35.69487",
+                    "id": "gtfs:odpt-tokyo-metro:stop:222",
                     "lat": 35.69487,
                     "lon": 139.767455,
+                    "mergeKey": "222:139.76746,35.69487",
                     "name": "淡路町",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "222"
                 },
                 {
-                    "id": "223:139.76441,35.70043",
+                    "id": "gtfs:odpt-tokyo-metro:stop:223",
                     "lat": 35.70043,
                     "lon": 139.764405,
+                    "mergeKey": "223:139.76441,35.70043",
                     "name": "御茶ノ水",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "223"
                 },
                 {
-                    "id": "224:139.76015,35.70673",
+                    "id": "gtfs:odpt-tokyo-metro:stop:224",
                     "lat": 35.706726,
                     "lon": 139.760154,
+                    "mergeKey": "224:139.76015,35.70673",
                     "name": "本郷三丁目",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "224"
                 },
                 {
-                    "id": "225:139.75086,35.70731",
+                    "id": "gtfs:odpt-tokyo-metro:stop:225",
                     "lat": 35.707307,
                     "lon": 139.750861,
+                    "mergeKey": "225:139.75086,35.70731",
                     "name": "後楽園",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "225"
                 },
                 {
-                    "id": "226:139.73690,35.71720",
+                    "id": "gtfs:odpt-tokyo-metro:stop:226",
                     "lat": 35.7172,
                     "lon": 139.736895,
+                    "mergeKey": "226:139.73690,35.71720",
                     "name": "茗荷谷",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "226"
                 },
                 {
-                    "id": "227:139.72935,35.72613",
+                    "id": "gtfs:odpt-tokyo-metro:stop:227",
                     "lat": 35.72613,
                     "lon": 139.729354,
+                    "mergeKey": "227:139.72935,35.72613",
                     "name": "新大塚",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "227"
                 },
                 {
-                    "id": "228:139.71115,35.73034",
+                    "id": "gtfs:odpt-tokyo-metro:stop:228",
                     "lat": 35.730345,
                     "lon": 139.71115,
+                    "mergeKey": "228:139.71115,35.73034",
                     "name": "池袋",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "228"
                 },
                 {
-                    "id": "201:139.61976,35.70417",
+                    "id": "gtfs:odpt-tokyo-metro:stop:201",
                     "lat": 35.704175,
                     "lon": 139.61976,
+                    "mergeKey": "201:139.61976,35.70417",
                     "name": "荻窪",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "201"
                 },
                 {
-                    "id": "202:139.63557,35.69946",
+                    "id": "gtfs:odpt-tokyo-metro:stop:202",
                     "lat": 35.699455,
                     "lon": 139.635575,
+                    "mergeKey": "202:139.63557,35.69946",
                     "name": "南阿佐ケ谷",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "202"
                 },
                 {
-                    "id": "203:139.64851,35.69786",
+                    "id": "gtfs:odpt-tokyo-metro:stop:203",
                     "lat": 35.69786,
                     "lon": 139.64851,
+                    "mergeKey": "203:139.64851,35.69786",
                     "name": "新高円寺",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "203"
                 },
                 {
-                    "id": "204:139.65830,35.69797",
+                    "id": "gtfs:odpt-tokyo-metro:stop:204",
                     "lat": 35.697965,
                     "lon": 139.658295,
+                    "mergeKey": "204:139.65830,35.69797",
                     "name": "東高円寺",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "204"
                 },
                 {
-                    "id": "205:139.66951,35.69747",
+                    "id": "gtfs:odpt-tokyo-metro:stop:205",
                     "lat": 35.697475,
                     "lon": 139.66951,
+                    "mergeKey": "205:139.66951,35.69747",
                     "name": "新中野",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "205"
                 },
                 {
-                    "id": "209:139.68221,35.69709",
+                    "id": "gtfs:odpt-tokyo-metro:stop:209",
                     "lat": 35.697085,
                     "lon": 139.682205,
+                    "mergeKey": "209:139.68221,35.69709",
                     "name": "中野坂上",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "209"
                 },
                 {
-                    "id": "210:139.69256,35.69452",
+                    "id": "gtfs:odpt-tokyo-metro:stop:210",
                     "lat": 35.694515,
                     "lon": 139.69256,
+                    "mergeKey": "210:139.69256,35.69452",
                     "name": "西新宿",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "210"
                 },
                 {
-                    "id": "207:139.66816,35.69082",
+                    "id": "gtfs:odpt-tokyo-metro:stop:207",
                     "lat": 35.69082,
                     "lon": 139.668155,
+                    "mergeKey": "207:139.66816,35.69082",
                     "name": "中野富士見町",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "207"
                 },
                 {
-                    "id": "208:139.67400,35.69168",
+                    "id": "gtfs:odpt-tokyo-metro:stop:208",
                     "lat": 35.691685,
                     "lon": 139.674001,
+                    "mergeKey": "208:139.67400,35.69168",
                     "name": "中野新橋",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "208"
                 },
                 {
-                    "id": "206:139.65794,35.68351",
+                    "id": "gtfs:odpt-tokyo-metro:stop:206",
                     "lat": 35.683515,
                     "lon": 139.657935,
+                    "mergeKey": "206:139.65794,35.68351",
                     "name": "方南町",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:2"],
+                    "sourceId": "206"
                 },
                 {
-                    "id": "321:139.79878,35.73231",
+                    "id": "gtfs:odpt-tokyo-metro:stop:321",
                     "lat": 35.73231,
                     "lon": 139.79878,
+                    "mergeKey": "321:139.79878,35.73231",
                     "name": "南千住",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:3"],
+                    "sourceId": "321"
                 },
                 {
-                    "id": "322:139.80559,35.74990",
+                    "id": "gtfs:odpt-tokyo-metro:stop:322",
                     "lat": 35.749904,
                     "lon": 139.805591,
+                    "mergeKey": "322:139.80559,35.74990",
                     "name": "北千住",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:3"],
+                    "sourceId": "322"
                 },
                 {
-                    "id": "301:139.69883,35.64411",
+                    "id": "gtfs:odpt-tokyo-metro:stop:301",
                     "lat": 35.644108,
                     "lon": 139.698833,
+                    "mergeKey": "301:139.69883,35.64411",
                     "name": "中目黒",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:3"],
+                    "sourceId": "301"
                 },
                 {
-                    "id": "302:139.70870,35.64704",
+                    "id": "gtfs:odpt-tokyo-metro:stop:302",
                     "lat": 35.64704,
                     "lon": 139.708701,
+                    "mergeKey": "302:139.70870,35.64704",
                     "name": "恵比寿",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:3"],
+                    "sourceId": "302"
                 },
                 {
-                    "id": "303:139.72221,35.65150",
+                    "id": "gtfs:odpt-tokyo-metro:stop:303",
                     "lat": 35.651499,
                     "lon": 139.722209,
+                    "mergeKey": "303:139.72221,35.65150",
                     "name": "広尾",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:3"],
+                    "sourceId": "303"
                 },
                 {
-                    "id": "304:139.73116,35.66280",
+                    "id": "gtfs:odpt-tokyo-metro:stop:304",
                     "lat": 35.6628,
                     "lon": 139.731155,
+                    "mergeKey": "304:139.73116,35.66280",
                     "name": "六本木",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:3"],
+                    "sourceId": "304"
                 },
                 {
-                    "id": "305:139.74472,35.66262",
+                    "id": "gtfs:odpt-tokyo-metro:stop:305",
                     "lat": 35.662625,
                     "lon": 139.744725,
+                    "mergeKey": "305:139.74472,35.66262",
                     "name": "神谷町",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:3"],
+                    "sourceId": "305"
                 },
                 {
-                    "id": "306:139.74774,35.66731",
+                    "id": "gtfs:odpt-tokyo-metro:stop:306",
                     "lat": 35.667309,
                     "lon": 139.747738,
+                    "mergeKey": "306:139.74774,35.66731",
                     "name": "虎ノ門ヒルズ",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:3"],
+                    "sourceId": "306"
                 },
                 {
-                    "id": "307:139.75106,35.67388",
+                    "id": "gtfs:odpt-tokyo-metro:stop:307",
                     "lat": 35.673875,
                     "lon": 139.75106,
+                    "mergeKey": "307:139.75106,35.67388",
                     "name": "霞ケ関",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:3"],
+                    "sourceId": "307"
                 },
                 {
-                    "id": "308:139.76060,35.67427",
+                    "id": "gtfs:odpt-tokyo-metro:stop:308",
                     "lat": 35.674271,
                     "lon": 139.7606,
+                    "mergeKey": "308:139.76060,35.67427",
                     "name": "日比谷",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:3"],
+                    "sourceId": "308"
                 },
                 {
-                    "id": "309:139.76401,35.67198",
+                    "id": "gtfs:odpt-tokyo-metro:stop:309",
                     "lat": 35.671983,
                     "lon": 139.764007,
+                    "mergeKey": "309:139.76401,35.67198",
                     "name": "銀座",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:3"],
+                    "sourceId": "309"
                 },
                 {
-                    "id": "310:139.76763,35.66913",
+                    "id": "gtfs:odpt-tokyo-metro:stop:310",
                     "lat": 35.669129,
                     "lon": 139.767633,
+                    "mergeKey": "310:139.76763,35.66913",
                     "name": "東銀座",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:3"],
+                    "sourceId": "310"
                 },
                 {
-                    "id": "311:139.77247,35.66793",
+                    "id": "gtfs:odpt-tokyo-metro:stop:311",
                     "lat": 35.667928,
                     "lon": 139.772473,
+                    "mergeKey": "311:139.77247,35.66793",
                     "name": "築地",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:3"],
+                    "sourceId": "311"
                 },
                 {
-                    "id": "312:139.77733,35.67537",
+                    "id": "gtfs:odpt-tokyo-metro:stop:312",
                     "lat": 35.675368,
                     "lon": 139.777334,
+                    "mergeKey": "312:139.77733,35.67537",
                     "name": "八丁堀",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:3"],
+                    "sourceId": "312"
                 },
                 {
-                    "id": "313:139.77962,35.67908",
+                    "id": "gtfs:odpt-tokyo-metro:stop:313",
                     "lat": 35.679078,
                     "lon": 139.779619,
+                    "mergeKey": "313:139.77962,35.67908",
                     "name": "茅場町",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:3"],
+                    "sourceId": "313"
                 },
                 {
-                    "id": "314:139.78234,35.68626",
+                    "id": "gtfs:odpt-tokyo-metro:stop:314",
                     "lat": 35.686259,
                     "lon": 139.782339,
+                    "mergeKey": "314:139.78234,35.68626",
                     "name": "人形町",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:3"],
+                    "sourceId": "314"
                 },
                 {
-                    "id": "315:139.77876,35.69042",
+                    "id": "gtfs:odpt-tokyo-metro:stop:315",
                     "lat": 35.690423,
                     "lon": 139.778758,
+                    "mergeKey": "315:139.77876,35.69042",
                     "name": "小伝馬町",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:3"],
+                    "sourceId": "315"
                 },
                 {
-                    "id": "316:139.77553,35.69797",
+                    "id": "gtfs:odpt-tokyo-metro:stop:316",
                     "lat": 35.697965,
                     "lon": 139.775529,
+                    "mergeKey": "316:139.77553,35.69797",
                     "name": "秋葉原",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:3"],
+                    "sourceId": "316"
                 },
                 {
-                    "id": "317:139.77619,35.70665",
+                    "id": "gtfs:odpt-tokyo-metro:stop:317",
                     "lat": 35.706655,
                     "lon": 139.77619,
+                    "mergeKey": "317:139.77619,35.70665",
                     "name": "仲御徒町",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:3"],
+                    "sourceId": "317"
                 },
                 {
-                    "id": "318:139.77706,35.71156",
+                    "id": "gtfs:odpt-tokyo-metro:stop:318",
                     "lat": 35.711558,
                     "lon": 139.777061,
+                    "mergeKey": "318:139.77706,35.71156",
                     "name": "上野",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:3"],
+                    "sourceId": "318"
                 },
                 {
-                    "id": "319:139.78447,35.72057",
+                    "id": "gtfs:odpt-tokyo-metro:stop:319",
                     "lat": 35.720565,
                     "lon": 139.784466,
+                    "mergeKey": "319:139.78447,35.72057",
                     "name": "入谷",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:3"],
+                    "sourceId": "319"
                 },
                 {
-                    "id": "320:139.79117,35.72928",
+                    "id": "gtfs:odpt-tokyo-metro:stop:320",
                     "lat": 35.729285,
                     "lon": 139.791165,
+                    "mergeKey": "320:139.79117,35.72928",
                     "name": "三ノ輪",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:3"],
+                    "sourceId": "320"
                 },
                 {
-                    "id": "414:139.81768,35.66959",
+                    "id": "gtfs:odpt-tokyo-metro:stop:414",
                     "lat": 35.66959,
                     "lon": 139.81768,
+                    "mergeKey": "414:139.81768,35.66959",
                     "name": "東陽町",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:4"],
+                    "sourceId": "414"
                 },
                 {
-                    "id": "415:139.83169,35.66842",
+                    "id": "gtfs:odpt-tokyo-metro:stop:415",
                     "lat": 35.668415,
                     "lon": 139.831695,
+                    "mergeKey": "415:139.83169,35.66842",
                     "name": "南砂町",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:4"],
+                    "sourceId": "415"
                 },
                 {
-                    "id": "416:139.85960,35.66456",
+                    "id": "gtfs:odpt-tokyo-metro:stop:416",
                     "lat": 35.664562,
                     "lon": 139.8596,
+                    "mergeKey": "416:139.85960,35.66456",
                     "name": "西葛西",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:4"],
+                    "sourceId": "416"
                 },
                 {
-                    "id": "417:139.87253,35.66362",
+                    "id": "gtfs:odpt-tokyo-metro:stop:417",
                     "lat": 35.663616,
                     "lon": 139.87253,
+                    "mergeKey": "417:139.87253,35.66362",
                     "name": "葛西",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:4"],
+                    "sourceId": "417"
                 },
                 {
-                    "id": "418:139.89324,35.66590",
+                    "id": "gtfs:odpt-tokyo-metro:stop:418",
                     "lat": 35.665903,
                     "lon": 139.893236,
+                    "mergeKey": "418:139.89324,35.66590",
                     "name": "浦安",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:4"],
+                    "sourceId": "418"
                 },
                 {
-                    "id": "419:139.90228,35.67273",
+                    "id": "gtfs:odpt-tokyo-metro:stop:419",
                     "lat": 35.672729,
                     "lon": 139.902276,
+                    "mergeKey": "419:139.90228,35.67273",
                     "name": "南行徳",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:4"],
+                    "sourceId": "419"
                 },
                 {
-                    "id": "420:139.91419,35.68262",
+                    "id": "gtfs:odpt-tokyo-metro:stop:420",
                     "lat": 35.68262,
                     "lon": 139.914185,
+                    "mergeKey": "420:139.91419,35.68262",
                     "name": "行徳",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:4"],
+                    "sourceId": "420"
                 },
                 {
-                    "id": "421:139.92429,35.69101",
+                    "id": "gtfs:odpt-tokyo-metro:stop:421",
                     "lat": 35.691014,
                     "lon": 139.924286,
+                    "mergeKey": "421:139.92429,35.69101",
                     "name": "妙典",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:4"],
+                    "sourceId": "421"
                 },
                 {
-                    "id": "422:139.94191,35.70330",
+                    "id": "gtfs:odpt-tokyo-metro:stop:422",
                     "lat": 35.7033,
                     "lon": 139.941915,
+                    "mergeKey": "422:139.94191,35.70330",
                     "name": "原木中山",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:4"],
+                    "sourceId": "422"
                 },
                 {
-                    "id": "423:139.95877,35.70717",
+                    "id": "gtfs:odpt-tokyo-metro:stop:423",
                     "lat": 35.707174,
                     "lon": 139.958767,
+                    "mergeKey": "423:139.95877,35.70717",
                     "name": "西船橋",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:4"],
+                    "sourceId": "423"
                 },
                 {
-                    "id": "401:139.66560,35.70574",
+                    "id": "gtfs:odpt-tokyo-metro:stop:401",
                     "lat": 35.70574,
                     "lon": 139.665605,
+                    "mergeKey": "401:139.66560,35.70574",
                     "name": "中野",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:4"],
+                    "sourceId": "401"
                 },
                 {
-                    "id": "402:139.68597,35.71064",
+                    "id": "gtfs:odpt-tokyo-metro:stop:402",
                     "lat": 35.710635,
                     "lon": 139.685965,
+                    "mergeKey": "402:139.68597,35.71064",
                     "name": "落合",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:4"],
+                    "sourceId": "402"
                 },
                 {
-                    "id": "403:139.70505,35.71328",
+                    "id": "gtfs:odpt-tokyo-metro:stop:403",
                     "lat": 35.71328,
                     "lon": 139.705045,
+                    "mergeKey": "403:139.70505,35.71328",
                     "name": "高田馬場",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:4"],
+                    "sourceId": "403"
                 },
                 {
-                    "id": "404:139.72219,35.70568",
+                    "id": "gtfs:odpt-tokyo-metro:stop:404",
                     "lat": 35.70568,
                     "lon": 139.72219,
+                    "mergeKey": "404:139.72219,35.70568",
                     "name": "早稲田",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:4"],
+                    "sourceId": "404"
                 },
                 {
-                    "id": "405:139.73452,35.70387",
+                    "id": "gtfs:odpt-tokyo-metro:stop:405",
                     "lat": 35.703865,
                     "lon": 139.73452,
+                    "mergeKey": "405:139.73452,35.70387",
                     "name": "神楽坂",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:4"],
+                    "sourceId": "405"
                 },
                 {
-                    "id": "406:139.74652,35.70140",
+                    "id": "gtfs:odpt-tokyo-metro:stop:406",
                     "lat": 35.701403,
                     "lon": 139.746521,
+                    "mergeKey": "406:139.74652,35.70140",
                     "name": "飯田橋",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:4"],
+                    "sourceId": "406"
                 },
                 {
-                    "id": "407:139.75126,35.69609",
+                    "id": "gtfs:odpt-tokyo-metro:stop:407",
                     "lat": 35.696091,
                     "lon": 139.751265,
+                    "mergeKey": "407:139.75126,35.69609",
                     "name": "九段下",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:4"],
+                    "sourceId": "407"
                 },
                 {
-                    "id": "408:139.75767,35.69044",
+                    "id": "gtfs:odpt-tokyo-metro:stop:408",
                     "lat": 35.69044,
                     "lon": 139.75767,
+                    "mergeKey": "408:139.75767,35.69044",
                     "name": "竹橋",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:4"],
+                    "sourceId": "408"
                 },
                 {
-                    "id": "409:139.76603,35.68470",
+                    "id": "gtfs:odpt-tokyo-metro:stop:409",
                     "lat": 35.684697,
                     "lon": 139.76603,
+                    "mergeKey": "409:139.76603,35.68470",
                     "name": "大手町",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:4"],
+                    "sourceId": "409"
                 },
                 {
-                    "id": "410:139.77410,35.68238",
+                    "id": "gtfs:odpt-tokyo-metro:stop:410",
                     "lat": 35.682376,
                     "lon": 139.774101,
+                    "mergeKey": "410:139.77410,35.68238",
                     "name": "日本橋",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:4"],
+                    "sourceId": "410"
                 },
                 {
-                    "id": "411:139.77927,35.68035",
+                    "id": "gtfs:odpt-tokyo-metro:stop:411",
                     "lat": 35.680346,
                     "lon": 139.77927,
+                    "mergeKey": "411:139.77927,35.68035",
                     "name": "茅場町",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:4"],
+                    "sourceId": "411"
                 },
                 {
-                    "id": "412:139.79610,35.67189",
+                    "id": "gtfs:odpt-tokyo-metro:stop:412",
                     "lat": 35.671892,
                     "lon": 139.796099,
+                    "mergeKey": "412:139.79610,35.67189",
                     "name": "門前仲町",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:4"],
+                    "sourceId": "412"
                 },
                 {
-                    "id": "413:139.80712,35.66936",
+                    "id": "gtfs:odpt-tokyo-metro:stop:413",
                     "lat": 35.669356,
                     "lon": 139.807115,
+                    "mergeKey": "413:139.80712,35.66936",
                     "name": "木場",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:4"],
+                    "sourceId": "413"
                 },
                 {
-                    "id": "518:139.80440,35.74920",
+                    "id": "gtfs:odpt-tokyo-metro:stop:518",
                     "lat": 35.7492,
                     "lon": 139.804403,
+                    "mergeKey": "518:139.80440,35.74920",
                     "name": "北千住",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:5"],
+                    "sourceId": "518"
                 },
                 {
-                    "id": "519:139.82489,35.76228",
+                    "id": "gtfs:odpt-tokyo-metro:stop:519",
                     "lat": 35.762285,
                     "lon": 139.82489,
+                    "mergeKey": "519:139.82489,35.76228",
                     "name": "綾瀬",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:5"],
+                    "sourceId": "519"
                 },
                 {
-                    "id": "513:139.76998,35.70681",
+                    "id": "gtfs:odpt-tokyo-metro:stop:513",
                     "lat": 35.706805,
                     "lon": 139.769981,
+                    "mergeKey": "513:139.76998,35.70681",
                     "name": "湯島",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:5"],
+                    "sourceId": "513"
                 },
                 {
-                    "id": "514:139.76575,35.71733",
+                    "id": "gtfs:odpt-tokyo-metro:stop:514",
                     "lat": 35.717325,
                     "lon": 139.76575,
+                    "mergeKey": "514:139.76575,35.71733",
                     "name": "根津",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:5"],
+                    "sourceId": "514"
                 },
                 {
-                    "id": "515:139.76330,35.72575",
+                    "id": "gtfs:odpt-tokyo-metro:stop:515",
                     "lat": 35.725746,
                     "lon": 139.763303,
+                    "mergeKey": "515:139.76330,35.72575",
                     "name": "千駄木",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:5"],
+                    "sourceId": "515"
                 },
                 {
-                    "id": "516:139.76689,35.73235",
+                    "id": "gtfs:odpt-tokyo-metro:stop:516",
                     "lat": 35.732355,
                     "lon": 139.76689,
+                    "mergeKey": "516:139.76689,35.73235",
                     "name": "西日暮里",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:5"],
+                    "sourceId": "516"
                 },
                 {
-                    "id": "517:139.78005,35.74207",
+                    "id": "gtfs:odpt-tokyo-metro:stop:517",
                     "lat": 35.742068,
                     "lon": 139.780047,
+                    "mergeKey": "517:139.78005,35.74207",
                     "name": "町屋",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:5"],
+                    "sourceId": "517"
                 },
                 {
-                    "id": "501:139.67988,35.66902",
+                    "id": "gtfs:odpt-tokyo-metro:stop:501",
                     "lat": 35.669017,
                     "lon": 139.679884,
+                    "mergeKey": "501:139.67988,35.66902",
                     "name": "代々木上原",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:5"],
+                    "sourceId": "501"
                 },
                 {
-                    "id": "502:139.68979,35.66910",
+                    "id": "gtfs:odpt-tokyo-metro:stop:502",
                     "lat": 35.669104,
                     "lon": 139.689791,
+                    "mergeKey": "502:139.68979,35.66910",
                     "name": "代々木公園",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:5"],
+                    "sourceId": "502"
                 },
                 {
-                    "id": "503:139.70394,35.66912",
+                    "id": "gtfs:odpt-tokyo-metro:stop:503",
                     "lat": 35.669123,
                     "lon": 139.703944,
+                    "mergeKey": "503:139.70394,35.66912",
                     "name": "明治神宮前〈原宿〉",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:5"],
+                    "sourceId": "503"
                 },
                 {
-                    "id": "504:139.71135,35.66565",
+                    "id": "gtfs:odpt-tokyo-metro:stop:504",
                     "lat": 35.665652,
                     "lon": 139.711346,
+                    "mergeKey": "504:139.71135,35.66565",
                     "name": "表参道",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:5"],
+                    "sourceId": "504"
                 },
                 {
-                    "id": "505:139.72623,35.66659",
+                    "id": "gtfs:odpt-tokyo-metro:stop:505",
                     "lat": 35.666592,
                     "lon": 139.726229,
+                    "mergeKey": "505:139.72623,35.66659",
                     "name": "乃木坂",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:5"],
+                    "sourceId": "505"
                 },
                 {
-                    "id": "506:139.73641,35.67210",
+                    "id": "gtfs:odpt-tokyo-metro:stop:506",
                     "lat": 35.672104,
                     "lon": 139.736413,
+                    "mergeKey": "506:139.73641,35.67210",
                     "name": "赤坂",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:5"],
+                    "sourceId": "506"
                 },
                 {
-                    "id": "507:139.74319,35.67357",
+                    "id": "gtfs:odpt-tokyo-metro:stop:507",
                     "lat": 35.673566,
                     "lon": 139.743188,
+                    "mergeKey": "507:139.74319,35.67357",
                     "name": "国会議事堂前",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:5"],
+                    "sourceId": "507"
                 },
                 {
-                    "id": "508:139.75177,35.67256",
+                    "id": "gtfs:odpt-tokyo-metro:stop:508",
                     "lat": 35.67256,
                     "lon": 139.75177,
+                    "mergeKey": "508:139.75177,35.67256",
                     "name": "霞ケ関",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:5"],
+                    "sourceId": "508"
                 },
                 {
-                    "id": "509:139.75877,35.67395",
+                    "id": "gtfs:odpt-tokyo-metro:stop:509",
                     "lat": 35.673955,
                     "lon": 139.758765,
+                    "mergeKey": "509:139.75877,35.67395",
                     "name": "日比谷",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:5"],
+                    "sourceId": "509"
                 },
                 {
-                    "id": "510:139.76178,35.68050",
+                    "id": "gtfs:odpt-tokyo-metro:stop:510",
                     "lat": 35.680505,
                     "lon": 139.76178,
+                    "mergeKey": "510:139.76178,35.68050",
                     "name": "二重橋前〈丸の内〉",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:5"],
+                    "sourceId": "510"
                 },
                 {
-                    "id": "511:139.76328,35.68525",
+                    "id": "gtfs:odpt-tokyo-metro:stop:511",
                     "lat": 35.68525,
                     "lon": 139.763285,
+                    "mergeKey": "511:139.76328,35.68525",
                     "name": "大手町",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:5"],
+                    "sourceId": "511"
                 },
                 {
-                    "id": "512:139.76545,35.69693",
+                    "id": "gtfs:odpt-tokyo-metro:stop:512",
                     "lat": 35.696925,
                     "lon": 139.76545,
+                    "mergeKey": "512:139.76545,35.69693",
                     "name": "新御茶ノ水",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:5"],
+                    "sourceId": "512"
                 },
                 {
-                    "id": "520:139.83210,35.77689",
+                    "id": "gtfs:odpt-tokyo-metro:stop:520",
                     "lat": 35.77689,
                     "lon": 139.832095,
+                    "mergeKey": "520:139.83210,35.77689",
                     "name": "北綾瀬",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:5"],
+                    "sourceId": "520"
                 },
                 {
-                    "id": "601:139.61286,35.78835",
+                    "id": "gtfs:odpt-tokyo-metro:stop:601",
                     "lat": 35.78835,
                     "lon": 139.612865,
+                    "mergeKey": "601:139.61286,35.78835",
                     "name": "和光市",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "601"
                 },
                 {
-                    "id": "602:139.63117,35.77674",
+                    "id": "gtfs:odpt-tokyo-metro:stop:602",
                     "lat": 35.77674,
                     "lon": 139.63117,
+                    "mergeKey": "602:139.63117,35.77674",
                     "name": "地下鉄成増",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "602"
                 },
                 {
-                    "id": "603:139.64400,35.76998",
+                    "id": "gtfs:odpt-tokyo-metro:stop:603",
                     "lat": 35.769981,
                     "lon": 139.644,
+                    "mergeKey": "603:139.64400,35.76998",
                     "name": "地下鉄赤塚",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "603"
                 },
                 {
-                    "id": "604:139.65430,35.75756",
+                    "id": "gtfs:odpt-tokyo-metro:stop:604",
                     "lat": 35.757555,
                     "lon": 139.6543,
+                    "mergeKey": "604:139.65430,35.75756",
                     "name": "平和台",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "604"
                 },
                 {
-                    "id": "605:139.66547,35.74962",
+                    "id": "gtfs:odpt-tokyo-metro:stop:605",
                     "lat": 35.74962,
                     "lon": 139.66547,
+                    "mergeKey": "605:139.66547,35.74962",
                     "name": "氷川台",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "605"
                 },
                 {
-                    "id": "606:139.67952,35.74339",
+                    "id": "gtfs:odpt-tokyo-metro:stop:606",
                     "lat": 35.743395,
                     "lon": 139.67952,
+                    "mergeKey": "606:139.67952,35.74339",
                     "name": "小竹向原",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "606"
                 },
                 {
-                    "id": "607:139.68940,35.73817",
+                    "id": "gtfs:odpt-tokyo-metro:stop:607",
                     "lat": 35.738175,
                     "lon": 139.6894,
+                    "mergeKey": "607:139.68940,35.73817",
                     "name": "千川",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "607"
                 },
                 {
-                    "id": "608:139.69848,35.73322",
+                    "id": "gtfs:odpt-tokyo-metro:stop:608",
                     "lat": 35.733215,
                     "lon": 139.69848,
+                    "mergeKey": "608:139.69848,35.73322",
                     "name": "要町",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "608"
                 },
                 {
-                    "id": "609:139.71088,35.72919",
+                    "id": "gtfs:odpt-tokyo-metro:stop:609",
                     "lat": 35.729185,
                     "lon": 139.710885,
+                    "mergeKey": "609:139.71088,35.72919",
                     "name": "池袋",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "609"
                 },
                 {
-                    "id": "610:139.71886,35.72595",
+                    "id": "gtfs:odpt-tokyo-metro:stop:610",
                     "lat": 35.72595,
                     "lon": 139.718865,
+                    "mergeKey": "610:139.71886,35.72595",
                     "name": "東池袋",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "610"
                 },
                 {
-                    "id": "611:139.72745,35.71918",
+                    "id": "gtfs:odpt-tokyo-metro:stop:611",
                     "lat": 35.71918,
                     "lon": 139.72745,
+                    "mergeKey": "611:139.72745,35.71918",
                     "name": "護国寺",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "611"
                 },
                 {
-                    "id": "612:139.73413,35.70929",
+                    "id": "gtfs:odpt-tokyo-metro:stop:612",
                     "lat": 35.709295,
                     "lon": 139.73413,
+                    "mergeKey": "612:139.73413,35.70929",
                     "name": "江戸川橋",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "612"
                 },
                 {
-                    "id": "613:139.74321,35.70134",
+                    "id": "gtfs:odpt-tokyo-metro:stop:613",
                     "lat": 35.701342,
                     "lon": 139.743207,
+                    "mergeKey": "613:139.74321,35.70134",
                     "name": "飯田橋",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "613"
                 },
                 {
-                    "id": "614:139.73689,35.69258",
+                    "id": "gtfs:odpt-tokyo-metro:stop:614",
                     "lat": 35.692576,
                     "lon": 139.736891,
+                    "mergeKey": "614:139.73689,35.69258",
                     "name": "市ケ谷",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "614"
                 },
                 {
-                    "id": "615:139.73735,35.68478",
+                    "id": "gtfs:odpt-tokyo-metro:stop:615",
                     "lat": 35.684785,
                     "lon": 139.73735,
+                    "mergeKey": "615:139.73735,35.68478",
                     "name": "麴町",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "615"
                 },
                 {
-                    "id": "616:139.74177,35.67789",
+                    "id": "gtfs:odpt-tokyo-metro:stop:616",
                     "lat": 35.677895,
                     "lon": 139.741773,
+                    "mergeKey": "616:139.74177,35.67789",
                     "name": "永田町",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "616"
                 },
                 {
-                    "id": "617:139.75189,35.67746",
+                    "id": "gtfs:odpt-tokyo-metro:stop:617",
                     "lat": 35.677459,
                     "lon": 139.751886,
+                    "mergeKey": "617:139.75189,35.67746",
                     "name": "桜田門",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "617"
                 },
                 {
-                    "id": "618:139.76229,35.67597",
+                    "id": "gtfs:odpt-tokyo-metro:stop:618",
                     "lat": 35.675973,
                     "lon": 139.762286,
+                    "mergeKey": "618:139.76229,35.67597",
                     "name": "有楽町",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "618"
                 },
                 {
-                    "id": "619:139.76679,35.67452",
+                    "id": "gtfs:odpt-tokyo-metro:stop:619",
                     "lat": 35.674519,
                     "lon": 139.766786,
+                    "mergeKey": "619:139.76679,35.67452",
                     "name": "銀座一丁目",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "619"
                 },
                 {
-                    "id": "620:139.77359,35.67053",
+                    "id": "gtfs:odpt-tokyo-metro:stop:620",
                     "lat": 35.670529,
                     "lon": 139.773594,
+                    "mergeKey": "620:139.77359,35.67053",
                     "name": "新富町",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "620"
                 },
                 {
-                    "id": "621:139.78440,35.66471",
+                    "id": "gtfs:odpt-tokyo-metro:stop:621",
                     "lat": 35.664711,
                     "lon": 139.784405,
+                    "mergeKey": "621:139.78440,35.66471",
                     "name": "月島",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "621"
                 },
                 {
-                    "id": "622:139.79599,35.65515",
+                    "id": "gtfs:odpt-tokyo-metro:stop:622",
                     "lat": 35.655153,
                     "lon": 139.795994,
+                    "mergeKey": "622:139.79599,35.65515",
                     "name": "豊洲",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "622"
                 },
                 {
-                    "id": "623:139.81033,35.64578",
+                    "id": "gtfs:odpt-tokyo-metro:stop:623",
                     "lat": 35.645775,
                     "lon": 139.81033,
+                    "mergeKey": "623:139.81033,35.64578",
                     "name": "辰巳",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "623"
                 },
                 {
-                    "id": "624:139.82661,35.64578",
+                    "id": "gtfs:odpt-tokyo-metro:stop:624",
                     "lat": 35.64578,
                     "lon": 139.826605,
+                    "mergeKey": "624:139.82661,35.64578",
                     "name": "新木場",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:6"],
+                    "sourceId": "624"
                 },
                 {
-                    "id": "701:139.70103,35.65945",
+                    "id": "gtfs:odpt-tokyo-metro:stop:701",
                     "lat": 35.65945,
                     "lon": 139.701035,
+                    "mergeKey": "701:139.70103,35.65945",
                     "name": "渋谷",
-                    "routeIds": ["7"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:7"],
+                    "sourceId": "701"
                 },
                 {
-                    "id": "702:139.71238,35.66514",
+                    "id": "gtfs:odpt-tokyo-metro:stop:702",
                     "lat": 35.665143,
                     "lon": 139.712383,
+                    "mergeKey": "702:139.71238,35.66514",
                     "name": "表参道",
-                    "routeIds": ["7"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:7"],
+                    "sourceId": "702"
                 },
                 {
-                    "id": "703:139.72407,35.67296",
+                    "id": "gtfs:odpt-tokyo-metro:stop:703",
                     "lat": 35.672956,
                     "lon": 139.724075,
+                    "mergeKey": "703:139.72407,35.67296",
                     "name": "青山一丁目",
-                    "routeIds": ["7"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:7"],
+                    "sourceId": "703"
                 },
                 {
-                    "id": "704:139.73887,35.67841",
+                    "id": "gtfs:odpt-tokyo-metro:stop:704",
                     "lat": 35.678407,
                     "lon": 139.738865,
+                    "mergeKey": "704:139.73887,35.67841",
                     "name": "永田町",
-                    "routeIds": ["7"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:7"],
+                    "sourceId": "704"
                 },
                 {
-                    "id": "705:139.74169,35.68538",
+                    "id": "gtfs:odpt-tokyo-metro:stop:705",
                     "lat": 35.68538,
                     "lon": 139.741695,
+                    "mergeKey": "705:139.74169,35.68538",
                     "name": "半蔵門",
-                    "routeIds": ["7"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:7"],
+                    "sourceId": "705"
                 },
                 {
-                    "id": "706:139.75112,35.69550",
+                    "id": "gtfs:odpt-tokyo-metro:stop:706",
                     "lat": 35.695501,
                     "lon": 139.751117,
+                    "mergeKey": "706:139.75112,35.69550",
                     "name": "九段下",
-                    "routeIds": ["7"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:7"],
+                    "sourceId": "706"
                 },
                 {
-                    "id": "707:139.75756,35.69602",
+                    "id": "gtfs:odpt-tokyo-metro:stop:707",
                     "lat": 35.696021,
                     "lon": 139.75756,
+                    "mergeKey": "707:139.75756,35.69602",
                     "name": "神保町",
-                    "routeIds": ["7"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:7"],
+                    "sourceId": "707"
                 },
                 {
-                    "id": "708:139.76490,35.68675",
+                    "id": "gtfs:odpt-tokyo-metro:stop:708",
                     "lat": 35.686745,
                     "lon": 139.764905,
+                    "mergeKey": "708:139.76490,35.68675",
                     "name": "大手町",
-                    "routeIds": ["7"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:7"],
+                    "sourceId": "708"
                 },
                 {
-                    "id": "709:139.77308,35.68493",
+                    "id": "gtfs:odpt-tokyo-metro:stop:709",
                     "lat": 35.684928,
                     "lon": 139.77308,
+                    "mergeKey": "709:139.77308,35.68493",
                     "name": "三越前",
-                    "routeIds": ["7"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:7"],
+                    "sourceId": "709"
                 },
                 {
-                    "id": "710:139.78517,35.68300",
+                    "id": "gtfs:odpt-tokyo-metro:stop:710",
                     "lat": 35.683,
                     "lon": 139.785171,
+                    "mergeKey": "710:139.78517,35.68300",
                     "name": "水天宮前",
-                    "routeIds": ["7"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:7"],
+                    "sourceId": "710"
                 },
                 {
-                    "id": "711:139.79984,35.68212",
+                    "id": "gtfs:odpt-tokyo-metro:stop:711",
                     "lat": 35.682119,
                     "lon": 139.799841,
+                    "mergeKey": "711:139.79984,35.68212",
                     "name": "清澄白河",
-                    "routeIds": ["7"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:7"],
+                    "sourceId": "711"
                 },
                 {
-                    "id": "712:139.81567,35.68870",
+                    "id": "gtfs:odpt-tokyo-metro:stop:712",
                     "lat": 35.688704,
                     "lon": 139.815667,
+                    "mergeKey": "712:139.81567,35.68870",
                     "name": "住吉",
-                    "routeIds": ["7"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:7"],
+                    "sourceId": "712"
                 },
                 {
-                    "id": "713:139.81496,35.69744",
+                    "id": "gtfs:odpt-tokyo-metro:stop:713",
                     "lat": 35.697441,
                     "lon": 139.814957,
+                    "mergeKey": "713:139.81496,35.69744",
                     "name": "錦糸町",
-                    "routeIds": ["7"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:7"],
+                    "sourceId": "713"
                 },
                 {
-                    "id": "714:139.81374,35.70847",
+                    "id": "gtfs:odpt-tokyo-metro:stop:714",
                     "lat": 35.708467,
                     "lon": 139.813735,
+                    "mergeKey": "714:139.81374,35.70847",
                     "name": "押上〈スカイツリー前〉",
-                    "routeIds": ["7"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:7"],
+                    "sourceId": "714"
                 },
                 {
-                    "id": "801:139.71566,35.63249",
+                    "id": "gtfs:odpt-tokyo-metro:stop:801",
                     "lat": 35.632485,
                     "lon": 139.71566,
+                    "mergeKey": "801:139.71566,35.63249",
                     "name": "目黒",
-                    "routeIds": ["8"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:8"],
+                    "sourceId": "801"
                 },
                 {
-                    "id": "802:139.72586,35.63777",
+                    "id": "gtfs:odpt-tokyo-metro:stop:802",
                     "lat": 35.63777,
                     "lon": 139.72586,
+                    "mergeKey": "802:139.72586,35.63777",
                     "name": "白金台",
-                    "routeIds": ["8"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:8"],
+                    "sourceId": "802"
                 },
                 {
-                    "id": "803:139.73428,35.64314",
+                    "id": "gtfs:odpt-tokyo-metro:stop:803",
                     "lat": 35.643145,
                     "lon": 139.734285,
+                    "mergeKey": "803:139.73428,35.64314",
                     "name": "白金高輪",
-                    "routeIds": ["8"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:8"],
+                    "sourceId": "803"
                 },
                 {
-                    "id": "804:139.73704,35.65481",
+                    "id": "gtfs:odpt-tokyo-metro:stop:804",
                     "lat": 35.65481,
                     "lon": 139.737045,
+                    "mergeKey": "804:139.73704,35.65481",
                     "name": "麻布十番",
-                    "routeIds": ["8"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:8"],
+                    "sourceId": "804"
                 },
                 {
-                    "id": "805:139.73890,35.66508",
+                    "id": "gtfs:odpt-tokyo-metro:stop:805",
                     "lat": 35.665075,
                     "lon": 139.7389,
+                    "mergeKey": "805:139.73890,35.66508",
                     "name": "六本木一丁目",
-                    "routeIds": ["8"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:8"],
+                    "sourceId": "805"
                 },
                 {
-                    "id": "806:139.74129,35.67309",
+                    "id": "gtfs:odpt-tokyo-metro:stop:806",
                     "lat": 35.673091,
                     "lon": 139.741294,
+                    "mergeKey": "806:139.74129,35.67309",
                     "name": "溜池山王",
-                    "routeIds": ["8"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:8"],
+                    "sourceId": "806"
                 },
                 {
-                    "id": "807:139.73929,35.67834",
+                    "id": "gtfs:odpt-tokyo-metro:stop:807",
                     "lat": 35.678338,
                     "lon": 139.739288,
+                    "mergeKey": "807:139.73929,35.67834",
                     "name": "永田町",
-                    "routeIds": ["8"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:8"],
+                    "sourceId": "807"
                 },
                 {
-                    "id": "808:139.72968,35.68608",
+                    "id": "gtfs:odpt-tokyo-metro:stop:808",
                     "lat": 35.686082,
                     "lon": 139.72968,
+                    "mergeKey": "808:139.72968,35.68608",
                     "name": "四ツ谷",
-                    "routeIds": ["8"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:8"],
+                    "sourceId": "808"
                 },
                 {
-                    "id": "809:139.73632,35.69289",
+                    "id": "gtfs:odpt-tokyo-metro:stop:809",
                     "lat": 35.692894,
                     "lon": 139.736324,
+                    "mergeKey": "809:139.73632,35.69289",
                     "name": "市ケ谷",
-                    "routeIds": ["8"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:8"],
+                    "sourceId": "809"
                 },
                 {
-                    "id": "810:139.74372,35.70153",
+                    "id": "gtfs:odpt-tokyo-metro:stop:810",
                     "lat": 35.701532,
                     "lon": 139.743716,
+                    "mergeKey": "810:139.74372,35.70153",
                     "name": "飯田橋",
-                    "routeIds": ["8"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:8"],
+                    "sourceId": "810"
                 },
                 {
-                    "id": "811:139.75179,35.70839",
+                    "id": "gtfs:odpt-tokyo-metro:stop:811",
                     "lat": 35.70839,
                     "lon": 139.751786,
+                    "mergeKey": "811:139.75179,35.70839",
                     "name": "後楽園",
-                    "routeIds": ["8"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:8"],
+                    "sourceId": "811"
                 },
                 {
-                    "id": "812:139.75788,35.71801",
+                    "id": "gtfs:odpt-tokyo-metro:stop:812",
                     "lat": 35.718014,
                     "lon": 139.75788,
+                    "mergeKey": "812:139.75788,35.71801",
                     "name": "東大前",
-                    "routeIds": ["8"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:8"],
+                    "sourceId": "812"
                 },
                 {
-                    "id": "813:139.75381,35.72436",
+                    "id": "gtfs:odpt-tokyo-metro:stop:813",
                     "lat": 35.724365,
                     "lon": 139.753812,
+                    "mergeKey": "813:139.75381,35.72436",
                     "name": "本駒込",
-                    "routeIds": ["8"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:8"],
+                    "sourceId": "813"
                 },
                 {
-                    "id": "814:139.74691,35.73591",
+                    "id": "gtfs:odpt-tokyo-metro:stop:814",
                     "lat": 35.735913,
                     "lon": 139.746909,
+                    "mergeKey": "814:139.74691,35.73591",
                     "name": "駒込",
-                    "routeIds": ["8"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:8"],
+                    "sourceId": "814"
                 },
                 {
-                    "id": "815:139.74226,35.74594",
+                    "id": "gtfs:odpt-tokyo-metro:stop:815",
                     "lat": 35.745945,
                     "lon": 139.74226,
+                    "mergeKey": "815:139.74226,35.74594",
                     "name": "西ケ原",
-                    "routeIds": ["8"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:8"],
+                    "sourceId": "815"
                 },
                 {
-                    "id": "816:139.73736,35.75447",
+                    "id": "gtfs:odpt-tokyo-metro:stop:816",
                     "lat": 35.75447,
                     "lon": 139.737362,
+                    "mergeKey": "816:139.73736,35.75447",
                     "name": "王子",
-                    "routeIds": ["8"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:8"],
+                    "sourceId": "816"
                 },
                 {
-                    "id": "817:139.73564,35.76529",
+                    "id": "gtfs:odpt-tokyo-metro:stop:817",
                     "lat": 35.765292,
                     "lon": 139.735641,
+                    "mergeKey": "817:139.73564,35.76529",
                     "name": "王子神谷",
-                    "routeIds": ["8"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:8"],
+                    "sourceId": "817"
                 },
                 {
-                    "id": "818:139.73250,35.77802",
+                    "id": "gtfs:odpt-tokyo-metro:stop:818",
                     "lat": 35.778025,
                     "lon": 139.7325,
+                    "mergeKey": "818:139.73250,35.77802",
                     "name": "志茂",
-                    "routeIds": ["8"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:8"],
+                    "sourceId": "818"
                 },
                 {
-                    "id": "819:139.72211,35.78336",
+                    "id": "gtfs:odpt-tokyo-metro:stop:819",
                     "lat": 35.783355,
                     "lon": 139.72211,
+                    "mergeKey": "819:139.72211,35.78336",
                     "name": "赤羽岩淵",
-                    "routeIds": ["8"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:8"],
+                    "sourceId": "819"
                 },
                 {
-                    "id": "913:139.70473,35.69061",
+                    "id": "gtfs:odpt-tokyo-metro:stop:913",
                     "lat": 35.690609,
                     "lon": 139.704727,
+                    "mergeKey": "913:139.70473,35.69061",
                     "name": "新宿三丁目",
-                    "routeIds": ["9"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:9"],
+                    "sourceId": "913"
                 },
                 {
-                    "id": "914:139.70547,35.67850",
+                    "id": "gtfs:odpt-tokyo-metro:stop:914",
                     "lat": 35.678503,
                     "lon": 139.705469,
+                    "mergeKey": "914:139.70547,35.67850",
                     "name": "北参道",
-                    "routeIds": ["9"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:9"],
+                    "sourceId": "914"
                 },
                 {
-                    "id": "915:139.70524,35.66821",
+                    "id": "gtfs:odpt-tokyo-metro:stop:915",
                     "lat": 35.668205,
                     "lon": 139.70524,
+                    "mergeKey": "915:139.70524,35.66821",
                     "name": "明治神宮前〈原宿〉",
-                    "routeIds": ["9"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:9"],
+                    "sourceId": "915"
                 },
                 {
-                    "id": "916:139.70257,35.65909",
+                    "id": "gtfs:odpt-tokyo-metro:stop:916",
                     "lat": 35.659092,
                     "lon": 139.70257,
+                    "mergeKey": "916:139.70257,35.65909",
                     "name": "渋谷",
-                    "routeIds": ["9"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:9"],
+                    "sourceId": "916"
                 },
                 {
-                    "id": "906:139.67952,35.74339",
+                    "id": "gtfs:odpt-tokyo-metro:stop:906",
                     "lat": 35.743395,
                     "lon": 139.67952,
+                    "mergeKey": "906:139.67952,35.74339",
                     "name": "小竹向原",
-                    "routeIds": ["9"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:9"],
+                    "sourceId": "906"
                 },
                 {
-                    "id": "907:139.68940,35.73817",
+                    "id": "gtfs:odpt-tokyo-metro:stop:907",
                     "lat": 35.738175,
                     "lon": 139.6894,
+                    "mergeKey": "907:139.68940,35.73817",
                     "name": "千川",
-                    "routeIds": ["9"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:9"],
+                    "sourceId": "907"
                 },
                 {
-                    "id": "908:139.69848,35.73322",
+                    "id": "gtfs:odpt-tokyo-metro:stop:908",
                     "lat": 35.733215,
                     "lon": 139.69848,
+                    "mergeKey": "908:139.69848,35.73322",
                     "name": "要町",
-                    "routeIds": ["9"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:9"],
+                    "sourceId": "908"
                 },
                 {
-                    "id": "909:139.71115,35.73034",
+                    "id": "gtfs:odpt-tokyo-metro:stop:909",
                     "lat": 35.730345,
                     "lon": 139.71115,
+                    "mergeKey": "909:139.71115,35.73034",
                     "name": "池袋",
-                    "routeIds": ["9"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:9"],
+                    "sourceId": "909"
                 },
                 {
-                    "id": "910:139.71472,35.72020",
+                    "id": "gtfs:odpt-tokyo-metro:stop:910",
                     "lat": 35.7202,
                     "lon": 139.714715,
+                    "mergeKey": "910:139.71472,35.72020",
                     "name": "雑司が谷",
-                    "routeIds": ["9"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:9"],
+                    "sourceId": "910"
                 },
                 {
-                    "id": "911:139.70912,35.70781",
+                    "id": "gtfs:odpt-tokyo-metro:stop:911",
                     "lat": 35.707806,
                     "lon": 139.70912,
+                    "mergeKey": "911:139.70912,35.70781",
                     "name": "西早稲田",
-                    "routeIds": ["9"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:9"],
+                    "sourceId": "911"
                 },
                 {
-                    "id": "912:139.70785,35.69983",
+                    "id": "gtfs:odpt-tokyo-metro:stop:912",
                     "lat": 35.699829,
                     "lon": 139.707846,
+                    "mergeKey": "912:139.70785,35.69983",
                     "name": "東新宿",
-                    "routeIds": ["9"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:9"],
+                    "sourceId": "912"
                 },
                 {
-                    "id": "901:139.61286,35.78835",
+                    "id": "gtfs:odpt-tokyo-metro:stop:901",
                     "lat": 35.78835,
                     "lon": 139.612865,
+                    "mergeKey": "901:139.61286,35.78835",
                     "name": "和光市",
-                    "routeIds": ["9"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:9"],
+                    "sourceId": "901"
                 },
                 {
-                    "id": "902:139.63117,35.77674",
+                    "id": "gtfs:odpt-tokyo-metro:stop:902",
                     "lat": 35.77674,
                     "lon": 139.63117,
+                    "mergeKey": "902:139.63117,35.77674",
                     "name": "地下鉄成増",
-                    "routeIds": ["9"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:9"],
+                    "sourceId": "902"
                 },
                 {
-                    "id": "903:139.64400,35.76998",
+                    "id": "gtfs:odpt-tokyo-metro:stop:903",
                     "lat": 35.76998,
                     "lon": 139.644001,
+                    "mergeKey": "903:139.64400,35.76998",
                     "name": "地下鉄赤塚",
-                    "routeIds": ["9"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:9"],
+                    "sourceId": "903"
                 },
                 {
-                    "id": "904:139.65430,35.75756",
+                    "id": "gtfs:odpt-tokyo-metro:stop:904",
                     "lat": 35.757555,
                     "lon": 139.6543,
+                    "mergeKey": "904:139.65430,35.75756",
                     "name": "平和台",
-                    "routeIds": ["9"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:9"],
+                    "sourceId": "904"
                 },
                 {
-                    "id": "905:139.66547,35.74962",
+                    "id": "gtfs:odpt-tokyo-metro:stop:905",
                     "lat": 35.74962,
                     "lon": 139.66547,
+                    "mergeKey": "905:139.66547,35.74962",
                     "name": "氷川台",
-                    "routeIds": ["9"]
+                    "routeIds": ["gtfs:odpt-tokyo-metro:route:9"],
+                    "sourceId": "905"
                 }
             ]
         },
@@ -3404,8 +3787,9 @@
                         ],
                         "type": "MultiLineString"
                     },
-                    "id": "1",
-                    "name": "浅草線"
+                    "id": "gtfs:odpt-toei-subway:route:1",
+                    "name": "浅草線",
+                    "sourceId": "1"
                 },
                 {
                     "color": "#0067B0",
@@ -3660,8 +4044,9 @@
                         ],
                         "type": "MultiLineString"
                     },
-                    "id": "2",
-                    "name": "三田線"
+                    "id": "gtfs:odpt-toei-subway:route:2",
+                    "name": "三田線",
+                    "sourceId": "2"
                 },
                 {
                     "color": "#9FB01C",
@@ -3809,8 +4194,9 @@
                         ],
                         "type": "MultiLineString"
                     },
-                    "id": "3",
-                    "name": "新宿線"
+                    "id": "gtfs:odpt-toei-subway:route:3",
+                    "name": "新宿線",
+                    "sourceId": "3"
                 },
                 {
                     "color": "#CF3366",
@@ -4196,8 +4582,9 @@
                         ],
                         "type": "MultiLineString"
                     },
-                    "id": "4",
-                    "name": "大江戸線"
+                    "id": "gtfs:odpt-toei-subway:route:4",
+                    "name": "大江戸線",
+                    "sourceId": "4"
                 },
                 {
                     "color": "#6CBB5A",
@@ -4246,8 +4633,9 @@
                         ],
                         "type": "MultiLineString"
                     },
-                    "id": "5",
-                    "name": "日暮里・舎人ライナー"
+                    "id": "gtfs:odpt-toei-subway:route:5",
+                    "name": "日暮里・舎人ライナー",
+                    "sourceId": "5"
                 },
                 {
                     "color": "#6CBB5A",
@@ -4608,1053 +4996,1356 @@
                         ],
                         "type": "MultiLineString"
                     },
-                    "id": "6",
-                    "name": "東京さくらトラム（都電荒川線）"
+                    "id": "gtfs:odpt-toei-subway:route:6",
+                    "name": "東京さくらトラム（都電荒川線）",
+                    "sourceId": "6"
                 }
             ],
+            "source": {
+                "kind": "gtfs",
+                "namespace": "odpt-toei-subway"
+            },
             "stations": [
                 {
-                    "id": "107:139.73999,35.63871",
+                    "id": "gtfs:odpt-toei-subway:stop:107",
                     "lat": 35.638715,
                     "lon": 139.739993,
+                    "mergeKey": "107:139.73999,35.63871",
                     "name": "泉岳寺",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:1"],
+                    "sourceId": "107"
                 },
                 {
-                    "id": "108:139.74688,35.64675",
+                    "id": "gtfs:odpt-toei-subway:stop:108",
                     "lat": 35.646749,
                     "lon": 139.746877,
+                    "mergeKey": "108:139.74688,35.64675",
                     "name": "三田",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:1"],
+                    "sourceId": "108"
                 },
                 {
-                    "id": "109:139.75468,35.65687",
+                    "id": "gtfs:odpt-toei-subway:stop:109",
                     "lat": 35.65687,
                     "lon": 139.754679,
+                    "mergeKey": "109:139.75468,35.65687",
                     "name": "大門",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:1"],
+                    "sourceId": "109"
                 },
                 {
-                    "id": "110:139.75934,35.66539",
+                    "id": "gtfs:odpt-toei-subway:stop:110",
                     "lat": 35.665386,
                     "lon": 139.759338,
+                    "mergeKey": "110:139.75934,35.66539",
                     "name": "新橋",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:1"],
+                    "sourceId": "110"
                 },
                 {
-                    "id": "111:139.76735,35.66992",
+                    "id": "gtfs:odpt-toei-subway:stop:111",
                     "lat": 35.669915,
                     "lon": 139.76735,
+                    "mergeKey": "111:139.76735,35.66992",
                     "name": "東銀座",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:1"],
+                    "sourceId": "111"
                 },
                 {
-                    "id": "112:139.77197,35.67561",
+                    "id": "gtfs:odpt-toei-subway:stop:112",
                     "lat": 35.675606,
                     "lon": 139.771966,
+                    "mergeKey": "112:139.77197,35.67561",
                     "name": "宝町",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:1"],
+                    "sourceId": "112"
                 },
                 {
-                    "id": "113:139.77581,35.68180",
+                    "id": "gtfs:odpt-toei-subway:stop:113",
                     "lat": 35.681796,
                     "lon": 139.775814,
+                    "mergeKey": "113:139.77581,35.68180",
                     "name": "日本橋",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:1"],
+                    "sourceId": "113"
                 },
                 {
-                    "id": "114:139.78228,35.68635",
+                    "id": "gtfs:odpt-toei-subway:stop:114",
                     "lat": 35.686345,
                     "lon": 139.782276,
+                    "mergeKey": "114:139.78228,35.68635",
                     "name": "人形町",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:1"],
+                    "sourceId": "114"
                 },
                 {
-                    "id": "115:139.78489,35.69212",
+                    "id": "gtfs:odpt-toei-subway:stop:115",
                     "lat": 35.692123,
                     "lon": 139.784886,
+                    "mergeKey": "115:139.78489,35.69212",
                     "name": "東日本橋",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:1"],
+                    "sourceId": "115"
                 },
                 {
-                    "id": "116:139.78634,35.69749",
+                    "id": "gtfs:odpt-toei-subway:stop:116",
                     "lat": 35.697494,
                     "lon": 139.786335,
+                    "mergeKey": "116:139.78634,35.69749",
                     "name": "浅草橋",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:1"],
+                    "sourceId": "116"
                 },
                 {
-                    "id": "117:139.79086,35.70313",
+                    "id": "gtfs:odpt-toei-subway:stop:117",
                     "lat": 35.703128,
                     "lon": 139.790858,
+                    "mergeKey": "117:139.79086,35.70313",
                     "name": "蔵前",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:1"],
+                    "sourceId": "117"
                 },
                 {
-                    "id": "118:139.79654,35.70892",
+                    "id": "gtfs:odpt-toei-subway:stop:118",
                     "lat": 35.70892,
                     "lon": 139.796542,
+                    "mergeKey": "118:139.79654,35.70892",
                     "name": "浅草",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:1"],
+                    "sourceId": "118"
                 },
                 {
-                    "id": "119:139.80440,35.70857",
+                    "id": "gtfs:odpt-toei-subway:stop:119",
                     "lat": 35.708565,
                     "lon": 139.804397,
+                    "mergeKey": "119:139.80440,35.70857",
                     "name": "本所吾妻橋",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:1"],
+                    "sourceId": "119"
                 },
                 {
-                    "id": "120:139.81299,35.71082",
+                    "id": "gtfs:odpt-toei-subway:stop:120",
                     "lat": 35.710824,
                     "lon": 139.812993,
+                    "mergeKey": "120:139.81299,35.71082",
                     "name": "押上",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:1"],
+                    "sourceId": "120"
                 },
                 {
-                    "id": "101:139.70609,35.58705",
+                    "id": "gtfs:odpt-toei-subway:stop:101",
                     "lat": 35.58705,
                     "lon": 139.706086,
+                    "mergeKey": "101:139.70609,35.58705",
                     "name": "西馬込",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:1"],
+                    "sourceId": "101"
                 },
                 {
-                    "id": "102:139.71188,35.59677",
+                    "id": "gtfs:odpt-toei-subway:stop:102",
                     "lat": 35.596773,
                     "lon": 139.711884,
+                    "mergeKey": "102:139.71188,35.59677",
                     "name": "馬込",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:1"],
+                    "sourceId": "102"
                 },
                 {
-                    "id": "103:139.71365,35.60527",
+                    "id": "gtfs:odpt-toei-subway:stop:103",
                     "lat": 35.605274,
                     "lon": 139.713645,
+                    "mergeKey": "103:139.71365,35.60527",
                     "name": "中延",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:1"],
+                    "sourceId": "103"
                 },
                 {
-                    "id": "104:139.71632,35.61442",
+                    "id": "gtfs:odpt-toei-subway:stop:104",
                     "lat": 35.614421,
                     "lon": 139.716315,
+                    "mergeKey": "104:139.71632,35.61442",
                     "name": "戸越",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:1"],
+                    "sourceId": "104"
                 },
                 {
-                    "id": "105:139.72396,35.62688",
+                    "id": "gtfs:odpt-toei-subway:stop:105",
                     "lat": 35.626878,
                     "lon": 139.723965,
+                    "mergeKey": "105:139.72396,35.62688",
                     "name": "五反田",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:1"],
+                    "sourceId": "105"
                 },
                 {
-                    "id": "106:139.73038,35.63175",
+                    "id": "gtfs:odpt-toei-subway:stop:106",
                     "lat": 35.631751,
                     "lon": 139.730384,
+                    "mergeKey": "106:139.73038,35.63175",
                     "name": "高輪台",
-                    "routeIds": ["1"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:1"],
+                    "sourceId": "106"
                 },
                 {
-                    "id": "201:139.71544,35.63363",
+                    "id": "gtfs:odpt-toei-subway:stop:201",
                     "lat": 35.633635,
                     "lon": 139.715444,
+                    "mergeKey": "201:139.71544,35.63363",
                     "name": "目黒",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "201"
                 },
                 {
-                    "id": "202:139.72601,35.63785",
+                    "id": "gtfs:odpt-toei-subway:stop:202",
                     "lat": 35.637851,
                     "lon": 139.726007,
+                    "mergeKey": "202:139.72601,35.63785",
                     "name": "白金台",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "202"
                 },
                 {
-                    "id": "203:139.73434,35.64328",
+                    "id": "gtfs:odpt-toei-subway:stop:203",
                     "lat": 35.643283,
                     "lon": 139.734344,
+                    "mergeKey": "203:139.73434,35.64328",
                     "name": "白金高輪",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "203"
                 },
                 {
-                    "id": "204:139.74900,35.64865",
+                    "id": "gtfs:odpt-toei-subway:stop:204",
                     "lat": 35.64865,
                     "lon": 139.748998,
+                    "mergeKey": "204:139.74900,35.64865",
                     "name": "三田",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "204"
                 },
                 {
-                    "id": "205:139.74985,35.65419",
+                    "id": "gtfs:odpt-toei-subway:stop:205",
                     "lat": 35.654186,
                     "lon": 139.74985,
+                    "mergeKey": "205:139.74985,35.65419",
                     "name": "芝公園",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "205"
                 },
                 {
-                    "id": "206:139.75137,35.66077",
+                    "id": "gtfs:odpt-toei-subway:stop:206",
                     "lat": 35.660774,
                     "lon": 139.751366,
+                    "mergeKey": "206:139.75137,35.66077",
                     "name": "御成門",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "206"
                 },
                 {
-                    "id": "207:139.75533,35.66934",
+                    "id": "gtfs:odpt-toei-subway:stop:207",
                     "lat": 35.669344,
                     "lon": 139.75533,
+                    "mergeKey": "207:139.75533,35.66934",
                     "name": "内幸町",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "207"
                 },
                 {
-                    "id": "208:139.76027,35.67659",
+                    "id": "gtfs:odpt-toei-subway:stop:208",
                     "lat": 35.676585,
                     "lon": 139.760274,
+                    "mergeKey": "208:139.76027,35.67659",
                     "name": "日比谷",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "208"
                 },
                 {
-                    "id": "209:139.76280,35.68409",
+                    "id": "gtfs:odpt-toei-subway:stop:209",
                     "lat": 35.684093,
                     "lon": 139.762798,
+                    "mergeKey": "209:139.76280,35.68409",
                     "name": "大手町",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "209"
                 },
                 {
-                    "id": "210:139.75821,35.69533",
+                    "id": "gtfs:odpt-toei-subway:stop:210",
                     "lat": 35.695331,
                     "lon": 139.758213,
+                    "mergeKey": "210:139.75821,35.69533",
                     "name": "神保町",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "210"
                 },
                 {
-                    "id": "211:139.75515,35.70346",
+                    "id": "gtfs:odpt-toei-subway:stop:211",
                     "lat": 35.70346,
                     "lon": 139.755147,
+                    "mergeKey": "211:139.75515,35.70346",
                     "name": "水道橋",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "211"
                 },
                 {
-                    "id": "212:139.75329,35.70953",
+                    "id": "gtfs:odpt-toei-subway:stop:212",
                     "lat": 35.709532,
                     "lon": 139.753287,
+                    "mergeKey": "212:139.75329,35.70953",
                     "name": "春日",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "212"
                 },
                 {
-                    "id": "213:139.75213,35.72168",
+                    "id": "gtfs:odpt-toei-subway:stop:213",
                     "lat": 35.721682,
                     "lon": 139.752134,
+                    "mergeKey": "213:139.75213,35.72168",
                     "name": "白山",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "213"
                 },
                 {
-                    "id": "214:139.74498,35.72777",
+                    "id": "gtfs:odpt-toei-subway:stop:214",
                     "lat": 35.727772,
                     "lon": 139.744984,
+                    "mergeKey": "214:139.74498,35.72777",
                     "name": "千石",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "214"
                 },
                 {
-                    "id": "215:139.73815,35.73379",
+                    "id": "gtfs:odpt-toei-subway:stop:215",
                     "lat": 35.733793,
                     "lon": 139.738154,
+                    "mergeKey": "215:139.73815,35.73379",
                     "name": "巣鴨",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "215"
                 },
                 {
-                    "id": "216:139.72870,35.74357",
+                    "id": "gtfs:odpt-toei-subway:stop:216",
                     "lat": 35.743568,
                     "lon": 139.728703,
+                    "mergeKey": "216:139.72870,35.74357",
                     "name": "西巣鴨",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "216"
                 },
                 {
-                    "id": "217:139.71981,35.74877",
+                    "id": "gtfs:odpt-toei-subway:stop:217",
                     "lat": 35.748772,
                     "lon": 139.719808,
+                    "mergeKey": "217:139.71981,35.74877",
                     "name": "新板橋",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "217"
                 },
                 {
-                    "id": "218:139.71012,35.75137",
+                    "id": "gtfs:odpt-toei-subway:stop:218",
                     "lat": 35.751372,
                     "lon": 139.71012,
+                    "mergeKey": "218:139.71012,35.75137",
                     "name": "板橋区役所前",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "218"
                 },
                 {
-                    "id": "219:139.70554,35.76131",
+                    "id": "gtfs:odpt-toei-subway:stop:219",
                     "lat": 35.761309,
                     "lon": 139.705544,
+                    "mergeKey": "219:139.70554,35.76131",
                     "name": "板橋本町",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "219"
                 },
                 {
-                    "id": "220:139.70241,35.76857",
+                    "id": "gtfs:odpt-toei-subway:stop:220",
                     "lat": 35.768566,
                     "lon": 139.70241,
+                    "mergeKey": "220:139.70241,35.76857",
                     "name": "本蓮沼",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "220"
                 },
                 {
-                    "id": "221:139.69510,35.77608",
+                    "id": "gtfs:odpt-toei-subway:stop:221",
                     "lat": 35.776082,
                     "lon": 139.695097,
+                    "mergeKey": "221:139.69510,35.77608",
                     "name": "志村坂上",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "221"
                 },
                 {
-                    "id": "222:139.68575,35.77747",
+                    "id": "gtfs:odpt-toei-subway:stop:222",
                     "lat": 35.777468,
                     "lon": 139.685751,
+                    "mergeKey": "222:139.68575,35.77747",
                     "name": "志村三丁目",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "222"
                 },
                 {
-                    "id": "223:139.67895,35.78426",
+                    "id": "gtfs:odpt-toei-subway:stop:223",
                     "lat": 35.784262,
                     "lon": 139.678947,
+                    "mergeKey": "223:139.67895,35.78426",
                     "name": "蓮根",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "223"
                 },
                 {
-                    "id": "224:139.67287,35.78707",
+                    "id": "gtfs:odpt-toei-subway:stop:224",
                     "lat": 35.787074,
                     "lon": 139.672867,
+                    "mergeKey": "224:139.67287,35.78707",
                     "name": "西台",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "224"
                 },
                 {
-                    "id": "225:139.66136,35.78891",
+                    "id": "gtfs:odpt-toei-subway:stop:225",
                     "lat": 35.788908,
                     "lon": 139.661361,
+                    "mergeKey": "225:139.66136,35.78891",
                     "name": "高島平",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "225"
                 },
                 {
-                    "id": "226:139.65405,35.79029",
+                    "id": "gtfs:odpt-toei-subway:stop:226",
                     "lat": 35.790289,
                     "lon": 139.65405,
+                    "mergeKey": "226:139.65405,35.79029",
                     "name": "新高島平",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "226"
                 },
                 {
-                    "id": "227:139.64542,35.79196",
+                    "id": "gtfs:odpt-toei-subway:stop:227",
                     "lat": 35.791965,
                     "lon": 139.645421,
+                    "mergeKey": "227:139.64542,35.79196",
                     "name": "西高島平",
-                    "routeIds": ["2"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:2"],
+                    "sourceId": "227"
                 },
                 {
-                    "id": "301:139.69842,35.68843",
+                    "id": "gtfs:odpt-toei-subway:stop:301",
                     "lat": 35.688433,
                     "lon": 139.698418,
+                    "mergeKey": "301:139.69842,35.68843",
                     "name": "新宿",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:3"],
+                    "sourceId": "301"
                 },
                 {
-                    "id": "302:139.70679,35.69102",
+                    "id": "gtfs:odpt-toei-subway:stop:302",
                     "lat": 35.691016,
                     "lon": 139.706794,
+                    "mergeKey": "302:139.70679,35.69102",
                     "name": "新宿三丁目",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:3"],
+                    "sourceId": "302"
                 },
                 {
-                    "id": "303:139.72232,35.69240",
+                    "id": "gtfs:odpt-toei-subway:stop:303",
                     "lat": 35.692402,
                     "lon": 139.722317,
+                    "mergeKey": "303:139.72232,35.69240",
                     "name": "曙橋",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:3"],
+                    "sourceId": "303"
                 },
                 {
-                    "id": "304:139.73759,35.69153",
+                    "id": "gtfs:odpt-toei-subway:stop:304",
                     "lat": 35.69153,
                     "lon": 139.737588,
+                    "mergeKey": "304:139.73759,35.69153",
                     "name": "市ヶ谷",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:3"],
+                    "sourceId": "304"
                 },
                 {
-                    "id": "305:139.75174,35.69555",
+                    "id": "gtfs:odpt-toei-subway:stop:305",
                     "lat": 35.695546,
                     "lon": 139.751738,
+                    "mergeKey": "305:139.75174,35.69555",
                     "name": "九段下",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:3"],
+                    "sourceId": "305"
                 },
                 {
-                    "id": "306:139.75798,35.69597",
+                    "id": "gtfs:odpt-toei-subway:stop:306",
                     "lat": 35.695972,
                     "lon": 139.757981,
+                    "mergeKey": "306:139.75798,35.69597",
                     "name": "神保町",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:3"],
+                    "sourceId": "306"
                 },
                 {
-                    "id": "307:139.76645,35.69501",
+                    "id": "gtfs:odpt-toei-subway:stop:307",
                     "lat": 35.695005,
                     "lon": 139.766449,
+                    "mergeKey": "307:139.76645,35.69501",
                     "name": "小川町",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:3"],
+                    "sourceId": "307"
                 },
                 {
-                    "id": "308:139.77511,35.69561",
+                    "id": "gtfs:odpt-toei-subway:stop:308",
                     "lat": 35.695607,
                     "lon": 139.775115,
+                    "mergeKey": "308:139.77511,35.69561",
                     "name": "岩本町",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:3"],
+                    "sourceId": "308"
                 },
                 {
-                    "id": "309:139.78301,35.69193",
+                    "id": "gtfs:odpt-toei-subway:stop:309",
                     "lat": 35.69193,
                     "lon": 139.783006,
+                    "mergeKey": "309:139.78301,35.69193",
                     "name": "馬喰横山",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:3"],
+                    "sourceId": "309"
                 },
                 {
-                    "id": "310:139.78772,35.68860",
+                    "id": "gtfs:odpt-toei-subway:stop:310",
                     "lat": 35.688601,
                     "lon": 139.787725,
+                    "mergeKey": "310:139.78772,35.68860",
                     "name": "浜町",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:3"],
+                    "sourceId": "310"
                 },
                 {
-                    "id": "311:139.79662,35.68798",
+                    "id": "gtfs:odpt-toei-subway:stop:311",
                     "lat": 35.687982,
                     "lon": 139.796623,
+                    "mergeKey": "311:139.79662,35.68798",
                     "name": "森下",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:3"],
+                    "sourceId": "311"
                 },
                 {
-                    "id": "312:139.80606,35.68840",
+                    "id": "gtfs:odpt-toei-subway:stop:312",
                     "lat": 35.688399,
                     "lon": 139.806057,
+                    "mergeKey": "312:139.80606,35.68840",
                     "name": "菊川",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:3"],
+                    "sourceId": "312"
                 },
                 {
-                    "id": "313:139.81572,35.68904",
+                    "id": "gtfs:odpt-toei-subway:stop:313",
                     "lat": 35.68904,
                     "lon": 139.815723,
+                    "mergeKey": "313:139.81572,35.68904",
                     "name": "住吉",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:3"],
+                    "sourceId": "313"
                 },
                 {
-                    "id": "314:139.82623,35.68939",
+                    "id": "gtfs:odpt-toei-subway:stop:314",
                     "lat": 35.689391,
                     "lon": 139.826231,
+                    "mergeKey": "314:139.82623,35.68939",
                     "name": "西大島",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:3"],
+                    "sourceId": "314"
                 },
                 {
-                    "id": "315:139.83471,35.68975",
+                    "id": "gtfs:odpt-toei-subway:stop:315",
                     "lat": 35.689752,
                     "lon": 139.834705,
+                    "mergeKey": "315:139.83471,35.68975",
                     "name": "大島",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:3"],
+                    "sourceId": "315"
                 },
                 {
-                    "id": "316:139.84725,35.68996",
+                    "id": "gtfs:odpt-toei-subway:stop:316",
                     "lat": 35.689959,
                     "lon": 139.847255,
+                    "mergeKey": "316:139.84725,35.68996",
                     "name": "東大島",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:3"],
+                    "sourceId": "316"
                 },
                 {
-                    "id": "317:139.86396,35.68376",
+                    "id": "gtfs:odpt-toei-subway:stop:317",
                     "lat": 35.68376,
                     "lon": 139.863955,
+                    "mergeKey": "317:139.86396,35.68376",
                     "name": "船堀",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:3"],
+                    "sourceId": "317"
                 },
                 {
-                    "id": "318:139.88259,35.68599",
+                    "id": "gtfs:odpt-toei-subway:stop:318",
                     "lat": 35.685987,
                     "lon": 139.882586,
+                    "mergeKey": "318:139.88259,35.68599",
                     "name": "一之江",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:3"],
+                    "sourceId": "318"
                 },
                 {
-                    "id": "319:139.89770,35.69351",
+                    "id": "gtfs:odpt-toei-subway:stop:319",
                     "lat": 35.69351,
                     "lon": 139.8977,
+                    "mergeKey": "319:139.89770,35.69351",
                     "name": "瑞江",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:3"],
+                    "sourceId": "319"
                 },
                 {
-                    "id": "320:139.90380,35.70602",
+                    "id": "gtfs:odpt-toei-subway:stop:320",
                     "lat": 35.706022,
                     "lon": 139.903796,
+                    "mergeKey": "320:139.90380,35.70602",
                     "name": "篠崎",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:3"],
+                    "sourceId": "320"
                 },
                 {
-                    "id": "321:139.92661,35.72282",
+                    "id": "gtfs:odpt-toei-subway:stop:321",
                     "lat": 35.722819,
                     "lon": 139.926613,
+                    "mergeKey": "321:139.92661,35.72282",
                     "name": "本八幡",
-                    "routeIds": ["3"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:3"],
+                    "sourceId": "321"
                 },
                 {
-                    "id": "429:139.69268,35.69061",
+                    "id": "gtfs:odpt-toei-subway:stop:429",
                     "lat": 35.690607,
                     "lon": 139.692677,
+                    "mergeKey": "429:139.69268,35.69061",
                     "name": "都庁前",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "429"
                 },
                 {
-                    "id": "402:139.69912,35.69337",
+                    "id": "gtfs:odpt-toei-subway:stop:402",
                     "lat": 35.693367,
                     "lon": 139.699121,
+                    "mergeKey": "402:139.69912,35.69337",
                     "name": "新宿西口",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "402"
                 },
                 {
-                    "id": "403:139.70743,35.69796",
+                    "id": "gtfs:odpt-toei-subway:stop:403",
                     "lat": 35.697957,
                     "lon": 139.707434,
+                    "mergeKey": "403:139.70743,35.69796",
                     "name": "東新宿",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "403"
                 },
                 {
-                    "id": "404:139.71804,35.69919",
+                    "id": "gtfs:odpt-toei-subway:stop:404",
                     "lat": 35.699188,
                     "lon": 139.718043,
+                    "mergeKey": "404:139.71804,35.69919",
                     "name": "若松河田",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "404"
                 },
                 {
-                    "id": "405:139.72504,35.69950",
+                    "id": "gtfs:odpt-toei-subway:stop:405",
                     "lat": 35.699501,
                     "lon": 139.72504,
+                    "mergeKey": "405:139.72504,35.69950",
                     "name": "牛込柳町",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "405"
                 },
                 {
-                    "id": "406:139.73589,35.70091",
+                    "id": "gtfs:odpt-toei-subway:stop:406",
                     "lat": 35.700911,
                     "lon": 139.735894,
+                    "mergeKey": "406:139.73589,35.70091",
                     "name": "牛込神楽坂",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "406"
                 },
                 {
-                    "id": "407:139.74526,35.70295",
+                    "id": "gtfs:odpt-toei-subway:stop:407",
                     "lat": 35.702952,
                     "lon": 139.745257,
+                    "mergeKey": "407:139.74526,35.70295",
                     "name": "飯田橋",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "407"
                 },
                 {
-                    "id": "408:139.75249,35.70849",
+                    "id": "gtfs:odpt-toei-subway:stop:408",
                     "lat": 35.708493,
                     "lon": 139.752487,
+                    "mergeKey": "408:139.75249,35.70849",
                     "name": "春日",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "408"
                 },
                 {
-                    "id": "409:139.76052,35.70751",
+                    "id": "gtfs:odpt-toei-subway:stop:409",
                     "lat": 35.70751,
                     "lon": 139.760524,
+                    "mergeKey": "409:139.76052,35.70751",
                     "name": "本郷三丁目",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "409"
                 },
                 {
-                    "id": "410:139.77335,35.70795",
+                    "id": "gtfs:odpt-toei-subway:stop:410",
                     "lat": 35.707949,
                     "lon": 139.773351,
+                    "mergeKey": "410:139.77335,35.70795",
                     "name": "上野御徒町",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "410"
                 },
                 {
-                    "id": "411:139.78217,35.70701",
+                    "id": "gtfs:odpt-toei-subway:stop:411",
                     "lat": 35.707009,
                     "lon": 139.782166,
+                    "mergeKey": "411:139.78217,35.70701",
                     "name": "新御徒町",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "411"
                 },
                 {
-                    "id": "412:139.79224,35.70559",
+                    "id": "gtfs:odpt-toei-subway:stop:412",
                     "lat": 35.705587,
                     "lon": 139.792244,
+                    "mergeKey": "412:139.79224,35.70559",
                     "name": "蔵前",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "412"
                 },
                 {
-                    "id": "413:139.79747,35.69681",
+                    "id": "gtfs:odpt-toei-subway:stop:413",
                     "lat": 35.696807,
                     "lon": 139.797469,
+                    "mergeKey": "413:139.79747,35.69681",
                     "name": "両国",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "413"
                 },
                 {
-                    "id": "414:139.79825,35.68793",
+                    "id": "gtfs:odpt-toei-subway:stop:414",
                     "lat": 35.687926,
                     "lon": 139.798251,
+                    "mergeKey": "414:139.79825,35.68793",
                     "name": "森下",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "414"
                 },
                 {
-                    "id": "415:139.79876,35.68236",
+                    "id": "gtfs:odpt-toei-subway:stop:415",
                     "lat": 35.682355,
                     "lon": 139.798758,
+                    "mergeKey": "415:139.79876,35.68236",
                     "name": "清澄白河",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "415"
                 },
                 {
-                    "id": "416:139.79512,35.67277",
+                    "id": "gtfs:odpt-toei-subway:stop:416",
                     "lat": 35.672772,
                     "lon": 139.795124,
+                    "mergeKey": "416:139.79512,35.67277",
                     "name": "門前仲町",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "416"
                 },
                 {
-                    "id": "417:139.78391,35.66376",
+                    "id": "gtfs:odpt-toei-subway:stop:417",
                     "lat": 35.663757,
                     "lon": 139.783912,
+                    "mergeKey": "417:139.78391,35.66376",
                     "name": "月島",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "417"
                 },
                 {
-                    "id": "418:139.77714,35.65893",
+                    "id": "gtfs:odpt-toei-subway:stop:418",
                     "lat": 35.658934,
                     "lon": 139.777138,
+                    "mergeKey": "418:139.77714,35.65893",
                     "name": "勝どき",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "418"
                 },
                 {
-                    "id": "419:139.76693,35.66492",
+                    "id": "gtfs:odpt-toei-subway:stop:419",
                     "lat": 35.664919,
                     "lon": 139.766929,
+                    "mergeKey": "419:139.76693,35.66492",
                     "name": "築地市場",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "419"
                 },
                 {
-                    "id": "420:139.76022,35.66319",
+                    "id": "gtfs:odpt-toei-subway:stop:420",
                     "lat": 35.663193,
                     "lon": 139.760225,
+                    "mergeKey": "420:139.76022,35.66319",
                     "name": "汐留",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "420"
                 },
                 {
-                    "id": "421:139.75570,35.65667",
+                    "id": "gtfs:odpt-toei-subway:stop:421",
                     "lat": 35.656671,
                     "lon": 139.755696,
+                    "mergeKey": "421:139.75570,35.65667",
                     "name": "大門",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "421"
                 },
                 {
-                    "id": "422:139.74399,35.65499",
+                    "id": "gtfs:odpt-toei-subway:stop:422",
                     "lat": 35.654985,
                     "lon": 139.743989,
+                    "mergeKey": "422:139.74399,35.65499",
                     "name": "赤羽橋",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "422"
                 },
                 {
-                    "id": "423:139.73633,35.65645",
+                    "id": "gtfs:odpt-toei-subway:stop:423",
                     "lat": 35.656448,
                     "lon": 139.73633,
+                    "mergeKey": "423:139.73633,35.65645",
                     "name": "麻布十番",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "423"
                 },
                 {
-                    "id": "424:139.73135,35.66411",
+                    "id": "gtfs:odpt-toei-subway:stop:424",
                     "lat": 35.664106,
                     "lon": 139.731354,
+                    "mergeKey": "424:139.73135,35.66411",
                     "name": "六本木",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "424"
                 },
                 {
-                    "id": "425:139.72393,35.67307",
+                    "id": "gtfs:odpt-toei-subway:stop:425",
                     "lat": 35.673067,
                     "lon": 139.723925,
+                    "mergeKey": "425:139.72393,35.67307",
                     "name": "青山一丁目",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "425"
                 },
                 {
-                    "id": "426:139.71467,35.67990",
+                    "id": "gtfs:odpt-toei-subway:stop:426",
                     "lat": 35.679896,
                     "lon": 139.714667,
+                    "mergeKey": "426:139.71467,35.67990",
                     "name": "国立競技場",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "426"
                 },
                 {
-                    "id": "427:139.70160,35.68350",
+                    "id": "gtfs:odpt-toei-subway:stop:427",
                     "lat": 35.683505,
                     "lon": 139.701603,
+                    "mergeKey": "427:139.70160,35.68350",
                     "name": "代々木",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "427"
                 },
                 {
-                    "id": "428:139.69902,35.68846",
+                    "id": "gtfs:odpt-toei-subway:stop:428",
                     "lat": 35.688462,
                     "lon": 139.699019,
+                    "mergeKey": "428:139.69902,35.68846",
                     "name": "新宿",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "428"
                 },
                 {
-                    "id": "430:139.68455,35.68989",
+                    "id": "gtfs:odpt-toei-subway:stop:430",
                     "lat": 35.689892,
                     "lon": 139.684545,
+                    "mergeKey": "430:139.68455,35.68989",
                     "name": "西新宿五丁目",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "430"
                 },
                 {
-                    "id": "431:139.68290,35.69789",
+                    "id": "gtfs:odpt-toei-subway:stop:431",
                     "lat": 35.697887,
                     "lon": 139.682899,
+                    "mergeKey": "431:139.68290,35.69789",
                     "name": "中野坂上",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "431"
                 },
                 {
-                    "id": "432:139.68311,35.70716",
+                    "id": "gtfs:odpt-toei-subway:stop:432",
                     "lat": 35.70716,
                     "lon": 139.683112,
+                    "mergeKey": "432:139.68311,35.70716",
                     "name": "東中野",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "432"
                 },
                 {
-                    "id": "433:139.68630,35.71393",
+                    "id": "gtfs:odpt-toei-subway:stop:433",
                     "lat": 35.713935,
                     "lon": 139.686296,
+                    "mergeKey": "433:139.68630,35.71393",
                     "name": "中井",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "433"
                 },
                 {
-                    "id": "434:139.68339,35.72344",
+                    "id": "gtfs:odpt-toei-subway:stop:434",
                     "lat": 35.723435,
                     "lon": 139.683389,
+                    "mergeKey": "434:139.68339,35.72344",
                     "name": "落合南長崎",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "434"
                 },
                 {
-                    "id": "435:139.67050,35.73258",
+                    "id": "gtfs:odpt-toei-subway:stop:435",
                     "lat": 35.732579,
                     "lon": 139.670498,
+                    "mergeKey": "435:139.67050,35.73258",
                     "name": "新江古田",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "435"
                 },
                 {
-                    "id": "436:139.65476,35.73741",
+                    "id": "gtfs:odpt-toei-subway:stop:436",
                     "lat": 35.737411,
                     "lon": 139.654762,
+                    "mergeKey": "436:139.65476,35.73741",
                     "name": "練馬",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "436"
                 },
                 {
-                    "id": "437:139.64912,35.74171",
+                    "id": "gtfs:odpt-toei-subway:stop:437",
                     "lat": 35.741711,
                     "lon": 139.649116,
+                    "mergeKey": "437:139.64912,35.74171",
                     "name": "豊島園",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "437"
                 },
                 {
-                    "id": "438:139.64030,35.75141",
+                    "id": "gtfs:odpt-toei-subway:stop:438",
                     "lat": 35.75141,
                     "lon": 139.6403,
+                    "mergeKey": "438:139.64030,35.75141",
                     "name": "練馬春日町",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "438"
                 },
                 {
-                    "id": "439:139.62890,35.75853",
+                    "id": "gtfs:odpt-toei-subway:stop:439",
                     "lat": 35.758527,
                     "lon": 139.628901,
+                    "mergeKey": "439:139.62890,35.75853",
                     "name": "光が丘",
-                    "routeIds": ["4"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:4"],
+                    "sourceId": "439"
                 },
                 {
-                    "id": "501:139.77112,35.72879",
+                    "id": "gtfs:odpt-toei-subway:stop:501",
                     "lat": 35.728793,
                     "lon": 139.771121,
+                    "mergeKey": "501:139.77112,35.72879",
                     "name": "日暮里",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:5"],
+                    "sourceId": "501"
                 },
                 {
-                    "id": "502:139.76817,35.73374",
+                    "id": "gtfs:odpt-toei-subway:stop:502",
                     "lat": 35.733739,
                     "lon": 139.768169,
+                    "mergeKey": "502:139.76817,35.73374",
                     "name": "西日暮里",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:5"],
+                    "sourceId": "502"
                 },
                 {
-                    "id": "503:139.76902,35.74287",
+                    "id": "gtfs:odpt-toei-subway:stop:503",
                     "lat": 35.742868,
                     "lon": 139.769025,
+                    "mergeKey": "503:139.76902,35.74287",
                     "name": "赤土小学校前",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:5"],
+                    "sourceId": "503"
                 },
                 {
-                    "id": "504:139.76983,35.74851",
+                    "id": "gtfs:odpt-toei-subway:stop:504",
                     "lat": 35.748513,
                     "lon": 139.769828,
+                    "mergeKey": "504:139.76983,35.74851",
                     "name": "熊野前",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:5"],
+                    "sourceId": "504"
                 },
                 {
-                    "id": "505:139.77038,35.75465",
+                    "id": "gtfs:odpt-toei-subway:stop:505",
                     "lat": 35.754655,
                     "lon": 139.770376,
+                    "mergeKey": "505:139.77038,35.75465",
                     "name": "足立小台",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:5"],
+                    "sourceId": "505"
                 },
                 {
-                    "id": "506:139.77080,35.76391",
+                    "id": "gtfs:odpt-toei-subway:stop:506",
                     "lat": 35.763906,
                     "lon": 139.770798,
+                    "mergeKey": "506:139.77080,35.76391",
                     "name": "扇大橋",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:5"],
+                    "sourceId": "506"
                 },
                 {
-                    "id": "507:139.77069,35.76835",
+                    "id": "gtfs:odpt-toei-subway:stop:507",
                     "lat": 35.768351,
                     "lon": 139.770692,
+                    "mergeKey": "507:139.77069,35.76835",
                     "name": "高野",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:5"],
+                    "sourceId": "507"
                 },
                 {
-                    "id": "508:139.77029,35.77395",
+                    "id": "gtfs:odpt-toei-subway:stop:508",
                     "lat": 35.773954,
                     "lon": 139.77029,
+                    "mergeKey": "508:139.77029,35.77395",
                     "name": "江北",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:5"],
+                    "sourceId": "508"
                 },
                 {
-                    "id": "509:139.77008,35.78151",
+                    "id": "gtfs:odpt-toei-subway:stop:509",
                     "lat": 35.78151,
                     "lon": 139.770077,
+                    "mergeKey": "509:139.77008,35.78151",
                     "name": "西新井大師西",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:5"],
+                    "sourceId": "509"
                 },
                 {
-                    "id": "510:139.77004,35.78879",
+                    "id": "gtfs:odpt-toei-subway:stop:510",
                     "lat": 35.788787,
                     "lon": 139.770036,
+                    "mergeKey": "510:139.77004,35.78879",
                     "name": "谷在家",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:5"],
+                    "sourceId": "510"
                 },
                 {
-                    "id": "511:139.77016,35.79638",
+                    "id": "gtfs:odpt-toei-subway:stop:511",
                     "lat": 35.796384,
                     "lon": 139.770159,
+                    "mergeKey": "511:139.77016,35.79638",
                     "name": "舎人公園",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:5"],
+                    "sourceId": "511"
                 },
                 {
-                    "id": "512:139.77007,35.80569",
+                    "id": "gtfs:odpt-toei-subway:stop:512",
                     "lat": 35.80569,
                     "lon": 139.770069,
+                    "mergeKey": "512:139.77007,35.80569",
                     "name": "舎人",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:5"],
+                    "sourceId": "512"
                 },
                 {
-                    "id": "513:139.77071,35.81454",
+                    "id": "gtfs:odpt-toei-subway:stop:513",
                     "lat": 35.814541,
                     "lon": 139.770707,
+                    "mergeKey": "513:139.77071,35.81454",
                     "name": "見沼代親水公園",
-                    "routeIds": ["5"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:5"],
+                    "sourceId": "513"
                 },
                 {
-                    "id": "613:139.75246,35.75086",
+                    "id": "gtfs:odpt-toei-subway:stop:613",
                     "lat": 35.750865,
                     "lon": 139.752461,
+                    "mergeKey": "613:139.75246,35.75086",
                     "name": "荒川車庫前",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "613"
                 },
                 {
-                    "id": "614:139.74727,35.75107",
+                    "id": "gtfs:odpt-toei-subway:stop:614",
                     "lat": 35.75107,
                     "lon": 139.747268,
+                    "mergeKey": "614:139.74727,35.75107",
                     "name": "梶原",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "614"
                 },
                 {
-                    "id": "615:139.74219,35.75086",
+                    "id": "gtfs:odpt-toei-subway:stop:615",
                     "lat": 35.750865,
                     "lon": 139.742186,
+                    "mergeKey": "615:139.74219,35.75086",
                     "name": "栄町",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "615"
                 },
                 {
-                    "id": "616:139.73804,35.75298",
+                    "id": "gtfs:odpt-toei-subway:stop:616",
                     "lat": 35.752982,
                     "lon": 139.738045,
+                    "mergeKey": "616:139.73804,35.75298",
                     "name": "王子駅前",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "616"
                 },
                 {
-                    "id": "617:139.73733,35.75011",
+                    "id": "gtfs:odpt-toei-subway:stop:617",
                     "lat": 35.750109,
                     "lon": 139.737333,
+                    "mergeKey": "617:139.73733,35.75011",
                     "name": "飛鳥山",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "617"
                 },
                 {
-                    "id": "618:139.73542,35.74728",
+                    "id": "gtfs:odpt-toei-subway:stop:618",
                     "lat": 35.747283,
                     "lon": 139.73542,
+                    "mergeKey": "618:139.73542,35.74728",
                     "name": "滝野川一丁目",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "618"
                 },
                 {
-                    "id": "619:139.73266,35.74422",
+                    "id": "gtfs:odpt-toei-subway:stop:619",
                     "lat": 35.744222,
                     "lon": 139.732665,
+                    "mergeKey": "619:139.73266,35.74422",
                     "name": "西ヶ原四丁目",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "619"
                 },
                 {
-                    "id": "620:139.73034,35.74107",
+                    "id": "gtfs:odpt-toei-subway:stop:620",
                     "lat": 35.74107,
                     "lon": 139.730344,
+                    "mergeKey": "620:139.73034,35.74107",
                     "name": "新庚申塚",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "620"
                 },
                 {
-                    "id": "621:139.72962,35.73950",
+                    "id": "gtfs:odpt-toei-subway:stop:621",
                     "lat": 35.739504,
                     "lon": 139.729625,
+                    "mergeKey": "621:139.72962,35.73950",
                     "name": "庚申塚",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "621"
                 },
                 {
-                    "id": "622:139.72768,35.73568",
+                    "id": "gtfs:odpt-toei-subway:stop:622",
                     "lat": 35.735682,
                     "lon": 139.727684,
+                    "mergeKey": "622:139.72768,35.73568",
                     "name": "巣鴨新田",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "622"
                 },
                 {
-                    "id": "623:139.72910,35.73119",
+                    "id": "gtfs:odpt-toei-subway:stop:623",
                     "lat": 35.731188,
                     "lon": 139.729098,
+                    "mergeKey": "623:139.72910,35.73119",
                     "name": "大塚駅前",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "623"
                 },
                 {
-                    "id": "624:139.72476,35.72877",
+                    "id": "gtfs:odpt-toei-subway:stop:624",
                     "lat": 35.728775,
                     "lon": 139.724759,
+                    "mergeKey": "624:139.72476,35.72877",
                     "name": "向原",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "624"
                 },
                 {
-                    "id": "625:139.72040,35.72540",
+                    "id": "gtfs:odpt-toei-subway:stop:625",
                     "lat": 35.725398,
                     "lon": 139.720404,
+                    "mergeKey": "625:139.72040,35.72540",
                     "name": "東池袋四丁目",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "625"
                 },
                 {
-                    "id": "626:139.71784,35.72408",
+                    "id": "gtfs:odpt-toei-subway:stop:626",
                     "lat": 35.724081,
                     "lon": 139.717835,
+                    "mergeKey": "626:139.71784,35.72408",
                     "name": "都電雑司ヶ谷",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "626"
                 },
                 {
-                    "id": "627:139.71516,35.72057",
+                    "id": "gtfs:odpt-toei-subway:stop:627",
                     "lat": 35.720569,
                     "lon": 139.71516,
+                    "mergeKey": "627:139.71516,35.72057",
                     "name": "鬼子母神前",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "627"
                 },
                 {
-                    "id": "628:139.71253,35.71635",
+                    "id": "gtfs:odpt-toei-subway:stop:628",
                     "lat": 35.716347,
                     "lon": 139.712529,
+                    "mergeKey": "628:139.71253,35.71635",
                     "name": "学習院下",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "628"
                 },
                 {
-                    "id": "629:139.71420,35.71301",
+                    "id": "gtfs:odpt-toei-subway:stop:629",
                     "lat": 35.713012,
                     "lon": 139.714199,
+                    "mergeKey": "629:139.71420,35.71301",
                     "name": "面影橋",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "629"
                 },
                 {
-                    "id": "630:139.71900,35.71176",
+                    "id": "gtfs:odpt-toei-subway:stop:630",
                     "lat": 35.71176,
                     "lon": 139.719003,
+                    "mergeKey": "630:139.71900,35.71176",
                     "name": "早稲田",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "630"
                 },
                 {
-                    "id": "601:139.79151,35.73221",
+                    "id": "gtfs:odpt-toei-subway:stop:601",
                     "lat": 35.732207,
                     "lon": 139.791509,
+                    "mergeKey": "601:139.79151,35.73221",
                     "name": "三ノ輪橋",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "601"
                 },
                 {
-                    "id": "602:139.78884,35.73377",
+                    "id": "gtfs:odpt-toei-subway:stop:602",
                     "lat": 35.733768,
                     "lon": 139.788841,
+                    "mergeKey": "602:139.78884,35.73377",
                     "name": "荒川一中前",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "602"
                 },
                 {
-                    "id": "603:139.78642,35.73491",
+                    "id": "gtfs:odpt-toei-subway:stop:603",
                     "lat": 35.734913,
                     "lon": 139.786416,
+                    "mergeKey": "603:139.78642,35.73491",
                     "name": "荒川区役所前",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "603"
                 },
                 {
-                    "id": "604:139.78470,35.73857",
+                    "id": "gtfs:odpt-toei-subway:stop:604",
                     "lat": 35.738573,
                     "lon": 139.784704,
+                    "mergeKey": "604:139.78470,35.73857",
                     "name": "荒川二丁目",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "604"
                 },
                 {
-                    "id": "605:139.78421,35.74192",
+                    "id": "gtfs:odpt-toei-subway:stop:605",
                     "lat": 35.741923,
                     "lon": 139.78421,
+                    "mergeKey": "605:139.78421,35.74192",
                     "name": "荒川七丁目",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "605"
                 },
                 {
-                    "id": "606:139.78089,35.74278",
+                    "id": "gtfs:odpt-toei-subway:stop:606",
                     "lat": 35.742783,
                     "lon": 139.780891,
+                    "mergeKey": "606:139.78089,35.74278",
                     "name": "町屋駅前",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "606"
                 },
                 {
-                    "id": "607:139.77642,35.74392",
+                    "id": "gtfs:odpt-toei-subway:stop:607",
                     "lat": 35.743919,
                     "lon": 139.776416,
+                    "mergeKey": "607:139.77642,35.74392",
                     "name": "町屋二丁目",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "607"
                 },
                 {
-                    "id": "608:139.77387,35.74563",
+                    "id": "gtfs:odpt-toei-subway:stop:608",
                     "lat": 35.745626,
                     "lon": 139.773867,
+                    "mergeKey": "608:139.77387,35.74563",
                     "name": "東尾久三丁目",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "608"
                 },
                 {
-                    "id": "609:139.76986,35.74849",
+                    "id": "gtfs:odpt-toei-subway:stop:609",
                     "lat": 35.748487,
                     "lon": 139.769859,
+                    "mergeKey": "609:139.76986,35.74849",
                     "name": "熊野前",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "609"
                 },
                 {
-                    "id": "610:139.76619,35.74981",
+                    "id": "gtfs:odpt-toei-subway:stop:610",
                     "lat": 35.749811,
                     "lon": 139.76619,
+                    "mergeKey": "610:139.76619,35.74981",
                     "name": "宮ノ前",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "610"
                 },
                 {
-                    "id": "611:139.76174,35.75048",
+                    "id": "gtfs:odpt-toei-subway:stop:611",
                     "lat": 35.750477,
                     "lon": 139.761739,
+                    "mergeKey": "611:139.76174,35.75048",
                     "name": "小台",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "611"
                 },
                 {
-                    "id": "612:139.75752,35.75065",
+                    "id": "gtfs:odpt-toei-subway:stop:612",
                     "lat": 35.750646,
                     "lon": 139.757517,
+                    "mergeKey": "612:139.75752,35.75065",
                     "name": "荒川遊園地前",
-                    "routeIds": ["6"]
+                    "routeIds": ["gtfs:odpt-toei-subway:route:6"],
+                    "sourceId": "612"
                 }
             ]
         }

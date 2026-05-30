@@ -21,6 +21,7 @@ import {
     type RadarQuestion,
     radarDistanceOptionMeters,
 } from "@/features/questions/radar/radarTypes";
+import { normalizeTransitLineQuestion } from "@/features/questions/transitLine/transitLineNormalization";
 import type { Position } from "@/features/map/geojsonTypes";
 import { useHidingZone } from "@/state/hidingZoneStore";
 import {
@@ -353,6 +354,9 @@ function normalizeQuestionState(question: unknown): QuestionState {
             answer: "unanswered",
         };
     }
+    if (isTransitLineQuestion(question)) {
+        return normalizeTransitLineQuestion(question);
+    }
     return question as QuestionState;
 }
 
@@ -383,5 +387,16 @@ function isRadarQuestionWithoutAnswer(
         "type" in value &&
         value.type === "radar" &&
         !("answer" in value)
+    );
+}
+
+function isTransitLineQuestion(
+    value: unknown,
+): value is Extract<QuestionState, { type: "matching" }> {
+    return (
+        typeof value === "object" &&
+        value !== null &&
+        "type" in value &&
+        value.type === "matching"
     );
 }

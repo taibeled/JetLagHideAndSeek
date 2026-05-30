@@ -31,6 +31,7 @@ pnpm format:check
 pnpm typecheck
 pnpm check
 pnpm test
+pnpm test:data:odpt
 pnpm test -- NativeMap.test.tsx
 pnpm data:odpt
 ```
