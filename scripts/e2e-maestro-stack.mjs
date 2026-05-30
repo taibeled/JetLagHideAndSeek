@@ -181,7 +181,9 @@ async function runMaestro() {
 
     if (failures.length > 0) {
         const names = failures.map((f) => f.name).join(", ");
-        console.error(`\n${failures.length} flow(s) failed after retries: ${names}`);
+        console.error(
+            `\n${failures.length} flow(s) failed after retries: ${names}`,
+        );
         for (const { name, error } of failures) {
             console.error(`\n--- ${name} ---`);
             console.error(error.message);
