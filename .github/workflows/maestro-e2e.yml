@@ -148,13 +148,20 @@ jobs:
               run: |
                   xcrun simctl list devices available
                   IOS_SIMULATOR="iPhone 16 Pro"
-                  if ! xcrun simctl list devices available | grep -q "$IOS_SIMULATOR"; then
-                      IOS_SIMULATOR="iPhone 16"
+                  IOS_RUNTIME="18.5"
+                  UDID=$(xcrun simctl list devices available | grep "$IOS_SIMULATOR (" | grep "iOS $IOS_RUNTIME" | head -1 | sed -n 's/.*(\([A-F0-9-]*\)).*/\1/p')
+                  if [ -z "$UDID" ]; then
+                      echo "No $IOS_SIMULATOR on iOS $IOS_RUNTIME found; falling back to first available $IOS_SIMULATOR"
+                      UDID=$(xcrun simctl list devices available | grep "$IOS_SIMULATOR (" | head -1 | sed -n 's/.*(\([A-F0-9-]*\)).*/\1/p')
                   fi
-                  echo "IOS_SIMULATOR=$IOS_SIMULATOR" >> "$GITHUB_ENV"
-                  UDID=$(xcrun simctl list devices available | grep "$IOS_SIMULATOR (" | head -1 | sed -n 's/.*(\([A-F0-9-]*\)).*/\1/p')
                   if [ -n "$UDID" ]; then
+                      echo "IOS_SIMULATOR=$IOS_SIMULATOR" >> "$GITHUB_ENV"
+                      echo "IOS_SIMULATOR_UDID=$UDID" >> "$GITHUB_ENV"
+                      echo "Selected simulator: $IOS_SIMULATOR ($UDID)"
                       xcrun simctl boot "$UDID" || true
+                  else
+                      echo "Failed to find any available $IOS_SIMULATOR"
+                      exit 1
                   fi
 
             - name: Build and install iOS dev client
@@ -163,7 +170,7 @@ jobs:
               run: |
                   LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 pnpm exec expo prebuild --platform ios --clean
                   set +e
-                  LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 pnpm exec expo run:ios --device "$IOS_SIMULATOR" --no-bundler
+                  LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 pnpm exec expo run:ios --device "$IOS_SIMULATOR_UDID" --no-bundler
                   EXIT=$?
                   set -e
                   if [ $EXIT -ne 0 ]; then
