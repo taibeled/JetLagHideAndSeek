@@ -9,6 +9,7 @@ type QuestionLocationSelectorProps = {
     center: Position;
     onCenterChange: (center: Position) => void;
     setToLocationAccessibilityLabel: string;
+    showSetToLocationButton?: boolean;
     testIDPrefix: string;
 };
 
@@ -17,6 +18,7 @@ export function QuestionLocationSelector({
     center,
     onCenterChange,
     setToLocationAccessibilityLabel,
+    showSetToLocationButton = true,
     testIDPrefix,
 }: QuestionLocationSelectorProps) {
     const handleSetToMyLocation = async () => {
@@ -35,20 +37,22 @@ export function QuestionLocationSelector({
                 {center[1].toFixed(5)}
                 {","} {center[0].toFixed(5)}
             </Text>
-            <Pressable
-                accessibilityLabel={setToLocationAccessibilityLabel}
-                accessibilityRole="button"
-                onPress={() => {
-                    void handleSetToMyLocation();
-                }}
-                style={({ pressed }) => [
-                    styles.locationButton,
-                    pressed ? styles.actionPressed : null,
-                ]}
-                testID={`${testIDPrefix}-set-to-location-button`}
-            >
-                <Text style={styles.locationButtonText}>{buttonLabel}</Text>
-            </Pressable>
+            {showSetToLocationButton ? (
+                <Pressable
+                    accessibilityLabel={setToLocationAccessibilityLabel}
+                    accessibilityRole="button"
+                    onPress={() => {
+                        void handleSetToMyLocation();
+                    }}
+                    style={({ pressed }) => [
+                        styles.locationButton,
+                        pressed ? styles.actionPressed : null,
+                    ]}
+                    testID={`${testIDPrefix}-set-to-location-button`}
+                >
+                    <Text style={styles.locationButtonText}>{buttonLabel}</Text>
+                </Pressable>
+            ) : null}
         </View>
     );
 }

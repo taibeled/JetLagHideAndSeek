@@ -37,6 +37,7 @@ export function TransitLineQuestionDetailScreen({
                     )
                 }
                 setToLocationAccessibilityLabel="Set transit line pin to my location"
+                showSetToLocationButton={false}
                 testIDPrefix="transit-line"
             />
 

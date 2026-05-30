@@ -176,6 +176,7 @@ export function RadarQuestionDetailScreen({
                     )
                 }
                 setToLocationAccessibilityLabel="Set radar pin to my location"
+                showSetToLocationButton={false}
                 testIDPrefix="radar"
             />
 

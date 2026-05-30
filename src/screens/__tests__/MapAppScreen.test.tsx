@@ -175,6 +175,11 @@ function pressAndAdvance(screen: ReturnType<typeof render>, testID: string) {
     });
 }
 
+function openQuestionActions(screen: ReturnType<typeof render>) {
+    fireEvent.press(screen.getByTestId("question-actions-menu-button"));
+    expect(screen.getByTestId("question-actions-menu")).toBeTruthy();
+}
+
 async function pressAddTransitLineQuestion(screen: ReturnType<typeof render>) {
     pressAndAdvance(screen, "add-matching-question-row");
     expect(screen.getByLabelText("Matching")).toBeTruthy();
@@ -407,12 +412,17 @@ describe("MapAppScreen", () => {
         ).toBeTruthy();
         expect(screen.getByTestId("radar-answer-option-positive")).toBeTruthy();
         expect(screen.getByTestId("radar-answer-option-negative")).toBeTruthy();
-        expect(screen.getByTestId("radar-pin-lock-button")).toBeTruthy();
-        expect(screen.getByText("🔓")).toBeTruthy();
+        expect(screen.getByTestId("question-actions-menu-button")).toBeTruthy();
+        expect(screen.queryByTestId("radar-set-to-location-button")).toBeNull();
+        openQuestionActions(screen);
         expect(
-            screen.getByTestId("radar-pin-lock-button").props
-                .accessibilityLabel,
-        ).toBe("Lock radar pin");
+            screen.getByTestId("question-actions-set-location"),
+        ).toBeTruthy();
+        expect(screen.getByTestId("question-actions-lock-toggle")).toBeTruthy();
+        expect(screen.getByText("Lock pin")).toBeTruthy();
+        expect(screen.getByTestId("question-actions-delete")).toBeTruthy();
+        fireEvent.press(screen.getByTestId("question-actions-cancel"));
+        expect(screen.queryByTestId("question-actions-menu")).toBeNull();
         expect(
             screen.getByTestId("radar-distance-meters").props.children,
         ).toEqual(["Current distance ", 500, " m"]);
@@ -538,9 +548,25 @@ describe("MapAppScreen", () => {
         ).toBeTruthy();
         expect(screen.getByTestId("transit-line-center-summary")).toBeTruthy();
         expect(
+            screen.queryByTestId("transit-line-set-to-location-button"),
+        ).toBeNull();
+        expect(
             getMapShapeSource(screen, "question-active-pin").props.shape
                 .features[0].geometry.coordinates,
         ).toEqual(defaultPlayArea.center);
+
+        openQuestionActions(screen);
+        await act(async () => {
+            fireEvent.press(
+                screen.getByTestId("question-actions-set-location"),
+            );
+        });
+        await waitFor(() => {
+            expect(
+                getMapShapeSource(screen, "question-active-pin").props.shape
+                    .features[0].geometry.coordinates,
+            ).toEqual([139.6503, 35.6762]);
+        });
 
         fireEvent.press(screen.getByText("Back"));
         act(() => {
@@ -644,7 +670,8 @@ describe("MapAppScreen", () => {
                 .features,
         ).toHaveLength(1);
 
-        fireEvent.press(screen.getByTestId("question-detail-delete-button"));
+        openQuestionActions(screen);
+        fireEvent.press(screen.getByTestId("question-actions-delete"));
         act(() => {
             jest.advanceTimersByTime(300);
         });
@@ -715,8 +742,11 @@ describe("MapAppScreen", () => {
             ).toEqual([139.75, 35.7]);
         });
 
+        openQuestionActions(screen);
         await act(async () => {
-            fireEvent.press(screen.getByTestId("radar-set-to-location-button"));
+            fireEvent.press(
+                screen.getByTestId("question-actions-set-location"),
+            );
         });
         await waitFor(() => {
             expect(
@@ -738,8 +768,11 @@ describe("MapAppScreen", () => {
             ).toEqual([139.8, 35.71]);
         });
 
+        openQuestionActions(screen);
         await act(async () => {
-            fireEvent.press(screen.getByTestId("radar-set-to-location-button"));
+            fireEvent.press(
+                screen.getByTestId("question-actions-set-location"),
+            );
         });
         expect(
             getMapShapeSource(screen, "question-active-pin").props.shape
@@ -775,11 +808,17 @@ describe("MapAppScreen", () => {
             "question-active-pin",
         ).props.shape.features[0].geometry.coordinates;
 
-        fireEvent.press(screen.getByTestId("radar-pin-lock-button"));
+        openQuestionActions(screen);
+        fireEvent.press(screen.getByTestId("question-actions-lock-toggle"));
+        expect(screen.queryByTestId("question-actions-menu")).toBeNull();
+
+        openQuestionActions(screen);
         expect(
-            screen.getByTestId("radar-pin-lock-button").props
+            screen.getByTestId("question-actions-lock-toggle").props
                 .accessibilityState,
         ).toEqual({ selected: true });
+        expect(screen.getByText("Unlock pin")).toBeTruthy();
+        fireEvent.press(screen.getByTestId("question-actions-cancel"));
 
         fireEvent(screen.getByTestId("native-map"), "onPress", {
             geometry: { coordinates: [139.75, 35.7] },
@@ -792,11 +831,6 @@ describe("MapAppScreen", () => {
             getMapShapeSource(screen, "question-active-pin").props.shape
                 .features[0].geometry.coordinates,
         ).toEqual(initialCoordinate);
-        expect(screen.getByText("🔒")).toBeTruthy();
-        expect(
-            screen.getByTestId("radar-pin-lock-button").props
-                .accessibilityLabel,
-        ).toBe("Unlock radar pin");
     });
 
     it("shows nearest selected station distance in the radar info box", async () => {

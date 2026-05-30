@@ -1,22 +1,22 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import { useState } from "react";
+import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 
+import { requestUserCoordinate } from "@/features/map/useUserLocation";
 import { RadarQuestionDetailScreen } from "@/features/questions/radar/RadarQuestionDetailScreen";
 import { TransitLineQuestionDetailScreen } from "@/features/questions/transitLine/TransitLineQuestionDetailScreen";
 import { SheetScrollView } from "@/features/sheet/SheetScrollView";
 import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
-import { useQuestion } from "@/state/questionStore";
+import { updateQuestionCenter, useQuestion } from "@/state/questionStore";
 import { colors } from "@/theme/colors";
 
 type QuestionDetailScreenProps = {
-    onNavigate: (route: SheetRouteName) => void;
     sheetIndex: number;
 };
 
 export function QuestionDetailScreen({
-    onNavigate,
     sheetIndex,
 }: QuestionDetailScreenProps) {
-    const { activeQuestion, deleteQuestion, updateQuestion } = useQuestion();
+    const { activeQuestion, updateQuestion } = useQuestion();
 
     if (!activeQuestion) {
         return (
@@ -28,11 +28,6 @@ export function QuestionDetailScreen({
             </SheetScrollView>
         );
     }
-
-    const handleDeleteQuestion = () => {
-        deleteQuestion(activeQuestion.id);
-        onNavigate("questions");
-    };
 
     return (
         <SheetScrollView
@@ -57,57 +52,160 @@ export function QuestionDetailScreen({
                     </Text>
                 </>
             )}
-
-            <Pressable
-                accessibilityLabel="Delete question"
-                accessibilityRole="button"
-                onPress={handleDeleteQuestion}
-                style={({ pressed }) => [
-                    styles.deleteButton,
-                    pressed ? styles.actionPressed : null,
-                ]}
-                testID="question-detail-delete-button"
-            >
-                <Text style={styles.deleteButtonText}>Delete Question</Text>
-            </Pressable>
         </SheetScrollView>
     );
 }
 
-export function QuestionPinLockButton() {
-    const { activeQuestion, isPinLocked, setPinLocked } = useQuestion();
+type QuestionActionsMenuProps = {
+    onNavigate: (route: SheetRouteName) => void;
+};
+
+export function QuestionActionsMenu({ onNavigate }: QuestionActionsMenuProps) {
+    const {
+        activeQuestion,
+        deleteQuestion,
+        isPinLocked,
+        setPinLocked,
+        updateQuestion,
+    } = useQuestion();
+    const [isVisible, setVisible] = useState(false);
 
     if (!activeQuestion || !("center" in activeQuestion)) {
         return null;
     }
 
-    const pinLockLabel = isPinLocked ? "🔒" : "🔓";
-    const questionKind = activeQuestion.type === "radar" ? "radar" : "question";
+    const closeMenu = () => setVisible(false);
+
+    const handleSetToMyLocation = async () => {
+        closeMenu();
+        const result = await requestUserCoordinate();
+        const coordinate = result.coordinate;
+        if (coordinate) {
+            updateQuestion(activeQuestion.id, (current) =>
+                updateQuestionCenter(current, coordinate),
+            );
+        }
+    };
+
+    const handleLockToggle = () => {
+        setPinLocked(!isPinLocked);
+        closeMenu();
+    };
+
+    const handleDeleteQuestion = () => {
+        closeMenu();
+        deleteQuestion(activeQuestion.id);
+        onNavigate("questions");
+    };
 
     return (
+        <>
+            <Pressable
+                accessibilityLabel="Open question actions"
+                accessibilityRole="button"
+                onPress={() => setVisible(true)}
+                style={({ pressed }) => [
+                    styles.menuButton,
+                    pressed ? styles.actionPressed : null,
+                ]}
+                testID="question-actions-menu-button"
+            >
+                <Text style={styles.menuButtonText}>...</Text>
+            </Pressable>
+            <Modal
+                animationType="fade"
+                onRequestClose={closeMenu}
+                transparent
+                visible={isVisible}
+            >
+                <View style={styles.modalRoot}>
+                    <Pressable
+                        accessibilityLabel="Close question actions"
+                        onPress={closeMenu}
+                        style={StyleSheet.absoluteFill}
+                    />
+                    <View
+                        accessibilityViewIsModal
+                        accessible
+                        accessibilityLabel="Question actions"
+                        style={styles.actionSheet}
+                        testID="question-actions-menu"
+                    >
+                        <ActionSheetButton
+                            accessibilityLabel="Set question pin to my location"
+                            onPress={() => {
+                                void handleSetToMyLocation();
+                            }}
+                            testID="question-actions-set-location"
+                            title="Set pin to my location"
+                        />
+                        <ActionSheetButton
+                            accessibilityLabel={
+                                isPinLocked
+                                    ? "Unlock question pin"
+                                    : "Lock question pin"
+                            }
+                            accessibilityState={{ selected: isPinLocked }}
+                            onPress={handleLockToggle}
+                            testID="question-actions-lock-toggle"
+                            title={isPinLocked ? "Unlock pin" : "Lock pin"}
+                        />
+                        <ActionSheetButton
+                            destructive
+                            accessibilityLabel="Delete question"
+                            onPress={handleDeleteQuestion}
+                            testID="question-actions-delete"
+                            title="Delete question"
+                        />
+                        <ActionSheetButton
+                            onPress={closeMenu}
+                            testID="question-actions-cancel"
+                            title="Cancel"
+                        />
+                    </View>
+                </View>
+            </Modal>
+        </>
+    );
+}
+
+function ActionSheetButton({
+    accessibilityLabel,
+    accessibilityState,
+    destructive = false,
+    onPress,
+    testID,
+    title,
+}: {
+    accessibilityLabel?: string;
+    accessibilityState?: { selected?: boolean };
+    destructive?: boolean;
+    onPress: () => void;
+    testID: string;
+    title: string;
+}) {
+    return (
         <Pressable
-            accessibilityLabel={
-                isPinLocked
-                    ? `Unlock ${questionKind} pin`
-                    : `Lock ${questionKind} pin`
-            }
+            accessibilityLabel={accessibilityLabel ?? title}
             accessibilityRole="button"
-            accessibilityState={{ selected: isPinLocked }}
-            onPress={() => setPinLocked(!isPinLocked)}
+            accessibilityState={accessibilityState}
+            onPress={onPress}
             style={({ pressed }) => [
-                styles.lockButton,
-                isPinLocked ? styles.lockButtonActive : null,
+                styles.actionSheetButton,
+                destructive ? styles.actionSheetButtonDestructive : null,
                 pressed ? styles.actionPressed : null,
             ]}
-            testID="radar-pin-lock-button"
+            testID={testID}
         >
             <Text
                 style={[
-                    styles.lockButtonText,
-                    isPinLocked ? styles.lockButtonTextActive : null,
+                    styles.actionSheetButtonText,
+                    destructive
+                        ? styles.actionSheetButtonTextDestructive
+                        : null,
                 ]}
             >
-                {pinLockLabel}
+                {title}
             </Text>
         </Pressable>
     );
@@ -117,21 +215,36 @@ const styles = StyleSheet.create({
     actionPressed: {
         opacity: 0.72,
     },
-    container: {},
-    deleteButton: {
+    actionSheet: {
+        backgroundColor: colors.panel,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        gap: 8,
+        padding: 20,
+        paddingBottom: 34,
+    },
+    actionSheetButton: {
         alignItems: "center",
-        backgroundColor: "#d92d20",
+        backgroundColor: colors.card,
+        borderColor: colors.border,
         borderRadius: 8,
+        borderWidth: 1,
         justifyContent: "center",
-        marginTop: 18,
-        minHeight: 50,
+        minHeight: 52,
         paddingHorizontal: 16,
     },
-    deleteButtonText: {
-        color: colors.white,
+    actionSheetButtonDestructive: {
+        borderColor: "#f4b4ae",
+    },
+    actionSheetButtonText: {
+        color: colors.ink,
         fontSize: 16,
         fontWeight: "800",
     },
+    actionSheetButtonTextDestructive: {
+        color: "#b42318",
+    },
+    container: {},
     emptyDetail: {
         color: colors.muted,
         fontSize: 15,
@@ -143,7 +256,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "800",
     },
-    lockButton: {
+    menuButton: {
         alignItems: "center",
         backgroundColor: colors.card,
         borderColor: colors.border,
@@ -151,20 +264,20 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         justifyContent: "center",
         minHeight: 42,
-        minWidth: 94,
-        paddingHorizontal: 12,
+        minWidth: 44,
+        paddingHorizontal: 10,
     },
-    lockButtonActive: {
-        backgroundColor: colors.button,
-        borderColor: colors.button,
-    },
-    lockButtonText: {
+    menuButtonText: {
         color: colors.ink,
-        fontSize: 14,
+        fontSize: 20,
         fontWeight: "800",
+        lineHeight: 20,
+        marginTop: -6,
     },
-    lockButtonTextActive: {
-        color: colors.white,
+    modalRoot: {
+        backgroundColor: "rgba(17, 24, 39, 0.42)",
+        flex: 1,
+        justifyContent: "flex-end",
     },
     scrollContent: {
         paddingHorizontal: 20,

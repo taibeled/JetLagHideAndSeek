@@ -27,8 +27,8 @@ import { PlayAreaScreen } from "@/features/playArea/PlayAreaScreen";
 import { AddQuestionScreen } from "@/features/questions/AddQuestionScreen";
 import { MatchingQuestionScreen } from "@/features/questions/MatchingQuestionScreen";
 import {
+    QuestionActionsMenu,
     QuestionDetailScreen,
-    QuestionPinLockButton,
 } from "@/features/questions/QuestionDetailScreen";
 import { QuestionsScreen } from "@/features/questions/QuestionsScreen";
 import { SettingsScreen } from "@/features/sheet/SettingsScreen";
@@ -344,14 +344,11 @@ function renderRouteContent(
         case "question-detail":
             return (
                 <ChildSheetShell
-                    accessory={<QuestionPinLockButton />}
+                    accessory={<QuestionActionsMenu onNavigate={onNavigate} />}
                     eyebrowLabel={eyebrowLabel}
                     onBack={() => onNavigate("questions")}
                 >
-                    <QuestionDetailScreen
-                        onNavigate={onNavigate}
-                        sheetIndex={sheetIndex}
-                    />
+                    <QuestionDetailScreen sheetIndex={sheetIndex} />
                 </ChildSheetShell>
             );
         default: {
