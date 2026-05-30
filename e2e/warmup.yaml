@@ -1,0 +1,6 @@
+appId: com.raycatdev.hideandseek.v2
+---
+- clearState
+- runFlow: e2e/bootstrap.yaml
+- assertVisible: "Tokyo 23 Wards"
+- stopApp

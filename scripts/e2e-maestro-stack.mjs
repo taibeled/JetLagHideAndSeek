@@ -24,6 +24,11 @@ const devClientBundleUrl = encodeURIComponent(
 );
 
 const flows = [
+    {
+        name: "warmup",
+        artifactSubdir: "warmup",
+        flowPath: "e2e/warmup.yaml",
+    },
     { name: "smoke", artifactSubdir: "smoke", flowPath: "e2e/smoke.yaml" },
     {
         name: "play-area",
