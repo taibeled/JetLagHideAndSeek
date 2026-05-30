@@ -104,6 +104,7 @@ jobs:
                   script: |
                       pnpm exec expo prebuild --platform android --clean
                       pnpm exec expo run:android --no-bundler
+                      adb shell am force-stop com.raycatdev.hideandseek.v2 || true
                       pnpm test:e2e:android:stack
 
             - name: Upload Maestro artifacts
@@ -169,6 +170,9 @@ jobs:
                       echo "expo run:ios exited $EXIT (expected: simctl openurl may time out without Metro)"
                       xcrun simctl listapps booted | grep -q com.raycatdev.hideandseek.v2 || exit $EXIT
                   fi
+
+            - name: Terminate app before E2E
+              run: xcrun simctl terminate booted com.raycatdev.hideandseek.v2 || true
 
             - name: Run Maestro
               run: pnpm test:e2e:ios:stack
