@@ -1,7 +1,7 @@
 appId: com.raycatdev.hideandseek.v2
 ---
 - stopApp
-- runFlow: e2e/bootstrap.yaml
+- runFlow: bootstrap.yaml
 - tapOn:
       point: "50%,78%"
 - tapOn:

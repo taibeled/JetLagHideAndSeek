@@ -1,7 +1,7 @@
 appId: com.raycatdev.hideandseek.v2
 ---
 - stopApp
-- runFlow: e2e/bootstrap.yaml
+- runFlow: bootstrap.yaml
 - swipe:
       start: "50%,85%"
       end: "50%,45%"
@@ -15,5 +15,5 @@ appId: com.raycatdev.hideandseek.v2
 - inputText: "358674"
 - tapOn:
       point: "80%,39%"
-- runFlow: e2e/dismiss-continue.yaml
+- runFlow: dismiss-continue.yaml
 - takeScreenshot: e2e/artifacts/play-area/play-area-osaka

@@ -1,12 +1,12 @@
 appId: com.raycatdev.hideandseek.v2
 ---
 - clearState
-- runFlow: e2e/bootstrap.yaml
+- runFlow: bootstrap.yaml
 - swipe:
       start: "50%,85%"
       end: "50%,45%"
       duration: 500
-- runFlow: e2e/dismiss-continue.yaml
+- runFlow: dismiss-continue.yaml
 - assertVisible: "Tokyo 23 Wards"
 - tapOn: "Settings"
 - waitForAnimationToEnd:
@@ -19,13 +19,13 @@ appId: com.raycatdev.hideandseek.v2
       timeout: 1000
 - assertVisible: ".*1 preset selected.*"
 - stopApp
-- runFlow: e2e/reconnect.yaml
+- runFlow: reconnect.yaml
 - assertVisible: "Tokyo 23 Wards"
 - swipe:
       start: "50%,85%"
       end: "50%,45%"
       duration: 500
-- runFlow: e2e/dismiss-continue.yaml
+- runFlow: dismiss-continue.yaml
 - assertVisible: "Tokyo 23 Wards"
 - tapOn: "Questions"
 - waitForAnimationToEnd:
