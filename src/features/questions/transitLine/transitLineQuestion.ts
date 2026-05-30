@@ -1,9 +1,11 @@
 import { buildHidingZoneFeatureCollection } from "@/features/hidingZone/hidingZone";
 import type { TransitStation } from "@/features/hidingZone/hidingZoneTypes";
 import type { Position } from "@/features/map/geojsonTypes";
+import type { QuestionAnswer } from "@/features/questions/questionTypes";
 import { findNearestStation } from "@/features/questions/radar/radarGeometry";
 import type { NearestStationInfo } from "@/features/questions/radar/radarTypes";
 import type { TransitLineQuestionFeatureCollection } from "@/features/questions/transitLine/transitLineTypes";
+import type { TransitLineQuestion } from "@/features/questions/transitLine/transitLineTypes";
 
 export type TransitLineOption = {
     closestStation: NearestStationInfo;
@@ -12,6 +14,39 @@ export type TransitLineOption = {
     name: string;
     stationCount: number;
 };
+
+export function reconcileTransitLineQuestionSelection(
+    question: TransitLineQuestion,
+    lineOptions: TransitLineOption[],
+    updatedAt = new Date().toISOString(),
+): TransitLineQuestion {
+    if (lineOptions.some((option) => option.id === question.lineId)) {
+        return question;
+    }
+
+    const soleOption = lineOptions.length === 1 ? lineOptions[0] : null;
+    const nextAnswer: QuestionAnswer = soleOption
+        ? question.answer
+        : "unanswered";
+    const nextLineId = soleOption?.id ?? null;
+    const nextLineName = soleOption?.name ?? null;
+
+    if (
+        question.answer === nextAnswer &&
+        question.lineId === nextLineId &&
+        question.lineName === nextLineName
+    ) {
+        return question;
+    }
+
+    return {
+        ...question,
+        answer: nextAnswer,
+        lineId: nextLineId,
+        lineName: nextLineName,
+        updatedAt,
+    };
+}
 
 export function getTransitLineOptions(
     stations: TransitStation[],

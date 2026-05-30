@@ -545,6 +545,14 @@ describe("MapAppScreen", () => {
         expect(
             screen.getByTestId("matching-answer-option-unanswered"),
         ).toBeTruthy();
+        expect(
+            screen.getByTestId("matching-answer-option-positive").props
+                .accessibilityState,
+        ).toEqual({ disabled: true, selected: false });
+        expect(
+            screen.getByTestId("matching-answer-option-negative").props
+                .accessibilityState,
+        ).toEqual({ disabled: true, selected: false });
         expect(screen.getByTestId("transit-line-center-summary")).toBeTruthy();
         expect(
             screen.queryByTestId("transit-line-set-to-location-button"),

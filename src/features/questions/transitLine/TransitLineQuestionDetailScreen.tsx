@@ -1,10 +1,14 @@
+import { useEffect } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { QuestionAnswerSelector } from "@/features/questions/components/QuestionAnswerSelector";
 import { QuestionLocationSelector } from "@/features/questions/components/QuestionLocationSelector";
 import { formatStationDistance } from "@/features/questions/radar/radarGeometry";
 import type { TransitLineQuestion } from "@/features/questions/transitLine/transitLineTypes";
-import { getTransitLineOptions } from "@/features/questions/transitLine/transitLineQuestion";
+import {
+    getTransitLineOptions,
+    reconcileTransitLineQuestionSelection,
+} from "@/features/questions/transitLine/transitLineQuestion";
 import { useHidingZone } from "@/state/hidingZoneStore";
 import { updateQuestionCenter, useQuestion } from "@/state/questionStore";
 import { colors } from "@/theme/colors";
@@ -26,6 +30,15 @@ export function TransitLineQuestionDetailScreen({
         question.center,
         radiusMeters,
     );
+    const lineOptionIds = lineOptions.map((line) => line.id).join("\0");
+
+    useEffect(() => {
+        updateQuestion(question.id, (current) =>
+            current.type === "matching"
+                ? reconcileTransitLineQuestionSelection(current, lineOptions)
+                : current,
+        );
+    }, [lineOptionIds, question.id, question.lineId, updateQuestion]);
 
     return (
         <>
@@ -104,6 +117,11 @@ export function TransitLineQuestionDetailScreen({
                 </Text>
                 <QuestionAnswerSelector
                     answer={question.answer}
+                    disabledAnswers={
+                        question.lineId === null
+                            ? ["positive", "negative"]
+                            : undefined
+                    }
                     onChange={(answer) =>
                         updateQuestion(question.id, (current) =>
                             current.type === "matching"

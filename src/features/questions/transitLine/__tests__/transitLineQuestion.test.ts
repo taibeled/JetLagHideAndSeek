@@ -9,7 +9,9 @@ import type {
 import {
     buildTransitLineMaskFeatures,
     getTransitLineOptions,
+    reconcileTransitLineQuestionSelection,
 } from "@/features/questions/transitLine/transitLineQuestion";
+import type { TransitLineQuestion } from "@/features/questions/transitLine/transitLineTypes";
 
 const stations: TransitStation[] = [
     {
@@ -246,5 +248,61 @@ describe("getTransitLineOptions", () => {
         );
 
         expect(Math.max(...maskLatitudes)).toBeLessThan(35.66);
+    });
+});
+
+describe("reconcileTransitLineQuestionSelection", () => {
+    const option = {
+        closestStation: {
+            distanceMeters: 33,
+            station: stations[0],
+        },
+        distanceMeters: 33,
+        id: "gtfs:odpt-tokyo-metro:route:3",
+        name: "Hibiya Line",
+        stationCount: 22,
+    };
+    const question: TransitLineQuestion = {
+        answer: "unanswered",
+        center: [139.72214, 35.65121],
+        createdAt: "2026-05-30T00:00:00.000Z",
+        id: "matching-1",
+        lineId: null,
+        lineName: null,
+        type: "matching",
+        updatedAt: "2026-05-30T00:00:00.000Z",
+    };
+
+    it("auto-selects a sole nearby line", () => {
+        expect(
+            reconcileTransitLineQuestionSelection(
+                question,
+                [option],
+                "2026-05-30T01:00:00.000Z",
+            ),
+        ).toEqual({
+            ...question,
+            lineId: option.id,
+            lineName: option.name,
+            updatedAt: "2026-05-30T01:00:00.000Z",
+        });
+    });
+
+    it("clears stale selections and answers when the pin has no unique line", () => {
+        expect(
+            reconcileTransitLineQuestionSelection(
+                {
+                    ...question,
+                    answer: "positive",
+                    lineId: option.id,
+                    lineName: option.name,
+                },
+                [],
+                "2026-05-30T01:00:00.000Z",
+            ),
+        ).toEqual({
+            ...question,
+            updatedAt: "2026-05-30T01:00:00.000Z",
+        });
     });
 });

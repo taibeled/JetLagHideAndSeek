@@ -11,6 +11,7 @@ const answers: QuestionAnswer[] = ["unanswered", "positive", "negative"];
 
 type QuestionAnswerSelectorProps = {
     answer: QuestionAnswer;
+    disabledAnswers?: QuestionAnswer[];
     onChange: (answer: QuestionAnswer) => void;
     questionType: QuestionType;
     testIDPrefix: string;
@@ -18,6 +19,7 @@ type QuestionAnswerSelectorProps = {
 
 export function QuestionAnswerSelector({
     answer,
+    disabledAnswers = [],
     onChange,
     questionType,
     testIDPrefix,
@@ -26,18 +28,24 @@ export function QuestionAnswerSelector({
         <View style={styles.segmentedControl}>
             {answers.map((option) => {
                 const isActive = answer === option;
+                const isDisabled = disabledAnswers.includes(option);
                 const label = getQuestionAnswerLabel(questionType, option);
 
                 return (
                     <Pressable
                         accessibilityLabel={`${label} answer`}
                         accessibilityRole="button"
-                        accessibilityState={{ selected: isActive }}
+                        accessibilityState={{
+                            ...(isDisabled ? { disabled: true } : {}),
+                            selected: isActive,
+                        }}
+                        disabled={isDisabled || undefined}
                         key={option}
                         onPress={() => onChange(option)}
                         style={({ pressed }) => [
                             styles.answerButton,
                             isActive ? styles.answerButtonActive : null,
+                            isDisabled ? styles.answerButtonDisabled : null,
                             pressed ? styles.actionPressed : null,
                         ]}
                         testID={`${testIDPrefix}-${option}`}
@@ -71,6 +79,9 @@ const styles = StyleSheet.create({
     },
     answerButtonActive: {
         backgroundColor: colors.button,
+    },
+    answerButtonDisabled: {
+        opacity: 0.45,
     },
     answerButtonText: {
         color: colors.ink,
