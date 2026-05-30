@@ -20,6 +20,7 @@ import type {
 } from "./hidingZoneTypes";
 
 const STATION_FALLBACK_COLOR = "#1f6f78";
+const PRESET_ROUTE_ID_SEPARATOR = ":";
 
 export function bboxIntersects(a: Bbox, b: Bbox): boolean {
     const [aWest, aSouth, aEast, aNorth] = a;
@@ -61,7 +62,8 @@ export function getSelectedRoutes(presets: HidingZonePreset[]): TransitRoute[] {
     const routes = new Map<string, TransitRoute>();
     for (const preset of presets) {
         for (const route of preset.routes) {
-            routes.set(route.id, route);
+            const id = getPresetRouteId(preset.id, route.id);
+            routes.set(id, { ...route, id });
         }
     }
     return [...routes.values()];
@@ -74,20 +76,23 @@ export function getSelectedStations(
     for (const preset of presets) {
         const routeColorById = new Map(
             preset.routes.map((route) => [
-                route.id,
+                getPresetRouteId(preset.id, route.id),
                 route.color || preset.defaultColor,
             ]),
         );
         for (const station of preset.stations) {
+            const routeIds = station.routeIds.map((routeId) =>
+                getPresetRouteId(preset.id, routeId),
+            );
             const routeColors = getStationRouteColors(
-                station.routeIds,
+                routeIds,
                 routeColorById,
                 preset.defaultColor,
             );
             const existing = stations.get(station.id);
             if (existing) {
                 existing.routeIds = [
-                    ...new Set([...existing.routeIds, ...station.routeIds]),
+                    ...new Set([...existing.routeIds, ...routeIds]),
                 ].sort();
                 existing.routeColors = [
                     ...new Set([
@@ -99,7 +104,7 @@ export function getSelectedStations(
                 stations.set(station.id, {
                     ...station,
                     routeColors,
-                    routeIds: [...station.routeIds].sort(),
+                    routeIds: [...routeIds].sort(),
                 });
             }
         }
@@ -112,16 +117,19 @@ export function buildRouteFeatureCollection(
 ): RouteFeatureCollection {
     return {
         features: presets.flatMap((preset) =>
-            preset.routes.map((route) => ({
-                geometry: route.geometry,
-                properties: {
-                    color: route.color || preset.defaultColor,
-                    id: route.id,
-                    name: route.name,
-                    presetId: preset.id,
-                },
-                type: "Feature" as const,
-            })),
+            preset.routes.map((route) => {
+                const routeId = getPresetRouteId(preset.id, route.id);
+                return {
+                    geometry: route.geometry,
+                    properties: {
+                        color: route.color || preset.defaultColor,
+                        id: routeId,
+                        name: route.name,
+                        presetId: preset.id,
+                    },
+                    type: "Feature" as const,
+                };
+            }),
         ),
         type: "FeatureCollection",
     };
@@ -204,4 +212,8 @@ function getStationRouteColors(
             ),
         ),
     ];
+}
+
+export function getPresetRouteId(presetId: string, routeId: string): string {
+    return `${presetId}${PRESET_ROUTE_ID_SEPARATOR}${routeId}`;
 }

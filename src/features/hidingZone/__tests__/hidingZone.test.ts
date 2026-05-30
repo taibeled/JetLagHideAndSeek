@@ -3,6 +3,8 @@ import {
     buildHidingZoneFeatureCollection,
     buildRouteFeatureCollection,
     buildStationFeatureCollection,
+    getPresetRouteId,
+    getSelectedRoutes,
     getSelectedStations,
     getSuggestedPresetIds,
 } from "../hidingZone";
@@ -142,7 +144,56 @@ describe("hidingZone helpers", () => {
             {
                 ...preset.stations[0],
                 routeColors: ["#FF9500", "#009BBF"],
-                routeIds: ["route-a", "route-b"],
+                routeIds: ["toei-subway:route-b", "tokyo-metro:route-a"],
+            },
+        ]);
+    });
+
+    it("scopes route ids by preset so operator-local route ids do not collide", () => {
+        const collidingPreset: HidingZonePreset = {
+            ...preset,
+            id: "toei-subway",
+            routes: [
+                {
+                    ...preset.routes[0],
+                    color: "#6CBB5A",
+                    id: "route-a",
+                    name: "Different Route A",
+                },
+            ],
+            stations: [
+                {
+                    id: "station-b",
+                    lat: 35.69,
+                    lon: 139.77,
+                    name: "Station B",
+                    routeIds: ["route-a"],
+                },
+            ],
+        };
+
+        expect(
+            getSelectedRoutes([preset, collidingPreset]).map((route) => ({
+                id: route.id,
+                name: route.name,
+            })),
+        ).toEqual([
+            { id: "tokyo-metro:route-a", name: "Route A" },
+            { id: "toei-subway:route-a", name: "Different Route A" },
+        ]);
+        expect(
+            getSelectedStations([preset, collidingPreset]).map((station) => ({
+                id: station.id,
+                routeIds: station.routeIds,
+            })),
+        ).toEqual([
+            {
+                id: "station-a",
+                routeIds: ["tokyo-metro:route-a"],
+            },
+            {
+                id: "station-b",
+                routeIds: ["toei-subway:route-a"],
             },
         ]);
     });
@@ -175,6 +226,9 @@ describe("hidingZone helpers", () => {
 
         expect(routeFeatures.features).toHaveLength(2);
         expect(routeFeatures.features[0].properties.color).toBe("#FF9500");
+        expect(routeFeatures.features[0].properties.id).toBe(
+            getPresetRouteId(preset.id, "route-a"),
+        );
         expect(routeFeatures.features[1].properties.color).toBe(
             preset.defaultColor,
         );
