@@ -1,7 +1,7 @@
 import { buildHidingZoneFeatureCollection } from "@/features/hidingZone/hidingZone";
 import type { TransitStation } from "@/features/hidingZone/hidingZoneTypes";
 import type { Position } from "@/features/map/geojsonTypes";
-import type { QuestionAnswer } from "@/features/questions/questionTypes";
+import type { QuestionAnswer } from "@/features/questions/coreTypes";
 import { findNearestStation } from "@/features/questions/radar/radarGeometry";
 import type { NearestStationInfo } from "@/features/questions/radar/radarTypes";
 import type { TransitLineQuestionFeatureCollection } from "@/features/questions/transitLine/transitLineTypes";

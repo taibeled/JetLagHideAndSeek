@@ -11,7 +11,7 @@ import type { Position } from "@/features/map/geojsonTypes";
 import type {
     BaseQuestion,
     QuestionAnswer,
-} from "@/features/questions/questionTypes";
+} from "@/features/questions/coreTypes";
 import type { TransitLineQuestionFeatureCollection } from "@/features/questions/transitLine/transitLineTypes";
 import type { DistanceUnit } from "@/shared/distanceUnits";
 
