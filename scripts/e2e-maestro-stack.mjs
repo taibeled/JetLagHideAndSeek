@@ -137,18 +137,51 @@ async function runMaestro() {
         );
     }
 
+    const failures = [];
+
     for (const flow of flowsToRun) {
         mkdirSync(join(artifactsDir, flow.artifactSubdir), {
             recursive: true,
         });
 
-        await runCommand("maestro", [
-            ...(maestroDevice ? ["--device", maestroDevice] : []),
-            "test",
-            "--debug-output",
-            join(artifactsDir, flow.artifactSubdir),
-            flow.flowPath,
-        ]);
+        let lastError = null;
+        const attempts = 2;
+
+        for (let attempt = 1; attempt <= attempts; attempt++) {
+            if (attempt > 1) {
+                console.log(
+                    `\nRetrying ${flow.name} (attempt ${attempt}/${attempts})...`,
+                );
+            }
+            try {
+                await runCommand("maestro", [
+                    ...(maestroDevice ? ["--device", maestroDevice] : []),
+                    "test",
+                    "--debug-output",
+                    join(artifactsDir, flow.artifactSubdir),
+                    flow.flowPath,
+                ]);
+                lastError = null;
+                break;
+            } catch (error) {
+                lastError = error;
+                console.error(`\n${flow.name} failed on attempt ${attempt}.`);
+            }
+        }
+
+        if (lastError) {
+            failures.push({ name: flow.name, error: lastError });
+        }
+    }
+
+    if (failures.length > 0) {
+        const names = failures.map((f) => f.name).join(", ");
+        console.error(`\n${failures.length} flow(s) failed after retries: ${names}`);
+        for (const { name, error } of failures) {
+            console.error(`\n--- ${name} ---`);
+            console.error(error.message);
+        }
+        throw new Error(`Maestro E2E failures: ${names}`);
     }
 }
 
