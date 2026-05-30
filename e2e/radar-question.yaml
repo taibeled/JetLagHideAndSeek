@@ -1,15 +1,38 @@
 appId: com.raycatdev.hideandseek.v2
 ---
-- stopApp
+- clearState
 - runFlow: bootstrap.yaml
-- tapOn:
-      point: "50%,78%"
-- tapOn:
-      point: "50%,55%"
-- tapOn:
-      point: "50%,55%"
-- tapOn:
-      point: "50%,55%"
-- tapOn:
-      point: "50%,70%"
-- takeScreenshot: e2e/artifacts/radar-question/radar-question-miss-map
+- swipe:
+      start: "50%,85%"
+      end: "50%,45%"
+      duration: 500
+- tapOn: "Questions"
+- waitForAnimationToEnd:
+      timeout: 1000
+- assertVisible: ".*No questions yet.*"
+- tapOn: "Add question"
+- waitForAnimationToEnd:
+      timeout: 1000
+- tapOn: "Add radar question"
+- waitForAnimationToEnd:
+      timeout: 4000
+# Dismiss iOS location permission dialog if it appears here
+- runFlow:
+      when:
+          visible: "Allow While Using App"
+      commands:
+          - tapOn: "Allow While Using App"
+- assertVisible: ".*Current distance 500 m"
+- assertVisible: ".*Unanswered answer.*"
+- tapOn: "Radar distance 1km"
+- waitForAnimationToEnd:
+      timeout: 1000
+- assertVisible: ".*Current distance 1000 m"
+- tapOn: "Miss answer"
+- waitForAnimationToEnd:
+      timeout: 1000
+- swipe:
+      start: "50%,15%"
+      end: "50%,85%"
+      duration: 500
+- takeScreenshot: e2e/artifacts/radar-question/radar-question-map

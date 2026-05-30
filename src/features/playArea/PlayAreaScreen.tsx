@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
     ActivityIndicator,
+    Keyboard,
     Pressable,
     StyleSheet,
     Text,
@@ -66,6 +67,7 @@ export function PlayAreaScreen() {
     }, [query]);
 
     const applyDirectRelation = async () => {
+        Keyboard.dismiss();
         const applied = await applyRelationId(relationId);
         if (applied) setRelationId("");
     };

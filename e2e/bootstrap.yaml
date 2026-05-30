@@ -3,6 +3,12 @@ appId: com.raycatdev.hideandseek.v2
 - openLink: ${MAESTRO_DEV_CLIENT_URL}
 - waitForAnimationToEnd:
       timeout: 5000
+# Dismiss iOS location permission dialog (appears after clearState)
+- runFlow:
+      when:
+          visible: "Allow While Using App"
+      commands:
+          - tapOn: "Allow While Using App"
 - runFlow:
       when:
           visible: "Open"
