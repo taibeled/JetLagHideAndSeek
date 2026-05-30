@@ -1,0 +1,17 @@
+appId: com.raycatdev.hideandseek.v2
+---
+- runFlow:
+      when:
+          visible: "Continue"
+      commands:
+          - tapOn: "Continue"
+          - extendedWaitUntil:
+                visible: "Connected to:"
+                timeout: 20000
+          - tapOn:
+                point: "91%,48%"
+          - waitForAnimationToEnd:
+                timeout: 3000
+- extendedWaitUntil:
+      notVisible: "Continue"
+      timeout: 90000

@@ -1,25 +1,7 @@
 appId: com.raycatdev.hideandseek.v2
 ---
 - clearState
-- openLink: ${MAESTRO_DEV_CLIENT_URL}
-- runFlow:
-      when:
-          visible: "Open"
-      commands:
-          - tapOn: "Open"
-- runFlow:
-      when:
-          visible: "Continue"
-      commands:
-          - tapOn: "Continue"
-          - extendedWaitUntil:
-                visible: "Connected to:"
-                timeout: 10000
-          - tapOn:
-                point: "91%,48%"
-- extendedWaitUntil:
-      notVisible: "Continue"
-      timeout: 60000
+- runFlow: e2e/bootstrap.yaml
 - swipe:
       start: "50%,85%"
       end: "50%,45%"

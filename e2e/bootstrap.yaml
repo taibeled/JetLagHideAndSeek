@@ -1,0 +1,27 @@
+appId: com.raycatdev.hideandseek.v2
+---
+- openLink: ${MAESTRO_DEV_CLIENT_URL}
+- waitForAnimationToEnd:
+      timeout: 5000
+- runFlow:
+      when:
+          visible: "Open"
+      commands:
+          - tapOn: "Open"
+- waitForAnimationToEnd:
+      timeout: 3000
+- runFlow:
+      when:
+          visible: "Continue"
+      commands:
+          - tapOn: "Continue"
+          - extendedWaitUntil:
+                visible: "Connected to:"
+                timeout: 20000
+          - tapOn:
+                point: "91%,48%"
+          - waitForAnimationToEnd:
+                timeout: 3000
+- extendedWaitUntil:
+      notVisible: "Continue"
+      timeout: 60000
