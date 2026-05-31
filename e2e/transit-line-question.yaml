@@ -36,7 +36,8 @@ appId: com.raycatdev.hideandseek.v2
 - tapOn: "Open matching questions"
 - waitForAnimationToEnd:
       timeout: 1000
-- tapOn: "Transit Line"
+- tapOn:
+    id: "add-matching-transit-line-row"
 - waitForAnimationToEnd:
       timeout: 1000
 - assertVisible: "Matching question detail. Answer section. Set pin to my location. Hit answer."
