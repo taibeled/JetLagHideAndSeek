@@ -24,6 +24,18 @@ export const matchingQuestionConfig = {
                 ? `Transit line: ${question.lineName}`
                 : "Transit line: not selected";
         }
+        if (question.category === "station-name-length") {
+            if (!question.targetName) {
+                return `${categoryTitle}: not selected`;
+            }
+            // Show the station name and its English-name character count.
+            const nameLen = question.candidates.find(
+                (c) => c.osmId === question.selectedOsmId,
+            )?.nameLength;
+            const suffix =
+                nameLen !== undefined ? ` (${nameLen} chars)` : "";
+            return `${categoryTitle}: ${question.targetName}${suffix}`;
+        }
         return question.targetName
             ? `${categoryTitle}: ${question.targetName}`
             : `${categoryTitle}: not selected`;

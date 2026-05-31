@@ -23,6 +23,12 @@ export const matchingCategories: MatchingCategoryConfig[] = [
         title: "Transit Line",
     },
     {
+        category: "station-name-length",
+        osmQueryTags: "",
+        section: "Transit",
+        title: "Station's Name Length",
+    },
+    {
         category: "commercial-airport",
         osmQueryTags: `["aeroway"="aerodrome"]`,
         section: "Transit",

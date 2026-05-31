@@ -207,6 +207,11 @@ export function OsmMatchingQuestionDetailScreen({
                                             numberOfLines={1}
                                         >
                                             {candidate.name}
+                                            {question.category ===
+                                                "station-name-length" &&
+                                            candidate.nameLength !== undefined
+                                                ? ` (${candidate.nameLength})`
+                                                : ""}
                                         </Text>
                                     </View>
                                     {candidate.distanceMeters !== undefined ? (

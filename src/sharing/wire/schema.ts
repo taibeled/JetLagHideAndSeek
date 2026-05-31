@@ -60,6 +60,7 @@ export const radarQuestionWireSchema = z.object({
 });
 const matchingCategorySchema = z.enum([
     "transit-line",
+    "station-name-length",
     "commercial-airport",
     "admin-1st",
     "admin-2nd",

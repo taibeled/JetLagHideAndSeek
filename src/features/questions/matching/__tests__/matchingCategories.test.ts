@@ -10,6 +10,7 @@ describe("matchingCategories", () => {
     it("has a config for every category", () => {
         const categories = matchingCategories.map((c) => c.category);
         expect(categories).toContain("transit-line");
+        expect(categories).toContain("station-name-length");
         expect(categories).toContain("mountain");
         expect(categories).toContain("park");
         expect(categories).toContain("hospital");
@@ -50,8 +51,12 @@ describe("matchingCategories", () => {
     });
 
     it("has OSM query tags for all non-transit categories", () => {
+        const specialCategories = new Set([
+            "transit-line",
+            "station-name-length",
+        ]);
         for (const config of matchingCategories) {
-            if (config.category === "transit-line") {
+            if (specialCategories.has(config.category)) {
                 expect(config.osmQueryTags).toBe("");
             } else {
                 expect(config.osmQueryTags).toBeTruthy();

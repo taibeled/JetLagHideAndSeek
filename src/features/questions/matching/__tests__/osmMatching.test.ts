@@ -434,4 +434,46 @@ describe("findMatchingFeatures", () => {
         });
         expect(result[0].distanceMeters).toBeGreaterThan(0);
     });
+
+    it("uses station query for station-name-length category", async () => {
+        mockFetch([
+            {
+                id: 1,
+                lat: 35.681,
+                lon: 139.761,
+                tags: { name: "Shinjuku", "name:en": "Shinjuku Station" },
+                type: "node",
+            },
+        ]);
+
+        const result = await findMatchingFeatures(
+            "station-name-length",
+            [139.76, 35.68],
+        );
+
+        expect(result).toHaveLength(1);
+        expect(result[0].name).toBe("Shinjuku Station");
+        expect(result[0].nameLength).toBe(16);
+    });
+
+    it("falls back to name when name:en is missing for station-name-length", async () => {
+        mockFetch([
+            {
+                id: 1,
+                lat: 35.681,
+                lon: 139.761,
+                tags: { name: "新宿" },
+                type: "node",
+            },
+        ]);
+
+        const result = await findMatchingFeatures(
+            "station-name-length",
+            [139.76, 35.68],
+        );
+
+        expect(result).toHaveLength(1);
+        expect(result[0].name).toBe("新宿");
+        expect(result[0].nameLength).toBe(2);
+    });
 });

@@ -31,7 +31,11 @@ export async function findMatchingFeatures(
     options?: { maxCandidates?: number; searchRadiusMeters?: number },
 ): Promise<OsmFeatureWithDistance[]> {
     const config = getCategoryConfig(category);
-    if (!config || !config.osmQueryTags) {
+    if (!config) {
+        return [];
+    }
+
+    if (!config.osmQueryTags && category !== "station-name-length") {
         return [];
     }
 
@@ -39,12 +43,15 @@ export async function findMatchingFeatures(
         options?.searchRadiusMeters ?? DEFAULT_SEARCH_RADIUS_METERS;
     const maxCandidates = options?.maxCandidates ?? 10;
     const [lon, lat] = center;
-    const query = buildOverpassQuery(
-        config.osmQueryTags,
-        lat,
-        lon,
-        searchRadiusMeters,
-    );
+    const query =
+        category === "station-name-length"
+            ? buildStationQuery(lat, lon, searchRadiusMeters)
+            : buildOverpassQuery(
+                  config.osmQueryTags,
+                  lat,
+                  lon,
+                  searchRadiusMeters,
+              );
 
     const response = await fetch(
         `${OVERPASS_API}?data=${encodeURIComponent(query)}`,
@@ -55,7 +62,7 @@ export async function findMatchingFeatures(
     }
 
     const data = (await response.json()) as OverpassResponse;
-    const features = parseOverpassElements(data.elements ?? []);
+    const features = parseOverpassElements(data.elements ?? [], category);
 
     const withDistance = features.map((feature) => ({
         ...feature,
@@ -99,8 +106,26 @@ export function buildOverpassQuery(
 out center tags qt;`;
 }
 
+function buildStationQuery(
+    lat: number,
+    lon: number,
+    radiusMeters: number,
+): string {
+    // Query both railway stations and subway stations to cover transit broadly.
+    const around = `(around:${radiusMeters},${lat},${lon})`;
+    return `[out:json][timeout:30];
+(
+  node["railway"="station"]${around};
+  way["railway"="station"]${around};
+  node["station"="subway"]["railway"="station"]${around};
+  way["station"="subway"]["railway"="station"]${around};
+);
+out center tags qt;`;
+}
+
 export function parseOverpassElements(
     elements: OverpassElement[],
+    category?: string,
 ): OsmFeature[] {
     const features: OsmFeature[] = [];
 
@@ -121,14 +146,25 @@ export function parseOverpassElements(
             continue;
         }
 
-        features.push({
+        const feature: OsmFeature = {
             lat,
             lon,
             name,
             osmId: element.id,
             osmType: element.type,
             tags: element.tags ?? {},
-        });
+        };
+
+        // For station-name-length, use the English name (name:en) when
+        // available, and record the character length for comparison.
+        if (category === "station-name-length") {
+            const englishName = element.tags?.["name:en"]?.trim();
+            const displayName = englishName || name;
+            feature.name = displayName;
+            feature.nameLength = displayName.length;
+        }
+
+        features.push(feature);
     }
 
     return features;

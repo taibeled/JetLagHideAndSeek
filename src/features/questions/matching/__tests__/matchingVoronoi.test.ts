@@ -1,6 +1,7 @@
 import type { Bbox } from "@/shared/geojson";
 import type { OsmFeature } from "@/features/questions/matching/matchingTypes";
 import {
+    buildNameLengthMasks,
     buildOsmMatchingHitMask,
     buildOsmMatchingMissMask,
     computeVoronoiCells,
@@ -285,5 +286,77 @@ describe("buildOsmMatchingMissMask", () => {
         expect(missWay.features.length).toBe(1);
         expect(missNode.features[0].properties?.osmKey).toBe("way/1");
         expect(missWay.features[0].properties?.osmKey).toBe("node/1");
+    });
+});
+
+describe("buildNameLengthMasks", () => {
+    const candidatesWithLengths: (OsmFeature & { distanceMeters: number })[] = [
+        {
+            distanceMeters: 100,
+            lat: 35.681,
+            lon: 139.7,
+            name: "Short Stn",
+            nameLength: 10,
+            osmId: 1,
+            osmType: "node",
+            tags: {},
+        },
+        {
+            distanceMeters: 200,
+            lat: 35.69,
+            lon: 139.71,
+            name: "Longer Name Station",
+            nameLength: 19,
+            osmId: 2,
+            osmType: "node",
+            tags: {},
+        },
+        {
+            distanceMeters: 300,
+            lat: 35.70,
+            lon: 139.72,
+            name: "Also Short",
+            nameLength: 10,
+            osmId: 3,
+            osmType: "node",
+            tags: {},
+        },
+    ];
+
+    it("returns empty masks when selectedNameLength is null", () => {
+        const cells = computeVoronoiCells(candidatesWithLengths, playAreaBbox);
+        const { hitMask, missMask } = buildNameLengthMasks(cells, null);
+
+        expect(hitMask.features).toHaveLength(0);
+        expect(missMask.features).toHaveLength(0);
+    });
+
+    it("hit mask includes all cells with matching name length", () => {
+        const cells = computeVoronoiCells(candidatesWithLengths, playAreaBbox);
+        const { hitMask, missMask } = buildNameLengthMasks(cells, 10);
+
+        // Two stations have length 10 (osmId 1 and 3) → union = MultiPolygon
+        expect(hitMask.features).toHaveLength(1);
+        expect(hitMask.features[0].geometry.type).toMatch(/Polygon/);
+        expect(missMask.features).toHaveLength(1);
+        expect(missMask.features[0].geometry.type).toMatch(/Polygon/);
+    });
+
+    it("miss mask is empty when all cells have matching name length", () => {
+        // Only one candidate → all cells match
+        const single = [candidatesWithLengths[0]];
+        const cells = computeVoronoiCells(single, playAreaBbox);
+        const { hitMask, missMask } = buildNameLengthMasks(cells, 10);
+
+        expect(hitMask.features).toHaveLength(1);
+        expect(missMask.features).toHaveLength(0);
+    });
+
+    it("hit mask is empty when no cell matches name length", () => {
+        const cells = computeVoronoiCells(candidatesWithLengths, playAreaBbox);
+        const { hitMask, missMask } = buildNameLengthMasks(cells, 99);
+
+        expect(hitMask.features).toHaveLength(0);
+        expect(missMask.features).toHaveLength(1);
     });
 });

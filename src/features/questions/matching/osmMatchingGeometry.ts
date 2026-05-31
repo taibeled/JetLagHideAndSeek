@@ -10,6 +10,7 @@ import type {
 import type { Bbox } from "@/shared/geojson";
 import type { QuestionState } from "@/features/questions/questionTypes";
 import {
+    buildNameLengthMasks,
     buildOsmMatchingHitMask,
     buildOsmMatchingMissMask,
     computeVoronoiCells,
@@ -58,7 +59,27 @@ export function buildOsmMatchingRenderState(
                 ? makeOsmKey(question.selectedOsmType, question.selectedOsmId)
                 : null;
 
-        if (question.answer === "positive") {
+        // Station-name-length uses name-length–based masks instead of
+        // per-candidate Voronoi masks.
+        if (question.category === "station-name-length") {
+            const selectedNameLength =
+                question.candidates.find(
+                    (c) =>
+                        c.osmId === question.selectedOsmId &&
+                        c.osmType === question.selectedOsmType,
+                )?.nameLength ?? null;
+
+            const { hitMask, missMask } = buildNameLengthMasks(
+                cells,
+                selectedNameLength,
+            );
+
+            if (question.answer === "positive") {
+                hitFeatures.push(...hitMask.features);
+            } else if (question.answer === "negative") {
+                missFeatures.push(...missMask.features);
+            }
+        } else if (question.answer === "positive") {
             const hitMask = buildOsmMatchingHitMask(cells, selectedOsmKey);
             hitFeatures.push(...hitMask.features);
         } else if (question.answer === "negative") {

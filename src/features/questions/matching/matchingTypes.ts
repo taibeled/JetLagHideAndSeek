@@ -6,6 +6,7 @@ import type {
 
 export type MatchingCategory =
     | "transit-line"
+    | "station-name-length"
     | "commercial-airport"
     | "admin-1st"
     | "admin-2nd"
@@ -43,6 +44,8 @@ export type OsmFeature = {
     lat: number;
     lon: number;
     name: string;
+    /** Length of the English name (name:en or name) — set for station-name-length. */
+    nameLength?: number;
     osmId: number;
     osmType: "node" | "way" | "relation";
     tags: Record<string, string>;

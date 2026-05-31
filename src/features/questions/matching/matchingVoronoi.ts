@@ -1,7 +1,12 @@
 import { featureCollection, point } from "@turf/helpers";
 import union from "@turf/union";
 import voronoi from "@turf/voronoi";
-import type { FeatureCollection, MultiPolygon, Polygon } from "geojson";
+import type {
+    Feature,
+    FeatureCollection,
+    MultiPolygon,
+    Polygon,
+} from "geojson";
 
 import type { Bbox } from "@/shared/geojson";
 import type { OsmFeature } from "@/features/questions/matching/matchingTypes";
@@ -44,20 +49,24 @@ export function computeVoronoiCells(
 
     const cells = voronoi(featureCollection(points), { bbox });
 
-    // Ensure each cell preserves the osmKey property
+    // Ensure each cell preserves the osmKey property and nameLength (if present)
     return {
         ...cells,
-        features: cells.features.map((feature, index) => ({
-            ...feature,
-            properties: {
+        features: cells.features.map((feature, index) => {
+            const candidate = deduped[index];
+            const props: Record<string, unknown> = {
                 ...feature.properties,
-                osmKey: makeOsmKey(
-                    deduped[index].osmType,
-                    deduped[index].osmId,
-                ),
-            },
-        })),
-    } as FeatureCollection<Polygon, { osmKey: string }>;
+                osmKey: makeOsmKey(candidate.osmType, candidate.osmId),
+            };
+            if (candidate.nameLength !== undefined) {
+                props.nameLength = candidate.nameLength;
+            }
+            return {
+                ...feature,
+                properties: props,
+            };
+        }),
+    } as FeatureCollection<Polygon, { osmKey: string; nameLength?: number }>;
 }
 
 export function buildOsmMatchingHitMask(
@@ -106,6 +115,63 @@ export function buildOsmMatchingMissMask(
         return featureCollection([]);
     }
 
+    return featureCollection([result]) as FeatureCollection<
+        Polygon | MultiPolygon
+    >;
+}
+
+/**
+ * Build hit and miss masks for station-name-length questions.
+ *
+ * Hit  = union of Voronoi cells whose station name length matches the
+ *        selected station's name length.
+ * Miss = union of all other Voronoi cells.
+ */
+export function buildNameLengthMasks(
+    cells: FeatureCollection<
+        Polygon,
+        { nameLength?: number; osmKey: string }
+    >,
+    selectedNameLength: number | null,
+): {
+    hitMask: FeatureCollection<Polygon | MultiPolygon>;
+    missMask: FeatureCollection<Polygon | MultiPolygon>;
+} {
+    if (selectedNameLength === null) {
+        return {
+            hitMask: featureCollection([]),
+            missMask: featureCollection([]),
+        };
+    }
+
+    const matchCells = cells.features.filter(
+        (f) => f.properties?.nameLength === selectedNameLength,
+    );
+    const otherCells = cells.features.filter(
+        (f) => f.properties?.nameLength !== selectedNameLength,
+    );
+
+    const hitMask = unionMany(matchCells);
+    const missMask = unionMany(otherCells);
+
+    return { hitMask, missMask };
+}
+
+function unionMany(
+    features: Feature<Polygon>[],
+): FeatureCollection<Polygon | MultiPolygon> {
+    if (features.length === 0) {
+        return featureCollection([]);
+    }
+    if (features.length === 1) {
+        return featureCollection([features[0]]) as FeatureCollection<
+            Polygon | MultiPolygon
+        >;
+    }
+    const result = union(featureCollection(features));
+    if (result === null) {
+        return featureCollection([]);
+    }
     return featureCollection([result]) as FeatureCollection<
         Polygon | MultiPolygon
     >;
