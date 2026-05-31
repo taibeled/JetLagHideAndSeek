@@ -6,7 +6,10 @@ import type { ReactElement } from "react";
 import { Keyboard } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { hidingZonePresets } from "@/features/hidingZone/hidingZoneData";
+import {
+    getHidingZonePresets,
+    loadHidingZonePresets,
+} from "@/features/hidingZone/hidingZoneData";
 import { defaultPlayArea } from "@/features/map/playArea";
 import { clearPlayAreaMemoryCache } from "@/features/map/playAreaBoundary";
 import { AppStateProviders } from "@/state/AppStateProviders";
@@ -192,6 +195,8 @@ async function pressAddTransitLineQuestion(screen: ReturnType<typeof render>) {
 }
 
 describe("MapAppScreen", () => {
+    beforeAll(() => loadHidingZonePresets());
+
     beforeEach(async () => {
         jest.useRealTimers();
         jest.clearAllMocks();
@@ -899,7 +904,7 @@ describe("MapAppScreen", () => {
 
     it("adds a hiding-zone preset and renders consistent map sources", async () => {
         const screen = renderWithSafeArea(<MapAppScreen />);
-        const tokyoMetro = hidingZonePresets.find(
+        const tokyoMetro = getHidingZonePresets().find(
             (preset) => preset.id === "tokyo-metro",
         );
 
@@ -1018,7 +1023,7 @@ describe("MapAppScreen", () => {
 
     it("updates rendered hiding-zone polygon area when the radius changes", async () => {
         const screen = renderWithSafeArea(<MapAppScreen />);
-        const tokyoMetro = hidingZonePresets.find(
+        const tokyoMetro = getHidingZonePresets().find(
             (preset) => preset.id === "tokyo-metro",
         );
 

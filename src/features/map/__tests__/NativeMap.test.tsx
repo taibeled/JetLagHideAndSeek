@@ -209,7 +209,7 @@ describe("NativeMap", () => {
 
         await waitFor(() => {
             expect(
-                Location.requestForegroundPermissionsAsync,
+                Location.getForegroundPermissionsAsync,
             ).toHaveBeenCalled();
             expect(__cameraMethods.setCamera).toHaveBeenCalledWith({
                 animationDuration: 700,

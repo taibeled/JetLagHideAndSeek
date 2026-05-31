@@ -7,6 +7,9 @@ describe("requestUserCoordinate", () => {
             getCurrentPositionAsync: jest.fn().mockResolvedValue({
                 coords: { latitude: 35.6762, longitude: 139.6503 },
             }),
+            getForegroundPermissionsAsync: jest
+                .fn()
+                .mockResolvedValue({ granted: false }),
             requestForegroundPermissionsAsync: jest
                 .fn()
                 .mockResolvedValue({ status: "granted" }),
@@ -25,6 +28,9 @@ describe("requestUserCoordinate", () => {
         const locationModule = {
             Accuracy: { Balanced: 3 },
             getCurrentPositionAsync: jest.fn(),
+            getForegroundPermissionsAsync: jest
+                .fn()
+                .mockResolvedValue({ granted: false }),
             requestForegroundPermissionsAsync: jest
                 .fn()
                 .mockResolvedValue({ status: "denied" }),
@@ -43,6 +49,9 @@ describe("requestUserCoordinate", () => {
             getCurrentPositionAsync: jest
                 .fn()
                 .mockRejectedValue(new Error("Cannot obtain current location")),
+            getForegroundPermissionsAsync: jest
+                .fn()
+                .mockResolvedValue({ granted: false }),
             requestForegroundPermissionsAsync: jest
                 .fn()
                 .mockResolvedValue({ status: "granted" }),
@@ -61,6 +70,9 @@ describe("requestUserCoordinate", () => {
         const locationModule = {
             Accuracy: { Balanced: 3 },
             getCurrentPositionAsync: jest.fn(),
+            getForegroundPermissionsAsync: jest
+                .fn()
+                .mockRejectedValue(new Error("Location module unavailable")),
             requestForegroundPermissionsAsync: jest
                 .fn()
                 .mockRejectedValue(new Error("Location module unavailable")),

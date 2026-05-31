@@ -94,7 +94,10 @@ describe("AppStateV1 schema", () => {
         const result = appStateV1Schema.safeParse(state);
 
         expect(result.success).toBe(true);
-        expect(state.questionSettings).toEqual({ isPinLocked: false });
+        expect(state.questionSettings).toEqual({
+            activeQuestionId: null,
+            isPinLocked: false,
+        });
         expect(state.questions).toEqual([]);
     });
 
@@ -194,7 +197,7 @@ describe("AppStateV1 schema", () => {
     it("accepts question settings", () => {
         const state = {
             ...makeAppState(),
-            questionSettings: { isPinLocked: true },
+            questionSettings: { activeQuestionId: null, isPinLocked: true },
         };
         expect(migratePersistedAppState(state)).toEqual(state);
     });

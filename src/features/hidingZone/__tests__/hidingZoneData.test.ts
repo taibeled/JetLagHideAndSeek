@@ -1,12 +1,18 @@
-import { hidingZonePresets } from "@/features/hidingZone/hidingZoneData";
+import {
+    loadHidingZonePresets,
+    getHidingZonePresets,
+} from "@/features/hidingZone/hidingZoneData";
 import {
     isCanonicalTransitRouteId,
     isCanonicalTransitStationId,
 } from "@/features/transit/transitIdentity";
 
 describe("generated hiding-zone preset data", () => {
+    beforeAll(() => loadHidingZonePresets());
+
     it("contains canonical source-adapter transit ids", () => {
-        for (const preset of hidingZonePresets) {
+        const presets = getHidingZonePresets();
+        for (const preset of presets) {
             const routeIds = new Set(preset.routes.map((route) => route.id));
 
             expect(preset.source.kind).toBe("gtfs");
