@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { QuestionAnswerSelector } from "@/features/questions/components/QuestionAnswerSelector";
@@ -12,6 +12,9 @@ import { colors } from "@/theme/colors";
 import type { MatchingQuestion } from "./matchingTypes";
 import { getCategoryTitle } from "./matchingCategories";
 import { findMatchingFeatures } from "./osmMatching";
+
+/** Milliseconds to wait after the pin stops moving before querying Overpass. */
+const SEARCH_DEBOUNCE_MS = 400;
 
 const OVERPASS_ERROR_MESSAGE =
     "Unable to search. Check your connection and try again.";
@@ -34,8 +37,9 @@ export function OsmMatchingQuestionDetailScreen({
     const categoryTitle = getCategoryTitle(question.category);
     const searchGenerationRef = useRef(0);
     const lastSearchCenterRef = useRef<[number, number] | null>(null);
+    const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    const performSearch = async () => {
+    const performSearch = useCallback(async () => {
         const generation = ++searchGenerationRef.current;
         lastSearchCenterRef.current = question.center;
         setIsLoading(true);
@@ -72,7 +76,28 @@ export function OsmMatchingQuestionDetailScreen({
                 setIsLoading(false);
             }
         }
-    };
+    }, [question.category, question.center, question.id, updateQuestion]);
+
+    // Schedule a debounced search. Clears any pending timer first.
+    const scheduleSearch = useCallback(() => {
+        if (debounceTimerRef.current !== null) {
+            clearTimeout(debounceTimerRef.current);
+        }
+        debounceTimerRef.current = setTimeout(() => {
+            debounceTimerRef.current = null;
+            void performSearch();
+        }, SEARCH_DEBOUNCE_MS);
+    }, [performSearch]);
+
+    // Clean up the debounce timer on unmount.
+    useEffect(() => {
+        return () => {
+            if (debounceTimerRef.current !== null) {
+                clearTimeout(debounceTimerRef.current);
+                debounceTimerRef.current = null;
+            }
+        };
+    }, []);
 
     // Auto-query on mount if no candidates are loaded, and invalidate stale
     // candidates when the question pin moves.
@@ -83,7 +108,7 @@ export function OsmMatchingQuestionDetailScreen({
                 !centersEqual(lastSearchCenterRef.current, question.center));
 
         if (needsSearch && !isLoading) {
-            void performSearch();
+            scheduleSearch();
         } else if (
             question.candidates.length > 0 &&
             lastSearchCenterRef.current !== null &&
@@ -114,7 +139,7 @@ export function OsmMatchingQuestionDetailScreen({
             // so future moves are detected correctly.
             lastSearchCenterRef.current = question.center;
         }
-    }, [question.center, question.candidates.length, isLoading]);
+    }, [question.center, question.candidates.length, isLoading, scheduleSearch]);
 
     const handleSelectCandidate = (candidate: {
         name: string;
