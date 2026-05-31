@@ -1,3 +1,10 @@
+import type {
+    FeatureCollection,
+    MultiPolygon,
+    Point,
+    Polygon,
+} from "geojson";
+
 import type { Position } from "@/shared/geojson";
 import type {
     BaseQuestion,
@@ -49,4 +56,14 @@ export type OsmFeature = {
     osmId: number;
     osmType: "node" | "way" | "relation";
     tags: Record<string, string>;
+};
+
+/** Map render state for OSM-based matching questions (Voronoi masks + POI points). */
+export type OsmMatchingRenderState = {
+    hitMaskFeatures: FeatureCollection<Polygon | MultiPolygon>;
+    missMaskFeatures: FeatureCollection<Polygon | MultiPolygon>;
+    poiFeatures: FeatureCollection<
+        Point,
+        { isSelected: boolean; name: string; osmId: number }
+    >;
 };

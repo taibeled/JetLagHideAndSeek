@@ -12,6 +12,7 @@ import type {
     BaseQuestion,
     QuestionAnswer,
 } from "@/features/questions/coreTypes";
+import type { OsmMatchingRenderState } from "@/features/questions/matching/matchingTypes";
 import type { TransitLineQuestionFeatureCollection } from "@/features/questions/transitLine/transitLineTypes";
 import type { DistanceUnit } from "@/shared/distanceUnits";
 
@@ -78,15 +79,6 @@ export type RadarQuestionRenderState = {
     missMaskFeatures: RadarQuestionFeatureCollection;
     outlineFeatures: RadarQuestionFeatureCollection;
     previewFeatures: RadarQuestionFeatureCollection;
-};
-
-export type OsmMatchingRenderState = {
-    hitMaskFeatures: FeatureCollection<Polygon | MultiPolygon>;
-    missMaskFeatures: FeatureCollection<Polygon | MultiPolygon>;
-    poiFeatures: FeatureCollection<
-        Point,
-        { isSelected: boolean; name: string; osmId: number }
-    >;
 };
 
 export type QuestionMapRenderState = {

@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react-native";
 
-import type { OsmMatchingRenderState } from "@/features/questions/radar/radarTypes";
+import type { OsmMatchingRenderState } from "@/features/questions/matching/matchingTypes";
 
 import { OsmMatchingLayers } from "../OsmMatchingLayers";
 

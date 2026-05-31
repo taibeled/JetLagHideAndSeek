@@ -9,6 +9,7 @@ import type {
 
 import type { Bbox } from "@/shared/geojson";
 import type { QuestionState } from "@/features/questions/questionTypes";
+import type { OsmMatchingRenderState } from "@/features/questions/matching/matchingTypes";
 import {
     buildNameLengthMasks,
     buildOsmMatchingHitMask,
@@ -16,17 +17,6 @@ import {
     computeVoronoiCells,
     makeOsmKey,
 } from "@/features/questions/matching/matchingVoronoi";
-
-export type OsmMatchingPoiFeature = FeatureCollection<
-    Point,
-    { isSelected: boolean; name: string; osmId: number }
->;
-
-export type OsmMatchingRenderState = {
-    hitMaskFeatures: FeatureCollection<Polygon | MultiPolygon>;
-    missMaskFeatures: FeatureCollection<Polygon | MultiPolygon>;
-    poiFeatures: OsmMatchingPoiFeature;
-};
 
 export function buildOsmMatchingRenderState(
     questions: QuestionState[],
@@ -50,7 +40,7 @@ export function buildOsmMatchingRenderState(
 
     const hitFeatures: Feature<Polygon | MultiPolygon>[] = [];
     const missFeatures: Feature<Polygon | MultiPolygon>[] = [];
-    const poiFeatures: OsmMatchingPoiFeature["features"] = [];
+    const poiFeatures: OsmMatchingRenderState["poiFeatures"]["features"] = [];
 
     for (const question of osmMatchingQuestions) {
         const cells = computeVoronoiCells(question.candidates, playAreaBbox);

@@ -1,4 +1,4 @@
-import type { OsmMatchingRenderState } from "@/features/questions/radar/radarTypes";
+import type { OsmMatchingRenderState } from "@/features/questions/matching/matchingTypes";
 
 import { MLCircleLayer, MLShapeSource } from "./mapLibrePrimitives";
 
