@@ -1,7 +1,4 @@
-import {
-    type Position,
-    haversineDistanceMeters,
-} from "@/shared/geojson";
+import { type Position, haversineDistanceMeters } from "@/shared/geojson";
 import type { MatchingCategory, OsmFeature } from "./matchingTypes";
 import { getCategoryConfig } from "./matchingCategories";
 

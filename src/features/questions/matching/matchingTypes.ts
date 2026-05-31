@@ -1,9 +1,4 @@
-import type {
-    FeatureCollection,
-    MultiPolygon,
-    Point,
-    Polygon,
-} from "geojson";
+import type { FeatureCollection, MultiPolygon, Point, Polygon } from "geojson";
 
 import type { Position } from "@/shared/geojson";
 import type {

@@ -313,7 +313,7 @@ describe("buildNameLengthMasks", () => {
         },
         {
             distanceMeters: 300,
-            lat: 35.70,
+            lat: 35.7,
             lon: 139.72,
             name: "Also Short",
             nameLength: 10,

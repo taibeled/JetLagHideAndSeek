@@ -128,10 +128,7 @@ export function buildOsmMatchingMissMask(
  * Miss = union of all other Voronoi cells.
  */
 export function buildNameLengthMasks(
-    cells: FeatureCollection<
-        Polygon,
-        { nameLength?: number; osmKey: string }
-    >,
+    cells: FeatureCollection<Polygon, { nameLength?: number; osmKey: string }>,
     selectedNameLength: number | null,
 ): {
     hitMask: FeatureCollection<Polygon | MultiPolygon>;

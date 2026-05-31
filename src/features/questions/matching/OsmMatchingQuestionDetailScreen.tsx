@@ -78,10 +78,7 @@ export function OsmMatchingQuestionDetailScreen({
             });
         } catch (error) {
             // Silently ignore aborted requests — a newer search is in flight.
-            if (
-                error instanceof Error &&
-                error.name === "AbortError"
-            ) {
+            if (error instanceof Error && error.name === "AbortError") {
                 return;
             }
             if (generation === searchGenerationRef.current) {
@@ -159,7 +156,12 @@ export function OsmMatchingQuestionDetailScreen({
             // so future moves are detected correctly.
             lastSearchCenterRef.current = question.center;
         }
-    }, [question.center, question.candidates.length, isLoading, scheduleSearch]);
+    }, [
+        question.center,
+        question.candidates.length,
+        isLoading,
+        scheduleSearch,
+    ]);
 
     const handleSelectCandidate = (candidate: {
         name: string;

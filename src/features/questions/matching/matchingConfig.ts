@@ -32,8 +32,7 @@ export const matchingQuestionConfig = {
             const nameLen = question.candidates.find(
                 (c) => c.osmId === question.selectedOsmId,
             )?.nameLength;
-            const suffix =
-                nameLen !== undefined ? ` (${nameLen} chars)` : "";
+            const suffix = nameLen !== undefined ? ` (${nameLen} chars)` : "";
             return `${categoryTitle}: ${question.targetName}${suffix}`;
         }
         return question.targetName

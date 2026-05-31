@@ -1,11 +1,5 @@
 import { point } from "@turf/helpers";
-import type {
-    Feature,
-    FeatureCollection,
-    MultiPolygon,
-    Point,
-    Polygon,
-} from "geojson";
+import type { Feature, MultiPolygon, Polygon } from "geojson";
 
 import type { Bbox } from "@/shared/geojson";
 import type { QuestionState } from "@/features/questions/questionTypes";
