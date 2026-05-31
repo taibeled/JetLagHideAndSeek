@@ -1,10 +1,12 @@
-import type { Position } from "@/shared/geojson";
+import {
+    type Position,
+    haversineDistanceMeters,
+} from "@/shared/geojson";
 import type { MatchingCategory, OsmFeature } from "./matchingTypes";
 import { getCategoryConfig } from "./matchingCategories";
 
 const OVERPASS_API = "https://overpass-api.de/api/interpreter";
 const DEFAULT_SEARCH_RADIUS_METERS = 50_000;
-const EARTH_RADIUS_METERS = 6_371_008.8;
 
 type OverpassElement = {
     center?: { lat: number; lon: number };
@@ -171,28 +173,4 @@ export function findNearestFeature(
     }
 
     return nearest;
-}
-
-function haversineDistanceMeters(
-    lat1: number,
-    lon1: number,
-    lat2: number,
-    lon2: number,
-): number {
-    const phi1 = toRadians(lat1);
-    const phi2 = toRadians(lat2);
-    const deltaPhi = toRadians(lat2 - lat1);
-    const deltaLambda = toRadians(lon2 - lon1);
-    const haversine =
-        Math.sin(deltaPhi / 2) ** 2 +
-        Math.cos(phi1) * Math.cos(phi2) * Math.sin(deltaLambda / 2) ** 2;
-    return (
-        2 *
-        EARTH_RADIUS_METERS *
-        Math.atan2(Math.sqrt(haversine), Math.sqrt(1 - haversine))
-    );
-}
-
-function toRadians(value: number): number {
-    return (value * Math.PI) / 180;
 }

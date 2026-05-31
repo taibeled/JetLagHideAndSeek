@@ -1,7 +1,7 @@
 import circle from "@turf/circle";
 
 import type { TransitStation } from "@/features/hidingZone/hidingZoneTypes";
-import type { Position } from "@/shared/geojson";
+import { type Position, haversineDistanceMeters } from "@/shared/geojson";
 import type { QuestionState } from "@/features/questions/questionTypes";
 export { fromMeters, toMeters } from "@/shared/distanceUnits";
 
@@ -11,8 +11,6 @@ import type {
     RadarQuestionFeatureCollection,
     RadarQuestionRenderState,
 } from "./radarTypes";
-
-const EARTH_RADIUS_METERS = 6371008.8;
 
 export function buildRadarQuestionRenderState(
     questions: QuestionState[],
@@ -83,20 +81,5 @@ export function formatStationDistance(distanceMeters: number): string {
 function getDistanceMeters(a: Position, b: Position): number {
     const [lonA, latA] = a;
     const [lonB, latB] = b;
-    const phiA = toRadians(latA);
-    const phiB = toRadians(latB);
-    const deltaPhi = toRadians(latB - latA);
-    const deltaLambda = toRadians(lonB - lonA);
-    const haversine =
-        Math.sin(deltaPhi / 2) ** 2 +
-        Math.cos(phiA) * Math.cos(phiB) * Math.sin(deltaLambda / 2) ** 2;
-    return (
-        2 *
-        EARTH_RADIUS_METERS *
-        Math.atan2(Math.sqrt(haversine), Math.sqrt(1 - haversine))
-    );
-}
-
-function toRadians(value: number): number {
-    return (value * Math.PI) / 180;
+    return haversineDistanceMeters(latA, lonA, latB, lonB);
 }
