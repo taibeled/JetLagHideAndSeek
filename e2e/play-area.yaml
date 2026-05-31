@@ -3,17 +3,17 @@ appId: com.raycatdev.hideandseek.v2
 - stopApp
 - runFlow: bootstrap.yaml
 - swipe:
-    start: "50%,85%"
-    end: "50%,45%"
-    duration: 500
+      start: "50%,85%"
+      end: "50%,45%"
+      duration: 500
 # Navigate to Settings via a11y label (was: point "50%,35%")
 - tapOn: "Settings"
 - waitForAnimationToEnd:
-    timeout: 1000
+      timeout: 1000
 # Navigate to Play Area settings (was: point "38%,39%")
 - tapOn: "Open Play Area settings"
 - waitForAnimationToEnd:
-    timeout: 1000
+      timeout: 1000
 # Enter an OSM relation ID for Osaka
 - tapOn: "OSM relation ID"
 - inputText: "358674"
@@ -21,8 +21,8 @@ appId: com.raycatdev.hideandseek.v2
 - tapOn: "Apply OSM relation"
 # Wait for the network fetch to complete
 - extendedWaitUntil:
-    notVisible: "Loading boundary..."
-    timeout: 30000
+      notVisible: "Loading boundary..."
+      timeout: 30000
 # Assert the play area was actually loaded and cached
 - assertVisible: "Relation 358674"
 # - assertVisible: "Bbox"  # The matching on this isn't great, disable for now.

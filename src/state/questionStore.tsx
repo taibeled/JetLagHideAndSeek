@@ -7,6 +7,7 @@ import {
     useState,
 } from "react";
 
+import type { MatchingCategory } from "@/features/questions/matching/matchingTypes";
 import { radarQuestionConfig } from "@/features/questions/radar/radarConfig";
 import {
     type ImplementedQuestionType,
@@ -57,7 +58,7 @@ export function useQuestionState(): QuestionStateValue {
 type QuestionActionsValue = {
     createQuestion: (
         type: ImplementedQuestionType,
-        options: { center: Position },
+        options: { center: Position; category?: MatchingCategory },
     ) => QuestionState;
     deleteQuestion: (questionId: string) => void;
     importQuestionSettings: (settings: QuestionSettingsImportState) => void;
@@ -141,9 +142,17 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
     );
 
     const createQuestion = useCallback(
-        (type: ImplementedQuestionType, options: { center: Position }) => {
+        (
+            type: ImplementedQuestionType,
+            options: { center: Position; category?: MatchingCategory },
+        ) => {
             const now = new Date().toISOString();
-            const question = createDefaultQuestion(type, options.center, now);
+            const question = createDefaultQuestion(
+                type,
+                options.center,
+                now,
+                options.category,
+            );
             setQuestions((current) => [...current, question]);
             setActiveQuestionIdState(question.id);
             return question;
@@ -340,6 +349,7 @@ function createDefaultQuestion(
     type: ImplementedQuestionType,
     center: Position,
     now: string,
+    category?: MatchingCategory,
 ): QuestionState {
     switch (type) {
         case "radar":
@@ -357,11 +367,18 @@ function createDefaultQuestion(
         case "matching":
             return {
                 answer: "unanswered",
+                candidates: [],
+                category: category ?? "transit-line",
                 center,
                 createdAt: now,
                 id: createQuestionId(),
                 lineId: null,
                 lineName: null,
+                selectedOsmId: null,
+                selectedOsmType: null,
+                targetName: null,
+                targetOsmId: null,
+                targetOsmType: null,
                 type: "matching",
                 updatedAt: now,
             };
@@ -388,7 +405,7 @@ function normalizeQuestionState(question: unknown): QuestionState {
             answer: "unanswered",
         };
     }
-    if (isTransitLineQuestion(question)) {
+    if (isMatchingQuestion(question)) {
         return normalizeTransitLineQuestion(question);
     }
     return question as QuestionState;
@@ -424,7 +441,7 @@ function isRadarQuestionWithoutAnswer(
     );
 }
 
-function isTransitLineQuestion(
+function isMatchingQuestion(
     value: unknown,
 ): value is Extract<QuestionState, { type: "matching" }> {
     return (

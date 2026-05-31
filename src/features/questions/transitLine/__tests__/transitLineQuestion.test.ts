@@ -264,11 +264,18 @@ describe("reconcileTransitLineQuestionSelection", () => {
     };
     const question: TransitLineQuestion = {
         answer: "unanswered",
+        candidates: [],
+        category: "transit-line",
         center: [139.72214, 35.65121],
         createdAt: "2026-05-30T00:00:00.000Z",
         id: "matching-1",
         lineId: null,
         lineName: null,
+        selectedOsmId: null,
+        selectedOsmType: null,
+        targetName: null,
+        targetOsmId: null,
+        targetOsmType: null,
         type: "matching",
         updatedAt: "2026-05-30T00:00:00.000Z",
     };

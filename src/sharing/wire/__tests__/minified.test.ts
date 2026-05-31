@@ -321,11 +321,18 @@ it("writes matching questions in compact format", () => {
         questions: [
             {
                 answer: "negative",
+                candidates: [],
+                category: "transit-line",
                 center: [139.7, 35.7],
                 createdAt: "2026-05-17T00:00:00.000Z",
                 id: "matching-1",
                 lineId: "gtfs:test:route:line-1",
                 lineName: "Line 1",
+                selectedOsmId: null,
+                selectedOsmType: null,
+                targetName: null,
+                targetOsmId: null,
+                targetOsmType: null,
                 type: "matching",
                 updatedAt: "2026-05-17T00:00:00.000Z",
             },
@@ -346,11 +353,18 @@ describe("unminifyEnvelope", () => {
             questions: [
                 {
                     answer: "positive",
+                    candidates: [],
+                    category: "transit-line",
                     center: [139.7, 35.7],
                     createdAt: "2026-05-17T00:00:00.000Z",
                     id: "matching-1",
                     lineId: "gtfs:test:route:line-1",
                     lineName: "Line 1",
+                    selectedOsmId: null,
+                    selectedOsmType: null,
+                    targetName: null,
+                    targetOsmId: null,
+                    targetOsmType: null,
                     type: "matching",
                     updatedAt: "2026-05-17T00:00:00.000Z",
                 },
@@ -359,11 +373,18 @@ describe("unminifyEnvelope", () => {
         const restored = unminifyEnvelope(minifyEnvelope(envelope));
         expect(restored.payload.questions?.[0]).toEqual({
             answer: "positive",
+            candidates: [],
+            category: "transit-line",
             center: [139.7, 35.7],
             createdAt: "2026-05-17T00:00:00.000Z",
             id: "matching-1",
             lineId: "gtfs:test:route:line-1",
             lineName: "Line 1",
+            selectedOsmId: null,
+            selectedOsmType: null,
+            targetName: null,
+            targetOsmId: null,
+            targetOsmType: null,
             type: "matching",
             updatedAt: "2026-05-17T00:00:00.000Z",
         });
@@ -374,11 +395,18 @@ describe("unminifyEnvelope", () => {
             questions: [
                 {
                     answer: "positive",
+                    candidates: [],
+                    category: "transit-line",
                     center: [139.7, 35.7],
                     createdAt: "2026-05-17T00:00:00.000Z",
                     id: "matching-1",
                     lineId: "tokyo-metro:3",
                     lineName: "Hibiya Line",
+                    selectedOsmId: null,
+                    selectedOsmType: null,
+                    targetName: null,
+                    targetOsmId: null,
+                    targetOsmType: null,
                     type: "matching",
                     updatedAt: "2026-05-17T00:00:00.000Z",
                 },
@@ -390,11 +418,18 @@ describe("unminifyEnvelope", () => {
         ).toEqual([
             {
                 answer: "unanswered",
+                candidates: [],
+                category: "transit-line",
                 center: [139.7, 35.7],
                 createdAt: "2026-05-17T00:00:00.000Z",
                 id: "matching-1",
                 lineId: null,
                 lineName: null,
+                selectedOsmId: null,
+                selectedOsmType: null,
+                targetName: null,
+                targetOsmId: null,
+                targetOsmType: null,
                 type: "matching",
                 updatedAt: "2026-05-17T00:00:00.000Z",
             },
@@ -406,11 +441,18 @@ describe("unminifyEnvelope", () => {
             questions: [
                 {
                     answer: "positive",
+                    candidates: [],
+                    category: "transit-line",
                     center: [139.7, 35.7],
                     createdAt: "2026-05-17T00:00:00.000Z",
                     id: "matching-1",
                     lineId: "gtfs:test:route:line-1",
                     lineName: "Line 1",
+                    selectedOsmId: null,
+                    selectedOsmType: null,
+                    targetName: null,
+                    targetOsmId: null,
+                    targetOsmType: null,
                     type: "matching",
                     updatedAt: "2026-05-17T00:00:00.000Z",
                 },
@@ -479,6 +521,103 @@ describe("unminifyEnvelope", () => {
             distanceUnit: "m",
             id: "q-1",
             type: "radar",
+        });
+    });
+
+    it("round-trips matching question with non-default category and target fields", () => {
+        const envelope = makeEnvelope({
+            questions: [
+                {
+                    answer: "positive",
+                    candidates: [],
+                    category: "park",
+                    center: [139.7, 35.7],
+                    createdAt: "2026-05-17T00:00:00.000Z",
+                    id: "matching-park",
+                    lineId: null,
+                    lineName: null,
+                    selectedOsmId: null,
+                    selectedOsmType: null,
+                    targetName: "Ueno Park",
+                    targetOsmId: 123456,
+                    targetOsmType: "way",
+                    type: "matching",
+                    updatedAt: "2026-05-17T00:00:00.000Z",
+                },
+            ],
+        });
+        const restored = unminifyEnvelope(minifyEnvelope(envelope));
+        const question = restored.payload.questions?.[0];
+        expect(question).toMatchObject({
+            category: "park",
+            targetName: "Ueno Park",
+            targetOsmId: 123456,
+            targetOsmType: "way",
+        });
+    });
+
+    it("round-trips OSM matching questions with candidates", () => {
+        const envelope = makeEnvelope({
+            questions: [
+                {
+                    answer: "positive",
+                    candidates: [
+                        {
+                            lat: 35.681,
+                            lon: 139.761,
+                            name: "Nearest Park",
+                            osmId: 1,
+                            osmType: "node",
+                            tags: {},
+                        },
+                        {
+                            lat: 35.685,
+                            lon: 139.765,
+                            name: "Farther Park",
+                            osmId: 2,
+                            osmType: "way",
+                            tags: {},
+                        },
+                    ],
+                    category: "park",
+                    center: [139.7, 35.7],
+                    createdAt: "2026-05-17T00:00:00.000Z",
+                    id: "matching-park",
+                    lineId: null,
+                    lineName: null,
+                    selectedOsmId: 1,
+                    selectedOsmType: "node",
+                    targetName: "Nearest Park",
+                    targetOsmId: 1,
+                    targetOsmType: "node",
+                    type: "matching",
+                    updatedAt: "2026-05-17T00:00:00.000Z",
+                },
+            ],
+        });
+        const restored = unminifyEnvelope(minifyEnvelope(envelope));
+        const question = restored.payload.questions?.[0];
+        expect(question).toMatchObject({
+            category: "park",
+            targetName: "Nearest Park",
+            candidates: [
+                {
+                    lat: 35.681,
+                    lon: 139.761,
+                    name: "Nearest Park",
+                    osmId: 1,
+                    osmType: "node",
+                    tags: {},
+                },
+                {
+                    lat: 35.685,
+                    lon: 139.765,
+                    name: "Farther Park",
+                    osmId: 2,
+                    osmType: "way",
+                    tags: {},
+                },
+            ],
         });
     });
 });

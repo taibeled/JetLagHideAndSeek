@@ -39,6 +39,15 @@ function StoreProbe() {
             <Text testID="probe-line-answer">
                 {matchingQuestion?.answer ?? "none"}
             </Text>
+            <Text testID="probe-matching-category">
+                {matchingQuestion?.category ?? "none"}
+            </Text>
+            <Text testID="probe-target-name">
+                {matchingQuestion?.targetName ?? "none"}
+            </Text>
+            <Text testID="probe-target-osm-id">
+                {matchingQuestion?.targetOsmId ?? "none"}
+            </Text>
         </View>
     );
 }
@@ -92,6 +101,64 @@ describe("ImportScreen", () => {
         );
     });
 
+    it("preserves non-default matching question category on import", async () => {
+        const envelope = buildAppStateEnvelope({
+            gameId: "shared-game",
+            hidingZones: {
+                radiusMeters: 600,
+                radiusUnit: "m",
+                selectedPresetIds: ["tokyo-metro"],
+            },
+            now: new Date("2026-05-17T00:00:00.000Z"),
+            playArea: defaultPlayArea,
+            questions: [
+                {
+                    answer: "positive",
+                    candidates: [],
+                    category: "park",
+                    center: defaultPlayArea.center,
+                    createdAt: "2026-05-17T00:00:00.000Z",
+                    id: "matching-park",
+                    lineId: null,
+                    lineName: null,
+                    selectedOsmId: null,
+                    selectedOsmType: null,
+                    targetName: "Ueno Park",
+                    targetOsmId: 123456,
+                    targetOsmType: "way",
+                    type: "matching",
+                    updatedAt: "2026-05-17T00:00:00.000Z",
+                },
+            ],
+        });
+        const payload = bytesToBase64Url(
+            deflateSync(strToU8(canonicalize(minifyEnvelope(envelope)))),
+        );
+        useLocalSearchParams.mockReturnValue({ d: payload });
+
+        const screen = render(
+            <AppStateProviders>
+                <ImportScreen />
+                <StoreProbe />
+            </AppStateProviders>,
+        );
+
+        await waitFor(() => {
+            expect(screen.getByTestId("import-preview-card")).toBeTruthy();
+        });
+        fireEvent.press(screen.getByTestId("import-confirm-button"));
+
+        expect(screen.getByTestId("probe-matching-category")).toHaveTextContent(
+            "park",
+        );
+        expect(screen.getByTestId("probe-target-name")).toHaveTextContent(
+            "Ueno Park",
+        );
+        expect(screen.getByTestId("probe-target-osm-id")).toHaveTextContent(
+            "123456",
+        );
+    });
+
     it("clears legacy transit line selections from shared payloads", async () => {
         const envelope = buildAppStateEnvelope({
             gameId: "shared-game",
@@ -105,11 +172,18 @@ describe("ImportScreen", () => {
             questions: [
                 {
                     answer: "positive",
+                    candidates: [],
+                    category: "transit-line",
                     center: defaultPlayArea.center,
                     createdAt: "2026-05-17T00:00:00.000Z",
                     id: "matching-1",
                     lineId: "tokyo-metro:3",
                     lineName: "Hibiya Line",
+                    selectedOsmId: null,
+                    selectedOsmType: null,
+                    targetName: null,
+                    targetOsmId: null,
+                    targetOsmType: null,
                     type: "matching",
                     updatedAt: "2026-05-17T00:00:00.000Z",
                 },

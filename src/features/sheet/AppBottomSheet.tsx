@@ -115,7 +115,7 @@ function getSheetAccessibilityLabel(
     activeQuestion: ReturnType<typeof useQuestionDerived>["activeQuestion"],
 ): string | undefined {
     if (route === "question-detail" && activeQuestion?.type === "matching") {
-        return "Transit line question detail. Transit line answer section. Set transit line pin to my location. Hit answer.";
+        return "Matching question detail. Answer section. Set pin to my location. Hit answer.";
     }
     return undefined;
 }

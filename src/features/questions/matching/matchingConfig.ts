@@ -1,4 +1,5 @@
 import type { QuestionDefinition } from "@/features/questions/questionRegistry";
+import { getCategoryTitle } from "./matchingCategories";
 
 export const matchingQuestionConfig = {
     answerMapBehavior: {
@@ -11,15 +12,23 @@ export const matchingQuestionConfig = {
     },
     cost: "Draw 2, pick 1",
     defaultAnswer: "unanswered",
-    detail: "Compare a candidate transit line from a movable map pin.",
+    detail: "Compare nearest candidates from a movable map pin.",
     implemented: true,
-    listTitle: "Transit Line",
+    listTitle: "Matching",
     mapBehavior: { usesMovableAnchor: true },
-    summary: (question) =>
-        question.type === "matching" && question.lineName
-            ? `Transit line: ${question.lineName}`
-            : "Transit line: not selected",
+    summary: (question) => {
+        if (question.type !== "matching") return "";
+        const categoryTitle = getCategoryTitle(question.category);
+        if (question.category === "transit-line") {
+            return question.lineName
+                ? `Transit line: ${question.lineName}`
+                : "Transit line: not selected";
+        }
+        return question.targetName
+            ? `${categoryTitle}: ${question.targetName}`
+            : `${categoryTitle}: not selected`;
+    },
     time: "5 minutes",
-    title: "Transit Line",
+    title: "Matching",
     type: "matching",
 } satisfies QuestionDefinition;

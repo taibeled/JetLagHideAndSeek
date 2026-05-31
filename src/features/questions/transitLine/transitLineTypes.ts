@@ -1,18 +1,9 @@
 import type { FeatureCollection, Polygon, MultiPolygon } from "geojson";
 
-import type { Position } from "@/features/map/geojsonTypes";
-import type {
-    BaseQuestion,
-    QuestionAnswer,
-} from "@/features/questions/coreTypes";
+import type { MatchingQuestion } from "@/features/questions/matching/matchingTypes";
 
-export type TransitLineQuestion = BaseQuestion & {
-    answer: QuestionAnswer;
-    center: Position;
-    lineId: string | null;
-    lineName: string | null;
-    type: "matching";
-};
+// Re-export for backward compatibility
+export type TransitLineQuestion = MatchingQuestion;
 
 export type TransitLineQuestionFeatureCollection = FeatureCollection<
     Polygon | MultiPolygon,

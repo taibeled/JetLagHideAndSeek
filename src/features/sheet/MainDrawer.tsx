@@ -407,7 +407,9 @@ function getRouteEyebrow(
     >["type"],
 ) {
     if (routeName === "question-detail") {
-        return activeQuestionType === "matching" ? "Transit" : "Radar Question";
+        return activeQuestionType === "matching"
+            ? "Matching"
+            : "Radar Question";
     }
     return routeEyebrows[routeName];
 }

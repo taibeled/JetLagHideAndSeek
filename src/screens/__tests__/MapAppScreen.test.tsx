@@ -183,7 +183,7 @@ async function pressAddTransitLineQuestion(screen: ReturnType<typeof render>) {
     pressAndAdvance(screen, "add-matching-question-row");
     expect(screen.getByLabelText("Matching")).toBeTruthy();
 
-    pressAndAdvance(screen, "add-transit-line-question-row");
+    pressAndAdvance(screen, "add-matching-transit-line-row");
     await waitFor(() => {
         expect(
             screen.getByTestId("matching-answer-option-unanswered"),
@@ -359,7 +359,7 @@ describe("MapAppScreen", () => {
         });
         expect(screen.getByLabelText("Matching")).toBeTruthy();
         expect(
-            screen.getByTestId("add-transit-line-question-row"),
+            screen.getByTestId("add-matching-transit-line-row"),
         ).toBeTruthy();
 
         fireEvent.press(screen.getByText("Back"));
@@ -581,7 +581,7 @@ describe("MapAppScreen", () => {
         });
 
         expect(screen.getByLabelText("Questions")).toBeTruthy();
-        expect(screen.getByText("Transit Line 1")).toBeTruthy();
+        expect(screen.getByText("Matching 1")).toBeTruthy();
         expect(screen.getByText("Transit line: not selected")).toBeTruthy();
     });
 

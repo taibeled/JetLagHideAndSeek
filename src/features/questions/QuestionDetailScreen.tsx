@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { requestUserCoordinate } from "@/features/map/useUserLocation";
+import { OsmMatchingQuestionDetailScreen } from "@/features/questions/matching/OsmMatchingQuestionDetailScreen";
 import { RadarQuestionDetailScreen } from "@/features/questions/radar/RadarQuestionDetailScreen";
 import { TransitLineQuestionDetailScreen } from "@/features/questions/transitLine/TransitLineQuestionDetailScreen";
 import { SheetScrollView } from "@/features/sheet/SheetScrollView";
@@ -46,8 +47,14 @@ export function QuestionDetailScreen({
                     sheetIndex={sheetIndex}
                     updateQuestion={updateQuestion}
                 />
-            ) : activeQuestion.type === "matching" ? (
+            ) : activeQuestion.type === "matching" &&
+              activeQuestion.category === "transit-line" ? (
                 <TransitLineQuestionDetailScreen
+                    question={activeQuestion}
+                    updateQuestion={updateQuestion}
+                />
+            ) : activeQuestion.type === "matching" ? (
+                <OsmMatchingQuestionDetailScreen
                     question={activeQuestion}
                     updateQuestion={updateQuestion}
                 />

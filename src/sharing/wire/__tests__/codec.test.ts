@@ -111,11 +111,18 @@ describe("sharing wire codec", () => {
                 questions: [
                     {
                         answer: "unanswered" as const,
+                        candidates: [],
+                        category: "transit-line" as const,
                         center: [139.7, 35.7] as [number, number],
                         createdAt: "2026-05-17T00:00:00.000Z",
                         id: "matching-1",
                         lineId: "gtfs:test:route:line-1",
                         lineName: "Line 1",
+                        selectedOsmId: null,
+                        selectedOsmType: null,
+                        targetName: null,
+                        targetOsmId: null,
+                        targetOsmType: null,
                         type: "matching" as const,
                         updatedAt: "2026-05-17T00:00:00.000Z",
                     },
@@ -130,6 +137,42 @@ describe("sharing wire codec", () => {
             expect(decoded.envelope.payload.questions?.[0]).toEqual(
                 withMatching.payload.questions[0],
             );
+        }
+    });
+
+    it("round-trips matching question with non-default category and target fields", () => {
+        const withMatching = {
+            ...envelope,
+            payload: {
+                ...envelope.payload,
+                questions: [
+                    {
+                        answer: "positive" as const,
+                        candidates: [],
+                        category: "park" as const,
+                        center: [139.7, 35.7] as [number, number],
+                        createdAt: "2026-05-17T00:00:00.000Z",
+                        id: "matching-park",
+                        lineId: null,
+                        lineName: null,
+                        selectedOsmId: null,
+                        selectedOsmType: null,
+                        targetName: "Ueno Park",
+                        targetOsmId: 123456,
+                        targetOsmType: "way" as const,
+                        type: "matching" as const,
+                        updatedAt: "2026-05-17T00:00:00.000Z",
+                    },
+                ],
+            },
+        };
+
+        const payload = encodeEnvelope(withMatching);
+        const decoded = decodeEnvelopePayload(payload);
+        expect(decoded.ok).toBe(true);
+        if (decoded.ok) {
+            const question = decoded.envelope.payload.questions?.[0];
+            expect(question).toEqual(withMatching.payload.questions[0]);
         }
     });
 });

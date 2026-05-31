@@ -59,14 +59,59 @@ export const appStateRadarQuestionSchema = z.object({
     type: z.literal("radar"),
     updatedAt: z.string().min(1),
 });
+const matchingCategorySchema = z.enum([
+    "transit-line",
+    "commercial-airport",
+    "admin-1st",
+    "admin-2nd",
+    "admin-3rd",
+    "admin-4th",
+    "mountain",
+    "landmark",
+    "park",
+    "amusement-park",
+    "zoo",
+    "aquarium",
+    "golf-course",
+    "museum",
+    "movie-theater",
+    "hospital",
+    "library",
+    "foreign-consulate",
+]);
+
 const appStateMatchingQuestionSchema = z
     .object({
         answer: questionAnswerSchema,
+        candidates: z
+            .array(
+                z.object({
+                    lat: z.number(),
+                    lon: z.number(),
+                    name: z.string(),
+                    osmId: z.number(),
+                    osmType: z.enum(["node", "way", "relation"]),
+                    tags: z.record(z.string()),
+                }),
+            )
+            .default([]),
+        category: matchingCategorySchema.default("transit-line"),
         center: positionSchema,
         createdAt: z.string().min(1),
         id: z.string().min(1),
         lineId: z.string().min(1).nullable(),
         lineName: z.string().min(1).nullable(),
+        selectedOsmId: z.number().int().positive().nullable().default(null),
+        selectedOsmType: z
+            .enum(["node", "way", "relation"])
+            .nullable()
+            .default(null),
+        targetName: z.string().min(1).nullable().default(null),
+        targetOsmId: z.number().int().positive().nullable().default(null),
+        targetOsmType: z
+            .enum(["node", "way", "relation"])
+            .nullable()
+            .default(null),
         type: z.literal("matching"),
         updatedAt: z.string().min(1),
     })

@@ -40,6 +40,7 @@ import {
     buildCombinedEligibilityMask,
     buildPlayAreaMask,
 } from "./maskBuilder";
+import { OsmMatchingLayers } from "./OsmMatchingLayers";
 import { PlayAreaBoundaryLayer } from "./PlayAreaBoundaryLayer";
 import {
     CombinedInsideMaskLayer,
@@ -88,10 +89,14 @@ export function NativeMap({ isQuestionDetailRoute, onPress }: NativeMapProps) {
                 ...asSeparateMaskConstraints(
                     questionMapRenderState.transitLine.hitMaskFeatures,
                 ),
+                ...asSeparateMaskConstraints(
+                    questionMapRenderState.osmMatching.hitMaskFeatures,
+                ),
             ],
             [
                 questionMapRenderState.radar.missMaskFeatures,
                 questionMapRenderState.transitLine.missMaskFeatures,
+                questionMapRenderState.osmMatching.missMaskFeatures,
             ],
         );
     }, [
@@ -101,6 +106,8 @@ export function NativeMap({ isQuestionDetailRoute, onPress }: NativeMapProps) {
         questionMapRenderState.radar.missMaskFeatures,
         questionMapRenderState.transitLine.hitMaskFeatures,
         questionMapRenderState.transitLine.missMaskFeatures,
+        questionMapRenderState.osmMatching.hitMaskFeatures,
+        questionMapRenderState.osmMatching.missMaskFeatures,
     ]);
     const mapStyle = useMemo(() => buildOsmRasterStyleJson(), []);
     const fitPadding = useMemo(
@@ -235,6 +242,9 @@ export function NativeMap({ isQuestionDetailRoute, onPress }: NativeMapProps) {
                     <RadarQuestionLayers
                         onPress={handleMapPress}
                         radar={questionMapRenderState.radar}
+                    />
+                    <OsmMatchingLayers
+                        osmMatching={questionMapRenderState.osmMatching}
                     />
                     <PlayAreaBoundaryLayer playArea={playArea} />
 

@@ -80,7 +80,17 @@ export type RadarQuestionRenderState = {
     previewFeatures: RadarQuestionFeatureCollection;
 };
 
+export type OsmMatchingRenderState = {
+    hitMaskFeatures: FeatureCollection<Polygon | MultiPolygon>;
+    missMaskFeatures: FeatureCollection<Polygon | MultiPolygon>;
+    poiFeatures: FeatureCollection<
+        Point,
+        { isSelected: boolean; name: string; osmId: number }
+    >;
+};
+
 export type QuestionMapRenderState = {
+    osmMatching: OsmMatchingRenderState;
     radar: RadarQuestionRenderState;
     radarAreaFeatures: RadarQuestionFeatureCollection;
     transitLine: {

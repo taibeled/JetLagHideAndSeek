@@ -6,6 +6,8 @@ import type { AppStateEnvelopeV1, WireEnvelope } from "./schema";
 
 export const FIELD_MAP = {
     answer: "e",
+    candidates: "cd",
+    category: "b",
     center: "n",
     createdAt: "c",
     gameId: "g",
@@ -23,7 +25,12 @@ export const FIELD_MAP = {
     questionType: "t",
     lineId: "x",
     lineName: "y",
+    selectedOsmId: "f",
+    selectedOsmType: "j",
     selectedPresetIds: "s",
+    targetName: "u",
+    targetOsmId: "w",
+    targetOsmType: "z",
     version: "v",
 } as const;
 
@@ -74,13 +81,38 @@ const radarQuestionMinifiedSchema = z.object({
         .optional(),
 });
 
+const compactCandidateSchema = z.object({
+    [FIELD_MAP.center]: compactCoordSchema,
+    [FIELD_MAP.osmId]: z.number().int().positive(),
+    name: z.string().min(1),
+    osmType: z.enum(["node", "way", "relation"]),
+});
+
 const matchingQuestionMinifiedSchema = z.object({
     [FIELD_MAP.answer]: z.enum(["p", "n"]).optional(),
+    [FIELD_MAP.candidates]: z.array(compactCandidateSchema).optional(),
+    [FIELD_MAP.category]: z.string().min(1),
     [FIELD_MAP.center]: compactCoordSchema.optional(),
     [FIELD_MAP.id]: z.string().min(1).optional(),
     [FIELD_MAP.questionType]: z.literal("m"),
     [FIELD_MAP.lineId]: z.string().min(1).nullable(),
     [FIELD_MAP.lineName]: z.string().min(1).nullable(),
+    [FIELD_MAP.selectedOsmId]: z
+        .number()
+        .int()
+        .positive()
+        .nullable()
+        .optional(),
+    [FIELD_MAP.selectedOsmType]: z
+        .enum(["node", "way", "relation"])
+        .nullable()
+        .optional(),
+    [FIELD_MAP.targetName]: z.string().min(1).nullable().optional(),
+    [FIELD_MAP.targetOsmId]: z.number().int().positive().nullable().optional(),
+    [FIELD_MAP.targetOsmType]: z
+        .enum(["node", "way", "relation"])
+        .nullable()
+        .optional(),
 });
 
 const metadataMinifiedSchema = z.object({
@@ -130,6 +162,45 @@ export function uncompactCoord(
     latInt: number,
 ): [number, number] {
     return [lonInt / COORD_FACTOR, latInt / COORD_FACTOR];
+}
+
+export function compactCandidate(candidate: {
+    lat: number;
+    lon: number;
+    name: string;
+    osmId: number;
+    osmType: "node" | "way" | "relation";
+}): z.infer<typeof compactCandidateSchema> {
+    return {
+        [FIELD_MAP.center]: compactCoord(candidate.lon, candidate.lat),
+        [FIELD_MAP.osmId]: candidate.osmId,
+        name: candidate.name,
+        osmType: candidate.osmType,
+    };
+}
+
+export function uncompactCandidate(
+    mini: z.infer<typeof compactCandidateSchema>,
+): {
+    lat: number;
+    lon: number;
+    name: string;
+    osmId: number;
+    osmType: "node" | "way" | "relation";
+    tags: Record<string, string>;
+} {
+    const [lon, lat] = uncompactCoord(
+        mini[FIELD_MAP.center][0],
+        mini[FIELD_MAP.center][1],
+    );
+    return {
+        lat,
+        lon,
+        name: mini.name,
+        osmId: mini[FIELD_MAP.osmId],
+        osmType: mini.osmType,
+        tags: {},
+    };
 }
 
 const POLYLINE_HEADER_SIZE = 3;
@@ -251,6 +322,7 @@ export function minifyEnvelope(env: WireEnvelope): WireEnvelopeMinified {
             }
 
             const result: Record<string, unknown> = {
+                [FIELD_MAP.category]: question.category,
                 [FIELD_MAP.center]: compactCoord(
                     question.center[0],
                     question.center[1],
@@ -263,6 +335,31 @@ export function minifyEnvelope(env: WireEnvelope): WireEnvelopeMinified {
 
             if (question.answer !== "unanswered") {
                 result[FIELD_MAP.answer] = ANSWER_TO_MINIFIED[question.answer];
+            }
+
+            if (question.selectedOsmId !== null) {
+                result[FIELD_MAP.selectedOsmId] = question.selectedOsmId;
+            }
+
+            if (question.selectedOsmType !== null) {
+                result[FIELD_MAP.selectedOsmType] = question.selectedOsmType;
+            }
+
+            if (question.targetName !== null) {
+                result[FIELD_MAP.targetName] = question.targetName;
+            }
+
+            if (question.targetOsmId !== null) {
+                result[FIELD_MAP.targetOsmId] = question.targetOsmId;
+            }
+
+            if (question.targetOsmType !== null) {
+                result[FIELD_MAP.targetOsmType] = question.targetOsmType;
+            }
+
+            if (question.candidates.length > 0) {
+                result[FIELD_MAP.candidates] =
+                    question.candidates.map(compactCandidate);
             }
 
             return result;
@@ -341,8 +438,19 @@ export function unminifyEnvelope(
                               | { center?: [number, number] }
                               | undefined
                       )?.center ?? [0, 0]);
+                const compactCandidates = q[FIELD_MAP.candidates] as
+                    | z.infer<typeof compactCandidateSchema>[]
+                    | undefined;
                 return normalizeTransitLineQuestion({
                     answer: resolvedAnswer,
+                    candidates:
+                        compactCandidates?.map(uncompactCandidate) ?? [],
+                    category:
+                        (q[FIELD_MAP.category] as
+                            | ReturnType<
+                                  typeof normalizeTransitLineQuestion
+                              >["category"]
+                            | undefined) ?? "transit-line",
                     center,
                     createdAt,
                     id:
@@ -354,6 +462,35 @@ export function unminifyEnvelope(
                     lineName:
                         (q[FIELD_MAP.lineName] as string | null | undefined) ??
                         null,
+                    selectedOsmId:
+                        (q[FIELD_MAP.selectedOsmId] as
+                            | number
+                            | null
+                            | undefined) ?? null,
+                    selectedOsmType:
+                        (q[FIELD_MAP.selectedOsmType] as
+                            | "node"
+                            | "way"
+                            | "relation"
+                            | null
+                            | undefined) ?? null,
+                    targetName:
+                        (q[FIELD_MAP.targetName] as
+                            | string
+                            | null
+                            | undefined) ?? null,
+                    targetOsmId:
+                        (q[FIELD_MAP.targetOsmId] as
+                            | number
+                            | null
+                            | undefined) ?? null,
+                    targetOsmType:
+                        (q[FIELD_MAP.targetOsmType] as
+                            | "node"
+                            | "way"
+                            | "relation"
+                            | null
+                            | undefined) ?? null,
                     type: "matching",
                     updatedAt: createdAt,
                 });

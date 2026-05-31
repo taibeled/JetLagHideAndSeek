@@ -1,5 +1,5 @@
+import type { MatchingQuestion } from "@/features/questions/matching/matchingTypes";
 import type { RadarQuestion } from "@/features/questions/radar/radarTypes";
-import type { TransitLineQuestion } from "@/features/questions/transitLine/transitLineTypes";
 
 export type {
     BaseQuestion,
@@ -9,5 +9,5 @@ export type {
     QuestionType,
 } from "@/features/questions/coreTypes";
 
-export type QuestionState = RadarQuestion | TransitLineQuestion;
+export type QuestionState = RadarQuestion | MatchingQuestion;
 export type QuestionsImportState = QuestionState[];

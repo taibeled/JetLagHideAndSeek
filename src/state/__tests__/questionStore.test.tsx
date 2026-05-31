@@ -55,6 +55,21 @@ function Probe() {
                     ? activeQuestion.center.join(",")
                     : "none"}
             </Text>
+            <Text testID="probe-matching-candidates">
+                {activeQuestion?.type === "matching"
+                    ? JSON.stringify(activeQuestion.candidates)
+                    : "none"}
+            </Text>
+            <Text testID="probe-matching-selected-osm-id">
+                {activeQuestion?.type === "matching"
+                    ? JSON.stringify(activeQuestion.selectedOsmId)
+                    : "none"}
+            </Text>
+            <Text testID="probe-matching-selected-osm-type">
+                {activeQuestion?.type === "matching"
+                    ? JSON.stringify(activeQuestion.selectedOsmType)
+                    : "none"}
+            </Text>
             <Text testID="probe-first-answer">
                 {questions[0]?.type === "radar" ? questions[0].answer : "none"}
             </Text>
@@ -191,6 +206,15 @@ describe("QuestionProvider", () => {
         expect(screen.getByTestId("probe-matching-center")).toHaveTextContent(
             defaultPlayArea.center.join(","),
         );
+        expect(
+            screen.getByTestId("probe-matching-candidates"),
+        ).toHaveTextContent("[]");
+        expect(
+            screen.getByTestId("probe-matching-selected-osm-id"),
+        ).toHaveTextContent("null");
+        expect(
+            screen.getByTestId("probe-matching-selected-osm-type"),
+        ).toHaveTextContent("null");
     });
 
     it("updates question centers generically", async () => {

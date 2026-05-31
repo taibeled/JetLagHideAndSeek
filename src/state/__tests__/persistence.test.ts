@@ -51,11 +51,18 @@ function makeRadarQuestion() {
 function makeMatchingQuestion() {
     return {
         answer: "unanswered" as const,
+        candidates: [],
+        category: "transit-line" as const,
         center: defaultPlayArea.center,
         createdAt: "2026-05-18T00:00:00.000Z",
         id: "matching-1",
         lineId: "gtfs:test:route:line-1",
         lineName: "Line 1",
+        selectedOsmId: null,
+        selectedOsmType: null,
+        targetName: null,
+        targetOsmId: null,
+        targetOsmType: null,
         type: "matching" as const,
         updatedAt: "2026-05-18T00:00:00.000Z",
     };
