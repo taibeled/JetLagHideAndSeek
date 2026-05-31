@@ -7,7 +7,7 @@ import type {
     Polygon,
 } from "geojson";
 
-import type { Bbox } from "@/features/map/geojsonTypes";
+import type { Bbox } from "@/shared/geojson";
 import type { QuestionState } from "@/features/questions/questionTypes";
 import {
     buildOsmMatchingHitMask,

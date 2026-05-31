@@ -8,7 +8,7 @@ import type {
     Polygon,
 } from "geojson";
 
-import type { Bbox } from "@/features/map/geojsonTypes";
+import type { Bbox } from "@/shared/geojson";
 import type {
     TransitRoute,
     TransitSource,

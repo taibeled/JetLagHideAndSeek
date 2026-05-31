@@ -1,7 +1,7 @@
 import circle from "@turf/circle";
 
 import type { TransitStation } from "@/features/hidingZone/hidingZoneTypes";
-import type { Position } from "@/features/map/geojsonTypes";
+import type { Position } from "@/shared/geojson";
 import type { QuestionState } from "@/features/questions/questionTypes";
 export { fromMeters, toMeters } from "@/shared/distanceUnits";
 

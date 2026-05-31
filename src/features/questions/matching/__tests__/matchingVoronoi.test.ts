@@ -1,4 +1,4 @@
-import type { Bbox } from "@/features/map/geojsonTypes";
+import type { Bbox } from "@/shared/geojson";
 import type { OsmFeature } from "@/features/questions/matching/matchingTypes";
 import {
     buildOsmMatchingHitMask,

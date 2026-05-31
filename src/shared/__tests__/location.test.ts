@@ -1,4 +1,4 @@
-import { requestUserCoordinate } from "../useUserLocation";
+import { requestUserCoordinate } from "../location";
 
 describe("requestUserCoordinate", () => {
     it("returns the current coordinate when permission is granted", async () => {

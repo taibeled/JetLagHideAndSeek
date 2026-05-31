@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import type { Bbox } from "@/features/map/geojsonTypes";
+import type { Bbox } from "@/shared/geojson";
 import type { QuestionMapRenderState } from "@/features/questions/radar/radarTypes";
 import { buildRadarQuestionRenderState } from "@/features/questions/radar/radarGeometry";
 import type { QuestionState } from "@/features/questions/questionTypes";

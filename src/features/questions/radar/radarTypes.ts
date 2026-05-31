@@ -7,7 +7,7 @@ import type {
 } from "geojson";
 
 import type { TransitStation } from "@/features/hidingZone/hidingZoneTypes";
-import type { Position } from "@/features/map/geojsonTypes";
+import type { Position } from "@/shared/geojson";
 import type {
     BaseQuestion,
     QuestionAnswer,

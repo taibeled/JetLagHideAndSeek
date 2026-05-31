@@ -1,4 +1,4 @@
-import type { Bbox } from "@/features/map/geojsonTypes";
+import type { Bbox } from "@/shared/geojson";
 import { defaultPlayArea } from "@/features/map/playArea";
 import type { MatchingQuestion } from "@/features/questions/matching/matchingTypes";
 import { buildOsmMatchingRenderState } from "@/features/questions/matching/osmMatchingGeometry";

@@ -1,5 +1,5 @@
+import { bboxIntersects } from "@/shared/geojson";
 import {
-    bboxIntersects,
     buildHidingZoneFeatureCollection,
     buildRouteFeatureCollection,
     buildStationFeatureCollection,

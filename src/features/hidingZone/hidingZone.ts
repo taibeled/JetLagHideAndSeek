@@ -2,7 +2,7 @@ import circle from "@turf/circle";
 import { featureCollection } from "@turf/helpers";
 import union from "@turf/union";
 
-import type { Bbox } from "@/features/map/geojsonTypes";
+import { bboxIntersects, type Bbox } from "@/shared/geojson";
 import {
     fromMeters as fromDistanceMeters,
     toMeters as toDistanceMeters,
@@ -20,17 +20,6 @@ import type {
 } from "./hidingZoneTypes";
 
 const STATION_FALLBACK_COLOR = "#1f6f78";
-
-export function bboxIntersects(a: Bbox, b: Bbox): boolean {
-    const [aWest, aSouth, aEast, aNorth] = a;
-    const [bWest, bSouth, bEast, bNorth] = b;
-    return !(
-        aEast < bWest ||
-        bEast < aWest ||
-        aNorth < bSouth ||
-        bNorth < aSouth
-    );
-}
 
 export function getSuggestedPresetIds(
     presets: HidingZonePreset[],

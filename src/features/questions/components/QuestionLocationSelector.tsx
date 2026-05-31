@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import type { Position } from "@/features/map/geojsonTypes";
-import { requestUserCoordinate } from "@/features/map/useUserLocation";
+import type { Position } from "@/shared/geojson";
+import { requestUserCoordinate } from "@/shared/location";
 import { colors } from "@/theme/colors";
 
 type QuestionLocationSelectorProps = {

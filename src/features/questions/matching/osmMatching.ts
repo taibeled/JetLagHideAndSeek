@@ -1,4 +1,4 @@
-import type { Position } from "@/features/map/geojsonTypes";
+import type { Position } from "@/shared/geojson";
 import type { MatchingCategory, OsmFeature } from "./matchingTypes";
 import { getCategoryConfig } from "./matchingCategories";
 

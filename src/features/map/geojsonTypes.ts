@@ -1,6 +1,6 @@
-export type Position = [number, number];
+import type { Bbox, Position } from "@/shared/geojson";
 
-export type Bbox = [number, number, number, number];
+export type { Bbox, Position };
 
 export type PolygonGeometry = {
     coordinates: Position[][] | Position[][][];

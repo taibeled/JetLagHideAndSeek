@@ -1564,6 +1564,7 @@ Deep link, QR code, share sheet, pasted URL, and future snapshot server should a
 That gives `mobile_v2` a practical serverless multiplayer path now while preserving a clean upgrade path to HTTPS links, snapshot links, and live rooms later.
 
 > **Current status:** The core `app-state` sharing path is complete and tested. The architecture is clean and extensible. The next logical increments are:
+>
 > 1. Question request/answer envelopes (multiplayer question flow).
 > 2. Paste import fallback.
 > 3. Partial export / merge import modes.

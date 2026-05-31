@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { requestUserCoordinate } from "@/features/map/useUserLocation";
+import { requestUserCoordinate } from "@/shared/location";
 import { SheetScrollView } from "@/features/sheet/SheetScrollView";
 import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
 import { usePlayArea } from "@/state/playAreaStore";

@@ -21,7 +21,7 @@ import {
     radarDistanceOptionMeters,
 } from "@/features/questions/radar/radarTypes";
 import { normalizeTransitLineQuestion } from "@/features/questions/transitLine/transitLineNormalization";
-import type { Position } from "@/features/map/geojsonTypes";
+import type { Position } from "@/shared/geojson";
 import {
     fromMeters,
     toMeters,

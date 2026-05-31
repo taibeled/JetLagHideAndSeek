@@ -3,7 +3,7 @@ import union from "@turf/union";
 import voronoi from "@turf/voronoi";
 import type { FeatureCollection, MultiPolygon, Polygon } from "geojson";
 
-import type { Bbox } from "@/features/map/geojsonTypes";
+import type { Bbox } from "@/shared/geojson";
 import type { OsmFeature } from "@/features/questions/matching/matchingTypes";
 
 export function makeOsmKey(
