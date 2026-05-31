@@ -36,13 +36,10 @@ appId: com.raycatdev.hideandseek.v2
 - tapOn: "Open matching questions"
 - waitForAnimationToEnd:
       timeout: 1000
-- tapOn: "Add transit line question"
+- tapOn: "Transit Line"
 - waitForAnimationToEnd:
       timeout: 1000
-- assertVisible: ".*Transit line question detail.*"
-- assertVisible: ".*Transit line answer section.*"
-- assertVisible: ".*Set transit line pin to my location.*"
-- assertVisible: ".*Hit answer.*"
+- assertVisible: "Matching question detail. Answer section. Set pin to my location. Hit answer."
 - tapOn:
       point: "50%,84%"
 - waitForAnimationToEnd:
