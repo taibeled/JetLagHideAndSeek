@@ -155,6 +155,17 @@ export function buildStationFeatureCollection(
     };
 }
 
+const MAX_ZONE_CACHE_SIZE = 30;
+const zoneFeatureCache = new Map<string, ZoneFeatureCollection>();
+
+function zoneCacheKey(stations: TransitStation[], radiusMeters: number): string {
+    const keys = stations
+        .map((s) => s.id)
+        .sort()
+        .join(",");
+    return `${keys}|${radiusMeters}`;
+}
+
 export function buildHidingZoneFeatureCollection(
     stations: TransitStation[],
     radiusMeters: number,
@@ -162,6 +173,10 @@ export function buildHidingZoneFeatureCollection(
     if (stations.length === 0) {
         return { features: [], type: "FeatureCollection" };
     }
+
+    const cacheKey = zoneCacheKey(stations, radiusMeters);
+    const cached = zoneFeatureCache.get(cacheKey);
+    if (cached) return cached;
 
     const circles = stations.map((station) =>
         circle([station.lon, station.lat], radiusMeters / 1000, {
@@ -171,21 +186,31 @@ export function buildHidingZoneFeatureCollection(
         }),
     );
 
+    let result: ZoneFeatureCollection;
+
     if (circles.length === 1) {
-        return {
+        result = {
             features: [circles[0]],
+            type: "FeatureCollection",
+        };
+    } else {
+        const merged = union(featureCollection(circles), {
+            properties: { radiusMeters },
+        }) as ZoneFeature | null;
+
+        result = {
+            features: merged ? [merged] : [],
             type: "FeatureCollection",
         };
     }
 
-    const merged = union(featureCollection(circles), {
-        properties: { radiusMeters },
-    }) as ZoneFeature | null;
+    if (zoneFeatureCache.size >= MAX_ZONE_CACHE_SIZE) {
+        const oldest = zoneFeatureCache.keys().next().value;
+        if (oldest !== undefined) zoneFeatureCache.delete(oldest);
+    }
+    zoneFeatureCache.set(cacheKey, result);
 
-    return {
-        features: merged ? [merged] : [],
-        type: "FeatureCollection",
-    };
+    return result;
 }
 
 function getStationRouteColors(

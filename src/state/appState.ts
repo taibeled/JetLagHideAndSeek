@@ -150,6 +150,7 @@ export const appStateQuestionsSchema = z.array(
 );
 
 export const appStateQuestionSettingsSchema = z.object({
+    activeQuestionId: z.string().nullable().default(null),
     isPinLocked: z.boolean(),
 });
 
@@ -210,6 +211,7 @@ export function createAppStateV1({
             osmType: playArea.osmType,
         },
         questionSettings: {
+            activeQuestionId: questionSettings?.activeQuestionId ?? null,
             isPinLocked: questionSettings?.isPinLocked ?? false,
         },
         questions: questions ? [...questions] : [],
@@ -236,7 +238,7 @@ function addMissingV1Slices(value: unknown): unknown {
         questionSettings:
             "questionSettings" in value
                 ? value.questionSettings
-                : { isPinLocked: false },
+                : { activeQuestionId: null, isPinLocked: false },
         questions,
     };
 }
@@ -307,6 +309,7 @@ export function appStateQuestionSettingsToImportState(
     questionSettings: AppStateQuestionSettingsV1,
 ): QuestionSettingsImportState {
     return {
+        activeQuestionId: questionSettings.activeQuestionId,
         isPinLocked: questionSettings.isPinLocked,
     };
 }

@@ -55,10 +55,12 @@ export function calculateCenter([west, south, east, north]: Bbox): Position {
     return [(west + east) / 2, (south + north) / 2];
 }
 
+const tokyoBbox = calculateBbox(tokyoBoundary);
+
 export const defaultPlayArea: DefaultPlayArea = {
-    bbox: calculateBbox(tokyoBoundary),
+    bbox: tokyoBbox,
     boundary: tokyoBoundary,
-    center: calculateCenter(calculateBbox(tokyoBoundary)),
+    center: calculateCenter(tokyoBbox),
     label: "Tokyo 23 Wards",
     osmId: 19631009,
     osmType: "R",

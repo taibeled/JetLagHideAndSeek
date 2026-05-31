@@ -25,6 +25,12 @@ export type LoadedPlayArea = {
     playArea: PlayArea;
 };
 
+type BoundaryCacheEnvelope = {
+    /** ISO-8601 timestamp of when the boundary was cached. */
+    cachedAt: string;
+    playArea: PlayArea;
+};
+
 export function parseRelationId(value: string): number | null {
     const trimmed = value.trim();
     if (!/^\d+$/.test(trimmed)) return null;
@@ -62,14 +68,20 @@ export async function loadPlayAreaByRelationId(
     const cacheKey = getBoundaryCacheKey(relationId);
     const persisted = await AsyncStorage.getItem(cacheKey);
     if (persisted) {
-        const playArea = JSON.parse(persisted) as PlayArea;
+        const envelope = JSON.parse(persisted) as BoundaryCacheEnvelope;
+        // Handle legacy entries that were stored without the envelope.
+        const playArea = envelope.playArea ?? (envelope as unknown as PlayArea);
         memoryCache.set(relationId, playArea);
         return { cacheSource: "persisted", playArea };
     }
 
     const playArea = await fetchPlayAreaBoundary(relationId);
     memoryCache.set(relationId, playArea);
-    await AsyncStorage.setItem(cacheKey, JSON.stringify(playArea));
+    const envelope: BoundaryCacheEnvelope = {
+        cachedAt: new Date().toISOString(),
+        playArea,
+    };
+    await AsyncStorage.setItem(cacheKey, JSON.stringify(envelope));
     return { cacheSource: "fetched", playArea };
 }
 
@@ -121,6 +133,42 @@ export function buildPlayAreaFromBoundary(
 
 export function clearPlayAreaMemoryCache() {
     memoryCache.clear();
+}
+
+/**
+ * Scan AsyncStorage for persisted boundary entries and seed the in-memory
+ * cache so that subsequent {@link loadPlayAreaByRelationId} calls skip the
+ * AsyncStorage read and avoid unnecessary Overpass fetches on restart.
+ *
+ * Call once during app startup (non-blocking — failures are silently ignored).
+ */
+export async function warmBoundaryCacheFromStorage(): Promise<void> {
+    try {
+        const keys = await AsyncStorage.getAllKeys();
+        for (const key of keys) {
+            if (!key.startsWith(CACHE_PREFIX)) continue;
+
+            const relationId = Number(key.slice(CACHE_PREFIX.length));
+            if (!Number.isSafeInteger(relationId) || relationId <= 0) continue;
+
+            // Skip if already in memory (e.g., bundled or already warmed).
+            if (memoryCache.has(relationId)) continue;
+
+            try {
+                const raw = await AsyncStorage.getItem(key);
+                if (!raw) continue;
+                const envelope = JSON.parse(raw) as BoundaryCacheEnvelope;
+                // Handle legacy entries stored without the envelope.
+                const playArea =
+                    envelope.playArea ?? (envelope as unknown as PlayArea);
+                memoryCache.set(relationId, playArea);
+            } catch {
+                // Corrupted entry — skip it.
+            }
+        }
+    } catch {
+        // AsyncStorage may not be available — ignore.
+    }
 }
 
 function filterBoundaryFeatures(

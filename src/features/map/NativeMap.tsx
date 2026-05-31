@@ -17,9 +17,9 @@ import { colors } from "@/theme/colors";
 
 import { useHidingZoneDerived } from "@/state/hidingZoneStore";
 import {
+    useIsPinLocked,
     useQuestionActions,
     useQuestionDerived,
-    useQuestionState,
     updateQuestionCenter,
 } from "@/state/questionStore";
 import { usePlayArea } from "@/state/playAreaStore";
@@ -69,7 +69,7 @@ export function NativeMap({ isQuestionDetailRoute, onPress }: NativeMapProps) {
     const { routeFeatures, stationFeatures, zoneFeatures } =
         useHidingZoneDerived();
     const { activeQuestion } = useQuestionDerived();
-    const { isPinLocked } = useQuestionState();
+    const isPinLocked = useIsPinLocked();
     const { updateQuestion } = useQuestionActions();
     const questionMapRenderState = useQuestionMapRenderState();
     const { playArea } = usePlayArea();

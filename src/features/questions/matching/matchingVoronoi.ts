@@ -18,13 +18,41 @@ export function makeOsmKey(
     return `${osmType}/${osmId}`;
 }
 
+const MAX_VORONOI_CACHE_SIZE = 20;
+const voronoiCache = new Map<
+    string,
+    FeatureCollection<Polygon, { osmKey: string; nameLength?: number }>
+>();
+
+function voronoiCacheKey(
+    candidates: (OsmFeature & { distanceMeters?: number })[],
+    bbox: Bbox,
+): string {
+    const keys = candidates
+        .map((c) => {
+            const base = `${makeOsmKey(c.osmType, c.osmId)}@${c.lon.toFixed(6)},${c.lat.toFixed(6)}`;
+            // Include nameLength in the key so candidates that differ only by
+            // this optional property don't collide in the cache.
+            const nl =
+                c.nameLength !== undefined ? `:nl${c.nameLength}` : "";
+            return `${base}${nl}`;
+        })
+        .sort()
+        .join(",");
+    return `${keys}|${bbox.join(",")}`;
+}
+
 export function computeVoronoiCells(
     candidates: (OsmFeature & { distanceMeters?: number })[],
     bbox: Bbox,
-): FeatureCollection<Polygon, { osmKey: string }> {
+): FeatureCollection<Polygon, { osmKey: string; nameLength?: number }> {
     if (candidates.length === 0) {
         return featureCollection([]);
     }
+
+    const cacheKey = voronoiCacheKey(candidates, bbox);
+    const cached = voronoiCache.get(cacheKey);
+    if (cached) return cached;
 
     // Deduplicate by (osmType, osmId) and by coordinates to avoid malformed
     // Turf Voronoi output when duplicate points are present.
@@ -50,7 +78,7 @@ export function computeVoronoiCells(
     const cells = voronoi(featureCollection(points), { bbox });
 
     // Ensure each cell preserves the osmKey property and nameLength (if present)
-    return {
+    const result = {
         ...cells,
         features: cells.features.map((feature, index) => {
             const candidate = deduped[index];
@@ -67,6 +95,15 @@ export function computeVoronoiCells(
             };
         }),
     } as FeatureCollection<Polygon, { osmKey: string; nameLength?: number }>;
+
+    // Evict oldest entry when cache exceeds max size.
+    if (voronoiCache.size >= MAX_VORONOI_CACHE_SIZE) {
+        const oldest = voronoiCache.keys().next().value;
+        if (oldest !== undefined) voronoiCache.delete(oldest);
+    }
+    voronoiCache.set(cacheKey, result);
+
+    return result;
 }
 
 export function buildOsmMatchingHitMask(

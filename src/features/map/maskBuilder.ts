@@ -51,11 +51,53 @@ export function buildCombinedInsideMask(
     return buildCombinedEligibilityMask(playArea, cutouts);
 }
 
+const MAX_MASK_CACHE_SIZE = 40;
+const maskResultCache = new Map<string, GeoJsonFeatureCollection>();
+
+/**
+ * Build a cache key from the structure and a lightweight coordinate
+ * fingerprint of each input. We sample the first ring of each feature so
+ * that geometrically different inputs produce different keys.
+ */
+function maskCacheKey(
+    playArea: PolygonFeatureCollection,
+    requiredConstraints: PolygonFeatureCollection[],
+    excludedAreas: PolygonFeatureCollection[],
+): string {
+    const collections = [playArea, ...requiredConstraints, ...excludedAreas];
+    const parts = collections.map((c) =>
+        c.features
+            .map((f) => {
+                const coords = (f.geometry as { coordinates?: unknown })
+                    .coordinates;
+                const ring0 = Array.isArray(coords) ? coords[0] : undefined;
+                const firstCoord = Array.isArray(ring0) ? ring0[0] : undefined;
+                const hash =
+                    firstCoord &&
+                    Array.isArray(firstCoord) &&
+                    typeof firstCoord[0] === "number"
+                        ? `${firstCoord[0].toFixed(3)},${firstCoord[1]?.toFixed(3) ?? 0}`
+                        : "?";
+                return `${f.geometry.type}:${f.geometry.coordinates ? "hasCoords" : "none"}:${hash}`;
+            })
+            .join("|"),
+    );
+    return parts.join("||");
+}
+
 export function buildCombinedEligibilityMask(
     playArea: PolygonFeatureCollection,
     requiredConstraints: PolygonFeatureCollection[],
     excludedAreas: PolygonFeatureCollection[] = [],
 ): GeoJsonFeatureCollection {
+    const cacheKey = maskCacheKey(
+        playArea,
+        requiredConstraints,
+        excludedAreas,
+    );
+    const cached = maskResultCache.get(cacheKey);
+    if (cached) return cached;
+
     const playAreaPolygons = getPolygons(playArea);
 
     if (playAreaPolygons.length === 0) {
@@ -105,7 +147,16 @@ export function buildCombinedEligibilityMask(
         eligibleArea,
     ) as Position[][][];
 
-    return buildMultiPolygonFeatureCollection(maskedArea);
+    const result = buildMultiPolygonFeatureCollection(maskedArea);
+
+    // Evict oldest entry when cache exceeds max size.
+    if (maskResultCache.size >= MAX_MASK_CACHE_SIZE) {
+        const oldest = maskResultCache.keys().next().value;
+        if (oldest !== undefined) maskResultCache.delete(oldest);
+    }
+    maskResultCache.set(cacheKey, result);
+
+    return result;
 }
 
 function getGeoms(collections: PolygonFeatureCollection[]): Geom[] {

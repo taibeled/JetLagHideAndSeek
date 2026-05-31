@@ -11,7 +11,7 @@ import {
     updateQuestionCenter,
     useQuestionActions,
     useQuestionDerived,
-    useQuestionState,
+    useIsPinLocked,
 } from "@/state/questionStore";
 import { colors } from "@/theme/colors";
 
@@ -75,7 +75,7 @@ type QuestionActionsMenuProps = {
 
 export function QuestionActionsMenu({ onNavigate }: QuestionActionsMenuProps) {
     const { activeQuestion } = useQuestionDerived();
-    const { isPinLocked } = useQuestionState();
+    const isPinLocked = useIsPinLocked();
     const { deleteQuestion, setPinLocked, updateQuestion } =
         useQuestionActions();
     const [isVisible, setVisible] = useState(false);

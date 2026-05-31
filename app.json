@@ -20,7 +20,12 @@
             "appVersionSource": "remote",
             "predictiveBackGestureEnabled": false
         },
-        "plugins": ["expo-router", "@maplibre/maplibre-react-native"],
+        "plugins": ["expo-router", "@maplibre/maplibre-react-native", "expo-splash-screen"],
+        "splash": {
+            "image": "./assets/splash.png",
+            "resizeMode": "cover",
+            "backgroundColor": "#0D0D0F"
+        },
         "extra": {
             "router": {},
             "eas": {

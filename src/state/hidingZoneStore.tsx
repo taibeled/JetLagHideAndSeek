@@ -3,11 +3,15 @@ import {
     type ReactNode,
     useCallback,
     useContext,
+    useEffect,
     useMemo,
     useState,
 } from "react";
 
-import { hidingZonePresets } from "@/features/hidingZone/hidingZoneData";
+import {
+    getHidingZonePresetsOrEmpty,
+    loadHidingZonePresets,
+} from "@/features/hidingZone/hidingZoneData";
 import {
     buildHidingZoneFeatureCollection,
     buildRouteFeatureCollection,
@@ -129,15 +133,33 @@ export function HidingZoneProvider({ children }: { children: ReactNode }) {
     const [radiusUnit, setRadiusUnitState] = useState<HidingZoneUnit>("m");
     const [radiusDisplayValue, setRadiusDisplayValueState] = useState("600");
     const [isRestored, setIsRestored] = useState(false);
+    const [presetsRevision, setPresetsRevision] = useState(0);
+
+    // Load the 294 KB preset JSON asynchronously so it doesn't block the
+    // JS thread during initial bundle evaluation.
+    useEffect(() => {
+        let cancelled = false;
+        loadHidingZonePresets().then(() => {
+            if (!cancelled) setPresetsRevision((n) => n + 1);
+        });
+        return () => {
+            cancelled = true;
+        };
+    }, []);
+
+    const presets = getHidingZonePresetsOrEmpty();
 
     const suggestedPresetIds = useMemo(
-        () => getSuggestedPresetIds(hidingZonePresets, playArea.bbox),
-        [playArea.bbox],
+        () => getSuggestedPresetIds(presets, playArea.bbox),
+        // Recompute when presets finish loading (revision bump) or bbox changes.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [playArea.bbox, presetsRevision],
     );
 
     const selectedPresets = useMemo(
-        () => getSelectedPresets(hidingZonePresets, selectedPresetIds),
-        [selectedPresetIds],
+        () => getSelectedPresets(presets, selectedPresetIds),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [selectedPresetIds, presetsRevision],
     );
     const selectedRoutes = useMemo(
         () => getSelectedRoutes(selectedPresets),
@@ -250,7 +272,7 @@ export function HidingZoneProvider({ children }: { children: ReactNode }) {
 
     const derivedValue = useMemo<HidingZoneDerivedValue>(
         () => ({
-            presets: hidingZonePresets,
+            presets,
             routeFeatures,
             selectedPresets,
             selectedRoutes,

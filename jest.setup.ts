@@ -19,6 +19,9 @@ jest.mock("expo-location", () => ({
         coords: { latitude: 35.6762, longitude: 139.6503 },
         timestamp: Date.now(),
     }),
+    getForegroundPermissionsAsync: jest
+        .fn()
+        .mockResolvedValue({ granted: true, status: "granted" }),
     requestForegroundPermissionsAsync: jest
         .fn()
         .mockResolvedValue({ status: "granted" }),
@@ -272,3 +275,33 @@ jest.mock("qrcode/lib/core/qrcode", () => ({
         },
     }),
 }));
+
+// In tests, load the 294 KB hiding-zone preset JSON synchronously via
+// require() so tests don't need dynamic import support. In the real app,
+// the module uses dynamic import() for lazy loading.
+jest.mock("@/features/hidingZone/hidingZoneData", () => {
+    let cached: any[] | null = null;
+    let loadPromise: Promise<any[]> | null = null;
+
+    function loadPresets() {
+        if (!loadPromise) {
+            loadPromise = Promise.resolve().then(() => {
+                // eslint-disable-next-line @typescript-eslint/no-require-imports
+                const raw = require("./data/odpt/generated/hiding-zone-presets.json");
+                cached = raw.presets;
+                return cached;
+            });
+        }
+        return loadPromise;
+    }
+
+    return {
+        __esModule: true,
+        loadHidingZonePresets: () => loadPresets(),
+        getHidingZonePresets: () => {
+            if (!cached) throw new Error("Presets not loaded yet");
+            return cached;
+        },
+        getHidingZonePresetsOrEmpty: () => cached ?? [],
+    };
+});

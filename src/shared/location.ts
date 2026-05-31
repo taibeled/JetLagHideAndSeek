@@ -4,7 +4,9 @@ import type { Position } from "./geojson";
 
 export type LocationModule = Pick<
     typeof Location,
-    "getCurrentPositionAsync" | "requestForegroundPermissionsAsync"
+    | "getCurrentPositionAsync"
+    | "getForegroundPermissionsAsync"
+    | "requestForegroundPermissionsAsync"
 > & {
     Accuracy: {
         Balanced: Location.Accuracy;
@@ -20,7 +22,14 @@ export async function requestUserCoordinate(
 ): Promise<UserCoordinateResult> {
     let status: Location.PermissionStatus;
     try {
-        ({ status } = await locationModule.requestForegroundPermissionsAsync());
+        // Check existing permission first to avoid unnecessary re-prompts.
+        const existing = await locationModule.getForegroundPermissionsAsync();
+        if (existing.granted) {
+            status = existing.status;
+        } else {
+            ({ status } =
+                await locationModule.requestForegroundPermissionsAsync());
+        }
     } catch {
         return { coordinate: null, status: "unavailable" };
     }

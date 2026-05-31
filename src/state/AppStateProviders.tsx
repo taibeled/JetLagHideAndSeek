@@ -1,4 +1,11 @@
-import { type ReactNode, useEffect, useRef } from "react";
+import {
+    createContext,
+    type ReactNode,
+    useCallback,
+    useContext,
+    useEffect,
+    useRef,
+} from "react";
 
 import {
     appStateHidingZonesToImportState,
@@ -11,6 +18,7 @@ import {
     useHidingZoneActions,
     useHidingZoneState,
 } from "@/state/hidingZoneStore";
+import { warmBoundaryCacheFromStorage } from "@/features/map/playAreaBoundary";
 import { loadPersistedAppState, persistAppState } from "@/state/persistence";
 import { PlayAreaProvider, usePlayArea } from "@/state/playAreaStore";
 import {
@@ -18,6 +26,21 @@ import {
     useQuestionActions,
     useQuestionState,
 } from "@/state/questionStore";
+
+// ---------------------------------------------------------------------------
+// Restoration context — consumed by the root layout to gate the splash screen
+// ---------------------------------------------------------------------------
+
+const AppRestorationContext = createContext<boolean>(false);
+
+/**
+ * Returns `true` once all provider slices have been restored from persisted
+ * state (or defaulted). The root layout uses this to hold the splash screen
+ * until the first meaningful frame is ready.
+ */
+export function useAppIsRestored(): boolean {
+    return useContext(AppRestorationContext);
+}
 
 export function AppStateProviders({ children }: { children: ReactNode }) {
     return (
@@ -44,6 +67,19 @@ function AppStatePersistenceCoordinator({ children }: { children: ReactNode }) {
         hidingZoneState.isRestored &&
         questionState.isRestored;
     const createdAtRef = useRef<string | null>(null);
+    const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const debouncedPersist = useCallback(
+        (state: ReturnType<typeof createAppStateV1>) => {
+            if (debounceRef.current) {
+                clearTimeout(debounceRef.current);
+            }
+            debounceRef.current = setTimeout(() => {
+                persistAppState(state);
+            }, 500);
+        },
+        [],
+    );
 
     useEffect(() => {
         let cancelled = false;
@@ -71,10 +107,22 @@ function AppStatePersistenceCoordinator({ children }: { children: ReactNode }) {
             playAreaStore.markRestored();
             hidingZoneActions.markRestored();
             questionActions.markRestored();
+
+            // Warm the boundary cache in the background — non-blocking.
+            warmBoundaryCacheFromStorage();
         })();
 
         return () => {
             cancelled = true;
+        };
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            if (debounceRef.current) {
+                clearTimeout(debounceRef.current);
+                debounceRef.current = null;
+            }
         };
     }, []);
 
@@ -85,7 +133,7 @@ function AppStatePersistenceCoordinator({ children }: { children: ReactNode }) {
         const createdAt = createdAtRef.current ?? now.toISOString();
         createdAtRef.current = createdAt;
 
-        persistAppState(
+        debouncedPersist(
             createAppStateV1({
                 hidingZones: {
                     radiusMeters: hidingZoneState.radiusMeters,
@@ -98,6 +146,7 @@ function AppStatePersistenceCoordinator({ children }: { children: ReactNode }) {
                 },
                 playArea: playAreaStore.playArea,
                 questionSettings: {
+                    activeQuestionId: questionState.activeQuestionId,
                     isPinLocked: questionState.isPinLocked,
                 },
                 questions: questionState.questions,
@@ -113,5 +162,9 @@ function AppStatePersistenceCoordinator({ children }: { children: ReactNode }) {
         questionState.questions,
     ]);
 
-    return children;
+    return (
+        <AppRestorationContext.Provider value={isRestored}>
+            {children}
+        </AppRestorationContext.Provider>
+    );
 }

@@ -52,6 +52,22 @@ export function useQuestionState(): QuestionStateValue {
 }
 
 // ---------------------------------------------------------------------------
+// Granular subscriptions — prevent re-renders for consumers that only need
+// a single scalar value (e.g. NativeMap only needs isPinLocked).
+// ---------------------------------------------------------------------------
+
+const IsPinLockedContext = createContext<boolean>(false);
+
+/**
+ * Subscribe to `isPinLocked` without receiving the full `questions` array.
+ * Use this in components that only need to know whether the active pin is
+ * locked, so they don't re-render on every question edit.
+ */
+export function useIsPinLocked(): boolean {
+    return useContext(IsPinLockedContext);
+}
+
+// ---------------------------------------------------------------------------
 // Actions context — stable callbacks
 // ---------------------------------------------------------------------------
 
@@ -109,6 +125,7 @@ export function useQuestionDerived(): QuestionDerivedValue {
 // ---------------------------------------------------------------------------
 
 export type QuestionSettingsImportState = {
+    activeQuestionId: string | null;
     isPinLocked: boolean;
 };
 
@@ -191,6 +208,7 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
     const importQuestionSettings = useCallback(
         (settings: QuestionSettingsImportState) => {
             setPinLockedState(settings.isPinLocked);
+            setActiveQuestionIdState(settings.activeQuestionId);
         },
         [],
     );
@@ -243,7 +261,9 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
         <QuestionStateContext.Provider value={stateValue}>
             <QuestionActionsContext.Provider value={actionsValue}>
                 <QuestionDerivedContext.Provider value={derivedValue}>
-                    {children}
+                    <IsPinLockedContext.Provider value={isPinLocked}>
+                        {children}
+                    </IsPinLockedContext.Provider>
                 </QuestionDerivedContext.Provider>
             </QuestionActionsContext.Provider>
         </QuestionStateContext.Provider>
