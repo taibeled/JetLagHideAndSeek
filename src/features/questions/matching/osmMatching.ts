@@ -28,7 +28,11 @@ export type OsmFeatureWithDistance = OsmFeature & {
 export async function findMatchingFeatures(
     category: MatchingCategory,
     center: Position,
-    options?: { maxCandidates?: number; searchRadiusMeters?: number },
+    options?: {
+        maxCandidates?: number;
+        searchRadiusMeters?: number;
+        signal?: AbortSignal;
+    },
 ): Promise<OsmFeatureWithDistance[]> {
     const config = getCategoryConfig(category);
     if (!config) {
@@ -55,6 +59,7 @@ export async function findMatchingFeatures(
 
     const response = await fetch(
         `${OVERPASS_API}?data=${encodeURIComponent(query)}`,
+        { signal: options?.signal },
     );
 
     if (!response.ok) {

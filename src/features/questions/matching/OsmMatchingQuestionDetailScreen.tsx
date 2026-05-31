@@ -38,8 +38,16 @@ export function OsmMatchingQuestionDetailScreen({
     const searchGenerationRef = useRef(0);
     const lastSearchCenterRef = useRef<[number, number] | null>(null);
     const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const abortControllerRef = useRef<AbortController | null>(null);
 
     const performSearch = useCallback(async () => {
+        // Cancel any in-flight request before starting a new one.
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+        }
+        const abortController = new AbortController();
+        abortControllerRef.current = abortController;
+
         const generation = ++searchGenerationRef.current;
         lastSearchCenterRef.current = question.center;
         setIsLoading(true);
@@ -48,6 +56,7 @@ export function OsmMatchingQuestionDetailScreen({
             const candidates = await findMatchingFeatures(
                 question.category,
                 question.center,
+                { signal: abortController.signal },
             );
             // Ignore stale responses from earlier searches
             if (generation !== searchGenerationRef.current) {
@@ -67,7 +76,14 @@ export function OsmMatchingQuestionDetailScreen({
                     updatedAt: new Date().toISOString(),
                 };
             });
-        } catch {
+        } catch (error) {
+            // Silently ignore aborted requests — a newer search is in flight.
+            if (
+                error instanceof Error &&
+                error.name === "AbortError"
+            ) {
+                return;
+            }
             if (generation === searchGenerationRef.current) {
                 setError(OVERPASS_ERROR_MESSAGE);
             }
@@ -89,12 +105,16 @@ export function OsmMatchingQuestionDetailScreen({
         }, SEARCH_DEBOUNCE_MS);
     }, [performSearch]);
 
-    // Clean up the debounce timer on unmount.
+    // Clean up timers and in-flight requests on unmount.
     useEffect(() => {
         return () => {
             if (debounceTimerRef.current !== null) {
                 clearTimeout(debounceTimerRef.current);
                 debounceTimerRef.current = null;
+            }
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+                abortControllerRef.current = null;
             }
         };
     }, []);

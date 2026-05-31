@@ -360,6 +360,7 @@ describe("OsmMatchingQuestionDetailScreen", () => {
             expect(mockFindMatchingFeatures).toHaveBeenCalledWith(
                 "park",
                 [139.8, 35.8],
+                expect.objectContaining({ signal: expect.any(AbortSignal) }),
             );
         });
     });

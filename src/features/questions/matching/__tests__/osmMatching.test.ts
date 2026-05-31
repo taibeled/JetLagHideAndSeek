@@ -386,6 +386,7 @@ describe("findMatchingFeatures", () => {
 
         expect(globalThis.fetch).toHaveBeenCalledWith(
             expect.stringContaining("10000"),
+            expect.any(Object),
         );
     });
 
