@@ -40,6 +40,7 @@ import {
     asSeparateMaskConstraints,
     buildCombinedEligibilityMask,
     buildPlayAreaMask,
+    buildPlayAreaMaskFromMetadata,
 } from "./maskBuilder";
 import { OsmMatchingLayers } from "./OsmMatchingLayers";
 import { PlayAreaBoundaryLayer } from "./PlayAreaBoundaryLayer";
@@ -77,8 +78,14 @@ export function NativeMap({ isQuestionDetailRoute, onPress }: NativeMapProps) {
     const { playArea } = usePlayArea();
 
     const playAreaMask = useMemo(
-        () => buildPlayAreaMask(playArea.boundary),
-        [playArea.boundary],
+        () =>
+            playArea.maskHoles
+                ? buildPlayAreaMaskFromMetadata(
+                      playArea.boundary,
+                      playArea.maskHoles,
+                  )
+                : buildPlayAreaMask(playArea.boundary),
+        [playArea.boundary, playArea.maskHoles],
     );
     const combinedInsideMask = useMemo(() => {
         return buildCombinedEligibilityMask(

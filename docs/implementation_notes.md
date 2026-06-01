@@ -6,6 +6,8 @@ Milestone 2 replaces the placeholder map with MapLibre RN and keeps the app dev-
 
 Default play area is **Tokyo 23 Wards**, OSM relation `19631009`. The checked-in boundary fixture lives at `assets/default-zones/tokyo.json` and is loaded by `src/features/map/playArea.ts`. The old broader Tokyo prefecture relation `1543125` is intentionally not used because it includes the island chain and makes the initial bbox far too wide.
 
+Generated Tokyo startup metadata lives at `assets/default-zones/tokyo-metadata.json`. It stores the precomputed bbox, center, and compact mask-hole paths without duplicating boundary coordinates. Run `pnpm data:default-zones` after changing the Tokyo fixture and `pnpm test:data:default-zones` to verify the checked-in metadata.
+
 The map fit is intentionally biased upward. `NativeMap` calls `fitCameraToBbox` with `getTopViewportFitPadding`, which uses asymmetric MapLibre camera bounds padding so the bbox sits in the upper map area above the medium bottom sheet. If sheet snap points change, revisit `getTopViewportFitPadding` in `src/features/map/camera.ts`.
 
 MapLibre native setup matters:

@@ -21,11 +21,35 @@ type PolygonFeature = {
     };
 };
 
+export type PlayAreaMaskHole = {
+    featureIndex: number;
+    polygonIndex: number | null;
+    reverse: boolean;
+};
+
 export function buildPlayAreaMask(
     boundary: GeoJsonFeatureCollection,
 ): GeoJsonFeatureCollection {
     const holes = getExteriorRings(boundary).map(orientHoleRing);
 
+    return buildPlayAreaMaskFromHoles(holes);
+}
+
+export function buildPlayAreaMaskFromMetadata(
+    boundary: GeoJsonFeatureCollection,
+    maskHoles: PlayAreaMaskHole[],
+): GeoJsonFeatureCollection {
+    const holes = maskHoles.map((hole) => {
+        const ring = getMaskHoleRing(boundary, hole);
+        return hole.reverse ? [...ring].reverse() : ring;
+    });
+
+    return buildPlayAreaMaskFromHoles(holes);
+}
+
+function buildPlayAreaMaskFromHoles(
+    holes: Position[][],
+): GeoJsonFeatureCollection {
     return {
         features: [
             {
@@ -42,6 +66,33 @@ export function buildPlayAreaMask(
         ],
         type: "FeatureCollection",
     };
+}
+
+function getMaskHoleRing(
+    boundary: GeoJsonFeatureCollection,
+    hole: PlayAreaMaskHole,
+): Position[] {
+    const feature = boundary.features[hole.featureIndex];
+    if (!feature) {
+        throw new Error("Invalid precomputed play-area mask feature index.");
+    }
+
+    const { coordinates, type } = feature.geometry;
+    const ring =
+        type === "Polygon"
+            ? coordinates[0]
+            : hole.polygonIndex !== null
+              ? coordinates[hole.polygonIndex]?.[0]
+              : null;
+    if (
+        !Array.isArray(ring) ||
+        !Array.isArray(ring[0]) ||
+        typeof ring[0][0] !== "number" ||
+        typeof ring[0][1] !== "number"
+    ) {
+        throw new Error("Invalid precomputed play-area mask polygon index.");
+    }
+    return ring as Position[];
 }
 
 export function buildCombinedInsideMask(

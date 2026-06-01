@@ -1,12 +1,15 @@
 import tokyoBoundaryJson from "../../../assets/default-zones/tokyo.json";
+import tokyoMetadataJson from "../../../assets/default-zones/tokyo-metadata.json";
 
 import type { Bbox, GeoJsonFeatureCollection, Position } from "./geojsonTypes";
+import type { PlayAreaMaskHole } from "./maskBuilder";
 
 export type DefaultPlayArea = {
     bbox: Bbox;
     boundary: GeoJsonFeatureCollection;
     center: Position;
     label: string;
+    maskHoles?: PlayAreaMaskHole[];
     osmId: number;
     osmType: "R";
 };
@@ -20,6 +23,11 @@ export type PlayAreaCacheSource =
     | "persisted";
 
 const tokyoBoundary = tokyoBoundaryJson as unknown as GeoJsonFeatureCollection;
+const tokyoMetadata = tokyoMetadataJson as unknown as {
+    bbox: Bbox;
+    center: Position;
+    maskHoles: PlayAreaMaskHole[];
+};
 
 export function calculateBbox(boundary: GeoJsonFeatureCollection): Bbox {
     const coords: Position[] = [];
@@ -55,13 +63,12 @@ export function calculateCenter([west, south, east, north]: Bbox): Position {
     return [(west + east) / 2, (south + north) / 2];
 }
 
-const tokyoBbox = calculateBbox(tokyoBoundary);
-
 export const defaultPlayArea: DefaultPlayArea = {
-    bbox: tokyoBbox,
+    bbox: tokyoMetadata.bbox,
     boundary: tokyoBoundary,
-    center: calculateCenter(tokyoBbox),
+    center: tokyoMetadata.center,
     label: "Tokyo 23 Wards",
+    maskHoles: tokyoMetadata.maskHoles,
     osmId: 19631009,
     osmType: "R",
 };

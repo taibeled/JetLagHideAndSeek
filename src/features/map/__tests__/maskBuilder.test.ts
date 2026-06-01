@@ -3,9 +3,11 @@ import {
     buildCombinedEligibilityMask,
     buildCombinedInsideMask,
     buildPlayAreaMask,
+    buildPlayAreaMaskFromMetadata,
     signedRingArea,
 } from "../maskBuilder";
 import type { GeoJsonFeatureCollection, Position } from "../geojsonTypes";
+import { defaultPlayArea } from "../playArea";
 
 function makeSquareFC(
     minX: number,
@@ -292,5 +294,14 @@ describe("buildPlayAreaMask", () => {
         const hole = coords[1];
         expect(signedRingArea(outer)).toBeGreaterThan(0);
         expect(signedRingArea(hole)).toBeLessThan(0);
+    });
+
+    it("reuses precomputed metadata for the bundled Tokyo mask", () => {
+        expect(
+            buildPlayAreaMaskFromMetadata(
+                defaultPlayArea.boundary,
+                defaultPlayArea.maskHoles!,
+            ),
+        ).toEqual(buildPlayAreaMask(defaultPlayArea.boundary));
     });
 });
