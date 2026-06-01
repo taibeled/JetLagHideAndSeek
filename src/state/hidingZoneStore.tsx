@@ -5,6 +5,7 @@ import {
     useContext,
     useEffect,
     useMemo,
+    useRef,
     useState,
 } from "react";
 
@@ -34,6 +35,7 @@ import { usePlayArea } from "@/state/playAreaStore";
 import { fromMeters, toMeters } from "@/shared/distanceUnits";
 
 const DEFAULT_RADIUS_METERS = 600;
+const ZONE_GEOMETRY_DEBOUNCE_MS = 300;
 
 export type HidingZoneImportState = {
     radiusMeters: number;
@@ -130,10 +132,17 @@ export function HidingZoneProvider({ children }: { children: ReactNode }) {
     const { playArea } = usePlayArea();
     const [selectedPresetIds, setSelectedPresetIds] = useState<string[]>([]);
     const [radiusMeters, setRadiusMeters] = useState(DEFAULT_RADIUS_METERS);
+    const [zoneGeometryRadiusMeters, setZoneGeometryRadiusMeters] = useState(
+        DEFAULT_RADIUS_METERS,
+    );
     const [radiusUnit, setRadiusUnitState] = useState<HidingZoneUnit>("m");
     const [radiusDisplayValue, setRadiusDisplayValueState] = useState("600");
     const [isRestored, setIsRestored] = useState(false);
     const [presetsRevision, setPresetsRevision] = useState(0);
+    const radiusMetersRef = useRef(DEFAULT_RADIUS_METERS);
+    const zoneGeometryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+        null,
+    );
 
     // Load the 294 KB preset JSON asynchronously so it doesn't block the
     // JS thread during initial bundle evaluation.
@@ -152,13 +161,11 @@ export function HidingZoneProvider({ children }: { children: ReactNode }) {
     const suggestedPresetIds = useMemo(
         () => getSuggestedPresetIds(presets, playArea.bbox),
         // Recompute when presets finish loading (revision bump) or bbox changes.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
         [playArea.bbox, presetsRevision],
     );
 
     const selectedPresets = useMemo(
         () => getSelectedPresets(presets, selectedPresetIds),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
         [selectedPresetIds, presetsRevision],
     );
     const selectedRoutes = useMemo(
@@ -178,30 +185,55 @@ export function HidingZoneProvider({ children }: { children: ReactNode }) {
         [selectedStations],
     );
     const zoneFeatures = useMemo(
-        () => buildHidingZoneFeatureCollection(selectedStations, radiusMeters),
-        [radiusMeters, selectedStations],
+        () =>
+            buildHidingZoneFeatureCollection(
+                selectedStations,
+                zoneGeometryRadiusMeters,
+            ),
+        [selectedStations, zoneGeometryRadiusMeters],
     );
 
-    const addPreset = useCallback((presetId: string) => {
-        setSelectedPresetIds((current) =>
-            current.includes(presetId) ? current : [...current, presetId],
-        );
+    const syncZoneGeometryRadius = useCallback((nextRadiusMeters: number) => {
+        if (zoneGeometryTimerRef.current) {
+            clearTimeout(zoneGeometryTimerRef.current);
+            zoneGeometryTimerRef.current = null;
+        }
+        setZoneGeometryRadiusMeters(nextRadiusMeters);
     }, []);
 
-    const removePreset = useCallback((presetId: string) => {
-        setSelectedPresetIds((current) =>
-            current.filter((id) => id !== presetId),
-        );
-    }, []);
+    const addPreset = useCallback(
+        (presetId: string) => {
+            syncZoneGeometryRadius(radiusMetersRef.current);
+            setSelectedPresetIds((current) =>
+                current.includes(presetId) ? current : [...current, presetId],
+            );
+        },
+        [syncZoneGeometryRadius],
+    );
 
-    const replaceSetup = useCallback((nextSetup: HidingZoneImportState) => {
-        setSelectedPresetIds(nextSetup.selectedPresetIds);
-        setRadiusMeters(nextSetup.radiusMeters);
-        setRadiusUnitState(nextSetup.radiusUnit);
-        setRadiusDisplayValueState(
-            fromMeters(nextSetup.radiusMeters, nextSetup.radiusUnit),
-        );
-    }, []);
+    const removePreset = useCallback(
+        (presetId: string) => {
+            syncZoneGeometryRadius(radiusMetersRef.current);
+            setSelectedPresetIds((current) =>
+                current.filter((id) => id !== presetId),
+            );
+        },
+        [syncZoneGeometryRadius],
+    );
+
+    const replaceSetup = useCallback(
+        (nextSetup: HidingZoneImportState) => {
+            syncZoneGeometryRadius(nextSetup.radiusMeters);
+            radiusMetersRef.current = nextSetup.radiusMeters;
+            setSelectedPresetIds(nextSetup.selectedPresetIds);
+            setRadiusMeters(nextSetup.radiusMeters);
+            setRadiusUnitState(nextSetup.radiusUnit);
+            setRadiusDisplayValueState(
+                fromMeters(nextSetup.radiusMeters, nextSetup.radiusUnit),
+            );
+        },
+        [syncZoneGeometryRadius],
+    );
 
     const togglePreset = useCallback(
         (presetId: string) => {
@@ -215,21 +247,36 @@ export function HidingZoneProvider({ children }: { children: ReactNode }) {
         (value: string) => {
             setRadiusDisplayValueState(value);
             const meters = toMeters(value, radiusUnit);
-            if (meters !== null) setRadiusMeters(meters);
+            if (meters === null) return;
+
+            radiusMetersRef.current = meters;
+            setRadiusMeters(meters);
+            if (zoneGeometryTimerRef.current) {
+                clearTimeout(zoneGeometryTimerRef.current);
+            }
+            zoneGeometryTimerRef.current = setTimeout(() => {
+                zoneGeometryTimerRef.current = null;
+                setZoneGeometryRadiusMeters(meters);
+            }, ZONE_GEOMETRY_DEBOUNCE_MS);
         },
         [radiusUnit],
     );
 
-    const setRadiusUnit = useCallback(
-        (unit: HidingZoneUnit) => {
-            setRadiusUnitState(unit);
-            setRadiusDisplayValueState(fromMeters(radiusMeters, unit));
-        },
-        [radiusMeters],
-    );
+    const setRadiusUnit = useCallback((unit: HidingZoneUnit) => {
+        setRadiusUnitState(unit);
+        setRadiusDisplayValueState(fromMeters(radiusMetersRef.current, unit));
+    }, []);
 
     const markRestored = useCallback(() => {
         setIsRestored(true);
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            if (zoneGeometryTimerRef.current) {
+                clearTimeout(zoneGeometryTimerRef.current);
+            }
+        };
     }, []);
 
     const stateValue = useMemo<HidingZoneStateValue>(

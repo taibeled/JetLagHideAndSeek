@@ -1,14 +1,25 @@
 appId: com.raycatdev.hideandseek.v2
 ---
+- runFlow:
+      when:
+          platform: Android
+      commands:
+          - setPermissions:
+                permissions:
+                    location: allow
+- runFlow:
+      when:
+          platform: iOS
+      commands:
+          - setPermissions:
+                permissions:
+                    location: inuse
+- setLocation:
+      latitude: 35.64957465
+      longitude: 139.7408995
 - openLink: ${MAESTRO_DEV_CLIENT_URL}
 - waitForAnimationToEnd:
       timeout: 5000
-# Dismiss iOS location permission dialog (appears after clearState)
-- runFlow:
-      when:
-          visible: "Allow While Using App"
-      commands:
-          - tapOn: "Allow While Using App"
 - runFlow:
       when:
           visible: "Open"

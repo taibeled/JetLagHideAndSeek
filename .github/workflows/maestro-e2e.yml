@@ -85,8 +85,10 @@ jobs:
 
             - name: Install Maestro
               run: |
+                  export MAESTRO_VERSION=2.6.0
                   curl -Ls "https://get.maestro.mobile.dev" | bash
                   echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+                  "$HOME/.maestro/bin/maestro" --version
 
             - name: Enable KVM
               run: |
@@ -95,6 +97,8 @@ jobs:
                   sudo udevadm trigger --name-match=kvm
 
             - name: Build, install, and test on Android
+              env:
+                  E2E_PLATFORM: android
               uses: reactivecircus/android-emulator-runner@v2
               with:
                   api-level: 35
@@ -141,8 +145,10 @@ jobs:
 
             - name: Install Maestro
               run: |
+                  export MAESTRO_VERSION=2.6.0
                   curl -Ls "https://get.maestro.mobile.dev" | bash
                   echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+                  "$HOME/.maestro/bin/maestro" --version
 
             - name: Select and boot iOS simulator
               run: |
@@ -182,6 +188,8 @@ jobs:
               run: xcrun simctl terminate booted com.raycatdev.hideandseek.v2 || true
 
             - name: Run Maestro
+              env:
+                  E2E_PLATFORM: ios
               run: pnpm test:e2e:ios:stack
 
             - name: Upload Maestro artifacts

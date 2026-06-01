@@ -37,12 +37,15 @@ appId: com.raycatdev.hideandseek.v2
 - waitForAnimationToEnd:
       timeout: 1000
 - tapOn:
-    id: "add-matching-transit-line-row"
+      id: "add-matching-transit-line-row"
 - waitForAnimationToEnd:
       timeout: 1000
-- assertVisible: "Matching question detail. Answer section. Set pin to my location. Hit answer."
+- extendedWaitUntil:
+      visible:
+          id: "matching-answer-option-positive"
+      timeout: 30000
 - tapOn:
-      point: "50%,84%"
+      id: "matching-answer-option-positive"
 - waitForAnimationToEnd:
       timeout: 1000
 - assertVisible: "Tokyo 23 Wards"

@@ -15,25 +15,25 @@ appId: com.raycatdev.hideandseek.v2
 - assertVisible: ".*0 presets selected.*"
 - assertVisible: ".*0 stations.*"
 - tapOn: "Tokyo Metro, Add"
-- waitForAnimationToEnd:
-      timeout: 1000
-- assertVisible: ".*1 preset selected.*"
+- extendedWaitUntil:
+      visible: ".*1 preset selected.*"
+      timeout: 30000
 - assertVisible: ".*185 stations.*"
 - tapOn: "Toei Subway, Add"
-- waitForAnimationToEnd:
-      timeout: 1000
-- assertVisible: ".*2 presets selected.*"
+- extendedWaitUntil:
+      visible: ".*2 presets selected.*"
+      timeout: 30000
 - tapOn: "Hiding zone radius"
 - eraseText
 - inputText: "500"
 - tapOn: "Hiding Zones"
-- waitForAnimationToEnd:
-      timeout: 1000
-- assertVisible: ".*tored as 500 m"
+- extendedWaitUntil:
+      visible: ".*Stored as 500 m"
+      timeout: 30000
 - tapOn: "Tokyo Metro, Remove"
-- waitForAnimationToEnd:
-      timeout: 1000
-- assertVisible: ".*1 preset selected.*"
+- extendedWaitUntil:
+      visible: ".*1 preset selected.*"
+      timeout: 30000
 - swipe:
       start: "50%,15%"
       end: "50%,85%"

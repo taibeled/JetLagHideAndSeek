@@ -14,20 +14,14 @@ appId: com.raycatdev.hideandseek.v2
 - waitForAnimationToEnd:
       timeout: 1000
 - tapOn: "Add radar question"
-- waitForAnimationToEnd:
-      timeout: 4000
-# Dismiss iOS location permission dialog if it appears here
-- runFlow:
-      when:
-          visible: "Allow While Using App"
-      commands:
-          - tapOn: "Allow While Using App"
-- assertVisible: ".*Current distance 500 m"
+- extendedWaitUntil:
+      visible: ".*Current distance 500 m"
+      timeout: 30000
 - assertVisible: ".*Unanswered answer.*"
 - tapOn: "Radar distance 1km"
-- waitForAnimationToEnd:
-      timeout: 1000
-- assertVisible: ".*Current distance 1000 m"
+- extendedWaitUntil:
+      visible: ".*Current distance 1000 m"
+      timeout: 30000
 - tapOn: "Miss answer"
 - waitForAnimationToEnd:
       timeout: 1000

@@ -1,9 +1,15 @@
 /* global URL, console, fetch, process, setTimeout */
 
 import { spawn } from "node:child_process";
-import { mkdirSync, readFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { platform } from "node:os";
 import { join } from "node:path";
+
+import {
+    createMetroWarmUrl,
+    resolveE2ePlatform,
+    selectFlows,
+} from "./e2e-maestro-stack-config.mjs";
 
 const metroPort = 8081;
 const metroStatusUrl = `http://127.0.0.1:${metroPort}/status`;
@@ -15,6 +21,7 @@ const artifactsDir = join(projectRoot, "e2e", "artifacts");
 const maestroBin = join(process.env.HOME ?? "", ".maestro", "bin");
 const pathSeparator = platform() === "win32" ? ";" : ":";
 const selectedFlow = process.env.E2E_FLOW ?? "all";
+const e2ePlatform = resolveE2ePlatform(process.env.E2E_PLATFORM, platform());
 const maestroDevice = process.env.E2E_MAESTRO_DEVICE;
 const devClientHost =
     process.env.E2E_DEV_CLIENT_HOST ??
@@ -54,6 +61,7 @@ const flows = [
 
 const env = {
     ...process.env,
+    E2E_PLATFORM: e2ePlatform,
     PATH: `${maestroBin}${pathSeparator}${process.env.PATH ?? ""}`,
     MAESTRO_DEV_CLIENT_URL: `exp+${appConfig.slug}://expo-development-client/?url=${devClientBundleUrl}&disableOnboarding=1`,
 };
@@ -92,7 +100,7 @@ async function main() {
 
 async function warmMetroBundle() {
     const warmedAt = Date.now();
-    const warmUrl = `http://127.0.0.1:${metroPort}/node_modules/expo-router/entry.js?platform=ios&dev=true&minify=false`;
+    const warmUrl = createMetroWarmUrl(metroPort, e2ePlatform);
     console.log(`Pre-warming Metro bundle at ${warmUrl} ...`);
     try {
         const response = await fetch(warmUrl);
@@ -129,18 +137,7 @@ async function waitForMetro() {
 }
 
 async function runMaestro() {
-    const flowsToRun =
-        selectedFlow === "all"
-            ? flows
-            : flows.filter((flow) => flow.name === selectedFlow);
-
-    if (flowsToRun.length === 0) {
-        throw new Error(
-            `Unknown E2E_FLOW "${selectedFlow}". Expected all or one of: ${flows
-                .map((flow) => flow.name)
-                .join(", ")}.`,
-        );
-    }
+    const flowsToRun = selectFlows(flows, selectedFlow);
 
     const failures = [];
 
@@ -153,17 +150,27 @@ async function runMaestro() {
         const attempts = 2;
 
         for (let attempt = 1; attempt <= attempts; attempt++) {
+            const attemptArtifactsDir = join(
+                artifactsDir,
+                flow.artifactSubdir,
+                `attempt-${attempt}`,
+            );
+            mkdirSync(attemptArtifactsDir, { recursive: true });
+
             if (attempt > 1) {
                 console.log(
                     `\nRetrying ${flow.name} (attempt ${attempt}/${attempts})...`,
                 );
             }
             try {
+                if (e2ePlatform === "android") {
+                    await waitForAndroidDevice();
+                }
                 await runCommand("maestro", [
                     ...(maestroDevice ? ["--device", maestroDevice] : []),
                     "test",
                     "--debug-output",
-                    join(artifactsDir, flow.artifactSubdir),
+                    attemptArtifactsDir,
                     flow.flowPath,
                 ]);
                 lastError = null;
@@ -171,6 +178,9 @@ async function runMaestro() {
             } catch (error) {
                 lastError = error;
                 console.error(`\n${flow.name} failed on attempt ${attempt}.`);
+                if (e2ePlatform === "android") {
+                    await captureAndroidDiagnostics(attemptArtifactsDir);
+                }
             }
         }
 
@@ -192,6 +202,63 @@ async function runMaestro() {
     }
 }
 
+async function waitForAndroidDevice() {
+    const startedAt = Date.now();
+    const timeoutMs = 30_000;
+
+    while (Date.now() - startedAt < timeoutMs) {
+        try {
+            const state = (
+                await runCommandCapture("adb", adbArgs(["get-state"]))
+            ).trim();
+            const bootCompleted = (
+                await runCommandCapture(
+                    "adb",
+                    adbArgs(["shell", "getprop", "sys.boot_completed"]),
+                )
+            ).trim();
+
+            if (state === "device" && bootCompleted === "1") return;
+        } catch {
+            // The emulator may be reconnecting between Maestro attempts.
+        }
+
+        await delay(1000);
+    }
+
+    throw new Error("Android emulator did not become ready within 30 seconds.");
+}
+
+async function captureAndroidDiagnostics(attemptArtifactsDir) {
+    const diagnostics = [];
+    for (const [label, args] of [
+        ["adb devices -l", ["devices", "-l"]],
+        ["adb get-state", adbArgs(["get-state"])],
+        [
+            "adb shell getprop sys.boot_completed",
+            adbArgs(["shell", "getprop", "sys.boot_completed"]),
+        ],
+        ["adb logcat -d -t 500", adbArgs(["logcat", "-d", "-t", "500"])],
+    ]) {
+        diagnostics.push(`$ ${label}`);
+        try {
+            diagnostics.push(await runCommandCapture("adb", args));
+        } catch (error) {
+            diagnostics.push(error.message);
+        }
+        diagnostics.push("");
+    }
+
+    writeFileSync(
+        join(attemptArtifactsDir, "android-diagnostics.txt"),
+        diagnostics.join("\n"),
+    );
+}
+
+function adbArgs(args) {
+    return maestroDevice ? ["-s", maestroDevice, ...args] : args;
+}
+
 async function runCommand(command, args) {
     await new Promise((resolve, reject) => {
         const child = spawn(command, args, {
@@ -206,6 +273,37 @@ async function runCommand(command, args) {
                 resolve();
             } else {
                 reject(new Error(`${command} exited with code ${code}.`));
+            }
+        });
+    });
+}
+
+async function runCommandCapture(command, args) {
+    return await new Promise((resolve, reject) => {
+        const child = spawn(command, args, {
+            cwd: projectRoot,
+            env,
+            stdio: ["ignore", "pipe", "pipe"],
+        });
+        let stdout = "";
+        let stderr = "";
+
+        child.stdout.on("data", (chunk) => {
+            stdout += chunk;
+        });
+        child.stderr.on("data", (chunk) => {
+            stderr += chunk;
+        });
+        child.on("error", reject);
+        child.on("exit", (code) => {
+            if (code === 0) {
+                resolve(stdout);
+            } else {
+                reject(
+                    new Error(
+                        `${command} exited with code ${code}.\n${stderr || stdout}`,
+                    ),
+                );
             }
         });
     });

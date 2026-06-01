@@ -16,6 +16,7 @@
         "data:odpt": "node data/odpt/scripts/fetch-odpt.mjs",
         "site:build": "node scripts/build-share-site-config.mjs",
         "typecheck": "tsc --noEmit",
+        "pretest": "node --test scripts/e2e-maestro-stack-config.test.mjs",
         "test": "jest",
         "test:data:odpt": "node --test data/odpt/scripts/fetch-odpt.test.mjs",
         "test:e2e": "maestro test e2e/smoke.yaml && maestro test e2e/play-area.yaml && maestro test e2e/hiding-zone.yaml && maestro test e2e/radar-question.yaml && maestro test e2e/transit-line-question.yaml",

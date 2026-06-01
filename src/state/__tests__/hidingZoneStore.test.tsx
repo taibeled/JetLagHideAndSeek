@@ -9,8 +9,11 @@ import { loadPersistedAppState, persistAppState } from "@/state/persistence";
 import {
     type HidingZoneImportState,
     useHidingZoneActions,
+    useHidingZoneDerived,
     useHidingZoneState,
+    HidingZoneProvider,
 } from "@/state/hidingZoneStore";
+import { PlayAreaProvider } from "@/state/playAreaStore";
 
 function Probe() {
     const { isRestored, radiusMeters, radiusUnit, selectedPresetIds } =
@@ -220,5 +223,108 @@ describe("HidingZoneProvider app-state persistence", () => {
         expect(persisted?.hidingZones.radiusMeters).toBe(700);
         expect(persisted?.hidingZones.radiusUnit).toBe("km");
         expect(persisted?.hidingZones.selectedPresetIds).toEqual(["toei"]);
+    });
+});
+
+describe("HidingZoneProvider zone geometry updates", () => {
+    afterEach(() => {
+        jest.useRealTimers();
+    });
+
+    it("debounces radius edits but flushes geometry for imports and preset changes", async () => {
+        let actions: ReturnType<typeof useHidingZoneActions> | null = null;
+
+        function GeometryProbe() {
+            actions = useHidingZoneActions();
+            const { radiusMeters } = useHidingZoneState();
+            const { presets, zoneFeatures } = useHidingZoneDerived();
+            const geometryRadius =
+                zoneFeatures.features[0]?.properties.radiusMeters ?? "empty";
+
+            return (
+                <View>
+                    <Text testID="probe-preset-count">{presets.length}</Text>
+                    <Text testID="probe-canonical-radius">{radiusMeters}</Text>
+                    <Text testID="probe-geometry-radius">{geometryRadius}</Text>
+                </View>
+            );
+        }
+
+        const screen = render(
+            <PlayAreaProvider>
+                <HidingZoneProvider>
+                    <GeometryProbe />
+                </HidingZoneProvider>
+            </PlayAreaProvider>,
+        );
+
+        await waitFor(() => {
+            expect(
+                screen.getByTestId("probe-preset-count"),
+            ).not.toHaveTextContent("0");
+        });
+
+        act(() => {
+            actions!.addPreset("tokyo-metro");
+        });
+        await waitFor(() => {
+            expect(
+                screen.getByTestId("probe-geometry-radius"),
+            ).toHaveTextContent("600");
+        });
+
+        jest.useFakeTimers();
+        act(() => {
+            actions!.setRadiusDisplayValue("5");
+            actions!.setRadiusDisplayValue("50");
+            actions!.setRadiusDisplayValue("500");
+        });
+
+        expect(screen.getByTestId("probe-canonical-radius")).toHaveTextContent(
+            "500",
+        );
+        expect(screen.getByTestId("probe-geometry-radius")).toHaveTextContent(
+            "600",
+        );
+
+        act(() => {
+            jest.advanceTimersByTime(299);
+        });
+        expect(screen.getByTestId("probe-geometry-radius")).toHaveTextContent(
+            "600",
+        );
+
+        act(() => {
+            jest.advanceTimersByTime(1);
+        });
+        expect(screen.getByTestId("probe-geometry-radius")).toHaveTextContent(
+            "500",
+        );
+
+        act(() => {
+            actions!.setRadiusDisplayValue("700");
+            actions!.replaceSetup({
+                radiusMeters: 900,
+                radiusUnit: "m",
+                selectedPresetIds: ["tokyo-metro"],
+            });
+        });
+        expect(screen.getByTestId("probe-canonical-radius")).toHaveTextContent(
+            "900",
+        );
+        expect(screen.getByTestId("probe-geometry-radius")).toHaveTextContent(
+            "900",
+        );
+
+        act(() => {
+            actions!.setRadiusDisplayValue("800");
+            actions!.addPreset("toei-subway");
+        });
+        expect(screen.getByTestId("probe-canonical-radius")).toHaveTextContent(
+            "800",
+        );
+        expect(screen.getByTestId("probe-geometry-radius")).toHaveTextContent(
+            "800",
+        );
     });
 });

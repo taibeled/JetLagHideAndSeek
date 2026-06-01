@@ -12,7 +12,6 @@ import { Keyboard, StyleSheet } from "react-native";
 
 import { MainDrawer } from "@/features/sheet/MainDrawer";
 import { SHEET_SNAP_INDEX, SheetRouteName } from "@/features/sheet/sheetRoutes";
-import { useQuestionDerived } from "@/state/questionStore";
 import { colors } from "@/theme/colors";
 
 const Sheet = BottomSheet as ComponentType<any>;
@@ -41,13 +40,7 @@ export const AppBottomSheet = forwardRef<
     const [sheetIndex, setSheetIndex] = useState<number>(
         SHEET_SNAP_INDEX.medium,
     );
-    const { activeQuestion } = useQuestionDerived();
     const currentIndexRef = useRef<number>(SHEET_SNAP_INDEX.medium);
-    const sheetAccessibilityLabel = getSheetAccessibilityLabel(
-        route,
-        activeQuestion,
-    );
-    const isSheetAccessible = sheetAccessibilityLabel !== undefined;
 
     useImperativeHandle(ref, () => ({
         snapToIndex(index: number) {
@@ -78,8 +71,7 @@ export const AppBottomSheet = forwardRef<
             enablePanDownToClose
             handleIndicatorStyle={styles.handleIndicator}
             backgroundStyle={styles.sheetBackground}
-            accessible={isSheetAccessible}
-            accessibilityLabel={sheetAccessibilityLabel}
+            accessible={false}
             onChange={(index: number) => {
                 if (index === SHEET_SNAP_INDEX.compact || index === -1) {
                     Keyboard.dismiss();
@@ -89,11 +81,7 @@ export const AppBottomSheet = forwardRef<
                 onIndexChange?.(index);
             }}
         >
-            <SheetView
-                accessible={isSheetAccessible}
-                accessibilityLabel={sheetAccessibilityLabel}
-                style={styles.content}
-            >
+            <SheetView accessible={false} style={styles.content}>
                 <MainDrawer
                     route={route}
                     onNavigate={setRoute}
@@ -108,16 +96,6 @@ function getRouteSnapIndex(route: SheetRouteName): number {
     return route === "play-area" || route === "hiding-zone"
         ? SHEET_SNAP_INDEX.large
         : SHEET_SNAP_INDEX.medium;
-}
-
-function getSheetAccessibilityLabel(
-    route: SheetRouteName,
-    activeQuestion: ReturnType<typeof useQuestionDerived>["activeQuestion"],
-): string | undefined {
-    if (route === "question-detail" && activeQuestion?.type === "matching") {
-        return "Matching question detail. Answer section. Set pin to my location. Hit answer.";
-    }
-    return undefined;
 }
 
 const styles = StyleSheet.create({
