@@ -94,6 +94,27 @@ export const hidingZoneScenarios: PerfScenario[] = [
     {
         fixtureHash: fixtureHash(presetFilename),
         group: "hiding-zone",
+        iterations: 4,
+        name: "hiding-zone/combined-600m-component-decomposition",
+        setup: clearHidingZoneFeatureCache,
+        run: () => {
+            const result = buildHidingZoneFeatureCollection(
+                combinedStations,
+                600,
+            );
+            return {
+                metrics: {
+                    components: result.features.length,
+                    stations: combinedStations.length,
+                },
+                output: result,
+            };
+        },
+        warmups: 1,
+    },
+    {
+        fixtureHash: fixtureHash(presetFilename),
+        group: "hiding-zone",
         iterations: 10,
         name: "hiding-zone/radius-return-600m",
         setup: () => {
