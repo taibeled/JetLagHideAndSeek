@@ -12,12 +12,14 @@ import {
     updateQuestionCenter,
     useQuestionActions,
     useQuestionDerived,
+    useQuestionIds,
     useQuestionState,
+    useQuestions,
 } from "@/state/questionStore";
 
 function Probe() {
-    const { activeQuestionId, isPinLocked, isRestored, questions } =
-        useQuestionState();
+    const { activeQuestionId, isPinLocked, isRestored } = useQuestionState();
+    const questions = useQuestions();
     const { activeQuestion } = useQuestionDerived();
     const {
         createQuestion,
@@ -165,6 +167,16 @@ function Probe() {
     );
 }
 
+function QuestionIdsProbe({
+    onRender,
+}: {
+    onRender: (questionIds: string[]) => void;
+}) {
+    const questionIds = useQuestionIds();
+    onRender(questionIds);
+    return null;
+}
+
 function renderProvider() {
     return render(
         <AppStateProviders>
@@ -245,6 +257,38 @@ describe("QuestionProvider", () => {
 
         expect(screen.getByTestId("probe-center")).toHaveTextContent(
             "139.7,35.66",
+        );
+    });
+
+    it("keeps the question id subscription stable when one question changes", async () => {
+        const onQuestionIdsRender = jest.fn();
+        const screen = render(
+            <AppStateProviders>
+                <Probe />
+                <QuestionIdsProbe onRender={onQuestionIdsRender} />
+            </AppStateProviders>,
+        );
+
+        await waitFor(() => {
+            expect(screen.getByTestId("probe-restored")).toHaveTextContent(
+                "true",
+            );
+        });
+
+        act(() => {
+            fireEvent.press(screen.getByTestId("action-create"));
+        });
+        const rendersAfterCreate = onQuestionIdsRender.mock.calls.length;
+        const questionIdsAfterCreate = onQuestionIdsRender.mock
+            .lastCall?.[0] as string[];
+
+        act(() => {
+            fireEvent.press(screen.getByTestId("action-option-1km"));
+        });
+
+        expect(onQuestionIdsRender).toHaveBeenCalledTimes(rendersAfterCreate);
+        expect(onQuestionIdsRender.mock.lastCall?.[0]).toBe(
+            questionIdsAfterCreate,
         );
     });
 
@@ -335,6 +379,48 @@ describe("QuestionProvider", () => {
         });
 
         expect(screen.getByTestId("probe-count")).toHaveTextContent("1");
+        expect(screen.getByTestId("probe-first-answer")).toHaveTextContent(
+            "negative",
+        );
+    });
+
+    it("restores external question ids without object-prototype collisions", async () => {
+        await persistAppState(
+            createAppStateV1({
+                hidingZones: {
+                    radiusMeters: 600,
+                    radiusUnit: "m",
+                    selectedPresetIds: [],
+                },
+                playArea: defaultPlayArea,
+                questions: [
+                    {
+                        answer: "negative",
+                        center: defaultPlayArea.center,
+                        createdAt: "2026-05-18T00:00:00.000Z",
+                        distanceMeters: 2000,
+                        distanceOption: "2km",
+                        distanceUnit: "m",
+                        id: "__proto__",
+                        type: "radar",
+                        updatedAt: "2026-05-18T00:00:00.000Z",
+                    },
+                ],
+            }),
+        );
+
+        const screen = renderProvider();
+
+        await waitFor(() => {
+            expect(screen.getByTestId("probe-restored")).toHaveTextContent(
+                "true",
+            );
+        });
+
+        expect(screen.getByTestId("probe-count")).toHaveTextContent("1");
+        expect(screen.getByTestId("probe-question-ids")).toHaveTextContent(
+            "__proto__",
+        );
         expect(screen.getByTestId("probe-first-answer")).toHaveTextContent(
             "negative",
         );

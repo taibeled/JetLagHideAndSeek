@@ -6,7 +6,7 @@ import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
 import { ShareSetupModal } from "@/sharing/export/ShareSetupModal";
 import { useHidingZoneState } from "@/state/hidingZoneStore";
 import { usePlayArea } from "@/state/playAreaStore";
-import { useQuestionState } from "@/state/questionStore";
+import { useQuestions } from "@/state/questionStore";
 import { colors } from "@/theme/colors";
 
 type SettingsScreenProps = {
@@ -17,7 +17,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
     const { cacheSource, playArea } = usePlayArea();
     const { radiusMeters, radiusUnit, selectedPresetIds } =
         useHidingZoneState();
-    const { questions } = useQuestionState();
+    const questions = useQuestions();
     const [isShareVisible, setIsShareVisible] = useState(false);
 
     return (

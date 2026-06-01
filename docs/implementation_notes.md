@@ -104,6 +104,7 @@ Testing added in this milestone:
 - Radar custom distance and hiding-zone radius share `src/components/UnitSegmentedControl.tsx`, preserving the existing `hiding-zone-unit-*` and `radar-distance-unit-*` test IDs.
 - The radar question info box compares the pin to selected hiding-zone stations; with no selected presets it shows an empty-state hint.
 - Legacy persisted/shared `type: "radius"` questions are normalized to `type: "radar"` on import and restore.
+- Live question state is normalized to `{ byId, allIds }`. Keep persisted and shared question payloads as ordered arrays, and use `useQuestions()` only where a consumer needs every question. ID-only consumers should use `useQuestionIds()` so single-question edits do not invalidate their subscription.
 - MapLibre Jest mocks now include `FillLayer` and `CircleLayer`.
 
 Native/dependency setup matters:

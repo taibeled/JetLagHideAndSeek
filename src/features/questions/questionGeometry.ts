@@ -11,7 +11,7 @@ import {
     useHidingZoneState,
 } from "@/state/hidingZoneStore";
 import { usePlayArea } from "@/state/playAreaStore";
-import { useQuestionState } from "@/state/questionStore";
+import { useQuestions } from "@/state/questionStore";
 import { buildOsmMatchingRenderState } from "./matching/osmMatchingGeometry";
 
 export function buildQuestionMapRenderState(
@@ -52,7 +52,7 @@ export function buildQuestionMapRenderState(
 }
 
 export function useQuestionMapRenderState(): QuestionMapRenderState {
-    const { questions } = useQuestionState();
+    const questions = useQuestions();
     const { radiusMeters } = useHidingZoneState();
     const { selectedStations } = useHidingZoneDerived();
     const { playArea } = usePlayArea();

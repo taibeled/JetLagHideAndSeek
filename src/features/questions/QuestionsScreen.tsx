@@ -4,7 +4,7 @@ import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import { getQuestionDefinition } from "@/features/questions/questionRegistry";
 import { SheetScrollView } from "@/features/sheet/SheetScrollView";
 import type { SheetRouteName } from "@/features/sheet/sheetRoutes";
-import { useQuestionActions, useQuestionState } from "@/state/questionStore";
+import { useQuestionActions, useQuestions } from "@/state/questionStore";
 import { colors } from "@/theme/colors";
 
 type QuestionsScreenProps = {
@@ -12,7 +12,7 @@ type QuestionsScreenProps = {
 };
 
 export function QuestionsScreen({ onNavigate }: QuestionsScreenProps) {
-    const { questions } = useQuestionState();
+    const questions = useQuestions();
     const { deleteQuestion, setActiveQuestionId } = useQuestionActions();
 
     const openQuestion = (questionId: string) => {

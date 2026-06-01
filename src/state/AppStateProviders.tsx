@@ -28,6 +28,7 @@ import {
     QuestionProvider,
     useQuestionActions,
     useQuestionState,
+    useQuestions,
 } from "@/state/questionStore";
 
 // ---------------------------------------------------------------------------
@@ -84,6 +85,7 @@ function AppStatePersistenceCoordinator({ children }: { children: ReactNode }) {
     const hidingZoneActions = useHidingZoneActions();
     const questionState = useQuestionState();
     const questionActions = useQuestionActions();
+    const questions = useQuestions();
     const isRestored =
         playAreaStore.isRestored &&
         hidingZoneState.isRestored &&
@@ -194,7 +196,7 @@ function AppStatePersistenceCoordinator({ children }: { children: ReactNode }) {
                     activeQuestionId: questionState.activeQuestionId,
                     isPinLocked: questionState.isPinLocked,
                 },
-                questions: questionState.questions,
+                questions,
             }),
         );
     }, [
@@ -205,7 +207,7 @@ function AppStatePersistenceCoordinator({ children }: { children: ReactNode }) {
         playAreaStore.playArea,
         questionState.activeQuestionId,
         questionState.isPinLocked,
-        questionState.questions,
+        questions,
     ]);
 
     const readinessValue = useMemo<AppReadinessValue>(

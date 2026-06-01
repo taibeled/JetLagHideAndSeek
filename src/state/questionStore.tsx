@@ -36,7 +36,6 @@ type QuestionStateValue = {
     activeQuestionId: string | null;
     isPinLocked: boolean;
     isRestored: boolean;
-    questions: QuestionState[];
 };
 
 const QuestionStateContext = createContext<QuestionStateValue | null>(null);
@@ -52,11 +51,16 @@ export function useQuestionState(): QuestionStateValue {
 }
 
 // ---------------------------------------------------------------------------
-// Granular subscriptions — prevent re-renders for consumers that only need
-// a single scalar value (e.g. NativeMap only needs isPinLocked).
+// Granular subscriptions — prevent re-renders for consumers that only need a
+// scalar value or stable question ordering.
 // ---------------------------------------------------------------------------
 
 const IsPinLockedContext = createContext<boolean>(false);
+const QuestionIdsContext = createContext<string[] | null>(null);
+const QuestionsByIdContext = createContext<Record<
+    string,
+    QuestionState
+> | null>(null);
 
 /**
  * Subscribe to `isPinLocked` without receiving the full `questions` array.
@@ -65,6 +69,27 @@ const IsPinLockedContext = createContext<boolean>(false);
  */
 export function useIsPinLocked(): boolean {
     return useContext(IsPinLockedContext);
+}
+
+export function useQuestionIds(): string[] {
+    const context = useContext(QuestionIdsContext);
+    if (!context) {
+        throw new Error("useQuestionIds must be used within QuestionProvider.");
+    }
+    return context;
+}
+
+export function useQuestions(): QuestionState[] {
+    const questionIds = useQuestionIds();
+    const questionsById = useContext(QuestionsByIdContext);
+    if (!questionsById) {
+        throw new Error("useQuestions must be used within QuestionProvider.");
+    }
+
+    return useMemo(
+        () => questionIds.map((questionId) => questionsById[questionId]),
+        [questionIds, questionsById],
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -129,8 +154,19 @@ export type QuestionSettingsImportState = {
     isPinLocked: boolean;
 };
 
+type NormalizedQuestions = {
+    allIds: string[];
+    byId: Record<string, QuestionState>;
+};
+
+const emptyQuestions: NormalizedQuestions = {
+    allIds: [],
+    byId: createQuestionsById(),
+};
+
 export function QuestionProvider({ children }: { children: ReactNode }) {
-    const [questions, setQuestions] = useState<QuestionState[]>([]);
+    const [questions, setQuestions] =
+        useState<NormalizedQuestions>(emptyQuestions);
     const [activeQuestionId, setActiveQuestionIdState] = useState<
         string | null
     >(null);
@@ -139,9 +175,10 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
 
     const activeQuestion = useMemo(
         () =>
-            questions.find((question) => question.id === activeQuestionId) ??
-            null,
-        [activeQuestionId, questions],
+            activeQuestionId
+                ? (questions.byId[activeQuestionId] ?? null)
+                : null,
+        [activeQuestionId, questions.byId],
     );
 
     const updateQuestion = useCallback(
@@ -149,11 +186,25 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
             questionId: string,
             updater: (question: QuestionState) => QuestionState,
         ) => {
-            setQuestions((current) =>
-                current.map((question) =>
-                    question.id === questionId ? updater(question) : question,
-                ),
-            );
+            setQuestions((current) => {
+                const question = current.byId[questionId];
+                if (!question) return current;
+
+                const updatedQuestion = updater(question);
+                if (updatedQuestion === question) return current;
+                if (updatedQuestion.id !== question.id) {
+                    throw new Error(
+                        "updateQuestion cannot change a question id.",
+                    );
+                }
+
+                const byId = cloneQuestionsById(current.byId);
+                byId[questionId] = updatedQuestion;
+                return {
+                    ...current,
+                    byId,
+                };
+            });
         },
         [],
     );
@@ -170,7 +221,14 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
                 now,
                 options.category,
             );
-            setQuestions((current) => [...current, question]);
+            setQuestions((current) => {
+                const byId = cloneQuestionsById(current.byId);
+                byId[question.id] = question;
+                return {
+                    allIds: [...current.allIds, question.id],
+                    byId,
+                };
+            });
             setActiveQuestionIdState(question.id);
             return question;
         },
@@ -179,10 +237,14 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
 
     const deleteQuestion = useCallback((questionId: string) => {
         setQuestions((current) => {
-            if (!current.some((question) => question.id === questionId)) {
-                return current;
-            }
-            return current.filter((question) => question.id !== questionId);
+            if (!hasQuestionId(current.byId, questionId)) return current;
+
+            const byId = cloneQuestionsById(current.byId);
+            delete byId[questionId];
+            return {
+                allIds: current.allIds.filter((id) => id !== questionId),
+                byId,
+            };
         });
         setActiveQuestionIdState((current) =>
             current === questionId ? null : current,
@@ -191,7 +253,9 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
 
     const importQuestions = useCallback(
         (nextQuestions: QuestionsImportState) => {
-            setQuestions(nextQuestions.map(normalizeQuestionState));
+            setQuestions(
+                normalizeQuestions(nextQuestions.map(normalizeQuestionState)),
+            );
             setActiveQuestionIdState(null);
         },
         [],
@@ -222,9 +286,8 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
             activeQuestionId,
             isPinLocked,
             isRestored,
-            questions,
         }),
-        [activeQuestionId, isPinLocked, isRestored, questions],
+        [activeQuestionId, isPinLocked, isRestored],
     );
 
     const actionsValue = useMemo<QuestionActionsValue>(
@@ -261,9 +324,13 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
         <QuestionStateContext.Provider value={stateValue}>
             <QuestionActionsContext.Provider value={actionsValue}>
                 <QuestionDerivedContext.Provider value={derivedValue}>
-                    <IsPinLockedContext.Provider value={isPinLocked}>
-                        {children}
-                    </IsPinLockedContext.Provider>
+                    <QuestionIdsContext.Provider value={questions.allIds}>
+                        <QuestionsByIdContext.Provider value={questions.byId}>
+                            <IsPinLockedContext.Provider value={isPinLocked}>
+                                {children}
+                            </IsPinLockedContext.Provider>
+                        </QuestionsByIdContext.Provider>
+                    </QuestionIdsContext.Provider>
                 </QuestionDerivedContext.Provider>
             </QuestionActionsContext.Provider>
         </QuestionStateContext.Provider>
@@ -273,6 +340,36 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
 // ---------------------------------------------------------------------------
 // Pure helper functions (stateless, keep outside context)
 // ---------------------------------------------------------------------------
+
+function normalizeQuestions(questions: QuestionState[]): NormalizedQuestions {
+    return questions.reduce<NormalizedQuestions>(
+        (normalized, question) => {
+            if (!hasQuestionId(normalized.byId, question.id)) {
+                normalized.allIds.push(question.id);
+            }
+            normalized.byId[question.id] = question;
+            return normalized;
+        },
+        { allIds: [], byId: createQuestionsById() },
+    );
+}
+
+function createQuestionsById(): Record<string, QuestionState> {
+    return Object.create(null) as Record<string, QuestionState>;
+}
+
+function cloneQuestionsById(
+    questionsById: Record<string, QuestionState>,
+): Record<string, QuestionState> {
+    return Object.assign(createQuestionsById(), questionsById);
+}
+
+function hasQuestionId(
+    questionsById: Record<string, QuestionState>,
+    questionId: string,
+): boolean {
+    return Object.prototype.hasOwnProperty.call(questionsById, questionId);
+}
 
 export function getRadarDistanceDisplayValue(question: RadarQuestion): string {
     return fromMeters(question.distanceMeters, question.distanceUnit);

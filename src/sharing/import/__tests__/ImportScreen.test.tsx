@@ -13,7 +13,7 @@ import { minifyEnvelope } from "@/sharing/wire/minified";
 import { AppStateProviders } from "@/state/AppStateProviders";
 import { useHidingZoneState } from "@/state/hidingZoneStore";
 import { usePlayArea } from "@/state/playAreaStore";
-import { useQuestionState } from "@/state/questionStore";
+import { useQuestions } from "@/state/questionStore";
 
 const { useLocalSearchParams, useRouter } = jest.requireMock("expo-router") as {
     useLocalSearchParams: jest.Mock;
@@ -23,7 +23,7 @@ const { useLocalSearchParams, useRouter } = jest.requireMock("expo-router") as {
 function StoreProbe() {
     const { playArea } = usePlayArea();
     const { radiusMeters, selectedPresetIds } = useHidingZoneState();
-    const { questions } = useQuestionState();
+    const questions = useQuestions();
     const matchingQuestion = questions.find(
         (question) => question.type === "matching",
     );
