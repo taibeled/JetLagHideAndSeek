@@ -8,6 +8,8 @@ Default play area is **Tokyo 23 Wards**, OSM relation `19631009`. The checked-in
 
 Generated Tokyo startup metadata lives at `assets/default-zones/tokyo-metadata.json`. It stores the precomputed bbox, center, and compact mask-hole paths without duplicating boundary coordinates. Run `pnpm data:default-zones` after changing the Tokyo fixture and `pnpm test:data:default-zones` to verify the checked-in metadata.
 
+Fetched non-bundled play-area boundaries use stale-while-revalidate caching. Boundaries younger than `30` days are served from memory or AsyncStorage without a request. Older and legacy timestamp-free entries are still served immediately, then refreshed from Overpass in the background with per-relation in-flight deduplication. A refresh failure deliberately leaves the stale copy available.
+
 The map fit is intentionally biased upward. `NativeMap` calls `fitCameraToBbox` with `getTopViewportFitPadding`, which uses asymmetric MapLibre camera bounds padding so the bbox sits in the upper map area above the medium bottom sheet. If sheet snap points change, revisit `getTopViewportFitPadding` in `src/features/map/camera.ts`.
 
 MapLibre native setup matters:

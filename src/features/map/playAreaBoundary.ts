@@ -14,11 +14,18 @@ import {
 
 const OVERPASS_API = "https://overpass-api.de/api/interpreter";
 const CACHE_PREFIX = "play-area-boundary:";
+export const BOUNDARY_CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 const BUNDLED_BOUNDARIES: Partial<Record<number, GeoJsonFeatureCollection>> = {
     358674: osakaBoundaryJson as unknown as GeoJsonFeatureCollection,
 };
 
-const memoryCache = new Map<number, PlayArea>();
+type BoundaryCacheEntry = {
+    cachedAt: string | null;
+    playArea: PlayArea;
+};
+
+const memoryCache = new Map<number, BoundaryCacheEntry>();
+const boundaryRevalidations = new Map<number, Promise<void>>();
 
 export type LoadedPlayArea = {
     cacheSource: PlayAreaCacheSource;
@@ -63,33 +70,62 @@ export async function loadCachedPlayAreaByRelationId(
 ): Promise<LoadedPlayArea | null> {
     const bundled = getBundledPlayArea(relationId);
     if (bundled) {
-        memoryCache.set(relationId, bundled);
         return { cacheSource: "bundled", playArea: bundled };
     }
 
     const memoryHit = memoryCache.get(relationId);
-    if (memoryHit) return { cacheSource: "memory", playArea: memoryHit };
+    if (memoryHit) {
+        revalidateBoundaryIfStale(relationId, memoryHit);
+        return { cacheSource: "memory", playArea: memoryHit.playArea };
+    }
 
     const persisted = await readPersistedBoundary(relationId);
     if (!persisted) return null;
 
     memoryCache.set(relationId, persisted);
-    return { cacheSource: "persisted", playArea: persisted };
+    revalidateBoundaryIfStale(relationId, persisted);
+    return { cacheSource: "persisted", playArea: persisted.playArea };
 }
 
 export async function persistPlayAreaBoundary(playArea: PlayArea) {
-    const memoryHit = memoryCache.get(playArea.osmId);
-    memoryCache.set(playArea.osmId, playArea);
-    if (isBundledPlayAreaId(playArea.osmId) || memoryHit === playArea) return;
-
     const envelope: BoundaryCacheEnvelope = {
         cachedAt: new Date().toISOString(),
         playArea,
     };
+    if (isBundledPlayAreaId(playArea.osmId)) return;
+
+    const memoryHit = memoryCache.get(playArea.osmId);
+    if (memoryHit?.playArea === playArea) return;
+
+    memoryCache.set(playArea.osmId, envelope);
     await AsyncStorage.setItem(
         getBoundaryCacheKey(playArea.osmId),
         JSON.stringify(envelope),
     );
+}
+
+/**
+ * App-state writes only need a durable boundary reference. They must not
+ * replace an existing cache record because the live state may still hold the
+ * stale object returned immediately before a background refresh completed.
+ */
+export async function ensurePlayAreaBoundaryCached(playArea: PlayArea) {
+    if (
+        isBundledPlayAreaId(playArea.osmId) ||
+        memoryCache.has(playArea.osmId)
+    ) {
+        return;
+    }
+
+    const persisted = await readPersistedBoundary(playArea.osmId);
+    if (persisted) {
+        if (!memoryCache.has(playArea.osmId)) {
+            memoryCache.set(playArea.osmId, persisted);
+        }
+        return;
+    }
+    if (memoryCache.has(playArea.osmId)) return;
+    await persistPlayAreaBoundary(playArea);
 }
 
 export async function fetchPlayAreaBoundary(
@@ -158,7 +194,7 @@ export async function warmBoundaryCacheFromStorage(): Promise<void> {
             const relationId = Number(key.slice(CACHE_PREFIX.length));
             if (!Number.isSafeInteger(relationId) || relationId <= 0) continue;
 
-            // Skip if already in memory (e.g., bundled or already warmed).
+            // Skip if already loaded or warmed.
             if (memoryCache.has(relationId)) continue;
 
             const playArea = await readPersistedBoundary(relationId);
@@ -182,24 +218,64 @@ function getBundledPlayArea(relationId: number): PlayArea | null {
 
 async function readPersistedBoundary(
     relationId: number,
-): Promise<PlayArea | null> {
+): Promise<BoundaryCacheEntry | null> {
     const cacheKey = getBoundaryCacheKey(relationId);
     try {
         const raw = await AsyncStorage.getItem(cacheKey);
         if (!raw) return null;
 
         const parsed = JSON.parse(raw) as unknown;
-        const playArea =
-            isRecord(parsed) && "playArea" in parsed ? parsed.playArea : parsed;
+        const isEnvelope = isRecord(parsed) && "playArea" in parsed;
+        const playArea = isEnvelope ? parsed.playArea : parsed;
         if (!isPlayArea(playArea, relationId)) {
             await removeBoundaryCacheEntry(cacheKey);
             return null;
         }
-        return playArea;
+        return {
+            cachedAt:
+                isEnvelope && typeof parsed.cachedAt === "string"
+                    ? parsed.cachedAt
+                    : null,
+            playArea,
+        };
     } catch {
         await removeBoundaryCacheEntry(cacheKey);
         return null;
     }
+}
+
+function revalidateBoundaryIfStale(
+    relationId: number,
+    cacheEntry: BoundaryCacheEntry,
+) {
+    if (
+        !isBoundaryCacheEntryStale(cacheEntry) ||
+        boundaryRevalidations.has(relationId)
+    ) {
+        return;
+    }
+
+    const revalidation = fetchPlayAreaBoundary(relationId)
+        .then(persistPlayAreaBoundary)
+        .catch(() => {
+            // Keep serving the stale boundary when Overpass is unavailable.
+        })
+        .finally(() => {
+            boundaryRevalidations.delete(relationId);
+        });
+    boundaryRevalidations.set(relationId, revalidation);
+}
+
+function isBoundaryCacheEntryStale(cacheEntry: BoundaryCacheEntry): boolean {
+    if (!cacheEntry.cachedAt) return true;
+
+    const cachedAtMs = Date.parse(cacheEntry.cachedAt);
+    const ageMs = Date.now() - cachedAtMs;
+    return (
+        !Number.isFinite(cachedAtMs) ||
+        ageMs < 0 ||
+        ageMs >= BOUNDARY_CACHE_TTL_MS
+    );
 }
 
 async function removeBoundaryCacheEntry(cacheKey: string) {

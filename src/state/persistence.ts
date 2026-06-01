@@ -1,8 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
+    ensurePlayAreaBoundaryCached,
     loadCachedPlayAreaByRelationId,
-    persistPlayAreaBoundary,
 } from "@/features/map/playAreaBoundary";
 import { type AppStateV1, migratePersistedAppState } from "@/state/appState";
 
@@ -36,7 +36,7 @@ export async function loadPersistedAppState(): Promise<AppStateV1 | null> {
 
 export async function persistAppState(state: AppStateV1): Promise<void> {
     try {
-        await persistPlayAreaBoundary(state.playArea);
+        await ensurePlayAreaBoundaryCached(state.playArea);
 
         await AsyncStorage.multiSet(serializeSlices(state));
         await AsyncStorage.removeItem(LEGACY_APP_STATE_KEY);
