@@ -208,9 +208,7 @@ describe("NativeMap", () => {
         fireEvent.press(screen.getByText("📍"));
 
         await waitFor(() => {
-            expect(
-                Location.getForegroundPermissionsAsync,
-            ).toHaveBeenCalled();
+            expect(Location.getForegroundPermissionsAsync).toHaveBeenCalled();
             expect(__cameraMethods.setCamera).toHaveBeenCalledWith({
                 animationDuration: 700,
                 animationMode: "flyTo",
