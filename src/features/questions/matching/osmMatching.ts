@@ -3,7 +3,7 @@ import type { MatchingCategory, OsmFeature } from "./matchingTypes";
 import { getCategoryConfig } from "./matchingCategories";
 
 const OVERPASS_API = "https://overpass-api.de/api/interpreter";
-const DEFAULT_SEARCH_RADIUS_METERS = 50_000;
+export const DEFAULT_SEARCH_RADIUS_METERS = 50_000;
 
 type OverpassElement = {
     center?: { lat: number; lon: number };
@@ -22,6 +22,39 @@ export type OsmFeatureWithDistance = OsmFeature & {
     distanceMeters: number;
 };
 
+/**
+ * Fetches and parses raw OSM features from Overpass without ranking them.
+ * Returns an empty array for categories that have no Overpass query tags.
+ */
+export async function fetchAndParseOverpassFeatures(
+    category: MatchingCategory,
+    center: Position,
+    radiusMeters: number,
+    signal?: AbortSignal,
+): Promise<OsmFeature[]> {
+    const config = getCategoryConfig(category);
+    if (!config) return [];
+    if (!config.osmQueryTags && category !== "station-name-length") return [];
+
+    const [lon, lat] = center;
+    const query =
+        category === "station-name-length"
+            ? buildStationQuery(lat, lon, radiusMeters)
+            : buildOverpassQuery(config.osmQueryTags, lat, lon, radiusMeters);
+
+    const response = await fetch(
+        `${OVERPASS_API}?data=${encodeURIComponent(query)}`,
+        { signal },
+    );
+
+    if (!response.ok) {
+        throw new Error(`Overpass API error ${response.status}`);
+    }
+
+    const data = (await response.json()) as OverpassResponse;
+    return parseOverpassElements(data.elements ?? [], category);
+}
+
 export async function findMatchingFeatures(
     category: MatchingCategory,
     center: Position,
@@ -31,41 +64,15 @@ export async function findMatchingFeatures(
         signal?: AbortSignal;
     },
 ): Promise<OsmFeatureWithDistance[]> {
-    const config = getCategoryConfig(category);
-    if (!config) {
-        return [];
-    }
-
-    if (!config.osmQueryTags && category !== "station-name-length") {
-        return [];
-    }
-
     const searchRadiusMeters =
         options?.searchRadiusMeters ?? DEFAULT_SEARCH_RADIUS_METERS;
     const maxCandidates = options?.maxCandidates ?? 10;
-    const [lon, lat] = center;
-    const query =
-        category === "station-name-length"
-            ? buildStationQuery(lat, lon, searchRadiusMeters)
-            : buildOverpassQuery(
-                  config.osmQueryTags,
-                  lat,
-                  lon,
-                  searchRadiusMeters,
-              );
-
-    const response = await fetch(
-        `${OVERPASS_API}?data=${encodeURIComponent(query)}`,
-        { signal: options?.signal },
+    const features = await fetchAndParseOverpassFeatures(
+        category,
+        center,
+        searchRadiusMeters,
+        options?.signal,
     );
-
-    if (!response.ok) {
-        throw new Error(`Overpass API error ${response.status}`);
-    }
-
-    const data = (await response.json()) as OverpassResponse;
-    const features = parseOverpassElements(data.elements ?? [], category);
-
     return rankMatchingFeatures(features, center, maxCandidates);
 }
 

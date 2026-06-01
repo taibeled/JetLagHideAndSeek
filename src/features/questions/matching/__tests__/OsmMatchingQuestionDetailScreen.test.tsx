@@ -36,14 +36,11 @@ const mockCandidates = [
     },
 ];
 
-let mockFindMatchingFeatures: jest.Mock;
-let mockFindNearestMatchingFeature: jest.Mock;
+let mockFindMatchingFeaturesWithCache: jest.Mock;
 
-jest.mock("@/features/questions/matching/osmMatching", () => ({
-    findMatchingFeatures: (...args: unknown[]) =>
-        mockFindMatchingFeatures(...args),
-    findNearestMatchingFeature: (...args: unknown[]) =>
-        mockFindNearestMatchingFeature(...args),
+jest.mock("@/features/questions/matching/osmMatchingCache", () => ({
+    findMatchingFeaturesWithCache: (...args: unknown[]) =>
+        mockFindMatchingFeaturesWithCache(...args),
 }));
 
 function TestScreen({
@@ -81,10 +78,10 @@ function TestScreen({
 describe("OsmMatchingQuestionDetailScreen", () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        mockFindMatchingFeatures = jest.fn().mockResolvedValue(mockCandidates);
-        mockFindNearestMatchingFeature = jest
-            .fn()
-            .mockResolvedValue(mockCandidates[0]);
+        mockFindMatchingFeaturesWithCache = jest.fn().mockResolvedValue({
+            candidates: mockCandidates,
+            source: "network",
+        });
     });
 
     it("renders candidate list sorted by distance", async () => {
@@ -253,7 +250,7 @@ describe("OsmMatchingQuestionDetailScreen", () => {
         render(<TestScreen initialQuestion={question} onUpdate={onUpdate} />);
 
         await waitFor(() => {
-            expect(mockFindMatchingFeatures).toHaveBeenCalled();
+            expect(mockFindMatchingFeaturesWithCache).toHaveBeenCalled();
         });
 
         const lastCall =
@@ -266,7 +263,7 @@ describe("OsmMatchingQuestionDetailScreen", () => {
         expect(updated.targetName).toBe("Nearest Park");
     });
 
-    it("refresh button re-queries and updates candidates", async () => {
+    it("refresh button re-queries with forceRefresh and updates candidates", async () => {
         const question: MatchingQuestion = {
             answer: "unanswered",
             candidates: mockCandidates,
@@ -294,7 +291,7 @@ describe("OsmMatchingQuestionDetailScreen", () => {
             expect(screen.getByTestId("osm-matching-refresh")).toBeTruthy();
         });
 
-        mockFindMatchingFeatures.mockClear();
+        mockFindMatchingFeaturesWithCache.mockClear();
         const newCandidates = [
             {
                 distanceMeters: 300,
@@ -306,12 +303,55 @@ describe("OsmMatchingQuestionDetailScreen", () => {
                 tags: {},
             },
         ];
-        mockFindMatchingFeatures.mockResolvedValue(newCandidates);
+        mockFindMatchingFeaturesWithCache.mockResolvedValue({
+            candidates: newCandidates,
+            source: "network",
+        });
 
         fireEvent.press(screen.getByTestId("osm-matching-refresh"));
 
         await waitFor(() => {
-            expect(mockFindMatchingFeatures).toHaveBeenCalled();
+            expect(mockFindMatchingFeaturesWithCache).toHaveBeenCalledWith(
+                "park",
+                defaultPlayArea.center,
+                expect.objectContaining({ forceRefresh: true }),
+            );
+        });
+    });
+
+    it("renders stale-cache banner when cache source is stale", async () => {
+        mockFindMatchingFeaturesWithCache.mockResolvedValue({
+            candidates: mockCandidates,
+            source: "stale",
+        });
+
+        const question: MatchingQuestion = {
+            answer: "unanswered",
+            candidates: [],
+            category: "park",
+            center: defaultPlayArea.center,
+            createdAt: "2026-05-30T00:00:00.000Z",
+            id: "matching-1",
+            lineId: null,
+            lineName: null,
+            selectedOsmId: null,
+            selectedOsmType: null,
+            targetName: null,
+            targetOsmId: null,
+            targetOsmType: null,
+            type: "matching",
+            updatedAt: "2026-05-30T00:00:00.000Z",
+        };
+        const onUpdate = jest.fn();
+
+        const screen = render(
+            <TestScreen initialQuestion={question} onUpdate={onUpdate} />,
+        );
+
+        await waitFor(() => {
+            expect(
+                screen.getByTestId("osm-matching-stale"),
+            ).toBeTruthy();
         });
     });
 
@@ -345,7 +385,7 @@ describe("OsmMatchingQuestionDetailScreen", () => {
             expect(screen.getByText("Nearest Park")).toBeTruthy();
         });
 
-        mockFindMatchingFeatures.mockClear();
+        mockFindMatchingFeaturesWithCache.mockClear();
 
         const movedQuestion: MatchingQuestion = {
             ...question,
@@ -357,7 +397,7 @@ describe("OsmMatchingQuestionDetailScreen", () => {
         );
 
         await waitFor(() => {
-            expect(mockFindMatchingFeatures).toHaveBeenCalledWith(
+            expect(mockFindMatchingFeaturesWithCache).toHaveBeenCalledWith(
                 "park",
                 [139.8, 35.8],
                 expect.objectContaining({ signal: expect.any(AbortSignal) }),

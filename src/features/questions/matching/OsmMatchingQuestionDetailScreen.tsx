@@ -11,7 +11,10 @@ import {
 import { colors } from "@/theme/colors";
 import type { MatchingQuestion } from "./matchingTypes";
 import { getCategoryTitle } from "./matchingCategories";
-import { findMatchingFeatures } from "./osmMatching";
+import {
+    findMatchingFeaturesWithCache,
+    type OsmMatchingCacheSource,
+} from "./osmMatchingCache";
 
 /** Milliseconds to wait after the pin stops moving before querying Overpass. */
 const SEARCH_DEBOUNCE_MS = 400;
@@ -34,62 +37,73 @@ export function OsmMatchingQuestionDetailScreen({
 }: OsmMatchingQuestionDetailScreenProps) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [cacheSource, setCacheSource] =
+        useState<OsmMatchingCacheSource | null>(null);
     const categoryTitle = getCategoryTitle(question.category);
     const searchGenerationRef = useRef(0);
     const lastSearchCenterRef = useRef<[number, number] | null>(null);
     const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const abortControllerRef = useRef<AbortController | null>(null);
 
-    const performSearch = useCallback(async () => {
-        // Cancel any in-flight request before starting a new one.
-        if (abortControllerRef.current) {
-            abortControllerRef.current.abort();
-        }
-        const abortController = new AbortController();
-        abortControllerRef.current = abortController;
+    const performSearch = useCallback(
+        async (forceRefresh = false) => {
+            // Cancel any in-flight request before starting a new one.
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+            }
+            const abortController = new AbortController();
+            abortControllerRef.current = abortController;
 
-        const generation = ++searchGenerationRef.current;
-        lastSearchCenterRef.current = question.center;
-        setIsLoading(true);
-        setError(null);
-        try {
-            const candidates = await findMatchingFeatures(
-                question.category,
-                question.center,
-                { signal: abortController.signal },
-            );
-            // Ignore stale responses from earlier searches
-            if (generation !== searchGenerationRef.current) {
-                return;
+            const generation = ++searchGenerationRef.current;
+            lastSearchCenterRef.current = question.center;
+            setIsLoading(true);
+            setError(null);
+            try {
+                const result = await findMatchingFeaturesWithCache(
+                    question.category,
+                    question.center,
+                    {
+                        forceRefresh,
+                        signal: abortController.signal,
+                    },
+                );
+                // Ignore stale responses from earlier searches
+                if (generation !== searchGenerationRef.current) {
+                    return;
+                }
+                const { candidates } = result;
+                const nearest = candidates[0] ?? null;
+                setCacheSource(result.source);
+                updateQuestion(question.id, (current) => {
+                    if (current.type !== "matching") return current;
+                    return {
+                        ...current,
+                        candidates,
+                        selectedOsmId: nearest?.osmId ?? null,
+                        selectedOsmType: nearest?.osmType ?? null,
+                        targetName: nearest?.name ?? null,
+                        targetOsmId: nearest?.osmId ?? null,
+                        targetOsmType: nearest?.osmType ?? null,
+                        updatedAt: new Date().toISOString(),
+                    };
+                });
+            } catch (error) {
+                // Silently ignore aborted requests — a newer search is in flight.
+                if (error instanceof Error && error.name === "AbortError") {
+                    return;
+                }
+                if (generation === searchGenerationRef.current) {
+                    setError(OVERPASS_ERROR_MESSAGE);
+                    setCacheSource(null);
+                }
+            } finally {
+                if (generation === searchGenerationRef.current) {
+                    setIsLoading(false);
+                }
             }
-            const nearest = candidates[0] ?? null;
-            updateQuestion(question.id, (current) => {
-                if (current.type !== "matching") return current;
-                return {
-                    ...current,
-                    candidates,
-                    selectedOsmId: nearest?.osmId ?? null,
-                    selectedOsmType: nearest?.osmType ?? null,
-                    targetName: nearest?.name ?? null,
-                    targetOsmId: nearest?.osmId ?? null,
-                    targetOsmType: nearest?.osmType ?? null,
-                    updatedAt: new Date().toISOString(),
-                };
-            });
-        } catch (error) {
-            // Silently ignore aborted requests — a newer search is in flight.
-            if (error instanceof Error && error.name === "AbortError") {
-                return;
-            }
-            if (generation === searchGenerationRef.current) {
-                setError(OVERPASS_ERROR_MESSAGE);
-            }
-        } finally {
-            if (generation === searchGenerationRef.current) {
-                setIsLoading(false);
-            }
-        }
-    }, [question.category, question.center, question.id, updateQuestion]);
+        },
+        [question.category, question.center, question.id, updateQuestion],
+    );
 
     // Schedule a debounced search. Clears any pending timer first.
     const scheduleSearch = useCallback(() => {
@@ -135,6 +149,8 @@ export function OsmMatchingQuestionDetailScreen({
             // effect run will trigger a fresh search for the new center.
             // Intentionally do NOT update lastSearchCenterRef here; the
             // subsequent render with empty candidates must detect a mismatch.
+            setError(null);
+            setCacheSource(null);
             updateQuestion(question.id, (current) => {
                 if (current.type !== "matching") return current;
                 return {
@@ -255,6 +271,15 @@ export function OsmMatchingQuestionDetailScreen({
                     </Text>
                 )}
 
+                {cacheSource === "stale" && !isLoading ? (
+                    <Text
+                        style={styles.staleCacheText}
+                        testID="osm-matching-stale"
+                    >
+                        Results may be outdated — tap Refresh to update.
+                    </Text>
+                ) : null}
+
                 {error ? (
                     <Text style={styles.errorText} testID="osm-matching-error">
                         {error}
@@ -266,7 +291,7 @@ export function OsmMatchingQuestionDetailScreen({
                     accessibilityRole="button"
                     disabled={isLoading}
                     onPress={() => {
-                        void performSearch();
+                        void performSearch(true);
                     }}
                     style={({ pressed }) => [
                         styles.refreshButton,
@@ -352,6 +377,12 @@ const styles = StyleSheet.create({
         fontWeight: "700",
         lineHeight: 18,
         marginTop: 8,
+    },
+    staleCacheText: {
+        color: colors.muted,
+        fontSize: 12,
+        lineHeight: 16,
+        marginTop: 6,
     },
     metadata: {
         color: colors.muted,
