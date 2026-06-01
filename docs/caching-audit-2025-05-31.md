@@ -339,10 +339,11 @@ No timestamps on cached boundaries or app-state snapshots. No way to implement T
 
 ### Higher-Effort Follow-up (2026-06-01)
 
-| #   | Disposition                                                                                                                                                                                                                                            |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 16  | **Complete.** The root layout configures a bounded `100 MiB` native MapLibre ambient tile cache before rendering the route stack. Offline packs are intentionally excluded while the raster source is `tile.openstreetmap.org`.                        |
-| 17  | **Complete.** Live question state is normalized to `{ byId, allIds }`. Array adapters remain at persistence, sharing, list-rendering, and map-render-state boundaries, while ID-only subscribers keep a stable reference across single-question edits. |
+| #   | Disposition                                                                                                                                                                                                                                                                                                                                                                |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 16  | **Complete.** The root layout configures a bounded `100 MiB` native MapLibre ambient tile cache before rendering the route stack. Offline packs are intentionally excluded while the raster source is `tile.openstreetmap.org`.                                                                                                                                            |
+| 17  | **Complete.** Live question state is normalized to `{ byId, allIds }`. Array adapters remain at persistence, sharing, list-rendering, and map-render-state boundaries, while ID-only subscribers keep a stable reference across single-question edits.                                                                                                                     |
+| 18  | **Deferred upstream.** MapLibre React Native `10.4.2` only exposes whole-shape replacement. Its bridge serializes the complete GeoJSON shape, Android forwards it to `GeoJsonSource.setGeoJson(...)`, and iOS forwards it to `MLNShapeSource.setShape(...)`. Revisit if upstream adds cross-platform per-feature updates or profiling justifies maintaining a native fork. |
 
 ### Architectural Direction
 

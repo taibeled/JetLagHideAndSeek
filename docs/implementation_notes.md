@@ -13,6 +13,7 @@ MapLibre native setup matters:
 - `app.json` must include the `@maplibre/maplibre-react-native` plugin.
 - `metro.config.js` pins `@maplibre/maplibre-react-native` to the workspace root to avoid duplicate native package resolution.
 - The root layout sets MapLibre's native ambient tile cache limit to `100 MiB` before rendering the route stack. Keep this startup ordering: native MapLibre documents that cache sizing should happen before a map style loads. Do not add automatic offline packs while the raster style uses `tile.openstreetmap.org`; the public OSM tile service permits normal HTTP caching but prohibits bulk offline downloading.
+- MapLibre React Native `10.4.2` does not expose cross-platform per-feature updates for `ShapeSource`. The bridge and both native wrappers replace the full GeoJSON shape. Avoid splitting collections into many sources as a substitute unless profiling proves that the extra native source/layer overhead is worthwhile; revisit when upstream exposes incremental updates or a native fork is justified.
 - After adding MapLibre, run `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 pnpm exec expo prebuild --platform ios --clean` so the iOS project gets the MapLibre Swift Package dependency and Podfile post-install hook.
 - Rebuild the dev client after native dependency changes with `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 pnpm exec expo run:ios --device "iPhone 16 Pro" --no-bundler`.
 
