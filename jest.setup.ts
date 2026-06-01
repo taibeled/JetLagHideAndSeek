@@ -88,6 +88,10 @@ jest.mock("@maplibre/maplibre-react-native", () => {
         getPointInView: jest.fn(),
     };
 
+    const OfflineManager = {
+        setMaximumAmbientCacheSize: jest.fn().mockResolvedValue(undefined),
+    };
+
     const createMapComponent =
         (testID) =>
         ({ children, testID: providedTestID, ...props }) =>
@@ -124,6 +128,7 @@ jest.mock("@maplibre/maplibre-react-native", () => {
         Images: createMapComponent("map-images"),
         LineLayer: createMapComponent("map-line-layer"),
         MapView,
+        OfflineManager,
         PointAnnotation: createMapComponent("map-point-annotation"),
         ShapeSource: createMapComponent("map-shape-source"),
         SymbolLayer: createMapComponent("map-symbol-layer"),
@@ -218,6 +223,8 @@ jest.mock("react-native-gesture-handler", () => {
     return {
         ...RNGH,
         GestureDetector: ({ children }: { children: React.ReactNode }) =>
+            children,
+        GestureHandlerRootView: ({ children }: { children: React.ReactNode }) =>
             children,
         Gesture: createGestureMocks(),
         __gestureCallbacks: gestureCallbacksExposed,

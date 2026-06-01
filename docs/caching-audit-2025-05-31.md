@@ -337,6 +337,12 @@ No timestamps on cached boundaries or app-state snapshots. No way to implement T
 | 19  | **Pre-compute and bundle Tokyo bbox/center/mask** — store pre-calculated values in `tokyo.json` or a companion file              | Medium | High   | `assets/default-zones/tokyo.json`, build scripts             |
 | 20  | **Implement stale-while-revalidate for boundaries** — return AsyncStorage cache immediately, refresh from Overpass in background | Medium | High   | `src/features/map/playAreaBoundary.ts`                       |
 
+### Higher-Effort Follow-up (2026-06-01)
+
+| #   | Disposition                                                                                                                                                                                                                     |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 16  | **Complete.** The root layout configures a bounded `100 MiB` native MapLibre ambient tile cache before rendering the route stack. Offline packs are intentionally excluded while the raster source is `tile.openstreetmap.org`. |
+
 ### Architectural Direction
 
 The highest-leverage changes are:
