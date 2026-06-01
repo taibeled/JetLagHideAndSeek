@@ -21,6 +21,10 @@ const MAX_CACHE_SIZE = 50;
  *  so we can evict the oldest entry when the cache exceeds MAX_CACHE_SIZE. */
 const searchCache = new Map<string, PlayAreaSearchResult[]>();
 
+export function clearPlayAreaSearchCache() {
+    searchCache.clear();
+}
+
 function normalizeQuery(query: string): string {
     return query.trim().toLowerCase();
 }

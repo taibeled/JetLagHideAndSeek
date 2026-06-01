@@ -4,8 +4,11 @@ import {
     useCallback,
     useContext,
     useEffect,
+    useMemo,
     useRef,
+    useState,
 } from "react";
+import { AppState } from "react-native";
 
 import {
     appStateHidingZonesToImportState,
@@ -31,7 +34,17 @@ import {
 // Restoration context — consumed by the root layout to gate the splash screen
 // ---------------------------------------------------------------------------
 
-const AppRestorationContext = createContext<boolean>(false);
+type AppReadinessValue = {
+    isMapReady: boolean;
+    isRestored: boolean;
+    markMapReady: () => void;
+};
+
+const AppReadinessContext = createContext<AppReadinessValue>({
+    isMapReady: false,
+    isRestored: false,
+    markMapReady: () => {},
+});
 
 /**
  * Returns `true` once all provider slices have been restored from persisted
@@ -39,7 +52,16 @@ const AppRestorationContext = createContext<boolean>(false);
  * until the first meaningful frame is ready.
  */
 export function useAppIsRestored(): boolean {
-    return useContext(AppRestorationContext);
+    return useContext(AppReadinessContext).isRestored;
+}
+
+export function useAppIsReady(): boolean {
+    const { isMapReady, isRestored } = useContext(AppReadinessContext);
+    return isMapReady && isRestored;
+}
+
+export function useMarkAppMapReady(): () => void {
+    return useContext(AppReadinessContext).markMapReady;
 }
 
 export function AppStateProviders({ children }: { children: ReactNode }) {
@@ -68,18 +90,37 @@ function AppStatePersistenceCoordinator({ children }: { children: ReactNode }) {
         questionState.isRestored;
     const createdAtRef = useRef<string | null>(null);
     const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const [isMapReady, setIsMapReady] = useState(false);
+    const pendingPersistRef = useRef<
+        ReturnType<typeof createAppStateV1> | undefined
+    >(undefined);
+
+    const flushPersist = useCallback(() => {
+        if (debounceRef.current) {
+            clearTimeout(debounceRef.current);
+            debounceRef.current = null;
+        }
+
+        const pendingState = pendingPersistRef.current;
+        if (!pendingState) return;
+
+        pendingPersistRef.current = undefined;
+        void persistAppState(pendingState);
+    }, []);
 
     const debouncedPersist = useCallback(
         (state: ReturnType<typeof createAppStateV1>) => {
+            pendingPersistRef.current = state;
             if (debounceRef.current) {
                 clearTimeout(debounceRef.current);
             }
-            debounceRef.current = setTimeout(() => {
-                persistAppState(state);
-            }, 500);
+            debounceRef.current = setTimeout(flushPersist, 500);
         },
-        [],
+        [flushPersist],
     );
+    const markMapReady = useCallback(() => {
+        setIsMapReady(true);
+    }, []);
 
     useEffect(() => {
         let cancelled = false;
@@ -118,13 +159,17 @@ function AppStatePersistenceCoordinator({ children }: { children: ReactNode }) {
     }, []);
 
     useEffect(() => {
-        return () => {
-            if (debounceRef.current) {
-                clearTimeout(debounceRef.current);
-                debounceRef.current = null;
+        const subscription = AppState.addEventListener("change", (state) => {
+            if (state !== "active") {
+                flushPersist();
             }
+        });
+
+        return () => {
+            subscription.remove();
+            flushPersist();
         };
-    }, []);
+    }, [flushPersist]);
 
     useEffect(() => {
         if (!isRestored) return;
@@ -158,13 +203,19 @@ function AppStatePersistenceCoordinator({ children }: { children: ReactNode }) {
         hidingZoneState.selectedPresetIds,
         isRestored,
         playAreaStore.playArea,
+        questionState.activeQuestionId,
         questionState.isPinLocked,
         questionState.questions,
     ]);
 
+    const readinessValue = useMemo<AppReadinessValue>(
+        () => ({ isMapReady, isRestored, markMapReady }),
+        [isMapReady, isRestored, markMapReady],
+    );
+
     return (
-        <AppRestorationContext.Provider value={isRestored}>
+        <AppReadinessContext.Provider value={readinessValue}>
             {children}
-        </AppRestorationContext.Provider>
+        </AppReadinessContext.Provider>
     );
 }

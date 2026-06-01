@@ -53,36 +53,39 @@ export function buildCombinedInsideMask(
 
 const MAX_MASK_CACHE_SIZE = 40;
 const maskResultCache = new Map<string, GeoJsonFeatureCollection>();
+const featureCacheIds = new WeakMap<PolygonFeature, number>();
+const featurePolygonCache = new WeakMap<PolygonFeature, Position[][][]>();
+let nextFeatureCacheId = 1;
 
 /**
- * Build a cache key from the structure and a lightweight coordinate
- * fingerprint of each input. We sample the first ring of each feature so
- * that geometrically different inputs produce different keys.
+ * Build a cache key from the exact feature objects supplied by the derived
+ * render state. Upstream geometry builders memoize their results, so object
+ * identity is both cheaper and safer than sampling coordinates.
  */
 function maskCacheKey(
     playArea: PolygonFeatureCollection,
     requiredConstraints: PolygonFeatureCollection[],
     excludedAreas: PolygonFeatureCollection[],
 ): string {
-    const collections = [playArea, ...requiredConstraints, ...excludedAreas];
-    const parts = collections.map((c) =>
-        c.features
-            .map((f) => {
-                const coords = (f.geometry as { coordinates?: unknown })
-                    .coordinates;
-                const ring0 = Array.isArray(coords) ? coords[0] : undefined;
-                const firstCoord = Array.isArray(ring0) ? ring0[0] : undefined;
-                const hash =
-                    firstCoord &&
-                    Array.isArray(firstCoord) &&
-                    typeof firstCoord[0] === "number"
-                        ? `${firstCoord[0].toFixed(3)},${firstCoord[1]?.toFixed(3) ?? 0}`
-                        : "?";
-                return `${f.geometry.type}:${f.geometry.coordinates ? "hasCoords" : "none"}:${hash}`;
-            })
-            .join("|"),
-    );
-    return parts.join("||");
+    return [
+        `playArea:${collectionCacheKey(playArea)}`,
+        `required:${requiredConstraints.map(collectionCacheKey).join(";")}`,
+        `excluded:${excludedAreas.map(collectionCacheKey).join(";")}`,
+    ].join("|");
+}
+
+function collectionCacheKey(collection: PolygonFeatureCollection): string {
+    return collection.features
+        .map((feature) => {
+            let id = featureCacheIds.get(feature);
+            if (id === undefined) {
+                id = nextFeatureCacheId;
+                nextFeatureCacheId += 1;
+                featureCacheIds.set(feature, id);
+            }
+            return `${feature.geometry.type}:${id}`;
+        })
+        .join(",");
 }
 
 export function buildCombinedEligibilityMask(
@@ -90,13 +93,13 @@ export function buildCombinedEligibilityMask(
     requiredConstraints: PolygonFeatureCollection[],
     excludedAreas: PolygonFeatureCollection[] = [],
 ): GeoJsonFeatureCollection {
-    const cacheKey = maskCacheKey(
-        playArea,
-        requiredConstraints,
-        excludedAreas,
-    );
+    const cacheKey = maskCacheKey(playArea, requiredConstraints, excludedAreas);
     const cached = maskResultCache.get(cacheKey);
-    if (cached) return cached;
+    if (cached) {
+        maskResultCache.delete(cacheKey);
+        maskResultCache.set(cacheKey, cached);
+        return cached;
+    }
 
     const playAreaPolygons = getPolygons(playArea);
 
@@ -227,18 +230,25 @@ function getExteriorRings(collection: PolygonFeatureCollection): Position[][] {
 
 function getPolygons(collection: PolygonFeatureCollection): Position[][][] {
     return collection.features.flatMap((feature) => {
+        const cached = featurePolygonCache.get(feature);
+        if (cached) return cached;
+
         const { coordinates, type } = feature.geometry;
+        let polygons: Position[][][];
 
         if (type === "Polygon") {
             const polygon = toPolygon(coordinates);
-            return polygon ? [polygon] : [];
+            polygons = polygon ? [polygon] : [];
+        } else {
+            const candidates = Array.isArray(coordinates) ? coordinates : [];
+            polygons = candidates.flatMap((polygon) => {
+                const converted = toPolygon(polygon);
+                return converted ? [converted] : [];
+            });
         }
 
-        const polygons = Array.isArray(coordinates) ? coordinates : [];
-        return polygons.flatMap((polygon) => {
-            const converted = toPolygon(polygon);
-            return converted ? [converted] : [];
-        });
+        featurePolygonCache.set(feature, polygons);
+        return polygons;
     });
 }
 

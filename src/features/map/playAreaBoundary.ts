@@ -50,39 +50,46 @@ export function isBundledPlayAreaId(relationId: number): boolean {
 export async function loadPlayAreaByRelationId(
     relationId: number,
 ): Promise<LoadedPlayArea> {
-    if (relationId === defaultPlayArea.osmId) {
-        memoryCache.set(relationId, defaultPlayArea);
-        return { cacheSource: "bundled", playArea: defaultPlayArea };
-    }
+    const cached = await loadCachedPlayAreaByRelationId(relationId);
+    if (cached) return cached;
 
-    const bundledBoundary = BUNDLED_BOUNDARIES[relationId];
-    if (bundledBoundary) {
-        const playArea = buildPlayAreaFromBoundary(relationId, bundledBoundary);
-        memoryCache.set(relationId, playArea);
-        return { cacheSource: "bundled", playArea };
+    const playArea = await fetchPlayAreaBoundary(relationId);
+    await persistPlayAreaBoundary(playArea);
+    return { cacheSource: "fetched", playArea };
+}
+
+export async function loadCachedPlayAreaByRelationId(
+    relationId: number,
+): Promise<LoadedPlayArea | null> {
+    const bundled = getBundledPlayArea(relationId);
+    if (bundled) {
+        memoryCache.set(relationId, bundled);
+        return { cacheSource: "bundled", playArea: bundled };
     }
 
     const memoryHit = memoryCache.get(relationId);
     if (memoryHit) return { cacheSource: "memory", playArea: memoryHit };
 
-    const cacheKey = getBoundaryCacheKey(relationId);
-    const persisted = await AsyncStorage.getItem(cacheKey);
-    if (persisted) {
-        const envelope = JSON.parse(persisted) as BoundaryCacheEnvelope;
-        // Handle legacy entries that were stored without the envelope.
-        const playArea = envelope.playArea ?? (envelope as unknown as PlayArea);
-        memoryCache.set(relationId, playArea);
-        return { cacheSource: "persisted", playArea };
-    }
+    const persisted = await readPersistedBoundary(relationId);
+    if (!persisted) return null;
 
-    const playArea = await fetchPlayAreaBoundary(relationId);
-    memoryCache.set(relationId, playArea);
+    memoryCache.set(relationId, persisted);
+    return { cacheSource: "persisted", playArea: persisted };
+}
+
+export async function persistPlayAreaBoundary(playArea: PlayArea) {
+    const memoryHit = memoryCache.get(playArea.osmId);
+    memoryCache.set(playArea.osmId, playArea);
+    if (isBundledPlayAreaId(playArea.osmId) || memoryHit === playArea) return;
+
     const envelope: BoundaryCacheEnvelope = {
         cachedAt: new Date().toISOString(),
         playArea,
     };
-    await AsyncStorage.setItem(cacheKey, JSON.stringify(envelope));
-    return { cacheSource: "fetched", playArea };
+    await AsyncStorage.setItem(
+        getBoundaryCacheKey(playArea.osmId),
+        JSON.stringify(envelope),
+    );
 }
 
 export async function fetchPlayAreaBoundary(
@@ -154,21 +161,79 @@ export async function warmBoundaryCacheFromStorage(): Promise<void> {
             // Skip if already in memory (e.g., bundled or already warmed).
             if (memoryCache.has(relationId)) continue;
 
-            try {
-                const raw = await AsyncStorage.getItem(key);
-                if (!raw) continue;
-                const envelope = JSON.parse(raw) as BoundaryCacheEnvelope;
-                // Handle legacy entries stored without the envelope.
-                const playArea =
-                    envelope.playArea ?? (envelope as unknown as PlayArea);
+            const playArea = await readPersistedBoundary(relationId);
+            if (playArea) {
                 memoryCache.set(relationId, playArea);
-            } catch {
-                // Corrupted entry — skip it.
             }
         }
     } catch {
         // AsyncStorage may not be available — ignore.
     }
+}
+
+function getBundledPlayArea(relationId: number): PlayArea | null {
+    if (relationId === defaultPlayArea.osmId) return defaultPlayArea;
+
+    const bundledBoundary = BUNDLED_BOUNDARIES[relationId];
+    return bundledBoundary
+        ? buildPlayAreaFromBoundary(relationId, bundledBoundary)
+        : null;
+}
+
+async function readPersistedBoundary(
+    relationId: number,
+): Promise<PlayArea | null> {
+    const cacheKey = getBoundaryCacheKey(relationId);
+    try {
+        const raw = await AsyncStorage.getItem(cacheKey);
+        if (!raw) return null;
+
+        const parsed = JSON.parse(raw) as unknown;
+        const playArea =
+            isRecord(parsed) && "playArea" in parsed ? parsed.playArea : parsed;
+        if (!isPlayArea(playArea, relationId)) {
+            await removeBoundaryCacheEntry(cacheKey);
+            return null;
+        }
+        return playArea;
+    } catch {
+        await removeBoundaryCacheEntry(cacheKey);
+        return null;
+    }
+}
+
+async function removeBoundaryCacheEntry(cacheKey: string) {
+    try {
+        await AsyncStorage.removeItem(cacheKey);
+    } catch {
+        // Storage may be unavailable. Treat this as a cache miss either way.
+    }
+}
+
+function isPlayArea(value: unknown, relationId: number): value is PlayArea {
+    if (!isRecord(value)) return false;
+    return (
+        value.osmId === relationId &&
+        value.osmType === "R" &&
+        typeof value.label === "string" &&
+        isNumberTuple(value.bbox, 4) &&
+        isNumberTuple(value.center, 2) &&
+        isRecord(value.boundary) &&
+        value.boundary.type === "FeatureCollection" &&
+        Array.isArray(value.boundary.features)
+    );
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isNumberTuple(value: unknown, length: number): boolean {
+    return (
+        Array.isArray(value) &&
+        value.length === length &&
+        value.every((part) => typeof part === "number" && Number.isFinite(part))
+    );
 }
 
 function filterBoundaryFeatures(

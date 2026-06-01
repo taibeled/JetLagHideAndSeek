@@ -33,8 +33,7 @@ function voronoiCacheKey(
             const base = `${makeOsmKey(c.osmType, c.osmId)}@${c.lon.toFixed(6)},${c.lat.toFixed(6)}`;
             // Include nameLength in the key so candidates that differ only by
             // this optional property don't collide in the cache.
-            const nl =
-                c.nameLength !== undefined ? `:nl${c.nameLength}` : "";
+            const nl = c.nameLength !== undefined ? `:nl${c.nameLength}` : "";
             return `${base}${nl}`;
         })
         .sort()
@@ -52,7 +51,11 @@ export function computeVoronoiCells(
 
     const cacheKey = voronoiCacheKey(candidates, bbox);
     const cached = voronoiCache.get(cacheKey);
-    if (cached) return cached;
+    if (cached) {
+        voronoiCache.delete(cacheKey);
+        voronoiCache.set(cacheKey, cached);
+        return cached;
+    }
 
     // Deduplicate by (osmType, osmId) and by coordinates to avoid malformed
     // Turf Voronoi output when duplicate points are present.

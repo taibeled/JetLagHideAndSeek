@@ -316,6 +316,12 @@ describe("hidingZone helpers", () => {
         expect(area).toBeLessThan(expectedArea * 1.15);
     });
 
+    it("reuses cached geometry for the same stations and radius", () => {
+        expect(buildHidingZoneFeatureCollection(preset.stations, 600)).toBe(
+            buildHidingZoneFeatureCollection(preset.stations, 600),
+        );
+    });
+
     it("merges multiple station buffers and grows when radius increases", () => {
         const nearbyStations = [
             preset.stations[0],
@@ -340,5 +346,19 @@ describe("hidingZone helpers", () => {
         expect(
             polygonAreaMeters(feature1000, nearbyStations[0].lat),
         ).toBeGreaterThan(polygonAreaMeters(feature600, nearbyStations[0].lat));
+    });
+
+    it("does not reuse cached geometry when a station coordinate changes", () => {
+        const first = buildHidingZoneFeatureCollection(preset.stations, 600);
+        const moved = buildHidingZoneFeatureCollection(
+            [{ ...preset.stations[0], lon: 139.9 }],
+            600,
+        );
+        const movedCoordinates = collectCoordinates(moved.features[0].geometry);
+
+        expect(moved).not.toBe(first);
+        expect(
+            Math.min(...movedCoordinates.map(([lon]) => lon)),
+        ).toBeGreaterThan(139.8);
     });
 });

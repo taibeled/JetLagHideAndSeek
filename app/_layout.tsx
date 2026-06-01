@@ -8,6 +8,7 @@ import * as SplashScreen from "expo-splash-screen";
 
 import {
     AppStateProviders,
+    useAppIsReady,
     useAppIsRestored,
 } from "@/state/AppStateProviders";
 
@@ -20,20 +21,20 @@ SplashScreen.preventAutoHideAsync().catch(() => {
 });
 
 function AppContent() {
+    const isReady = useAppIsReady();
     const isRestored = useAppIsRestored();
 
     useEffect(() => {
-        if (isRestored) {
-            // Brief delay so the map has one frame to paint before the
-            // splash fades out.
-            const timer = setTimeout(() => {
-                SplashScreen.hideAsync().catch(() => {
-                    // Ignore errors — splash may already be hidden.
-                });
-            }, 300);
-            return () => clearTimeout(timer);
-        }
-    }, [isRestored]);
+        if (!isRestored) return;
+
+        const hideSplash = () => {
+            SplashScreen.hideAsync().catch(() => {
+                // Ignore errors — splash may already be hidden.
+            });
+        };
+        const timer = setTimeout(hideSplash, isReady ? 100 : 5000);
+        return () => clearTimeout(timer);
+    }, [isReady, isRestored]);
 
     return <Stack screenOptions={{ headerShown: false }} />;
 }

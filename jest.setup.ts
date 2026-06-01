@@ -46,6 +46,22 @@ jest.mock("@react-native-async-storage/async-storage", () => {
                 return Promise.resolve();
             }),
             getItem: jest.fn((key) => Promise.resolve(store[key] ?? null)),
+            getAllKeys: jest.fn(() => Promise.resolve(Object.keys(store))),
+            multiGet: jest.fn((keys) =>
+                Promise.resolve(keys.map((key) => [key, store[key] ?? null])),
+            ),
+            multiRemove: jest.fn((keys) => {
+                keys.forEach((key) => {
+                    delete store[key];
+                });
+                return Promise.resolve();
+            }),
+            multiSet: jest.fn((entries) => {
+                entries.forEach(([key, value]) => {
+                    store[key] = value;
+                });
+                return Promise.resolve();
+            }),
             removeItem: jest.fn((key) => {
                 delete store[key];
                 return Promise.resolve();
@@ -286,7 +302,6 @@ jest.mock("@/features/hidingZone/hidingZoneData", () => {
     function loadPresets() {
         if (!loadPromise) {
             loadPromise = Promise.resolve().then(() => {
-                // eslint-disable-next-line @typescript-eslint/no-require-imports
                 const raw = require("./data/odpt/generated/hiding-zone-presets.json");
                 cached = raw.presets;
                 return cached;

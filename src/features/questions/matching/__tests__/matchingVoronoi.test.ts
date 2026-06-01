@@ -100,6 +100,12 @@ describe("computeVoronoiCells", () => {
         expect(result.features.length).toBe(0);
     });
 
+    it("reuses cached cells for the same candidates and bbox", () => {
+        expect(computeVoronoiCells(mockCandidates, playAreaBbox)).toBe(
+            computeVoronoiCells(mockCandidates, playAreaBbox),
+        );
+    });
+
     it("stores composite osmKey (type/id) on each cell", () => {
         const result = computeVoronoiCells(mockCandidates, playAreaBbox);
 

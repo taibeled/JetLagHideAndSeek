@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { defaultPlayArea } from "@/features/map/playArea";
+import { clearPlayAreaMemoryCache } from "@/features/map/playAreaBoundary";
 import {
     appStateV1Schema,
     createAppStateV1,
@@ -233,6 +234,7 @@ describe("AppStateV1 schema", () => {
 
 describe("app-state persistence", () => {
     beforeEach(async () => {
+        clearPlayAreaMemoryCache();
         await AsyncStorage.clear();
     });
 
@@ -246,6 +248,43 @@ describe("app-state persistence", () => {
 
         await persistAppState(state);
 
+        await expect(loadPersistedAppState()).resolves.toEqual(state);
+        await expect(AsyncStorage.getItem("app-state:v1")).resolves.toBeNull();
+        await expect(
+            AsyncStorage.getItem("app-state:play-area:v1"),
+        ).resolves.toBe(JSON.stringify({ osmId: defaultPlayArea.osmId }));
+    });
+
+    it("stores custom boundaries separately from the app-state slices", async () => {
+        const customPlayArea = {
+            ...defaultPlayArea,
+            label: "Custom Area",
+            osmId: 999999,
+        };
+        const state = createAppStateV1({
+            hidingZones: {
+                radiusMeters: 600,
+                radiusUnit: "m",
+                selectedPresetIds: [],
+            },
+            playArea: customPlayArea,
+        });
+
+        await persistAppState(state);
+        clearPlayAreaMemoryCache();
+
+        const playAreaReference = await AsyncStorage.getItem(
+            "app-state:play-area:v1",
+        );
+        const boundaryEnvelope = await AsyncStorage.getItem(
+            "play-area-boundary:999999",
+        );
+        expect(playAreaReference).toBe(JSON.stringify({ osmId: 999999 }));
+        expect(playAreaReference).not.toContain("boundary");
+        expect(JSON.parse(boundaryEnvelope ?? "{}")).toMatchObject({
+            cachedAt: expect.any(String),
+            playArea: { label: "Custom Area", osmId: 999999 },
+        });
         await expect(loadPersistedAppState()).resolves.toEqual(state);
     });
 

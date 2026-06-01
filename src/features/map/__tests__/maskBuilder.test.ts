@@ -251,6 +251,30 @@ describe("buildCombinedEligibilityMask", () => {
             .coordinates as Position[][][];
         expect(polygonArea(coords)).toBeCloseTo(44, 1);
     });
+
+    it("does not reuse a cached mask for distinct polygons with similar starting coordinates", () => {
+        const first = makeSquareFC(1.0001, 1.0001, 5, 5);
+        const second = makeSquareFC(1.0002, 1.0002, 9, 9);
+
+        const firstResult = buildCombinedEligibilityMask(PLAY_AREA, [first]);
+        const secondResult = buildCombinedEligibilityMask(PLAY_AREA, [second]);
+        const firstCoords = firstResult.features[0].geometry
+            .coordinates as Position[][][];
+        const secondCoords = secondResult.features[0].geometry
+            .coordinates as Position[][][];
+
+        expect(polygonArea(firstCoords)).toBeGreaterThan(
+            polygonArea(secondCoords),
+        );
+    });
+
+    it("reuses a cached mask for the same feature objects", () => {
+        const hidingZone = makeSquareFC(1, 1, 9, 9);
+
+        expect(buildCombinedEligibilityMask(PLAY_AREA, [hidingZone])).toBe(
+            buildCombinedEligibilityMask(PLAY_AREA, [hidingZone]),
+        );
+    });
 });
 
 describe("buildPlayAreaMask", () => {

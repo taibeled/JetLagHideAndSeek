@@ -158,9 +158,12 @@ export function buildStationFeatureCollection(
 const MAX_ZONE_CACHE_SIZE = 30;
 const zoneFeatureCache = new Map<string, ZoneFeatureCollection>();
 
-function zoneCacheKey(stations: TransitStation[], radiusMeters: number): string {
+function zoneCacheKey(
+    stations: TransitStation[],
+    radiusMeters: number,
+): string {
     const keys = stations
-        .map((s) => s.id)
+        .map((station) => `${station.id}@${station.lon},${station.lat}`)
         .sort()
         .join(",");
     return `${keys}|${radiusMeters}`;
@@ -176,7 +179,11 @@ export function buildHidingZoneFeatureCollection(
 
     const cacheKey = zoneCacheKey(stations, radiusMeters);
     const cached = zoneFeatureCache.get(cacheKey);
-    if (cached) return cached;
+    if (cached) {
+        zoneFeatureCache.delete(cacheKey);
+        zoneFeatureCache.set(cacheKey, cached);
+        return cached;
+    }
 
     const circles = stations.map((station) =>
         circle([station.lon, station.lat], radiusMeters / 1000, {

@@ -148,9 +148,14 @@ export function HidingZoneProvider({ children }: { children: ReactNode }) {
     // JS thread during initial bundle evaluation.
     useEffect(() => {
         let cancelled = false;
-        loadHidingZonePresets().then(() => {
-            if (!cancelled) setPresetsRevision((n) => n + 1);
-        });
+        loadHidingZonePresets()
+            .then(() => {
+                if (!cancelled) setPresetsRevision((n) => n + 1);
+            })
+            .catch(() => {
+                // Keep the app usable without preset suggestions if the
+                // bundled dataset cannot be loaded.
+            });
         return () => {
             cancelled = true;
         };

@@ -1,10 +1,12 @@
 import {
+    clearPlayAreaSearchCache,
     mapPhotonFeaturesToPlayAreaResults,
     searchPlayAreas,
 } from "../playAreaSearch";
 
 describe("searchPlayAreas", () => {
     beforeEach(() => {
+        clearPlayAreaSearchCache();
         globalThis.fetch = jest.fn();
     });
 
@@ -17,6 +19,27 @@ describe("searchPlayAreas", () => {
         await expect(searchPlayAreas("Osaka")).rejects.toThrow(
             "Photon search error 500",
         );
+    });
+
+    it("reuses cached results for normalized queries", async () => {
+        (globalThis.fetch as jest.Mock).mockResolvedValue({
+            json: jest.fn().mockResolvedValue({
+                features: [
+                    {
+                        properties: {
+                            name: "Osaka",
+                            osm_id: 358674,
+                            osm_type: "R",
+                        },
+                    },
+                ],
+            }),
+            ok: true,
+        });
+
+        await expect(searchPlayAreas(" Osaka ")).resolves.toHaveLength(1);
+        await expect(searchPlayAreas("osaka")).resolves.toHaveLength(1);
+        expect(globalThis.fetch).toHaveBeenCalledTimes(1);
     });
 });
 

@@ -19,8 +19,13 @@ function Probe() {
     const { activeQuestionId, isPinLocked, isRestored, questions } =
         useQuestionState();
     const { activeQuestion } = useQuestionDerived();
-    const { createQuestion, deleteQuestion, setPinLocked, updateQuestion } =
-        useQuestionActions();
+    const {
+        createQuestion,
+        deleteQuestion,
+        setActiveQuestionId,
+        setPinLocked,
+        updateQuestion,
+    } = useQuestionActions();
 
     return (
         <View>
@@ -108,6 +113,11 @@ function Probe() {
                 accessibilityRole="button"
                 testID="action-delete-unknown"
                 onPress={() => deleteQuestion("q-missing")}
+            />
+            <Pressable
+                accessibilityRole="button"
+                testID="action-clear-active"
+                onPress={() => setActiveQuestionId(null)}
             />
             <Pressable
                 accessibilityRole="button"
@@ -449,6 +459,54 @@ describe("QuestionProvider", () => {
         await waitFor(async () => {
             const persisted = await loadPersistedAppState();
             expect(persisted?.questionSettings.isPinLocked).toBe(true);
+        });
+    });
+
+    it("persists active-question navigation changes", async () => {
+        const screen = renderProvider();
+
+        await waitFor(() => {
+            expect(screen.getByTestId("probe-restored")).toHaveTextContent(
+                "true",
+            );
+        });
+
+        act(() => {
+            fireEvent.press(screen.getByTestId("action-create"));
+        });
+        await waitFor(async () => {
+            const persisted = await loadPersistedAppState();
+            expect(persisted?.questionSettings.activeQuestionId).not.toBeNull();
+        });
+
+        act(() => {
+            fireEvent.press(screen.getByTestId("action-clear-active"));
+        });
+
+        await waitFor(async () => {
+            const persisted = await loadPersistedAppState();
+            expect(persisted?.questionSettings.activeQuestionId).toBeNull();
+        });
+    });
+
+    it("flushes pending persistence when the provider unmounts", async () => {
+        const screen = renderProvider();
+
+        await waitFor(() => {
+            expect(screen.getByTestId("probe-restored")).toHaveTextContent(
+                "true",
+            );
+        });
+
+        act(() => {
+            fireEvent.press(screen.getByTestId("action-create"));
+        });
+        screen.unmount();
+
+        await waitFor(async () => {
+            await expect(loadPersistedAppState()).resolves.toMatchObject({
+                questions: [{ type: "radar" }],
+            });
         });
     });
 });

@@ -16,6 +16,7 @@ import {
 import { colors } from "@/theme/colors";
 
 import { useHidingZoneDerived } from "@/state/hidingZoneStore";
+import { useMarkAppMapReady } from "@/state/AppStateProviders";
 import {
     useIsPinLocked,
     useQuestionActions,
@@ -71,6 +72,7 @@ export function NativeMap({ isQuestionDetailRoute, onPress }: NativeMapProps) {
     const { activeQuestion } = useQuestionDerived();
     const isPinLocked = useIsPinLocked();
     const { updateQuestion } = useQuestionActions();
+    const markAppMapReady = useMarkAppMapReady();
     const questionMapRenderState = useQuestionMapRenderState();
     const { playArea } = usePlayArea();
 
@@ -124,6 +126,10 @@ export function NativeMap({ isQuestionDetailRoute, onPress }: NativeMapProps) {
     const fitPlayArea = useCallback(() => {
         fitCameraToBbox(cameraRef.current, playArea.bbox, fitPadding);
     }, [fitPadding, playArea.bbox]);
+    const handleMapReady = useCallback(() => {
+        fitPlayArea();
+        markAppMapReady();
+    }, [fitPlayArea, markAppMapReady]);
 
     const activeQuestionCenter =
         activeQuestion && "center" in activeQuestion
@@ -211,7 +217,7 @@ export function NativeMap({ isQuestionDetailRoute, onPress }: NativeMapProps) {
                     compassEnabled
                     logoEnabled={false}
                     mapStyle={mapStyle}
-                    onDidFinishLoadingMap={fitPlayArea}
+                    onDidFinishLoadingMap={handleMapReady}
                     onPress={handleMapPress}
                     ref={mapRef}
                     scrollEnabled={!pinDrag.isDragging}
