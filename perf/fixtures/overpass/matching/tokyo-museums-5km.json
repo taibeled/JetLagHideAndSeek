@@ -1,0 +1,3775 @@
+{
+    "attribution": "OpenStreetMap contributors via the Overpass API",
+    "capturedAt": "2026-06-01T11:07:59.185Z",
+    "endpoint": "https://overpass-api.de/api/interpreter",
+    "id": "matching-tokyo-museums-5km",
+    "payload": {
+        "version": 0.6,
+        "generator": "Overpass API 0.7.62.11 87bfad18",
+        "osm3s": {
+            "timestamp_osm_base": "2026-06-01T11:06:14Z",
+            "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+        },
+        "elements": [
+            {
+                "type": "node",
+                "id": 2999882990,
+                "lat": 35.6633995,
+                "lon": 139.7176082,
+                "tags": {
+                    "museum": "person;photography",
+                    "name": "秋山庄太郎写真美術館",
+                    "name:en": "Shotaro Akiyama Photo Art Museum",
+                    "source": "survey",
+                    "tourism": "museum",
+                    "website": "http://akiyama-shotaro.com/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420789248,
+                "lat": 35.6470718,
+                "lon": 139.7452081,
+                "tags": {
+                    "museum": "history;local",
+                    "name": "港区立港郷土資料館",
+                    "name:en": "Minato Local Museum",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "operator": "東京都港区",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://www.minato-rekishi.com/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 11262093573,
+                "lat": 35.6514755,
+                "lon": 139.737046,
+                "tags": {
+                    "addr:block_number": "11",
+                    "addr:city": "港区",
+                    "addr:housenumber": "1-7-32",
+                    "addr:neighbourhood": "1丁目",
+                    "addr:province": "東京都",
+                    "addr:quarter": "三田",
+                    "addr:suburb": "港区",
+                    "museum": "history",
+                    "name": "The History Museum of J-Koreans",
+                    "name:ja": "在日韓人歴史資料館",
+                    "name:ko": "재일한인역사자료관",
+                    "opening_hours": "Tu-Sa 10:30-17:30",
+                    "tourism": "museum",
+                    "website": "http://www.j-koreans.org/",
+                    "wikidata": "Q122929555"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420786660,
+                "lat": 35.660432,
+                "lon": 139.729261,
+                "tags": {
+                    "addr:block_number": "10",
+                    "addr:city": "港区",
+                    "addr:housenumber": "1",
+                    "addr:neighbourhood": "6丁目",
+                    "addr:postcode": "106-6122",
+                    "addr:province": "東京都",
+                    "addr:quarter": "六本木",
+                    "contact:phone": "+81 357778600",
+                    "museum": "art",
+                    "name": "森美術館",
+                    "name:en": "Mori Art Museum",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "opening_hours": "We-Mo 10:00-22:00; Tu 10:00-17:00",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://www.mori.art.museum/jp/index.html",
+                    "wheelchair": "yes",
+                    "wikidata": "Q4410434",
+                    "wikimedia_commons": "Category:Mori Art Museum",
+                    "wikipedia": "en:Mori Art Museum"
+                }
+            },
+            {
+                "type": "node",
+                "id": 7231031105,
+                "lat": 35.6595759,
+                "lon": 139.7340144,
+                "tags": {
+                    "addr:block_number": "6",
+                    "addr:housenumber": "20",
+                    "addr:neighbourhood": "5",
+                    "addr:province": "東京都",
+                    "addr:quarter": "六本木",
+                    "addr:suburb": "港区",
+                    "amenity": "conference_centre",
+                    "name": "六本木ミュージアム",
+                    "name:en": "Roppongi Museum",
+                    "name:ja": "六本木ミュージアム",
+                    "opening_hours": "10:00-20:00",
+                    "phone": "+81 3-6328-3005",
+                    "tourism": "museum",
+                    "website": "https://roppongimuseum.jp/",
+                    "wikidata": "Q115977950"
+                }
+            },
+            {
+                "type": "node",
+                "id": 11563440614,
+                "lat": 35.6675053,
+                "lon": 139.7268378,
+                "tags": {
+                    "name": "TOTOギャラリー・間",
+                    "name:en": "TOTO GALLERY · MA",
+                    "tourism": "museum",
+                    "wikidata": "Q55526821",
+                    "wikipedia": "ja:TOTOギャラリー・間"
+                }
+            },
+            {
+                "type": "node",
+                "id": 4731579022,
+                "lat": 35.6654221,
+                "lon": 139.7301622,
+                "tags": {
+                    "fee": "no",
+                    "name": "富士フィルム 写真歴史博物館",
+                    "name:en": "Fujifilm Photo History Museum",
+                    "tourism": "museum",
+                    "website": "https://fujifilmsquare.jp/guide/museum.html"
+                }
+            },
+            {
+                "type": "node",
+                "id": 4807675725,
+                "lat": 35.6664346,
+                "lon": 139.7304575,
+                "tags": {
+                    "architect": "隈研吾",
+                    "architect:wikidata": "Q725462",
+                    "contact:facebook": "SuntoryMuseumOfArt",
+                    "contact:phone": "+81 3-3479-8600",
+                    "contact:tripadvisor": "1986242",
+                    "contact:twitter": "sun_sma",
+                    "contact:website": "https://www.suntory.co.jp/sma/",
+                    "fee": "yes",
+                    "name": "サントリー美術館",
+                    "name:da": "Suntory kunstmuseet",
+                    "name:en": "Suntory Museum of Art",
+                    "name:es": "Museo de Arte Suntory",
+                    "name:fr": "Musée d'art Suntory",
+                    "name:ja": "サントリー美術館",
+                    "name:ja-Hira": "サントリーびじゅつかん",
+                    "name:ja-Latn": "Santorī-bijutsukan",
+                    "name:ko": "산토리 미술관",
+                    "name:zh": "三得利美術館",
+                    "opening_hours": "Fr 10:00-20:00; Sa-We 10:00-18:00; Th off",
+                    "operator": "サントリー芸術財団",
+                    "operator:wikidata": "Q11305847",
+                    "start_date": "1961-11-20",
+                    "tourism": "museum",
+                    "wheelchair": "yes",
+                    "wikidata": "Q11249110",
+                    "wikimedia_commons": "Category:Suntory Museum of Art",
+                    "wikipedia": "ja:サントリー美術館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420771165,
+                "lat": 35.663653,
+                "lon": 139.7417064,
+                "tags": {
+                    "name": "吉田苞竹記念会館",
+                    "name:en": "Yoshida Hochiku Memorial Hall",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年　国土交通省",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420787831,
+                "lat": 35.665033,
+                "lon": 139.741068,
+                "tags": {
+                    "addr:housenumber": "六本木１－５－１",
+                    "fee": "yes",
+                    "museum": "art;craft",
+                    "name": "泉屋博古館東京",
+                    "name:en": "Sen-Oku Hakukokan Museum Tokyo",
+                    "name:es": "Sen-Oku Hakukokan",
+                    "name:ja-Latn": "Sen-Oku Hakukokan Tokyo",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "opening_hours": "Tu-Su 10:00-16:30",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://sen-oku.or.jp/tokyo"
+                }
+            },
+            {
+                "type": "node",
+                "id": 11512273700,
+                "lat": 35.6616023,
+                "lon": 139.7412674,
+                "tags": {
+                    "air_conditioning": "yes",
+                    "fee": "yes",
+                    "museum": "art",
+                    "name": "teamLab Borderless Museum",
+                    "name:en": "teamLab Borderless",
+                    "name:fr": "teamLab Borderless",
+                    "name:ja-Hira": "チームラボボーダレス",
+                    "official_name": "MORI Building DIGITAL ART MUSEUM: Epson teamLab Borderless",
+                    "official_name:ja-Hira": "森ビル デジタルアート ミュージアム：エプソン チームラボボーダレス",
+                    "opening_hours": "Mo-Su 10:00-21:00",
+                    "start_date": "2024-02-09",
+                    "tourism": "museum",
+                    "website": "https://www.teamlab.art/e/tokyo/",
+                    "wheelchair": "yes",
+                    "wikidata": "Q131314431"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420772919,
+                "lat": 35.666923,
+                "lon": 139.7432191,
+                "tags": {
+                    "addr:block_number": "10",
+                    "addr:city": "港区",
+                    "addr:housenumber": "3",
+                    "addr:neighbourhood": "2",
+                    "addr:quarter": "虎ノ門",
+                    "alt_name:en": "Okura Shukokan",
+                    "fee": "yes",
+                    "museum": "art",
+                    "name": "大倉集古館",
+                    "name:en": "Okura Museum of Art",
+                    "name:ja": "大倉集古館",
+                    "name:zh": "大倉集古館",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "opening_hours": "Tu-Su 10:00-16:30",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://www.shukokan.org/",
+                    "wikidata": "Q3329598",
+                    "wikimedia_commons": "Category:Okura Shukokan",
+                    "wikipedia": "en:Okura Museum of Art"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420797074,
+                "lat": 35.666041,
+                "lon": 139.744605,
+                "tags": {
+                    "fee": "yes",
+                    "museum": "art",
+                    "name": "菊池寛実記念智美術館",
+                    "name:en": "Kikuchi Kanjitsu Memorial Tomo Museum",
+                    "name:ja-Latn": "Kikuchikan jitsu kinen Akira bijutsukan",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "official_name:en": "Kikuchi Kanjitsu Memorial Tomo Museum",
+                    "short_name:en": "Tomo Museum",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://www.musee-tomo.or.jp/",
+                    "wheelchair": "limited",
+                    "wikidata": "Q19340630",
+                    "wikimedia_commons": "Category:Musée Tomo",
+                    "wikipedia": "en:Musée Tomo"
+                }
+            },
+            {
+                "type": "node",
+                "id": 4032273632,
+                "lat": 35.6656723,
+                "lon": 139.7459572,
+                "tags": {
+                    "museum": "nature",
+                    "name": "気象科学館",
+                    "name:en": "Museum of Meteorological Science",
+                    "name:es": "Museo de Ciencai Metereológica",
+                    "name:ja": "気象科学館",
+                    "tourism": "museum",
+                    "website": "https://www.jma.go.jp/jma/kishou/intro/kagakukan.html",
+                    "wikidata": "Q16872707",
+                    "wikipedia": "ja:気象科学館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 7007531447,
+                "lat": 35.6637251,
+                "lon": 139.7482596,
+                "tags": {
+                    "addr:block_number": "1",
+                    "addr:housenumber": "1",
+                    "addr:neighbourhood": "2",
+                    "addr:postcode": "105-0002",
+                    "addr:province": "東京都",
+                    "addr:quarter": "愛宕",
+                    "addr:suburb": "港区",
+                    "check_date": "2024-03-16",
+                    "fax": "03-5401-1539",
+                    "fee": "no",
+                    "museum": "history",
+                    "name": "NHK放送博物館",
+                    "name:en": "NHK Museum of Broadcasting",
+                    "name:es": "NHK Museum of Broadcasting",
+                    "name:ja": "NHK放送博物館",
+                    "opening_hours": "Tu-Su,PH 10:00-16:30",
+                    "operator": "日本放送協会",
+                    "phone": "03-5400-6900",
+                    "tourism": "museum",
+                    "website": "http://www.nhk.or.jp/museum/",
+                    "wikidata": "Q11235312",
+                    "wikimedia_commons": "Category:NHK Museum of Broadcasting",
+                    "wikipedia": "ja:NHK放送博物館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 11736273728,
+                "lat": 35.6655838,
+                "lon": 139.7460106,
+                "tags": {
+                    "check_date": "2024-03-16",
+                    "fee": "no",
+                    "level": "0",
+                    "museum": "science",
+                    "name": "港区立みなと科学館",
+                    "name:en": "Minato Science Museum",
+                    "operator:type": "government",
+                    "toilets": "yes",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "node",
+                "id": 13146132401,
+                "lat": 35.6620024,
+                "lon": 139.7434178,
+                "tags": {
+                    "fee": "yes",
+                    "internet_access": "wlan",
+                    "name": "teamLab Borderless: MORI Building DIGITAL ART MUSEUM",
+                    "opening_hours": "Mo-Su 08:00-21:00",
+                    "tourism": "museum",
+                    "website": "https://teamlab.art/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 12290658288,
+                "lat": 35.653554,
+                "lon": 139.7697666,
+                "tags": {
+                    "name:en": "Toyomi Fish Museum",
+                    "name:ja": "豊海おさかなミュージアム",
+                    "name:ja-Latn": "Toyomi Osakana Museum",
+                    "tourism": "museum",
+                    "website": "https://museum.suisan-shinkou.or.jp"
+                }
+            },
+            {
+                "type": "node",
+                "id": 820849494,
+                "lat": 35.6659465,
+                "lon": 139.7616202,
+                "tags": {
+                    "addr:block_number": "5",
+                    "addr:city": "港区",
+                    "addr:housenumber": "3",
+                    "addr:neighbourhood": "東新橋一丁目",
+                    "addr:province": "東京都",
+                    "name": "旧新橋停車場鉄道歴史展示室",
+                    "name:en": "Old Shimbashi Station Railway History Exhibition Hall",
+                    "name:es": "Sala de exhibición histórica de la antigua estación de Shimbashi",
+                    "name:ja_rm": "Kyū Shinbashi Teishajō Tetsudō Rekishi Tenjishitsu",
+                    "opening_hours": "Tu-Su 11:00-18:00",
+                    "tourism": "museum",
+                    "wikidata": "Q104698226"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420786016,
+                "lat": 35.665828,
+                "lon": 139.761882,
+                "tags": {
+                    "addr:block_number": "5",
+                    "addr:city": "港区",
+                    "addr:housenumber": "1",
+                    "addr:neighbourhood": "東新橋一丁目",
+                    "addr:postcode": "105-8301",
+                    "addr:province": "東京都",
+                    "museum": "art",
+                    "name": "パナソニック汐留美術館",
+                    "name:en": "Panasonic Shiodome Museum of Art",
+                    "name:es": "Museo Panasonic Shiodome",
+                    "name:ja-Latn": "Panasonikku Shiodome Bijutsukan",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "opening_hours": "Tu-Su 10:00-18:00",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://panasonic.co.jp/ew/museum/",
+                    "wikidata": "Q11550512"
+                }
+            },
+            {
+                "type": "node",
+                "id": 13449380634,
+                "lat": 35.6660045,
+                "lon": 139.7613636,
+                "tags": {
+                    "alt_name:en": "Oi Ocha Museum",
+                    "museum": "culture;tea",
+                    "name": "お茶の文化創造博物館",
+                    "name:en": "Ocha Culture Creation Museum",
+                    "tourism": "museum",
+                    "website": "https://www.ochamuseum.jp/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420766180,
+                "lat": 35.6664905,
+                "lon": 139.7680837,
+                "tags": {
+                    "name": "中央区立築地社会教育会館・郷土資料館",
+                    "name:en": "Tsukiji Local Museum",
+                    "name:es": "Museo local Tsukiji",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年　国土交通省",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "node",
+                "id": 4605597193,
+                "lat": 35.6645224,
+                "lon": 139.7626413,
+                "tags": {
+                    "addr:block_number": "8",
+                    "addr:city": "港区",
+                    "addr:housenumber": "2",
+                    "addr:neighbourhood": "東新橋一丁目",
+                    "addr:postcode": "105-7090",
+                    "addr:province": "東京都",
+                    "contact:facebook": "admt.jp",
+                    "contact:instagram": "admt.jp",
+                    "contact:phone": "+81 3-6218-2500",
+                    "contact:tripadvisor": "2710573",
+                    "contact:twitter": "admt_jp",
+                    "contact:website": "https://www.admt.jp/",
+                    "contact:youtube": "UCjaaWwdy976_0V53eIpllmg",
+                    "fee": "no",
+                    "level": "-2",
+                    "level:ref": "B2F",
+                    "name": "アド・ミュージアム東京",
+                    "name:en": "Advertising Museum Tokyo",
+                    "name:fr": "Musée de la publicité de Tokyo",
+                    "name:ja-Hira": "アド・ミュージアム とうきょう",
+                    "name:ja-Latn": "Ado myūjiamu Tōkyō",
+                    "name:zh": "東京廣告博物館",
+                    "opening_hours": "Tu-Sa 12:00-18:00",
+                    "operator": "公益財団法人 吉田秀雄記念事業財団",
+                    "start_date": "2002-12-01",
+                    "tourism": "museum",
+                    "wikidata": "Q11284141",
+                    "wikimedia_commons": "Category:Ad Museum Tokyo",
+                    "wikipedia": "ja:アド・ミュージアム東京"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1484933111,
+                "lat": 35.6630488,
+                "lon": 139.7736585,
+                "tags": {
+                    "name": "かちどき 橋の資料館",
+                    "name:en": "Kachidoki Bridge Museum",
+                    "name:es": "Museo del puente Kachidoki",
+                    "opening_hours": "Tu,Th-Sa 09:30-16:30",
+                    "tourism": "museum",
+                    "wheelchair": "limited",
+                    "wikidata": "Q109160363",
+                    "wikimedia_commons": "Category:Kachidoki hashi no shiryōkan"
+                }
+            },
+            {
+                "type": "node",
+                "id": 6291685287,
+                "lat": 35.64938,
+                "lon": 139.789728,
+                "tags": {
+                    "addr:block_number": "1",
+                    "addr:housenumber": "16",
+                    "addr:neighbourhood": "6",
+                    "alt_name:en": "TeamLab Planets;Teamlab Planets",
+                    "fee": "yes",
+                    "name": "チームラボ プラネッツ",
+                    "name:en": "teamLab Planets",
+                    "name:fr": "teamLab Planets",
+                    "name:ja": "チームラボ プラネッツ",
+                    "opening_hours": "Mo-Su 09:00-22:00",
+                    "operator": "teamLab",
+                    "tourism": "museum",
+                    "website": "https://planets.teamlab.art/tokyo/",
+                    "wheelchair": "no",
+                    "wikidata": "Q97613610",
+                    "wikimedia_commons": "Category:TeamLab Planets TOKYO DMM.com",
+                    "wikipedia": "en:TeamLab Planets TOKYO DMM.com"
+                }
+            },
+            {
+                "type": "node",
+                "id": 10163996662,
+                "lat": 35.6590674,
+                "lon": 139.776216,
+                "tags": {
+                    "name": "勝どき・豊海歴史資料展示館",
+                    "name:en": "Kachidoki-Toyoumi Historical Materials Exhibition Hall",
+                    "name:ja": "勝どき・豊海歴史資料展示館",
+                    "name:ja-Latn": "Kachidoki Toyomi rekishi shiryō tenji-kan",
+                    "tourism": "museum",
+                    "website": "https://www.chuoku-machikadotenjikan.jp/tenjikan/kachidoki_toyoumi/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 3608488400,
+                "lat": 35.6666557,
+                "lon": 139.7766153,
+                "tags": {
+                    "museum": "history;local",
+                    "name": "中央区立郷土天文館",
+                    "name:en": "Chuo Ward Local History Museum",
+                    "name:ja_rm": "Kyōdo Tenmon Kan",
+                    "tourism": "museum",
+                    "website": "https://www.city.chuo.lg.jp/bunkakankou/bunka/kyodoshiryokan/index.html",
+                    "wheelchair": "yes"
+                }
+            },
+            {
+                "type": "node",
+                "id": 4609249704,
+                "lat": 35.6678004,
+                "lon": 139.7822229,
+                "tags": {
+                    "museum": "local;history",
+                    "name": "佃まちかど展示館",
+                    "name:en": "Tsukuda Machikado Museum",
+                    "name:es": "Museo Tsukuda Machikado",
+                    "source": "survey",
+                    "tourism": "museum",
+                    "website": "https://www.chuoku-machikadotenjikan.jp/tenjikan/tsukuda/",
+                    "wheelchair": "no",
+                    "wikidata": "Q109166065",
+                    "wikimedia_commons": "Category:Tsukuda machikado tenjikan"
+                }
+            },
+            {
+                "type": "node",
+                "id": 6056394285,
+                "lat": 35.6628604,
+                "lon": 139.7979043,
+                "tags": {
+                    "museum": "technology",
+                    "name": "建設技術歴史展示室",
+                    "name:en": "Historical Gallery of Construction Technology",
+                    "tourism": "museum",
+                    "website": "https://www.shimz.co.jp/en/company/about/sit/showroom/exhibition/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 2930640182,
+                "lat": 35.6706976,
+                "lon": 139.7133661,
+                "tags": {
+                    "addr:block_number": "7",
+                    "addr:city": "渋谷区",
+                    "addr:housenumber": "6",
+                    "addr:neighbourhood": "神宮前三丁目",
+                    "addr:postcode": "150-0001",
+                    "addr:province": "東京都",
+                    "alt_name:en": "WATARI-UM, watrium, the museum of contemporary art",
+                    "email": "official@watarium.co.jp",
+                    "name": "ワタリウム美術館",
+                    "name:en": "The Watari Museum Contemporary Art",
+                    "name:es": "Museo de arte contemporaneo Watari",
+                    "opening_hours": "Tu, Th-Su 11:00-19:00; We 11:00-21:00",
+                    "phone": "+81 3-3402-3001",
+                    "tourism": "museum",
+                    "website": "http://www.watarium.co.jp/",
+                    "wikidata": "Q3915469",
+                    "wikimedia_commons": "Category:Watari Museum of Contemporary Art",
+                    "wikipedia": "ja:ワタリウム美術館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 7125341600,
+                "lat": 35.6749482,
+                "lon": 139.7151556,
+                "tags": {
+                    "fee": "yes",
+                    "museum": "history",
+                    "name": "日本オリンピックミュージアム",
+                    "name:en": "JAPAN OLYMPIC MUSEUM",
+                    "tourism": "museum",
+                    "website": "https://japan-olympicmuseum.jp",
+                    "wheelchair": "yes"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420766948,
+                "lat": 35.681682,
+                "lon": 139.714976,
+                "tags": {
+                    "addr:block_number": "31",
+                    "addr:city": "新宿区",
+                    "addr:housenumber": "10",
+                    "addr:neighbourhood": "大京町",
+                    "addr:province": "東京都",
+                    "museum": "art",
+                    "name": "佐藤美術館",
+                    "name:en": "Sato Art Museum",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "opening_hours": "Tu-Th, Sa-Su 10:00-17:00; Fr 10:00-19:00",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://sato-museum.la.coocan.jp/",
+                    "wikidata": "Q11384365",
+                    "wikimedia_commons": "Category:Sato Museum of Art",
+                    "wikipedia": "ja:佐藤美術館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420787066,
+                "lat": 35.6823264,
+                "lon": 139.7193832,
+                "tags": {
+                    "addr:city": "新宿区",
+                    "addr:housenumber": "8",
+                    "addr:postcode": "160-8588",
+                    "addr:province": "東京都",
+                    "addr:quarter": "信濃町",
+                    "name": "民音音楽博物館",
+                    "name:en": "Min-On Music Library",
+                    "name:ja": "民音音楽博物館",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年　国土交通省",
+                    "opening_hours": "Tu-Sa 11:00-16:00; Su 10:00-17:00",
+                    "operator": "民主音楽協会",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://museum.min-on.or.jp/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420799298,
+                "lat": 35.683753,
+                "lon": 139.716289,
+                "tags": {
+                    "name": "野口英世記念会館展示室",
+                    "name:en": "Hideyo Noguchi Memorial Hall Exhibition Room",
+                    "name:es": "Salón conmemorativo Hideyo Noguchi",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年　国土交通省",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420784678,
+                "lat": 35.6881372,
+                "lon": 139.7199391,
+                "tags": {
+                    "addr:postcode": "160-0004",
+                    "fax": "+81-3-33539925",
+                    "name": "東京消防庁消防防災資料センター消防博物館",
+                    "name:en": "Fire Museum",
+                    "name:ja": "消防博物館",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年　国土交通省",
+                    "opening_hours": "Tu-Su 09:30-17:00; Mo off",
+                    "phone": "+81-3-33539119",
+                    "source": "KSJ2; (URL)",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://www.tfd.metro.tokyo.lg.jp/eng/e_museum/information.html",
+                    "wikidata": "Q11559505",
+                    "wikimedia_commons": "Category:Tokyo Fire Museum",
+                    "wikipedia": "ja:消防博物館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420799355,
+                "lat": 35.690868,
+                "lon": 139.71952,
+                "tags": {
+                    "name": "釣り文化資料館",
+                    "name:en": "Fishing Culture Museum",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年　国土交通省",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "wikidata": "Q104698254"
+                }
+            },
+            {
+                "type": "node",
+                "id": 5894435886,
+                "lat": 35.6897793,
+                "lon": 139.7179766,
+                "tags": {
+                    "name:de": "Tokyo Toy Museum",
+                    "name:en": "Tokyo Toy Museum",
+                    "name:zh": "東京玩具美術館",
+                    "tourism": "museum",
+                    "website": "http://goodtoy.org",
+                    "wikidata": "Q11524018",
+                    "wikimedia_commons": "Category:Tokyo Toy Museum",
+                    "wikipedia": "ja:東京おもちゃ美術館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420783718,
+                "lat": 35.697188,
+                "lon": 139.72029,
+                "tags": {
+                    "addr:block_number": "8",
+                    "addr:city": "新宿区",
+                    "addr:housenumber": "1",
+                    "addr:neighbourhood": "河田町",
+                    "addr:province": "東京都",
+                    "name": "東京女子医科大学史料室・吉岡彌生記念室",
+                    "name:en": "Tokyo Women's Medical University Archives and Yayoi Yoshioka Memorial Room",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://museums.io/museums/74175",
+                    "wheelchair": "yes",
+                    "wikidata": "Q104698247"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420796583,
+                "lat": 35.674085,
+                "lon": 139.729314,
+                "tags": {
+                    "addr:block_number": "2",
+                    "addr:city": "港区",
+                    "addr:country": "JP",
+                    "addr:housenumber": "21",
+                    "addr:neighbourhood": "赤坂七丁目",
+                    "addr:province": "東京都",
+                    "name": "草月美術館",
+                    "name:en": "Sogetsu Art Museum",
+                    "name:ja": "草月美術館",
+                    "name:ja-Hira": "そうげつびじゅつかん",
+                    "name:ja_rm": "Sogetsu Bijutsukan",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420797402,
+                "lat": 35.675242,
+                "lon": 139.732592,
+                "tags": {
+                    "name": "虎屋ギャラリー",
+                    "name:en": "Toraya Gallery",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年　国土交通省",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420780821,
+                "lat": 35.690013,
+                "lon": 139.72563,
+                "tags": {
+                    "addr:housenumber": "新宿区三栄町２２",
+                    "name": "新宿歴史博物館",
+                    "name:en": "Shinjuku Historical Museum",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年　国土交通省",
+                    "opening_hours": "Tu-Su 09:30-17:30",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "wikidata": "Q11501857",
+                    "wikimedia_commons": "Category:Shinjuku Historical Museum",
+                    "wikipedia": "ja:新宿歴史博物館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420780980,
+                "lat": 35.6860582,
+                "lon": 139.7428472,
+                "tags": {
+                    "addr:housenumber": "千代田区一番町２５",
+                    "level": "-1",
+                    "museum": "photography",
+                    "name": "日本カメラ博物館",
+                    "name:en": "JCII Camera Museum",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "opening_hours": "Tu-Su 10:00-17:00",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://www.jcii-cameramuseum.jp/",
+                    "wikidata": "Q21019310",
+                    "wikimedia_commons": "Category:JCII Camera Museum",
+                    "wikipedia": "ja:日本カメラ博物館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 6266973577,
+                "lat": 35.6930474,
+                "lon": 139.7365541,
+                "tags": {
+                    "addr:postcode": "162-0843",
+                    "level": "-2",
+                    "name": "江戸歴史散歩コーナー",
+                    "name:en": "Edo History Walking Corner",
+                    "name:es": "Esquina andante de la historia de Edo",
+                    "name:ja": "江戸歴史散歩コーナー",
+                    "opening_hours": "Mo-Su 06:00-23:30",
+                    "operator": "Tokyo Metro",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420770260,
+                "lat": 35.693263,
+                "lon": 139.74649,
+                "tags": {
+                    "museum": "history;person",
+                    "name": "千秋文庫博物館",
+                    "name:en": "Senshu Bunko",
+                    "name:es": "Senshu Bunko",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://www.senshu-bunko.or.jp/",
+                    "wikidata": "Q11405795",
+                    "wikimedia_commons": "Category:Senshu-Bunko Museum",
+                    "wikipedia": "ja:千秋文庫"
+                }
+            },
+            {
+                "type": "node",
+                "id": 4376204494,
+                "lat": 35.6698023,
+                "lon": 139.7525029,
+                "tags": {
+                    "name": "日本の酒情報館",
+                    "name:en": "Japan Sake and Shōchū Information Center",
+                    "name:ja": "日本酒造会馆",
+                    "phone": "+81 33519 2091",
+                    "tourism": "museum",
+                    "website": "https://japansake.or.jp/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 3258775394,
+                "lat": 35.6685768,
+                "lon": 139.7618973,
+                "tags": {
+                    "contact:instagram": "https://www.instagram.com/shiseidogallery/",
+                    "museum": "art",
+                    "name": "資生堂ギャラリー",
+                    "name:en": "Shiseido Gallery",
+                    "tourism": "museum",
+                    "website": "https://gallery.shiseido.com/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 5161860624,
+                "lat": 35.6710329,
+                "lon": 139.7614285,
+                "tags": {
+                    "museum": "art",
+                    "name": "秋華洞",
+                    "name:en": "Gallery Shukado",
+                    "opening_hours": "Mo-Sa 10:00-18:00; Su 11:00-18:00",
+                    "short_name:en": "Shukado",
+                    "tourism": "museum",
+                    "website": "https://www.syukado.jp/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 12920169414,
+                "lat": 35.6767579,
+                "lon": 139.7539879,
+                "tags": {
+                    "museum": "history",
+                    "name:en": "Ministry of Justice Museum",
+                    "name:ja": "法務史料展示室",
+                    "name:ja-Latn": "Hōmu Shiryō Tenjishitsu",
+                    "tourism": "museum",
+                    "website": "https://www.moj.go.jp/ENGLISH/mojm-01.html"
+                }
+            },
+            {
+                "type": "node",
+                "id": 11334772769,
+                "lat": 35.6787799,
+                "lon": 139.7614042,
+                "tags": {
+                    "museum": "art;person",
+                    "name": "静嘉堂美術館",
+                    "name:en": "Seikado Bunko Art Museum",
+                    "name:ja": "静嘉堂文庫美術館",
+                    "opening_hours": "Tu-Th, Sa-Su 10:00-17:00; Fr 10:00-18:00",
+                    "tourism": "museum",
+                    "website": "https://www.seikado.or.jp/",
+                    "wheelchair": "limited"
+                }
+            },
+            {
+                "type": "node",
+                "id": 3258793182,
+                "lat": 35.6696832,
+                "lon": 139.7625645,
+                "tags": {
+                    "name": "MMM Maison des Musees du Monde",
+                    "name:en": "Ghinza Graphic Gallery",
+                    "tourism": "museum",
+                    "website": "https://www.mmm-ginza.org/top.html",
+                    "wheelchair": "no"
+                }
+            },
+            {
+                "type": "node",
+                "id": 5161825322,
+                "lat": 35.6742479,
+                "lon": 139.7679885,
+                "tags": {
+                    "name": "ポーラ ミュージアム アネックス",
+                    "name:en": "Pola Museum Annex",
+                    "name:es": "Pola Museum Annex",
+                    "name:ja": "ポーラ ミュージアム アネックス",
+                    "opening_hours": "Mo-Su 11:00-20:00",
+                    "tourism": "museum",
+                    "website": "https://www.po-holdings.co.jp/m-annex/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 7638842706,
+                "lat": 35.669669,
+                "lon": 139.7679383,
+                "tags": {
+                    "name": "歌舞伎座ギャラリー",
+                    "name:en": "Kabukiza Gallery",
+                    "theatre:genre": "theatre;history",
+                    "tourism": "museum",
+                    "website": "https://www.shochiku.co.jp/play/theater/kabukiza/ginza-kabukiza/gallery/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 9210529918,
+                "lat": 35.6723712,
+                "lon": 139.7644242,
+                "tags": {
+                    "name": "セイコーミュージアム",
+                    "name:en": "Seiko Museum",
+                    "name:ja": "セイコーミュージアム",
+                    "tourism": "museum",
+                    "website": "https://museum.seiko.co.jp"
+                }
+            },
+            {
+                "type": "node",
+                "id": 10271111779,
+                "lat": 35.67138,
+                "lon": 139.7657079,
+                "tags": {
+                    "addr:block_number": "6",
+                    "addr:city": "中央区",
+                    "addr:floor": "8F",
+                    "addr:housename": "銀座三越 新館",
+                    "addr:housenumber": "16",
+                    "addr:neighbourhood": "銀座四丁目",
+                    "addr:postcode": "104-8212",
+                    "addr:province": "東京都",
+                    "alt_name:fr": "Musée d'art en aquarium de Ginza",
+                    "charge:adult": "2700 JPY",
+                    "charge:child": "0 JPY",
+                    "contact:facebook": "artaquariumofficial",
+                    "contact:instagram": "artaquarium_tm_official",
+                    "contact:phone": "+81-3-3528-6721",
+                    "contact:tiktok": "@artaquarium_tm_official",
+                    "contact:twitter": "artaquarium_tm",
+                    "contact:website": "https://artaquarium.jp/",
+                    "fee": "yes",
+                    "level": "7",
+                    "level_ref": "8F",
+                    "name": "Art Aquarium Museum GINZA",
+                    "name:en": "Art Aquarium Museum GINZA",
+                    "name:fr": "Art Aquarium Museum GINZA",
+                    "name:ja": "アートアクアリウム美術館 GINZA",
+                    "name:ja-Hira": "あーとあくありうむびじゅつかん ぎんざ",
+                    "name:ja-Latn": "Āto Akuariumu Bijutsukan Ginza",
+                    "opening_hours": "Mo-Su,PH 10:00-19:00; Dec 31 10:00-17:30; Jan 01 off",
+                    "operator": "株式会社Amuseum Parks",
+                    "operator:type": "business",
+                    "payment:cash": "yes",
+                    "payment:credit_cards": "yes",
+                    "pets": "no",
+                    "reservation": "only",
+                    "stroller": "no",
+                    "subject": "金魚",
+                    "subject:wikidata": "Q123141",
+                    "tourism": "museum",
+                    "website": "https://artaquarium.jp/",
+                    "wheelchair": "yes",
+                    "wikidata": "Q116921556",
+                    "wikimedia_commons": "Category:Art Aquarium Museum",
+                    "wikipedia": "ja:アートアクアリウム"
+                }
+            },
+            {
+                "type": "node",
+                "id": 3666894176,
+                "lat": 35.6774598,
+                "lon": 139.7645151,
+                "tags": {
+                    "addr:block_number": "5",
+                    "addr:city": "千代田区",
+                    "addr:floor": "B1F",
+                    "addr:housename": "東京国際フォーラム",
+                    "addr:housenumber": "1",
+                    "addr:neighbourhood": "丸の内三丁目",
+                    "addr:postcode": "100-0005",
+                    "addr:province": "東京都",
+                    "contact:fax": "+81 3-6212-3201",
+                    "contact:instagram": "mitsuoaida_museum",
+                    "contact:phone": "+81 3-5675-6521",
+                    "contact:tripadvisor": "1903771",
+                    "contact:twitter": "Mitsuo_Museum",
+                    "contact:website": "https://www.mitsuo.co.jp/museum/index.html",
+                    "contact:youtube": "UCVKx2_d_DDnqstbYBZylpEw",
+                    "level": "-1",
+                    "level:ref": "B1",
+                    "name": "相田みつを美術館",
+                    "name:en": "Mitsuo Aida Museum",
+                    "name:etymology": "相田みつを",
+                    "name:etymology:wikidata": "Q403849",
+                    "name:fr": "Musée d'art Aida Mitsuo",
+                    "name:ja-Hira": "あいだみつを びじゅつかん",
+                    "name:ja-Latn": "Aida Mitsuwo bijutsukan",
+                    "opening_hours": "Tu-Su 10:00-17:30",
+                    "subject:wikidata": "Q403849",
+                    "subject:wikipedia": "相田みつを",
+                    "tourism": "museum",
+                    "wheelchair": "yes",
+                    "wikidata": "Q11582309",
+                    "wikimedia_commons": "Category:Mitsuo Aida Museum",
+                    "wikipedia": "ja:相田みつを美術館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 4272532291,
+                "lat": 35.6800322,
+                "lon": 139.764534,
+                "tags": {
+                    "level": "1;2",
+                    "museum": "science",
+                    "name": "インターメディアテク",
+                    "name:en": "Intermediatheque",
+                    "name:ja_rm": "Intāmediateku",
+                    "opening_hours": "11:00-18:00; Fr,Sa 11:00-20:00; Mo closed",
+                    "operator:type": "private",
+                    "tourism": "museum",
+                    "website": "http://www.intermediatheque.jp/",
+                    "wheelchair": "yes"
+                }
+            },
+            {
+                "type": "node",
+                "id": 250668618,
+                "lat": 35.678749,
+                "lon": 139.7721285,
+                "tags": {
+                    "addr:block_number": "7",
+                    "addr:city": "中央区",
+                    "addr:housenumber": "2",
+                    "addr:neighbourhood": "京橋一丁目",
+                    "addr:province": "東京都",
+                    "air_conditioning": "yes",
+                    "museum": "art",
+                    "name": "アーティゾン美術館",
+                    "name:en": "Artizon Museum",
+                    "name:ja": "アーティゾン美術館",
+                    "name:ja-Latn": "Ātizon Bijutsukan",
+                    "opening_hours": "Tu-Sa 10:00-20:00; Su 10:00-18:00",
+                    "toilets": "yes",
+                    "tourism": "museum",
+                    "website": "https://www.artizon.museum/",
+                    "wikidata": "Q913808",
+                    "wikipedia": "ja:アーティゾン美術館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420789601,
+                "lat": 35.6755738,
+                "lon": 139.7706589,
+                "tags": {
+                    "museum": "film;history",
+                    "name": "国立映画アーカイブ",
+                    "name:en": "National Film Archive of Japan",
+                    "name:fr": "Centre National du Cinema",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://www.nfaj.go.jp/",
+                    "wikidata": "Q51371009",
+                    "wikipedia": "en:National Film Archive of Japan"
+                }
+            },
+            {
+                "type": "node",
+                "id": 11513601556,
+                "lat": 35.6798127,
+                "lon": 139.7694768,
+                "tags": {
+                    "name": "HANASAKA STAND",
+                    "tourism": "museum",
+                    "website": "https://www.yanmar.com/jp/about/hanasaka/#hanasaka-stand",
+                    "wheelchair": "yes"
+                }
+            },
+            {
+                "type": "node",
+                "id": 12767832234,
+                "lat": 35.6781695,
+                "lon": 139.7716493,
+                "tags": {
+                    "name": "Creative Museum Tokyo",
+                    "tourism": "museum",
+                    "website": "https://www.creative-museum.tokyo/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 3164340661,
+                "lat": 35.6824302,
+                "lon": 139.7664939,
+                "tags": {
+                    "name": "東京ステーションギャラリー",
+                    "name:en": "Tokyo Station Gallery",
+                    "name:es": "Galería de la Estación de Tokio",
+                    "name:ko": "도쿄역갤러리",
+                    "name:zh": "東京車站畫廊",
+                    "opening_hours": "Tu-Th 10:00-18:00, Fr 10:00-20:00, Sa-Su 10:00-18:00",
+                    "tourism": "museum",
+                    "website": "http://www.ejrcf.or.jp/gallery/",
+                    "wheelchair": "yes",
+                    "wikidata": "Q115265693",
+                    "wikimedia_commons": "Category:Tokyo Station Gallery",
+                    "wikipedia": "ja:東京ステーションギャラリー"
+                }
+            },
+            {
+                "type": "node",
+                "id": 13606792473,
+                "lat": 35.6832961,
+                "lon": 139.7649308,
+                "tags": {
+                    "check_date": "2026-02-28",
+                    "fee": "no",
+                    "museum": "history",
+                    "name": "三菱UFJ信託銀行 信託博物館",
+                    "name:en": "Mitsubishi UFJ Trust and Banking Museum",
+                    "tourism": "museum",
+                    "website": "https://www.mitsubishi.com/ja/minikite/vol03.html"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1350269516,
+                "lat": 35.6854395,
+                "lon": 139.7716029,
+                "tags": {
+                    "addr:block_number": "3",
+                    "addr:city": "中央区",
+                    "addr:housenumber": "1",
+                    "addr:neighbourhood": "日本橋本石町一丁目",
+                    "addr:province": "東京都",
+                    "check_date": "2024-11-03",
+                    "internet_access": "wlan",
+                    "internet_access:fee": "no",
+                    "internet_access:password": "money1985",
+                    "internet_access:ssid": "CurrencyMuseum",
+                    "museum": "numismatic",
+                    "name": "日本銀行金融研究所貨幣博物館",
+                    "name:en": "Bank of Japan Currency Museum",
+                    "name:es": "Actual Museo de la Moneda",
+                    "name:ja-Latn": "Nippon Ginkō Kin’yū Kenkyūjo Kahei Hakubutsukan",
+                    "name:ja_rm": "Kahei Hakubutsukan",
+                    "opening_hours": "Tu-Su 09:30-16:30",
+                    "operator": "日本銀行金融研究所",
+                    "tourism": "museum",
+                    "website": "https://www.imes.boj.or.jp/cm/",
+                    "wikidata": "Q865607",
+                    "wikimedia_commons": "Category:Currency Museum, Institute for Monetary and Economic Studies, Bank of Japan",
+                    "wikipedia": "en:Currency Museum of the Bank of Japan"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420765471,
+                "lat": 35.6868356,
+                "lon": 139.7730738,
+                "tags": {
+                    "addr:place": "中央区日本橋室町２－１－１",
+                    "alt_name:en": "Mitsui Memorial Museum of Art",
+                    "museum": "art",
+                    "name": "三井記念美術館",
+                    "name:en": "Mitsui Memorial Museum",
+                    "name:es": "Museo de arte memorial Mitsui",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "opening_hours": "Tu-Su 10:00-17:00",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://www.mitsui-museum.jp/",
+                    "wikidata": "Q864700",
+                    "wikimedia_commons": "Category:Mitsui Memorial Museum",
+                    "wikipedia": "en:Mitsui Memorial Museum"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420767886,
+                "lat": 35.6844275,
+                "lon": 139.7751576,
+                "tags": {
+                    "addr:block_number": "8",
+                    "addr:city": "中央区",
+                    "addr:housenumber": "3",
+                    "addr:neighbourhood": "1",
+                    "addr:postcode": "103-0022",
+                    "addr:province": "東京都",
+                    "addr:quarter": "日本橋室町",
+                    "level": "1",
+                    "name": "凧の博物館",
+                    "name:en": "Kite Museum",
+                    "name:es": "Museo de Kite",
+                    "opening_hours": "Mo-Sa 11:00-17:00",
+                    "phone": "+81 3 3275 2704",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://www.taimeiken.co.jp/tako/index_t.htm"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420774624,
+                "lat": 35.691776,
+                "lon": 139.764418,
+                "tags": {
+                    "addr:block_number": "1",
+                    "addr:city": "千代田区",
+                    "addr:housenumber": "9",
+                    "addr:neighbourhood": "神田錦町",
+                    "addr:province": "東京都",
+                    "name": "天理ギャラリー",
+                    "name:en": "Tenri Gallery",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "opening_hours": "Mo-Fr 10:00-18:00; Sa-Su 10:00-16:00",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://tokyotenrikyokan.co.jp/gallery/",
+                    "wheelchair": "no"
+                }
+            },
+            {
+                "type": "node",
+                "id": 13284174057,
+                "lat": 35.6896126,
+                "lon": 139.7678609,
+                "tags": {
+                    "addr:block_number": "3",
+                    "addr:city": "千代田区",
+                    "addr:floor": "1F",
+                    "addr:housename": "楓ビル",
+                    "addr:housenumber": "6",
+                    "addr:neighbourhood": "内神田二丁目",
+                    "addr:postcode": "101-0047",
+                    "addr:province": "東京都",
+                    "contact:facebook": "https://www.facebook.com/people/Extinct-Media-Museum-Tokyo/61557714370847/",
+                    "email": "kawai@himanainu.jp",
+                    "museum": "technology",
+                    "name": "絶滅メディア博物館",
+                    "name:en": "Extinct Media Museum",
+                    "name:ja-Hira": "ぜつめつめでぃあはくぶつかん",
+                    "name:ja-Latn": "Zetsumetsu Media Hakubutsukan",
+                    "phone": "+81 3-5256-5700",
+                    "tourism": "museum",
+                    "website": "https://extinct-media-museum.blog.jp/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1248297444,
+                "lat": 35.6937575,
+                "lon": 139.7716325,
+                "tags": {
+                    "name": "Zemaitis Museum",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420771652,
+                "lat": 35.69496,
+                "lon": 139.729273,
+                "tags": {
+                    "addr:block_number": "9",
+                    "addr:city": "新宿区",
+                    "addr:housenumber": "5",
+                    "addr:neighbourhood": "市ヶ谷本村町",
+                    "addr:province": "東京都",
+                    "alt_name": "お札と切手の博物館",
+                    "alt_name:en": "Museum of Bills and Stamps",
+                    "alt_name:ja": "お札と切手の博物館",
+                    "name": "国立印刷局博物館",
+                    "name:en": "National Printing Bureau Museum",
+                    "name:ja": "国立印刷局博物館",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年　国土交通省",
+                    "opening_hours": "Tu-Su 09:30-16:30",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "node",
+                "id": 5165879121,
+                "lat": 35.7032011,
+                "lon": 139.7264837,
+                "tags": {
+                    "addr:block_number": "107",
+                    "addr:city": "新宿区",
+                    "addr:neighbourhood": "弁天町",
+                    "addr:postcode": "162-0851",
+                    "addr:province": "東京都",
+                    "changing_table": "yes",
+                    "check_date": "2024-03-03",
+                    "contact:instagram": "yayoikusamamuseum",
+                    "dog": "no",
+                    "fee": "yes",
+                    "internet_access": "no",
+                    "museum": "art;person",
+                    "name": "草間彌生美術館",
+                    "name:en": "Yayoi Kusama Museum",
+                    "opening_hours": "Mo-We off; Th-Su,PH 11:00-17:30",
+                    "reservation": "required",
+                    "smoking": "no",
+                    "toilets": "yes",
+                    "toilets:wheelchair": "yes",
+                    "tourism": "museum",
+                    "website": "https://yayoikusamamuseum.jp/",
+                    "wheelchair": "yes",
+                    "wikidata": "Q65941212",
+                    "wikimedia_commons": "Category:Yayoi Kusama Museum",
+                    "wikipedia": "ja:草間彌生美術館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420775065,
+                "lat": 35.699758,
+                "lon": 139.736845,
+                "tags": {
+                    "addr:block_number": "35",
+                    "addr:city": "新宿区",
+                    "addr:neighbourhood": "中町",
+                    "addr:province": "東京都",
+                    "fixme": "reopen in year 2027",
+                    "museum": "person;music",
+                    "name": "宮城道雄記念館",
+                    "name:en": "Miyagi Michio Memorial Museum",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "opening_hours": "We-Sa 10:00-16:30",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://miyagikai.gr.jp/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 4059140708,
+                "lat": 35.7040532,
+                "lon": 139.7477579,
+                "tags": {
+                    "alt_name:en": "Japan-China Friendship Hall Museum",
+                    "museum": "art",
+                    "name": "日中友好会館美術館",
+                    "name:en": "Japan-China Friendship Center Art Museum",
+                    "tourism": "museum",
+                    "website": "https://jcfcmuseum.jp/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 6187350572,
+                "lat": 35.7030863,
+                "lon": 139.7443261,
+                "tags": {
+                    "contact:youtube": "https://www.youtube.com/@marionetteshop",
+                    "level": "1",
+                    "museum": "puppet",
+                    "name": "パペットハウス",
+                    "name:en": "Puppet House",
+                    "opening_hours": "11:00-19:00",
+                    "tourism": "museum",
+                    "website": "https://www.puppet-house.co.jp/",
+                    "wheelchair": "no"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420770935,
+                "lat": 35.7091646,
+                "lon": 139.7414372,
+                "tags": {
+                    "addr:block_number": "3",
+                    "addr:city": "文京区",
+                    "addr:housenumber": "3",
+                    "addr:neighbourhood": "1",
+                    "addr:province": "東京都",
+                    "addr:quarter": "水道",
+                    "air_conditioning": "yes",
+                    "fee": "yes",
+                    "museum": "printing",
+                    "name": "印刷博物館",
+                    "name:en": "Printing Museum",
+                    "name:es": "Printing Museum",
+                    "name:fr": "Musée de l'imprimerie",
+                    "name:ja": "印刷博物館",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "opening_hours": "Tu-Su 10:00-18:00",
+                    "phone": "+81 3 5840 2300",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://www.printing-museum.org/",
+                    "wheelchair": "limited",
+                    "wikidata": "Q994083"
+                }
+            },
+            {
+                "type": "node",
+                "id": 988763541,
+                "lat": 35.6951109,
+                "lon": 139.7509066,
+                "tags": {
+                    "alt_name:en": "Showakan",
+                    "museum": "history",
+                    "name": "昭和館",
+                    "name:en": "National Showa Memorial Museum",
+                    "name:es": "Museo conmemorativo nacional Showa",
+                    "name:ja_rm": "Shōwakan",
+                    "opening_hours": "Tu-Su 10:00-17:30",
+                    "tourism": "museum",
+                    "website": "https://www.showakan.go.jp/",
+                    "wikidata": "Q3788883",
+                    "wikimedia_commons": "Category:National Showa Memorial Museum",
+                    "wikipedia": "en:National Showa Memorial Museum"
+                }
+            },
+            {
+                "type": "node",
+                "id": 12085101795,
+                "lat": 35.6970758,
+                "lon": 139.7510805,
+                "tags": {
+                    "addr:postcode": "102-0073",
+                    "contact:facebook": "https://www.facebook.com/shokeikan.kudan",
+                    "fax": "+81-3-3234-7826",
+                    "fee": "no",
+                    "museum": "history;medical",
+                    "name": "しょうけい館",
+                    "name:en": "War Wounded and Sick Historical Museum",
+                    "opening_hours": "Tu-Su,PH 10:00-17:30",
+                    "phone": "+81-3-3234-7821",
+                    "toilets": "yes",
+                    "tourism": "museum",
+                    "website": "https://www.shokeikan.go.jp/",
+                    "wikidata": "Q11269143",
+                    "wikipedia": "ja:しょうけい館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420799336,
+                "lat": 35.7055787,
+                "lon": 139.7528979,
+                "tags": {
+                    "museum": "sport",
+                    "name": "野球殿堂博物館",
+                    "name:en": "The Baseball Hall of Fame and Museum",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "wheelchair": "limited",
+                    "wikidata": "Q1134380",
+                    "wikimedia_commons": "Category:The Baseball Hall of Fame and Museum (Japan)",
+                    "wikipedia": "ja:野球殿堂博物館 (日本)"
+                }
+            },
+            {
+                "type": "node",
+                "id": 6256032285,
+                "lat": 35.7034876,
+                "lon": 139.7517679,
+                "tags": {
+                    "name:en": "TenQ",
+                    "tourism": "museum",
+                    "wheelchair": "no"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420765213,
+                "lat": 35.702532,
+                "lon": 139.7597595,
+                "tags": {
+                    "name": "センチュリーミュージアム",
+                    "name:en": "Century Museum",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://www.nact.jp/index.html"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420785386,
+                "lat": 35.7033139,
+                "lon": 139.7604984,
+                "tags": {
+                    "museum": "technology;history",
+                    "name": "東京都水道歴史館",
+                    "name:en": "Tokyo Waterworks Historical Museum",
+                    "name:es": "Museo histórico de obras hidráulicas de Tokio",
+                    "name:ja_rm": "Tōkyōto Suidō Rekishikan",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://www.suidorekishi.jp/",
+                    "wheelchair": "no",
+                    "wikidata": "Q11525339",
+                    "wikimedia_commons": "Category:Tokyo Waterworks Historical Museum",
+                    "wikipedia": "ja:東京都水道歴史館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420781347,
+                "lat": 35.6986987,
+                "lon": 139.7621517,
+                "tags": {
+                    "addr:block_number": "1",
+                    "addr:city": "千代田区",
+                    "addr:neighbourhood": "神田駿河台一丁目",
+                    "addr:province": "東京都",
+                    "fee": "no",
+                    "layer": "-1",
+                    "name": "明治大学博物館",
+                    "name:en": "Meiji University Museum",
+                    "name:es": "Museo de la Universidad Meiji",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "opening_hours": "Mo-Su 10:00-16:30",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://www.meiji.ac.jp/museum/",
+                    "wikidata": "Q85880847",
+                    "wikipedia": "ja:明治大学博物館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 410166105,
+                "lat": 35.7042546,
+                "lon": 139.7639427,
+                "tags": {
+                    "addr:housenumber": "本郷３－１０－１５",
+                    "museum": "sport",
+                    "name": "日本サッカーミュージアム",
+                    "name:en": "Japan Football Museum",
+                    "opening_hours": "Mo-Fr 13:00-18:00; Sa-Su 10:00-19:00",
+                    "source": "(URL)",
+                    "tourism": "museum",
+                    "website": "http://www.jfa.jp/football_museum/",
+                    "wikidata": "Q11506477",
+                    "wikimedia_commons": "Category:Japan Football Museum",
+                    "wikipedia": "ja:日本サッカーミュージアム"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420780641,
+                "lat": 35.707984,
+                "lon": 139.756582,
+                "tags": {
+                    "addr:block_number": "9",
+                    "addr:city": "文京区",
+                    "addr:housenumber": "29",
+                    "addr:neighbourhood": "本郷四丁目",
+                    "addr:province": "東京都",
+                    "museum": "local;history",
+                    "name": "文京ふるさと歴史館",
+                    "name:en": "Bunkyo Hometown History Museum",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "old_name:en": "Bunkyo Historical Museum",
+                    "opening_hours": "Tu-Su 10:00-17:00",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://www.city.bunkyo.lg.jp/rekishikan/",
+                    "wikidata": "Q11499743",
+                    "wikimedia_commons": "Category:Furusato History Museum",
+                    "wikipedia": "en:Bunkyo Museum"
+                }
+            },
+            {
+                "type": "node",
+                "id": 4071196400,
+                "lat": 35.7112344,
+                "lon": 139.7590945,
+                "tags": {
+                    "museum": "history",
+                    "name": "わだつみのこえ記念館",
+                    "name:en": "Wadatsumi no Koe Museum",
+                    "tourism": "museum",
+                    "website": "http://www.wadatsuminokoe.org"
+                }
+            },
+            {
+                "type": "node",
+                "id": 4848865521,
+                "lat": 35.716155,
+                "lon": 139.758873,
+                "tags": {
+                    "name": "東京大学農学資料館",
+                    "name:en": "University of Tokyo Agricultural Science Museum",
+                    "tourism": "museum",
+                    "website": "https://hotozero.com/museum/%E6%9D%B1%E4%BA%AC%E5%A4%A7%E5%AD%A6-%E8%BE%B2%E5%AD%A6%E8%B3%87%E6%96%99%E9%A4%A8/",
+                    "wheelchair": "yes"
+                }
+            },
+            {
+                "type": "node",
+                "id": 4071181079,
+                "lat": 35.7096557,
+                "lon": 139.765997,
+                "tags": {
+                    "name": "三菱史料館",
+                    "name:en": "Mitsubishi Economic Research Archives",
+                    "tourism": "museum",
+                    "wikidata": "Q11357080",
+                    "wikipedia": "ja:三菱史料館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 4628815692,
+                "lat": 35.7100384,
+                "lon": 139.7643646,
+                "tags": {
+                    "museum": "science;medicine",
+                    "name": "健康と医学の博物館",
+                    "name:en": "Museum of Health and Medicine",
+                    "name:fr": "Musée de la santé et de la médecine",
+                    "name:ja": "健康と医学の博物館",
+                    "opening_hours": "10:00-17:00; Dec 24-Jan 4 off",
+                    "tourism": "museum",
+                    "website": "https://mhm.m.u-tokyo.ac.jp/",
+                    "wheelchair": "yes"
+                }
+            },
+            {
+                "type": "node",
+                "id": 6033643885,
+                "lat": 35.7096507,
+                "lon": 139.7666399,
+                "tags": {
+                    "museum": "architecture",
+                    "name": "国立近現代建築資料館",
+                    "name:en": "National Museum of Modern and Contemporary Architecture",
+                    "old_name:en": "National Archives of Modern Architecture",
+                    "tourism": "museum",
+                    "website": "https://www.bunka.go.jp/nama/",
+                    "wikidata": "Q28312009",
+                    "wikipedia": "ja:国立近現代建築資料館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 441655802,
+                "lat": 35.7128522,
+                "lon": 139.7747663,
+                "tags": {
+                    "addr:block_number": "2",
+                    "addr:neighbourhood": "1",
+                    "addr:postcode": "110-0007",
+                    "addr:province": "東京都",
+                    "addr:quarter": "上野公園",
+                    "addr:suburb": "台東区",
+                    "contact:facebook": "uenomori",
+                    "contact:twitter": "UenoMoriMuseum",
+                    "fee": "yes",
+                    "museum": "art",
+                    "name": "上野の森美術館",
+                    "name:en": "The Ueno Royal Museum",
+                    "name:es": "Museo real Ueno",
+                    "name:fr": "Le musée royal Ueno",
+                    "name:ja": "上野の森美術館",
+                    "name:ko": "우에노 모리 미술관",
+                    "opening_hours": "10:00-17:00",
+                    "source": "KSJ2",
+                    "tourism": "museum",
+                    "website": "https://www.ueno-mori.org/",
+                    "wheelchair": "yes",
+                    "wikidata": "Q11360245"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420780101,
+                "lat": 35.7149026,
+                "lon": 139.7634784,
+                "tags": {
+                    "addr:block_number": "4",
+                    "addr:city": "文京区",
+                    "addr:housenumber": "3",
+                    "addr:neighbourhood": "弥生二丁目",
+                    "addr:province": "東京都",
+                    "name": "弥生美術館・竹久夢二美術館",
+                    "name:en": "Yayoi Museum,Takeshisa Yumeji Museum",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年　国土交通省",
+                    "opening_hours": "Tu-Su 10:00-17:00",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420785063,
+                "lat": 35.719192,
+                "lon": 139.7719324,
+                "tags": {
+                    "addr:block_number": "8",
+                    "addr:neighbourhood": "12",
+                    "addr:postcode": "110-8714",
+                    "addr:province": "東京都",
+                    "addr:quarter": "上野公園",
+                    "addr:suburb": "台東区",
+                    "email": "kanri@ml.geidai.ac.jp",
+                    "name": "東京藝術大学大学美術館",
+                    "name:en": "The University Art Museum, Tokyo University of the Arts",
+                    "name:ja_rm": "Tokyo Geijutsu Daigaku, Daigaku Bijutsukan",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年　国土交通省",
+                    "opening_hours": "Tu-Su 10:00-17:00",
+                    "phone": "050-5541-8600",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://www.geidai.ac.jp/museum/",
+                    "wikidata": "Q11525123"
+                }
+            },
+            {
+                "type": "node",
+                "id": 13881133162,
+                "lat": 35.7179853,
+                "lon": 139.7733061,
+                "tags": {
+                    "museum": "music",
+                    "name": "旧東京音楽学校奏楽堂",
+                    "name:en": "Sogakudo of the Former Tokyo Music School",
+                    "tourism": "museum",
+                    "website": "https://www.taitogeibun.net/sougakudou/#"
+                }
+            },
+            {
+                "type": "node",
+                "id": 11993719386,
+                "lat": 35.7236434,
+                "lon": 139.7498152,
+                "tags": {
+                    "name": "井上円了記念博物館",
+                    "name:en": "Inoue Enryo Memorial Museum",
+                    "tourism": "museum",
+                    "website": "https://www.toyo.ac.jp/about/founder/iecp/museum/",
+                    "wikidata": "Q11527629",
+                    "wikipedia": "ja:東洋大学井上円了記念博物館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 2457988864,
+                "lat": 35.7248452,
+                "lon": 139.760649,
+                "tags": {
+                    "museum": "literature;person",
+                    "name": "森鴎外記念館",
+                    "name:en": "Mori Ogai Memorial Museum",
+                    "tourism": "museum",
+                    "website": "https://moriogai-kinenkan.jp/",
+                    "wikidata": "Q84836242",
+                    "wikipedia": "ja:文京区立森鷗外記念館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420772944,
+                "lat": 35.721289,
+                "lon": 139.766182,
+                "tags": {
+                    "addr:block_number": "1",
+                    "addr:housenumber": "27",
+                    "addr:neighbourhood": "谷中二丁目",
+                    "addr:postcode": "110-0001",
+                    "addr:province": "東京都",
+                    "addr:suburb": "台東区",
+                    "museum": "clock",
+                    "name": "大名時計博物館",
+                    "name:en": "Daimyo Clock Museum",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "opening_hours": "Tu-Su 10:00-16:00",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://t-navi.city.taito.lg.jp/spot/1078",
+                    "wikidata": "Q10856362",
+                    "wikipedia": "ja:大名時計博物館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 12918716601,
+                "lat": 35.6736905,
+                "lon": 139.7753057,
+                "tags": {
+                    "addr:block_number": "13",
+                    "addr:city": "中央区",
+                    "addr:housenumber": "14",
+                    "addr:neighbourhood": "新富一丁目",
+                    "addr:postcode": "104-0041",
+                    "addr:province": "東京都",
+                    "museum": "local;history",
+                    "name": "中央区立郷土資料館",
+                    "name:en": "Chuo Ward Local History Museum",
+                    "opening_hours": "Mo-Sa 09:00-21:00; Su 09:00-17:00",
+                    "phone": "+81-3-35512151",
+                    "tourism": "museum",
+                    "website": "https://www.library.city.chuo.tokyo.jp/contents?1&pid=11"
+                }
+            },
+            {
+                "type": "node",
+                "id": 9194884405,
+                "lat": 35.6699086,
+                "lon": 139.7843231,
+                "tags": {
+                    "museum": "technology;maritime",
+                    "name": "石川島資料館",
+                    "name:en": "Ishikawajima Museum",
+                    "name:ja-Latn": "Ishikawajima shiryoukan",
+                    "tourism": "museum",
+                    "website": "https://machinagi.com/ishikawajima-museum-tsukuda/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420787694,
+                "lat": 35.6810519,
+                "lon": 139.8005482,
+                "tags": {
+                    "museum": "local;history",
+                    "name": "江東区深川江戸資料館",
+                    "name:en": "Fukagawa Edo Museum",
+                    "name:fr": "Musée Fukagawa-Edo",
+                    "official_name:en": "Koto Ward Fukagawa Edo Museum",
+                    "opening_hours": "Mo-Su 09:30-16:30",
+                    "source": "KSJ2",
+                    "toilets:wheelchair": "yes",
+                    "tourism": "museum",
+                    "website": "https://www.kcf.or.jp/fukagawa/",
+                    "wheelchair": "yes",
+                    "wikidata": "Q3090685",
+                    "wikimedia_commons": "Category:Fukagawa Edo Museum",
+                    "wikipedia": "en:Fukagawa Edo Museum"
+                }
+            },
+            {
+                "type": "node",
+                "id": 12308555809,
+                "lat": 35.6874311,
+                "lon": 139.7772859,
+                "tags": {
+                    "check_date": "2024-11-03",
+                    "fee": "no",
+                    "museum": "art;ukiyo-e",
+                    "name": "伊場仙浮世絵ミュージアム",
+                    "name:en": "Ibasen Ukiyo-e Museum",
+                    "tourism": "museum",
+                    "website": "https://www.ibasen.co.jp/pages/gallery"
+                }
+            },
+            {
+                "type": "node",
+                "id": 8540191217,
+                "lat": 35.6811866,
+                "lon": 139.7827066,
+                "tags": {
+                    "name": "醤油会館",
+                    "name:en": "Soy Sauce Centre (Shoyu Kaikan)",
+                    "tourism": "museum",
+                    "website": "https://www.soysauce.or.jp/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 6026372096,
+                "lat": 35.6884593,
+                "lon": 139.7756693,
+                "tags": {
+                    "museum": "medicine",
+                    "name": "第一三共くすりミュージアム",
+                    "name:en": "Daiichi Sankyo Kusuri Museum",
+                    "name:es": "Museo Daiichi Sankyo Kusuri",
+                    "tourism": "museum",
+                    "wikidata": "Q17224188",
+                    "wikipedia": "ja:Daiichi Sankyo くすりミュージアム"
+                }
+            },
+            {
+                "type": "node",
+                "id": 6440157288,
+                "lat": 35.6888018,
+                "lon": 139.7763151,
+                "tags": {
+                    "name:en": "Ozu Washi",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "node",
+                "id": 2283943982,
+                "lat": 35.6911909,
+                "lon": 139.7878718,
+                "tags": {
+                    "name": "Button Museum",
+                    "name:en": "Button Museum",
+                    "tourism": "museum",
+                    "website": "https://www.iris1946-en.com/museum/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420787712,
+                "lat": 35.686129,
+                "lon": 139.794092,
+                "tags": {
+                    "addr:housenumber": "江東区常盤１－６－３",
+                    "charge": "200 JPY",
+                    "check_date": "2024-11-03",
+                    "contact:facebook": "basho_museum",
+                    "contact:instagram": "basho_museum",
+                    "contact:twitter": "basho_museum",
+                    "fee": "yes",
+                    "internet_access": "wlan",
+                    "internet_access:fee": "no",
+                    "internet_access:ssid": "Koto_City_Free_Wi-Fi",
+                    "museum": "literature;person",
+                    "name": "江東区芭蕉記念館",
+                    "name:en": "Basho Museum",
+                    "opening_hours": "Tu-Su 09:30-17:00",
+                    "operator:type": "government",
+                    "payment:cash": "yes",
+                    "payment:credit_cards": "yes",
+                    "payment:debit_cards": "yes",
+                    "source": "KSJ2",
+                    "toilets": "yes",
+                    "toilets:wheelchair": "yes",
+                    "tourism": "museum",
+                    "website": "https://www.kcf.or.jp/basho/",
+                    "wikidata": "Q104698200",
+                    "wikimedia_commons": "Category:Basho Museum"
+                }
+            },
+            {
+                "type": "node",
+                "id": 5668194825,
+                "lat": 35.6939005,
+                "lon": 139.7917584,
+                "tags": {
+                    "museum": "craft",
+                    "name": "両国花火資料館",
+                    "name:en": "Ryogoku Fireworks Museum",
+                    "name:ja-Latn": "Ryōgoku Hanabi Shiryōkan",
+                    "name:ru": "Музей фейерверков Рёгоку",
+                    "opening_hours": "Mo-Su 12:00-16:00",
+                    "tourism": "museum",
+                    "website": "https://visit-sumida.jp/sv/spot/6036/",
+                    "wikidata": "Q21014218",
+                    "wikimedia_commons": "Category:Ryogoku Fireworks Museum",
+                    "wikipedia": "ja:両国花火資料館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 5027602026,
+                "lat": 35.6850919,
+                "lon": 139.8023628,
+                "tags": {
+                    "museum": "person",
+                    "name": "田河水泡・のらくろ館",
+                    "name:en": "Tagawa Suiho Norakuro Museum",
+                    "opening_hours": "Mo-Su 09:00-21:00",
+                    "tourism": "museum",
+                    "website": "https://www.kcf.or.jp/morishita/josetsu/norakuro/",
+                    "wikidata": "Q17209701",
+                    "wikipedia": "ja:田河水泡・のらくろ館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420765316,
+                "lat": 35.694138,
+                "lon": 139.809419,
+                "tags": {
+                    "description:en": "Museum on brakes in all sorts of vehicles",
+                    "name": "ブレーキ博物館",
+                    "name:en": "Brake Museum",
+                    "source": "KSJ2",
+                    "tourism": "museum",
+                    "website": "https://sasga.co.jp/brake_museum/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420783697,
+                "lat": 35.681744,
+                "lon": 139.822264,
+                "tags": {
+                    "museum": "local;history;war",
+                    "name": "東京大空襲・戦災資料センター",
+                    "name:en": "Center of the Tokyo Raids and War Damage",
+                    "name:ja-Latn": "Tōkyō Daikūshū Sensai Shiryō Sentā",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://tokyo-sensai.net/",
+                    "wikidata": "Q15961648",
+                    "wikimedia_commons": "Category:Center of the Tokyo Raids and War Damage",
+                    "wikipedia": "en:Center of the Tokyo Raids and War Damage"
+                }
+            },
+            {
+                "type": "node",
+                "id": 9234146642,
+                "lat": 35.6974008,
+                "lon": 139.7772749,
+                "tags": {
+                    "name": "San Francisco Fillmore Wolfgang's Vault Art Museum",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420790652,
+                "lat": 35.6972706,
+                "lon": 139.7932372,
+                "tags": {
+                    "addr:block_number": "3",
+                    "addr:city": "墨田区",
+                    "addr:housenumber": "28",
+                    "addr:neighbourhood": "横網一丁目",
+                    "addr:postcode": "130-0015",
+                    "addr:province": "東京都",
+                    "contact:phone": "+81 3-3622-0366",
+                    "contact:tripadvisor": "12018012",
+                    "contact:website": "https://www.sumo.or.jp/KokugikanSumoMuseum/",
+                    "fee": "no",
+                    "level": "1",
+                    "level:ref": "1階",
+                    "name": "相撲博物館",
+                    "name:en": "Sumo Museum",
+                    "name:es": "Museo del Sumo",
+                    "name:fr": "Musée du Sumo",
+                    "name:ja": "相撲博物館",
+                    "name:ja-Latn": "Sumō hakubutsukan",
+                    "name:ru": "Сумо музей бесплатно",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "opening_hours": "Mo-Fr 10:00-16:00",
+                    "operator": "日本相撲協会",
+                    "operator:wikidata": "Q1426308",
+                    "source": "KSJ2;(URL)",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "wikidata": "Q11582043",
+                    "wikimedia_commons": "Category:Sumo Museum",
+                    "wikipedia": "ja:相撲博物館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 5911509487,
+                "lat": 35.6988183,
+                "lon": 139.7937142,
+                "tags": {
+                    "charge": "1000 JPY",
+                    "fee": "yes",
+                    "name": "刀剣博物館",
+                    "name:en": "Japanese Sword Museum",
+                    "name:es": "Museo de Espadas Japonés",
+                    "name:ja-Latn": "Tōken Hakubutsukan",
+                    "opening_hours": "Tu-Su 09:30-17:00",
+                    "phone": "+81 36284 1000",
+                    "start_date": "2018-01-19",
+                    "tourism": "museum",
+                    "website": "https://www.touken.or.jp/museum/",
+                    "wikidata": "Q3329874",
+                    "wikimedia_commons": "Category:Japanese Sword Museum",
+                    "wikipedia": "ja:刀剣博物館"
+                }
+            },
+            {
+                "type": "node",
+                "id": 6650881085,
+                "lat": 35.6967717,
+                "lon": 139.788832,
+                "tags": {
+                    "name": "日本文具資料館",
+                    "name:en": "Japan Stationary Museum",
+                    "tourism": "museum",
+                    "website": "https://www.nihonbungu.or.jp/shiryokan/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 6650880985,
+                "lat": 35.7006673,
+                "lon": 139.7956878,
+                "tags": {
+                    "name:en": "Bekkō (Turtle Shell Crafts) Museum",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "node",
+                "id": 6650880986,
+                "lat": 35.6980982,
+                "lon": 139.7957058,
+                "tags": {
+                    "name:en": "NTT Docomo History Square",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "node",
+                "id": 13320217114,
+                "lat": 35.7048118,
+                "lon": 139.7983466,
+                "tags": {
+                    "museum": "art",
+                    "museum_type": "municipal",
+                    "name": "Tokyo Origami Museum",
+                    "name:en": "Tokyo Origami Museum",
+                    "operator": "National Origami Association",
+                    "tourism": "museum",
+                    "website": "https://www.origami-noa.jp/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 13588730450,
+                "lat": 35.7076354,
+                "lon": 139.7752774,
+                "tags": {
+                    "name": "QUARK MUSEUM",
+                    "name:en": "QUARK MUSEUM",
+                    "tourism": "museum",
+                    "website": "https://www.quarkmuseum.com/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 6261728292,
+                "lat": 35.7142739,
+                "lon": 139.7848829,
+                "tags": {
+                    "name": "ギャラリー心",
+                    "name:en": "Gallery Shin",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420774661,
+                "lat": 35.711815,
+                "lon": 139.791779,
+                "tags": {
+                    "museum": "music",
+                    "name": "太皷館",
+                    "name:en": "Taikokan Drum Museum",
+                    "name:fr": "Musée du tambour",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://www.asakusastation.com/taikokan-drum-museum/",
+                    "wikidata": "Q104698257"
+                }
+            },
+            {
+                "type": "node",
+                "id": 10806528645,
+                "lat": 35.7117112,
+                "lon": 139.7946169,
+                "tags": {
+                    "name": "日本浮世絵博物館　東京",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "node",
+                "id": 11503128602,
+                "lat": 35.711573,
+                "lon": 139.7917829,
+                "tags": {
+                    "addr:block_number": "8",
+                    "addr:city": "台東区",
+                    "addr:housenumber": "13",
+                    "addr:neighbourhood": "西浅草一丁目",
+                    "addr:postcode": "111-0035",
+                    "addr:province": "東京都",
+                    "museum": "history",
+                    "name": "サムライ忍者体験ミュージアム東京",
+                    "name:en": "SAMURAI NINJA MUSEUM TOKYO With Experience",
+                    "operator": "MAIKO",
+                    "operator:type": "business",
+                    "tourism": "museum",
+                    "website": "https://mai-ko.com/jp/samurai/tokyo.html"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420765070,
+                "lat": 35.708056,
+                "lon": 139.795315,
+                "tags": {
+                    "addr:block_number": "8",
+                    "addr:city": "台東区",
+                    "addr:city:en": "Taito-ku",
+                    "addr:housenumber": "10",
+                    "addr:neighbourhood": "駒形一丁目",
+                    "addr:postcode": "111-0043",
+                    "addr:province": "東京都",
+                    "addr:province:en": "Tokyo",
+                    "name": "エース世界のカバン博物館",
+                    "name:en": "World Bags & Luggage Museum",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年　国土交通省",
+                    "opening_hours": "10:00-16:30",
+                    "operator": "ACE",
+                    "phone": "+81 3-3847-5680",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://www.ace.jp/museum/",
+                    "wikidata": "Q104698116"
+                }
+            },
+            {
+                "type": "node",
+                "id": 3835272257,
+                "lat": 35.716384,
+                "lon": 139.793803,
+                "tags": {
+                    "addr:housenumber": "台東区浅草２－２２－１３",
+                    "museum": "craft",
+                    "name": "江戸下町伝統工芸館",
+                    "name:en": "Edo Taitō Traditional Crafts Museum",
+                    "name:ja": "江戸下町伝統工芸館",
+                    "opening_hours": "10:00-20:00",
+                    "source": "survey",
+                    "tourism": "museum",
+                    "website": "https://craft.city.taito.lg.jp/",
+                    "wheelchair": "yes",
+                    "wheelchair:description": "入口は１，２ｃｍの段差はあるが、１人での入館可能。２階の展示を見る際は、いす式階段昇降機を使用する。 トイレは１階にあるが、受付で開錠してもらった後使用可能。扉はスライドドアになっている（ボタン開閉ではない。）照明のスイッチが手動式で入口右上のやや上の壁に設置されているため車椅子の場合、押しにくい場合がある。（20151114）"
+                }
+            },
+            {
+                "type": "node",
+                "id": 7627418373,
+                "lat": 35.7174338,
+                "lon": 139.7896284,
+                "tags": {
+                    "museum": "person;literature",
+                    "name": "池波正太郎記念文庫",
+                    "name:en": "Ikenami Shōtarō Memorial Museum",
+                    "tourism": "museum",
+                    "website": "https://library.city.taito.lg.jp/ikenami/"
+                }
+            },
+            {
+                "type": "node",
+                "id": 2528816507,
+                "lat": 35.7088736,
+                "lon": 139.8021508,
+                "tags": {
+                    "name": "ちいさな硝子の本の博物館",
+                    "name:en": "Little Museum of Glass Books",
+                    "name:ja-Latn": "Chīsana garasu no hon no hakubutsukan",
+                    "tourism": "museum",
+                    "website": "https://chiisanaglass.jp"
+                }
+            },
+            {
+                "type": "node",
+                "id": 7656892588,
+                "lat": 35.7104473,
+                "lon": 139.8077044,
+                "tags": {
+                    "name": "屏風博物館",
+                    "name:en": "Museum of Byōbu",
+                    "name:ja": "屏風博物館",
+                    "name:ja-Latn": "Byōbu Hakubutsukan",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1420771103,
+                "lat": 35.7247153,
+                "lon": 139.7764529,
+                "tags": {
+                    "museum": "art",
+                    "name": "台東区立書道博物館",
+                    "name:en": "Calligraphy Museum",
+                    "name:fr": "Musée de la Calligraphie",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://www.taitogeibun.net/shodou/",
+                    "wikidata": "Q11411955"
+                }
+            },
+            {
+                "type": "node",
+                "id": 13763336521,
+                "lat": 35.7244593,
+                "lon": 139.7764403,
+                "tags": {
+                    "museum": "literature;person",
+                    "name": "子規庵に",
+                    "name:en": "Shikian",
+                    "person": "Shiki Masaoka",
+                    "tourism": "museum",
+                    "website": "https://shikian.or.jp/"
+                }
+            },
+            {
+                "type": "way",
+                "id": 139972313,
+                "center": {
+                    "lat": 35.6621944,
+                    "lon": 139.7173527
+                },
+                "tags": {
+                    "addr:block_number": "5",
+                    "addr:city": "港区",
+                    "addr:housenumber": "1",
+                    "addr:neighbourhood": "6",
+                    "addr:province": "東京都",
+                    "addr:quarter": "南青山",
+                    "architect": "隈研吾建築都市設計事務所",
+                    "architect:wikidata": "Q725462",
+                    "building": "museum",
+                    "building:levels": "2",
+                    "building:levels:underground": "1",
+                    "charge:adult": "1600 JPY",
+                    "charge:child": "1300 JPY",
+                    "contact:facebook": "NezuMuseum",
+                    "contact:fax": "+81 3 3400 2436",
+                    "contact:instagram": "nezumuseum",
+                    "contact:phone": "+81 3 3400 2536",
+                    "contact:tripadvisor": "324417",
+                    "contact:twitter": "nezumuseum",
+                    "contact:website": "http://www.nezu-muse.or.jp/",
+                    "contact:youtube": "UC0ioFysDHf0pxo0tUdiyS8A",
+                    "height": "14.26",
+                    "museum": "art",
+                    "name": "根津美術館",
+                    "name:en": "Nezu Museum",
+                    "name:fr": "Musée Nezu",
+                    "name:ja-Hira": "ねづ びじゅつかん",
+                    "name:ja-Latn": "Nezu-bijutsukan",
+                    "opening_hours": "Mo off; Tu-Su 10:00-17:00",
+                    "roof:orientation": "along",
+                    "roof:shape": "gabled",
+                    "source": "Bing,2007-04",
+                    "start_date": "2006",
+                    "tourism": "museum",
+                    "wheelchair": "yes",
+                    "wikidata": "Q1047097",
+                    "wikimedia_commons": "Category:Nezu Museum",
+                    "wikipedia": "ja:根津美術館"
+                }
+            },
+            {
+                "type": "way",
+                "id": 103425086,
+                "center": {
+                    "lat": 35.6650234,
+                    "lon": 139.7264998
+                },
+                "tags": {
+                    "name": "国立新美術館",
+                    "name:en": "The National Art Center, Tokyo",
+                    "name:es": "Centro nacional de arte en Tokio",
+                    "name:ja": "国立新美術館",
+                    "name:ja-Hira": "しんこくりつびじゅつかん",
+                    "name:ko": "국립신미술관",
+                    "name:zh": "國立新美術館",
+                    "tourism": "museum",
+                    "website": "https://www.nact.jp/",
+                    "wikidata": "Q1362638",
+                    "wikimedia_commons": "Category:National Art Center, Tokyo",
+                    "wikipedia": "ja:国立新美術館"
+                }
+            },
+            {
+                "type": "way",
+                "id": 136048451,
+                "center": {
+                    "lat": 35.665188,
+                    "lon": 139.726364
+                },
+                "tags": {
+                    "addr:block_number": "22",
+                    "addr:housenumber": "2",
+                    "addr:neighbourhood": "六本木七丁目",
+                    "addr:postcode": "106-8558",
+                    "addr:province": "東京都",
+                    "addr:suburb": "港区",
+                    "air_conditioning": "yes",
+                    "architect": "黒川紀章",
+                    "architect:wikidata": "Q358502",
+                    "building": "museum",
+                    "building:levels": "7",
+                    "contact:facebook": "nact.jp",
+                    "contact:fax": "+81 3-3405-2531",
+                    "contact:instagram": "thenationalartcentertokyo",
+                    "contact:phone": "+81 3 6812 9900",
+                    "contact:tripadvisor": "1170018",
+                    "contact:twitter": "NACT_PR",
+                    "contact:website": "https://www.nact.jp/",
+                    "contact:youtube": "UCmpKQQ64fhGqI_zRmLDXzig",
+                    "fee": "no",
+                    "museum": "art",
+                    "name": "国立新美術館",
+                    "name:en": "National Art Center Tokyo",
+                    "name:es": "Centro nacional de arte en Tokio",
+                    "name:fr": "Centre national des Arts de Tokyo",
+                    "name:ja-Hira": "しんこくりつびじゅつかん",
+                    "name:ja-Latn": "Kokuritsu-shin-bijutsukan",
+                    "name:ko": "국립신미술관",
+                    "name:zh": "國立新美術館",
+                    "official_name:en": "The National Art Center Tokyo",
+                    "opening_hours": "Su-Mo,We-Th 10:00-18:00; Fr-Sa 10:00-20:00; Tu off; Dec 26-Jan 10 off",
+                    "operator": "国立美術館",
+                    "operator:wikidata": "Q24074189",
+                    "roof:shape": "flat",
+                    "short_name": "NACT",
+                    "start_date": "2007-01-21",
+                    "tourism": "museum",
+                    "wheelchair": "yes",
+                    "wikidata": "Q1362638",
+                    "wikimedia_commons": "Category:National Art Center, Tokyo",
+                    "wikipedia": "ja:国立新美術館"
+                }
+            },
+            {
+                "type": "way",
+                "id": 109503139,
+                "center": {
+                    "lat": 35.6674408,
+                    "lon": 139.7304041
+                },
+                "tags": {
+                    "architect": "安藤忠雄",
+                    "architect:wikidata": "Q208220",
+                    "building": "public",
+                    "building:levels": "1",
+                    "contact:email": "info@2121designsight.jp",
+                    "contact:facebook": "2121DESIGNSIGHT",
+                    "contact:flickr": "78801951@N00",
+                    "contact:instagram": "2121designsight",
+                    "contact:phone": "+81 3-3475-2121",
+                    "contact:tripadvisor": "1879897",
+                    "contact:twitter": "2121DESIGNSIGHT",
+                    "contact:website": "http://www.2121designsight.jp/",
+                    "fee": "yes",
+                    "museum": "art",
+                    "name": "21_21 Design Sight",
+                    "name:en": "21_21 Design Sight",
+                    "name:fr": "21_21 Design Sight",
+                    "name:ja-Hira": "トゥーワン・トゥーワン・デザインサイト",
+                    "name:ja-Latn": "tū wan tū wan dezain saito",
+                    "opening_hours": "We-Mo 10:00-19:00; Tu off; Dec 27-Jan 03 off",
+                    "source": "image,2012-10-12;Bing",
+                    "start_date": "2007-03-30",
+                    "tourism": "museum",
+                    "wikidata": "Q863044",
+                    "wikimedia_commons": "Category:21 21 Design Sight",
+                    "wikipedia": "ja:21 21 DESIGN SIGHT"
+                }
+            },
+            {
+                "type": "way",
+                "id": 92676026,
+                "center": {
+                    "lat": 35.6612437,
+                    "lon": 139.738862
+                },
+                "tags": {
+                    "building": "yes",
+                    "museum": "history",
+                    "name": "外交史料館別館",
+                    "source": "Bing, 2007-04",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "way",
+                "id": 209147930,
+                "center": {
+                    "lat": 35.6592183,
+                    "lon": 139.7385643
+                },
+                "tags": {
+                    "building": "yes",
+                    "name": "ブリヂストン美術館永坂分室",
+                    "name:en": "Bridgestone Museum",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "way",
+                "id": 107771604,
+                "center": {
+                    "lat": 35.6517147,
+                    "lon": 139.7919941
+                },
+                "tags": {
+                    "museum": "science",
+                    "name": "東京ガス「がすてなーに ガスの科学館」",
+                    "name:en": "Gas science museum",
+                    "name:es": "Gasutenani",
+                    "name:fr": "Musée du gaz",
+                    "official_name": "がすてなーに ガスの科学館",
+                    "official_name:en": "Gas Science Museum",
+                    "official_name:es": "Museo científico del gas",
+                    "opening_hours": "Tu-Su 09:30-17:00",
+                    "source": "Bing",
+                    "toilets:wheelchair": "yes",
+                    "tourism": "museum",
+                    "website": "https://www.gas-kagakukan.com/",
+                    "wheelchair": "yes",
+                    "wikidata": "Q11295937",
+                    "wikimedia_commons": "Category:Gasutenani",
+                    "wikipedia": "ja:ガスの科学館"
+                }
+            },
+            {
+                "type": "way",
+                "id": 174402705,
+                "center": {
+                    "lat": 35.6565291,
+                    "lon": 139.8115672
+                },
+                "tags": {
+                    "addr:block_number": "3",
+                    "addr:city": "江東区",
+                    "addr:housenumber": "2",
+                    "addr:neighbourhood": "1",
+                    "addr:postcode": "1350052",
+                    "addr:province": "東京都",
+                    "addr:quarter": "潮見",
+                    "building": "public",
+                    "building:levels": "2",
+                    "description": "東京スイソミルは、環境先進都市・東京都が目指す水素社会のショーケース。目に見えない水素のこと、水素社会の将来像を、見て触って体験しながら楽しく学べる総合的な学習施設です。",
+                    "fee": "no",
+                    "museum": "science",
+                    "name": "水素情報館 東京スイソミル",
+                    "name:en": "Tokyo Suiso-miru",
+                    "name:ja": "水素情報館 東京スイソミル",
+                    "name:zh-Hans": "东京氢科技体验馆",
+                    "name:zh-Hant": "東京氫科技體驗館",
+                    "opening_hours": "Tu-Su 09:00-17:00; Mo off; Dec 28-31 off; Jan 1-4 off",
+                    "operator": "東京都環境公社",
+                    "roof:levels": "0",
+                    "source": "Bing;Website",
+                    "toilets": "yes",
+                    "toilets:changing_table": "yes",
+                    "toilets:wheelchair": "yes",
+                    "tourism": "museum",
+                    "website": "https://www.tokyo-suisomiru.jp/",
+                    "wheelchair": "yes"
+                }
+            },
+            {
+                "type": "way",
+                "id": 94104811,
+                "center": {
+                    "lat": 35.6787743,
+                    "lon": 139.7175979
+                },
+                "tags": {
+                    "addr:housenumber": "新宿区霞ヶ丘1－1",
+                    "addr:postcode": "160-8484",
+                    "building": "yes",
+                    "height": "31.7",
+                    "heritage": "2",
+                    "heritage:note": "重要文化財",
+                    "layer": "1",
+                    "name": "明治神宮聖徳記念絵画館",
+                    "name:en": "Meiji Memorial Picture Gallery",
+                    "name:es": "Galería de arte conmemorativo de Meiji",
+                    "name:ja-Hira": "めいじじんぐうせいとくきねんかいがかん",
+                    "name:ja_rm": "Seitoku Kinen Kaigakan",
+                    "name:ko": "메이지진구 성덕기념 박물관",
+                    "name:pt": "Memorial Meiji Galeria de Fotos",
+                    "name:ru": "Мемориальная художественная галерея Мэйдзи",
+                    "name:zh": "圣德纪念绘画馆",
+                    "opening_hours": "Mo-Su 09:00-17:00",
+                    "source": "Bing",
+                    "tourism": "museum",
+                    "website": "https://www.meijijingugaien.jp/art-culture/seitoku-gallery/",
+                    "wikidata": "Q5153794",
+                    "wikimedia_commons": "Category:Meiji Memorial Picture Gallery",
+                    "wikipedia": "ja:聖徳記念絵画館"
+                }
+            },
+            {
+                "type": "way",
+                "id": 1322002409,
+                "center": {
+                    "lat": 35.6860641,
+                    "lon": 139.7127848
+                },
+                "tags": {
+                    "building": "museum",
+                    "name": "新宿御苑ミュージアム",
+                    "name:en": "Shinjuku Gyoen Museum",
+                    "name:fr": "Musée du jardin national de Shinjuku",
+                    "name:ja-Hira": "しんじゅく ぎょえん みミュージアム",
+                    "name:ja-Latn": "Shinjuku-goen myūjiamu",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "way",
+                "id": 140099041,
+                "center": {
+                    "lat": 35.678347,
+                    "lon": 139.7470123
+                },
+                "tags": {
+                    "building": "yes",
+                    "name": "憲政記念館",
+                    "name:en": "Parliamentary Museum",
+                    "name:es": "Museo del Parlamento",
+                    "name:ja": "憲政記念館",
+                    "name:ko": "헌정기념관",
+                    "name:ru": "Музей памяти Конституционного правительства",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年　国土交通省",
+                    "opening_hours": "Mo-Su 09:30-17:00",
+                    "phone": "0335811651",
+                    "source": "Bing,2007-04;KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "http://www.shugiin.go.jp",
+                    "wikidata": "Q11495238",
+                    "wikimedia_commons": "Category:Kensei Kinenkan"
+                }
+            },
+            {
+                "type": "way",
+                "id": 306116935,
+                "center": {
+                    "lat": 35.6784664,
+                    "lon": 139.7631636
+                },
+                "tags": {
+                    "alt_name:fr": "Musée d'art Mitsubishi Ichigokan",
+                    "building": "public",
+                    "building:architecture": "queen_anne",
+                    "building:architecture:wikidata": "Q529819",
+                    "building:levels": "3",
+                    "building:wikidata": "Q11357064",
+                    "charge:adult": "2300 JPY",
+                    "contact:instagram": "mitsubishi_ichigokan_museum",
+                    "contact:tripadvisor": "1604472",
+                    "contact:twitter": "ichigokan_PR",
+                    "contact:website": "https://mimt.jp/",
+                    "contact:youtube": "UCKrLJ7bZGrdd2KjF0RjJ53Q",
+                    "description:fr": "Anciens bureaux de la société Mitsubishi",
+                    "fee": "yes",
+                    "museum": "art",
+                    "name": "三菱一号館",
+                    "name:en": "Mitsubishi Ichigokan Museum",
+                    "name:es": "Museo Mitsubishi Ichigokan",
+                    "name:etymology:wikidata": "Q11357064",
+                    "name:fr": "Musée Mitsubishi Ichigokan",
+                    "name:ja-Hira": "みつびしいちごうかんびじゅつかん",
+                    "name:ja-Latn": "Mitsubishi Ichigōkan Bijutsukan",
+                    "name:zh": "三菱一號館",
+                    "opening_hours": "Sa-Su, Tu-Th 10:00-18:00; Fr,We[2] 10:00-20:00; Mo off",
+                    "roof:levels": "1",
+                    "roof:orientation": "along",
+                    "roof:shape": "gabled",
+                    "start_date": "2010-04-06",
+                    "start_date:building": "1894-06-30",
+                    "tourism": "museum",
+                    "wheelchair": "no",
+                    "wikidata": "Q3815458",
+                    "wikimedia_commons": "Category:Mitsubishi Ichigokan Museum",
+                    "wikipedia": "ja:三菱一号館美術館"
+                }
+            },
+            {
+                "type": "way",
+                "id": 117928766,
+                "center": {
+                    "lat": 35.6753464,
+                    "lon": 139.7695745
+                },
+                "tags": {
+                    "building": "yes",
+                    "building:levels": "9",
+                    "name": "LIXILギャラリー",
+                    "name:en": "LIXIL Gallery",
+                    "tourism": "museum",
+                    "website": "https://livingculture.lixil.com/gallery/",
+                    "wheelchair": "limited"
+                }
+            },
+            {
+                "type": "way",
+                "id": 187797342,
+                "center": {
+                    "lat": 35.6751233,
+                    "lon": 139.769582
+                },
+                "tags": {
+                    "addr:postcode": "100-8929",
+                    "addr:province": "東京都",
+                    "building": "yes",
+                    "museum": "police;history",
+                    "name": "警察博物館",
+                    "name:en": "Police Museum",
+                    "name:ja": "警察博物館",
+                    "name:ja-Hira": "けいさつはくぶつかん",
+                    "phone": "+81335814321",
+                    "tourism": "museum",
+                    "website": "https://www.keishicho.metro.tokyo.lg.jp/about_mpd/welcome/welcome/museum_tour.html",
+                    "wheelchair": "limited",
+                    "wikidata": "Q11632332",
+                    "wikimedia_commons": "Category:Police Museum (Tokyo)",
+                    "wikipedia": "ja:警察博物館"
+                }
+            },
+            {
+                "type": "way",
+                "id": 145501856,
+                "center": {
+                    "lat": 35.6865373,
+                    "lon": 139.7589461
+                },
+                "tags": {
+                    "building": "public",
+                    "check_date": "2026-02-21",
+                    "fee": "yes",
+                    "landuse": "construction",
+                    "museum": "art",
+                    "name": "宮内庁 三の丸尚蔵館",
+                    "name:en": "The Museum of the Imperial Collections, Sannomaru Shozokan",
+                    "name:es": "Museo de colecciones imperiales",
+                    "name:fr": "Musée des collections impériales",
+                    "name:ja-Hira": "さんのまるしょうぞうかん",
+                    "name:ja-Latn": "Kunaichou Sannomaru-Shōzōkan",
+                    "name:ko": "궁내청 산노마루 상장관",
+                    "note": "Museum will open at the end of 2026",
+                    "opening_hours": "Tu-Th, Su 09:30-16:30; Fr-Sa 09:30-19:30",
+                    "source": "Bing",
+                    "tourism": "museum",
+                    "website": "https://shozokan.nich.go.jp/",
+                    "wheelchair": "yes",
+                    "wikidata": "Q3076188",
+                    "wikimedia_commons": "Category:Museum of the Imperial Collections",
+                    "wikipedia": "ja:三の丸尚蔵館"
+                }
+            },
+            {
+                "type": "way",
+                "id": 43898324,
+                "center": {
+                    "lat": 35.6915625,
+                    "lon": 139.7530799
+                },
+                "tags": {
+                    "addr:block_number": "2",
+                    "addr:city": "千代田区",
+                    "addr:county": "東京都",
+                    "addr:housenumber": "1",
+                    "addr:neighbourhood": "北の丸公園",
+                    "addr:postcode": "102-0091",
+                    "architect": "松下清夫; 平山嵩",
+                    "architect:wikidata": "Q79018012;Q11482510",
+                    "building": "public",
+                    "contact:facebook": "ScienceMuseum.jp",
+                    "contact:instagram": "sciencemuseum.jp",
+                    "contact:tripadvisor": "1637721",
+                    "contact:twitter": "JSF_SMT",
+                    "contact:website": "https://www.jsf.or.jp/",
+                    "contact:youtube": "UC49I9-_5zsYNO4ue1lTI-OQ",
+                    "name": "科学技術館",
+                    "name:en": "Science Museum",
+                    "name:es": "Museo de Ciencia",
+                    "name:fr": "Musée des sciences",
+                    "name:ja-Hira": "かがくぎじゅつかん",
+                    "name:ja-Latn": "Kagakugijutsu-kan",
+                    "name:ko": "과학박물관",
+                    "name:zh": "科学技术馆",
+                    "name:zh-Hant": "科學技術館",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "source": "NRPB of MLIT Japan;KSJ2",
+                    "source:ja": "国土画像情報（オルソ化空中写真）国土計画局",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "start_date": "1964-04-12",
+                    "tourism": "museum",
+                    "wikidata": "Q10855424",
+                    "wikimedia_commons": "Category:Science Museum (Tokyo)",
+                    "wikipedia": "ja:科学技術館"
+                }
+            },
+            {
+                "type": "way",
+                "id": 43934324,
+                "center": {
+                    "lat": 35.6904946,
+                    "lon": 139.7546203
+                },
+                "tags": {
+                    "addr:city": "千代田区",
+                    "addr:housenumber": "3-1",
+                    "addr:neighbourhood": "1丁目",
+                    "addr:postcode": "102-8322",
+                    "addr:province": "東京都",
+                    "building": "yes",
+                    "fee": "yes",
+                    "museum": "art",
+                    "name": "東京国立近代美術館",
+                    "name:en": "National Museum of Modern Art, Tokyo",
+                    "name:es": "Museo Nacional de Arte Moderno de Tokio",
+                    "name:ja": "東京国立近代美術館",
+                    "name:ru": "Национальный музей современного искусства (Токио)",
+                    "name:zh": "東京國立近代美術館",
+                    "official_name:en": "The National Museum of Modern Art, Tokyo",
+                    "opening_hours": "Sa-Th 10:00-17:00; Fr 10:00-20:00",
+                    "phone": "+81357778600",
+                    "short_name": "MOMAT",
+                    "source": "Bing;NRPB of MLIT Japan",
+                    "source:ja": "国土画像情報（オルソ化空中写真）国土計画局",
+                    "tourism": "museum",
+                    "website": "https://www.momat.go.jp/",
+                    "website:en": "https://www.momat.go.jp/en",
+                    "wikidata": "Q1359908",
+                    "wikimedia_commons": "Category:National Museum of Modern Art, Tokyo",
+                    "wikipedia": "ja:東京国立近代美術館"
+                }
+            },
+            {
+                "type": "way",
+                "id": 1189531504,
+                "center": {
+                    "lat": 35.6960925,
+                    "lon": 139.7317292
+                },
+                "tags": {
+                    "alt_name:en": "Ichigaya Forest Book and Type Museum",
+                    "building": "yes",
+                    "fixme": "please confirm that museum is on this spot, thanks",
+                    "museum": "printing",
+                    "name": "本と活字館",
+                    "name:en": "Ichigaya Letterpress Factory",
+                    "tourism": "museum",
+                    "website": "https://ichigaya-letterpress.jp/"
+                }
+            },
+            {
+                "type": "way",
+                "id": 168230264,
+                "center": {
+                    "lat": 35.7039421,
+                    "lon": 139.725453
+                },
+                "tags": {
+                    "building": "yes",
+                    "museum": "person;literature",
+                    "name": "漱石山房記念館",
+                    "name:en": "Natsume Soseki Memorial Museum",
+                    "name:ja_rm": "Sōsekisanbō kinen-kan",
+                    "official_name:en": "Shinjuku City Soseki Sanbo Memorial Museum",
+                    "source": "Bing",
+                    "tourism": "museum",
+                    "website": "https://soseki-museum.jp",
+                    "wikidata": "Q24862403",
+                    "wikimedia_commons": "Category:Natsume Soseki Memorial Museum",
+                    "wikipedia": "ja:新宿区立漱石山房記念館"
+                }
+            },
+            {
+                "type": "way",
+                "id": 144379628,
+                "center": {
+                    "lat": 35.6953152,
+                    "lon": 139.7433692
+                },
+                "tags": {
+                    "addr:postcode": "102-8246",
+                    "building": "museum",
+                    "building:levels": "2",
+                    "contact:tripadvisor": "9974357",
+                    "contact:website": "https://www.yasukuni.or.jp/yusyukan/",
+                    "museum": "military",
+                    "name": "遊就館",
+                    "name:en": "Yūshūkan Japanese military & war museum",
+                    "name:es": "Yūshūkan",
+                    "name:fr": "Yūshūkan",
+                    "name:zh": "游就馆",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "roof:shape": "hipped",
+                    "source": "Bing,2007-04;KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "start_date": "1882-02-25",
+                    "tourism": "museum",
+                    "wikidata": "Q2855971",
+                    "wikimedia_commons": "Category:Yūshūkan",
+                    "wikipedia": "ja:遊就館"
+                }
+            },
+            {
+                "type": "way",
+                "id": 459173235,
+                "center": {
+                    "lat": 35.7191959,
+                    "lon": 139.7469713
+                },
+                "tags": {
+                    "building": "museum",
+                    "name": "柴田記念館",
+                    "name:en": "Keita Shibata Memorial Hall",
+                    "name:fr": "Musée commémoratif de Keita Shibata",
+                    "name:ja-Hira": "しばた きねんかん",
+                    "name:ja-Latn": "Shibata kinen-kan",
+                    "opening_hours": "Mo-Su 10:30-16:00; Th off",
+                    "operator": "Tu-Sa 10:30-16:30",
+                    "source:geometry": "GSImaps/std",
+                    "start_date": "1919",
+                    "subject": "柴田桂太",
+                    "subject:wikidata": "Q6458446",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "way",
+                "id": 230292042,
+                "center": {
+                    "lat": 35.6992239,
+                    "lon": 139.7581996
+                },
+                "tags": {
+                    "building": "yes",
+                    "source": "Bing",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "way",
+                "id": 91234941,
+                "center": {
+                    "lat": 35.7022569,
+                    "lon": 139.7678448
+                },
+                "tags": {
+                    "alt_name:en": "The Kanda Myoujin Shrine Museum",
+                    "building": "museum",
+                    "name": "神田明神資料館",
+                    "name:en": "Kanda Myojin Museum",
+                    "name:fr": "Musée de Kanda-myōjin",
+                    "name:ja-Hira": "かんだ みょうじん しりょうかん",
+                    "name:ja-Latn": "Kanda myōjin shiryōkan",
+                    "tourism": "museum",
+                    "website": "https://www.kandamyoujin.or.jp/museum/"
+                }
+            },
+            {
+                "type": "way",
+                "id": 137625432,
+                "center": {
+                    "lat": 35.7085286,
+                    "lon": 139.7612259
+                },
+                "tags": {
+                    "building": "yes",
+                    "name": "東京大学総合研究博物館",
+                    "name:en": "The University Museum, the University of Tokyo",
+                    "tourism": "museum",
+                    "website": "https://www.um.u-tokyo.ac.jp/",
+                    "wikidata": "Q15524927",
+                    "wikimedia_commons": "Category:The University Museum, The University of Tokyo",
+                    "wikipedia": "ja:東京大学総合研究博物館"
+                }
+            },
+            {
+                "type": "way",
+                "id": 511585927,
+                "center": {
+                    "lat": 35.7121031,
+                    "lon": 139.7682269
+                },
+                "tags": {
+                    "addr:block_number": "4",
+                    "addr:housenumber": "24",
+                    "addr:neighbourhood": "1丁目",
+                    "addr:quarter": "池之端",
+                    "contact:phone": "+81 3 3821 1017",
+                    "museum": "art;person",
+                    "name": "横山大観記念館",
+                    "name:en": "Yokoyama Taikan Memorial Hall",
+                    "name:es": "Yokoyama Taikan Memorial Hall",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://taikan.tokyo/",
+                    "wikidata": "Q30925115"
+                }
+            },
+            {
+                "type": "way",
+                "id": 145344198,
+                "center": {
+                    "lat": 35.7102385,
+                    "lon": 139.7727469
+                },
+                "tags": {
+                    "addr:block_number": "2",
+                    "addr:city": "台東区",
+                    "addr:country": "JP",
+                    "addr:housenumber": "1",
+                    "addr:neighbourhood": "上野公園",
+                    "addr:postcode": "110-0007",
+                    "addr:province": "東京都",
+                    "building": "museum",
+                    "building:levels": "3",
+                    "fax": "+81 3-3823-3870",
+                    "fee": "yes",
+                    "museum": "local;history",
+                    "name": "したまちミュージアム",
+                    "name:en": "Shitamachi Museum",
+                    "name:es": "Museo de Shitamachi",
+                    "name:fr": "Musée Shitamachi",
+                    "name:ja-Hira": "したまちミュージアム",
+                    "name:ja_rm": "Shitamachi Museum",
+                    "name:ru": "Этнографический музей Ситамати",
+                    "old_name:ja": "下町風俗資料館",
+                    "old_name:ja-Hira": "したまちふうぞくしりょうかん",
+                    "old_name:ja_rm": "Shitamachi Fūzoku Shiryōkan",
+                    "phone": "+81 3-3823-7451",
+                    "tourism": "museum",
+                    "website": "https://www.taitogeibun.net/shitamachi/",
+                    "wheelchair": "yes",
+                    "wikidata": "Q3915464",
+                    "wikipedia": "ja:下町風俗資料館"
+                }
+            },
+            {
+                "type": "way",
+                "id": 33439660,
+                "center": {
+                    "lat": 35.7190658,
+                    "lon": 139.7758162
+                },
+                "tags": {
+                    "addr:block_number": "13",
+                    "addr:city": "台東区",
+                    "addr:housenumber": "9",
+                    "addr:neighbourhood": "上野公園",
+                    "addr:postcode": "110-8712",
+                    "addr:province": "東京都",
+                    "check_date": "2026-04-10",
+                    "contact:facebook": "TokyoNationalMuseum",
+                    "contact:instagram": "tnm_pr",
+                    "contact:tripadvisor": "320638",
+                    "contact:twitter": "TNM_PR",
+                    "contact:website": "https://www.tnm.jp/",
+                    "contact:youtube": "UCi4kijTbqPOh1LPN2f0eQYg",
+                    "fee": "yes",
+                    "museum": "art",
+                    "name": "東京国立博物館",
+                    "name:de": "Nationalmuseum Tokio",
+                    "name:en": "Tokyo National Museum",
+                    "name:es": "Museo Nacional de Tokio",
+                    "name:et": "Tōkyō Rahvusmuuseum",
+                    "name:fr": "Musée national de Tokyo",
+                    "name:it": "Museo Nazionale di Tokyo",
+                    "name:ja-Hira": "とうきょうこくりつはくぶつかん",
+                    "name:ja-Latn": "Tōkyō Kokuritsu-hakubutsukan",
+                    "name:ko": "도쿄국립박물관",
+                    "name:ru": "Токийский национальный музей",
+                    "opening_hours": "Mo-Su 09:30-17:00",
+                    "operator": "国立文化財機構",
+                    "operator:wikidata": "Q11421271",
+                    "operator:wikipedia": "ja:国立文化財機構",
+                    "phone": "+81 3-3822-1111",
+                    "short_name": "TNM;東博",
+                    "short_name:ja-Latn": "Tōhaku",
+                    "start_date": "1872-04-17",
+                    "tourism": "museum",
+                    "website": "https://www.tnm.jp/",
+                    "wikidata": "Q653433",
+                    "wikimedia_commons": "Category:Tokyo National Museum",
+                    "wikipedia": "ja:東京国立博物館"
+                }
+            },
+            {
+                "type": "way",
+                "id": 145344185,
+                "center": {
+                    "lat": 35.7186128,
+                    "lon": 139.7752405
+                },
+                "tags": {
+                    "building": "public",
+                    "check_date": "2026-04-10",
+                    "check_date:opening_hours": "2026-04-10",
+                    "name": "表慶館",
+                    "name:en": "Hyokeikan",
+                    "name:es": "Hyokeikan",
+                    "name:fr": "Hyōkeikan",
+                    "name:ja-Hira": "ひょうけいかん",
+                    "name:ja-Latn": "Hyōkei-kan",
+                    "name:ko": "효케이관",
+                    "opening_hours": "Mo-Su 09:30-17:00",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "way",
+                "id": 203960903,
+                "center": {
+                    "lat": 35.7154106,
+                    "lon": 139.775852
+                },
+                "tags": {
+                    "addr:block_number": "7",
+                    "addr:neighbourhood": "7",
+                    "addr:postcode": "110-0007",
+                    "addr:province": "東京都",
+                    "addr:quarter": "上野公園",
+                    "addr:suburb": "台東区",
+                    "architect": "Le Corbusier; 前川國男",
+                    "architect:ja-Latn": "Le Corbusier;Kunio Maekawa",
+                    "architect:wikidata": "Q4724;Q129938",
+                    "charge:adult": "500 JPY",
+                    "charge:child": "0 JPY",
+                    "charge:disabled": "0 JPY",
+                    "charge:student": "250 JPY",
+                    "contact:email": "info@nmwa.gov.jp",
+                    "contact:facebook": "NationalMuseumofWesternArt",
+                    "contact:fax": "+81 3-3828-5135",
+                    "contact:tripadvisor": "479268",
+                    "contact:twitter": "NMWATokyo",
+                    "contact:website": "https://www.nmwa.go.jp/",
+                    "contact:youtube": "UCFtBgJ1ArMLvcpQeT2vNupQ",
+                    "fee": "yes",
+                    "museum": "art",
+                    "name": "国立西洋美術館",
+                    "name:de": "Nationalmuseum für westliche Kunst",
+                    "name:en": "The National Museum of Western Art",
+                    "name:es": "Museo nacional de arte occidental",
+                    "name:fr": "Musée national de l'art occidental",
+                    "name:id": "Museum Nasional Seni Barat",
+                    "name:it": "Museo nazionale d'arte occidentale",
+                    "name:ja": "国立西洋美術館",
+                    "name:ja-Hira": "こくりつせいようびじゅつかん",
+                    "name:ja-Latn": "Kokuritsu seiyō bijutsukan",
+                    "name:ko": "국립서양미술관",
+                    "name:ru": "Национальный музей западного искусства",
+                    "name:zh": "國立西洋美術館",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "opening_hours": "Su,Tu-Th 09:30-17:30;Fr-Sa 09:30-20:00;Mo off;Dec 28-Jan 01 off",
+                    "operator": "国立美術館",
+                    "operator:wikidata": "Q24074189",
+                    "payment:american_express": "yes",
+                    "payment:diners_club": "yes",
+                    "payment:discover_card": "yes",
+                    "payment:jcb": "yes",
+                    "payment:mastercard": "yes",
+                    "payment:suica": "yes",
+                    "payment:uc_card": "yes",
+                    "payment:unionpay": "yes",
+                    "payment:visa": "yes",
+                    "short_name": "西美",
+                    "short_name:en": "NMWA",
+                    "short_name:ja-Hira": "せいび",
+                    "short_name:ja-Latn": "Seibi",
+                    "source": "KSJ2;Bing",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "start_date": "1959-06-10",
+                    "tourism": "museum",
+                    "wheelchair": "yes",
+                    "wikidata": "Q1362629",
+                    "wikimedia_commons": "Category:National Museum of Western Art, Tokyo",
+                    "wikipedia": "ja:国立西洋美術館"
+                }
+            },
+            {
+                "type": "way",
+                "id": 33440458,
+                "center": {
+                    "lat": 35.7171071,
+                    "lon": 139.7731771
+                },
+                "tags": {
+                    "contact:facebook": "TokyoMetropolitanArtMuseum",
+                    "contact:instagram": "tokyometropolitanartmuseum",
+                    "contact:twitter": "tobikan_en",
+                    "contact:youtube": "tokyometropolitanartmuseum7280",
+                    "fax": "+81 3-3823-6920",
+                    "museum": "art",
+                    "name": "東京都美術館",
+                    "name:en": "Tokyo Metropolitan Art Museum",
+                    "name:es": "Museo Metropolitano de Tokyo",
+                    "name:fr": "Musée d'art de la ville de Tokyo",
+                    "name:ja": "東京都美術館",
+                    "name:ja-Hira": "とうきょうとびじゅつかん",
+                    "name:ja_rm": "Tōkyōto Bijutsukan",
+                    "name:ko": "도쿄도미술관",
+                    "name:ru": "Токийский художественный музей",
+                    "opening_hours": "09:30-17:30",
+                    "phone": "+81 3-3823-6921",
+                    "tourism": "museum",
+                    "website": "https://www.tobikan.jp/",
+                    "wheelchair": "yes",
+                    "wikidata": "Q864957",
+                    "wikipedia": "ja:東京都美術館"
+                }
+            },
+            {
+                "type": "way",
+                "id": 145344062,
+                "center": {
+                    "lat": 35.7186784,
+                    "lon": 139.7740942
+                },
+                "tags": {
+                    "building": "public",
+                    "building:levels": "1",
+                    "check_date": "2026-04-10",
+                    "check_date:opening_hours": "2026-04-10",
+                    "fee": "yes",
+                    "internet_access": "wlan",
+                    "internet_access:fee": "no",
+                    "name": "法隆寺宝物館",
+                    "name:en": "The Gallery of Horyuji Treasures",
+                    "name:es": "Galería de tesoros de Horyuji",
+                    "name:etymology:wikidata": "Q261932",
+                    "name:etymology:wikipedia": "ja:法隆寺",
+                    "name:fr": "Galerie des trésors du temple Hōryū",
+                    "name:ja-Hira": "ほうりゅうじほうもつかん",
+                    "name:ja-Latn": "Hōryūji hōmotsu-kan",
+                    "name:ko": "호류지 보물관",
+                    "name:zh": "法隆寺宝物馆",
+                    "opening_hours": "Mo-Su 09:30-17:00",
+                    "tourism": "museum",
+                    "wikidata": "Q123195811",
+                    "wikimedia_commons": "Category:The Gallery of Horyuji Treasures"
+                }
+            },
+            {
+                "type": "way",
+                "id": 152340249,
+                "center": {
+                    "lat": 35.7189039,
+                    "lon": 139.7733129
+                },
+                "tags": {
+                    "building": "yes",
+                    "museum": "art",
+                    "name": "黒田記念館",
+                    "name:en": "Kuroda Memorial Hall",
+                    "source": "Bing, 2007-03",
+                    "tourism": "museum",
+                    "website": "https://www.tobunken.go.jp/kuroda/index_e.html",
+                    "wikidata": "Q123195608",
+                    "wikipedia": "en:Kuroda Memorial Hall"
+                }
+            },
+            {
+                "type": "way",
+                "id": 914133670,
+                "center": {
+                    "lat": 35.7213055,
+                    "lon": 139.7710053
+                },
+                "tags": {
+                    "fee": "no",
+                    "museum": "history",
+                    "name": "下町風俗資料館付設展示場【旧吉田屋酒店】",
+                    "name:en": "Shitamachi museum annex [Yoshidaya]",
+                    "opening_hours": "9:30-16:30",
+                    "operator": "下町風俗資料館",
+                    "tourism": "museum",
+                    "website": "https://www.taitogeibun.net/shitamachi/shitamachi_annex/",
+                    "wikidata": "Q59268117",
+                    "wikimedia_commons": "Category:Old Yoshida Sake Store"
+                }
+            },
+            {
+                "type": "way",
+                "id": 819161140,
+                "center": {
+                    "lat": 35.6795951,
+                    "lon": 139.7772188
+                },
+                "tags": {
+                    "building": "yes",
+                    "museum": "local",
+                    "name": "兜町・茅場町まちかど展示館",
+                    "name:en": "Kabutochō Kayabachō Machikado Museum",
+                    "name:ja-Latn": "Kabutochō Kayabachō Machi Kado Tenjikan",
+                    "tourism": "museum"
+                }
+            },
+            {
+                "type": "way",
+                "id": 229426242,
+                "center": {
+                    "lat": 35.6816723,
+                    "lon": 139.785894
+                },
+                "tags": {
+                    "building": "yes",
+                    "museum": "art;person",
+                    "name": "Musée Hamaguchi Yōzō: Yamasa Collection",
+                    "name:en": "Musée Hamaguchi Yōzō: Yamasa Collection",
+                    "name:ja": "ミュゼ浜口陽三・ヤマサコレクション",
+                    "source": "Bing;GSI/KIBAN 25000;NARO",
+                    "source_ref": "http://wiki.osm.org/wiki/GSI_KIBAN",
+                    "tourism": "museum",
+                    "website": "https://www.yamasa.com/musee/"
+                }
+            },
+            {
+                "type": "way",
+                "id": 229426286,
+                "center": {
+                    "lat": 35.6817314,
+                    "lon": 139.7860539
+                },
+                "tags": {
+                    "building": "yes",
+                    "building:colour": "#808080",
+                    "building:levels": "14",
+                    "museum": "art",
+                    "name:en": "Musée Hamaguchi Yōzō: Yamasa Collection",
+                    "name:ja": "ミュゼ浜口陽三・ヤマサコレクション",
+                    "roof:shape": "flat",
+                    "source": "Bing;GSI/KIBAN 25000;NARO",
+                    "source_ref": "http://wiki.osm.org/wiki/GSI_KIBAN",
+                    "tourism": "museum",
+                    "website": "https://www.yamasa.com/musee/"
+                }
+            },
+            {
+                "type": "way",
+                "id": 76187056,
+                "center": {
+                    "lat": 35.6964445,
+                    "lon": 139.7960767
+                },
+                "tags": {
+                    "addr:block_number": "4",
+                    "addr:city": "墨田区",
+                    "addr:housenumber": "1",
+                    "addr:neighbourhood": "横網一丁目",
+                    "addr:postcode": "130-0015",
+                    "addr:province": "東京都",
+                    "architect": "菊竹清訓",
+                    "architect:wikidata": "Q1352623",
+                    "building": "museum",
+                    "building:levels": "7",
+                    "building:levels:underground": "1",
+                    "charge:adult": "600 JPY;300 JPY",
+                    "charge:child": "300 JPY;0 JPY",
+                    "contact:facebook": "EDO-TOKYO-Museum-1240715509394178",
+                    "contact:instagram": "edotokyomuseum",
+                    "contact:phone": "+81-3-3626-9974",
+                    "contact:tripadvisor": "315478",
+                    "contact:twitter": "edohakugibochan",
+                    "contact:website": "https://www.edo-tokyo-museum.or.jp/",
+                    "contact:youtube": "UCHULFfLXb5QsTH6ASDW5jRA",
+                    "fee": "yes",
+                    "height": "62.2",
+                    "layer": "3",
+                    "museum": "local;history",
+                    "name": "江戸東京博物館",
+                    "name:en": "Edo Tokyo Museum",
+                    "name:es": "Museo Edo",
+                    "name:fr": "Musée d'Edo-Tokyo",
+                    "name:ja-Hira": "とうきょうとえどとうきょうはくぶつかん",
+                    "name:ja-Latn": "Tōkyō-to Edo Tōkyō hakubutsukan",
+                    "name:zh": "江戶東京博物館",
+                    "opening_hours": "Su, Tu-Fr 09:30-17:30; Sa 09:30-19:30; Mo off",
+                    "operator": "東京都歴史文化財団",
+                    "operator:wikidata": "Q11235186",
+                    "roof:shape": "flat",
+                    "start_date": "1993-03-28",
+                    "subject:wikidata": "Q2510783;Q184963",
+                    "tourism": "museum",
+                    "website": "http://www.edo-tokyo-museum.or.jp/",
+                    "wikidata": "Q1191042",
+                    "wikimedia_commons": "Category:Edo-Tokyo Museum",
+                    "wikipedia": "ja:東京都江戸東京博物館"
+                }
+            },
+            {
+                "type": "way",
+                "id": 157050752,
+                "center": {
+                    "lat": 35.6998208,
+                    "lon": 139.7968952
+                },
+                "tags": {
+                    "addr:postcode": "130-0015",
+                    "building": "museum",
+                    "fee": "no",
+                    "name": "東京都復興記念館",
+                    "name:en": "Great Kanto Earthquake Memorial Museum",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年　国土交通省",
+                    "opening_hours": "Tu-Su 09:00-16:30",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://www.tokyoessentials.com/kanto-earthquake-memorial-museum.html",
+                    "wheelchair": "yes",
+                    "wikidata": "Q24895832",
+                    "wikimedia_commons": "Category:Great Kanto Earthquake Memorial Museum",
+                    "wikipedia": "ja:東京都復興記念館"
+                }
+            },
+            {
+                "type": "way",
+                "id": 444853841,
+                "center": {
+                    "lat": 35.6963305,
+                    "lon": 139.8004871
+                },
+                "tags": {
+                    "addr:block_number": "7",
+                    "addr:city": "墨田区",
+                    "addr:housenumber": "2",
+                    "addr:neighbourhood": "亀沢二丁目",
+                    "addr:postcode": "130-0014",
+                    "addr:province": "東京都",
+                    "building": "yes",
+                    "check_date": "2025-10-10",
+                    "fee": "yes",
+                    "internet_access": "wlan",
+                    "internet_access:fee": "customers",
+                    "internet_access:ssid": "hmguest",
+                    "museum": "art;ukiyo-e;person",
+                    "name": "すみだ北斎美術館",
+                    "name:en": "Sumida Hokusai Museum",
+                    "name:ja": "すみだ北斎美術館",
+                    "official_name:en": "The Sumida Hokusai Museum",
+                    "opening_hours": "9:30-17:30",
+                    "phone": "+81-3-5777-8600",
+                    "tourism": "museum",
+                    "website": "https://hokusai-museum.jp/",
+                    "wikidata": "Q17220332",
+                    "wikipedia": "ja:すみだ北斎美術館"
+                }
+            },
+            {
+                "type": "way",
+                "id": 89041321,
+                "center": {
+                    "lat": 35.717849,
+                    "lon": 139.7768698
+                },
+                "tags": {
+                    "building": "public",
+                    "check_date": "2026-04-10",
+                    "check_date:opening_hours": "2026-04-10",
+                    "contact:website": "https://www.tnm.jp/modules/r_exhibition/index.php?controller=hall&hid=13",
+                    "fee": "yes",
+                    "name": "東洋館",
+                    "name:en": "Toyokan (Asian Gallery)",
+                    "name:es": "Toyokan (Galería de Asia)",
+                    "name:fr": "Galerie asiatique",
+                    "name:ja-Hira": "とうようかん",
+                    "name:ja_rm": "Tōyō-kan",
+                    "name:ko": "동양관",
+                    "opening_hours": "Mo-Su 09:30-17:00",
+                    "toilets:wheelchair": "yes",
+                    "tourism": "museum",
+                    "wheelchair": "yes"
+                }
+            },
+            {
+                "type": "way",
+                "id": 203960902,
+                "center": {
+                    "lat": 35.7159919,
+                    "lon": 139.7765927
+                },
+                "tags": {
+                    "addr:block_number": "20",
+                    "addr:neighbourhood": "7",
+                    "addr:postcode": "110-8718",
+                    "addr:province": "東京都",
+                    "addr:quarter": "上野公園",
+                    "addr:suburb": "台東区",
+                    "check_date": "2026-04-11",
+                    "check_date:opening_hours": "2026-04-11",
+                    "museum": "science;natural",
+                    "name": "国立科学博物館",
+                    "name:de": "Nationalmuseum der Naturwissenschaften",
+                    "name:en": "National Museum of Nature and Science",
+                    "name:es": "Museo Nacional de Ciencia de Japón",
+                    "name:fr": "Musée national de la nature et des sciences de Tokyo",
+                    "name:ja": "国立科学博物館",
+                    "name:ja-Hira": "こくりつかがくはくぶつかん",
+                    "name:ja_rm": "Kokuritsu Kagaku Hakubutsukan",
+                    "name:ko": "국립과학박물관",
+                    "name:ru": "Национальный музей природы и науки",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年 国土交通省",
+                    "opening_hours": "Tu-Su 09:00-17:00",
+                    "source": "GSImaps/std;Bing",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "tourism": "museum",
+                    "website": "https://www.kahaku.go.jp/",
+                    "wheelchair": "yes",
+                    "wikidata": "Q74940",
+                    "wikipedia": "ja:国立科学博物館"
+                }
+            },
+            {
+                "type": "way",
+                "id": 135838556,
+                "center": {
+                    "lat": 35.7057662,
+                    "lon": 139.8085314
+                },
+                "tags": {
+                    "addr:block_number": "16",
+                    "addr:city": "墨田区",
+                    "addr:housenumber": "3",
+                    "addr:neighbourhood": "1丁目",
+                    "addr:postcode": "130-0003",
+                    "addr:province": "東京都",
+                    "addr:quarter": "横川",
+                    "building": "yes",
+                    "name": "たばこと塩の博物館",
+                    "name:en": "Tobacco & Salt Museum",
+                    "opening_hours": "10:00-18:00; Mo off",
+                    "operator": "日本たばこ産業",
+                    "tourism": "museum",
+                    "website": "https://www.jti.co.jp/Culture/museum/index.html",
+                    "wikidata": "Q11271253",
+                    "wikipedia": "ja:たばこと塩の博物館"
+                }
+            },
+            {
+                "type": "relation",
+                "id": 12077221,
+                "center": {
+                    "lat": 35.679795,
+                    "lon": 139.8080673
+                },
+                "tags": {
+                    "addr:block_number": "1",
+                    "addr:city": "江東区",
+                    "addr:housenumber": "1",
+                    "addr:neighbourhood": "三好四丁目",
+                    "addr:postcode": "135-0022",
+                    "addr:province": "東京都",
+                    "air_conditioning": "yes",
+                    "building": "yes",
+                    "fee": "yes",
+                    "layer": "1",
+                    "museum": "art",
+                    "name": "東京都現代美術館",
+                    "name:de": "Museum für zeitgenössische Kunst Tokio",
+                    "name:en": "Museum of Contemporary Art Tokyo",
+                    "name:es": "Museo de arte contemporáneo de Tokio",
+                    "name:fr": "Musée d'art contemporain de Tokyo",
+                    "name:ja": "東京都現代美術館",
+                    "opening_hours": "Tu-Su 10:00-18:00; Mo off",
+                    "operator": "東京都歴史文化財団",
+                    "phone": "+81-3-52454111",
+                    "toilets": "yes",
+                    "tourism": "museum",
+                    "type": "multipolygon",
+                    "website": "https://www.mot-art-museum.jp/",
+                    "wikidata": "Q1649688",
+                    "wikipedia": "ja:東京都現代美術館"
+                }
+            },
+            {
+                "type": "relation",
+                "id": 2737745,
+                "center": {
+                    "lat": 35.7189135,
+                    "lon": 139.7764941
+                },
+                "tags": {
+                    "building": "public",
+                    "check_date": "2026-04-10",
+                    "check_date:opening_hours": "2026-04-10",
+                    "name": "本館",
+                    "name:de": "Honkan",
+                    "name:en": "Honkan (Japanese Gallery)",
+                    "name:es": "Honkan (Galería Japonesa",
+                    "name:et": "Honkan",
+                    "name:fr": "Bâtiment principal",
+                    "name:ja-Hira": "ほんかん",
+                    "name:ja-Latn": "Hon-kan",
+                    "name:ko": "본관",
+                    "note": "National-Land Numerical Information (Public Facility) 2006, MLIT Japan",
+                    "note:ja": "国土数値情報（公共施設データ）平成19年　国土交通省",
+                    "opening_hours": "Mo-Su 09:30-17:00",
+                    "source": "KSJ2",
+                    "source_ref": "http://nlftp.mlit.go.jp/ksj/jpgis/datalist/KsjTmplt-P02-v2_0.html",
+                    "toilets:wheelchair": "yes",
+                    "tourism": "museum",
+                    "type": "multipolygon",
+                    "wheelchair": "yes"
+                }
+            }
+        ]
+    },
+    "query": "[out:json][timeout:30];(node[\"tourism\"=\"museum\"](around:5000,35.681236,139.767125);way[\"tourism\"=\"museum\"](around:5000,35.681236,139.767125);relation[\"tourism\"=\"museum\"](around:5000,35.681236,139.767125););out center tags qt;",
+    "requestUrl": "https://overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A30%5D%3B%28node%5B%22tourism%22%3D%22museum%22%5D%28around%3A5000%2C35.681236%2C139.767125%29%3Bway%5B%22tourism%22%3D%22museum%22%5D%28around%3A5000%2C35.681236%2C139.767125%29%3Brelation%5B%22tourism%22%3D%22museum%22%5D%28around%3A5000%2C35.681236%2C139.767125%29%3B%29%3Bout+center+tags+qt%3B",
+    "responseBytes": 114546,
+    "responseSha256": "7f8adaa820d7fb0619e27433475f734145623cc3f4209704bc99d091e6a6d433",
+    "schemaVersion": 1,
+    "source": "overpass"
+}

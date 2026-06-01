@@ -1,0 +1,21 @@
+{
+    "attribution": "OpenStreetMap contributors via the Overpass API",
+    "capturedAt": "2026-06-01T11:08:39.568Z",
+    "endpoint": "https://overpass-api.de/api/interpreter",
+    "id": "matching-ocean-hospitals-empty",
+    "payload": {
+        "version": 0.6,
+        "generator": "Overpass API 0.7.62.11 87bfad18",
+        "osm3s": {
+            "timestamp_osm_base": "2026-06-01T11:07:15Z",
+            "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+        },
+        "elements": []
+    },
+    "query": "[out:json][timeout:30];(node[\"amenity\"=\"hospital\"](around:5000,35,145);way[\"amenity\"=\"hospital\"](around:5000,35,145);relation[\"amenity\"=\"hospital\"](around:5000,35,145););out center tags qt;",
+    "requestUrl": "https://overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A30%5D%3B%28node%5B%22amenity%22%3D%22hospital%22%5D%28around%3A5000%2C35%2C145%29%3Bway%5B%22amenity%22%3D%22hospital%22%5D%28around%3A5000%2C35%2C145%29%3Brelation%5B%22amenity%22%3D%22hospital%22%5D%28around%3A5000%2C35%2C145%29%3B%29%3Bout+center+tags+qt%3B",
+    "responseBytes": 287,
+    "responseSha256": "f7397b51d1e0b04f2a9293c7fb203e539e7911e41230e0694c3ebed20232bef2",
+    "schemaVersion": 1,
+    "source": "overpass"
+}

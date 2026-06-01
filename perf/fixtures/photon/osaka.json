@@ -1,0 +1,240 @@
+{
+    "attribution": "Photon search results based on OpenStreetMap data",
+    "capturedAt": "2026-06-01T11:09:01.826Z",
+    "endpoint": "https://photon.komoot.io/api/",
+    "id": "photon-osaka",
+    "payload": {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "R",
+                    "osm_id": 358674,
+                    "osm_key": "place",
+                    "osm_value": "city",
+                    "type": "city",
+                    "name": "Osaka",
+                    "state": "Osaka Prefecture",
+                    "country": "Japan",
+                    "countrycode": "JP",
+                    "extent": [135.3099784, 34.768849, 135.5991702, 34.586154]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [135.5014539, 34.6937569]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "N",
+                    "osm_id": 346685291,
+                    "osm_key": "railway",
+                    "osm_value": "station",
+                    "type": "house",
+                    "name": "Osaka",
+                    "street": "市道梅田線",
+                    "locality": "Umeda 3-chome",
+                    "district": "Kita Ward",
+                    "city": "Osaka",
+                    "state": "Osaka Prefecture",
+                    "country": "Japan",
+                    "postcode": "530-8558",
+                    "countrycode": "JP"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [135.4955732, 34.7022133]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "R",
+                    "osm_id": 341906,
+                    "osm_key": "place",
+                    "osm_value": "province",
+                    "type": "state",
+                    "name": "Osaka Prefecture",
+                    "country": "Japan",
+                    "countrycode": "JP",
+                    "extent": [135.0258879, 35.051293, 135.746603, 34.271821]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [135.490357, 34.6198813]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "W",
+                    "osm_id": 34619038,
+                    "osm_key": "building",
+                    "osm_value": "yes",
+                    "type": "house",
+                    "housenumber": "1",
+                    "name": "Osaka Castle",
+                    "street": "1",
+                    "locality": "Osakajo",
+                    "district": "Chūō Ward",
+                    "city": "Osaka",
+                    "state": "Osaka Prefecture",
+                    "country": "Japan",
+                    "postcode": "540-0002",
+                    "countrycode": "JP",
+                    "extent": [135.525632, 34.6875751, 135.5260774, 34.6871702]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [135.5258555, 34.6873735]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "R",
+                    "osm_id": 18159861,
+                    "osm_key": "aeroway",
+                    "osm_value": "aerodrome",
+                    "type": "house",
+                    "name": "Osaka Itami Airport",
+                    "locality": "蛍池南町3丁目",
+                    "city": "Itami",
+                    "state": "Hyogo Prefecture",
+                    "country": "Japan",
+                    "postcode": "664-0842",
+                    "countrycode": "JP",
+                    "extent": [135.4264921, 34.7984552, 135.4542213, 34.7699317]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [135.4390407, 34.7839847]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "N",
+                    "osm_id": 13775488179,
+                    "osm_key": "office",
+                    "osm_value": "company",
+                    "type": "house",
+                    "housenumber": "4",
+                    "name": "Osaka Cygames",
+                    "street": "2",
+                    "locality": "Komatsubaracho",
+                    "district": "Kita Ward",
+                    "city": "Osaka",
+                    "state": "Osaka Prefecture",
+                    "country": "Japan",
+                    "postcode": "530-0018",
+                    "countrycode": "JP"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [135.5002725, 34.7022017]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "W",
+                    "osm_id": 176303041,
+                    "osm_key": "amenity",
+                    "osm_value": "theatre",
+                    "type": "house",
+                    "name": "Osaka-jō Hall",
+                    "street": "Osakajo Shimbashi Bridge",
+                    "locality": "Osakajo",
+                    "district": "Chūō Ward",
+                    "city": "Osaka",
+                    "state": "Osaka Prefecture",
+                    "country": "Japan",
+                    "postcode": "540-8510",
+                    "countrycode": "JP",
+                    "extent": [135.5294449, 34.6901951, 135.5307637, 34.6890897]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [135.5301038, 34.6896442]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "W",
+                    "osm_id": 1133488291,
+                    "osm_key": "amenity",
+                    "osm_value": "university",
+                    "type": "house",
+                    "name": "Osaka University of Arts",
+                    "locality": "Higashiyama",
+                    "city": "Kanan",
+                    "county": "Minamikawachi County",
+                    "state": "Osaka Prefecture",
+                    "country": "Japan",
+                    "postcode": "585-8555",
+                    "countrycode": "JP",
+                    "extent": [135.6285167, 34.5142636, 135.6366438, 34.5081436]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [135.631448, 34.5111993]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "N",
+                    "osm_id": 7890071991,
+                    "osm_key": "railway",
+                    "osm_value": "stop",
+                    "type": "house",
+                    "name": "Ōsaka Uehommachi",
+                    "street": "Sennichimae-dori Street",
+                    "locality": "Uehonmachi 6-chome",
+                    "district": "Tennōji Ward",
+                    "city": "Osaka",
+                    "state": "Osaka Prefecture",
+                    "country": "Japan",
+                    "postcode": "543-0031",
+                    "countrycode": "JP"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [135.5207093, 34.6654914]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "N",
+                    "osm_id": 7890071989,
+                    "osm_key": "railway",
+                    "osm_value": "stop",
+                    "type": "house",
+                    "name": "Ōsaka Uehommachi",
+                    "street": "Sennichimae-dori Street",
+                    "locality": "Uehonmachi 6-chome",
+                    "district": "Tennōji Ward",
+                    "city": "Osaka",
+                    "state": "Osaka Prefecture",
+                    "country": "Japan",
+                    "postcode": "543-0031",
+                    "countrycode": "JP"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [135.5207241, 34.6653833]
+                }
+            }
+        ]
+    },
+    "requestUrl": "https://photon.komoot.io/api/?lang=en&limit=10&q=Osaka",
+    "responseBytes": 4027,
+    "responseSha256": "cf691082f84d330a9aaea025dfce92394d727bd75b619f654fb7821619daa2c5",
+    "schemaVersion": 1,
+    "source": "photon"
+}

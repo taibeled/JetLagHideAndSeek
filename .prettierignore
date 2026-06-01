@@ -3,6 +3,7 @@ node_modules
 dist
 coverage
 e2e/artifacts
+perf/results
 data/odpt/cache
 data/odpt/odpt_api.htm
 data/odpt/odpt_api_files

@@ -108,6 +108,10 @@ const featureCacheIds = new WeakMap<PolygonFeature, number>();
 const featurePolygonCache = new WeakMap<PolygonFeature, Position[][][]>();
 let nextFeatureCacheId = 1;
 
+export function clearMaskResultCache() {
+    maskResultCache.clear();
+}
+
 /**
  * Build a cache key from the exact feature objects supplied by the derived
  * render state. Upstream geometry builders memoize their results, so object

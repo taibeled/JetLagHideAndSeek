@@ -1,0 +1,455 @@
+{
+    "attribution": "OpenStreetMap contributors via the Overpass API",
+    "capturedAt": "2026-06-01T11:08:29.048Z",
+    "endpoint": "https://overpass-api.de/api/interpreter",
+    "id": "matching-tokyo-airports-50km",
+    "payload": {
+        "version": 0.6,
+        "generator": "Overpass API 0.7.62.11 87bfad18",
+        "osm3s": {
+            "timestamp_osm_base": "2026-06-01T11:07:15Z",
+            "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+        },
+        "elements": [
+            {
+                "type": "node",
+                "id": 415168260,
+                "lat": 35.7490925,
+                "lon": 139.3490931,
+                "tags": {
+                    "aeroway": "aerodrome",
+                    "alt_name": "横田基地",
+                    "ele": "141",
+                    "iata": "OKO",
+                    "icao": "RJTY",
+                    "landuse": "military",
+                    "military": "airfield",
+                    "name": "横田飛行場",
+                    "name:en": "Yokota Air Base",
+                    "name:ja": "横田飛行場",
+                    "name:ja_rm": "Yokota Kūgun Kichi",
+                    "name:ru": "Аэродром Йокота",
+                    "name:zh": "横田基地",
+                    "name_2": "http://upload.wikimedia.org/wikipedia/commons/e/e5/Pacific Air Forces.png",
+                    "source": "wikipedia",
+                    "wikidata": "Q1806489",
+                    "wikipedia": "ja:横田飛行場",
+                    "wikipedia:en": "Yokota Air Base"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1042056058,
+                "lat": 35.7108002,
+                "lon": 139.4029999,
+                "tags": {
+                    "aeroway": "aerodrome",
+                    "icao": "RJTC",
+                    "landuse": "military",
+                    "military": "airfield",
+                    "name": "立川飛行場",
+                    "name:en": "Tachikawa Airfield",
+                    "name:ja": "立川飛行場",
+                    "source": "ourairports.com",
+                    "wikidata": "Q3275968",
+                    "wikipedia": "ja:立川飛行場"
+                }
+            },
+            {
+                "type": "node",
+                "id": 415168305,
+                "lat": 35.8429315,
+                "lon": 139.4113541,
+                "tags": {
+                    "aerodrome:type": "military",
+                    "aeroway": "aerodrome",
+                    "ele": "90",
+                    "icao": "RJTJ",
+                    "name": "航空自衛隊 入間基地",
+                    "name:en": "Iruma Air Base",
+                    "name:ja": "航空自衛隊 入間基地",
+                    "name:ru": "Аэродром Ирума",
+                    "operator": "Japan Air Self-Defense Force",
+                    "source": "wikipedia",
+                    "wikidata": "Q3015843",
+                    "wikipedia": "ja:入間基地",
+                    "wikipedia:en": "Iruma_Air_Base"
+                }
+            },
+            {
+                "type": "node",
+                "id": 2474531814,
+                "lat": 35.9766513,
+                "lon": 139.5238055,
+                "tags": {
+                    "aeroway": "aerodrome",
+                    "name": "ホンダエアポート",
+                    "wikidata": "Q2333597",
+                    "wikipedia": "ja:ホンダエアポート"
+                }
+            },
+            {
+                "type": "node",
+                "id": 1042056080,
+                "lat": 35.7974387,
+                "lon": 140.0113449,
+                "tags": {
+                    "aeroway": "aerodrome",
+                    "icao": "RJTL",
+                    "landuse": "military",
+                    "military": "airfield",
+                    "name": "下総航空基地",
+                    "name:en": "Shimofusa Airbase",
+                    "name:ja": "下総航空基地",
+                    "operator": "JMSDF",
+                    "source": "ourairports.com"
+                }
+            },
+            {
+                "type": "node",
+                "id": 9610812797,
+                "lat": 35.9040774,
+                "lon": 139.8838205,
+                "tags": {
+                    "aeroway": "aerodrome",
+                    "name": "流山場外へリポート"
+                }
+            },
+            {
+                "type": "way",
+                "id": 314547242,
+                "center": {
+                    "lat": 35.3423911,
+                    "lon": 139.6558668
+                },
+                "tags": {
+                    "access": "private",
+                    "aeroway": "aerodrome",
+                    "name": "横浜ヘリポート",
+                    "operator": "横浜市",
+                    "wikidata": "Q117090111",
+                    "wikipedia": "ja:横浜ヘリポート"
+                }
+            },
+            {
+                "type": "way",
+                "id": 400715881,
+                "center": {
+                    "lat": 35.6714054,
+                    "lon": 139.5288644
+                },
+                "tags": {
+                    "aerodrome:type": "public",
+                    "aeroway": "aerodrome",
+                    "ele": "42",
+                    "icao": "RJTF",
+                    "name": "調布飛行場",
+                    "name:en": "Chofu Airport",
+                    "name:es": "Aeropuerto de Chōfu",
+                    "name:ja": "調布飛行場",
+                    "name:ja-Hira": "ちょうふひこうじょう",
+                    "name:ru": "Аэропорт Чофу",
+                    "name:zh": "調布飛行場",
+                    "operator": "Tokyo Metropolitan Government",
+                    "source": "wikipedia",
+                    "wikidata": "Q970339",
+                    "wikipedia": "ja:調布飛行場"
+                }
+            },
+            {
+                "type": "way",
+                "id": 55683493,
+                "center": {
+                    "lat": 35.3982233,
+                    "lon": 139.9107768
+                },
+                "tags": {
+                    "aeroway": "aerodrome",
+                    "icao": "RJTK",
+                    "landuse": "military",
+                    "military": "airfield",
+                    "name": "陸上自衛隊木更津駐屯地",
+                    "source": "NRPB of MLIT Japan; ourairports.com",
+                    "source:ja": "国土画像情報(オルソ化空中写真)国土計画局",
+                    "wikidata": "Q3245032",
+                    "wikipedia": "ja:木更津駐屯地"
+                }
+            },
+            {
+                "type": "way",
+                "id": 172627190,
+                "center": {
+                    "lat": 35.6360795,
+                    "lon": 139.8384348
+                },
+                "tags": {
+                    "aeroway": "aerodrome",
+                    "icao": "RJTI",
+                    "name": "東京ヘリポート",
+                    "name:en": "Tokyo Heliport",
+                    "name:es": "Helipuerto de Tokio",
+                    "operator": "東京都",
+                    "source": "Bing",
+                    "start_date": "1972-06-15",
+                    "wikidata": "Q2335057",
+                    "wikipedia": "ja:東京ヘリポート"
+                }
+            },
+            {
+                "type": "way",
+                "id": 1137019248,
+                "center": {
+                    "lat": 35.6242657,
+                    "lon": 139.8945223
+                },
+                "tags": {
+                    "access": "private",
+                    "aeroway": "aerodrome",
+                    "name": "浦安へリポート",
+                    "name:en": "Urayasu Heliport",
+                    "operator": "エクセル航空"
+                }
+            },
+            {
+                "type": "way",
+                "id": 1137015607,
+                "center": {
+                    "lat": 35.56922,
+                    "lon": 140.2789454
+                },
+                "tags": {
+                    "access": "private",
+                    "aeroway": "aerodrome",
+                    "name": "美樹ヘリポート",
+                    "operator": "美樹観光"
+                }
+            },
+            {
+                "type": "way",
+                "id": 58610047,
+                "center": {
+                    "lat": 35.7464195,
+                    "lon": 139.3541523
+                },
+                "tags": {
+                    "aeroway": "aerodrome",
+                    "alt_name": "在日米軍 横田飛行場",
+                    "alt_name:ja": "在日米軍 横田飛行場",
+                    "barrier": "fence",
+                    "iata": "OKO",
+                    "icao": "RJTY",
+                    "landuse": "military",
+                    "layer": "-3",
+                    "name": "横田基地",
+                    "name:en": "Yokota Air Base",
+                    "name:es": "Base aérea Yokota",
+                    "name:ja": "横田基地",
+                    "operator": "United States Air Force"
+                }
+            },
+            {
+                "type": "way",
+                "id": 43104790,
+                "center": {
+                    "lat": 35.7125545,
+                    "lon": 139.4029351
+                },
+                "tags": {
+                    "aeroway": "aerodrome",
+                    "icao": "RJTC",
+                    "landuse": "military",
+                    "military": "airfield",
+                    "military_service": "army",
+                    "name": "陸上自衛隊 立川駐屯地",
+                    "note": "estimated",
+                    "operator": "陸上自衛隊",
+                    "operator:en": "Japan Ground Self-Defense Force",
+                    "operator:wikidata": "Q889751",
+                    "website": "https://www.mod.go.jp/gsdf/eae/eaavn/",
+                    "wikipedia": "ja:立川駐屯地"
+                }
+            },
+            {
+                "type": "way",
+                "id": 1137004856,
+                "center": {
+                    "lat": 35.9580525,
+                    "lon": 139.4673058
+                },
+                "tags": {
+                    "access": "private",
+                    "aeroway": "aerodrome",
+                    "name": "朝日・川越ヘリポート",
+                    "operator": "朝日航洋",
+                    "operator:type": "private"
+                }
+            },
+            {
+                "type": "way",
+                "id": 463253703,
+                "center": {
+                    "lat": 35.8591703,
+                    "lon": 140.2414208
+                },
+                "tags": {
+                    "aeroway": "aerodrome",
+                    "name": "大利根飛行場",
+                    "name:en": "Otone Airfield",
+                    "surface": "grass",
+                    "wikidata": "Q10933756",
+                    "wikipedia": "ja:大利根飛行場"
+                }
+            },
+            {
+                "type": "way",
+                "id": 92832772,
+                "center": {
+                    "lat": 35.9053459,
+                    "lon": 140.2421403
+                },
+                "tags": {
+                    "aeroway": "aerodrome",
+                    "name": "龍ヶ崎飛行場",
+                    "name:en": "Ryugasaki Airport",
+                    "name:ja": "龍ヶ崎飛行場",
+                    "operator": "川田工業",
+                    "source": "Bing",
+                    "wikidata": "Q1447375",
+                    "wikipedia": "ja:竜ヶ崎飛行場"
+                }
+            },
+            {
+                "type": "relation",
+                "id": 8376587,
+                "center": {
+                    "lat": 35.45452,
+                    "lon": 139.445636
+                },
+                "tags": {
+                    "aeroway": "aerodrome",
+                    "barrier": "fence",
+                    "iata": "NJA",
+                    "icao": "RJTA",
+                    "landuse": "military",
+                    "military": "airfield",
+                    "name": "厚木海軍飛行場",
+                    "name:en": "United States Naval Air Facility Atsugi",
+                    "name:ja": "厚木海軍飛行場",
+                    "source": "Bing",
+                    "type": "multipolygon",
+                    "wikidata": "Q3016710",
+                    "wikipedia": "ja:厚木海軍飛行場"
+                }
+            },
+            {
+                "type": "relation",
+                "id": 17864987,
+                "center": {
+                    "lat": 35.5457102,
+                    "lon": 139.7898582
+                },
+                "tags": {
+                    "access": "yes",
+                    "addr:neighbourhood": "羽田空港",
+                    "aerodrome": "international",
+                    "aerodrome:type": "international",
+                    "aeroway": "aerodrome",
+                    "alt_name": "羽田空港",
+                    "alt_name:en": "Haneda Airport",
+                    "alt_name:es": "Aeropuerto de Haneda",
+                    "alt_name:fr": "Aéroport de Haneda",
+                    "alt_name:it": "Aeroporto di Haneda",
+                    "alt_name:ja": "羽田空港",
+                    "alt_name:ja-Hira": "はねだくうこう",
+                    "alt_name:zh": "羽田机场;东京羽田国际机场;羽田国际机场",
+                    "alt_name:zh-Hans": "羽田机场;东京羽田国际机场;羽田国际机场",
+                    "alt_name:zh-Hant": "羽田機場;東京羽田國際機場;羽田國際機場",
+                    "cargo": "international",
+                    "contact:facebook": "https://www.facebook.com/TokyoInternationalAirport.Haneda.en/",
+                    "contact:phone": "+81-03-5757-8111",
+                    "contact:telegram": "https://www.instagram.com/haneda.airport_official/",
+                    "contact:twitter": "https://twitter.com/Haneda_official",
+                    "contact:url": "https://tokyo-haneda.com/en/contact/index.html",
+                    "contact:url:en": "https://tokyo-haneda.com/en/contact/index.html",
+                    "contact:url:ja": "https://tokyo-haneda.com/contact/index.html",
+                    "contact:website": "https://form.kintoneapp.com/public/form/show/253e1f1425ec11637827503544881c5ebf4f49030c40ed77b75a1cac70082c6b",
+                    "contact:website:en": "https://form.kintoneapp.com/public/form/show/253e1f1425ec11637827503544881c5ebf4f49030c40ed77b75a1cac70082c6b",
+                    "contact:website:ja": "https://form.kintoneapp.com/public/form/show/02e887041131a5a7ee602d039031413f23a941321fc0ca8a5fe8290f0a35bfe3",
+                    "contact:youtube": "https://www.youtube.com/channel/UC-jAF68axQeLhXDOxK6NZVw",
+                    "ele": "6",
+                    "iata": "HND",
+                    "icao": "RJTT",
+                    "is_in:iso_3166_2": "JP-13",
+                    "man_made": "island",
+                    "name": "東京国際空港",
+                    "name:en": "Tokyo International Airport",
+                    "name:es": "Aeropuerto internacional de Tokio",
+                    "name:fr": "Aéroport International de Tokyo",
+                    "name:it": "Aeroporto internazionale di Tokyo",
+                    "name:ja": "東京国際空港",
+                    "name:ja-Hira": "とうきょうこくさいくうこう",
+                    "name:ko": "도쿄 하네다국제공항",
+                    "name:ku": "Balafirgeha Navneteweyî ya Tokyo",
+                    "name:pt": "Aeroporto Internacional de Tóquio",
+                    "name:ru": "Международный аэропорт Токио (Ханеда)",
+                    "name:tr": "Tokyo Uluslararası Havalimanı",
+                    "name:zh": "东京国际机场",
+                    "name:zh-Hans": "东京国际机场",
+                    "name:zh-Hant": "東京國際機場",
+                    "opening_hours": "24/7",
+                    "operator": "東京空港事務所",
+                    "operator:admin_level": "2",
+                    "operator:en": "Tokyo Airport Office",
+                    "operator:ja": "東京空港事務所",
+                    "operator:type": "government",
+                    "owner:admin_level": "2",
+                    "ownership": "government",
+                    "passenger": "international",
+                    "phone": "+81-03-5757-8111",
+                    "place": "island",
+                    "rank_aci:2016": "5",
+                    "reclaimed": "yes",
+                    "service_times": "24/7",
+                    "target": "東京",
+                    "target:en": "Tokyo",
+                    "target:iata": "TYO",
+                    "target:ja": "東京",
+                    "type": "multipolygon",
+                    "website": "https://tokyo-haneda.com/",
+                    "website:en": "https://tokyo-haneda.com/en/",
+                    "website:ja": "https://tokyo-haneda.com/",
+                    "website:ko": "https://tokyo-haneda.com/ko/",
+                    "wikidata": "Q204853",
+                    "wikipedia": "ja:東京国際空港",
+                    "wikipedia:en": "Haneda Airport"
+                }
+            },
+            {
+                "type": "relation",
+                "id": 16240987,
+                "center": {
+                    "lat": 35.9347289,
+                    "lon": 139.6957038
+                },
+                "tags": {
+                    "access": "private",
+                    "addr:city": "さいたま市",
+                    "addr:housenumber": "421",
+                    "addr:postcode": "3390045",
+                    "addr:province": "埼玉県",
+                    "addr:quarter": "柏崎",
+                    "addr:suburb": "岩槻区",
+                    "aeroway": "aerodrome",
+                    "name": "岩槻インターヘリポート",
+                    "type": "multipolygon"
+                }
+            }
+        ]
+    },
+    "query": "[out:json][timeout:30];(node[\"aeroway\"=\"aerodrome\"](around:50000,35.681236,139.767125);way[\"aeroway\"=\"aerodrome\"](around:50000,35.681236,139.767125);relation[\"aeroway\"=\"aerodrome\"](around:50000,35.681236,139.767125););out center tags qt;",
+    "requestUrl": "https://overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A30%5D%3B%28node%5B%22aeroway%22%3D%22aerodrome%22%5D%28around%3A50000%2C35.681236%2C139.767125%29%3Bway%5B%22aeroway%22%3D%22aerodrome%22%5D%28around%3A50000%2C35.681236%2C139.767125%29%3Brelation%5B%22aeroway%22%3D%22aerodrome%22%5D%28around%3A50000%2C35.681236%2C139.767125%29%3B%29%3Bout+center+tags+qt%3B",
+    "responseBytes": 11714,
+    "responseSha256": "99ca135c68785c4b2f7d90a9ce10757dbc2866225bdc4e46f6eaf708a9f5f0d2",
+    "schemaVersion": 1,
+    "source": "overpass"
+}

@@ -66,6 +66,15 @@ export async function findMatchingFeatures(
     const data = (await response.json()) as OverpassResponse;
     const features = parseOverpassElements(data.elements ?? [], category);
 
+    return rankMatchingFeatures(features, center, maxCandidates);
+}
+
+export function rankMatchingFeatures(
+    features: OsmFeature[],
+    center: Position,
+    maxCandidates = 10,
+): OsmFeatureWithDistance[] {
+    const [lon, lat] = center;
     const withDistance = features.map((feature) => ({
         ...feature,
         distanceMeters: haversineDistanceMeters(
@@ -108,7 +117,7 @@ export function buildOverpassQuery(
 out center tags qt;`;
 }
 
-function buildStationQuery(
+export function buildStationQuery(
     lat: number,
     lon: number,
     radiusMeters: number,

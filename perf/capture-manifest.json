@@ -1,0 +1,97 @@
+{
+    "schemaVersion": 1,
+    "requests": [
+        {
+            "attribution": "OpenStreetMap contributors via the Overpass API",
+            "endpoint": "https://overpass-api.de/api/interpreter",
+            "id": "boundary-vatican-city-36989",
+            "output": "fixtures/overpass/boundaries/vatican-city-36989.json",
+            "query": "[out:json][timeout:30];relation(36989);out geom qt;",
+            "source": "overpass"
+        },
+        {
+            "attribution": "OpenStreetMap contributors via the Overpass API",
+            "endpoint": "https://overpass-api.de/api/interpreter",
+            "id": "boundary-monaco-1124039",
+            "output": "fixtures/overpass/boundaries/monaco-1124039.json",
+            "query": "[out:json][timeout:30];relation(1124039);out geom qt;",
+            "source": "overpass"
+        },
+        {
+            "attribution": "OpenStreetMap contributors via the Overpass API",
+            "endpoint": "https://overpass-api.de/api/interpreter",
+            "id": "matching-tokyo-stations-5km",
+            "output": "fixtures/overpass/matching/tokyo-stations-5km.json",
+            "query": "[out:json][timeout:30];(node[\"railway\"=\"station\"](around:5000,35.681236,139.767125);way[\"railway\"=\"station\"](around:5000,35.681236,139.767125);node[\"station\"=\"subway\"][\"railway\"=\"station\"](around:5000,35.681236,139.767125);way[\"station\"=\"subway\"][\"railway\"=\"station\"](around:5000,35.681236,139.767125););out center tags qt;",
+            "source": "overpass"
+        },
+        {
+            "attribution": "OpenStreetMap contributors via the Overpass API",
+            "endpoint": "https://overpass-api.de/api/interpreter",
+            "id": "matching-tokyo-hospitals-5km",
+            "output": "fixtures/overpass/matching/tokyo-hospitals-5km.json",
+            "query": "[out:json][timeout:30];(node[\"amenity\"=\"hospital\"](around:5000,35.681236,139.767125);way[\"amenity\"=\"hospital\"](around:5000,35.681236,139.767125);relation[\"amenity\"=\"hospital\"](around:5000,35.681236,139.767125););out center tags qt;",
+            "source": "overpass"
+        },
+        {
+            "attribution": "OpenStreetMap contributors via the Overpass API",
+            "endpoint": "https://overpass-api.de/api/interpreter",
+            "id": "matching-tokyo-museums-5km",
+            "output": "fixtures/overpass/matching/tokyo-museums-5km.json",
+            "query": "[out:json][timeout:30];(node[\"tourism\"=\"museum\"](around:5000,35.681236,139.767125);way[\"tourism\"=\"museum\"](around:5000,35.681236,139.767125);relation[\"tourism\"=\"museum\"](around:5000,35.681236,139.767125););out center tags qt;",
+            "source": "overpass"
+        },
+        {
+            "attribution": "OpenStreetMap contributors via the Overpass API",
+            "endpoint": "https://overpass-api.de/api/interpreter",
+            "id": "matching-tokyo-airports-50km",
+            "output": "fixtures/overpass/matching/tokyo-airports-50km.json",
+            "query": "[out:json][timeout:30];(node[\"aeroway\"=\"aerodrome\"](around:50000,35.681236,139.767125);way[\"aeroway\"=\"aerodrome\"](around:50000,35.681236,139.767125);relation[\"aeroway\"=\"aerodrome\"](around:50000,35.681236,139.767125););out center tags qt;",
+            "source": "overpass"
+        },
+        {
+            "attribution": "OpenStreetMap contributors via the Overpass API",
+            "endpoint": "https://overpass-api.de/api/interpreter",
+            "id": "matching-ocean-hospitals-empty",
+            "output": "fixtures/overpass/matching/ocean-hospitals-empty.json",
+            "query": "[out:json][timeout:30];(node[\"amenity\"=\"hospital\"](around:5000,35,145);way[\"amenity\"=\"hospital\"](around:5000,35,145);relation[\"amenity\"=\"hospital\"](around:5000,35,145););out center tags qt;",
+            "source": "overpass"
+        },
+        {
+            "attribution": "Photon search results based on OpenStreetMap data",
+            "endpoint": "https://photon.komoot.io/api/",
+            "id": "photon-tokyo",
+            "output": "fixtures/photon/tokyo.json",
+            "params": {
+                "lang": "en",
+                "limit": "10",
+                "q": "Tokyo"
+            },
+            "source": "photon"
+        },
+        {
+            "attribution": "Photon search results based on OpenStreetMap data",
+            "endpoint": "https://photon.komoot.io/api/",
+            "id": "photon-osaka",
+            "output": "fixtures/photon/osaka.json",
+            "params": {
+                "lang": "en",
+                "limit": "10",
+                "q": "Osaka"
+            },
+            "source": "photon"
+        },
+        {
+            "attribution": "Photon search results based on OpenStreetMap data",
+            "endpoint": "https://photon.komoot.io/api/",
+            "id": "photon-shibuya",
+            "output": "fixtures/photon/shibuya.json",
+            "params": {
+                "lang": "en",
+                "limit": "10",
+                "q": "Shibuya City Japan"
+            },
+            "source": "photon"
+        }
+    ]
+}

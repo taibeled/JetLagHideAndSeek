@@ -158,6 +158,10 @@ export function buildStationFeatureCollection(
 const MAX_ZONE_CACHE_SIZE = 30;
 const zoneFeatureCache = new Map<string, ZoneFeatureCollection>();
 
+export function clearHidingZoneFeatureCache() {
+    zoneFeatureCache.clear();
+}
+
 function zoneCacheKey(
     stations: TransitStation[],
     radiusMeters: number,

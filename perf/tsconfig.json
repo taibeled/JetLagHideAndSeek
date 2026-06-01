@@ -1,0 +1,10 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "allowImportingTsExtensions": true,
+        "module": "preserve",
+        "moduleResolution": "bundler",
+        "noEmit": true
+    },
+    "include": ["./**/*.mts", "../src/**/*.ts", "../src/**/*.tsx"]
+}

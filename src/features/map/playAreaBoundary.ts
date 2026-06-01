@@ -1,16 +1,21 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import osmtogeojson from "osmtogeojson";
 
 import osakaBoundaryJson from "../../../assets/default-zones/osaka.json";
 
 import type { GeoJsonFeatureCollection } from "./geojsonTypes";
 import {
-    calculateBbox,
-    calculateCenter,
     defaultPlayArea,
     type PlayArea,
     type PlayAreaCacheSource,
 } from "./playArea";
+export {
+    buildPlayAreaFromBoundary,
+    buildPlayAreaFromOverpass,
+} from "./playAreaBoundaryConversion";
+import {
+    buildPlayAreaFromBoundary,
+    buildPlayAreaFromOverpass,
+} from "./playAreaBoundaryConversion";
 
 const OVERPASS_API = "https://overpass-api.de/api/interpreter";
 const CACHE_PREFIX = "play-area-boundary:";
@@ -141,37 +146,6 @@ export async function fetchPlayAreaBoundary(
 
     const overpassJson = await response.json();
     return buildPlayAreaFromOverpass(relationId, overpassJson);
-}
-
-export function buildPlayAreaFromOverpass(
-    relationId: number,
-    overpassJson: unknown,
-): PlayArea {
-    const converted = osmtogeojson(overpassJson);
-    const boundary = filterBoundaryFeatures(
-        converted as unknown as GeoJsonFeatureCollection,
-    );
-
-    return buildPlayAreaFromBoundary(relationId, boundary);
-}
-
-export function buildPlayAreaFromBoundary(
-    relationId: number,
-    boundary: GeoJsonFeatureCollection,
-): PlayArea {
-    if (boundary.features.length === 0) {
-        throw new Error(`No polygon boundary found for relation ${relationId}`);
-    }
-
-    const bbox = calculateBbox(boundary);
-    return {
-        bbox,
-        boundary,
-        center: calculateCenter(bbox),
-        label: getBoundaryLabel(boundary, relationId),
-        osmId: relationId,
-        osmType: "R",
-    };
 }
 
 export function clearPlayAreaMemoryCache() {
@@ -310,31 +284,6 @@ function isNumberTuple(value: unknown, length: number): boolean {
         value.length === length &&
         value.every((part) => typeof part === "number" && Number.isFinite(part))
     );
-}
-
-function filterBoundaryFeatures(
-    boundary: GeoJsonFeatureCollection,
-): GeoJsonFeatureCollection {
-    return {
-        features: boundary.features.filter(
-            (feature) =>
-                feature.geometry.type === "Polygon" ||
-                feature.geometry.type === "MultiPolygon",
-        ),
-        type: "FeatureCollection",
-    };
-}
-
-function getBoundaryLabel(
-    boundary: GeoJsonFeatureCollection,
-    relationId: number,
-): string {
-    for (const feature of boundary.features) {
-        const name = feature.properties?.name;
-        if (typeof name === "string" && name.trim()) return name;
-    }
-
-    return `OSM relation ${relationId}`;
 }
 
 function getBoundaryCacheKey(relationId: number): string {

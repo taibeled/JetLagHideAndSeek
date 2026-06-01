@@ -1,0 +1,244 @@
+{
+    "attribution": "Photon search results based on OpenStreetMap data",
+    "capturedAt": "2026-06-01T11:04:21.217Z",
+    "endpoint": "https://photon.komoot.io/api/",
+    "id": "photon-shibuya",
+    "payload": {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "N",
+                    "osm_id": 2619511165,
+                    "osm_key": "amenity",
+                    "osm_value": "bus_station",
+                    "type": "house",
+                    "name": "Mark City Shibuya",
+                    "street": "渋谷マークシティ駐車場",
+                    "locality": "Dōgenzaka 1",
+                    "district": "Shibuya",
+                    "city": "Tokyo",
+                    "country": "Japan",
+                    "postcode": "150-0043",
+                    "countrycode": "JP"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [139.6986396, 35.658258]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "W",
+                    "osm_id": 665207881,
+                    "osm_key": "amenity",
+                    "osm_value": "townhall",
+                    "type": "house",
+                    "housenumber": "1",
+                    "name": "Shibuya ward city hall",
+                    "locality": "Udagawachō",
+                    "district": "Shibuya",
+                    "city": "Tokyo",
+                    "state": "東京都",
+                    "country": "Japan",
+                    "postcode": "150-8010",
+                    "countrycode": "JP",
+                    "extent": [139.6972795, 35.663957, 139.6982134, 35.6635221]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [139.6978121, 35.663765]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "N",
+                    "osm_id": 10808790405,
+                    "osm_key": "amenity",
+                    "osm_value": "restaurant",
+                    "type": "house",
+                    "name": "Tonkatsu Wako Shibuya Mark City",
+                    "street": "渋谷マークシティ駐車場",
+                    "locality": "Dōgenzaka 1",
+                    "district": "Shibuya",
+                    "city": "Tokyo",
+                    "country": "Japan",
+                    "postcode": "150-0043",
+                    "countrycode": "JP"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [139.6982367, 35.6585364]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "W",
+                    "osm_id": 87250190,
+                    "osm_key": "building",
+                    "osm_value": "retail",
+                    "type": "house",
+                    "name": "Shibuya Mark City East",
+                    "street": "Wave-dori Street",
+                    "locality": "Dōgenzaka 1",
+                    "district": "Shibuya",
+                    "city": "Tokyo",
+                    "country": "Japan",
+                    "postcode": "150-0043",
+                    "countrycode": "JP",
+                    "extent": [139.6988644, 35.6589026, 139.7000511, 35.658193]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [139.6995732, 35.658586]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "N",
+                    "osm_id": 11436145750,
+                    "osm_key": "amenity",
+                    "osm_value": "bicycle_rental",
+                    "type": "house",
+                    "name": "Shibuya Mark City",
+                    "street": "渋谷マークシティ駐車場",
+                    "locality": "Dōgenzaka 1",
+                    "district": "Shibuya",
+                    "city": "Tokyo",
+                    "country": "Japan",
+                    "postcode": "150-0043",
+                    "countrycode": "JP"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [139.697165, 35.657682]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "W",
+                    "osm_id": 54500467,
+                    "osm_key": "building",
+                    "osm_value": "retail",
+                    "type": "house",
+                    "name": "Ishi-usubiki Nihachi Soba Sobashiki Shibuya Mark City",
+                    "locality": "Dōgenzaka 1",
+                    "district": "Shibuya",
+                    "city": "Tokyo",
+                    "state": "東京都",
+                    "country": "Japan",
+                    "postcode": "150-0043",
+                    "countrycode": "JP",
+                    "extent": [139.6972108, 35.6583334, 139.6987684, 35.6575743]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [139.6979919, 35.657934]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "N",
+                    "osm_id": 3606317786,
+                    "osm_key": "amenity",
+                    "osm_value": "toilets",
+                    "type": "house",
+                    "name": "Shibuya City Office",
+                    "street": "Yellow St.",
+                    "locality": "Jinnan 1",
+                    "district": "Shibuya",
+                    "city": "Tokyo",
+                    "country": "Japan",
+                    "postcode": "150-0041",
+                    "countrycode": "JP"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [139.6992523, 35.6648489]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "W",
+                    "osm_id": 136570578,
+                    "osm_key": "tourism",
+                    "osm_value": "hotel",
+                    "type": "house",
+                    "name": "Shibuya City hotel",
+                    "street": "Rambling Street",
+                    "locality": "Maruyamachō",
+                    "district": "Shibuya",
+                    "city": "Tokyo",
+                    "country": "Japan",
+                    "postcode": "150-0044",
+                    "countrycode": "JP",
+                    "extent": [139.6953298, 35.6599295, 139.6954736, 35.659746]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [139.6954009, 35.6598244]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "N",
+                    "osm_id": 8415255170,
+                    "osm_key": "information",
+                    "osm_value": "office",
+                    "type": "house",
+                    "housenumber": "5",
+                    "name": "Shibuya City Tourism Association",
+                    "street": "12",
+                    "locality": "Dōgenzaka 1",
+                    "district": "Shibuya",
+                    "city": "Tokyo",
+                    "state": "東京都",
+                    "country": "Japan",
+                    "postcode": "150-0043",
+                    "countrycode": "JP"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [139.6973, 35.6578637]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "N",
+                    "osm_id": 3495056597,
+                    "osm_key": "shop",
+                    "osm_value": "mall",
+                    "type": "house",
+                    "name": "Shibuya Mark City",
+                    "street": "Plaza-dori Street",
+                    "locality": "Dōgenzaka 1",
+                    "district": "Shibuya",
+                    "city": "Tokyo",
+                    "state": "東京都",
+                    "country": "Japan",
+                    "postcode": "150-0043",
+                    "countrycode": "JP"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [139.6988136, 35.6582783]
+                }
+            }
+        ]
+    },
+    "requestUrl": "https://photon.komoot.io/api/?lang=en&limit=10&q=Shibuya+City+Japan",
+    "responseBytes": 4117,
+    "responseSha256": "455e03ff6ea95d5e28d0fb0bd8508ee2f0bb6b80325d1670a262e29ca612c1a7",
+    "schemaVersion": 1,
+    "source": "photon"
+}

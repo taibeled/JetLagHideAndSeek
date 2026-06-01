@@ -24,6 +24,10 @@ const voronoiCache = new Map<
     FeatureCollection<Polygon, { osmKey: string; nameLength?: number }>
 >();
 
+export function clearVoronoiCache() {
+    voronoiCache.clear();
+}
+
 function voronoiCacheKey(
     candidates: (OsmFeature & { distanceMeters?: number })[],
     bbox: Bbox,

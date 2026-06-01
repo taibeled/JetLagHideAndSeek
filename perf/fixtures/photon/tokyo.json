@@ -1,0 +1,247 @@
+{
+    "attribution": "Photon search results based on OpenStreetMap data",
+    "capturedAt": "2026-06-01T11:08:50.303Z",
+    "endpoint": "https://photon.komoot.io/api/",
+    "id": "photon-tokyo",
+    "payload": {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "R",
+                    "osm_id": 1543125,
+                    "osm_key": "place",
+                    "osm_value": "province",
+                    "type": "city",
+                    "name": "Tokyo",
+                    "country": "Japan",
+                    "countrycode": "JP",
+                    "extent": [135.8536855, 35.8984245, 154.205541, 20.2145811]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [139.7638947, 35.6768601]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "N",
+                    "osm_id": 2149761647,
+                    "osm_key": "railway",
+                    "osm_value": "station",
+                    "type": "house",
+                    "housenumber": "1",
+                    "name": "Tōkyō",
+                    "street": "9",
+                    "locality": "Marunouchi 1",
+                    "district": "Chiyoda",
+                    "city": "Tokyo",
+                    "state": "東京都",
+                    "country": "Japan",
+                    "postcode": "100-0005",
+                    "countrycode": "JP"
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [139.766706, 35.6812546]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "W",
+                    "osm_id": 20028328,
+                    "osm_key": "leisure",
+                    "osm_value": "stadium",
+                    "type": "house",
+                    "housenumber": "61",
+                    "name": "Tokyo Dome",
+                    "street": "3",
+                    "locality": "Kōraku 1",
+                    "district": "Bunkyo",
+                    "city": "Tokyo",
+                    "state": "東京都",
+                    "country": "Japan",
+                    "postcode": "112-0004",
+                    "countrycode": "JP",
+                    "extent": [139.75078, 35.7064952, 139.7531508, 35.704533]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [139.7519705, 35.7055706]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "R",
+                    "osm_id": 17864987,
+                    "osm_key": "place",
+                    "osm_value": "island",
+                    "type": "house",
+                    "name": "Tokyo International Airport",
+                    "locality": "Haneda Airport",
+                    "district": "Ota",
+                    "city": "Tokyo",
+                    "country": "Japan",
+                    "postcode": "144-0041",
+                    "countrycode": "JP",
+                    "extent": [139.7539835, 35.5704477, 139.8257329, 35.5209727]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [139.7760994, 35.5456924]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "W",
+                    "osm_id": 68523634,
+                    "osm_key": "amenity",
+                    "osm_value": "studio",
+                    "type": "house",
+                    "name": "Tokyo FM",
+                    "locality": "Kojimachi 1",
+                    "district": "Chiyoda",
+                    "city": "Tokyo",
+                    "state": "東京都",
+                    "country": "Japan",
+                    "postcode": "102-8080",
+                    "countrycode": "JP",
+                    "extent": [139.7433613, 35.683606, 139.7438325, 35.6833217]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [139.7434717, 35.6834679]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "R",
+                    "osm_id": 17864987,
+                    "osm_key": "place",
+                    "osm_value": "island",
+                    "type": "other",
+                    "name": "Tokyo International Airport",
+                    "locality": "羽田空港",
+                    "city": "Tokyo",
+                    "country": "Japan",
+                    "postcode": "144-0041",
+                    "countrycode": "JP",
+                    "extent": [139.7539835, 35.5704477, 139.8257329, 35.5209727]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [139.7760994, 35.5456924]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "W",
+                    "osm_id": 188715669,
+                    "osm_key": "amenity",
+                    "osm_value": "university",
+                    "type": "house",
+                    "housenumber": "1",
+                    "name": "Tokyo University of the Arts",
+                    "street": "25",
+                    "locality": "Senju 1-chome",
+                    "district": "Senju",
+                    "city": "Tokyo",
+                    "state": "東京都",
+                    "country": "Japan",
+                    "postcode": "120-0034",
+                    "countrycode": "JP",
+                    "extent": [139.8016315, 35.7475013, 139.8025381, 35.7467833]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [139.802157, 35.7472291]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "R",
+                    "osm_id": 8129848,
+                    "osm_key": "leisure",
+                    "osm_value": "stadium",
+                    "type": "house",
+                    "name": "Tokyo Racecourse",
+                    "street": "Chuo Expressway",
+                    "locality": "Yazakicho 1-chome",
+                    "district": "Fuchu",
+                    "city": "Tokyo",
+                    "country": "Japan",
+                    "postcode": "183-0025",
+                    "countrycode": "JP",
+                    "extent": [139.4799914, 35.666932, 139.4934862, 35.6604]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [139.4854585, 35.6636986]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "W",
+                    "osm_id": 144508545,
+                    "osm_key": "building",
+                    "osm_value": "public",
+                    "type": "house",
+                    "housenumber": "1",
+                    "name": "Tokyo International Forum",
+                    "street": "5",
+                    "locality": "Marunouchi 3",
+                    "district": "Chiyoda",
+                    "city": "Tokyo",
+                    "state": "東京都",
+                    "country": "Japan",
+                    "postcode": "100-0005",
+                    "countrycode": "JP",
+                    "extent": [139.7628698, 35.6778081, 139.7643834, 35.675809]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [139.7635414, 35.6767901]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "osm_type": "W",
+                    "osm_id": 33439660,
+                    "osm_key": "tourism",
+                    "osm_value": "museum",
+                    "type": "house",
+                    "housenumber": "9",
+                    "name": "Tokyo National Museum",
+                    "street": "13",
+                    "locality": "Ueno Park",
+                    "district": "Taito",
+                    "city": "Tokyo",
+                    "state": "東京都",
+                    "country": "Japan",
+                    "postcode": "110-8712",
+                    "countrycode": "JP",
+                    "extent": [139.7734254, 35.7211723, 139.7782071, 35.7169594]
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [139.7759676, 35.7190448]
+                }
+            }
+        ]
+    },
+    "requestUrl": "https://photon.komoot.io/api/?lang=en&limit=10&q=Tokyo",
+    "responseBytes": 4121,
+    "responseSha256": "edf5c1df4afef1a10dd3ad6753603a12532a42600436d40e383626021bc6dce3",
+    "schemaVersion": 1,
+    "source": "photon"
+}
