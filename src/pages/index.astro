@@ -4,6 +4,7 @@ import { Map } from "@/components/Map";
 import { OptionDrawers } from "@/components/OptionDrawers";
 import { PlacePicker } from "@/components/PlacePicker";
 import { QuestionSidebar } from "@/components/QuestionSidebar";
+import { StationCountIndicator } from "@/components/StationCountIndicator";
 import { TutorialDialog } from "@/components/TutorialDialog";
 import {
     SidebarProvider as SidebarProviderL,
@@ -52,6 +53,12 @@ import Layout from "@/layouts/Layout.astro";
                             style="bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px))"
                         >
                             <OptionDrawers client:load />
+                        </div>
+                        <div
+                            class="left-1/2 -translate-x-1/2 absolute z-[1030] group-[.fullscreen]:hidden"
+                            style="bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px))"
+                        >
+                            <StationCountIndicator client:only="react" />
                         </div>
                         <Map
                             className="w-full h-[100svh] md:h-full group-[.fullscreen]:w-full group-[.fullscreen]:h-full"
