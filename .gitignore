@@ -37,3 +37,7 @@ public/gtfs/nyct-subway.zip
 
 # Claude Code worktrees
 .claude/
+
+# Python bytecode
+__pycache__/
+*.pyc

@@ -145,27 +145,45 @@ def main():
         for f in failed:
             print(f"  FAILED: {f}")
 
-    # Sort by name, then cluster
+    # Sort by name (gives deterministic member ordering within each cluster).
     ok.sort(key=lambda x: x[0])
-    clusters: list[dict] = []  # {lat, lng, members}
 
-    for name, lat, lng in ok:
-        placed = False
-        for c in clusters:
-            if haversine_m(lat, lng, c["lat"], c["lng"]) <= CLUSTER_RADIUS_M:
-                c["members"].append(name)
-                # Recalculate centroid
-                n = len(c["members"])
-                # Re-average using stored lats/lngs
-                c["lats"].append(lat)
-                c["lngs"].append(lng)
-                c["lat"] = sum(c["lats"]) / n
-                c["lng"] = sum(c["lngs"]) / n
-                placed = True
-                break
-        if not placed:
-            clusters.append({"lat": lat, "lng": lng, "members": [name],
-                              "lats": [lat], "lngs": [lng]})
+    # Cluster via connected components (single-linkage): union any two
+    # hospitals within CLUSTER_RADIUS_M, then average each component to its
+    # centroid. This is order-independent — unlike greedy first-match
+    # assignment, where a shifting centroid made the result depend on
+    # iteration order. It also matches the stated rule: hospitals within
+    # 1000ft *of each other* merge.
+    parent = list(range(len(ok)))
+
+    def find(i: int) -> int:
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]  # path compression
+            i = parent[i]
+        return i
+
+    def union(i: int, j: int) -> None:
+        ri, rj = find(i), find(j)
+        if ri != rj:
+            parent[ri] = rj
+
+    for i in range(len(ok)):
+        for j in range(i + 1, len(ok)):
+            if haversine_m(ok[i][1], ok[i][2], ok[j][1], ok[j][2]) <= CLUSTER_RADIUS_M:
+                union(i, j)
+
+    components: dict[int, list[int]] = {}
+    for i in range(len(ok)):
+        components.setdefault(find(i), []).append(i)
+
+    clusters: list[dict] = []  # {lat, lng, members}
+    for idxs in components.values():
+        members = [ok[i][0] for i in idxs]
+        clusters.append({
+            "lat": sum(ok[i][1] for i in idxs) / len(idxs),
+            "lng": sum(ok[i][2] for i in idxs) / len(idxs),
+            "members": members,
+        })
 
     # Sort clusters by display name
     clusters.sort(key=lambda c: cluster_name(c["members"]))
