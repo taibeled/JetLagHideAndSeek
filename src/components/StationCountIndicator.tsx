@@ -15,7 +15,7 @@ import { useMemo } from "react";
 
 import { METRO_AREA_RAIL_STATIONS } from "@/data/metro-area-rail-stations";
 import { NYC_MAJOR_SUBWAY_STATIONS } from "@/data/nyc-subway-major-stations";
-import { playableTerritoryUnion, questions } from "@/lib/context";
+import { playableTerritoryUnion } from "@/lib/context";
 import { cn } from "@/lib/utils";
 
 // Combine subway + metro rail into one flat list for counting.
@@ -41,10 +41,16 @@ const SYSTEM_LABEL: Record<string, string> = {
 
 export const StationCountIndicator = () => {
     const $territory = useStore(playableTerritoryUnion);
-    const $questions = useStore(questions);
 
     const { activeCount, bySystem } = useMemo(() => {
-        if (!$territory) return { activeCount: null, bySystem: {} };
+        // No territory yet (no questions applied) — show full count.
+        if (!$territory) {
+            const bySystem: Record<string, number> = {};
+            for (const s of ALL_STATIONS) {
+                bySystem[s.system] = (bySystem[s.system] ?? 0) + 1;
+            }
+            return { activeCount: TOTAL, bySystem };
+        }
 
         const bySystem: Record<string, number> = {};
         let activeCount = 0;
@@ -58,9 +64,6 @@ export const StationCountIndicator = () => {
 
         return { activeCount, bySystem };
     }, [$territory]);
-
-    // Nothing to show until questions have been applied and territory computed.
-    if (activeCount === null || $questions.length === 0) return null;
 
     const pct = activeCount / TOTAL;
     const eliminated = TOTAL - activeCount;
