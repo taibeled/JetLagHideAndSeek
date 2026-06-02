@@ -81,51 +81,31 @@ async function handleRequest(request: Request, url: URL): Promise<Response> {
         );
     }
 
-    // Size cap
-    const declaredLength = upstream.headers.get("content-length");
-    if (declaredLength && parseInt(declaredLength, 10) > MAX_BYTES) {
-        return jsonError(413, `Response too large (cap ${MAX_BYTES} bytes)`);
+    // Buffer the FULL response, then return it. Deliberately NOT streamed:
+    // Node's fetch (undici) auto-decompresses gzip/br bodies, so the upstream
+    // Content-Length (compressed size) no longer matches the decompressed
+    // bytes. A hand-rolled streaming proxy that forwards that header — or
+    // whose background writer is cut short by the Node adapter — truncates the
+    // JSON mid-stream ("Overpass returned data that is not valid JSON").
+    // Buffering lets `new Response(buf)` set a correct Content-Length and
+    // makes truncation impossible. These APIs return a few MB at most.
+    let buf: ArrayBuffer;
+    try {
+        buf = await upstream.arrayBuffer();
+    } catch (err) {
+        return jsonError(
+            502,
+            `Failed reading upstream body: ${err instanceof Error ? err.message : String(err)}`,
+        );
     }
 
-    const { readable, writable } = new TransformStream<
-        Uint8Array,
-        Uint8Array
-    >();
-    const writer = writable.getWriter();
+    if (buf.byteLength > MAX_BYTES) {
+        return jsonError(
+            413,
+            `Response is ${buf.byteLength} bytes, cap is ${MAX_BYTES}.`,
+        );
+    }
 
-    (async () => {
-        if (!upstream.body) {
-            await writer.close();
-            return;
-        }
-        const reader = upstream.body.getReader();
-        let bytes = 0;
-        try {
-            for (;;) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                if (value) {
-                    bytes += value.byteLength;
-                    if (bytes > MAX_BYTES) {
-                        await writer.abort(new Error("Response exceeded cap"));
-                        return;
-                    }
-                    await writer.write(value);
-                }
-            }
-            await writer.close();
-        } catch (err) {
-            await writer.abort(err);
-        }
-    })();
-
-    // IMPORTANT: do NOT forward Content-Length or Content-Encoding.
-    // Node's fetch (undici) auto-decompresses gzip/br responses, so the body
-    // we re-stream is already decompressed — but the upstream Content-Length
-    // describes the COMPRESSED size. Forwarding it makes the client stop
-    // reading early, truncating the JSON mid-stream (e.g. Overpass responses
-    // cut off at ~50KB). Omitting it lets the response stream chunked so the
-    // client reads the full decompressed body.
     const headers = new Headers({
         "access-control-allow-origin": "*",
         "access-control-expose-headers": "content-type",
@@ -134,7 +114,7 @@ async function handleRequest(request: Request, url: URL): Promise<Response> {
         "cache-control": "private, max-age=0, no-cache",
     });
 
-    return new Response(readable, { status: 200, headers });
+    return new Response(buf, { status: 200, headers });
 }
 
 export const GET: APIRoute = ({ request, url }) => handleRequest(request, url);
