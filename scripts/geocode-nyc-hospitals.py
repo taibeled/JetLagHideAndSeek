@@ -59,21 +59,47 @@ def haversine_m(lat1, lon1, lat2, lon2):
     return R * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
 
+# ── Nominatim query (resilient) ───────────────────────────────────────────────
+def _nominatim_query(params):
+    """Run one Nominatim search. Returns the parsed JSON list, or None on any
+    failure (timeout, 429/5xx, HTML error page, non-JSON body). Never raises —
+    a single bad response must not crash a multi-hundred-row geocoding run."""
+    try:
+        resp = requests.get(
+            NOMINATIM_URL,
+            params=params,
+            headers={"User-Agent": USER_AGENT},
+            timeout=10,
+        )
+    except requests.RequestException as e:
+        print(f"[req error: {e}]", end="  ", flush=True)
+        return None
+    if not resp.ok:
+        snippet = resp.text[:120].replace("\n", " ")
+        print(f"[HTTP {resp.status_code}: {snippet}]", end="  ", flush=True)
+        return None
+    if "json" not in resp.headers.get("content-type", "").lower():
+        snippet = resp.text[:120].replace("\n", " ")
+        print(f"[non-JSON: {snippet}]", end="  ", flush=True)
+        return None
+    try:
+        return resp.json()
+    except ValueError as e:
+        print(f"[bad JSON: {e}]", end="  ", flush=True)
+        return None
+
+
 # ── Geocode one hospital ──────────────────────────────────────────────────────
 def geocode(name, address, city, state):
-    headers = {"User-Agent": USER_AGENT}
-
     # Attempt 1: structured query
-    params = {
+    results = _nominatim_query({
         "street": address,
         "city": city,
         "state": state,
         "country": "US",
         "format": "json",
         "limit": 1,
-    }
-    resp = requests.get(NOMINATIM_URL, params=params, headers=headers, timeout=10)
-    results = resp.json()
+    })
     if results:
         r = results[0]
         return float(r["lat"]), float(r["lon"]), "structured"
@@ -81,9 +107,9 @@ def geocode(name, address, city, state):
     time.sleep(SLEEP_S)
 
     # Attempt 2: free-text fallback — include hospital name for better match
-    params2 = {"q": f"{name}, {address}, {city}, NY, USA", "format": "json", "limit": 1}
-    resp2 = requests.get(NOMINATIM_URL, params=params2, headers=headers, timeout=10)
-    results2 = resp2.json()
+    results2 = _nominatim_query(
+        {"q": f"{name}, {address}, {city}, NY, USA", "format": "json", "limit": 1}
+    )
     if results2:
         r = results2[0]
         return float(r["lat"]), float(r["lon"]), "fallback"
