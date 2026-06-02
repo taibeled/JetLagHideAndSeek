@@ -87,9 +87,15 @@ async function handleRequest(request: Request, url: URL): Promise<Response> {
     }
 
     if (!upstream.ok) {
+        // Forward Retry-After on rate-limit/unavailable responses (429/503)
+        // so overpass.ts can honor the server's requested backoff instead of
+        // falling back to its fixed minimum. This is the only place it's
+        // meaningful — Retry-After never appears on the 200 path below.
+        const retryAfter = upstream.headers.get("retry-after");
         return jsonError(
             upstream.status,
             `Upstream returned HTTP ${upstream.status}: ${upstream.statusText}`,
+            retryAfter ? { "retry-after": retryAfter } : undefined,
         );
     }
 
@@ -137,12 +143,19 @@ function isAllowedHost(hostname: string): boolean {
     return ALLOWED_HOSTS.some((h) => lower === h || lower.endsWith(`.${h}`));
 }
 
-function jsonError(status: number, message: string): Response {
-    return new Response(JSON.stringify({ error: message }), {
-        status,
-        headers: {
-            "content-type": "application/json",
-            "access-control-allow-origin": "*",
-        },
-    });
+function jsonError(
+    status: number,
+    message: string,
+    extraHeaders?: Record<string, string>,
+): Response {
+    const headers: Record<string, string> = {
+        "content-type": "application/json",
+        "access-control-allow-origin": "*",
+        ...extraHeaders,
+    };
+    // Let the browser read retry-after cross-origin when we forward it.
+    if (extraHeaders?.["retry-after"]) {
+        headers["access-control-expose-headers"] = "retry-after";
+    }
+    return new Response(JSON.stringify({ error: message }), { status, headers });
 }
