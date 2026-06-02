@@ -122,7 +122,6 @@ export function supportsOrdinaryFacilityOsmPicks(type: string): boolean {
     return type === "major-city" || type === "city" || type.endsWith("-full");
 }
 
-
 /** Unfiltered OSM facility points for UI lists (major-city / city and *-full). */
 export async function listOrdinaryFacilityVoronoiCandidates(q: {
     type: string;

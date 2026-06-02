@@ -10,9 +10,7 @@ const OVERPASS_API_FALLBACK = "https://overpass.private.coffee/api/interpreter";
  * In dev, hit the APIs directly (no proxy overhead, no Railway needed).
  */
 const proxy = (url: string): string =>
-    import.meta.env.DEV
-        ? url
-        : `/api/proxy-api?url=${encodeURIComponent(url)}`;
+    import.meta.env.DEV ? url : `/api/proxy-api?url=${encodeURIComponent(url)}`;
 
 /**
  * Interpreter endpoints tried in order. Public .de first; private.coffee

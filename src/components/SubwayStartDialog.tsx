@@ -58,13 +58,10 @@ export function SubwayStartDialog({ children }: Props) {
 
     const reroll = useCallback(() => setStation(pick()), []);
 
-    const handleOpenChange = useCallback(
-        (next: boolean) => {
-            if (next) setStation(pick());
-            setOpen(next);
-        },
-        [],
-    );
+    const handleOpenChange = useCallback((next: boolean) => {
+        if (next) setStation(pick());
+        setOpen(next);
+    }, []);
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>

@@ -39,10 +39,7 @@ async function handleRequest(request: Request, url: URL): Promise<Response> {
     }
 
     if (!isAllowedHost(targetUrl.hostname)) {
-        return jsonError(
-            403,
-            `Host not on allow-list: ${targetUrl.hostname}`,
-        );
+        return jsonError(403, `Host not on allow-list: ${targetUrl.hostname}`);
     }
 
     if (targetUrl.protocol !== "http:" && targetUrl.protocol !== "https:") {
@@ -90,11 +87,17 @@ async function handleRequest(request: Request, url: URL): Promise<Response> {
         return jsonError(413, `Response too large (cap ${MAX_BYTES} bytes)`);
     }
 
-    const { readable, writable } = new TransformStream<Uint8Array, Uint8Array>();
+    const { readable, writable } = new TransformStream<
+        Uint8Array,
+        Uint8Array
+    >();
     const writer = writable.getWriter();
 
     (async () => {
-        if (!upstream.body) { await writer.close(); return; }
+        if (!upstream.body) {
+            await writer.close();
+            return;
+        }
         const reader = upstream.body.getReader();
         let bytes = 0;
         try {
@@ -119,7 +122,8 @@ async function handleRequest(request: Request, url: URL): Promise<Response> {
     const headers = new Headers({
         "access-control-allow-origin": "*",
         "access-control-expose-headers": "content-length, content-type",
-        "content-type": upstream.headers.get("content-type") ?? "application/json",
+        "content-type":
+            upstream.headers.get("content-type") ?? "application/json",
         "cache-control": "private, max-age=0, no-cache",
     });
     const len = upstream.headers.get("content-length");

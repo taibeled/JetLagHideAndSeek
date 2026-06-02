@@ -18,7 +18,10 @@ export const NYC_HOSPITALS: NycHospital[] = [
         lat: 40.846509,
         lng: -73.839401,
         ref: "bronx-psychiatric-center-new-york-city-c",
-        members: ["Bronx Psychiatric Center", "New York City Childrens Center - Bronx Campus (FKA Bronx Childrens Psychiatric Center)"],
+        members: [
+            "Bronx Psychiatric Center",
+            "New York City Childrens Center - Bronx Campus (FKA Bronx Childrens Psychiatric Center)",
+        ],
     },
     {
         name: "BronxCare Hospital Center - Fulton Campus",
@@ -36,10 +39,12 @@ export const NYC_HOSPITALS: NycHospital[] = [
     },
     {
         name: "Brookdale University Hospital Medical Center (FKA Brookdale Hospital Medical Center)",
-        lat: 40.659800,
-        lng: -73.913500,
+        lat: 40.6598,
+        lng: -73.9135,
         ref: "brookdale-university-hospital-medical-ce",
-        members: ["Brookdale University Hospital Medical Center (FKA Brookdale Hospital Medical Center)"],
+        members: [
+            "Brookdale University Hospital Medical Center (FKA Brookdale Hospital Medical Center)",
+        ],
     },
     {
         name: "Brooklyn Hospital Center at Downtown Campus",
@@ -60,21 +65,31 @@ export const NYC_HOSPITALS: NycHospital[] = [
         lat: 40.848626,
         lng: -73.845013,
         ref: "calvary-hospital-bronx-campus-montefiore",
-        members: ["Calvary Hospital - Bronx Campus", "Montefiore Hospital - Einstein Campus (AKA Jack D Weiler Hospital)"],
+        members: [
+            "Calvary Hospital - Bronx Campus",
+            "Montefiore Hospital - Einstein Campus (AKA Jack D Weiler Hospital)",
+        ],
     },
     {
         name: "Calvary Hospital - Brooklyn Campus / NYU Langone Hospital - Brooklyn (FKA NYU Lutheran Medical Center)",
         lat: 40.646673,
         lng: -74.020906,
         ref: "calvary-hospital-brooklyn-campus-nyu-lan",
-        members: ["Calvary Hospital - Brooklyn Campus", "NYU Langone Hospital - Brooklyn (FKA NYU Lutheran Medical Center)"],
+        members: [
+            "Calvary Hospital - Brooklyn Campus",
+            "NYU Langone Hospital - Brooklyn (FKA NYU Lutheran Medical Center)",
+        ],
     },
     {
         name: "Childrens Hospital at Montefiore / Montefiore Hospital - Moses Campus / NYC Health and Hospitals - North Central Bronx (FKA North Central Bronx Hospital)",
         lat: 40.880272,
         lng: -73.880046,
         ref: "childrens-hospital-at-montefiore-montefi",
-        members: ["Childrens Hospital at Montefiore", "Montefiore Hospital - Moses Campus", "NYC Health and Hospitals - North Central Bronx (FKA North Central Bronx Hospital)"],
+        members: [
+            "Childrens Hospital at Montefiore",
+            "Montefiore Hospital - Moses Campus",
+            "NYC Health and Hospitals - North Central Bronx (FKA North Central Bronx Hospital)",
+        ],
     },
     {
         name: "Creedmoor Psychiatric Center",
@@ -102,14 +117,23 @@ export const NYC_HOSPITALS: NycHospital[] = [
         lat: 40.7416,
         lng: -73.9718,
         ref: "helen-l-and-martin-s-kimmel-pavilion-nyu",
-        members: ["Helen L and Martin S Kimmel Pavilion", "NYU Langone Hassenfeld Childrens Hospital"],
+        members: [
+            "Helen L and Martin S Kimmel Pavilion",
+            "NYU Langone Hassenfeld Childrens Hospital",
+        ],
     },
     {
         name: "Hospital for Special Surgery (campus)",
         lat: 40.764325,
         lng: -73.954664,
         ref: "hospital-for-special-surgery-campus",
-        members: ["Hospital for Special Surgery", "NewYork-Presbyterian Alexandra Cohen Hospital for Women & Newborns", "NewYork-Presbyterian Komansky Childrens Hospital", "NewYork-Presbyterian Weill Cornell Medical Center", "Rockefeller University Hospital"],
+        members: [
+            "Hospital for Special Surgery",
+            "NewYork-Presbyterian Alexandra Cohen Hospital for Women & Newborns",
+            "NewYork-Presbyterian Komansky Childrens Hospital",
+            "NewYork-Presbyterian Weill Cornell Medical Center",
+            "Rockefeller University Hospital",
+        ],
     },
     {
         name: "Interfaith Medical Center",
@@ -127,24 +151,30 @@ export const NYC_HOSPITALS: NycHospital[] = [
     },
     {
         name: "James J Peters VA Medical Center",
-        lat: 40.867200,
+        lat: 40.8672,
         lng: -73.905511,
         ref: "james-j-peters-va-medical-center",
         members: ["James J Peters VA Medical Center"],
     },
     {
         name: "Kingsboro Psychiatric Center / Kingsbrook Jewish Medical Center",
-        lat: 40.658530,
+        lat: 40.65853,
         lng: -73.933835,
         ref: "kingsboro-psychiatric-center-kingsbrook",
-        members: ["Kingsboro Psychiatric Center", "Kingsbrook Jewish Medical Center"],
+        members: [
+            "Kingsboro Psychiatric Center",
+            "Kingsbrook Jewish Medical Center",
+        ],
     },
     {
         name: "Kirby Forensic Psychiatric Center / Manhattan Psychiatric Center",
         lat: 40.789226,
         lng: -73.929835,
         ref: "kirby-forensic-psychiatric-center-manhat",
-        members: ["Kirby Forensic Psychiatric Center", "Manhattan Psychiatric Center"],
+        members: [
+            "Kirby Forensic Psychiatric Center",
+            "Manhattan Psychiatric Center",
+        ],
     },
     {
         name: "Lenox Hill Hospital",
@@ -156,13 +186,15 @@ export const NYC_HOSPITALS: NycHospital[] = [
     {
         name: "Long Island Jewish Forest Hills (FKA Forest Hills Hospital)",
         lat: 40.728949,
-        lng: -73.850140,
+        lng: -73.85014,
         ref: "long-island-jewish-forest-hills-fka-fore",
-        members: ["Long Island Jewish Forest Hills (FKA Forest Hills Hospital)"],
+        members: [
+            "Long Island Jewish Forest Hills (FKA Forest Hills Hospital)",
+        ],
     },
     {
         name: "Maimonides Childrens Hospital / Maimonides Medical Center",
-        lat: 40.639420,
+        lat: 40.63942,
         lng: -73.998107,
         ref: "maimonides-childrens-hospital-maimonides",
         members: ["Maimonides Childrens Hospital", "Maimonides Medical Center"],
@@ -172,14 +204,19 @@ export const NYC_HOSPITALS: NycHospital[] = [
         lat: 40.613893,
         lng: -73.948569,
         ref: "maimonides-midwood-community-hospital-fk",
-        members: ["Maimonides Midwood Community Hospital (FKA New York Community Hospital of Brooklyn)"],
+        members: [
+            "Maimonides Midwood Community Hospital (FKA New York Community Hospital of Brooklyn)",
+        ],
     },
     {
         name: "Manhattan VA Medical Center (AKA Margaret Cochran Corbin VA Campus) / NYC Health and Hospitals - Bellevue (FKA Bellevue Hospital Center)",
-        lat: 40.738010,
+        lat: 40.73801,
         lng: -73.976047,
         ref: "manhattan-va-medical-center-aka-margaret",
-        members: ["Manhattan VA Medical Center (AKA Margaret Cochran Corbin VA Campus)", "NYC Health and Hospitals - Bellevue (FKA Bellevue Hospital Center)"],
+        members: [
+            "Manhattan VA Medical Center (AKA Margaret Cochran Corbin VA Campus)",
+            "NYC Health and Hospitals - Bellevue (FKA Bellevue Hospital Center)",
+        ],
     },
     {
         name: "Memorial Sloan Kettering Cancer Center",
@@ -200,21 +237,29 @@ export const NYC_HOSPITALS: NycHospital[] = [
         lat: 40.618672,
         lng: -73.942974,
         ref: "mount-sinai-brooklyn-aka-mount-sinai-bet",
-        members: ["Mount Sinai Brooklyn (AKA Mount Sinai Beth Israel Brooklyn Medical Center - Kings Highway Division Brooklyn)"],
+        members: [
+            "Mount Sinai Brooklyn (AKA Mount Sinai Beth Israel Brooklyn Medical Center - Kings Highway Division Brooklyn)",
+        ],
     },
     {
         name: "Mount Sinai Kravis Childrens Hospital / The Mount Sinai Hospital (AKA Mount Sinai Medical Center)",
         lat: 40.789879,
         lng: -73.953241,
         ref: "mount-sinai-kravis-childrens-hospital-th",
-        members: ["Mount Sinai Kravis Childrens Hospital", "The Mount Sinai Hospital (AKA Mount Sinai Medical Center)"],
+        members: [
+            "Mount Sinai Kravis Childrens Hospital",
+            "The Mount Sinai Hospital (AKA Mount Sinai Medical Center)",
+        ],
     },
     {
         name: "Mount Sinai Morningside (FKA Mount Sinai St Lukes) / Mount Sinai Rehabilitation Center at Mount Sinai Morningside",
         lat: 40.805237,
         lng: -73.961388,
         ref: "mount-sinai-morningside-fka-mount-sinai",
-        members: ["Mount Sinai Morningside (FKA Mount Sinai St Lukes)", "Mount Sinai Rehabilitation Center at Mount Sinai Morningside"],
+        members: [
+            "Mount Sinai Morningside (FKA Mount Sinai St Lukes)",
+            "Mount Sinai Rehabilitation Center at Mount Sinai Morningside",
+        ],
     },
     {
         name: "Mount Sinai Queens",
@@ -228,95 +273,122 @@ export const NYC_HOSPITALS: NycHospital[] = [
         lat: 40.769713,
         lng: -73.986907,
         ref: "mount-sinai-west-fka-roosevelt-hospital",
-        members: ["Mount Sinai West (FKA Roosevelt Hospital Mount Sinai Roosevelt)"],
+        members: [
+            "Mount Sinai West (FKA Roosevelt Hospital Mount Sinai Roosevelt)",
+        ],
     },
     {
         name: "NYC Health and Hospitals - Carter (FKA Henry J Carter Specialty Hospital)",
         lat: 40.803012,
         lng: -73.941047,
         ref: "nyc-health-and-hospitals-carter-fka-henr",
-        members: ["NYC Health and Hospitals - Carter (FKA Henry J Carter Specialty Hospital)"],
+        members: [
+            "NYC Health and Hospitals - Carter (FKA Henry J Carter Specialty Hospital)",
+        ],
     },
     {
         name: "NYC Health and Hospitals - Elmhurst (FKA Elmhurst Hospital Center)",
         lat: 40.744775,
-        lng: -73.885650,
+        lng: -73.88565,
         ref: "nyc-health-and-hospitals-elmhurst-fka-el",
-        members: ["NYC Health and Hospitals - Elmhurst (FKA Elmhurst Hospital Center)"],
+        members: [
+            "NYC Health and Hospitals - Elmhurst (FKA Elmhurst Hospital Center)",
+        ],
     },
     {
         name: "NYC Health and Hospitals - Harlem (FKA Harlem Hospital Center)",
-        lat: 40.814710,
+        lat: 40.81471,
         lng: -73.939278,
         ref: "nyc-health-and-hospitals-harlem-fka-harl",
-        members: ["NYC Health and Hospitals - Harlem (FKA Harlem Hospital Center)"],
+        members: [
+            "NYC Health and Hospitals - Harlem (FKA Harlem Hospital Center)",
+        ],
     },
     {
         name: "NYC Health and Hospitals - Jacobi (FKA Jacobi Medical Center)",
-        lat: 40.856400,
+        lat: 40.8564,
         lng: -73.847412,
         ref: "nyc-health-and-hospitals-jacobi-fka-jaco",
-        members: ["NYC Health and Hospitals - Jacobi (FKA Jacobi Medical Center)"],
+        members: [
+            "NYC Health and Hospitals - Jacobi (FKA Jacobi Medical Center)",
+        ],
     },
     {
         name: "NYC Health and Hospitals - Kings County (FKA Kings County Hospital Center) / University Hospital at Downstate (AKA University Hospital of Brooklyn at SUNY Downstate Medical Center)",
         lat: 40.655698,
         lng: -73.944056,
         ref: "nyc-health-and-hospitals-kings-county-fk",
-        members: ["NYC Health and Hospitals - Kings County (FKA Kings County Hospital Center)", "University Hospital at Downstate (AKA University Hospital of Brooklyn at SUNY Downstate Medical Center)"],
+        members: [
+            "NYC Health and Hospitals - Kings County (FKA Kings County Hospital Center)",
+            "University Hospital at Downstate (AKA University Hospital of Brooklyn at SUNY Downstate Medical Center)",
+        ],
     },
     {
         name: "NYC Health and Hospitals - Lincoln (FKA Lincoln Medical & Mental Health Center)",
         lat: 40.817033,
-        lng: -73.924370,
+        lng: -73.92437,
         ref: "nyc-health-and-hospitals-lincoln-fka-lin",
-        members: ["NYC Health and Hospitals - Lincoln (FKA Lincoln Medical & Mental Health Center)"],
+        members: [
+            "NYC Health and Hospitals - Lincoln (FKA Lincoln Medical & Mental Health Center)",
+        ],
     },
     {
         name: "NYC Health and Hospitals - Metropolitan (FKA Metropolitan Hospital Center)",
         lat: 40.785037,
         lng: -73.944971,
         ref: "nyc-health-and-hospitals-metropolitan-fk",
-        members: ["NYC Health and Hospitals - Metropolitan (FKA Metropolitan Hospital Center)"],
+        members: [
+            "NYC Health and Hospitals - Metropolitan (FKA Metropolitan Hospital Center)",
+        ],
     },
     {
         name: "NYC Health and Hospitals - Queens (FKA Queens Hospital Center)",
-        lat: 40.717710,
+        lat: 40.71771,
         lng: -73.806014,
         ref: "nyc-health-and-hospitals-queens-fka-quee",
-        members: ["NYC Health and Hospitals - Queens (FKA Queens Hospital Center)"],
+        members: [
+            "NYC Health and Hospitals - Queens (FKA Queens Hospital Center)",
+        ],
     },
     {
         name: "NYC Health and Hospitals - Woodhull (FKA Woodhull Medical and Mental Health Center)",
         lat: 40.699336,
         lng: -73.942747,
         ref: "nyc-health-and-hospitals-woodhull-fka-wo",
-        members: ["NYC Health and Hospitals - Woodhull (FKA Woodhull Medical and Mental Health Center)"],
+        members: [
+            "NYC Health and Hospitals - Woodhull (FKA Woodhull Medical and Mental Health Center)",
+        ],
     },
     {
         name: "NYC Health and Hospitals South Brooklyn Health (AKA Ruth Bader Ginsburg Hospital)",
         lat: 40.585459,
         lng: -73.964872,
         ref: "nyc-health-and-hospitals-south-brooklyn",
-        members: ["NYC Health and Hospitals South Brooklyn Health (AKA Ruth Bader Ginsburg Hospital)"],
+        members: [
+            "NYC Health and Hospitals South Brooklyn Health (AKA Ruth Bader Ginsburg Hospital)",
+        ],
     },
     {
         name: "NYU Langone Orthopedic Hospital (FKA NYU Hospital for Joint Diseases)",
         lat: 40.734394,
         lng: -73.982991,
         ref: "nyu-langone-orthopedic-hospital-fka-nyu",
-        members: ["NYU Langone Orthopedic Hospital (FKA NYU Hospital for Joint Diseases)"],
+        members: [
+            "NYU Langone Orthopedic Hospital (FKA NYU Hospital for Joint Diseases)",
+        ],
     },
     {
         name: "New York City Childrens Center - Queens Campus (FKA Queens Childrens Psychiatric Center)",
         lat: 40.745442,
         lng: -73.725772,
         ref: "new-york-city-childrens-center-queens-ca",
-        members: ["New York City Childrens Center - Queens Campus (FKA Queens Childrens Psychiatric Center)"],
+        members: [
+            "New York City Childrens Center - Queens Campus (FKA Queens Childrens Psychiatric Center)",
+        ],
     },
     {
         name: "New York Eye and Ear Infirmary of Mount Sinai",
-        lat: 40.731880,
+        lat: 40.73188,
         lng: -73.984581,
         ref: "new-york-eye-and-ear-infirmary-of-mount",
         members: ["New York Eye and Ear Infirmary of Mount Sinai"],
@@ -340,21 +412,28 @@ export const NYC_HOSPITALS: NycHospital[] = [
         lat: 40.665846,
         lng: -73.986116,
         ref: "newyork-presbyterian-brooklyn-methodist",
-        members: ["NewYork-Presbyterian Brooklyn Methodist Hospital (FKA New York Methodist Hospital)"],
+        members: [
+            "NewYork-Presbyterian Brooklyn Methodist Hospital (FKA New York Methodist Hospital)",
+        ],
     },
     {
         name: "NewYork-Presbyterian Columbia University Irving Medical Center / Sloane Hospital for Women at NewYork-Presbyterian Morgan Stanley Childrens Hospital",
         lat: 40.840519,
         lng: -73.940955,
         ref: "newyork-presbyterian-columbia-university",
-        members: ["NewYork-Presbyterian Columbia University Irving Medical Center", "Sloane Hospital for Women at NewYork-Presbyterian Morgan Stanley Childrens Hospital"],
+        members: [
+            "NewYork-Presbyterian Columbia University Irving Medical Center",
+            "Sloane Hospital for Women at NewYork-Presbyterian Morgan Stanley Childrens Hospital",
+        ],
     },
     {
         name: "NewYork-Presbyterian Lower Manhattan Hospital (AKA New York Downtown Hospital)",
-        lat: 40.710290,
+        lat: 40.71029,
         lng: -74.004937,
         ref: "newyork-presbyterian-lower-manhattan-hos",
-        members: ["NewYork-Presbyterian Lower Manhattan Hospital (AKA New York Downtown Hospital)"],
+        members: [
+            "NewYork-Presbyterian Lower Manhattan Hospital (AKA New York Downtown Hospital)",
+        ],
     },
     {
         name: "NewYork-Presbyterian Queens",
@@ -379,8 +458,8 @@ export const NYC_HOSPITALS: NycHospital[] = [
     },
     {
         name: "Saint Marys Hospital for Children",
-        lat: 40.756600,
-        lng: -73.727800,
+        lat: 40.7566,
+        lng: -73.7278,
         ref: "saint-marys-hospital-for-children",
         members: ["Saint Marys Hospital for Children"],
     },
@@ -410,7 +489,9 @@ export const NYC_HOSPITALS: NycHospital[] = [
         lat: 40.598688,
         lng: -73.753461,
         ref: "st-johns-episcopal-hospital-aka-episcopa",
-        members: ["St Johns Episcopal Hospital (AKA Episcopal Health Services Inc)"],
+        members: [
+            "St Johns Episcopal Hospital (AKA Episcopal Health Services Inc)",
+        ],
     },
     {
         name: "Staten Island University Hospital - North Campus",
@@ -424,14 +505,18 @@ export const NYC_HOSPITALS: NycHospital[] = [
         lat: 40.517087,
         lng: -74.196186,
         ref: "staten-island-university-hospital-south",
-        members: ["Staten Island University Hospital - South Campus (AKA Staten Island University Hospital - Prince Bay)"],
+        members: [
+            "Staten Island University Hospital - South Campus (AKA Staten Island University Hospital - Prince Bay)",
+        ],
     },
     {
         name: "The Specialty Hospital at ArchCare at Terence Cardinal Cooke Health Care Center (AKA ArchCare)",
         lat: 40.793747,
         lng: -73.950941,
         ref: "the-specialty-hospital-at-archcare-at-te",
-        members: ["The Specialty Hospital at ArchCare at Terence Cardinal Cooke Health Care Center (AKA ArchCare)"],
+        members: [
+            "The Specialty Hospital at ArchCare at Terence Cardinal Cooke Health Care Center (AKA ArchCare)",
+        ],
     },
     {
         name: "Tisch Hospital",

@@ -21,22 +21,30 @@ import { cn } from "@/lib/utils";
 // Combine subway + metro rail into one flat list for counting.
 // Each entry just needs { lat, lng } for the point-in-polygon check.
 const ALL_STATIONS = [
-    ...NYC_MAJOR_SUBWAY_STATIONS.map((s) => ({ lat: s.lat, lng: s.lng, system: "Subway" as const })),
-    ...METRO_AREA_RAIL_STATIONS.map((s) => ({ lat: s.lat, lng: s.lng, system: s.system })),
+    ...NYC_MAJOR_SUBWAY_STATIONS.map((s) => ({
+        lat: s.lat,
+        lng: s.lng,
+        system: "Subway" as const,
+    })),
+    ...METRO_AREA_RAIL_STATIONS.map((s) => ({
+        lat: s.lat,
+        lng: s.lng,
+        system: s.system,
+    })),
 ];
 
 const TOTAL = ALL_STATIONS.length;
 
 // Display-friendly label for each system key
 const SYSTEM_LABEL: Record<string, string> = {
-    Subway:      "NYC Subway",
-    LIRR:        "LIRR",
-    MNR:         "Metro-North",
-    NJT:         "NJ Transit",
-    NJLR:        "NJ Light Rail",
-    SEPTA:       "SEPTA",
-    Amtrak:      "Amtrak",
-    HartfordLine:"Hartford Line",
+    Subway: "NYC Subway",
+    LIRR: "LIRR",
+    MNR: "Metro-North",
+    NJT: "NJ Transit",
+    NJLR: "NJ Light Rail",
+    SEPTA: "SEPTA",
+    Amtrak: "Amtrak",
+    HartfordLine: "Hartford Line",
 };
 
 export const StationCountIndicator = () => {
@@ -56,7 +64,12 @@ export const StationCountIndicator = () => {
         let activeCount = 0;
 
         for (const s of ALL_STATIONS) {
-            if (turf.booleanPointInPolygon(turf.point([s.lng, s.lat]), $territory)) {
+            if (
+                turf.booleanPointInPolygon(
+                    turf.point([s.lng, s.lat]),
+                    $territory,
+                )
+            ) {
                 activeCount++;
                 bySystem[s.system] = (bySystem[s.system] ?? 0) + 1;
             }
@@ -101,7 +114,12 @@ export const StationCountIndicator = () => {
 
             {/* Big count */}
             <div className="flex items-baseline gap-1.5">
-                <span className={cn("text-2xl font-bold tabular-nums leading-none", countColor)}>
+                <span
+                    className={cn(
+                        "text-2xl font-bold tabular-nums leading-none",
+                        countColor,
+                    )}
+                >
                     {activeCount.toLocaleString()}
                 </span>
                 <span className="text-sm text-white/60">
@@ -112,7 +130,10 @@ export const StationCountIndicator = () => {
             {/* Progress bar */}
             <div className="mt-2 h-1.5 w-full rounded-full bg-white/10">
                 <div
-                    className={cn("h-full rounded-full transition-all duration-500", barColor)}
+                    className={cn(
+                        "h-full rounded-full transition-all duration-500",
+                        barColor,
+                    )}
                     style={{ width: `${Math.max(pct * 100, 1)}%` }}
                 />
             </div>
@@ -121,7 +142,10 @@ export const StationCountIndicator = () => {
             {activeSystems.length > 0 && activeSystems.length <= 6 && (
                 <div className="mt-2 space-y-0.5 border-t border-white/10 pt-1.5">
                     {activeSystems.map(([sys, n]) => (
-                        <div key={sys} className="flex justify-between text-[11px] text-white/50">
+                        <div
+                            key={sys}
+                            className="flex justify-between text-[11px] text-white/50"
+                        >
                             <span>{SYSTEM_LABEL[sys] ?? sys}</span>
                             <span className="tabular-nums">{n}</span>
                         </div>

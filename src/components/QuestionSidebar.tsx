@@ -2,7 +2,6 @@ import { useStore } from "@nanostores/react";
 import { SidebarCloseIcon } from "lucide-react";
 
 import { AddQuestionDialog } from "@/components/AddQuestionDialog";
-import { SubwayStartDialog } from "@/components/SubwayStartDialog";
 import {
     MatchingQuestionComponent,
     MeasuringQuestionComponent,
@@ -10,6 +9,7 @@ import {
     TentacleQuestionComponent,
     ThermometerQuestionComponent,
 } from "@/components/QuestionCards";
+import { SubwayStartDialog } from "@/components/SubwayStartDialog";
 import {
     Sidebar,
     SidebarContent,

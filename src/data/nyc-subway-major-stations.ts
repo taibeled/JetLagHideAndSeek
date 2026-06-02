@@ -2004,7 +2004,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
     },
     {
         name: "DeKalb Av",
-        borough: "Manhattan",
+        borough: "Brooklyn",
         lat: 40.7038,
         lng: -73.9184,
         lines: ["L"],
