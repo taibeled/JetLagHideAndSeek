@@ -176,6 +176,17 @@ const serwistIntegration = ({ disable }) => ({
 
 // https://astro.build/config
 export default defineConfig({
+    security: {
+        // Astro's default checkOrigin:true rejects form-encoded POSTs with
+        // "Cross-site POST form submissions are forbidden". Our Overpass proxy
+        // (/api/proxy-api) POSTs `application/x-www-form-urlencoded` bodies,
+        // and behind Railway's reverse proxy the internal host doesn't match
+        // the browser Origin, so even same-origin POSTs get blocked. This app
+        // has no auth, cookies, or state-changing endpoints — only stateless
+        // read proxies — so CSRF origin checking provides no protection and
+        // only breaks the proxy. Disable it.
+        checkOrigin: false,
+    },
     integrations: [
         react(),
         partytown({
