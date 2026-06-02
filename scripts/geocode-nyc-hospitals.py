@@ -4,12 +4,16 @@ Geocode NYC hospitals from NYC_All_Hospitals.xlsx using Nominatim,
 cluster hospitals within 1000 feet (305m), and output a TypeScript data file.
 
 Usage:
-    python scripts/geocode-nyc-hospitals.py
+    python scripts/geocode-nyc-hospitals.py --xlsx /path/to/NYC_All_Hospitals.xlsx
+
+    The xlsx file is not committed to the repo. Download it from NYC Open Data and
+    pass its path via --xlsx (or place it at <repo>/data/NYC_All_Hospitals.xlsx).
 
 Requires:
     pip install pandas openpyxl requests
 """
 
+import argparse
 import json
 import math
 import re
@@ -20,10 +24,25 @@ from pathlib import Path
 import pandas as pd
 import requests
 
+# ── Repo-relative defaults ────────────────────────────────────────────────────
+_REPO_ROOT = Path(__file__).resolve().parent.parent
+_DEFAULT_XLSX = _REPO_ROOT / "data" / "NYC_All_Hospitals.xlsx"
+_DEFAULT_OUTPUT_TS = _REPO_ROOT / "src" / "data" / "nyc-hospitals.ts"
+
+# ── CLI ───────────────────────────────────────────────────────────────────────
+_parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+_parser.add_argument("--xlsx", type=Path, default=_DEFAULT_XLSX,
+                     help="Path to NYC_All_Hospitals.xlsx (default: %(default)s)")
+_parser.add_argument("--output", type=Path, default=_DEFAULT_OUTPUT_TS,
+                     help="Output TypeScript file (default: %(default)s)")
+_parser.add_argument("--progress", type=Path, default=Path("/tmp/nyc_hospitals_geocoded.json"),
+                     help="Geocoding progress cache (default: %(default)s)")
+_args = _parser.parse_args()
+
 # ── Config ────────────────────────────────────────────────────────────────────
-XLSX_PATH = Path("/Users/nick_pruitt/Documents/NYC_All_Hospitals.xlsx")
-PROGRESS_FILE = Path("/tmp/nyc_hospitals_geocoded.json")
-OUTPUT_TS = Path("/Users/nick_pruitt/Downloads/JetLagHideAndSeek/src/data/nyc-hospitals.ts")
+XLSX_PATH = _args.xlsx
+PROGRESS_FILE = _args.progress
+OUTPUT_TS = _args.output
 CLUSTER_RADIUS_M = 305  # ~1000 feet
 NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
 USER_AGENT = "JetLagHideAndSeek-geocoder"
