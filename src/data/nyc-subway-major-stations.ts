@@ -2654,7 +2654,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
     },
     {
         name: "Bay Ridge-95 St",
-        borough: "Staten Island",
+        borough: "Brooklyn",
         lat: 40.6166,
         lng: -74.0309,
         lines: ["R"],
