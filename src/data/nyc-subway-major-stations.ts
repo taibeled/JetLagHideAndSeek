@@ -44,7 +44,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
     },
     {
         name: "157 St",
-        borough: "Bronx",
+        borough: "Manhattan",
         lat: 40.834,
         lng: -73.9449,
         lines: ["1"],
@@ -64,7 +64,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
     },
     {
         name: "168 St-Washington Hts",
-        borough: "Bronx",
+        borough: "Manhattan",
         lat: 40.8406,
         lng: -73.9398,
         lines: ["1", "A", "C"],
@@ -94,7 +94,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
     },
     {
         name: "175 St",
-        borough: "Bronx",
+        borough: "Manhattan",
         lat: 40.8474,
         lng: -73.9397,
         lines: ["A"],
@@ -104,7 +104,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
     },
     {
         name: "181 St",
-        borough: "Bronx",
+        borough: "Manhattan",
         lat: 40.8495,
         lng: -73.9336,
         lines: ["1"],
@@ -114,7 +114,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
     },
     {
         name: "181 St",
-        borough: "Bronx",
+        borough: "Manhattan",
         lat: 40.8517,
         lng: -73.938,
         lines: ["A"],
@@ -124,7 +124,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
     },
     {
         name: "190 St",
-        borough: "Bronx",
+        borough: "Manhattan",
         lat: 40.859,
         lng: -73.9342,
         lines: ["A"],
@@ -134,7 +134,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
     },
     {
         name: "191 St",
-        borough: "Bronx",
+        borough: "Manhattan",
         lat: 40.8552,
         lng: -73.9294,
         lines: ["1"],
@@ -144,7 +144,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
     },
     {
         name: "207 St",
-        borough: "Bronx",
+        borough: "Manhattan",
         lat: 40.8646,
         lng: -73.9188,
         lines: ["1"],
@@ -154,7 +154,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
     },
     {
         name: "215 St",
-        borough: "Bronx",
+        borough: "Manhattan",
         lat: 40.8694,
         lng: -73.9153,
         lines: ["1"],
@@ -254,7 +254,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
     },
     {
         name: "Dyckman St",
-        borough: "Bronx",
+        borough: "Manhattan",
         lat: 40.8605,
         lng: -73.9255,
         lines: ["1"],
@@ -264,7 +264,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
     },
     {
         name: "Dyckman St",
-        borough: "Bronx",
+        borough: "Manhattan",
         lat: 40.8655,
         lng: -73.9273,
         lines: ["A"],
@@ -354,7 +354,7 @@ export const NYC_MAJOR_SUBWAY_STATIONS: SubwayStation[] = [
     },
     {
         name: "Inwood-207 St",
-        borough: "Bronx",
+        borough: "Manhattan",
         lat: 40.8681,
         lng: -73.9199,
         lines: ["A"],
