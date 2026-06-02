@@ -63,8 +63,7 @@ const CARTO_DARK_RASTER =
  * Default Leaflet GeoJSON fill (#3388ff @ 0.2) reads as a milky haze on dark
  * basemaps and dulls markers / tiles; tune per basemap theme.
  */
-function eliminationMaskPathOptions(): L.PathOptions {
-    const theme = baseTileLayer.get();
+function eliminationMaskPathOptions(theme: string): L.PathOptions {
     if (theme === "dark") {
         return {
             interactive: false,
@@ -262,6 +261,7 @@ export const Map = ({ className }: { className?: string }) => {
     );
     const refreshGenRef = useRef(0);
     const refreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const eliminationLayerRef = useRef<L.GeoJSON | null>(null);
 
     const refreshQuestions = async (focus: boolean = false) => {
         if (!map) return;
@@ -404,11 +404,12 @@ export const Map = ({ className }: { className?: string }) => {
             });
 
             const g = L.geoJSON(mapGeoData, {
-                style: () => eliminationMaskPathOptions(),
+                style: () => eliminationMaskPathOptions($baseTileLayer),
             });
             // @ts-expect-error This is a check such that only this type of layer is removed
             g.eliminationGeoJSON = true;
             g.addTo(map);
+            eliminationLayerRef.current = g;
 
             questionFinishedMapData.set(mapGeoData);
 
@@ -756,6 +757,14 @@ export const Map = ({ className }: { className?: string }) => {
         // `followMeMarkerRef` and `geoWatchIdRef` are refs, not values;
         // including them in deps would be a hook-rules false positive.
     }, [$followMe, map]);
+
+    // Re-style the elimination mask when the user switches basemap theme
+    // without triggering a full refreshQuestions cycle.
+    useEffect(() => {
+        eliminationLayerRef.current?.setStyle(
+            eliminationMaskPathOptions($baseTileLayer),
+        );
+    }, [$baseTileLayer]);
 
     useEffect(() => {
         if (!map) return;
