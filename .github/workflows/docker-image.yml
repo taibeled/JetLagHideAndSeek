@@ -31,6 +31,13 @@ jobs:
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
 
+            # tsc relies on Astro's generated .astro/types.d.ts for
+            # import.meta.env etc.; it doesn't exist in a fresh checkout, so
+            # generate it before type-checking (otherwise tsc fails with
+            # "Property 'env' does not exist on type 'ImportMeta'").
+            - name: Generate Astro types
+              run: pnpm exec astro sync
+
             - name: Type-check
               run: pnpm run typecheck:ts6
 
