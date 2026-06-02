@@ -9,8 +9,6 @@
     "ignoreDependencies": [
         "@astrojs/check",
         "@react-leaflet/core",
-        // @typescript-eslint/parser must stay as a direct devDep: eslint-plugin-astro
-        // uses it as a peer dep and pnpm does not hoist peers automatically.
         "@typescript-eslint/parser"
     ],
     "ignoreIssues": {
