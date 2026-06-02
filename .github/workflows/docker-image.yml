@@ -6,7 +6,39 @@ on:
     workflow_dispatch:
 
 jobs:
+    # Gate: typecheck + unit tests must pass before we build/push an image.
+    # astro/esbuild does NOT type-check and nothing else ran the test suite in
+    # CI, so type errors and broken contracts (e.g. the proxy regressions) used
+    # to ship silently. `build` depends on this job, so a red check blocks the
+    # image — and therefore the Railway deploy that watches this workflow.
+    test:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Set up pnpm
+              uses: pnpm/action-setup@v4
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "24"
+                  cache: pnpm
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Type-check
+              run: pnpm run typecheck:ts6
+
+            - name: Unit tests
+              run: pnpm test run
+
     build:
+        needs: test
         runs-on: ubuntu-latest
         permissions:
             contents: read
