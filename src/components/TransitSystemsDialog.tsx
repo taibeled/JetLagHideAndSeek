@@ -209,10 +209,10 @@ function TransitSystemsDialog({
         if (loading) return;
         const nextId = batchQueueRef.current.shift();
         if (!nextId) return;
-        const preset = GTFS_PRESETS.find(
-            (p) => p.id === nextId && p.kind === "public",
-        );
-        if (preset) {
+        const preset = GTFS_PRESETS.find((p) => p.id === nextId);
+        // Narrow to PublicPreset so `.url` is typed; byo-url presets can't
+        // auto-install (they need a user-supplied URL) and are skipped.
+        if (preset && preset.kind === "public") {
             handleImport({
                 kind: "url",
                 url: preset.url,
@@ -237,10 +237,8 @@ function TransitSystemsDialog({
         }
         const [first, ...rest] = toInstall;
         batchQueueRef.current = [...rest];
-        const preset = GTFS_PRESETS.find(
-            (p) => p.id === first && p.kind === "public",
-        );
-        if (preset) {
+        const preset = GTFS_PRESETS.find((p) => p.id === first);
+        if (preset && preset.kind === "public") {
             handleImport({
                 kind: "url",
                 url: preset.url,
