@@ -42,7 +42,7 @@ export default [
         settings: {
             "react-x": {
                 // Keep in sync with `dependencies.react` in package.json.
-                version: "19.2.5",
+                version: "19.2.7",
                 importSource: "react",
             },
         },
