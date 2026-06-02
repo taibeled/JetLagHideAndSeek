@@ -337,6 +337,21 @@ const getOverpassData = async (
         data = await response.json();
     } catch (err) {
         await debugOverpassFailure(response);
+        // A 200 with an unparseable body is almost always a truncated/partial
+        // response or an HTML error page slipping through — not real data.
+        // Treat it like a retryable failure: a fresh fetch (Overpass is
+        // NetworkOnly, so never served from cache) normally returns intact
+        // JSON. Only surface the toast once retries are exhausted.
+        if (_retryCount < OVERPASS_MAX_RETRIES) {
+            const delay = Math.min(1000 * (_retryCount + 1), 3000);
+            await new Promise((r) => setTimeout(r, delay));
+            return getOverpassData(
+                query,
+                loadingText,
+                cacheType,
+                _retryCount + 1,
+            );
+        }
         toast.error(
             `Overpass returned data that is not valid JSON: ${
                 err instanceof Error ? err.message : String(err)
