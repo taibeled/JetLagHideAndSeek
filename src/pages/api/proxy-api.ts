@@ -119,15 +119,20 @@ async function handleRequest(request: Request, url: URL): Promise<Response> {
         }
     })();
 
+    // IMPORTANT: do NOT forward Content-Length or Content-Encoding.
+    // Node's fetch (undici) auto-decompresses gzip/br responses, so the body
+    // we re-stream is already decompressed — but the upstream Content-Length
+    // describes the COMPRESSED size. Forwarding it makes the client stop
+    // reading early, truncating the JSON mid-stream (e.g. Overpass responses
+    // cut off at ~50KB). Omitting it lets the response stream chunked so the
+    // client reads the full decompressed body.
     const headers = new Headers({
         "access-control-allow-origin": "*",
-        "access-control-expose-headers": "content-length, content-type",
+        "access-control-expose-headers": "content-type",
         "content-type":
             upstream.headers.get("content-type") ?? "application/json",
         "cache-control": "private, max-age=0, no-cache",
     });
-    const len = upstream.headers.get("content-length");
-    if (len) headers.set("content-length", len);
 
     return new Response(readable, { status: 200, headers });
 }
