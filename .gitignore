@@ -25,13 +25,10 @@ test-results/
 # macOS-specific files
 .DS_Store
 
-# Local GTFS data files — too large for git, developer-supplied only
-public/gtfs/
-# Game-day feeds committed for Railway deployment (phone-accessible, no upload needed)
-!public/gtfs/njt-rail.zip
-!public/gtfs/septa-rail.zip
-!public/gtfs/hartford-line.zip
-!public/gtfs/amtrak.zip
+# Local GTFS data files — too large for git, developer-supplied only.
+# Specific game-day feeds are committed (njt-rail, septa, hartford-line, amtrak).
+# Ignore everything else in the directory (e.g. local dev nyct-subway.zip).
+public/gtfs/nyct-subway.zip
 
 # jetbrains setting folder
 .idea/
