@@ -23,7 +23,7 @@ export interface MetroRailStation {
     agency: string;
 }
 
-// 712 stations total
+// 711 stations total
 export const METRO_AREA_RAIL_STATIONS: MetroRailStation[] = [
     { name: "Aberdeen Amtrak Station", lat: 39.508447, lng: -76.16326, system: "Amtrak", agency: "Amtrak" },
     { name: "Albany-Rensselaer Amtrak Station", lat: 42.641029, lng: -73.741147, system: "Amtrak", agency: "Amtrak" },
@@ -554,7 +554,6 @@ export const METRO_AREA_RAIL_STATIONS: MetroRailStation[] = [
     { name: "RUTHERFORD", lat: 40.828248, lng: -74.100563, system: "NJT", agency: "NJ Transit Rail" },
     { name: "SALISBURY MILLS-CORNWALL", lat: 41.437073, lng: -74.101871, system: "NJT", agency: "NJ Transit Rail" },
     { name: "SECAUCUS LOWER LEVEL", lat: 40.761188, lng: -74.075821, system: "NJT", agency: "NJ Transit Rail" },
-    { name: "SECAUCUS UPPER LEVEL", lat: 40.761188, lng: -74.075821, system: "NJT", agency: "NJ Transit Rail" },
     { name: "SHORT HILLS", lat: 40.725249, lng: -74.323754, system: "NJT", agency: "NJ Transit Rail" },
     { name: "SLOATSBURG", lat: 41.157138, lng: -74.191307, system: "NJT", agency: "NJ Transit Rail" },
     { name: "SOMERVILLE", lat: 40.566075, lng: -74.61397, system: "NJT", agency: "NJ Transit Rail" },
