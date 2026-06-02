@@ -146,14 +146,16 @@ export const GTFS_PRESETS: GtfsPreset[] = [
 
 /**
  * Subset of presets to install in one tap for the NJ/NY/CT/PA large game.
- * Listed in install order — smaller feeds first so the UI feels responsive.
+ * Listed in install order — smaller feeds first (by zip size: SEPTA ~0.6MB,
+ * LIRR ~2.1MB, Hartford ~2.5MB, MNR ~4.1MB, NYC Subway ~5.3MB, NJT ~5.3MB,
+ * Amtrak ~17MB) so the first systems appear quickly and the UI feels responsive.
  */
 export const LARGE_GAME_PRESET_IDS = [
-    "nyct-subway",
-    "hartford-line",
     "septa",
     "lirr",
+    "hartford-line",
     "mnr",
+    "nyct-subway",
     "njt-rail",
     "amtrak",
 ] as const;
