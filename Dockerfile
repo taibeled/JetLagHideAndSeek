@@ -1,6 +1,6 @@
 FROM node:24-slim AS base
 # Activate the exact pnpm version declared in package.json.
-RUN corepack enable && corepack prepare pnpm@11.0.9 --activate
+RUN corepack enable && corepack prepare pnpm@11.5.1 --activate
 
 # ── Install ───────────────────────────────────────────────────────────────────
 # Separate stage so the node_modules layer is only invalidated when
@@ -8,7 +8,10 @@ RUN corepack enable && corepack prepare pnpm@11.0.9 --activate
 # pnpm install entirely via Docker layer cache.
 FROM base AS deps
 WORKDIR /app
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+# .npmrc carries `minimum-release-age=0` — without it, pnpm 11's default
+# supply-chain age policy rejects freshly-published packages (e.g. an astro
+# point release from today), failing `--frozen-lockfile` in the container.
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 RUN pnpm install --frozen-lockfile
 
 # ── Build ─────────────────────────────────────────────────────────────────────
