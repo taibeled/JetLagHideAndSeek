@@ -262,13 +262,38 @@ export const Map = ({ className }: { className?: string }) => {
     const refreshGenRef = useRef(0);
     const refreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const eliminationLayerRef = useRef<L.GeoJSON | null>(null);
+    // If a refresh is requested while one is already running, we record it
+    // here instead of dropping it. When the in-flight refresh finishes it
+    // re-runs once with the latest state. Without this, a new location/region
+    // chosen during a slow (10-40s) boundary fetch was silently discarded and
+    // wouldn't apply until the map was closed/reopened.
+    const pendingRefreshRef = useRef<{ focus: boolean } | null>(null);
 
     const refreshQuestions = async (focus: boolean = false) => {
         if (!map) return;
 
-        if (isLoading.get()) return;
+        if (isLoading.get()) {
+            // Don't drop this request — coalesce it. finishLoading() will
+            // re-run once the current refresh completes, so a location change
+            // made during a slow boundary fetch still takes effect.
+            pendingRefreshRef.current = { focus };
+            return;
+        }
 
         isLoading.set(true);
+
+        // Centralized "refresh finished" handler: clears the loading flag and,
+        // if a refresh was requested while we were busy, kicks off exactly one
+        // follow-up with the latest state (deferred a tick to let state settle
+        // and avoid synchronous recursion).
+        const finishLoading = () => {
+            const next = pendingRefreshRef.current;
+            isLoading.set(false);
+            if (next) {
+                pendingRefreshRef.current = null;
+                setTimeout(() => refreshQuestions(next.focus), 0);
+            }
+        };
 
         const gen = ++refreshGenRef.current;
 
@@ -315,7 +340,7 @@ export const Map = ({ className }: { className?: string }) => {
 
         if (!mapGeoData) {
             playableTerritoryUnion.set(null);
-            isLoading.set(false);
+            finishLoading();
             return;
         }
 
@@ -328,7 +353,7 @@ export const Map = ({ className }: { className?: string }) => {
         }
 
         if (gen !== refreshGenRef.current) {
-            isLoading.set(false);
+            finishLoading();
             return;
         }
 
@@ -443,8 +468,7 @@ export const Map = ({ className }: { className?: string }) => {
         } catch (error) {
             console.log(error);
             playableTerritoryUnion.set(null);
-
-            isLoading.set(false);
+            // isLoading is cleared in `finally` via finishLoading().
             // Previously this only fired if no other toast was visible —
             // fragile (could silently swallow the error while an unrelated
             // toast was on-screen) and opaque (users never saw what broke).
@@ -459,7 +483,7 @@ export const Map = ({ className }: { className?: string }) => {
                 autoClose: 6000,
             });
         } finally {
-            isLoading.set(false);
+            finishLoading();
         }
     };
 
