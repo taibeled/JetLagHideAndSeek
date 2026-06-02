@@ -78,6 +78,7 @@ const isLocalhost =
                 <script is:inline type="text/partytown">
                     window.dataLayer = window.dataLayer || [];
                     function gtag() {
+                        // eslint-disable-next-line prefer-rest-params -- GA4 requires Arguments object, not an Array
                         window.dataLayer.push(arguments);
                     }
                     gtag("js", new Date());
