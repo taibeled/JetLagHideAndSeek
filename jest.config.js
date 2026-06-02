@@ -9,4 +9,13 @@ module.exports = {
     transformIgnorePatterns: [
         "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|@maplibre/.*|@gorhom/.*|react-navigation|@react-navigation/.*)",
     ],
+    collectCoverageFrom: [
+        "src/**/*.{ts,tsx}",
+        "!src/**/*.d.ts",
+        "!src/**/*Types.ts",
+        "!src/**/types.ts",
+        "!src/theme/**",
+        "!src/config/**",
+    ],
+    coverageReporters: ["text", "lcov"],
 };
