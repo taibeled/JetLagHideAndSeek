@@ -61,8 +61,8 @@ def geocode(name, address, city, state):
 
     time.sleep(SLEEP_S)
 
-    # Attempt 2: free-text fallback
-    params2 = {"q": f"{address}, {city}, NY, USA", "format": "json", "limit": 1}
+    # Attempt 2: free-text fallback — include hospital name for better match
+    params2 = {"q": f"{name}, {address}, {city}, NY, USA", "format": "json", "limit": 1}
     resp2 = requests.get(NOMINATIM_URL, params=params2, headers=headers, timeout=10)
     results2 = resp2.json()
     if results2:
