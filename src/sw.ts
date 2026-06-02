@@ -103,8 +103,13 @@ const serwist = new Serwist({
             }),
         },
         {
-            // Photon geocoder (free-text search autocomplete).
-            matcher: /^https:\/\/photon\.komoot\.io\/api\/.*/i,
+            // Photon geocoder — direct in dev, proxied in prod via /api/proxy-api.
+            matcher: ({ url }: { url: URL }) =>
+                url.hostname === "photon.komoot.io" ||
+                (url.pathname === "/api/proxy-api" &&
+                    (url.searchParams.get("url") ?? "").includes(
+                        "photon.komoot.io",
+                    )),
             handler: new StaleWhileRevalidate({
                 cacheName: "geocoder-photon",
                 plugins: [
@@ -120,8 +125,13 @@ const serwist = new Serwist({
         {
             // Nominatim — boundary polygons + reverse geocoding. Cache
             // aggressively because boundaries are the expensive thing we
-            // want to survive a reload.
-            matcher: /^https:\/\/nominatim\.openstreetmap\.org\/.*/i,
+            // want to survive a reload. Matches both direct and proxied URLs.
+            matcher: ({ url }: { url: URL }) =>
+                url.hostname === "nominatim.openstreetmap.org" ||
+                (url.pathname === "/api/proxy-api" &&
+                    (url.searchParams.get("url") ?? "").includes(
+                        "nominatim.openstreetmap.org",
+                    )),
             handler: new StaleWhileRevalidate({
                 cacheName: "boundaries-nominatim",
                 plugins: [
@@ -135,13 +145,14 @@ const serwist = new Serwist({
             }),
         },
         {
-            // Overpass — must bypass caching strategies that touch the Cache
-            // API. StaleWhileRevalidate caused `no-response` / Failed to fetch
-            // in production (SW on Railway) while localhost worked (SW off by
-            // default): long unique GET URLs + SWR left the handler with no
-            // usable response. Network-only matches dev behavior.
-            matcher:
-                /^https:\/\/(overpass-api\.de|overpass\.kumi\.systems|overpass\.private\.coffee)\/api\/interpreter.*/i,
+            // Overpass — network-only (see comment below). Matches both
+            // direct domain (dev) and /api/proxy-api (prod).
+            matcher: ({ url }: { url: URL }) =>
+                /^(overpass-api\.de|overpass\.kumi\.systems|overpass\.private\.coffee)$/.test(
+                    url.hostname,
+                ) ||
+                (url.pathname === "/api/proxy-api" &&
+                    /overpass/.test(url.searchParams.get("url") ?? "")),
             method: "GET" as const,
             handler: new NetworkOnly(),
         },

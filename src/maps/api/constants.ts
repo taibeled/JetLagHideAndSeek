@@ -4,23 +4,34 @@ export const OVERPASS_API = "https://overpass-api.de/api/interpreter";
 const OVERPASS_API_FALLBACK = "https://overpass.private.coffee/api/interpreter";
 
 /**
+ * In production, route all external API calls through /api/proxy-api so
+ * ad blockers targeting overpass-api.de, photon.komoot.io, etc. can't
+ * interfere — the browser only ever sees requests to the Railway domain.
+ * In dev, hit the APIs directly (no proxy overhead, no Railway needed).
+ */
+const proxy = (url: string): string =>
+    import.meta.env.DEV
+        ? url
+        : `/api/proxy-api?url=${encodeURIComponent(url)}`;
+
+/**
  * Interpreter endpoints tried in order. Public .de first; private.coffee
  * before kumi because kumi often returns 504 under load while other mirrors
  * succeed. Cache keys stay {@link OVERPASS_API}?data=… for hits across mirrors.
  */
 export const OVERPASS_INTERPRETER_URLS: readonly string[] = [
-    OVERPASS_API,
-    OVERPASS_API_FALLBACK,
-    "https://overpass.kumi.systems/api/interpreter",
+    proxy(OVERPASS_API),
+    proxy(OVERPASS_API_FALLBACK),
+    proxy("https://overpass.kumi.systems/api/interpreter"),
 ];
-export const GEOCODER_API = "https://photon.komoot.io/api/";
+export const GEOCODER_API = proxy("https://photon.komoot.io/api/");
 // Nominatim returns pre-simplified boundary polygons in ~50-200KB for
 // entire countries, versus 2-10MB from Overpass `out geom`. It's what
 // powers the OSM website's "view this relation" rendering and handles
 // `polygon_geojson=1` for any OSM relation/way/node id. Preferred for
 // the game-territory outline because Overpass regularly 504s on cold
 // loads for country-level relations.
-export const NOMINATIM_API = "https://nominatim.openstreetmap.org";
+export const NOMINATIM_API = proxy("https://nominatim.openstreetmap.org");
 export const PASTEBIN_API_POST_URL =
     "https://cors-anywhere.com/https://pastebin.com/api/api_post.php";
 export const PASTEBIN_API_RAW_URL = "https://pastebin.com/raw/";
