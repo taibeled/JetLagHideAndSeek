@@ -46,6 +46,18 @@ async function handleRequest(request: Request, url: URL): Promise<Response> {
         return jsonError(400, `Unsupported protocol: ${targetUrl.protocol}`);
     }
 
+    // The app builds proxied URLs by appending its own query string to the
+    // proxy base: `${proxyBase}?a=b&c=d` → `/api/proxy-api?url=<enc-base>?a=b&c=d`.
+    // The URL parser folds the FIRST appended param into the `url` value but
+    // leaves the rest as sibling params on OUR request. Without re-attaching
+    // them, multi-param calls silently lose everything after the first param —
+    // e.g. Photon's `q=` (→ 400 "Photon is down") and Nominatim's `format=`/
+    // `polygon_geojson=` (→ broken boundaries). Forward every non-`url` param.
+    for (const [key, value] of url.searchParams) {
+        if (key === "url") continue;
+        targetUrl.searchParams.append(key, value);
+    }
+
     const method = request.method;
     const body = method === "POST" ? await request.arrayBuffer() : undefined;
 
