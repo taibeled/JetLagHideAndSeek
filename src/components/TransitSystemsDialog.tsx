@@ -220,8 +220,7 @@ function TransitSystemsDialog({
                 name: preset.name,
             });
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [loading]);
+    }, [loading]); // intentionally omits handleImport — only fires on loading transitions
 
     /**
      * Install every preset in LARGE_GAME_PRESET_IDS that isn't already in IDB.
