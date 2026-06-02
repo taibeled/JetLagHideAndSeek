@@ -27,6 +27,11 @@ test-results/
 
 # Local GTFS data files — too large for git, developer-supplied only
 public/gtfs/
+# Game-day feeds committed for Railway deployment (phone-accessible, no upload needed)
+!public/gtfs/njt-rail.zip
+!public/gtfs/septa-rail.zip
+!public/gtfs/hartford-line.zip
+!public/gtfs/amtrak.zip
 
 # jetbrains setting folder
 .idea/

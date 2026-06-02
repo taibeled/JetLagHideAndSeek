@@ -15,6 +15,10 @@
  * in IDB, so "already installed?" checks are a simple set membership
  * test against `listSystems()`. Renaming an existing preset's id is a
  * breaking change — users will see duplicate rows after update.
+ *
+ * Game-day feeds (njt-rail, amtrak, septa, hartford-line) are committed
+ * to public/gtfs/ and served same-origin — no CORS proxy needed, works
+ * on mobile without any manual file upload.
  */
 
 export interface PublicPreset {
@@ -50,10 +54,11 @@ export interface ByoUrlPreset {
 export type GtfsPreset = PublicPreset | ByoUrlPreset;
 
 /**
- * Curated starter set — NYC Metro area commuter rail + Connecticut
- * Shore Line East. These are the systems the original JetLag crew
- * actually travels on. Add more here (any region, any rail mode) and
- * they'll appear in the dialog automatically.
+ * Curated starter set — NYC Metro area + NJ/CT/PA for large-territory games.
+ *
+ * MTA feeds (subway, LIRR, MNR) are served from MTA's S3 bucket.
+ * Game-day feeds (NJT, Amtrak, SEPTA, Hartford Line) are bundled in
+ * public/gtfs/ so they work on mobile with a single tap — no uploads.
  */
 export const GTFS_PRESETS: GtfsPreset[] = [
     {
@@ -64,10 +69,8 @@ export const GTFS_PRESETS: GtfsPreset[] = [
         region: "New York",
         description:
             "Full subway system. Updated a few times per year; represents the normal schedule without most temporary changes.",
-        // In local dev: serve from public/gtfs/nyct-subway.zip (gitignored,
-        // see .gitignore). Same-origin — no CORS, no proxy needed. In
-        // production: /api/proxy-gtfs handles the S3 fetch (S3 has no CORS
-        // headers so direct browser fetches fail without the proxy).
+        // In local dev: serve from public/gtfs/nyct-subway.zip (gitignored).
+        // In production: proxy fetches from MTA S3 (no CORS headers on S3).
         url: import.meta.env.DEV
             ? "/gtfs/nyct-subway.zip"
             : "https://rrgtfsfeeds.s3.amazonaws.com/gtfs_subway.zip",
@@ -96,25 +99,61 @@ export const GTFS_PRESETS: GtfsPreset[] = [
         licenseUrl: "https://www.mta.info/developers",
     },
     {
-        kind: "byo-url",
+        kind: "public",
         id: "njt-rail",
         name: "NJ Transit Rail",
         agency: "New Jersey Transit",
         region: "New Jersey",
         description:
-            "NJ Transit commuter rail. Covers the Northeast Corridor, North Jersey Coast, and every other NJT rail line.",
-        reason: "NJ Transit's developer terms forbid hot-linking their feed — each user has to register and paste their own URL.",
-        portalUrl: "https://developer.njtransit.com/registration/",
-        licenseUrl: "https://developer.njtransit.com/terms/",
+            "NJ Transit commuter rail + light rail. Northeast Corridor, North Jersey Coast, Hudson-Bergen, Newark LR, and all other NJT lines. Bus routes are filtered out automatically.",
+        url: "/gtfs/njt-rail.zip",
+        licenseUrl: "https://www.njtransit.com/",
     },
     {
         kind: "public",
-        id: "sle",
-        name: "Shore Line East",
-        agency: "Connecticut DOT / CTtransit",
+        id: "amtrak",
+        name: "Amtrak",
+        agency: "Amtrak",
+        region: "Northeast",
+        description:
+            "Amtrak intercity rail across the Northeast, including Shore Line East stops (Branford, Guilford, Madison, Clinton, Westbrook, Old Saybrook, New London).",
+        url: "/gtfs/amtrak.zip",
+        licenseUrl: "https://www.amtrak.com/developers",
+    },
+    {
+        kind: "public",
+        id: "septa",
+        name: "SEPTA Regional Rail",
+        agency: "SEPTA",
+        region: "Pennsylvania",
+        description:
+            "SEPTA commuter rail in the Philadelphia metro area — all regional rail lines into Center City.",
+        url: "/gtfs/septa-rail.zip",
+        licenseUrl: "https://www.septa.org/",
+    },
+    {
+        kind: "public",
+        id: "hartford-line",
+        name: "Hartford Line",
+        agency: "Connecticut DOT",
         region: "Connecticut",
-        description: "Shore Line East commuter rail (New Haven ↔ New London).",
-        url: "https://www.cttransit.com/sites/default/files/gtfs/slegtfs_1.zip",
-        licenseUrl: "https://www.cttransit.com/about/developers/terms-of-use",
+        description:
+            "Hartford Line commuter rail (New Haven ↔ Springfield), operated by CT DOT.",
+        url: "/gtfs/hartford-line.zip",
+        licenseUrl: "https://www.hartfordline.com/",
     },
 ];
+
+/**
+ * Subset of presets to install in one tap for the NJ/NY/CT/PA large game.
+ * Listed in install order — smaller feeds first so the UI feels responsive.
+ */
+export const LARGE_GAME_PRESET_IDS = [
+    "nyct-subway",
+    "hartford-line",
+    "septa",
+    "lirr",
+    "mnr",
+    "njt-rail",
+    "amtrak",
+] as const;

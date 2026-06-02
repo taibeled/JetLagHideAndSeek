@@ -40,6 +40,7 @@ import {
     type ByoUrlPreset,
     GTFS_PRESETS,
     type GtfsPreset,
+    LARGE_GAME_PRESET_IDS,
 } from "@/lib/transit/presets";
 import { reachabilityClient } from "@/lib/transit/reachability-client";
 import type { ImportProgress, TransitSystem } from "@/lib/transit/types";
@@ -142,6 +143,8 @@ function TransitSystemsDialog({
     const [downloadInFlight, setDownloadInFlight] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const abortRef = useRef<AbortController | null>(null);
+    /** Queue of preset IDs waiting to be imported during a bulk install. */
+    const batchQueueRef = useRef<string[]>([]);
 
     const guardedOpenChange = useCallback(
         (next: boolean) => {
@@ -198,6 +201,54 @@ function TransitSystemsDialog({
         const s = await listSystems();
         s.sort((a, b) => b.importedAt - a.importedAt);
         setSystems(s);
+    };
+
+    // Drain the bulk-install queue: when an import finishes (loading → false)
+    // and there are more presets queued, kick off the next one automatically.
+    useEffect(() => {
+        if (loading) return;
+        const nextId = batchQueueRef.current.shift();
+        if (!nextId) return;
+        const preset = GTFS_PRESETS.find(
+            (p) => p.id === nextId && p.kind === "public",
+        );
+        if (preset) {
+            handleImport({
+                kind: "url",
+                url: preset.url,
+                systemId: preset.id,
+                name: preset.name,
+            });
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [loading]);
+
+    /**
+     * Install every preset in LARGE_GAME_PRESET_IDS that isn't already in IDB.
+     * Runs them sequentially so the UI stays responsive between each feed.
+     */
+    const handleBulkInstall = () => {
+        const installed = new Set(systems?.map((s) => s.id) ?? []);
+        const toInstall = LARGE_GAME_PRESET_IDS.filter(
+            (id) => !installed.has(id),
+        );
+        if (toInstall.length === 0) {
+            toast.info("All large-game feeds are already installed.");
+            return;
+        }
+        const [first, ...rest] = toInstall;
+        batchQueueRef.current = [...rest];
+        const preset = GTFS_PRESETS.find(
+            (p) => p.id === first && p.kind === "public",
+        );
+        if (preset) {
+            handleImport({
+                kind: "url",
+                url: preset.url,
+                systemId: preset.id,
+                name: preset.name,
+            });
+        }
     };
 
     const handleImport = async (
@@ -456,9 +507,22 @@ function TransitSystemsDialog({
 
                     {/* Curated presets */}
                     <section>
-                        <h3 className="text-sm font-semibold mb-2">
-                            Curated presets
-                        </h3>
+                        <div className="flex items-center justify-between mb-2">
+                            <h3 className="text-sm font-semibold">
+                                Curated presets
+                            </h3>
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                disabled={loading}
+                                onClick={handleBulkInstall}
+                                className="text-xs h-7 px-2"
+                            >
+                                {loading && batchQueueRef.current.length > 0
+                                    ? `${batchQueueRef.current.length} remaining…`
+                                    : "Install all (large game)"}
+                            </Button>
+                        </div>
                         <ul className="space-y-2">
                             {GTFS_PRESETS.map((preset) => (
                                 <PresetCard
