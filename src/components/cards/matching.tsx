@@ -768,6 +768,7 @@ export const MatchingQuestionComponent = ({
                                         data.type === "peak-full" ||
                                         data.type === "museum-full" ||
                                         data.type === "hospital-full" ||
+                                        data.type === "hospital-nyc-full" ||
                                         data.type === "cinema-full" ||
                                         data.type === "library-full" ||
                                         data.type === "golf_course-full" ||
