@@ -117,11 +117,13 @@ export function registerServiceWorker() {
     });
 
     // Check for a SW that was already waiting before this page loaded (e.g.
-    // installed on a previous visit but skipWaiting was never called). Do
-    // this synchronously before any user interaction can set hasUserInteracted,
-    // so we auto-apply rather than showing the toast. This is the primary fix
-    // for mobile: the browser fires the Serwist "waiting" event asynchronously,
-    // by which point the user has usually already tapped something.
+    // installed on a previous visit but skipWaiting was never called). The
+    // check is initiated immediately on load but resolves asynchronously
+    // (getRegistration returns a Promise), so it normally settles before the
+    // user has interacted — letting us auto-apply rather than show the toast.
+    // The !hasUserInteracted guard inside still protects the case where the
+    // user taps before it resolves. This is the primary fix for mobile, where
+    // the Serwist "waiting" event fires late, after a tap has usually landed.
     navigator.serviceWorker.getRegistration(scope).then((existing) => {
         if (existing?.waiting && !hasUserInteracted && !reloadingForUpdate) {
             reloadingForUpdate = true;
