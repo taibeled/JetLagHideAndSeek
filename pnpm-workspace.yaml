@@ -1,3 +1,11 @@
+# Disable pnpm 11's supply-chain "minimum release age" policy. Without this,
+# `pnpm install --frozen-lockfile` rejects any lockfile entry published within
+# the default ~1-day window (e.g. a same-day astro point release), which broke
+# the Railway Docker build. In pnpm 11 this setting lives in pnpm-workspace.yaml
+# (camelCase `minimumReleaseAge`); the old .npmrc `minimum-release-age` key is
+# NOT read by the supply-chain policy.
+minimumReleaseAge: 0
+
 allowBuilds:
     "@vaadin/vaadin-usage-statistics": true
     esbuild: true
