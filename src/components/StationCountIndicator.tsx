@@ -1,34 +1,62 @@
 /**
- * Persistent map overlay showing how many NYC subway stations remain
- * inside the current playable territory.
+ * Persistent map overlay showing how many metro-area rail + subway stations
+ * remain inside the current playable territory.
  *
- * Updates reactively every time a question is applied. Useful for both
- * seekers (tracking how much they've narrowed things down) and hiders
- * (knowing how many valid starting spots remain).
+ * Covers: NYC Subway, MTA LIRR, MTA Metro-North, NJ Transit (rail + light
+ * rail), SEPTA, Amtrak, and Hartford Line — useful for NJ/NY/CT/PA games.
  *
- * Only appears once at least one question has been answered and the
- * territory has been computed.
+ * Updates reactively every time a question is applied. Only appears once at
+ * least one question has been answered and the territory has been computed.
  */
 
 import { useStore } from "@nanostores/react";
 import * as turf from "@turf/turf";
 import { useMemo } from "react";
 
+import { METRO_AREA_RAIL_STATIONS } from "@/data/metro-area-rail-stations";
 import { NYC_MAJOR_SUBWAY_STATIONS } from "@/data/nyc-subway-major-stations";
 import { playableTerritoryUnion, questions } from "@/lib/context";
 import { cn } from "@/lib/utils";
 
-const TOTAL = NYC_MAJOR_SUBWAY_STATIONS.length;
+// Combine subway + metro rail into one flat list for counting.
+// Each entry just needs { lat, lng } for the point-in-polygon check.
+const ALL_STATIONS = [
+    ...NYC_MAJOR_SUBWAY_STATIONS.map((s) => ({ lat: s.lat, lng: s.lng, system: "Subway" as const })),
+    ...METRO_AREA_RAIL_STATIONS.map((s) => ({ lat: s.lat, lng: s.lng, system: s.system })),
+];
+
+const TOTAL = ALL_STATIONS.length;
+
+// Display-friendly label for each system key
+const SYSTEM_LABEL: Record<string, string> = {
+    Subway:      "NYC Subway",
+    LIRR:        "LIRR",
+    MNR:         "Metro-North",
+    NJT:         "NJ Transit",
+    NJLR:        "NJ Light Rail",
+    SEPTA:       "SEPTA",
+    Amtrak:      "Amtrak",
+    HartfordLine:"Hartford Line",
+};
 
 export const StationCountIndicator = () => {
     const $territory = useStore(playableTerritoryUnion);
     const $questions = useStore(questions);
 
-    const activeCount = useMemo(() => {
-        if (!$territory) return null;
-        return NYC_MAJOR_SUBWAY_STATIONS.filter((s) =>
-            turf.booleanPointInPolygon(turf.point([s.lng, s.lat]), $territory),
-        ).length;
+    const { activeCount, bySystem } = useMemo(() => {
+        if (!$territory) return { activeCount: null, bySystem: {} };
+
+        const bySystem: Record<string, number> = {};
+        let activeCount = 0;
+
+        for (const s of ALL_STATIONS) {
+            if (turf.booleanPointInPolygon(turf.point([s.lng, s.lat]), $territory)) {
+                activeCount++;
+                bySystem[s.system] = (bySystem[s.system] ?? 0) + 1;
+            }
+        }
+
+        return { activeCount, bySystem };
     }, [$territory]);
 
     // Nothing to show until questions have been applied and territory computed.
@@ -51,31 +79,52 @@ export const StationCountIndicator = () => {
               ? "bg-yellow-500"
               : "bg-red-500";
 
+    // Only show per-system rows that still have stations remaining
+    const activeSystems = Object.entries(bySystem)
+        .filter(([, n]) => n > 0)
+        .sort(([, a], [, b]) => b - a);
+
     return (
-        <div className="rounded-xl bg-black/80 px-3 py-2 shadow-lg backdrop-blur-sm select-none min-w-[180px]">
+        <div className="rounded-xl bg-black/80 px-3 py-2 shadow-lg backdrop-blur-sm select-none min-w-[200px]">
+            {/* Header */}
             <div className="flex items-baseline justify-between gap-3 mb-1">
                 <span className="text-xs font-medium text-white/60 tracking-wide uppercase">
-                    NYC Subway
+                    Metro Rail
                 </span>
                 <span className="text-xs text-white/50">
                     −{eliminated.toLocaleString()} eliminated
                 </span>
             </div>
+
+            {/* Big count */}
             <div className="flex items-baseline gap-1.5">
                 <span className={cn("text-2xl font-bold tabular-nums leading-none", countColor)}>
                     {activeCount.toLocaleString()}
                 </span>
                 <span className="text-sm text-white/60">
-                    / {TOTAL} stations
+                    / {TOTAL.toLocaleString()} stations
                 </span>
             </div>
-            {/* Progress bar: full = all stations remain, empty = all eliminated */}
+
+            {/* Progress bar */}
             <div className="mt-2 h-1.5 w-full rounded-full bg-white/10">
                 <div
                     className={cn("h-full rounded-full transition-all duration-500", barColor)}
                     style={{ width: `${Math.max(pct * 100, 1)}%` }}
                 />
             </div>
+
+            {/* Per-system breakdown (only when narrowed down enough to be readable) */}
+            {activeSystems.length > 0 && activeSystems.length <= 6 && (
+                <div className="mt-2 space-y-0.5 border-t border-white/10 pt-1.5">
+                    {activeSystems.map(([sys, n]) => (
+                        <div key={sys} className="flex justify-between text-[11px] text-white/50">
+                            <span>{SYSTEM_LABEL[sys] ?? sys}</span>
+                            <span className="tabular-nums">{n}</span>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 };
