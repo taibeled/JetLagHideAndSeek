@@ -21,10 +21,15 @@ RUN NODE_OPTIONS='--max-old-space-size=4096' pnpm build
 # ── Runtime ───────────────────────────────────────────────────────────────────
 FROM node:24-slim AS runtime
 WORKDIR /app
+# Run as a non-root user for security.
+RUN groupadd --system appgroup && useradd --system --gid appgroup --no-create-home appuser
 ENV HOST=0.0.0.0
 ENV NODE_OPTIONS='--max-old-space-size=1024'
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/node_modules ./node_modules
-COPY package.json ./
+COPY --from=build --chown=appuser:appgroup /app/dist ./dist
+COPY --from=build --chown=appuser:appgroup /app/node_modules ./node_modules
+COPY --chown=appuser:appgroup package.json ./
+USER appuser
 EXPOSE 3000
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD node -e "require('http').get('http://localhost:3000/health',r=>process.exit(r.statusCode<500?0:1)).on('error',()=>process.exit(1))"
 CMD ["node", "./dist/server/entry.mjs"]
