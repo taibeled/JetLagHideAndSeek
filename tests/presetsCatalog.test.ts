@@ -14,10 +14,13 @@ describe("GTFS_PRESETS catalog", () => {
         }
     });
 
-    it("public presets carry an https URL", () => {
+    it("public presets carry an https URL or a same-origin path", () => {
+        // Game-day feeds are bundled in public/gtfs/ and served same-origin
+        // (e.g. "/gtfs/njt-rail.zip"); MTA feeds use absolute https URLs.
+        // In dev, nyct-subway also resolves to a same-origin "/gtfs/..." path.
         for (const p of GTFS_PRESETS) {
             if (p.kind === "public") {
-                expect(p.url).toMatch(/^https?:\/\//);
+                expect(p.url).toMatch(/^(https?:\/\/|\/)/);
             }
         }
     });
