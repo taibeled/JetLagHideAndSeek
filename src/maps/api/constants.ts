@@ -13,16 +13,17 @@ const proxy = (url: string): string =>
     import.meta.env.DEV ? url : `/api/proxy-api?url=${encodeURIComponent(url)}`;
 
 /**
- * Interpreter endpoints tried in order. The canonical overpass-api.de is
- * demoted to LAST fallback: under load it routinely returns 504 (verified
- * against the Railway server IP), so leading with it meant eating a gateway
- * timeout on most queries. private.coffee and kumi both return complete data
- * for large area queries; private.coffee is first because kumi is flakier
- * under heavy load. Cache keys stay {@link OVERPASS_API}?data=… across mirrors.
+ * Interpreter endpoints tried in order. kumi is primary: across repeated
+ * benchmarks (NY-state and Westchester-County station queries) it returned
+ * complete data fastest (~24-38s), while private.coffee was slower and
+ * sometimes 504'd after 70s+, and the canonical overpass-api.de routinely
+ * 504s under load against the Railway IP. So: kumi → private.coffee → de.
+ * The app retries down the list, so a slow/failed primary still recovers.
+ * Cache keys stay {@link OVERPASS_API}?data=… across mirrors.
  */
 export const OVERPASS_INTERPRETER_URLS: readonly string[] = [
-    proxy(OVERPASS_API_FALLBACK),
     proxy("https://overpass.kumi.systems/api/interpreter"),
+    proxy(OVERPASS_API_FALLBACK),
     proxy(OVERPASS_API),
 ];
 export const GEOCODER_API = proxy("https://photon.komoot.io/api/");
