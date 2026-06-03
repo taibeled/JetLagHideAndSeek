@@ -262,6 +262,18 @@ export const activeStationsOnly = persistentAtom<boolean>(
         decode: JSON.parse,
     },
 );
+// Use the app's bundled NY/NJ/CT/PA station dataset (NYC Subway, LIRR,
+// Metro-North, NJ Transit, SEPTA, Amtrak, Hartford Line) instead of fetching
+// railway=station from Overpass. Instant, can't time out, works offline — but
+// only covers that region, so it's OFF by default and opt-in per game.
+export const useBundledStations = persistentAtom<boolean>(
+    "useBundledStations",
+    false,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
 // Drop stations whose parent railway way is tagged as a heritage /
 // tourist / preserved / abandoned line. Off by default because the
 // valid/invalid distinction is game-logic, not OSM-encodable: one-way

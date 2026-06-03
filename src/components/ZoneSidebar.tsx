@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/sidebar-r";
 import { SidebarContext as RightSidebarContext } from "@/components/ui/sidebar-r";
 import { UnitSelect } from "@/components/UnitSelect";
+import { getBundledStationPlaces } from "@/data/bundled-stations";
 import {
     activeStationsOnly as activeStationsOnlyAtom,
     additionalMapGeoLocations,
@@ -62,6 +63,7 @@ import {
     reachabilityResult as reachabilityResultAtom,
     trainStations,
     triggerLocalRefresh,
+    useBundledStations as useBundledStationsAtom,
     useCustomStations as useCustomStationsAtom,
 } from "@/lib/context";
 import { getAllStops } from "@/lib/transit/gtfs-store";
@@ -127,6 +129,7 @@ export const ZoneSidebar = () => {
     const mergeDuplicates = useStore(mergeDuplicatesAtom);
     const includeDefaultStations = useStore(includeDefaultStationsAtom);
     const activeStationsOnly = useStore(activeStationsOnlyAtom);
+    const useBundledStations = useStore(useBundledStationsAtom);
     const excludeHeritageRailways = useStore(excludeHeritageRailwaysAtom);
     const $reachabilityResult = useStore(reachabilityResultAtom);
     const $reachabilityOverrides = useStore(reachabilityOverridesAtom);
@@ -395,23 +398,34 @@ export const ZoneSidebar = () => {
                         },
                     }));
                 } else {
-                    const activeFilter = activeStationsOnly
-                        ? OVERPASS_ACTIVE_RAIL_STATION_EXCLUSIONS
-                        : "";
-                    const stationOptions = $displayHidingZonesOptions.map(
-                        (opt) => `${opt}${activeFilter}`,
-                    );
-                    // @ts-expect-error osmtogeojson always defines properties with an "id" string
-                    places = osmtogeojson(
-                        await findPlacesInZone(
-                            stationOptions[0],
-                            "Finding stations. This may take a while. Do not press any buttons while this is processing. Don't worry, it will be cached.",
-                            "nwr",
-                            "center",
-                            stationOptions.slice(1),
-                            240,
-                        ),
-                    ).features;
+                    if (useBundledStations) {
+                        // Skip Overpass entirely: use the bundled NY/NJ/CT/PA
+                        // station dataset. Return the full set as candidates and
+                        // let Phase B cull to the actual zone (just like the
+                        // Overpass path) — pre-filtering here would go stale,
+                        // since Phase A doesn't re-run when questions change the
+                        // territory. Instant and can't 504. Off by default; only
+                        // this region is covered.
+                        places = getBundledStationPlaces(null);
+                    } else {
+                        const activeFilter = activeStationsOnly
+                            ? OVERPASS_ACTIVE_RAIL_STATION_EXCLUSIONS
+                            : "";
+                        const stationOptions = $displayHidingZonesOptions.map(
+                            (opt) => `${opt}${activeFilter}`,
+                        );
+                        // @ts-expect-error osmtogeojson always defines properties with an "id" string
+                        places = osmtogeojson(
+                            await findPlacesInZone(
+                                stationOptions[0],
+                                "Finding stations. This may take a while. Do not press any buttons while this is processing. Don't worry, it will be cached.",
+                                "nwr",
+                                "center",
+                                stationOptions.slice(1),
+                                240,
+                            ),
+                        ).features;
+                    }
 
                     if (
                         useCustomStations &&
@@ -551,6 +565,7 @@ export const ZoneSidebar = () => {
         mergeDuplicates,
         activeStationsOnly,
         excludeHeritageRailways,
+        useBundledStations,
         $polyGeoJSON,
         $mapGeoLocation,
         $additionalMapGeoLocations,
@@ -975,6 +990,35 @@ export const ZoneSidebar = () => {
                                         disabled={$isLoading}
                                     />
                                 </div>
+                            </SidebarMenuItem>
+                            <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
+                                <div className="flex flex-row items-center justify-between w-full">
+                                    <Label className="font-semibold font-poppins flex items-center gap-1.5">
+                                        Use bundled stations (NY/NJ/CT/PA)?
+                                        {isHidingZoneLoading && (
+                                            <Loader2 className="h-3.5 w-3.5 animate-spin opacity-70" />
+                                        )}
+                                    </Label>
+                                    <Checkbox
+                                        checked={useBundledStations}
+                                        onCheckedChange={(v) =>
+                                            useBundledStationsAtom.set(!!v)
+                                        }
+                                        disabled={$isLoading}
+                                    />
+                                </div>
+                            </SidebarMenuItem>
+                            <SidebarMenuItem
+                                className={cn(
+                                    MENU_ITEM_CLASSNAME,
+                                    "text-xs text-muted-foreground leading-4 -mt-1",
+                                )}
+                            >
+                                Skips Overpass and uses the app&apos;s built-in
+                                station list (NYC Subway, LIRR, Metro-North, NJ
+                                Transit, SEPTA, Amtrak, Hartford Line). Instant
+                                and can&apos;t time out, but only covers the NY
+                                metro region — leave off for games elsewhere.
                             </SidebarMenuItem>
                             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                                 <div className="flex flex-row items-center justify-between w-full">
