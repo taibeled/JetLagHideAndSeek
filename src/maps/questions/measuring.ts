@@ -8,7 +8,8 @@ import type {
     MultiPolygon,
     Polygon,
 } from "geojson";
-import _ from "lodash";
+import memoize from "lodash/memoize";
+import uniqBy from "lodash/uniqBy";
 
 import {
     hiderMode,
@@ -49,7 +50,7 @@ import type {
     MeasuringQuestionWithFacilityOsmRefs,
 } from "@/maps/schema";
 
-const highSpeedBase = _.memoize(
+const highSpeedBase = memoize(
     (features: Feature[]) => {
         const grouped = groupObjects(features);
 
@@ -345,7 +346,7 @@ export const determineMeasuringBoundary = async (
             return [
                 turf.combine(
                     turf.featureCollection(
-                        _.uniqBy(
+                        uniqBy(
                             (
                                 await findPlacesInZone(
                                     overpassAirportIataFilter(),
@@ -436,7 +437,7 @@ export const determineMeasuringBoundary = async (
     }
 };
 
-const bufferedDeterminer = _.memoize(
+const bufferedDeterminer = memoize(
     async (question: MeasuringQuestion) => {
         const placeData = await determineMeasuringBoundary(question);
 

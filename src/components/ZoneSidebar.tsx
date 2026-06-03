@@ -2,7 +2,9 @@ import { useStore } from "@nanostores/react";
 import * as turf from "@turf/turf";
 import type { Feature, FeatureCollection, Point } from "geojson";
 import * as L from "leaflet";
-import _ from "lodash";
+import find from "lodash/find";
+import isEqual from "lodash/isEqual";
+import minBy from "lodash/minBy";
 import { Loader2, SidebarCloseIcon } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -825,7 +827,7 @@ export const ZoneSidebar = () => {
         if (!map || isLoading.get()) return;
 
         if ($displayHidingZones && hidingZoneModeStationID) {
-            const hiderStation = _.find(
+            const hiderStation = find(
                 stations,
                 (c) => c.properties.properties.id === hidingZoneModeStationID,
             );
@@ -1950,7 +1952,7 @@ async function selectionProcess(
                     point: x,
                 };
             });
-            const minimumPoint = _.minBy(distances, "distance");
+            const minimumPoint = minBy(distances, "distance");
             if (!minimumPoint) {
                 continue;
             }
@@ -2120,7 +2122,7 @@ async function selectionProcess(
         }
     }
 
-    if (_.isEqual(mapData, BLANK_GEOJSON)) {
+    if (isEqual(mapData, BLANK_GEOJSON)) {
         toast.warning(
             "The hider cannot be in this hiding zone. This wasn't eliminated on the sidebar as its absence was caused by multiple criteria.",
         );

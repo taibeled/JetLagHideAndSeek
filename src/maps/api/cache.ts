@@ -1,11 +1,11 @@
-import _ from "lodash";
+import memoize from "lodash/memoize";
 import { toast } from "react-toastify";
 
 import { CacheType } from "@/maps/api/types";
 
-const determineQuestionCache = _.memoize(() => caches.open(CacheType.CACHE));
-const determineZoneCache = _.memoize(() => caches.open(CacheType.ZONE_CACHE));
-const determinePermanentCache = _.memoize(() =>
+const determineQuestionCache = memoize(() => caches.open(CacheType.CACHE));
+const determineZoneCache = memoize(() => caches.open(CacheType.ZONE_CACHE));
+const determinePermanentCache = memoize(() =>
     caches.open(CacheType.PERMANENT_CACHE),
 );
 

@@ -6,7 +6,8 @@ import type {
     Point,
     Polygon,
 } from "geojson";
-import _ from "lodash";
+import memoize from "lodash/memoize";
+import uniqBy from "lodash/uniqBy";
 import { toast } from "react-toastify";
 
 import {
@@ -56,7 +57,7 @@ async function fetchAirportPointsUnfiltered(
     question: MatchingQuestion,
 ): Promise<Feature<Point>[]> {
     if (question.type !== "airport") return [];
-    const elements = _.uniqBy(
+    const elements = uniqBy(
         (
             await findPlacesInZone(
                 overpassAirportIataFilter({
@@ -176,7 +177,7 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
     }
 };
 
-export const determineMatchingBoundary = _.memoize(
+export const determineMatchingBoundary = memoize(
     async (
         question: MatchingQuestion,
         overpassTimeoutSeconds: number = DEFAULT_ADMIN_BOUNDARY_OVERPASS_TIMEOUT_SEC,
