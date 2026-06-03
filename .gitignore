@@ -26,9 +26,13 @@ test-results/
 .DS_Store
 
 # Local GTFS data files — too large for git, developer-supplied only.
-# Specific game-day feeds are committed (njt-rail, septa, hartford-line, amtrak).
-# Ignore everything else in the directory (e.g. local dev nyct-subway.zip).
-public/gtfs/nyct-subway.zip
+# Ignore everything in public/gtfs/ (e.g. local dev nyct-subway.zip)…
+public/gtfs/*
+# …but keep the committed game-day feeds.
+!public/gtfs/amtrak.zip
+!public/gtfs/hartford-line.zip
+!public/gtfs/njt-rail.zip
+!public/gtfs/septa-rail.zip
 
 # jetbrains setting folder
 .idea/
@@ -41,3 +45,6 @@ public/gtfs/nyct-subway.zip
 # Python bytecode
 __pycache__/
 *.pyc
+
+# Geocoding cache (scripts)
+_cache/

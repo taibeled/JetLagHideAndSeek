@@ -41,7 +41,9 @@ const BUNDLED_STATIONS: BundledStation[] = [
             name: s.name,
             lat: s.lat,
             lng: s.lng,
-            id: `bundled/${s.system.toLowerCase()}-${i}`,
+            // `rail-` namespace keeps metro ids from ever colliding with the
+            // subway ids above, even if a future system lowercased to "subway".
+            id: `bundled/rail-${s.system.toLowerCase()}-${i}`,
         }),
     ),
 ];

@@ -28,6 +28,9 @@ import requests
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 _DEFAULT_XLSX = _REPO_ROOT / "data" / "NYC_All_Hospitals.xlsx"
 _DEFAULT_OUTPUT_TS = _REPO_ROOT / "src" / "data" / "nyc-hospitals.ts"
+# Resumable geocoding cache. Repo-relative (not /tmp, which doesn't exist on
+# Windows and is wiped on reboot); gitignored via _cache/.
+_DEFAULT_PROGRESS = _REPO_ROOT / "_cache" / "nyc_hospitals_geocoded.json"
 
 # ── CLI ───────────────────────────────────────────────────────────────────────
 _parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -35,7 +38,7 @@ _parser.add_argument("--xlsx", type=Path, default=_DEFAULT_XLSX,
                      help="Path to NYC_All_Hospitals.xlsx (default: %(default)s)")
 _parser.add_argument("--output", type=Path, default=_DEFAULT_OUTPUT_TS,
                      help="Output TypeScript file (default: %(default)s)")
-_parser.add_argument("--progress", type=Path, default=Path("/tmp/nyc_hospitals_geocoded.json"),
+_parser.add_argument("--progress", type=Path, default=_DEFAULT_PROGRESS,
                      help="Geocoding progress cache (default: %(default)s)")
 _args = _parser.parse_args()
 
@@ -146,6 +149,7 @@ def main():
     if PROGRESS_FILE.exists():
         geocoded = json.loads(PROGRESS_FILE.read_text())
         print(f"Resuming — {len(geocoded)} already geocoded")
+    PROGRESS_FILE.parent.mkdir(parents=True, exist_ok=True)
 
     # Geocode
     for i, h in enumerate(hospitals):

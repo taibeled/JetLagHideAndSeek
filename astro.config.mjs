@@ -185,6 +185,12 @@ export default defineConfig({
         // has no auth, cookies, or state-changing endpoints — only stateless
         // read proxies — so CSRF origin checking provides no protection and
         // only breaks the proxy. Disable it.
+        //
+        // NOTE: only safe while EVERY route is a stateless read. If you ever
+        // add cookies/auth or a state-changing endpoint, re-enable checkOrigin
+        // (Astro has no per-route bypass) or add explicit CSRF protection to
+        // that route. The proxy's real risk is SSRF, handled in proxy-api.ts
+        // (host allowlist + protocol check + size cap).
         checkOrigin: false,
     },
     integrations: [

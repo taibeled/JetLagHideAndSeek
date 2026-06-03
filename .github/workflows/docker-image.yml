@@ -18,6 +18,8 @@ jobs:
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
+              with:
+                  persist-credentials: false
 
             - name: Set up pnpm
               uses: pnpm/action-setup@v4
@@ -60,6 +62,8 @@ jobs:
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
+              with:
+                  persist-credentials: false
 
             - name: Check Docker Hub credentials
               id: creds

@@ -125,7 +125,7 @@ export const QuestionSidebar = () => {
                         </SidebarMenuItem>
                         <SidebarMenuItem>
                             <SubwayStartDialog>
-                                <SidebarMenuButton>
+                                <SidebarMenuButton disabled={$isLoading}>
                                     Random Start Station
                                 </SidebarMenuButton>
                             </SubwayStartDialog>
