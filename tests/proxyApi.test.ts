@@ -28,10 +28,12 @@ function ctx(fullUrl: string, init?: RequestInit) {
 /** Install a fetch mock that records calls and returns a canned upstream. */
 function mockUpstream(resp: () => Response) {
     const calls: { url: string; init?: RequestInit }[] = [];
-    vi.spyOn(globalThis, "fetch").mockImplementation((input: any, init?: any) => {
-        calls.push({ url: String(input), init });
-        return Promise.resolve(resp());
-    });
+    vi.spyOn(globalThis, "fetch").mockImplementation(
+        (input: any, init?: any) => {
+            calls.push({ url: String(input), init });
+            return Promise.resolve(resp());
+        },
+    );
     return calls;
 }
 
@@ -43,7 +45,10 @@ describe("/api/proxy-api wire contract", () => {
         // /api/proxy-api?url=<enc-base>?q=..&format=.. — the parser folds the
         // first param into `url` and leaves the rest as siblings on our request.
         const calls = mockUpstream(
-            () => new Response("[]", { headers: { "content-type": "application/json" } }),
+            () =>
+                new Response("[]", {
+                    headers: { "content-type": "application/json" },
+                }),
         );
         const base = "https://nominatim.openstreetmap.org/search";
         const fullUrl =
@@ -123,15 +128,21 @@ describe("/api/proxy-api wire contract", () => {
 
     it("returns 400 when the url param is missing or malformed", async () => {
         mockUpstream(() => new Response("ok"));
-        expect((await GET(ctx(`${APP_ORIGIN}/api/proxy-api`))).status).toBe(400);
+        expect((await GET(ctx(`${APP_ORIGIN}/api/proxy-api`))).status).toBe(
+            400,
+        );
         expect(
-            (await GET(ctx(`${APP_ORIGIN}/api/proxy-api?url=not-a-url`))).status,
+            (await GET(ctx(`${APP_ORIGIN}/api/proxy-api?url=not-a-url`)))
+                .status,
         ).toBe(400);
     });
 
     it("POST forwards the request body and content-type to the upstream", async () => {
         const calls = mockUpstream(
-            () => new Response("[]", { headers: { "content-type": "application/json" } }),
+            () =>
+                new Response("[]", {
+                    headers: { "content-type": "application/json" },
+                }),
         );
         const fullUrl = `${APP_ORIGIN}/api/proxy-api?url=${encodeURIComponent(
             "https://overpass-api.de/api/interpreter",
@@ -140,7 +151,9 @@ describe("/api/proxy-api wire contract", () => {
             ctx(fullUrl, {
                 method: "POST",
                 body: "data=[out:json];node(1);out;",
-                headers: { "content-type": "application/x-www-form-urlencoded" },
+                headers: {
+                    "content-type": "application/x-www-form-urlencoded",
+                },
             }),
         );
         expect(res.status).toBe(200);
@@ -154,10 +167,64 @@ describe("/api/proxy-api wire contract", () => {
         expect(sentText).toContain("out:json");
     });
 
+    it("blocks a redirect to a non-allow-listed host (SSRF guard)", async () => {
+        // Allow-listed upstream tries to bounce us to internal metadata.
+        const calls = mockUpstream(
+            () =>
+                new Response(null, {
+                    status: 302,
+                    headers: {
+                        location: "http://169.254.169.254/latest/meta-data/",
+                    },
+                }),
+        );
+        const fullUrl = `${APP_ORIGIN}/api/proxy-api?url=${encodeURIComponent(
+            "https://overpass-api.de/api/interpreter?data=x",
+        )}`;
+        const res = await GET(ctx(fullUrl));
+        expect(res.status).toBe(403);
+        // Only the first hop was fetched; the redirect target was never hit.
+        expect(calls).toHaveLength(1);
+    });
+
+    it("follows a redirect to an allow-listed host", async () => {
+        let n = 0;
+        vi.spyOn(globalThis, "fetch").mockImplementation(() => {
+            n += 1;
+            if (n === 1) {
+                return Promise.resolve(
+                    new Response(null, {
+                        status: 302,
+                        headers: {
+                            location:
+                                "https://overpass.kumi.systems/api/interpreter?data=x",
+                        },
+                    }),
+                );
+            }
+            return Promise.resolve(
+                new Response("[]", {
+                    headers: { "content-type": "application/json" },
+                }),
+            );
+        });
+        const fullUrl = `${APP_ORIGIN}/api/proxy-api?url=${encodeURIComponent(
+            "https://overpass-api.de/api/interpreter?data=x",
+        )}`;
+        const res = await GET(ctx(fullUrl));
+        expect(res.status).toBe(200);
+        expect(n).toBe(2); // followed exactly one allow-listed hop
+    });
+
     it("returns the full buffered body unchanged for large responses", async () => {
-        const big = JSON.stringify({ elements: Array.from({ length: 2000 }, (_, i) => ({ id: i })) });
+        const big = JSON.stringify({
+            elements: Array.from({ length: 2000 }, (_, i) => ({ id: i })),
+        });
         mockUpstream(
-            () => new Response(big, { headers: { "content-type": "application/json" } }),
+            () =>
+                new Response(big, {
+                    headers: { "content-type": "application/json" },
+                }),
         );
         const fullUrl = `${APP_ORIGIN}/api/proxy-api?url=${encodeURIComponent(
             "https://overpass.private.coffee/api/interpreter?data=x",

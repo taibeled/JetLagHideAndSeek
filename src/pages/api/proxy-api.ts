@@ -26,6 +26,7 @@ const ALLOWED_HOSTS = [
 ];
 
 const MAX_BYTES = 50 * 1024 * 1024; // 50 MB — Overpass responses can be large
+const MAX_REDIRECTS = 3;
 
 async function handleRequest(request: Request, url: URL): Promise<Response> {
     const target = url.searchParams.get("url");
@@ -61,30 +62,23 @@ async function handleRequest(request: Request, url: URL): Promise<Response> {
     const method = request.method;
     const body = method === "POST" ? await request.arrayBuffer() : undefined;
 
-    let upstream: Response;
-    try {
-        upstream = await fetch(targetUrl.toString(), {
-            method,
-            body: body ?? undefined,
-            headers: {
-                "user-agent": "JetLagHideAndSeek-Proxy/1.0",
-                // Forward content-type for POST bodies (Overpass QL)
-                ...(body !== undefined
-                    ? {
-                          "content-type":
-                              request.headers.get("content-type") ??
-                              "application/x-www-form-urlencoded",
-                      }
-                    : {}),
-            },
-            redirect: "follow",
-        });
-    } catch (err) {
-        return jsonError(
-            502,
-            `Upstream fetch failed: ${err instanceof Error ? err.message : String(err)}`,
-        );
-    }
+    const result = await fetchAllowlisted(targetUrl, {
+        method,
+        body: body ?? undefined,
+        headers: {
+            "user-agent": "JetLagHideAndSeek-Proxy/1.0",
+            // Forward content-type for POST bodies (Overpass QL)
+            ...(body !== undefined
+                ? {
+                      "content-type":
+                          request.headers.get("content-type") ??
+                          "application/x-www-form-urlencoded",
+                  }
+                : {}),
+        },
+    });
+    if (!result.ok) return jsonError(result.status, result.message);
+    const upstream = result.response;
 
     if (!upstream.ok) {
         // Forward Retry-After on rate-limit/unavailable responses (429/503)
@@ -138,6 +132,77 @@ async function handleRequest(request: Request, url: URL): Promise<Response> {
 export const GET: APIRoute = ({ request, url }) => handleRequest(request, url);
 export const POST: APIRoute = ({ request, url }) => handleRequest(request, url);
 
+type FetchResult =
+    | { ok: true; response: Response }
+    | { ok: false; status: number; message: string };
+
+/**
+ * Fetch `initial` following redirects MANUALLY, re-validating every hop's host
+ * against the allow-list. `redirect: "follow"` would chase a 3xx from an
+ * allow-listed upstream to ANY host (SSRF — e.g. internal IPs / cloud-metadata
+ * endpoints); this keeps every hop on the allow-list. The OSM APIs don't
+ * redirect in practice, so this is defense-in-depth, not a hot path.
+ */
+async function fetchAllowlisted(
+    initial: URL,
+    init: RequestInit,
+): Promise<FetchResult> {
+    let current = initial;
+    for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
+        let resp: Response;
+        try {
+            resp = await fetch(current.toString(), {
+                ...init,
+                redirect: "manual",
+            });
+        } catch (err) {
+            return {
+                ok: false,
+                status: 502,
+                message: `Upstream fetch failed: ${err instanceof Error ? err.message : String(err)}`,
+            };
+        }
+
+        const isRedirect =
+            resp.status >= 300 &&
+            resp.status < 400 &&
+            resp.headers.has("location");
+        if (!isRedirect) return { ok: true, response: resp };
+
+        const location = resp.headers.get("location")!;
+        let next: URL;
+        try {
+            next = new URL(location, current);
+        } catch {
+            return {
+                ok: false,
+                status: 502,
+                message: `Upstream redirect had a malformed Location: ${location}`,
+            };
+        }
+        if (next.protocol !== "http:" && next.protocol !== "https:") {
+            return {
+                ok: false,
+                status: 403,
+                message: `Redirect to unsupported protocol: ${next.protocol}`,
+            };
+        }
+        if (!isAllowedHost(next.hostname)) {
+            return {
+                ok: false,
+                status: 403,
+                message: `Redirect to non-allow-listed host: ${next.hostname}`,
+            };
+        }
+        current = next;
+    }
+    return {
+        ok: false,
+        status: 502,
+        message: `Too many redirects (>${MAX_REDIRECTS}).`,
+    };
+}
+
 function isAllowedHost(hostname: string): boolean {
     const lower = hostname.toLowerCase();
     return ALLOWED_HOSTS.some((h) => lower === h || lower.endsWith(`.${h}`));
@@ -157,5 +222,8 @@ function jsonError(
     if (extraHeaders?.["retry-after"]) {
         headers["access-control-expose-headers"] = "retry-after";
     }
-    return new Response(JSON.stringify({ error: message }), { status, headers });
+    return new Response(JSON.stringify({ error: message }), {
+        status,
+        headers,
+    });
 }
