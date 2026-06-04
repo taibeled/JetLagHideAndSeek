@@ -38,7 +38,10 @@ describe("bundled-stations", () => {
         // Every returned point must actually be inside the box.
         for (const p of inBox) {
             expect(
-                turf.booleanPointInPolygon(turf.point(p.geometry.coordinates), box),
+                turf.booleanPointInPolygon(
+                    turf.point(p.geometry.coordinates),
+                    box,
+                ),
             ).toBe(true);
         }
     });
