@@ -11,6 +11,27 @@ const determinePermanentCache = memoize(() =>
 
 const inFlightFetches = new Map<string, Promise<Response>>();
 
+/**
+ * Client-side abort timeout for Overpass/boundary fetches. Without it a slow or
+ * hung upstream (a county/state `railway=station` query can run the server's
+ * full `[timeout:240]`, or the connection can hang outright) leaves the browser
+ * fetch pending indefinitely — and with it `isLoading` stuck `true`, freezing
+ * the whole UI. Aborting after this caps the freeze and lets the mirror sweep /
+ * retry recover (a thrown fetch becomes a 599 Response here).
+ */
+export const OVERPASS_FETCH_TIMEOUT_MS = 60_000;
+
+/** fetch() that aborts after OVERPASS_FETCH_TIMEOUT_MS so a hang can't freeze
+ *  the app. Falls back to a plain fetch if AbortSignal.timeout is unavailable. */
+export const timedFetch = (url: string, init?: RequestInit): Promise<Response> =>
+    fetch(url, {
+        ...init,
+        signal:
+            typeof AbortSignal !== "undefined" && "timeout" in AbortSignal
+                ? AbortSignal.timeout(OVERPASS_FETCH_TIMEOUT_MS)
+                : init?.signal,
+    });
+
 /** Busy upstream / rate limit — Overpass mirror sweep or getOverpassData retry often recovers. */
 const TRANSIENT_FETCH_STATUSES = new Set([408, 429, 502, 503, 504, 507, 529]);
 const MAX_FETCH_FAILURE_LOG_ENTRIES = 100;
@@ -96,7 +117,7 @@ export const cacheFetch = async (
         const fetchAndMaybeCache = async () => {
             let response: Response;
             try {
-                response = await fetch(url);
+                response = await timedFetch(url);
             } catch (error) {
                 reportFetchFailure({
                     url,
@@ -141,7 +162,7 @@ export const cacheFetch = async (
     } catch (e) {
         console.log(e); // Probably a caches not supported error
         try {
-            const response = await fetch(url);
+            const response = await timedFetch(url);
             if (!response.ok) {
                 reportFetchFailure({
                     url,

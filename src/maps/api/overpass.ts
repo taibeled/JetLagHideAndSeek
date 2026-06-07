@@ -42,7 +42,7 @@ import {
     polyGeoJSON,
 } from "@/lib/context";
 import { stationNameMatchKey } from "@/lib/transit/osm-gtfs-match";
-import { cacheFetch, determineCache } from "@/maps/api/cache";
+import { cacheFetch, determineCache, timedFetch } from "@/maps/api/cache";
 import {
     LOCATION_FIRST_TAG,
     NOMINATIM_API,
@@ -198,7 +198,7 @@ const getOverpassData = async (
             const base = OVERPASS_INTERPRETER_URLS[i]!;
             const pending = (async () => {
                 try {
-                    return await fetch(base, {
+                    return await timedFetch(base, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/x-www-form-urlencoded",
