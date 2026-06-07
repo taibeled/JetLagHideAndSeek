@@ -173,6 +173,43 @@ function overpassRetryDelayMs(status: number, response: Response): number {
     return OVERPASS_RETRY_DELAY_MS;
 }
 
+/**
+ * Resolve with the FIRST ok response among the given promises (mirror racing);
+ * if none are ok, resolve with the last settled response. Racing fires all
+ * mirrors in parallel so a query's latency is the FASTEST healthy mirror — not
+ * the sum of slow-mirror timeouts. Before this, mirrors were tried
+ * sequentially, so a single slow/504'ing primary (e.g. private.coffee taking
+ * its full 60s gateway timeout) stalled the whole sweep and froze the UI while
+ * `isLoading` stayed true. Losers keep running but their bodies are never read.
+ * Cost: ~3x request volume per cache-miss query, fine for this app's low rate.
+ */
+async function firstOkOrLast(
+    promises: Promise<Response>[],
+): Promise<Response> {
+    if (promises.length === 0) {
+        return new Response("", { status: 599, statusText: "Network Error" });
+    }
+    return await new Promise<Response>((resolve) => {
+        let remaining = promises.length;
+        let last = new Response("", { status: 599, statusText: "Network Error" });
+        for (const p of promises) {
+            p.then(
+                (res) => {
+                    if (res.ok) {
+                        resolve(res);
+                    } else {
+                        last = res;
+                        if (--remaining === 0) resolve(last);
+                    }
+                },
+                () => {
+                    if (--remaining === 0) resolve(last);
+                },
+            );
+        }
+    });
+}
+
 const getOverpassData = async (
     query: string,
     loadingText?: string,
@@ -190,38 +227,29 @@ const getOverpassData = async (
 
     const fetchOverpassPostAllMirrors = async (): Promise<Response> => {
         const body = `data=${encodedQuery}`;
-        let last = new Response("", {
-            status: 599,
-            statusText: "Network Error",
-        });
-        for (let i = 0; i < OVERPASS_INTERPRETER_URLS.length; i++) {
-            const base = OVERPASS_INTERPRETER_URLS[i]!;
-            const pending = (async () => {
-                try {
-                    return await timedFetch(base, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/x-www-form-urlencoded",
-                        },
-                        body,
-                    });
-                } catch {
-                    return new Response("", {
+        // Race all mirrors in parallel; first ok wins (see firstOkOrLast).
+        const attempts = OVERPASS_INTERPRETER_URLS.map((base) =>
+            timedFetch(base, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body,
+            }).catch(
+                () =>
+                    new Response("", {
                         status: 599,
                         statusText: "Network Error",
-                    });
-                }
-            })();
-            last =
-                loadingText && i === 0 && _retryCount === 0
-                    ? await toast.promise(pending, { pending: loadingText })
-                    : await pending;
-            if (last.ok) {
-                await mirrorCachePut(last);
-                return last;
-            }
-        }
-        return last;
+                    }),
+            ),
+        );
+        const race = firstOkOrLast(attempts);
+        const result =
+            loadingText && _retryCount === 0
+                ? await toast.promise(race, { pending: loadingText })
+                : await race;
+        if (result.ok) await mirrorCachePut(result);
+        return result;
     };
 
     let response: Response;
@@ -261,25 +289,17 @@ const getOverpassData = async (
      * so we must iterate mirrors explicitly — the old try/catch never ran.
      */
     const fetchOverpassGetAllMirrors = async (): Promise<Response> => {
-        let last = new Response("", {
-            status: 599,
-            statusText: "Network Error",
-        });
-        for (let i = 0; i < OVERPASS_INTERPRETER_URLS.length; i++) {
-            const url = `${OVERPASS_INTERPRETER_URLS[i]}?data=${encodedQuery}`;
-            last = await cacheFetch(
-                url,
-                i === 0 && _retryCount === 0 ? loadingText : undefined,
-                cacheType,
-            );
-            if (last.ok) {
-                if (i > 0) {
-                    await mirrorCachePut(last);
-                }
-                return last;
-            }
-        }
-        return last;
+        // Race all mirrors in parallel; first ok wins (see firstOkOrLast).
+        const attempts = OVERPASS_INTERPRETER_URLS.map((baseUrl) =>
+            cacheFetch(`${baseUrl}?data=${encodedQuery}`, undefined, cacheType),
+        );
+        const race = firstOkOrLast(attempts);
+        const result =
+            loadingText && _retryCount === 0
+                ? await toast.promise(race, { pending: loadingText })
+                : await race;
+        if (result.ok) await mirrorCachePut(result);
+        return result;
     };
 
     if (usePost) {
