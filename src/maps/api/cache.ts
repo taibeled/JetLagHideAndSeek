@@ -12,23 +12,41 @@ const determinePermanentCache = memoize(() =>
 const inFlightFetches = new Map<string, Promise<Response>>();
 
 /**
- * Client-side abort timeout for Overpass/boundary fetches. Without it a slow or
- * hung upstream (a county/state `railway=station` query can run the server's
- * full `[timeout:240]`, or the connection can hang outright) leaves the browser
- * fetch pending indefinitely — and with it `isLoading` stuck `true`, freezing
- * the whole UI. Aborting after this caps the freeze and lets the mirror sweep /
- * retry recover (a thrown fetch becomes a 599 Response here).
+ * Client-side abort timeout for Overpass/boundary fetches. Its job is to stop a
+ * genuinely HUNG connection from leaving the fetch pending forever (with
+ * `isLoading` stuck `true`, freezing the UI) — NOT to cut off a slow-but-valid
+ * query. A medium/large territory's query explicitly asks Overpass for up to
+ * `[timeout:240]`, so a flat short timeout wrongly aborts it (→ 599 → blank map
+ * even after reload). Derive the budget from the query's own `[timeout:N]`
+ * (in the GET URL or the POST body) plus network/proxy overhead, capped by MAX.
  */
-export const OVERPASS_FETCH_TIMEOUT_MS = 60_000;
+const DEFAULT_FETCH_TIMEOUT_MS = 60_000;
+const MAX_FETCH_TIMEOUT_MS = 300_000; // hard backstop against a true hang
+const FETCH_TIMEOUT_BUFFER_MS = 30_000; // proxy + network overhead beyond [timeout:N]
 
-/** fetch() that aborts after OVERPASS_FETCH_TIMEOUT_MS so a hang can't freeze
- *  the app. Falls back to a plain fetch if AbortSignal.timeout is unavailable. */
+function fetchTimeoutMs(url: string, init?: RequestInit): number {
+    const body = typeof init?.body === "string" ? init.body : "";
+    // Matches `timeout:240` and the URL-encoded `timeout%3A240`.
+    const match = `${url}${body}`.match(/timeout(?:%3A|:)(\d+)/i);
+    const serverSec = match ? Number.parseInt(match[1]!, 10) : NaN;
+    if (Number.isFinite(serverSec) && serverSec > 0) {
+        return Math.min(
+            serverSec * 1000 + FETCH_TIMEOUT_BUFFER_MS,
+            MAX_FETCH_TIMEOUT_MS,
+        );
+    }
+    return DEFAULT_FETCH_TIMEOUT_MS;
+}
+
+/** fetch() that aborts after the query's own [timeout:N] budget (+ buffer, capped
+ *  by MAX) so a hang can't freeze the app while a valid slow query still finishes.
+ *  Falls back to a plain fetch if AbortSignal.timeout is unavailable. */
 export const timedFetch = (url: string, init?: RequestInit): Promise<Response> =>
     fetch(url, {
         ...init,
         signal:
             typeof AbortSignal !== "undefined" && "timeout" in AbortSignal
-                ? AbortSignal.timeout(OVERPASS_FETCH_TIMEOUT_MS)
+                ? AbortSignal.timeout(fetchTimeoutMs(url, init))
                 : init?.signal,
     });
 
