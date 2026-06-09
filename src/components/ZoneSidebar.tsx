@@ -824,7 +824,12 @@ export const ZoneSidebar = () => {
     );
 
     useEffect(() => {
-        if (!map || isLoading.get()) return;
+        // Gate on the SUBSCRIBED $isLoading (not isLoading.get()) and keep it
+        // in the deps below: a refresh is often still in flight when the
+        // hiding-zone data finishes loading, so this would bail early — and
+        // without $isLoading as a dep it never re-ran when loading finished,
+        // leaving the zones undrawn until a full page reload.
+        if (!map || $isLoading) return;
 
         if ($displayHidingZones && hidingZoneModeStationID) {
             const hiderStation = find(
@@ -881,6 +886,7 @@ export const ZoneSidebar = () => {
         // are component-module scoped). Re-running on their identity
         // would needlessly redraw the GeoJSON layer.
     }, [
+        $isLoading,
         $displayHidingZones,
         $displayHidingZonesStyle,
         $hidingRadius,
