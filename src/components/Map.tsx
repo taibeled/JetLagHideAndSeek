@@ -309,9 +309,37 @@ export const Map = ({ className }: { className?: string }) => {
                 mapGeoData = polyGeoData;
                 mapGeoJSON.set(polyGeoData);
             } else {
+                // Signature of the location set this boundary pull is FOR.
+                // If the user adds/removes a location while the pull is in
+                // flight, PlacePicker nulls mapGeoJSON and the new request is
+                // coalesced into pendingRefreshRef — but this pull would then
+                // complete and mapGeoJSON.set() would OVERWRITE that null with
+                // a territory missing the new location. The queued refresh
+                // would see a non-null mapGeoJSON, skip recomputation, and the
+                // new county would never render until a full page reload.
+                // Publishing only when the location set is unchanged lets the
+                // queued refresh recompute from scratch instead.
+                const locationsSignature = () =>
+                    JSON.stringify([
+                        mapGeoLocation.get()?.properties?.osm_id,
+                        ...additionalMapGeoLocations
+                            .get()
+                            .map(
+                                (entry) =>
+                                    `${entry.added}:${entry.location.properties.osm_id}`,
+                            ),
+                    ]);
+                const signatureAtStart = locationsSignature();
                 await toast.promise(
                     determineMapBoundaries()
                         .then((x) => {
+                            if (locationsSignature() !== signatureAtStart) {
+                                // Stale: locations changed mid-pull. Leave
+                                // mapGeoJSON as PlacePicker set it (null) so
+                                // the coalesced follow-up refresh recomputes
+                                // with the full, current location set.
+                                return;
+                            }
                             mapGeoJSON.set(x);
                             mapGeoData = x;
                         })
