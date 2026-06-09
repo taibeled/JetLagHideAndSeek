@@ -183,6 +183,42 @@ function overpassRetryDelayMs(status: number, response: Response): number {
  * `isLoading` stayed true. Losers keep running but their bodies are never read.
  * Cost: ~3x request volume per cache-miss query, fine for this app's low rate.
  */
+/**
+ * The mirror that most recently answered ok. Racing every query against ALL
+ * mirrors triples request volume per cache miss — harmless for a one-off
+ * query, but the medium-large split path issues one query per region in
+ * waves, and 2 concurrent queries x 3 mirrors = 6 simultaneous requests from
+ * the single Railway egress IP. overpass-api.de allows ~2 concurrent slots
+ * per IP, so the racing itself triggered 429s at scale. Sticky routing sends
+ * follow-up queries only to the proven-healthy mirror (1 request per query)
+ * and re-races all mirrors only when that one stops answering.
+ */
+let stickyOverpassMirror: string | null = null;
+
+async function overpassFetchStickyOrRace(
+    attemptFor: (base: string) => Promise<Response>,
+): Promise<Response> {
+    const sticky = stickyOverpassMirror;
+    if (sticky) {
+        try {
+            const res = await attemptFor(sticky);
+            if (res.ok) return res;
+        } catch {
+            /* fall through to a full race */
+        }
+        stickyOverpassMirror = null;
+    }
+    const attempts = OVERPASS_INTERPRETER_URLS.map((base) =>
+        attemptFor(base).then((res) => {
+            if (res.ok && stickyOverpassMirror === null) {
+                stickyOverpassMirror = base;
+            }
+            return res;
+        }),
+    );
+    return firstOkOrLast(attempts);
+}
+
 async function firstOkOrLast(promises: Promise<Response>[]): Promise<Response> {
     if (promises.length === 0) {
         return new Response("", { status: 599, statusText: "Network Error" });
@@ -228,8 +264,9 @@ const getOverpassData = async (
 
     const fetchOverpassPostAllMirrors = async (): Promise<Response> => {
         const body = `data=${encodedQuery}`;
-        // Race all mirrors in parallel; first ok wins (see firstOkOrLast).
-        const attempts = OVERPASS_INTERPRETER_URLS.map((base) =>
+        // Sticky mirror first; full parallel race only when it fails
+        // (see overpassFetchStickyOrRace).
+        const race = overpassFetchStickyOrRace((base) =>
             timedFetch(base, {
                 method: "POST",
                 headers: {
@@ -244,7 +281,6 @@ const getOverpassData = async (
                     }),
             ),
         );
-        const race = firstOkOrLast(attempts);
         const result =
             loadingText && _retryCount === 0
                 ? await toast.promise(race, { pending: loadingText })
@@ -290,11 +326,11 @@ const getOverpassData = async (
      * so we must iterate mirrors explicitly — the old try/catch never ran.
      */
     const fetchOverpassGetAllMirrors = async (): Promise<Response> => {
-        // Race all mirrors in parallel; first ok wins (see firstOkOrLast).
-        const attempts = OVERPASS_INTERPRETER_URLS.map((baseUrl) =>
+        // Sticky mirror first; full parallel race only when it fails
+        // (see overpassFetchStickyOrRace).
+        const race = overpassFetchStickyOrRace((baseUrl) =>
             cacheFetch(`${baseUrl}?data=${encodedQuery}`, undefined, cacheType),
         );
-        const race = firstOkOrLast(attempts);
         const result =
             loadingText && _retryCount === 0
                 ? await toast.promise(race, { pending: loadingText })
@@ -312,7 +348,18 @@ const getOverpassData = async (
             response = await fetchOverpassPostAllMirrors();
         }
     } else {
-        response = await fetchOverpassGetAllMirrors();
+        // Check the canonical cache entry first. mirrorCachePut stores every
+        // success under primaryUrl; with sticky-mirror routing the fetch may
+        // go to a different mirror URL than the one cacheFetch cached under,
+        // so without this check a previously fetched query would re-hit the
+        // network.
+        const cache = await determineCache(cacheType);
+        const cachedResponse = await cache.match(primaryUrl);
+        if (cachedResponse?.ok) {
+            response = cachedResponse.clone();
+        } else {
+            response = await fetchOverpassGetAllMirrors();
+        }
     }
 
     if (!response.ok && !usePost) {
