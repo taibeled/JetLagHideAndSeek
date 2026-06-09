@@ -183,15 +183,16 @@ function overpassRetryDelayMs(status: number, response: Response): number {
  * `isLoading` stayed true. Losers keep running but their bodies are never read.
  * Cost: ~3x request volume per cache-miss query, fine for this app's low rate.
  */
-async function firstOkOrLast(
-    promises: Promise<Response>[],
-): Promise<Response> {
+async function firstOkOrLast(promises: Promise<Response>[]): Promise<Response> {
     if (promises.length === 0) {
         return new Response("", { status: 599, statusText: "Network Error" });
     }
     return await new Promise<Response>((resolve) => {
         let remaining = promises.length;
-        let last = new Response("", { status: 599, statusText: "Network Error" });
+        let last = new Response("", {
+            status: 599,
+            statusText: "Network Error",
+        });
         for (const p of promises) {
             p.then(
                 (res) => {
@@ -510,7 +511,12 @@ const determineGeoJSON = async (
     }
 
     const osmType = OSM_TYPE_LONG[osmTypeLetter];
-    const query = `[out:json];${osmType}(${osmId});out geom;`;
+    // Explicit [timeout:N]: county/state `out geom` payloads are multi-MB and
+    // routinely exceed Overpass's defaults on busy mirrors. The client-side
+    // abort budget in timedFetch derives from this declared value, so leaving
+    // it off capped the fetch at the 60s default and large boundaries died
+    // mid-transfer (blank territory at scale).
+    const query = `[out:json][timeout:180];${osmType}(${osmId});out geom;`;
     const data = await getOverpassData(
         query,
         opts.forceDetailed
@@ -1711,23 +1717,34 @@ export const nearestToQuestion = async (
 export const determineMapBoundaries = async (
     opts: DetermineGeoJSONOptions = {},
 ) => {
-    const mapGeoDatum = await Promise.all(
-        [
-            {
-                location: mapGeoLocation.get(),
-                added: true,
-                base: true,
-            },
-            ...additionalMapGeoLocations.get(),
-        ].map(async (location) => ({
+    const locations = [
+        {
+            location: mapGeoLocation.get(),
+            added: true,
+            base: true,
+        },
+        ...additionalMapGeoLocations.get(),
+    ];
+
+    // SEQUENTIAL on purpose. This was Promise.all, which fired one Nominatim
+    // lookup per location simultaneously through the single Railway egress IP.
+    // Small games (1-2 locations) were fine; a real medium-large game (6+
+    // counties) tripped Nominatim's ~1 req/s policy, the refused lookups fell
+    // back to heavy Overpass `out geom` queries in parallel, and the territory
+    // never built (blank map at scale). Each boundary lands in PERMANENT_CACHE,
+    // so the sequential cost is paid once per location, ever — cached loads
+    // skip the network entirely and stay fast.
+    const mapGeoDatum: { added: boolean; data: any }[] = [];
+    for (const location of locations) {
+        mapGeoDatum.push({
             added: location.added,
             data: await determineGeoJSON(
                 location.location.properties.osm_id.toString(),
                 location.location.properties.osm_type,
                 opts,
             ),
-        })),
-    );
+        });
+    }
 
     let mapGeoData = turf.featureCollection([
         safeUnion(
