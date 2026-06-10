@@ -1,21 +1,18 @@
 name: Deploy to Railway
 
+# Manual-only. Production deploys happen through Railway's NATIVE GitHub
+# integration (the railway-app bot deploys every push to master directly);
+# this CLI-based workflow is an unused alternative that requires
+# RAILWAY_API_TOKEN / *_ID secrets which were never configured. With the
+# workflow_run trigger it fired (and failed "Unauthorized") on every push,
+# making it look like deploys were broken when the real path was fine.
 on:
-    workflow_run:
-        workflows: ["Build and Push Docker Image"]
-        types: [completed]
-        branches:
-            - master
     # workflow_dispatch has no branches: filter in GitHub workflow syntax; master-only manual runs are enforced in deploy.if below (github.ref).
     workflow_dispatch:
 
 jobs:
     deploy:
-        if: |
-            (github.event_name == 'workflow_dispatch' &&
-             github.ref == 'refs/heads/master') ||
-            (github.event_name == 'workflow_run' &&
-             github.event.workflow_run.conclusion == 'success')
+        if: github.ref == 'refs/heads/master'
         runs-on: ubuntu-latest
         steps:
             - name: Checkout repository

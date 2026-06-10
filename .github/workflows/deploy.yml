@@ -1,8 +1,11 @@
 name: Deploy to GitHub Pages
 
+# Manual-only. This fork deploys via Railway's native GitHub integration
+# (the SSR app at jetlaghideandseek-production.up.railway.app); the GH Pages
+# static mirror is upstream's deploy target, not ours. Running it on every
+# push just painted a red X on every commit — it had been failing on a pnpm
+# version conflict — and made real deploys look broken.
 on:
-    push:
-        branches: [master]
     workflow_dispatch:
 
 # Allow this job to clone the repo and create a page deployment
@@ -22,7 +25,10 @@ jobs:
               with:
                   path: . # The root location of your Astro project inside the repository. (optional)
                   node-version: 20 # The specific version of Node that should be used to build your site. Defaults to 20. (optional)
-                  package-manager: pnpm@latest # The Node package manager that should be used to install dependencies and build your site. Automatically detected based on your lockfile. (optional)
+                  # No package-manager pin: package.json's `packageManager`
+                  # field declares the exact pnpm version, and specifying one
+                  # here too makes withastro/action fail with "Multiple
+                  # versions of pnpm specified".
 
     deploy:
         needs: build
