@@ -139,6 +139,15 @@ def cluster_name(members: list[str]) -> str:
     return f"{shortest} (campus)"
 
 
+# ── Atomic write ──────────────────────────────────────────────────────────────
+def _atomic_write_text(path: Path, text: str) -> None:
+    """Write via a sibling .tmp then atomically replace, so an interrupted run
+    never leaves a truncated progress cache that the next run can't parse."""
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(text)
+    tmp.replace(path)
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 def main():
     df = pd.read_excel(XLSX_PATH)
@@ -147,8 +156,12 @@ def main():
     # Load progress
     geocoded: dict = {}
     if PROGRESS_FILE.exists():
-        geocoded = json.loads(PROGRESS_FILE.read_text())
-        print(f"Resuming — {len(geocoded)} already geocoded")
+        try:
+            geocoded = json.loads(PROGRESS_FILE.read_text())
+            print(f"Resuming — {len(geocoded)} already geocoded")
+        except json.JSONDecodeError as e:
+            print(f"Warning: progress cache is corrupt ({e}); starting fresh")
+            geocoded = {}
     PROGRESS_FILE.parent.mkdir(parents=True, exist_ok=True)
 
     # Geocode
@@ -164,7 +177,7 @@ def main():
             print("→ FAILED")
         geocoded[key] = {"lat": lat, "lng": lng, "method": method,
                           "address": h["Address"], "city": h["City"]}
-        PROGRESS_FILE.write_text(json.dumps(geocoded, indent=2))
+        _atomic_write_text(PROGRESS_FILE, json.dumps(geocoded, indent=2))
         time.sleep(SLEEP_S)
 
     # Separate successful / failed
