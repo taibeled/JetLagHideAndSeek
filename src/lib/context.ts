@@ -8,6 +8,7 @@ import type {
 import type { Map } from "leaflet";
 import { atom, computed, onSet } from "nanostores";
 
+import { gameKey } from "@/lib/game-slot";
 import { buildReachabilityPayload } from "@/lib/share/reachability-payload";
 import type { ReachabilityResult } from "@/lib/transit/types";
 import type {
@@ -27,10 +28,18 @@ import {
     type Units,
 } from "@/maps/schema";
 
+// Persistent atoms come in two scopes:
+//   * gameKey("…")  — per-game state (regions, questions, hider mode, zone
+//     options, reachability inputs…). Namespaced by the ?game= URL slot so
+//     independent games can run in different tabs without clobbering each
+//     other (see lib/game-slot.ts).
+//   * bare "…" keys — app-level preferences (tile layer, API keys, units,
+//     tutorial seen, presets library). Shared across every game on purpose;
+//     a new game shouldn't reset your tile layer or replay the tutorial.
 export const DEFAULT_MAP_GEO_LOCATION_OSM_ID = 382313;
 
 export const mapGeoLocation = persistentAtom<OpenStreetMap>(
-    "mapGeoLocation",
+    gameKey("mapGeoLocation"),
     {
         geometry: {
             coordinates: [36.5748441, 139.2394179],
@@ -57,12 +66,12 @@ export const mapGeoLocation = persistentAtom<OpenStreetMap>(
 
 export const additionalMapGeoLocations = persistentAtom<
     AdditionalMapGeoLocations[]
->("additionalMapGeoLocations", [], {
+>(gameKey("additionalMapGeoLocations"), [], {
     encode: JSON.stringify,
     decode: JSON.parse,
 });
 export const permanentOverlay = persistentAtom<FeatureCollection | null>(
-    "permanentOverlay",
+    gameKey("permanentOverlay"),
     null,
     {
         encode: JSON.stringify,
@@ -75,7 +84,7 @@ export const mapGeoJSON = atom<FeatureCollection<
 > | null>(null);
 export const polyGeoJSON = persistentAtom<FeatureCollection<
     Polygon | MultiPolygon
-> | null>("polyGeoJSON", null, {
+> | null>(gameKey("polyGeoJSON"), null, {
     encode: JSON.stringify,
     decode: JSON.parse,
 });
@@ -143,7 +152,7 @@ onSet(additionalMapGeoLocations, ({ newValue }) => {
     }
 });
 
-export const questions = persistentAtom<Questions>("questions", [], {
+export const questions = persistentAtom<Questions>(gameKey("questions"), [], {
     encode: JSON.stringify,
     decode: (x) => questionsSchema.parse(JSON.parse(x)),
 });
@@ -167,7 +176,7 @@ export const hiderMode = persistentAtom<
           latitude: number;
           longitude: number;
       }
->("isHiderMode", false, {
+>(gameKey("isHiderMode"), false, {
     encode: JSON.stringify,
     decode: JSON.parse,
 });
@@ -177,13 +186,13 @@ export const startingLocation = persistentAtom<
           latitude: number;
           longitude: number;
       }
->("startingLocation", false, {
+>(gameKey("startingLocation"), false, {
     encode: JSON.stringify,
     decode: JSON.parse,
 });
 export const triggerLocalRefresh = atom<number>(0);
 export const displayHidingZones = persistentAtom<boolean>(
-    "displayHidingZones",
+    gameKey("displayHidingZones"),
     false,
     {
         encode: JSON.stringify,
@@ -191,7 +200,7 @@ export const displayHidingZones = persistentAtom<boolean>(
     },
 );
 export const displayHidingZonesOptions = persistentAtom<string[]>(
-    "displayHidingZonesOptions",
+    gameKey("displayHidingZonesOptions"),
     ["[railway=station]"],
     {
         encode: JSON.stringify,
@@ -200,7 +209,7 @@ export const displayHidingZonesOptions = persistentAtom<string[]>(
 );
 export const displayHidingZonesStyle = persistentAtom<
     "zones" | "stations" | "no-overlap" | "no-display"
->("displayHidingZonesStyle", "zones");
+>(gameKey("displayHidingZonesStyle"), "zones");
 export const questionFinishedMapData = atom<any>(null);
 
 /**
@@ -223,7 +232,7 @@ onSet(trainStations, ({ newValue }) => {
 });
 
 export const useCustomStations = persistentAtom<boolean>(
-    "useCustomStations",
+    gameKey("useCustomStations"),
     false,
     {
         encode: JSON.stringify,
@@ -231,7 +240,7 @@ export const useCustomStations = persistentAtom<boolean>(
     },
 );
 export const customStations = persistentAtom<CustomStation[]>(
-    "customStations",
+    gameKey("customStations"),
     [],
     {
         encode: JSON.stringify,
@@ -239,7 +248,7 @@ export const customStations = persistentAtom<CustomStation[]>(
     },
 );
 export const mergeDuplicates = persistentAtom<boolean>(
-    "removeDuplicates",
+    gameKey("removeDuplicates"),
     false,
     {
         encode: JSON.stringify,
@@ -247,7 +256,7 @@ export const mergeDuplicates = persistentAtom<boolean>(
     },
 );
 export const includeDefaultStations = persistentAtom<boolean>(
-    "includeDefaultStations",
+    gameKey("includeDefaultStations"),
     false,
     {
         encode: JSON.stringify,
@@ -255,7 +264,7 @@ export const includeDefaultStations = persistentAtom<boolean>(
     },
 );
 export const activeStationsOnly = persistentAtom<boolean>(
-    "activeStationsOnly",
+    gameKey("activeStationsOnly"),
     true,
     {
         encode: JSON.stringify,
@@ -267,7 +276,7 @@ export const activeStationsOnly = persistentAtom<boolean>(
 // railway=station from Overpass. Instant, can't time out, works offline — but
 // only covers that region, so it's OFF by default and opt-in per game.
 export const useBundledStations = persistentAtom<boolean>(
-    "useBundledStations",
+    gameKey("useBundledStations"),
     false,
     {
         encode: JSON.stringify,
@@ -281,7 +290,7 @@ export const useBundledStations = persistentAtom<boolean>(
 // fair hiding spots, while round-trip excursions like the Essex Steam
 // Train are not. Flip on per-game as needed.
 export const excludeHeritageRailways = persistentAtom<boolean>(
-    "excludeHeritageRailways",
+    gameKey("excludeHeritageRailways"),
     false,
     {
         encode: JSON.stringify,
@@ -316,7 +325,7 @@ export const reachabilityClassifications = atom<
 export const reachabilityOverrides = persistentAtom<
     Record<string, "include" | "exclude">
 >(
-    "reachabilityOverrides",
+    gameKey("reachabilityOverrides"),
     {},
     {
         encode: JSON.stringify,
@@ -330,17 +339,17 @@ export const reachabilityOverrides = persistentAtom<
 // session. The result itself is transient (`reachabilityResult` above).
 // ---------------------------------------------------------------------------
 export const reachabilityBudgetMinutes = persistentAtom<number>(
-    "reachabilityBudgetMinutes",
+    gameKey("reachabilityBudgetMinutes"),
     45,
     { encode: JSON.stringify, decode: JSON.parse },
 );
 export const reachabilityWalkSpeedMph = persistentAtom<number>(
-    "reachabilityWalkSpeedMph",
+    gameKey("reachabilityWalkSpeedMph"),
     3,
     { encode: JSON.stringify, decode: JSON.parse },
 );
 export const reachabilityMaxWalkLegMinutes = persistentAtom<number>(
-    "reachabilityMaxWalkLegMinutes",
+    gameKey("reachabilityMaxWalkLegMinutes"),
     20,
     { encode: JSON.stringify, decode: JSON.parse },
 );
@@ -354,19 +363,19 @@ export type ReachabilityDeparturePreset =
     | "custom";
 export const reachabilityDeparturePreset =
     persistentAtom<ReachabilityDeparturePreset>(
-        "reachabilityDeparturePreset",
+        gameKey("reachabilityDeparturePreset"),
         "now",
         { encode: JSON.stringify, decode: JSON.parse },
     );
 export const reachabilityDepartureCustomISO = persistentAtom<string>(
-    "reachabilityDepartureCustomISO",
+    gameKey("reachabilityDepartureCustomISO"),
     "",
 );
 // Empty array means "use all imported systems" — matches the RAPTOR
 // worker's own default and avoids a chicken-and-egg problem where the
 // user has nothing selected on a fresh install.
 export const reachabilitySelectedSystemIds = persistentAtom<string[]>(
-    "reachabilitySelectedSystemIds",
+    gameKey("reachabilitySelectedSystemIds"),
     [],
     { encode: JSON.stringify, decode: JSON.parse },
 );
@@ -379,12 +388,12 @@ export const animateMapMovements = persistentAtom<boolean>(
         decode: JSON.parse,
     },
 );
-export const hidingRadius = persistentAtom<number>("hidingRadius", 0.5, {
+export const hidingRadius = persistentAtom<number>(gameKey("hidingRadius"), 0.5, {
     encode: JSON.stringify,
     decode: JSON.parse,
 });
 export const hidingRadiusUnits = persistentAtom<Units>(
-    "hidingRadiusUnits",
+    gameKey("hidingRadiusUnits"),
     "miles",
     {
         encode: JSON.stringify,
@@ -392,7 +401,7 @@ export const hidingRadiusUnits = persistentAtom<Units>(
     },
 );
 export const disabledStations = persistentAtom<string[]>(
-    "disabledStations",
+    gameKey("disabledStations"),
     [],
     {
         encode: JSON.stringify,
@@ -567,7 +576,7 @@ export const hidingZone = computed(
 
 export const drawingQuestionKey = atom<number>(-1);
 export const planningModeEnabled = persistentAtom<boolean>(
-    "planningModeEnabled",
+    gameKey("planningModeEnabled"),
     false,
     {
         encode: JSON.stringify,

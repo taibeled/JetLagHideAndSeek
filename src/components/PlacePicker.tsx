@@ -40,6 +40,7 @@ import {
     questions,
     startingLocation,
 } from "@/lib/context";
+import { GAME_SLOT, newGameUrl } from "@/lib/game-slot";
 import { withTask } from "@/lib/progress";
 import { cn } from "@/lib/utils";
 import {
@@ -467,6 +468,11 @@ export const PlacePicker = ({
                             ))}
                         </CommandGroup>
                     </CommandList>
+                    {GAME_SLOT && (
+                        <div className="px-3 py-1 text-xs text-muted-foreground">
+                            Game: {GAME_SLOT}
+                        </div>
+                    )}
                     <Button
                         variant="outline"
                         className="font-normal bg-slate-50 hover:bg-slate-200"
@@ -485,6 +491,18 @@ export const PlacePicker = ({
                         }}
                     >
                         New Game
+                    </Button>
+                    <Button
+                        variant="outline"
+                        className="font-normal bg-slate-50 hover:bg-slate-200"
+                        onClick={() => {
+                            // Independent game in a separate ?game= storage
+                            // slot — this tab's game is untouched, and the
+                            // two tabs don't sync (see lib/game-slot.ts).
+                            window.open(newGameUrl(), "_blank");
+                        }}
+                    >
+                        New Game in New Tab
                     </Button>
                     {$polyGeoJSON && (
                         <Button
