@@ -38,17 +38,85 @@ function fetchTimeoutMs(url: string, init?: RequestInit): number {
     return DEFAULT_FETCH_TIMEOUT_MS;
 }
 
-/** fetch() that aborts after the query's own [timeout:N] budget (+ buffer, capped
- *  by MAX) so a hang can't freeze the app while a valid slow query still finishes.
- *  Falls back to a plain fetch if AbortSignal.timeout is unavailable. */
-export const timedFetch = (url: string, init?: RequestInit): Promise<Response> =>
-    fetch(url, {
-        ...init,
-        signal:
-            typeof AbortSignal !== "undefined" && "timeout" in AbortSignal
-                ? AbortSignal.timeout(fetchTimeoutMs(url, init))
-                : init?.signal,
-    });
+/**
+ * Reconstruct the upstream URL from a `/api/proxy-api?url=…` URL, replicating
+ * the server's param folding: the `url` query param is the base (callers may
+ * have appended a path and params that fold into its value), and every other
+ * query param is forwarded as a sibling. Returns null for non-proxied URLs.
+ */
+export function directUrlFromProxied(url: string): string | null {
+    try {
+        const u = new URL(
+            url,
+            typeof location !== "undefined"
+                ? location.origin
+                : "http://localhost",
+        );
+        if (u.pathname !== "/api/proxy-api") return null;
+        const target = u.searchParams.get("url");
+        if (!target || !/^https?:\/\//i.test(target)) return null;
+        const direct = new URL(target);
+        for (const [key, value] of u.searchParams) {
+            if (key !== "url") direct.searchParams.append(key, value);
+        }
+        return direct.toString();
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * Once a direct (browser → API) request fails with a network-level error —
+ * the signature of an ad blocker, a CORS strip, or a dead connection — stop
+ * trying direct for the rest of this page load and go straight to the proxy.
+ * Per-page-load on purpose: the next visit retries direct.
+ */
+let directNetworkBlocked = false;
+
+/**
+ * fetch() that aborts after the query's own [timeout:N] budget (+ buffer,
+ * capped by MAX) so a hang can't freeze the app while a valid slow query
+ * still finishes. Falls back to a plain fetch if AbortSignal.timeout is
+ * unavailable.
+ *
+ * Proxied URLs try the DIRECT upstream first and use /api/proxy-api only as
+ * a fallback. Overpass, Nominatim, and Photon all serve permissive CORS (the
+ * upstream app talks to them straight from the browser) — going direct means
+ * each player's own IP carries their rate-limit footprint instead of every
+ * request funneling through the single Railway egress IP, which is what made
+ * Overpass 429s and Nominatim refusals an at-scale problem. The proxy stays
+ * as the fallback for browsers with ad blockers (the reason it exists).
+ * Timeouts/aborts do NOT trigger the fallback — a query that exhausted its
+ * budget directly is just slow, and re-running it through the proxy would
+ * double the wait for the same result.
+ */
+export const timedFetch = async (
+    url: string,
+    init?: RequestInit,
+): Promise<Response> => {
+    const doFetch = (target: string) =>
+        fetch(target, {
+            ...init,
+            signal:
+                typeof AbortSignal !== "undefined" && "timeout" in AbortSignal
+                    ? AbortSignal.timeout(fetchTimeoutMs(target, init))
+                    : init?.signal,
+        });
+
+    const direct = directNetworkBlocked ? null : directUrlFromProxied(url);
+    if (direct) {
+        try {
+            return await doFetch(direct);
+        } catch (error) {
+            const name = error instanceof Error ? error.name : "";
+            if (name === "AbortError" || name === "TimeoutError") {
+                throw error;
+            }
+            directNetworkBlocked = true;
+        }
+    }
+    return doFetch(url);
+};
 
 /** Busy upstream / rate limit — Overpass mirror sweep or getOverpassData retry often recovers. */
 const TRANSIENT_FETCH_STATUSES = new Set([408, 429, 502, 503, 504, 507, 529]);
