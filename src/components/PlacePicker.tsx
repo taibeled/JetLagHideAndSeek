@@ -371,9 +371,13 @@ export const PlacePicker = ({
                 >
                     <CommandInput
                         placeholder="Search place..."
-                        onKeyUp={(x) => {
-                            setInputValue(x.currentTarget.value);
-                        }}
+                        // onValueChange, NOT onKeyUp: mobile input methods
+                        // (swipe typing, autocorrect insertions, long-press
+                        // paste) don't reliably fire per-key keyup events, so
+                        // keyup-driven search silently never ran on phones —
+                        // the picker just showed "No locations found".
+                        // onValueChange fires for every input method.
+                        onValueChange={setInputValue}
                     />
                     <CommandList>
                         <CommandEmpty>

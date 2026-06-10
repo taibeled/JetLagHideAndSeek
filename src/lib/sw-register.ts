@@ -27,31 +27,17 @@ import { Serwist } from "@serwist/window";
 import { toast } from "react-toastify";
 
 const TOAST_ID = "sw-update-available";
-const DISMISSED_WAITING_SW_KEY = "dismissedWaitingSwScriptURL";
 
-function getDismissedWaitingScriptURL(): string | null {
-    try {
-        return localStorage.getItem(DISMISSED_WAITING_SW_KEY);
-    } catch {
-        return null;
-    }
-}
-
-function setDismissedWaitingScriptURL(scriptURL: string) {
-    try {
-        localStorage.setItem(DISMISSED_WAITING_SW_KEY, scriptURL);
-    } catch {
-        // Ignore storage failures (private mode / restricted webview).
-    }
-}
-
-function clearDismissedWaitingScriptURL() {
-    try {
-        localStorage.removeItem(DISMISSED_WAITING_SW_KEY);
-    } catch {
-        // Ignore storage failures (private mode / restricted webview).
-    }
-}
+// Dismissal is intentionally PER PAGE LOAD (a module variable, not
+// localStorage). The old implementation persisted the dismissed SW's
+// scriptURL — but scriptURL is `<base>sw.js` for EVERY build, so one
+// dismissal permanently suppressed every future update prompt and users
+// got pinned to an old bundle no matter how many times they refreshed
+// (fresh loads auto-apply waiting SWs, but a long-lived tab never saw
+// the prompt again). Now a dismissal lasts until the next page load,
+// where the update either auto-applies (no interaction yet) or
+// re-prompts.
+let dismissedThisPageLoad = false;
 
 export function registerServiceWorker() {
     if (typeof window === "undefined") return;
@@ -110,7 +96,6 @@ export function registerServiceWorker() {
     navigator.serviceWorker.addEventListener("controllerchange", () => {
         if (reloadingForUpdate) return;
         reloadingForUpdate = true;
-        clearDismissedWaitingScriptURL();
         // New SW took control — reload so the freshly-precached
         // assets are picked up on the next navigation.
         window.location.reload();
@@ -145,16 +130,9 @@ export function registerServiceWorker() {
             return;
         }
 
-        const registration =
-            await navigator.serviceWorker.getRegistration(scope);
-        const waitingScriptURL = registration?.waiting?.scriptURL ?? null;
-
-        // If the user already dismissed this exact waiting SW, do not
-        // re-show the banner until a different SW build is waiting.
-        if (
-            waitingScriptURL &&
-            getDismissedWaitingScriptURL() === waitingScriptURL
-        ) {
+        // Re-showing after a dismissal waits for the next page load (see
+        // dismissedThisPageLoad above) — never suppress updates forever.
+        if (dismissedThisPageLoad) {
             return;
         }
 
@@ -166,9 +144,7 @@ export function registerServiceWorker() {
             closeOnClick: false,
             draggable: false,
             onClose: () => {
-                if (waitingScriptURL) {
-                    setDismissedWaitingScriptURL(waitingScriptURL);
-                }
+                dismissedThisPageLoad = true;
             },
             onClick: () => {
                 reloadingForUpdate = true;
