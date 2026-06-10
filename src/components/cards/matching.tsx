@@ -847,15 +847,10 @@ export const MatchingQuestionComponent = ({
                         <ToggleGroup
                             className="grow"
                             type="single"
-                            value={
-                                data.lengthComparison
-                                    ? data.lengthComparison
-                                    : data.same === true
-                                      ? "same"
-                                      : data.same === false
-                                        ? "different"
-                                        : "same"
-                            }
+                            // Legacy/unset state defaults to "same" (the
+                            // creation default + zonePipeline fallback) so the
+                            // value always matches a ToggleGroupItem below.
+                            value={data.lengthComparison ?? "same"}
                             onValueChange={(
                                 value:
                                     | "shorter"

@@ -5,8 +5,8 @@
  * Covers: NYC Subway, MTA LIRR, MTA Metro-North, NJ Transit (rail + light
  * rail), SEPTA, Amtrak, and Hartford Line — useful for NJ/NY/CT/PA games.
  *
- * Updates reactively every time a question is applied. Only appears once at
- * least one question has been answered and the territory has been computed.
+ * Shows the full station count on load (before any question), then updates
+ * reactively every time a question is applied and the territory is recomputed.
  */
 
 import { useStore } from "@nanostores/react";

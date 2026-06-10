@@ -42,7 +42,13 @@ import {
     polyGeoJSON,
 } from "@/lib/context";
 import { stationNameMatchKey } from "@/lib/transit/osm-gtfs-match";
-import { cacheFetch, determineCache, timedFetch } from "@/maps/api/cache";
+import {
+    cacheFetch,
+    currentCancelEpoch,
+    determineCache,
+    timedFetch,
+    wasCancelledSince,
+} from "@/maps/api/cache";
 import {
     LOCATION_FIRST_TAG,
     NOMINATIM_API,
@@ -252,7 +258,13 @@ const getOverpassData = async (
     loadingText?: string,
     cacheType: CacheType = CacheType.CACHE,
     _retryCount = 0,
+    // Captured once on the top-level call; threaded through retries so a
+    // user cancel mid-operation is detected even across recursion.
+    _startEpoch = currentCancelEpoch(),
 ) => {
+    // Bail before doing any work if the user already cancelled.
+    if (wasCancelledSince(_startEpoch)) return { elements: [] };
+
     const encodedQuery = encodeURIComponent(query);
     const primaryUrl = `${OVERPASS_API}?data=${encodedQuery}`;
     const usePost = primaryUrl.length > MAX_OVERPASS_GET_URL_LENGTH;
@@ -372,6 +384,9 @@ const getOverpassData = async (
     }
 
     if (!response.ok) {
+        // A user cancel turns in-flight fetches into 599s; don't retry them
+        // (or surface an error toast) — just unwind quietly.
+        if (wasCancelledSince(_startEpoch)) return { elements: [] };
         if (
             _retryCount < OVERPASS_MAX_RETRIES &&
             OVERPASS_RETRYABLE_HTTP.has(response.status)
@@ -383,6 +398,7 @@ const getOverpassData = async (
                 loadingText,
                 cacheType,
                 _retryCount + 1,
+                _startEpoch,
             );
         }
         await debugOverpassFailure(response);
@@ -410,6 +426,7 @@ const getOverpassData = async (
         // Treat it like a retryable failure: a fresh fetch (Overpass is
         // NetworkOnly, so never served from cache) normally returns intact
         // JSON. Only surface the toast once retries are exhausted.
+        if (wasCancelledSince(_startEpoch)) return { elements: [] };
         if (_retryCount < OVERPASS_MAX_RETRIES) {
             const delay = Math.min(1000 * (_retryCount + 1), 3000);
             await new Promise((r) => setTimeout(r, delay));
@@ -418,6 +435,7 @@ const getOverpassData = async (
                 loadingText,
                 cacheType,
                 _retryCount + 1,
+                _startEpoch,
             );
         }
         toast.error(
@@ -866,13 +884,27 @@ export const findLandmassBoundaryAtPoint = async (
     longitude: number,
     timeoutDuration: number = DEFAULT_ADMIN_BOUNDARY_OVERPASS_TIMEOUT_SEC,
 ): Promise<PolyFeature | null> => {
-    // First pass: split the current territory by OSM water polygons/rivers.
-    // This better separates nearby islands/mainland than coarse admin fallbacks.
+    // First pass: split the territory by OSM water polygons/rivers. This
+    // better separates nearby islands/mainland than coarse admin fallbacks.
+    //
+    // Base this on the STABLE full game extent (the selected boundary), never
+    // `playableTerritoryUnion`: that store shrinks as other questions narrow
+    // the map, so using it would change the water-query bbox on every layered
+    // answer (new bbox → Overpass cache miss → re-fetch + toast) and re-derive
+    // a different landmass each time. A landmass is a fixed geographic fact, so
+    // derive it once from the full extent; the pipeline clips it to the
+    // current territory afterward. `playableTerritoryUnion` is only a
+    // last-resort fallback when no full-extent boundary is loaded.
+    const fullExtent =
+        (mapGeoJSON.get() as FeatureCollection | null) ??
+        (polyGeoJSON.get() as FeatureCollection | null);
     const territory = asPolygonFeature(
-        (playableTerritoryUnion.get() as Feature | null | undefined) ??
-            (mapGeoJSON.get()
-                ? (safeUnion(mapGeoJSON.get() as any) as Feature | null)
-                : null),
+        fullExtent
+            ? (safeUnion(fullExtent as any) as Feature | null)
+            : ((playableTerritoryUnion.get() as
+                  | Feature
+                  | null
+                  | undefined) ?? null),
     );
     if (territory) {
         try {

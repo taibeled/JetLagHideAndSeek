@@ -1031,7 +1031,10 @@ export async function applyQuestionFilters({
                 });
             } else if (question.data.type === "same-length-station") {
                 const seekerLength = englishName.length;
-                const comparison = question.data.lengthComparison;
+                // Legacy questions (saved before lengthComparison existed)
+                // can have this unset; default to "same" so the filter
+                // doesn't silently eliminate every station.
+                const comparison = question.data.lengthComparison ?? "same";
                 current = current.filter((circle) => {
                     const name = extractStationName(circle.properties);
                     if (!name) return false;

@@ -39,6 +39,60 @@ function fetchTimeoutMs(url: string, init?: RequestInit): number {
 }
 
 /**
+ * User-triggered cancellation. Separate from the per-fetch timeout above: the
+ * timeout stops a genuine HANG, this lets a player abort a slow-but-running
+ * operation they started by mistake (e.g. a fat-fingered radius or an
+ * accidental whole-continent boundary) instead of waiting out the full
+ * `[timeout:N]` budget.
+ *
+ * Every `timedFetch` subscribes to the current controller's signal, so a
+ * single `cancelInFlightRequests()` aborts ALL in-flight requests at once.
+ * Aborting also bumps `cancelEpoch`: orchestration loops that retry on failure
+ * (see `getOverpassData`) capture the epoch at entry and bail silently when it
+ * changes, so a cancel doesn't just trip a retry. A fresh controller is
+ * installed immediately so requests started after the cancel work normally.
+ */
+let userAbortController: AbortController | null = null;
+let cancelEpoch = 0;
+
+function ensureUserAbortController(): AbortController {
+    if (!userAbortController) userAbortController = new AbortController();
+    return userAbortController;
+}
+
+/** Signal that fires when the user cancels. Always returns a live signal. */
+export function userCancelSignal(): AbortSignal {
+    return ensureUserAbortController().signal;
+}
+
+/** Monotonic counter; changes each time the user cancels. */
+export function currentCancelEpoch(): number {
+    return cancelEpoch;
+}
+
+/** True if `epoch` is stale, i.e. a cancel happened since it was captured. */
+export function wasCancelledSince(epoch: number): boolean {
+    return cancelEpoch !== epoch;
+}
+
+/**
+ * Abort every in-flight request the user can see and arm a fresh controller
+ * for subsequent ones. Does NOT touch loading/progress UI — callers pair this
+ * with their own state reset (see `GlobalProgressBar`).
+ */
+export function cancelInFlightRequests(): void {
+    userAbortController?.abort();
+    userAbortController = new AbortController();
+    cancelEpoch++;
+}
+
+/** True if the error is a user/timeout abort rather than a real failure. */
+export function isAbortLikeError(error: unknown): boolean {
+    const name = error instanceof Error ? error.name : "";
+    return name === "AbortError" || name === "TimeoutError";
+}
+
+/**
  * Reconstruct the upstream URL from a `/api/proxy-api?url=…` URL, replicating
  * the server's param folding: the `url` query param is the base (callers may
  * have appended a path and params that fold into its value), and every other
@@ -94,13 +148,29 @@ export const timedFetch = async (
     url: string,
     init?: RequestInit,
 ): Promise<Response> => {
+    // Combine the per-request hang timeout, the global user-cancel signal, and
+    // any caller-supplied signal so the fetch aborts on whichever fires first.
+    const combinedSignal = (target: string): AbortSignal | undefined => {
+        const parts: AbortSignal[] = [];
+        if (typeof AbortSignal !== "undefined" && "timeout" in AbortSignal) {
+            parts.push(AbortSignal.timeout(fetchTimeoutMs(target, init)));
+        }
+        parts.push(userCancelSignal());
+        if (init?.signal) parts.push(init.signal);
+
+        if (parts.length === 1) return parts[0];
+        if (typeof AbortSignal !== "undefined" && "any" in AbortSignal) {
+            return AbortSignal.any(parts);
+        }
+        // Old browser without AbortSignal.any: fall back to the first signal
+        // (the timeout when present) — user-cancel is best-effort here.
+        return parts[0];
+    };
+
     const doFetch = (target: string) =>
         fetch(target, {
             ...init,
-            signal:
-                typeof AbortSignal !== "undefined" && "timeout" in AbortSignal
-                    ? AbortSignal.timeout(fetchTimeoutMs(target, init))
-                    : init?.signal,
+            signal: combinedSignal(target),
         });
 
     const direct = directNetworkBlocked ? null : directUrlFromProxied(url);

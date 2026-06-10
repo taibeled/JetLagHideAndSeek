@@ -212,7 +212,7 @@ function mergePolygonsBinary(
                     // Keep fallbacks above.
                 }
                 console.warn(
-                    "[measuring] mergePolygonsBinary union failed; preserving first polygon only",
+                    "[measuring] mergePolygonsBinary union failed; preserving both as MultiPolygon",
                     {
                         pairStartIndex: i,
                         aBbox,
@@ -221,7 +221,23 @@ function mergePolygonsBinary(
                         bAreaKm2,
                     },
                 );
-                next.push(a);
+                // Union failed (topological error) — keep BOTH inputs by
+                // concatenating their polygons into one MultiPolygon so no
+                // exclusion region is silently dropped. Fall back to `a` only
+                // if even the MultiPolygon construction throws.
+                try {
+                    const aPolys =
+                        a.geometry.type === "Polygon"
+                            ? [a.geometry.coordinates]
+                            : a.geometry.coordinates;
+                    const bPolys =
+                        b.geometry.type === "Polygon"
+                            ? [b.geometry.coordinates]
+                            : b.geometry.coordinates;
+                    next.push(turf.multiPolygon([...aPolys, ...bPolys]));
+                } catch {
+                    next.push(a);
+                }
             }
         }
         layer = next;
