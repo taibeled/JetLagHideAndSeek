@@ -72,7 +72,7 @@ export const GTFS_PRESETS: GtfsPreset[] = [
         // In local dev: serve from public/gtfs/nyct-subway.zip (gitignored).
         // In production: proxy fetches from MTA S3 (no CORS headers on S3).
         url: import.meta.env.DEV
-            ? "/gtfs/nyct-subway.zip"
+            ? `${import.meta.env.BASE_URL}gtfs/nyct-subway.zip`
             : "https://rrgtfsfeeds.s3.amazonaws.com/gtfs_subway.zip",
         licenseUrl: "https://www.mta.info/developers",
     },
@@ -106,7 +106,7 @@ export const GTFS_PRESETS: GtfsPreset[] = [
         region: "New Jersey",
         description:
             "NJ Transit commuter rail + light rail. Northeast Corridor, North Jersey Coast, Hudson-Bergen, Newark LR, and all other NJT lines. Bus routes are filtered out automatically.",
-        url: "/gtfs/njt-rail.zip",
+        url: `${import.meta.env.BASE_URL}gtfs/njt-rail.zip`,
         licenseUrl: "https://www.njtransit.com/",
     },
     {
@@ -117,7 +117,7 @@ export const GTFS_PRESETS: GtfsPreset[] = [
         region: "Northeast",
         description:
             "Amtrak intercity rail across the Northeast, including Shore Line East stops (Branford, Guilford, Madison, Clinton, Westbrook, Old Saybrook, New London).",
-        url: "/gtfs/amtrak.zip",
+        url: `${import.meta.env.BASE_URL}gtfs/amtrak.zip`,
         licenseUrl: "https://www.amtrak.com/developers",
     },
     {
@@ -128,7 +128,7 @@ export const GTFS_PRESETS: GtfsPreset[] = [
         region: "Pennsylvania",
         description:
             "SEPTA commuter rail in the Philadelphia metro area — all regional rail lines into Center City.",
-        url: "/gtfs/septa-rail.zip",
+        url: `${import.meta.env.BASE_URL}gtfs/septa-rail.zip`,
         licenseUrl: "https://www.septa.org/",
     },
     {
@@ -139,7 +139,7 @@ export const GTFS_PRESETS: GtfsPreset[] = [
         region: "Connecticut",
         description:
             "Hartford Line commuter rail (New Haven ↔ Springfield), operated by CT DOT.",
-        url: "/gtfs/hartford-line.zip",
+        url: `${import.meta.env.BASE_URL}gtfs/hartford-line.zip`,
         licenseUrl: "https://www.hartfordline.com/",
     },
 ];

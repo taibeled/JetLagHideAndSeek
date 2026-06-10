@@ -229,9 +229,18 @@ def main():
 
     # Build TypeScript entries
     ts_entries = []
+    # Dedupe refs: to_ref truncates to 40 chars and same-named hospitals in
+    # different boroughs collide, so two clusters can yield the same slug.
+    # `ref` is a stable toggle key downstream, so collisions would conflate
+    # entries. Clusters are already deterministically sorted, so appending a
+    # numeric suffix per repeated base keeps refs stable across re-runs.
+    seen_refs: dict[str, int] = {}
     for c in clusters:
         display = cluster_name(c["members"])
-        ref = to_ref(display)
+        base_ref = to_ref(display)
+        count = seen_refs.get(base_ref, 0)
+        seen_refs[base_ref] = count + 1
+        ref = base_ref if count == 0 else f"{base_ref}-{count}"
         members_json = json.dumps(c["members"], ensure_ascii=False)
         ts_entries.append(
             f'    {{\n'

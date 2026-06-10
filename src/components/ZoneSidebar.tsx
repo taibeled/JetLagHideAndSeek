@@ -379,7 +379,14 @@ export const ZoneSidebar = () => {
             try {
                 const needsDefault =
                     !useCustomStations || includeDefaultStations;
-                if (needsDefault && $displayHidingZonesOptions.length === 0) {
+                // The empty-type check only applies to the Overpass path;
+                // bundled stations don't consume $displayHidingZonesOptions, so
+                // requiring a selected place type would wrongly block them.
+                if (
+                    needsDefault &&
+                    !useBundledStations &&
+                    $displayHidingZonesOptions.length === 0
+                ) {
                     toast.error("At least one place type must be selected");
                     return;
                 }
