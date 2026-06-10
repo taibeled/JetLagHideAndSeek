@@ -61,7 +61,7 @@ function ensureUserAbortController(): AbortController {
 }
 
 /** Signal that fires when the user cancels. Always returns a live signal. */
-export function userCancelSignal(): AbortSignal {
+function userCancelSignal(): AbortSignal {
     return ensureUserAbortController().signal;
 }
 
@@ -84,12 +84,6 @@ export function cancelInFlightRequests(): void {
     userAbortController?.abort();
     userAbortController = new AbortController();
     cancelEpoch++;
-}
-
-/** True if the error is a user/timeout abort rather than a real failure. */
-export function isAbortLikeError(error: unknown): boolean {
-    const name = error instanceof Error ? error.name : "";
-    return name === "AbortError" || name === "TimeoutError";
 }
 
 /**
