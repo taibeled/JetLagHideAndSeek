@@ -544,6 +544,62 @@ const fetchNominatimBoundary = async (
     return parseNominatimBoundaryPayload(raw);
 };
 
+/** Long→letter mapping for Nominatim lookup responses ("relation" → "R"). */
+const OSM_TYPE_LETTER: Record<string, "W" | "R" | "N"> = {
+    way: "W",
+    relation: "R",
+    node: "N",
+};
+
+/**
+ * Batch form of {@link fetchNominatimBoundary}: ONE `/lookup` request for up
+ * to 50 regions (Nominatim's documented per-request cap). A multi-region game
+ * previously issued one lookup per location — 7 requests for a 7-region game
+ * on every cold cache — which is what tripped Nominatim's ~1 req/s usage
+ * policy at scale. Returns a map keyed `R<id>`/`W<id>`/`N<id>`; absent keys
+ * mean Nominatim had no polygon for that region (caller falls back
+ * per-location, which in turn falls back to Overpass).
+ */
+const fetchNominatimBoundariesBatch = async (
+    refs: { osmId: string; osmTypeLetter: "W" | "R" | "N" }[],
+    loadingText?: string,
+): Promise<Map<string, any>> => {
+    const byRef = new Map<string, any>();
+    if (refs.length < 2) return byRef; // single region: per-location path caches better
+    const osmIds = refs
+        .slice(0, 50)
+        .map((r) => `${r.osmTypeLetter}${r.osmId}`)
+        .join(",");
+    const url =
+        `${NOMINATIM_API}/lookup` +
+        `?osm_ids=${encodeURIComponent(osmIds)}` +
+        `&polygon_geojson=1` +
+        `&format=json`;
+
+    let raw: unknown;
+    try {
+        const response = await cacheFetch(
+            url,
+            loadingText,
+            CacheType.PERMANENT_CACHE,
+        );
+        if (!response.ok) return byRef;
+        raw = await response.json();
+    } catch {
+        return byRef;
+    }
+    if (!Array.isArray(raw)) return byRef;
+
+    for (const entry of raw) {
+        if (!entry || typeof entry !== "object") continue;
+        const letter = OSM_TYPE_LETTER[String((entry as any).osm_type)];
+        if (!letter) continue;
+        const fc = parseNominatimBoundaryPayload([entry]);
+        if (fc) byRef.set(`${letter}${(entry as any).osm_id}`, fc);
+    }
+    return byRef;
+};
+
 export interface DetermineGeoJSONOptions {
     /**
      * Skip Nominatim and go straight to Overpass's `out geom` query.
@@ -1805,23 +1861,37 @@ export const determineMapBoundaries = async (
         ...additionalMapGeoLocations.get(),
     ];
 
-    // SEQUENTIAL on purpose. This was Promise.all, which fired one Nominatim
-    // lookup per location simultaneously through the single Railway egress IP.
-    // Small games (1-2 locations) were fine; a real medium-large game (6+
-    // counties) tripped Nominatim's ~1 req/s policy, the refused lookups fell
-    // back to heavy Overpass `out geom` queries in parallel, and the territory
-    // never built (blank map at scale). Each boundary lands in PERMANENT_CACHE,
-    // so the sequential cost is paid once per location, ever — cached loads
-    // skip the network entirely and stay fast.
+    // Nominatim load discipline (usage policy: ≤1 req/s, identifying UA —
+    // https://operations.osmfoundation.org/policies/nominatim/):
+    //   1. BATCH: one /lookup request covers every region (up to Nominatim's
+    //      50-id cap) instead of one request per location. A 7-region game on
+    //      a cold cache is 1 request, not 7 — the per-location burst is what
+    //      previously tripped the policy and blanked the territory.
+    //   2. SEQUENTIAL fallback: regions the batch missed go one at a time
+    //      (never the old Promise.all burst), each landing in PERMANENT_CACHE
+    //      so the cost is paid once per region, ever.
+    const batched = opts.forceDetailed
+        ? new Map<string, any>()
+        : await fetchNominatimBoundariesBatch(
+              locations.map((l) => ({
+                  osmId: l.location.properties.osm_id.toString(),
+                  osmTypeLetter: l.location.properties.osm_type,
+              })),
+              "Loading map data...",
+          );
+
     const mapGeoDatum: { added: boolean; data: any }[] = [];
     for (const location of locations) {
+        const ref = `${location.location.properties.osm_type}${location.location.properties.osm_id}`;
         mapGeoDatum.push({
             added: location.added,
-            data: await determineGeoJSON(
-                location.location.properties.osm_id.toString(),
-                location.location.properties.osm_type,
-                opts,
-            ),
+            data:
+                batched.get(ref) ??
+                (await determineGeoJSON(
+                    location.location.properties.osm_id.toString(),
+                    location.location.properties.osm_type,
+                    opts,
+                )),
         });
     }
 

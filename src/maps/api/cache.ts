@@ -120,6 +120,30 @@ export function directUrlFromProxied(url: string): string | null {
 }
 
 /**
+ * Hosts that must NEVER be fetched browser-direct, even though the proxy URL
+ * embeds them. Nominatim's usage policy
+ * (https://operations.osmfoundation.org/policies/nominatim/) requires an
+ * identifying User-Agent and ≤1 req/s — our proxy sends the identifying UA
+ * and the app fetches boundaries sequentially with permanent caching, so the
+ * proxied path is compliant. Browser-direct requests can't set a custom UA,
+ * and Nominatim's block/error responses carry no CORS headers, so a policy
+ * block surfaces as an opaque TypeError mid-game (observed live: adding
+ * Connecticut → direct /lookup CORS-blocked → no territory). Photon and the
+ * Overpass mirrors have no such UA requirement and serve CORS on errors;
+ * they stay direct-first.
+ */
+const PROXY_ONLY_HOSTS = new Set(["nominatim.openstreetmap.org"]);
+
+/** True when this reconstructed direct URL is allowed to skip the proxy. */
+export function directFetchAllowed(directUrl: string): boolean {
+    try {
+        return !PROXY_ONLY_HOSTS.has(new URL(directUrl).hostname);
+    } catch {
+        return false;
+    }
+}
+
+/**
  * Once a direct (browser → API) request fails with a network-level error —
  * the signature of an ad blocker, a CORS strip, or a dead connection — stop
  * trying direct for the rest of this page load and go straight to the proxy.
@@ -173,7 +197,8 @@ export const timedFetch = async (
             signal: combinedSignal(target),
         });
 
-    const direct = directNetworkBlocked ? null : directUrlFromProxied(url);
+    let direct = directNetworkBlocked ? null : directUrlFromProxied(url);
+    if (direct && !directFetchAllowed(direct)) direct = null;
     if (direct) {
         try {
             return await doFetch(direct);

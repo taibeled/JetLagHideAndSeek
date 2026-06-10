@@ -7,7 +7,7 @@
  */
 import { describe, expect, it } from "vitest";
 
-import { directUrlFromProxied } from "@/maps/api/cache";
+import { directFetchAllowed, directUrlFromProxied } from "@/maps/api/cache";
 
 describe("directUrlFromProxied", () => {
     it("reconstructs an Overpass GET (data folded into the url param)", () => {
@@ -65,6 +65,25 @@ describe("directUrlFromProxied", () => {
             ),
         ).toBeNull();
         expect(directUrlFromProxied("/api/some-other-route?url=x")).toBeNull();
+    });
+
+    it("never allows Nominatim browser-direct (usage policy: identifying UA via proxy only)", () => {
+        expect(
+            directFetchAllowed(
+                "https://nominatim.openstreetmap.org/lookup?osm_ids=R224951",
+            ),
+        ).toBe(false);
+        // Photon and Overpass mirrors stay direct-first.
+        expect(
+            directFetchAllowed("https://photon.komoot.io/api/?q=x"),
+        ).toBe(true);
+        expect(
+            directFetchAllowed(
+                "https://overpass.kumi.systems/api/interpreter?data=x",
+            ),
+        ).toBe(true);
+        // Garbage URL → not allowed (defensive default).
+        expect(directFetchAllowed("not-a-url")).toBe(false);
     });
 
     it("returns null when the url param is missing or not http(s)", () => {
