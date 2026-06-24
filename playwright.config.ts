@@ -12,10 +12,16 @@ export default defineConfig({
         baseURL,
         trace: "on-first-retry",
     },
+    // Test the production build, not `astro dev`. Dev mode injects Tailwind
+    // CSS via JS (FOUC) and compiles .tsx on demand, so measuring layout right
+    // after load is racy — the dialog was read at its unstyled full-content
+    // width or hadn't hydrated yet. `astro preview` serves the built artifact
+    // (real stylesheet, no on-demand compile), which is also what deploys.
     webServer: {
-        command: "pnpm dev --host 127.0.0.1",
+        command: "pnpm build && pnpm preview --host 127.0.0.1",
         url: baseURL,
         reuseExistingServer: !process.env.CI,
+        timeout: 120_000,
     },
     projects: [
         {

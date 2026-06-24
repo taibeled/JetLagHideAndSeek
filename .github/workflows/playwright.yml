@@ -10,11 +10,13 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
+            - name: Enable corepack (pins pnpm from package.json)
+              run: corepack enable
             - uses: actions/setup-node@v4
               with:
                   node-version: lts/*
             - name: Install dependencies
-              run: npm install -g pnpm && pnpm install
+              run: pnpm install --frozen-lockfile
             - name: Install Playwright Browsers
               run: pnpm exec playwright install --with-deps
             - name: Run Playwright tests
