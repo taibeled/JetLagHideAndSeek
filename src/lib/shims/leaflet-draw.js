@@ -7,6 +7,13 @@
 // astro.config.mjs aliases the bare `leaflet-draw` specifier to this file. We
 // run the side-effectful build (the full dist path does NOT match the alias, so
 // no recursion) and re-expose the attached `L.Draw` as the default export.
+//
+// Import leaflet FIRST: leaflet.draw.js references a free global `L`, so the
+// global Leaflet namespace must exist before it runs. Leaflet's UMD build
+// (dist/leaflet-src.js) sets `globalThis.L` when evaluated, and ESM evaluates
+// these imports in source order — so we don't rely on react-leaflet happening
+// to be imported earlier elsewhere.
+import "leaflet";
 import "leaflet-draw/dist/leaflet.draw.js";
 
 export default (globalThis.L && globalThis.L.Draw) || {};
