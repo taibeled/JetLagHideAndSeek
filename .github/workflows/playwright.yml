@@ -4,6 +4,9 @@ on:
         branches: [main, master]
     pull_request:
         branches: [main, master]
+concurrency:
+    group: playwright-${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
 permissions:
     contents: read
 jobs:

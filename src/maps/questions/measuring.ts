@@ -41,6 +41,7 @@ import {
 import {
     fetchFullFacilityElements,
     filterFacilityPointsByDisabledOsmRefs,
+    nycHospitalPoints,
     osmElementsToFacilityPoints,
     validateFullFacilityFetch,
 } from "@/maps/questions/facility-full";
@@ -150,6 +151,7 @@ function lightenCoastlinesForMeasuring(
     fc: FeatureCollection<LineString | MultiLineString>,
     gameBbox: BBox,
     point: Feature<Point>,
+    clipBboxOverride?: BBox,
 ): FeatureCollection<LineString | MultiLineString> {
     const tol = coastlineSimplifyTolerance(gameBbox);
     const span = Math.max(
@@ -157,7 +159,13 @@ function lightenCoastlinesForMeasuring(
         gameBbox[3] - gameBbox[1],
         0.01,
     );
-    const clipBbox = expandBboxDegrees(gameBbox, Math.max(span * 0.12, 0.06));
+    // Default clip is a small pad around the game bbox. Callers measuring an
+    // inland point pass a distance-expanded bbox so the nearest coast — which
+    // can sit far outside the game bbox — survives the clip instead of being
+    // dropped (which would blank the measurement).
+    const clipBbox =
+        clipBboxOverride ??
+        expandBboxDegrees(gameBbox, Math.max(span * 0.12, 0.06));
 
     const scored: {
         len: number;
@@ -375,21 +383,19 @@ export const determineMeasuringBoundary = async (
              */
             const pt = turf.point([question.lng, question.lat]);
             const rawCoast = await fetchCoastlinesForMeasuring(bBox);
-            const coastFc = lightenCoastlinesForMeasuring(rawCoast, bBox, pt);
 
-            if (coastFc.features.length === 0) {
-                return [turf.bboxPolygon(bBox)];
-            }
-
+            // Measure the nearest-coast distance against the UNCLIPPED raw set
+            // first. Clipping/lightening before measuring can drop the nearest
+            // coastline for an inland point (its coast lies outside the game
+            // bbox), leaving an empty set and blanking the measurement.
             let distanceToCoastline = Infinity;
-            for (const f of coastFc.features) {
-                for (const line of eachLineStringOfCoast(f)) {
-                    const d = turf.pointToLineDistance(pt, line, {
-                        units: "miles",
-                        method: "geodesic",
-                    });
-                    if (d < distanceToCoastline) distanceToCoastline = d;
-                }
+            for (const f of rawCoast.features) {
+                const d = minPointToCoastDistanceMiles(pt, f);
+                if (d < distanceToCoastline) distanceToCoastline = d;
+            }
+            if (!Number.isFinite(distanceToCoastline)) {
+                // No coastline anywhere (empty raw set) — nothing to exclude.
+                return [turf.bboxPolygon(bBox)];
             }
 
             const bufMiles = Math.max(
@@ -397,6 +403,18 @@ export const determineMeasuringBoundary = async (
                 COASTLINE_BUFFER_EPS_MI,
             );
             const extendedBbox = bboxExtension(bBox, bufMiles);
+
+            // Lighten AFTER measuring, clipping to the distance-expanded bbox so
+            // the nearest coast survives even when it lies outside the game bbox.
+            const coastFc = lightenCoastlinesForMeasuring(
+                rawCoast,
+                bBox,
+                pt,
+                extendedBbox,
+            );
+            if (coastFc.features.length === 0) {
+                return [turf.bboxPolygon(bBox)];
+            }
 
             const exclusion = mergeCoastalLineBuffers(
                 coastFc,
@@ -483,6 +501,19 @@ export const determineMeasuringBoundary = async (
                 return [turf.multiPolygon([])];
             }
             return [turf.combine(turf.featureCollection(filtered)).features[0]];
+        }
+        case "hospital-nyc-full": {
+            // Curated NYC hospital list (not an Overpass *-full query, so it
+            // can't share the block above). Matches the matching-side path,
+            // which also resolves this type via nycHospitalPoints.
+            const pts = nycHospitalPoints(
+                (question as MeasuringQuestionWithFacilityOsmRefs)
+                    .disabledFacilityOsmRefs,
+            );
+            if (pts.length === 0) {
+                return [turf.multiPolygon([])];
+            }
+            return [turf.combine(turf.featureCollection(pts)).features[0]];
         }
         case "custom-measure":
             return turf.combine(

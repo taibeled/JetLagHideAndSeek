@@ -232,13 +232,15 @@ const MapPickModeHandler = () => {
             className="leaflet-top leaflet-left"
             style={{ pointerEvents: "none" }}
         >
-            <div
-                role="status"
+            {/* <output> carries an implicit role="status" natively — more
+                reliably announced than role on a div. .leaflet-control floats
+                it, so the block-level spacing (m-3) is preserved. */}
+            <output
                 aria-live="polite"
                 className="leaflet-control m-3 rounded-lg bg-black/80 px-3 py-2 text-sm font-medium text-white shadow-lg"
             >
                 Tap the map to choose a location · Esc to cancel
-            </div>
+            </output>
         </div>
     );
 };
@@ -311,7 +313,16 @@ export const Map = ({ className }: { className?: string }) => {
 
         const gen = ++refreshGenRef.current;
 
-        if ($questions.length === 0) {
+        // Read questions/hiderMode LIVE at execution time, not the render
+        // snapshot this closure captured. The coalesced rerun (see
+        // finishLoading) reuses this same closure instance, so a refresh queued
+        // while another was in flight must apply the user's newest edits — not
+        // the stale state from when the closure was created. (Location reads
+        // below already use live `.get()` via locationsSignature.)
+        const liveQuestions = questions.get();
+        const liveHiderMode = hiderMode.get();
+
+        if (liveQuestions.length === 0) {
             await clearCache();
         }
 
@@ -386,8 +397,8 @@ export const Map = ({ className }: { className?: string }) => {
             return;
         }
 
-        if ($hiderMode !== false) {
-            for (const question of $questions) {
+        if (liveHiderMode !== false) {
+            for (const question of liveQuestions) {
                 await hiderifyQuestion(question);
             }
 
@@ -407,7 +418,7 @@ export const Map = ({ className }: { className?: string }) => {
 
         try {
             mapGeoData = await applyQuestionsToMapGeoData(
-                $questions,
+                liveQuestions,
                 mapGeoData,
                 planningModeEnabled.get(),
                 (geoJSONObj, question) => {

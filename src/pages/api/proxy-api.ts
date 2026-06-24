@@ -76,6 +76,21 @@ async function readCapped(
     return out;
 }
 
+/**
+ * Cancel an unconsumed response body so the underlying socket and buffers are
+ * released promptly instead of lingering until GC. Best-effort and safe on a
+ * null or already-locked/consumed body — cleanup must never throw.
+ */
+function drainBody(resp: Response): void {
+    try {
+        if (resp.body && !resp.body.locked) {
+            void resp.body.cancel();
+        }
+    } catch {
+        /* ignore */
+    }
+}
+
 async function handleRequest(request: Request, url: URL): Promise<Response> {
     const target = url.searchParams.get("url");
     if (!target) return jsonError(400, "Missing `url` query parameter.");
@@ -166,6 +181,8 @@ async function handleRequest(request: Request, url: URL): Promise<Response> {
         // falling back to its fixed minimum. This is the only place it's
         // meaningful — Retry-After never appears on the 200 path below.
         const retryAfter = upstream.headers.get("retry-after");
+        // We won't read the error body — release the socket instead of leaking.
+        drainBody(upstream);
         return jsonError(
             upstream.status,
             `Upstream returned HTTP ${upstream.status}: ${upstream.statusText}`,
@@ -188,6 +205,7 @@ async function handleRequest(request: Request, url: URL): Promise<Response> {
     try {
         buf = await readCapped(upstream.body, MAX_BYTES);
     } catch (err) {
+        drainBody(upstream);
         return jsonError(
             502,
             `Failed reading upstream body: ${err instanceof Error ? err.message : String(err)}`,
@@ -256,6 +274,10 @@ async function fetchAllowlisted(
             resp.status < 400 &&
             resp.headers.has("location");
         if (!isRedirect) return { ok: true, response: resp };
+
+        // This redirect response is discarded on every path below (followed,
+        // or rejected as malformed/unsafe), so drain its body before moving on.
+        drainBody(resp);
 
         const location = resp.headers.get("location")!;
         let next: URL;

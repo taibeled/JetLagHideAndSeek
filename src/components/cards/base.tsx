@@ -251,14 +251,31 @@ export const QuestionCard = ({
                                     {locked ? <LockIcon /> : <UnlockIcon />}
                                 </Button>
                             )}
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setHidden!(!hidden)}
-                                disabled={$isLoading}
-                            >
-                                {hidden ? <EyeOffIcon /> : <EyeIcon />}
-                            </Button>
+                            {setHidden !== undefined && (
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setHidden(!hidden)}
+                                    disabled={$isLoading}
+                                    aria-label={
+                                        hidden
+                                            ? "Show question"
+                                            : "Hide question"
+                                    }
+                                    aria-pressed={!!hidden}
+                                    title={
+                                        hidden
+                                            ? "Show question"
+                                            : "Hide question"
+                                    }
+                                >
+                                    {hidden ? (
+                                        <EyeOffIcon aria-hidden="true" />
+                                    ) : (
+                                        <EyeIcon aria-hidden="true" />
+                                    )}
+                                </Button>
+                            )}
                         </div>
                     </SidebarGroupContent>
                 </div>

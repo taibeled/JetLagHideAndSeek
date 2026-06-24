@@ -274,14 +274,22 @@ const getOverpassData = async (
         await cache.put(primaryUrl, res.clone());
     };
 
-    // Purge the canonical cache entry. mirrorCachePut stores every 200 under
-    // primaryUrl BEFORE the body is parsed, so a 200 whose body later fails to
-    // parse poisons the cache: retries (and future calls) would re-match the
-    // same broken entry and fail identically. Deleting it forces a fresh fetch.
+    // Purge EVERY cache entry for this query. A 200 whose body later fails to
+    // parse poisons the cache from two directions: mirrorCachePut stores it
+    // under primaryUrl (before the body is read), and cacheFetch stores the GET
+    // response under its own mirror URL (`${base}?data=…`). Retries (and future
+    // calls) re-match whichever survives and fail identically, so we delete the
+    // canonical entry AND each mirror's entry to force a fresh network fetch.
     const mirrorCacheDelete = async () => {
         try {
             const cache = await determineCache(cacheType);
-            await cache.delete(primaryUrl);
+            const urls = new Set<string>([
+                primaryUrl,
+                ...OVERPASS_INTERPRETER_URLS.map(
+                    (base) => `${base}?data=${encodedQuery}`,
+                ),
+            ]);
+            await Promise.all([...urls].map((u) => cache.delete(u)));
         } catch {
             /* best-effort purge — never let cache cleanup throw */
         }
@@ -387,9 +395,17 @@ const getOverpassData = async (
         }
     }
 
-    if (!response.ok && !usePost) {
-        // Some Overpass frontends/proxies return 400 for long/complex GET
-        // query strings but accept the same payload via POST.
+    if (
+        !response.ok &&
+        !usePost &&
+        !OVERPASS_RETRYABLE_HTTP.has(response.status)
+    ) {
+        // Some Overpass frontends/proxies return 400/414 for long/complex GET
+        // query strings but accept the same payload via POST. Only retry as
+        // POST for these URL/GET-specific failures — NOT for rate-limited or
+        // busy responses (429/503/504/…), which must fall through to the
+        // delayed retry below instead of immediately re-hitting a mirror and
+        // bypassing the backoff.
         const postRetryResponse = await fetchOverpassPostAllMirrors();
         if (postRetryResponse.ok) {
             response = postRetryResponse;
@@ -568,13 +584,13 @@ const OSM_TYPE_LETTER: Record<string, "W" | "R" | "N"> = {
 };
 
 /**
- * Batch form of {@link fetchNominatimBoundary}: ONE `/lookup` request for up
- * to 50 regions (Nominatim's documented per-request cap). A multi-region game
- * previously issued one lookup per location — 7 requests for a 7-region game
- * on every cold cache — which is what tripped Nominatim's ~1 req/s usage
- * policy at scale. Returns a map keyed `R<id>`/`W<id>`/`N<id>`; absent keys
- * mean Nominatim had no polygon for that region (caller falls back
- * per-location, which in turn falls back to Overpass).
+ * Batch form of {@link fetchNominatimBoundary}: one `/lookup` request per 50
+ * regions (Nominatim's documented per-request cap), chunked so every ref is
+ * actually requested. A multi-region game previously issued one lookup per
+ * location — 7 requests for a 7-region game on every cold cache — which is what
+ * tripped Nominatim's ~1 req/s usage policy at scale. Returns a map keyed
+ * `R<id>`/`W<id>`/`N<id>`; absent keys mean Nominatim had no polygon for that
+ * region (caller falls back per-location, which in turn falls back to Overpass).
  */
 const fetchNominatimBoundariesBatch = async (
     refs: { osmId: string; osmTypeLetter: "W" | "R" | "N" }[],
@@ -582,36 +598,45 @@ const fetchNominatimBoundariesBatch = async (
 ): Promise<Map<string, any>> => {
     const byRef = new Map<string, any>();
     if (refs.length < 2) return byRef; // single region: per-location path caches better
-    const osmIds = refs
-        .slice(0, 50)
-        .map((r) => `${r.osmTypeLetter}${r.osmId}`)
-        .join(",");
-    const url =
-        `${NOMINATIM_API}/lookup` +
-        `?osm_ids=${encodeURIComponent(osmIds)}` +
-        `&polygon_geojson=1` +
-        `&format=json`;
+    // Nominatim's /lookup caps at 50 ids per request, so chunk to request EVERY
+    // ref. Without this, refs beyond the first 50 were never looked up yet the
+    // caller treated their absence from the result as a Nominatim miss and
+    // forced them to Overpass prematurely. Chunks run sequentially (one awaited
+    // request at a time) to respect the ~1 req/s policy. A failed chunk is
+    // skipped, not fatal, so other chunks still resolve.
+    const NOMINATIM_LOOKUP_MAX_IDS = 50;
+    for (let i = 0; i < refs.length; i += NOMINATIM_LOOKUP_MAX_IDS) {
+        const osmIds = refs
+            .slice(i, i + NOMINATIM_LOOKUP_MAX_IDS)
+            .map((r) => `${r.osmTypeLetter}${r.osmId}`)
+            .join(",");
+        const url =
+            `${NOMINATIM_API}/lookup` +
+            `?osm_ids=${encodeURIComponent(osmIds)}` +
+            `&polygon_geojson=1` +
+            `&format=json`;
 
-    let raw: unknown;
-    try {
-        const response = await cacheFetch(
-            url,
-            loadingText,
-            CacheType.PERMANENT_CACHE,
-        );
-        if (!response.ok) return byRef;
-        raw = await response.json();
-    } catch {
-        return byRef;
-    }
-    if (!Array.isArray(raw)) return byRef;
+        let raw: unknown;
+        try {
+            const response = await cacheFetch(
+                url,
+                loadingText,
+                CacheType.PERMANENT_CACHE,
+            );
+            if (!response.ok) continue;
+            raw = await response.json();
+        } catch {
+            continue;
+        }
+        if (!Array.isArray(raw)) continue;
 
-    for (const entry of raw) {
-        if (!entry || typeof entry !== "object") continue;
-        const letter = OSM_TYPE_LETTER[String((entry as any).osm_type)];
-        if (!letter) continue;
-        const fc = parseNominatimBoundaryPayload([entry]);
-        if (fc) byRef.set(`${letter}${(entry as any).osm_id}`, fc);
+        for (const entry of raw) {
+            if (!entry || typeof entry !== "object") continue;
+            const letter = OSM_TYPE_LETTER[String((entry as any).osm_type)];
+            if (!letter) continue;
+            const fc = parseNominatimBoundaryPayload([entry]);
+            if (fc) byRef.set(`${letter}${(entry as any).osm_id}`, fc);
+        }
     }
     return byRef;
 };

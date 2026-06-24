@@ -32,7 +32,12 @@ COPY --from=build --chown=appuser:appgroup /app/dist ./dist
 COPY --from=build --chown=appuser:appgroup /app/node_modules ./node_modules
 COPY --chown=appuser:appgroup package.json ./
 USER appuser
-EXPOSE 3000
+# Informational only — the @astrojs/node adapter listens on $PORT (Railway
+# injects it) and falls back to 4321, the adapter's default.
+EXPOSE 4321
+# Probe the real route the app serves ("/" — same as railway.json's
+# healthcheckPath) on the actual runtime port ($PORT, default 4321), not a
+# hardcoded 3000 or a non-existent /health endpoint.
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:3000/health',r=>process.exit(r.statusCode<500?0:1)).on('error',()=>process.exit(1))"
+    CMD node -e "const p=process.env.PORT||4321;require('http').get('http://localhost:'+p+'/',r=>process.exit(r.statusCode<500?0:1)).on('error',()=>process.exit(1))"
 CMD ["node", "./dist/server/entry.mjs"]

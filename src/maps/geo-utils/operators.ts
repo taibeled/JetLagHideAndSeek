@@ -99,12 +99,21 @@ const bufferUnion = (
     if (feats.length === 1) {
         return toMultiPolygon(feats[0]);
     }
-    const union = turf.union(turf.featureCollection(feats));
+    // turf.union can both return null AND throw on degenerate/self-intersecting
+    // geometry. Treat a throw exactly like a null result so it falls through to
+    // the MultiPolygon merge below instead of escaping and failing arcBuffer.
+    let union: Feature<Polygon | MultiPolygon> | null;
+    try {
+        union = turf.union(turf.featureCollection(feats)) as Feature<
+            Polygon | MultiPolygon
+        > | null;
+    } catch {
+        union = null;
+    }
     if (union) {
         return toMultiPolygon(union);
     }
-    // turf.union can return null (e.g. degenerate/non-overlapping geometry);
-    // fall back to every polygon ring combined into one MultiPolygon rather
+    // Fall back to every polygon ring combined into one MultiPolygon rather
     // than just feats[0], so no buffered feature is silently dropped.
     const polygons = feats.flatMap((f) =>
         f.geometry.type === "MultiPolygon"

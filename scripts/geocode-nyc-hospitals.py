@@ -163,9 +163,11 @@ def geocode(name, address, city, state):
 
     time.sleep(SLEEP_S)
 
-    # Attempt 2: free-text fallback — include hospital name for better match
+    # Attempt 2: free-text fallback — include hospital name for better match.
+    # Use the row's own state (not a hardcoded NY) so a non-NY row isn't biased
+    # to the wrong search location; _result_matches still validates against it.
     results2 = _nominatim_query({
-        "q": f"{name}, {address}, {city}, NY, USA",
+        "q": f"{name}, {address}, {city}, {state}, USA",
         "format": "json",
         "addressdetails": 1,
         "limit": 5,

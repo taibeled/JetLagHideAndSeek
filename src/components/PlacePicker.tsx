@@ -31,7 +31,6 @@ import {
     additionalMapGeoLocations,
     boundaryDetailLevel,
     DEFAULT_MAP_GEO_LOCATION,
-    DEFAULT_MAP_GEO_LOCATION_OSM_ID,
     hiderMode,
     isLoading,
     mapGeoJSON,
@@ -90,13 +89,15 @@ export const PlacePicker = ({
     // in-flight. If the snapshot we captured at click-time no longer
     // matches when the fetch returns, the result is for the old region
     // and we must discard it rather than overwrite the new polygon.
-    const captureRegionSignature = () =>
-        JSON.stringify([
-            mapGeoLocation.get()?.properties?.osm_id,
+    const captureRegionSignature = () => {
+        const base = mapGeoLocation.get();
+        return JSON.stringify([
+            base ? osmRef(base) : null,
             additionalMapGeoLocations
                 .get()
-                .map((l) => [l.location.properties.osm_id, l.added, l.base]),
+                .map((l) => [osmRef(l.location), l.added, l.base]),
         ]);
+    };
 
     const handleUpgradeBoundary = async () => {
         if (upgradingBoundary) return;
@@ -316,10 +317,10 @@ export const PlacePicker = ({
                                             additionalMapGeoLocations.set(
                                                 $additionalMapGeoLocations.filter(
                                                     (x) =>
-                                                        x.location.properties
-                                                            .osm_id !==
-                                                        location.location
-                                                            .properties.osm_id,
+                                                        osmRef(x.location) !==
+                                                        osmRef(
+                                                            location.location,
+                                                        ),
                                                 ),
                                             );
                                         }
@@ -411,8 +412,10 @@ export const PlacePicker = ({
                                         const currentAdditionals =
                                             additionalMapGeoLocations.get();
                                         const isDefaultBase =
-                                            currentBase.properties.osm_id ===
-                                                DEFAULT_MAP_GEO_LOCATION_OSM_ID &&
+                                            osmRef(currentBase) ===
+                                                osmRef(
+                                                    DEFAULT_MAP_GEO_LOCATION,
+                                                ) &&
                                             currentAdditionals.length === 0;
 
                                         const ref = osmRef(result);
