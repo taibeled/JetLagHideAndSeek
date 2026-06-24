@@ -8,8 +8,9 @@
  * Minimal per-row UI for now: name, stop count, delete. Storage usage,
  * enable toggles, and last-refreshed come in Phase 5 polish.
  *
- * Curated presets (NYCT, LIRR, MNR, NJT, SLE) slot into the empty
- * presets section and come in the follow-up p4-presets task.
+ * Curated presets (MTA subway/LIRR/MNR, NJ Transit, Amtrak — whose feed
+ * includes Shore Line East stops — SEPTA, Hartford Line) render in the
+ * presets section; see `src/lib/transit/presets.ts`.
  */
 import { Globe, Loader2, Plus, Trash2, Upload } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -231,7 +232,11 @@ function TransitSystemsDialog({
      * Runs them sequentially so the UI stays responsive between each feed.
      */
     const handleBulkInstall = () => {
-        const installed = new Set(systems?.map((s) => s.id) ?? []);
+        // Wait for the installed list to load — treating the unloaded `null`
+        // state as an empty set would re-download feeds already in IDB (the
+        // dedupe below would miss them).
+        if (systems === null) return;
+        const installed = new Set(systems.map((s) => s.id));
         const toInstall = LARGE_GAME_PRESET_IDS.filter(
             (id) => !installed.has(id),
         );
@@ -519,7 +524,7 @@ function TransitSystemsDialog({
                             <Button
                                 size="sm"
                                 variant="outline"
-                                disabled={loading}
+                                disabled={loading || systems === null}
                                 onClick={handleBulkInstall}
                                 className="text-xs h-7 px-2"
                             >
