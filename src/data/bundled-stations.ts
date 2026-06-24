@@ -27,23 +27,36 @@ interface BundledStation {
     id: string;
 }
 
+/** Normalize a station name into a stable id slug. */
+const slugifyStationName = (name: string): string =>
+    name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+
+// Ids are content-based (namespace + name slug + exact coords), NOT array
+// index: `disabledStations` persists these, so an index-derived id would
+// silently re-point a user's exclusions to different stations after any
+// reorder/insertion in the source datasets. Coords are the unique stable key
+// (no two stations share exact coords; names like "86 St" repeat).
 const BUNDLED_STATIONS: BundledStation[] = [
     ...NYC_MAJOR_SUBWAY_STATIONS.map(
-        (s, i): BundledStation => ({
+        (s): BundledStation => ({
             name: s.name,
             lat: s.lat,
             lng: s.lng,
-            id: `bundled/subway-${i}`,
+            id: `bundled/subway-${slugifyStationName(s.name)}-${s.lat}-${s.lng}`,
         }),
     ),
     ...METRO_AREA_RAIL_STATIONS.map(
-        (s, i): BundledStation => ({
+        (s): BundledStation => ({
             name: s.name,
             lat: s.lat,
             lng: s.lng,
-            // `rail-` namespace keeps metro ids from ever colliding with the
-            // subway ids above, even if a future system lowercased to "subway".
-            id: `bundled/rail-${s.system.toLowerCase()}-${i}`,
+            // `rail-` namespace + system keeps metro ids from ever colliding
+            // with the subway ids above, even if a future system lowercased
+            // to "subway".
+            id: `bundled/rail-${s.system.toLowerCase()}-${slugifyStationName(s.name)}-${s.lat}-${s.lng}`,
         }),
     ),
 ];
