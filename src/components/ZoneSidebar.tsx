@@ -1363,6 +1363,10 @@ export const ZoneSidebar = () => {
                                     className="bg-popover!"
                                     disabled={
                                         $isLoading ||
+                                        // Bundled mode skips the Overpass
+                                        // place-type query, so these options are
+                                        // ignored — disable to avoid a no-op.
+                                        useBundledStations ||
                                         (useCustomStations &&
                                             !includeDefaultStations)
                                     }
