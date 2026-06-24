@@ -108,7 +108,7 @@ export const StationCountIndicator = () => {
             {/* Header */}
             <div className="flex items-baseline justify-between gap-3 mb-1">
                 <span className="text-xs font-medium text-white/60 tracking-wide uppercase">
-                    Metro Rail
+                    Rail + Subway
                 </span>
                 <span className="text-xs text-white/50">
                     −{eliminated.toLocaleString()} eliminated
@@ -137,7 +137,12 @@ export const StationCountIndicator = () => {
                         "h-full rounded-full transition-all duration-500",
                         barColor,
                     )}
-                    style={{ width: `${Math.max(pct * 100, 1)}%` }}
+                    style={{
+                        width:
+                            activeCount === 0
+                                ? "0%"
+                                : `${Math.max(pct * 100, 1)}%`,
+                    }}
                 />
             </div>
 

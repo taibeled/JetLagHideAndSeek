@@ -444,8 +444,8 @@ export const NYC_HOSPITALS: NycHospital[] = [
     },
     {
         name: "Northwell Greenwich Village Hospital",
-        lat: 40.676977,
-        lng: -73.974048,
+        lat: 40.737778,
+        lng: -74.000833,
         ref: "northwell-greenwich-village-hospital",
         members: ["Northwell Greenwich Village Hospital"],
     },

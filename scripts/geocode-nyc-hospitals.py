@@ -92,30 +92,87 @@ def _nominatim_query(params):
         return None
 
 
+# ── Match validation ──────────────────────────────────────────────────────────
+# Street-type and directional words that don't help identify a street, so we
+# don't reject "7th Avenue" vs "7th Ave" or require the suffix to match.
+_STREET_TYPES = {
+    "street", "st", "avenue", "ave", "road", "rd", "boulevard", "blvd",
+    "drive", "dr", "lane", "ln", "place", "pl", "court", "ct", "parkway",
+    "pkwy", "highway", "hwy", "terrace", "ter", "square", "sq", "plaza",
+    "way", "walk", "circle", "cir", "north", "south", "east", "west",
+    "n", "s", "e", "w",
+}
+_STATE_ALIASES = {"ny": "new york", "nj": "new jersey", "ct": "connecticut"}
+
+
+def _norm(s) -> str:
+    s = str(s or "").lower()
+    s = re.sub(r"[^a-z0-9\s]", " ", s)
+    return re.sub(r"\s+", " ", s).strip()
+
+
+def _street_tokens(s: str) -> set:
+    """Significant street-name tokens — drop house numbers and street-type
+    words so suffix/abbreviation differences don't cause false rejections."""
+    return {t for t in _norm(s).split() if t not in _STREET_TYPES and not t.isdigit()}
+
+
+def _result_matches(result: dict, address: str, state: str) -> bool:
+    """Reject Nominatim hits that positively contradict the request — e.g. a
+    fallback to a city centroid or a same-named street in the wrong state.
+    Lenient where the candidate lacks data (can't disprove a match); strict
+    only on a direct contradiction.
+
+    Known gap: this cannot distinguish NYC boroughs. Nominatim reports every
+    borough as state "New York" with city "City of New York", so a wrong-borough
+    hit on a same-named street (the historical "30 7th Avenue" → Brooklyn bug)
+    still passes. Catching that requires a postcode in the query, not a
+    post-filter — out of scope here since the source xlsx has no ZIP column."""
+    addr = result.get("address", {})
+    # 1. State must not contradict (catches cross-state false positives).
+    want_state = _STATE_ALIASES.get(_norm(state), _norm(state))
+    cand_state = _norm(addr.get("state", ""))
+    if want_state and cand_state and want_state != cand_state:
+        return False
+    # 2. Street name must share a significant token with the request, but only
+    #    when the candidate actually carries a road name to compare against.
+    road = addr.get("road") or ""
+    want_tokens = _street_tokens(address)
+    got_tokens = _street_tokens(road)
+    if road and want_tokens and got_tokens and want_tokens.isdisjoint(got_tokens):
+        return False
+    return True
+
+
 # ── Geocode one hospital ──────────────────────────────────────────────────────
 def geocode(name, address, city, state):
-    # Attempt 1: structured query
+    # Attempt 1: structured query. Pull a few candidates + address details so a
+    # contradicted top hit can be skipped in favor of a real match below.
     results = _nominatim_query({
         "street": address,
         "city": city,
         "state": state,
         "country": "US",
         "format": "json",
-        "limit": 1,
+        "addressdetails": 1,
+        "limit": 5,
     })
-    if results:
-        r = results[0]
-        return float(r["lat"]), float(r["lon"]), "structured"
+    for r in results or []:
+        if _result_matches(r, address, state):
+            return float(r["lat"]), float(r["lon"]), "structured"
 
     time.sleep(SLEEP_S)
 
     # Attempt 2: free-text fallback — include hospital name for better match
-    results2 = _nominatim_query(
-        {"q": f"{name}, {address}, {city}, NY, USA", "format": "json", "limit": 1}
-    )
-    if results2:
-        r = results2[0]
-        return float(r["lat"]), float(r["lon"]), "fallback"
+    results2 = _nominatim_query({
+        "q": f"{name}, {address}, {city}, NY, USA",
+        "format": "json",
+        "addressdetails": 1,
+        "limit": 5,
+    })
+    for r in results2 or []:
+        if _result_matches(r, address, state):
+            return float(r["lat"]), float(r["lon"]), "fallback"
 
     return None, None, "failed"
 
@@ -167,7 +224,11 @@ def main():
     # Geocode
     for i, h in enumerate(hospitals):
         key = h["Hospital Name"]
-        if key in geocoded:
+        cached = geocoded.get(key)
+        # Only skip rows that already geocoded successfully. Cached failures
+        # (null lat/lng from a transient Nominatim outage) are retried on the
+        # next run instead of being permanently stuck.
+        if cached and cached.get("lat") is not None and cached.get("lng") is not None:
             continue
         print(f"[{i+1:02d}/81] {key[:60]}...", end="  ", flush=True)
         lat, lng, method = geocode(key, h["Address"], h["City"], h["State"])

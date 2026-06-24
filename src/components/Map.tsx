@@ -232,8 +232,12 @@ const MapPickModeHandler = () => {
             className="leaflet-top leaflet-left"
             style={{ pointerEvents: "none" }}
         >
-            <div className="leaflet-control m-3 rounded-lg bg-black/80 px-3 py-2 text-sm font-medium text-white shadow-lg">
-                Tap the map to place the end point · Esc to cancel
+            <div
+                role="status"
+                aria-live="polite"
+                className="leaflet-control m-3 rounded-lg bg-black/80 px-3 py-2 text-sm font-medium text-white shadow-lg"
+            >
+                Tap the map to choose a location · Esc to cancel
             </div>
         </div>
     );

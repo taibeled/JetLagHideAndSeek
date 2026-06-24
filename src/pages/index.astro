@@ -55,7 +55,7 @@ import Layout from "@/layouts/Layout.astro";
                             <OptionDrawers client:load />
                         </div>
                         <div
-                            class="left-1/2 -translate-x-1/2 absolute z-[1030] group-[.fullscreen]:hidden"
+                            class="left-1/2 -translate-x-1/2 absolute z-[1030] group-[.fullscreen]:hidden pointer-events-none"
                             style="bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px))"
                         >
                             <StationCountIndicator client:only="react" />

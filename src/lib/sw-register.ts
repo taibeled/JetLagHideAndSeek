@@ -72,8 +72,9 @@ export function registerServiceWorker() {
     // Track whether the user has interacted with the page. A waiting SW
     // detected before any interaction means we're on a fresh page load —
     // safe to auto-apply the update immediately. After interaction (click,
-    // keydown, touch) we show the toast instead so a mid-game session isn't
-    // disrupted by a sudden reload.
+    // pointer, mouse, key, wheel, touch) we show the toast instead so a
+    // mid-game session — including a map drag/zoom, which only fires
+    // pointer/wheel events — isn't disrupted by a sudden reload.
     let hasUserInteracted = false;
     const onFirstInteraction = () => {
         hasUserInteracted = true;
@@ -82,9 +83,23 @@ export function registerServiceWorker() {
         once: true,
         capture: true,
     });
+    document.addEventListener("pointerdown", onFirstInteraction, {
+        once: true,
+        capture: true,
+        passive: true,
+    });
+    document.addEventListener("mousedown", onFirstInteraction, {
+        once: true,
+        capture: true,
+    });
     document.addEventListener("keydown", onFirstInteraction, {
         once: true,
         capture: true,
+    });
+    document.addEventListener("wheel", onFirstInteraction, {
+        once: true,
+        capture: true,
+        passive: true,
     });
     document.addEventListener("touchstart", onFirstInteraction, {
         once: true,
@@ -111,9 +126,8 @@ export function registerServiceWorker() {
     // the Serwist "waiting" event fires late, after a tap has usually landed.
     navigator.serviceWorker.getRegistration(scope).then((existing) => {
         if (existing?.waiting && !hasUserInteracted && !reloadingForUpdate) {
-            reloadingForUpdate = true;
             existing.waiting.postMessage({ type: "SKIP_WAITING" });
-            // controllerchange fires above → location.reload() runs.
+            // controllerchange fires above → it sets the guard + reloads.
         }
     });
 
@@ -124,9 +138,8 @@ export function registerServiceWorker() {
         // the old SW had stale code; auto-activating the new one on the
         // next fresh open avoids that entirely.
         if (!hasUserInteracted) {
-            reloadingForUpdate = true;
             sw.messageSkipWaiting();
-            // controllerchange fires → location.reload() above runs.
+            // controllerchange fires → it sets the guard + reloads above.
             return;
         }
 
@@ -147,7 +160,6 @@ export function registerServiceWorker() {
                 dismissedThisPageLoad = true;
             },
             onClick: () => {
-                reloadingForUpdate = true;
                 sw.messageSkipWaiting();
             },
             // Using data to hint the user that the entire toast is

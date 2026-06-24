@@ -41,8 +41,7 @@ export function GlobalProgressBar() {
     const anyError = tasks.some((t) => t.status === "error");
     // Keep Cancel available while anything is still in flight, even if another
     // task is mid error-flash — `!anyError` would hide it while real work runs.
-    const hasRunning =
-        loading || tasks.some((t) => t.status === "running");
+    const hasRunning = loading || tasks.some((t) => t.status === "running");
 
     // Determinate tasks contribute to the visual fraction; indeterminate ones
     // don't, but their presence alone flips us into shimmer mode.

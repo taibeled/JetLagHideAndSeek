@@ -405,6 +405,7 @@ export const LatitudeLongitude = ({
                             <Button
                                 variant="outline"
                                 title="Pick location on map"
+                                aria-label="Pick location on map"
                                 disabled={disabled}
                                 onClick={() => {
                                     mapPickMode.set((lat, lng) => {
@@ -412,7 +413,7 @@ export const LatitudeLongitude = ({
                                     });
                                 }}
                             >
-                                <MapPinIcon />
+                                <MapPinIcon aria-hidden="true" />
                             </Button>
                             <Dialog>
                                 <DialogTrigger asChild>
@@ -420,8 +421,9 @@ export const LatitudeLongitude = ({
                                         disabled={disabled}
                                         variant="outline"
                                         title="Edit coordinates"
+                                        aria-label="Edit coordinates"
                                     >
-                                        <EditIcon />
+                                        <EditIcon aria-hidden="true" />
                                     </Button>
                                 </DialogTrigger>
                                 <DialogContent>
@@ -492,8 +494,9 @@ export const LatitudeLongitude = ({
                             }}
                             disabled={disabled}
                             title="Set to current location"
+                            aria-label="Set to current location"
                         >
-                            <LocateIcon />
+                            <LocateIcon aria-hidden="true" />
                         </Button>
                         <Button
                             variant="outline"
@@ -541,8 +544,9 @@ export const LatitudeLongitude = ({
                             }}
                             disabled={disabled}
                             title="Paste coordinates from clipboard"
+                            aria-label="Paste coordinates from clipboard"
                         >
-                            <ClipboardPasteIcon />
+                            <ClipboardPasteIcon aria-hidden="true" />
                         </Button>
                         <Button
                             variant="outline"
@@ -569,8 +573,9 @@ export const LatitudeLongitude = ({
                                 );
                             }}
                             title="Copy coordinates to clipboard"
+                            aria-label="Copy coordinates to clipboard"
                         >
-                            <ClipboardCopyIcon />
+                            <ClipboardCopyIcon aria-hidden="true" />
                         </Button>
                     </div>
                 </div>

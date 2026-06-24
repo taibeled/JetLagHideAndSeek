@@ -96,11 +96,22 @@ const bufferUnion = (
     if (feats.length === 0) {
         return turf.multiPolygon([]) as Feature<MultiPolygon>;
     }
-    const unioned =
-        feats.length === 1
-            ? feats[0]
-            : (turf.union(turf.featureCollection(feats)) ?? feats[0]);
-    return toMultiPolygon(unioned);
+    if (feats.length === 1) {
+        return toMultiPolygon(feats[0]);
+    }
+    const union = turf.union(turf.featureCollection(feats));
+    if (union) {
+        return toMultiPolygon(union);
+    }
+    // turf.union can return null (e.g. degenerate/non-overlapping geometry);
+    // fall back to every polygon ring combined into one MultiPolygon rather
+    // than just feats[0], so no buffered feature is silently dropped.
+    const polygons = feats.flatMap((f) =>
+        f.geometry.type === "MultiPolygon"
+            ? f.geometry.coordinates
+            : [f.geometry.coordinates],
+    );
+    return turf.multiPolygon(polygons) as Feature<MultiPolygon>;
 };
 
 export const arcBuffer = async (
@@ -154,8 +165,12 @@ export const arcBufferToPoint = async (
     lng: number,
 ): Promise<Feature<MultiPolygon>> => {
     const point = turf.point([lng, lat]);
-    const distances = geometry.features.map((feat) =>
-        distanceToFeature(feat, point, DEFAULT_BUFFER_UNIT),
-    );
+    const distances = geometry.features
+        .map((feat) => distanceToFeature(feat, point, DEFAULT_BUFFER_UNIT))
+        .filter(Number.isFinite);
+    if (distances.length === 0) {
+        // Empty or all-unsupported collection — no finite distance to buffer.
+        return turf.multiPolygon([]) as Feature<MultiPolygon>;
+    }
     return bufferUnion(geometry, Math.min(...distances), DEFAULT_BUFFER_UNIT);
 };

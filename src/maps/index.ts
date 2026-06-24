@@ -78,7 +78,6 @@ async function adjustMapGeoDataForQuestion(question: any, mapGeoData: any) {
         return mapGeoData;
     }
 
-
     try {
         switch (question?.id) {
             case "radius":
