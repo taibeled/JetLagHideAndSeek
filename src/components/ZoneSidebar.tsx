@@ -481,7 +481,15 @@ export const ZoneSidebar = () => {
                 // are members of heritage / preserved / tourism /
                 // abandoned railway ways in scope and drop any place
                 // whose OSM id matches.
-                if (needsDefault && excludeHeritageRailways) {
+                // Skip in bundled mode: the curated dataset has no heritage/
+                // tourist railways, and its `bundled/…` ids aren't the OSM
+                // `node/…` ids this filter keys on — so the Overpass fetch
+                // would be pure cost and break "Skip Overpass entirely".
+                if (
+                    needsDefault &&
+                    excludeHeritageRailways &&
+                    !useBundledStations
+                ) {
                     try {
                         const heritageNodeIds =
                             await findHeritageRailwayMemberNodeIds();
