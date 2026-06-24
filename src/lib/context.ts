@@ -38,26 +38,29 @@ import {
 //     a new game shouldn't reset your tile layer or replay the tutorial.
 export const DEFAULT_MAP_GEO_LOCATION_OSM_ID = 382313;
 
+/** Default primary region (Japan). Exported so "New Game" can reset to it. */
+export const DEFAULT_MAP_GEO_LOCATION: OpenStreetMap = {
+    geometry: {
+        coordinates: [36.5748441, 139.2394179],
+        type: "Point",
+    },
+    type: "Feature",
+    properties: {
+        osm_type: "R",
+        osm_id: DEFAULT_MAP_GEO_LOCATION_OSM_ID,
+        extent: [45.7112046, 122.7141754, 20.2145811, 154.205541],
+        country: "Japan",
+        osm_key: "place",
+        countrycode: "JP",
+        osm_value: "country",
+        name: "Japan",
+        type: "country",
+    },
+};
+
 export const mapGeoLocation = persistentAtom<OpenStreetMap>(
     gameKey("mapGeoLocation"),
-    {
-        geometry: {
-            coordinates: [36.5748441, 139.2394179],
-            type: "Point",
-        },
-        type: "Feature",
-        properties: {
-            osm_type: "R",
-            osm_id: DEFAULT_MAP_GEO_LOCATION_OSM_ID,
-            extent: [45.7112046, 122.7141754, 20.2145811, 154.205541],
-            country: "Japan",
-            osm_key: "place",
-            countrycode: "JP",
-            osm_value: "country",
-            name: "Japan",
-            type: "country",
-        },
-    },
+    DEFAULT_MAP_GEO_LOCATION,
     {
         encode: JSON.stringify,
         decode: JSON.parse,

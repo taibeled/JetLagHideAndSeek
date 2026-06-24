@@ -30,6 +30,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import {
     additionalMapGeoLocations,
     boundaryDetailLevel,
+    DEFAULT_MAP_GEO_LOCATION,
     DEFAULT_MAP_GEO_LOCATION_OSM_ID,
     hiderMode,
     isLoading,
@@ -484,6 +485,10 @@ export const PlacePicker = ({
                             questions.set([]);
                             mapGeoJSON.set(null);
                             polyGeoJSON.set(null);
+                            // Reset the primary region too (back to the default,
+                            // since the store is non-nullable) so "all selected
+                            // regions" really are cleared.
+                            mapGeoLocation.set(DEFAULT_MAP_GEO_LOCATION);
                             additionalMapGeoLocations.set([]);
                             hiderMode.set(false);
                             startingLocation.set(false);
