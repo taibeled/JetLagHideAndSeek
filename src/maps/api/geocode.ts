@@ -11,9 +11,15 @@ export const geocode = async (
     filter: boolean = true,
 ) => {
     // timedFetch: direct-to-Photon first (player's own IP), proxy fallback.
+    // Encode the values — an address with &, #, ?, or + would corrupt the
+    // query string (or inject stray params) otherwise.
     const features = (
         await (
-            await timedFetch(`${GEOCODER_API}?lang=${language}&q=${address}`)
+            await timedFetch(
+                `${GEOCODER_API}?lang=${encodeURIComponent(
+                    language,
+                )}&q=${encodeURIComponent(address)}`,
+            )
         ).json()
     ).features as OpenStreetMap[];
 
