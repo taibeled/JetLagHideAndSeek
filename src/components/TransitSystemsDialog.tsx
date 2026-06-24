@@ -189,9 +189,13 @@ function TransitSystemsDialog({
         };
     }, [open]);
 
-    // Abort any in-flight fetch when the dialog closes.
+    // Abort any in-flight fetch and abandon a pending bulk-install queue when
+    // the dialog closes — otherwise remaining presets would keep importing
+    // invisibly after the user navigated away.
     useEffect(() => {
-        if (!open && abortRef.current) {
+        if (open) return;
+        batchQueueRef.current = [];
+        if (abortRef.current) {
             abortRef.current.abort();
             abortRef.current = null;
         }
@@ -336,6 +340,10 @@ function TransitSystemsDialog({
                         );
                     } catch (e) {
                         if (isAbortError(e)) {
+                            // Explicit cancel — abandon the rest of any bulk
+                            // install so the loading→false drain effect doesn't
+                            // auto-start the next preset.
+                            batchQueueRef.current = [];
                             finishTask(taskId);
                             setProgress(null);
                             return;
