@@ -8,10 +8,10 @@ RUN corepack enable && corepack prepare pnpm@11.9.0 --activate
 # pnpm install entirely via Docker layer cache.
 FROM base AS deps
 WORKDIR /app
-# .npmrc carries `minimum-release-age=0` — without it, pnpm 11's default
-# supply-chain age policy rejects freshly-published packages (e.g. an astro
-# point release from today), failing `--frozen-lockfile` in the container.
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+# pnpm-workspace.yaml carries `minimumReleaseAge: 0` — without it, pnpm 11's
+# default supply-chain age policy rejects freshly-published packages (e.g. an
+# astro point release from today), failing `--frozen-lockfile` in the container.
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 
 # ── Build ─────────────────────────────────────────────────────────────────────
