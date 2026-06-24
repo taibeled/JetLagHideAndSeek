@@ -274,6 +274,19 @@ const getOverpassData = async (
         await cache.put(primaryUrl, res.clone());
     };
 
+    // Purge the canonical cache entry. mirrorCachePut stores every 200 under
+    // primaryUrl BEFORE the body is parsed, so a 200 whose body later fails to
+    // parse poisons the cache: retries (and future calls) would re-match the
+    // same broken entry and fail identically. Deleting it forces a fresh fetch.
+    const mirrorCacheDelete = async () => {
+        try {
+            const cache = await determineCache(cacheType);
+            await cache.delete(primaryUrl);
+        } catch {
+            /* best-effort purge — never let cache cleanup throw */
+        }
+    };
+
     const fetchOverpassPostAllMirrors = async (): Promise<Response> => {
         const body = `data=${encodedQuery}`;
         // Sticky mirror first; full parallel race only when it fails
@@ -423,9 +436,12 @@ const getOverpassData = async (
         await debugOverpassFailure(response);
         // A 200 with an unparseable body is almost always a truncated/partial
         // response or an HTML error page slipping through — not real data.
-        // Treat it like a retryable failure: a fresh fetch (Overpass is
-        // NetworkOnly, so never served from cache) normally returns intact
-        // JSON. Only surface the toast once retries are exhausted.
+        // mirrorCachePut already cached this bad 200 under primaryUrl, so purge
+        // it before retrying — otherwise the retry (and any later call) would
+        // re-match the poisoned entry and fail identically. Once purged, a
+        // fresh fetch normally returns intact JSON. Only surface the toast once
+        // retries are exhausted.
+        await mirrorCacheDelete();
         if (wasCancelledSince(_startEpoch)) return { elements: [] };
         if (_retryCount < OVERPASS_MAX_RETRIES) {
             const delay = Math.min(1000 * (_retryCount + 1), 3000);
@@ -951,9 +967,13 @@ export const findLandmassBoundaryAtPoint = async (
     // derive it once from the full extent; the pipeline clips it to the
     // current territory afterward. `playableTerritoryUnion` is only a
     // last-resort fallback when no full-extent boundary is loaded.
+    // Prefer the custom polygon store when present — it's the source of truth
+    // everywhere else in this file (overpassZoneCacheKey, findPlacesInZone), so
+    // a drawn/imported polygon drives the landmass split rather than a stale
+    // mapGeoJSON. Falls back to mapGeoJSON for the region-selection flow.
     const fullExtent =
-        (mapGeoJSON.get() as FeatureCollection | null) ??
-        (polyGeoJSON.get() as FeatureCollection | null);
+        (polyGeoJSON.get() as FeatureCollection | null) ??
+        (mapGeoJSON.get() as FeatureCollection | null);
     const territory = asPolygonFeature(
         fullExtent
             ? (safeUnion(fullExtent as any) as Feature | null)
@@ -1878,19 +1898,30 @@ export const determineMapBoundaries = async (
               "Loading map data...",
           );
 
+    // When the batch demonstrably worked (returned at least one polygon), a ref
+    // it didn't return means Nominatim genuinely has no polygon for that region
+    // — so skip the redundant single-ref Nominatim lookup determineGeoJSON would
+    // otherwise do and go straight to Overpass (forceDetailed bypasses Nominatim
+    // and runs the identical `out geom` query). If the batch came back empty
+    // (single-region path, or a transient batch failure), keep the normal
+    // per-ref flow so its Nominatim attempt can still resolve/recover.
+    const batchSucceeded = batched.size > 0;
     const mapGeoDatum: { added: boolean; data: any }[] = [];
     for (const location of locations) {
         const ref = `${location.location.properties.osm_type}${location.location.properties.osm_id}`;
-        mapGeoDatum.push({
-            added: location.added,
-            data:
-                batched.get(ref) ??
-                (await determineGeoJSON(
-                    location.location.properties.osm_id.toString(),
-                    location.location.properties.osm_type,
-                    opts,
-                )),
-        });
+        const batchedData = batched.get(ref);
+        let data = batchedData;
+        if (!data) {
+            const perRegionOpts = batchSucceeded
+                ? { ...opts, forceDetailed: true }
+                : opts;
+            data = await determineGeoJSON(
+                location.location.properties.osm_id.toString(),
+                location.location.properties.osm_type,
+                perRegionOpts,
+            );
+        }
+        mapGeoDatum.push({ added: location.added, data });
     }
 
     let mapGeoData = turf.featureCollection([

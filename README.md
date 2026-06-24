@@ -118,7 +118,7 @@ The GitHub Actions workflow in `.github/workflows/railway-deploy.yml` uses four 
 
 ### 3) Verify a run
 
-1. Go to **Actions -> Deploy to Railway** and run it with **Run workflow** (or wait for the Docker image workflow trigger on `master`).
+1. Go to **Actions -> Deploy to Railway** and run it with **Run workflow** (deployment is manual-only — there is no automatic trigger on `master`).
 2. Confirm the `Link Railway project and redeploy` step succeeds and the job finishes green.
 
 ## Contributors

@@ -266,6 +266,14 @@ export const Map = ({ className }: { className?: string }) => {
     const refreshGenRef = useRef(0);
     const refreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const eliminationLayerRef = useRef<L.GeoJSON | null>(null);
+    // Map-local "a refresh is currently running" flag. Coalescing must gate on
+    // THIS, not the shared `isLoading` atom — LatLngPicker's geolocation /
+    // clipboard flows also flip `isLoading`, so gating on it would make a
+    // location change stash into pendingRefreshRef while no map refresh is
+    // actually in flight to flush it, dropping the change until something else
+    // triggered a refresh. `isLoading` is still driven below for the progress
+    // bar UI.
+    const refreshInFlightRef = useRef(false);
     // If a refresh is requested while one is already running, we record it
     // here instead of dropping it. When the in-flight refresh finishes it
     // re-runs once with the latest state. Without this, a new location/region
@@ -276,7 +284,7 @@ export const Map = ({ className }: { className?: string }) => {
     const refreshQuestions = async (focus: boolean = false) => {
         if (!map) return;
 
-        if (isLoading.get()) {
+        if (refreshInFlightRef.current) {
             // Don't drop this request — coalesce it. finishLoading() will
             // re-run once the current refresh completes, so a location change
             // made during a slow boundary fetch still takes effect.
@@ -284,14 +292,16 @@ export const Map = ({ className }: { className?: string }) => {
             return;
         }
 
+        refreshInFlightRef.current = true;
         isLoading.set(true);
 
-        // Centralized "refresh finished" handler: clears the loading flag and,
+        // Centralized "refresh finished" handler: clears the loading flags and,
         // if a refresh was requested while we were busy, kicks off exactly one
         // follow-up with the latest state (deferred a tick to let state settle
         // and avoid synchronous recursion).
         const finishLoading = () => {
             const next = pendingRefreshRef.current;
+            refreshInFlightRef.current = false;
             isLoading.set(false);
             if (next) {
                 pendingRefreshRef.current = null;
@@ -565,12 +575,20 @@ export const Map = ({ className }: { className?: string }) => {
                                     lngB: e.latlng.lng,
                                 },
                             });
+                            // Capture THIS thermometer's key now, so the second
+                            // tap updates exactly the question we just created —
+                            // not whatever happens to be last in the list then
+                            // (the list can change between the two taps).
+                            const qsAfterAdd = questions.get();
+                            const thermometerKey =
+                                qsAfterAdd[qsAfterAdd.length - 1]?.key;
                             mapPickMode.set((lat, lng) => {
-                                const qs = questions.get();
-                                const last = qs[qs.length - 1];
-                                if (last?.id === "thermometer") {
-                                    last.data.latB = lat;
-                                    last.data.lngB = lng;
+                                const target = questions
+                                    .get()
+                                    .find((q) => q.key === thermometerKey);
+                                if (target?.id === "thermometer") {
+                                    target.data.latB = lat;
+                                    target.data.lngB = lng;
                                     questionModified();
                                 }
                             });

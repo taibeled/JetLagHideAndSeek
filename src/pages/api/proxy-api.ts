@@ -27,6 +27,54 @@ const ALLOWED_HOSTS = [
 
 const MAX_BYTES = 50 * 1024 * 1024; // 50 MB — Overpass responses can be large
 const MAX_REDIRECTS = 3;
+// Hard server-side deadline for the whole upstream request (across redirect
+// hops). Overpass can legitimately take tens of seconds on big queries, so
+// this is a generous backstop, not a tight SLA — it only exists so a hung
+// upstream can't pin a server request open forever after the client leaves.
+const MAX_UPSTREAM_MS = 60_000;
+
+// Sentinel returned by readCapped when a body exceeds the byte cap, so callers
+// can map it to a 413 without confusing it with an empty body.
+const TOO_LARGE = Symbol("too-large");
+
+/**
+ * Read a request/response body stream into a single buffer, but abort and
+ * return TOO_LARGE the moment the accumulated size exceeds `max` — so an
+ * oversized payload is never fully allocated before we reject it. A null body
+ * (e.g. GET, 204) reads as empty. Used for BOTH the POST request body and the
+ * upstream response so the limit is enforced through one path.
+ */
+async function readCapped(
+    body: ReadableStream<Uint8Array> | null,
+    max: number,
+): Promise<Uint8Array<ArrayBuffer> | typeof TOO_LARGE> {
+    if (!body) return new Uint8Array(0);
+    const reader = body.getReader();
+    const chunks: Uint8Array[] = [];
+    let total = 0;
+    try {
+        for (;;) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            if (!value) continue;
+            total += value.byteLength;
+            if (total > max) {
+                await reader.cancel();
+                return TOO_LARGE;
+            }
+            chunks.push(value);
+        }
+    } finally {
+        reader.releaseLock();
+    }
+    const out = new Uint8Array(total);
+    let offset = 0;
+    for (const chunk of chunks) {
+        out.set(chunk, offset);
+        offset += chunk.byteLength;
+    }
+    return out;
+}
 
 async function handleRequest(request: Request, url: URL): Promise<Response> {
     const target = url.searchParams.get("url");
@@ -60,11 +108,43 @@ async function handleRequest(request: Request, url: URL): Promise<Response> {
     }
 
     const method = request.method;
-    const body = method === "POST" ? await request.arrayBuffer() : undefined;
+    // Read the POST body through the SAME capped reader as the response, so an
+    // oversized upload is rejected with 413 before its bytes are fully
+    // allocated — not buffered in full and then checked.
+    let body: Uint8Array<ArrayBuffer> | undefined;
+    if (method === "POST") {
+        let read: Uint8Array<ArrayBuffer> | typeof TOO_LARGE;
+        try {
+            read = await readCapped(request.body, MAX_BYTES);
+        } catch (err) {
+            return jsonError(
+                400,
+                `Failed reading request body: ${err instanceof Error ? err.message : String(err)}`,
+            );
+        }
+        if (read === TOO_LARGE) {
+            return jsonError(
+                413,
+                `Request body exceeds cap of ${MAX_BYTES} bytes.`,
+            );
+        }
+        body = read;
+    }
+
+    // Tie the upstream fetch to (a) the client aborting (browser cancels the
+    // request) and (b) a hard server-side deadline, so a hung upstream is
+    // never left running after the client gives up. `AbortSignal.any` fires
+    // on whichever happens first; the timeout is absolute, shared across all
+    // redirect hops in fetchAllowlisted.
+    const signal = AbortSignal.any([
+        request.signal,
+        AbortSignal.timeout(MAX_UPSTREAM_MS),
+    ]);
 
     const result = await fetchAllowlisted(targetUrl, {
         method,
         body: body ?? undefined,
+        signal,
         headers: {
             "user-agent": "JetLagHideAndSeek-Proxy/1.0",
             // Forward content-type for POST bodies (Overpass QL)
@@ -93,17 +173,20 @@ async function handleRequest(request: Request, url: URL): Promise<Response> {
         );
     }
 
-    // Buffer the FULL response, then return it. Deliberately NOT streamed:
-    // Node's fetch (undici) auto-decompresses gzip/br bodies, so the upstream
-    // Content-Length (compressed size) no longer matches the decompressed
-    // bytes. A hand-rolled streaming proxy that forwards that header — or
-    // whose background writer is cut short by the Node adapter — truncates the
-    // JSON mid-stream ("Overpass returned data that is not valid JSON").
-    // Buffering lets `new Response(buf)` set a correct Content-Length and
-    // makes truncation impossible. These APIs return a few MB at most.
-    let buf: ArrayBuffer;
+    // Buffer the response (up to MAX_BYTES), then return it. Deliberately NOT
+    // streamed through to the client: Node's fetch (undici) auto-decompresses
+    // gzip/br bodies, so the upstream Content-Length (compressed size) no
+    // longer matches the decompressed bytes. A hand-rolled streaming proxy
+    // that forwards that header — or whose background writer is cut short by
+    // the Node adapter — truncates the JSON mid-stream ("Overpass returned
+    // data that is not valid JSON"). Buffering lets `new Response(buf)` set a
+    // correct Content-Length and makes truncation impossible. The capped
+    // reader still stops at MAX_BYTES so an oversized response is rejected
+    // mid-stream instead of being allocated in full. These APIs return a few
+    // MB at most.
+    let buf: Uint8Array<ArrayBuffer> | typeof TOO_LARGE;
     try {
-        buf = await upstream.arrayBuffer();
+        buf = await readCapped(upstream.body, MAX_BYTES);
     } catch (err) {
         return jsonError(
             502,
@@ -111,10 +194,10 @@ async function handleRequest(request: Request, url: URL): Promise<Response> {
         );
     }
 
-    if (buf.byteLength > MAX_BYTES) {
+    if (buf === TOO_LARGE) {
         return jsonError(
             413,
-            `Response is ${buf.byteLength} bytes, cap is ${MAX_BYTES}.`,
+            `Response exceeds cap of ${MAX_BYTES} bytes.`,
         );
     }
 
@@ -156,9 +239,14 @@ async function fetchAllowlisted(
                 redirect: "manual",
             });
         } catch (err) {
+            // AbortSignal.timeout fires a TimeoutError; surface that as a 504
+            // (gateway timeout) rather than a generic 502 bad gateway. A client
+            // abort raises AbortError — still reported, though the client is
+            // usually gone by then.
+            const isTimeout = err instanceof Error && err.name === "TimeoutError";
             return {
                 ok: false,
-                status: 502,
+                status: isTimeout ? 504 : 502,
                 message: `Upstream fetch failed: ${err instanceof Error ? err.message : String(err)}`,
             };
         }
@@ -204,8 +292,12 @@ async function fetchAllowlisted(
 }
 
 function isAllowedHost(hostname: string): boolean {
+    // Exact match only. Every proxied target (the Overpass mirrors, Nominatim,
+    // Photon) is itself an ALLOWED_HOSTS entry — no subdomain is ever proxied —
+    // so matching subdomains via endsWith would only widen the SSRF surface
+    // (e.g. an attacker-controlled `*.overpass-api.de`) for no functional gain.
     const lower = hostname.toLowerCase();
-    return ALLOWED_HOSTS.some((h) => lower === h || lower.endsWith(`.${h}`));
+    return ALLOWED_HOSTS.includes(lower);
 }
 
 function jsonError(

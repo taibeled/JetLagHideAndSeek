@@ -239,8 +239,19 @@ function mergePolygonsBinary(
             }
             const a = layer[i]!;
             const b = layer[i + 1]!;
-            const u = turf.union(turf.featureCollection([a, b]));
-            if (u) next.push(u as Feature<Polygon | MultiPolygon>);
+            // turf.union can both return null AND throw (topological errors on
+            // self-intersecting/degenerate geometry). Treat a throw exactly
+            // like a null result so a single bad pair never aborts the whole
+            // coastline merge — both inputs are preserved in the else branch.
+            let u: Feature<Polygon | MultiPolygon> | null;
+            try {
+                u = turf.union(turf.featureCollection([a, b])) as Feature<
+                    Polygon | MultiPolygon
+                > | null;
+            } catch {
+                u = null;
+            }
+            if (u) next.push(u);
             else {
                 let aBbox = "unknown";
                 let bBbox = "unknown";
