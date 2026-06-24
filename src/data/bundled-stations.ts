@@ -34,13 +34,27 @@ const slugifyStationName = (name: string): string =>
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-+|-+$/g, "");
 
+// The GTFS-derived rail dataset includes a few non-passenger placeholders
+// (border crossings, yards, maintenance facilities) as "stops". Drop them so
+// they don't become hiding-zone candidates. Exact-name match, NOT a pattern:
+// real stations like "34 St-Hudson Yards", "Yardley", and "Port Washington"
+// must survive.
+const NON_PASSENGER_NAMES: ReadonlySet<string> = new Set([
+    "Canadian Border",
+    "Hillside Facility",
+    "Highbridge Yard",
+    "Springdale MW Facility",
+]);
+
 // Ids are content-based (namespace + name slug + exact coords), NOT array
 // index: `disabledStations` persists these, so an index-derived id would
 // silently re-point a user's exclusions to different stations after any
 // reorder/insertion in the source datasets. Coords are the unique stable key
 // (no two stations share exact coords; names like "86 St" repeat).
 const BUNDLED_STATIONS: BundledStation[] = [
-    ...NYC_MAJOR_SUBWAY_STATIONS.map(
+    ...NYC_MAJOR_SUBWAY_STATIONS.filter(
+        (s) => !NON_PASSENGER_NAMES.has(s.name),
+    ).map(
         (s): BundledStation => ({
             name: s.name,
             lat: s.lat,
@@ -48,7 +62,9 @@ const BUNDLED_STATIONS: BundledStation[] = [
             id: `bundled/subway-${slugifyStationName(s.name)}-${s.lat}-${s.lng}`,
         }),
     ),
-    ...METRO_AREA_RAIL_STATIONS.map(
+    ...METRO_AREA_RAIL_STATIONS.filter(
+        (s) => !NON_PASSENGER_NAMES.has(s.name),
+    ).map(
         (s): BundledStation => ({
             name: s.name,
             lat: s.lat,
