@@ -6,6 +6,7 @@ import type {
     LineString,
     MultiLineString,
     MultiPolygon,
+    Point,
     Polygon,
 } from "geojson";
 import memoize from "lodash/memoize";
@@ -120,13 +121,35 @@ function coastlineSimplifyTolerance(bbox: BBox): number {
     return Math.min(0.025, span * COASTLINE_SIMPLIFY_SPAN_RATIO);
 }
 
+/** Min geodesic distance (miles) from a point to any line of a coast feature. */
+function minPointToCoastDistanceMiles(
+    point: Feature<Point>,
+    f: Feature<LineString | MultiLineString>,
+): number {
+    let min = Infinity;
+    for (const line of eachLineStringOfCoast(f)) {
+        const d = turf.pointToLineDistance(point, line, {
+            units: "miles",
+            method: "geodesic",
+        });
+        if (d < min) min = d;
+    }
+    return min;
+}
+
 /**
  * Clip to game extent, simplify vertices, and cap feature count so coastline
  * measuring stays interactive for metro-state / multi-region games.
+ *
+ * `point` is the picked location: the length cap can otherwise drop the
+ * shoreline nearest the seeker (if it's a short segment), which would make the
+ * caller's `distanceToCoastline` reflect a farther coast and over-size the
+ * exclusion buffer. So the nearest feature is force-retained past the cap.
  */
 function lightenCoastlinesForMeasuring(
     fc: FeatureCollection<LineString | MultiLineString>,
     gameBbox: BBox,
+    point: Feature<Point>,
 ): FeatureCollection<LineString | MultiLineString> {
     const tol = coastlineSimplifyTolerance(gameBbox);
     const span = Math.max(
@@ -178,6 +201,26 @@ function lightenCoastlinesForMeasuring(
     }
 
     scored.sort((a, b) => b.len - a.len);
+
+    // Only relevant when the cap actually drops features. Find the feature
+    // nearest the picked point; if it ranks past the cap, swap it into the
+    // kept set (displacing the shortest kept feature) so proximity survives.
+    if (scored.length > COASTLINE_MAX_LINE_FEATURES) {
+        let nearestIdx = -1;
+        let nearestDist = Infinity;
+        for (let i = 0; i < scored.length; i++) {
+            const d = minPointToCoastDistanceMiles(point, scored[i]!.f);
+            if (d < nearestDist) {
+                nearestDist = d;
+                nearestIdx = i;
+            }
+        }
+        if (nearestIdx >= COASTLINE_MAX_LINE_FEATURES) {
+            const [nearest] = scored.splice(nearestIdx, 1);
+            scored.splice(COASTLINE_MAX_LINE_FEATURES - 1, 0, nearest!);
+        }
+    }
+
     const top = scored.slice(0, COASTLINE_MAX_LINE_FEATURES).map((x) => x.f);
     return { type: "FeatureCollection", features: top };
 }
@@ -321,7 +364,7 @@ export const determineMeasuringBoundary = async (
              */
             const pt = turf.point([question.lng, question.lat]);
             const rawCoast = await fetchCoastlinesForMeasuring(bBox);
-            const coastFc = lightenCoastlinesForMeasuring(rawCoast, bBox);
+            const coastFc = lightenCoastlinesForMeasuring(rawCoast, bBox, pt);
 
             if (coastFc.features.length === 0) {
                 return [turf.bboxPolygon(bBox)];
