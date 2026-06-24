@@ -36,7 +36,10 @@ import {
 //   * bare "…" keys — app-level preferences (tile layer, API keys, units,
 //     tutorial seen, presets library). Shared across every game on purpose;
 //     a new game shouldn't reset your tile layer or replay the tutorial.
-export const DEFAULT_MAP_GEO_LOCATION_OSM_ID = 382313;
+// Internal-only: the default region's OSM id, referenced when building
+// DEFAULT_MAP_GEO_LOCATION below. Not exported — consumers compare via osmRef
+// against DEFAULT_MAP_GEO_LOCATION itself rather than the bare id.
+const DEFAULT_MAP_GEO_LOCATION_OSM_ID = 382313;
 
 /** Default primary region (Japan). Exported so "New Game" can reset to it. */
 export const DEFAULT_MAP_GEO_LOCATION: OpenStreetMap = {
