@@ -35,9 +35,12 @@ const ALL_STATIONS = [
 
 const TOTAL = ALL_STATIONS.length;
 
-// Display-friendly label for each system key
+// Display-friendly label for each system key. Subway is the curated
+// "major stations" set (same data the bundled-stations flow uses), not the
+// full ~470-station system — qualify the label so the count isn't read as
+// "every subway station".
 const SYSTEM_LABEL: Record<string, string> = {
-    Subway: "NYC Subway",
+    Subway: "NYC Subway (major)",
     LIRR: "LIRR",
     MNR: "Metro-North",
     NJT: "NJ Transit",
