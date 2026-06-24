@@ -48,3 +48,9 @@ __pycache__/
 
 # Geocoding cache (scripts)
 _cache/
+
+# Playwright
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
