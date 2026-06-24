@@ -57,7 +57,7 @@ export const determinePlanningPolygon = async (
     question: Question,
     planningModeEnabled: boolean,
 ) => {
-    if (planningModeEnabled && question.data.drag) {
+    if (planningModeEnabled && question.data.drag && !question.data.hidden) {
         switch (question.id) {
             case "radius":
                 return radiusPlanningPolygon(question.data);
@@ -77,6 +77,10 @@ export async function adjustMapGeoDataForQuestion(
     question: any,
     mapGeoData: any,
 ) {
+    if (question.data.hidden) {
+        return mapGeoData;
+    }
+
     try {
         switch (question?.id) {
             case "radius":
