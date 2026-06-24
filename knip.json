@@ -6,11 +6,7 @@
         "src/pages/**/*.astro",
         "src/layouts/**/*.astro"
     ],
-    "ignoreDependencies": [
-        "@astrojs/check",
-        "@react-leaflet/core",
-        "@typescript-eslint/parser"
-    ],
+    "ignoreDependencies": ["@astrojs/check", "@react-leaflet/core"],
     "ignoreIssues": {
         "src/lib/**": ["types"],
         "src/components/ui/**": ["types"],

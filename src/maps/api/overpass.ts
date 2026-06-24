@@ -957,10 +957,8 @@ export const findLandmassBoundaryAtPoint = async (
     const territory = asPolygonFeature(
         fullExtent
             ? (safeUnion(fullExtent as any) as Feature | null)
-            : ((playableTerritoryUnion.get() as
-                  | Feature
-                  | null
-                  | undefined) ?? null),
+            : ((playableTerritoryUnion.get() as Feature | null | undefined) ??
+                  null),
     );
     if (territory) {
         try {

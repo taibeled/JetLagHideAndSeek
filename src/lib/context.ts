@@ -388,10 +388,14 @@ export const animateMapMovements = persistentAtom<boolean>(
         decode: JSON.parse,
     },
 );
-export const hidingRadius = persistentAtom<number>(gameKey("hidingRadius"), 0.5, {
-    encode: JSON.stringify,
-    decode: JSON.parse,
-});
+export const hidingRadius = persistentAtom<number>(
+    gameKey("hidingRadius"),
+    0.5,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
 export const hidingRadiusUnits = persistentAtom<Units>(
     gameKey("hidingRadiusUnits"),
     "miles",

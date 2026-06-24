@@ -54,7 +54,8 @@ export function GlobalProgressBar() {
 
     // Show the most recently started task's label as the primary caption,
     // falling back to a generic one when only `isLoading` is set.
-    const primaryLabel = tasks.length > 0 ? tasks[tasks.length - 1].label : "Loading…";
+    const primaryLabel =
+        tasks.length > 0 ? tasks[tasks.length - 1].label : "Loading…";
 
     return (
         <div className="fixed top-0 left-0 right-0 z-[10000] pointer-events-none">

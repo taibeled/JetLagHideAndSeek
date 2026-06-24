@@ -74,9 +74,9 @@ describe("directUrlFromProxied", () => {
             ),
         ).toBe(false);
         // Photon and Overpass mirrors stay direct-first.
-        expect(
-            directFetchAllowed("https://photon.komoot.io/api/?q=x"),
-        ).toBe(true);
+        expect(directFetchAllowed("https://photon.komoot.io/api/?q=x")).toBe(
+            true,
+        );
         expect(
             directFetchAllowed(
                 "https://overpass.kumi.systems/api/interpreter?data=x",

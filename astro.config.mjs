@@ -6,6 +6,7 @@ import node from "@astrojs/node";
 import partytown from "@astrojs/partytown";
 import react from "@astrojs/react";
 import { injectManifest } from "@serwist/build";
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 import { build as esbuild } from "esbuild";
 
@@ -204,6 +205,32 @@ export default defineConfig({
     ],
     devToolbar: {
         enabled: false,
+    },
+    // Tailwind v4 via its Vite plugin (not the PostCSS plugin): under Vite 8 /
+    // rolldown, Vite's @import resolver tries to resolve the bare `tailwindcss`
+    // specifier in globals.css as a file before @tailwindcss/postcss can
+    // intercept it, breaking the build. The Vite plugin handles the CSS first.
+    vite: {
+        plugins: [tailwindcss()],
+        // The legacy leaflet-draw UMD build exports nothing, but
+        // react-leaflet-draw does `import Draw from "leaflet-draw"`. Under
+        // Vite 8 / rolldown that hard-fails with MISSING_EXPORT, so redirect the
+        // bare specifier to a shim that runs the side-effect and re-exports
+        // L.Draw as the default. (The shim's own `leaflet-draw/dist/...` import
+        // is a subpath and doesn't match this exact-match alias — no recursion.)
+        resolve: {
+            alias: [
+                {
+                    find: /^leaflet-draw$/,
+                    replacement: fileURLToPath(
+                        new URL(
+                            "./src/lib/shims/leaflet-draw.js",
+                            import.meta.url,
+                        ),
+                    ),
+                },
+            ],
+        },
     },
     site,
     base,

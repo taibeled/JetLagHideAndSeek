@@ -29,7 +29,9 @@ const MAX_SLOT_LENGTH = 40;
  * malformed param falls back to the default (unprefixed) game rather than
  * silently creating a junk namespace.
  */
-export function sanitizeGameSlot(raw: string | null | undefined): string | null {
+export function sanitizeGameSlot(
+    raw: string | null | undefined,
+): string | null {
     if (!raw) return null;
     const slot = raw
         .toLowerCase()
