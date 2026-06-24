@@ -8,12 +8,13 @@
 // run the side-effectful build (the full dist path does NOT match the alias, so
 // no recursion) and re-expose the attached `L.Draw` as the default export.
 //
-// Import leaflet FIRST: leaflet.draw.js references a free global `L`, so the
-// global Leaflet namespace must exist before it runs. Leaflet's UMD build
-// (dist/leaflet-src.js) sets `globalThis.L` when evaluated, and ESM evaluates
-// these imports in source order — so we don't rely on react-leaflet happening
-// to be imported earlier elsewhere.
-import "leaflet";
+// Pin `globalThis.L` to the imported leaflet FIRST (see leaflet-global.js):
+// leaflet.draw.js references a free global `L`, and it must extend the SAME
+// leaflet instance the app imports — otherwise `L.drawLocal` is undefined and
+// PolygonDraw crashes. This MUST be a separate module imported before the
+// plugin: ES import side effects run before statement code, so setting the
+// global inline here would be too late.
+import "./leaflet-global.js";
 import "leaflet-draw/dist/leaflet.draw.js";
 
 export default (globalThis.L && globalThis.L.Draw) || {};

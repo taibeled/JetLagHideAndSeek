@@ -7,7 +7,7 @@ import type {
     MultiPolygon,
     Polygon as GeoJSONPolygon,
 } from "geojson";
-import * as L from "leaflet";
+import L from "leaflet";
 import uniqBy from "lodash/uniqBy";
 import { useEffect, useRef, useState } from "react";
 import { FeatureGroup, Marker, Polygon, Polyline } from "react-leaflet";
