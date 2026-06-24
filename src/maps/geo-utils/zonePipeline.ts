@@ -1032,9 +1032,12 @@ export async function applyQuestionFilters({
             } else if (question.data.type === "same-length-station") {
                 const seekerLength = englishName.length;
                 // Legacy questions (saved before lengthComparison existed)
-                // can have this unset; default to "same" so the filter
-                // doesn't silently eliminate every station.
-                const comparison = question.data.lengthComparison ?? "same";
+                // carry only `same`; map same:false to "different" (and the
+                // unset default to "same") so the filter matches the card and
+                // never silently eliminates every station.
+                const comparison =
+                    question.data.lengthComparison ??
+                    (question.data.same === false ? "different" : "same");
                 current = current.filter((circle) => {
                     const name = extractStationName(circle.properties);
                     if (!name) return false;
@@ -1044,6 +1047,8 @@ export async function applyQuestionFilters({
                         return name.length < seekerLength;
                     if (comparison === "longer")
                         return name.length > seekerLength;
+                    if (comparison === "different")
+                        return name.length !== seekerLength;
                     return false;
                 });
             }

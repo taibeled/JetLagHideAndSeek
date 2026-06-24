@@ -849,10 +849,13 @@ export const MatchingQuestionComponent = ({
                         <ToggleGroup
                             className="grow"
                             type="single"
-                            // Legacy/unset state defaults to "same" (the
-                            // creation default + zonePipeline fallback) so the
-                            // value always matches a ToggleGroupItem below.
-                            value={data.lengthComparison ?? "same"}
+                            // Legacy questions (saved before lengthComparison
+                            // existed) carry only `same`; map same:false to
+                            // "different" so they stay correct and selectable.
+                            value={
+                                data.lengthComparison ??
+                                (data.same === false ? "different" : "same")
+                            }
                             onValueChange={(
                                 value:
                                     | "shorter"
@@ -865,11 +868,10 @@ export const MatchingQuestionComponent = ({
                                         (data.lengthComparison = value),
                                     );
                                 } else if (value === "same") {
-                                    questionModified(
-                                        (data.lengthComparison = "same"),
-                                    );
+                                    data.lengthComparison = "same";
                                     questionModified((data.same = true));
                                 } else if (value === "different") {
+                                    data.lengthComparison = "different";
                                     questionModified((data.same = false));
                                 }
                             }}
@@ -881,6 +883,9 @@ export const MatchingQuestionComponent = ({
                             <ToggleGroupItem value="same">Same</ToggleGroupItem>
                             <ToggleGroupItem value="longer">
                                 Longer
+                            </ToggleGroupItem>
+                            <ToggleGroupItem value="different">
+                                Different
                             </ToggleGroupItem>
                         </ToggleGroup>
                     ) : (
