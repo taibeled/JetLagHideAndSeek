@@ -70,6 +70,7 @@ const thermometerQuestionSchema = z
         /** Note that drag is now synonymous with unlocked */
         drag: z.boolean().default(true),
         collapsed: z.boolean().default(false),
+        hidden: z.boolean().optional(),
     })
     .transform((question) => {
         if (question.colorA === question.colorB) {
@@ -94,6 +95,7 @@ const ordinaryBaseQuestionSchema = z.object({
     drag: z.boolean().default(true),
     color: iconColorSchema.default(randomColor),
     collapsed: z.boolean().default(false),
+    hidden: z.boolean().optional(),
 });
 
 const getDefaultUnit = () => {
