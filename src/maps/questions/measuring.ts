@@ -13,6 +13,7 @@ import {
 } from "@/lib/context";
 import {
     fetchCoastline,
+    findAdminBoundary,
     findPlacesInZone,
     findPlacesSpecificInZone,
     LOCATION_FIRST_TAG,
@@ -32,6 +33,32 @@ import type {
     HomeGameMeasuringQuestions,
     MeasuringQuestion,
 } from "@/maps/schema";
+
+export interface AdminZoneInfo {
+    name: string;
+    boundary: any;
+}
+
+export const findAdminZoneInfo = _.memoize(
+    async (
+        lat: number,
+        lng: number,
+        adminLevel: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10,
+    ): Promise<AdminZoneInfo | null> => {
+        const boundary = await findAdminBoundary(lat, lng, adminLevel);
+
+        if (!boundary) {
+            return null;
+        }
+
+        const name =
+            boundary.properties?.["name:en"] ?? boundary.properties?.name ?? "Unknown";
+
+        return { name, boundary };
+    },
+    (lat, lng, adminLevel) =>
+        `${lat.toFixed(6)},${lng.toFixed(6)},${adminLevel}`,
+);
 
 const highSpeedBase = _.memoize(
     (features: Feature[]) => {
@@ -99,6 +126,29 @@ export const determineMeasuringBoundary = async (
             ).features;
 
             return [highSpeedBase(features)];
+        }
+        case "admin-measure": {
+            const adminLevel = (question as any).cat?.adminLevel ?? 4;
+            const zoneInfo = await findAdminZoneInfo(
+                question.lat,
+                question.lng,
+                adminLevel,
+            );
+
+            if (!zoneInfo) {
+                toast.error("No admin boundary found at this location");
+                return [turf.multiPolygon([])];
+            }
+
+            // Store the zone name for display
+            if (!(question as any).cat) {
+                (question as any).cat = { adminLevel };
+            }
+            (question as any).cat.zoneName = zoneInfo.name;
+
+            // Convert the polygon to its outline (the border)
+            const outline = turf.polygonToLine(zoneInfo.boundary);
+            return [outline];
         }
         case "coastline": {
             const coastline = turf.lineToPolygon(
@@ -275,6 +325,7 @@ const bufferedDeterminer = _.memoize(
                 ? polyGeoJSON.get()
                 : mapGeoLocation.get(),
             geo: (question as any).geo,
+            cat: (question as any).cat,
         }),
 );
 
