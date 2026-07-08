@@ -349,6 +349,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "LeagueOfPoro",
+      "name": "League of Poro",
+      "avatar_url": "https://avatars.githubusercontent.com/u/95635582?v=4",
+      "profile": "https://www.youtube.com/@LeagueOfPoro",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
