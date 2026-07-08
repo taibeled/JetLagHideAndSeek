@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/react";
-import { LockIcon, UnlockIcon } from "lucide-react";
+import { EyeIcon, EyeOffIcon, LockIcon, UnlockIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { VscChevronDown, VscShare, VscTrash } from "react-icons/vsc";
 
@@ -41,7 +41,9 @@ export const QuestionCard = ({
     sub,
     collapsed,
     locked,
+    hidden,
     setLocked,
+    setHidden,
     setCollapsed,
 }: {
     children: React.ReactNode;
@@ -51,7 +53,9 @@ export const QuestionCard = ({
     sub?: string;
     collapsed?: boolean;
     locked?: boolean;
+    hidden?: boolean;
     setLocked?: (locked: boolean) => void;
+    setHidden?: (hidden: boolean) => void;
     setCollapsed?: (collapsed: boolean) => void;
 }) => {
     const [isCollapsed, setIsCollapsed] = useState(collapsed ?? false);
@@ -247,6 +251,14 @@ export const QuestionCard = ({
                                     {locked ? <LockIcon /> : <UnlockIcon />}
                                 </Button>
                             )}
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setHidden!(!hidden)}
+                                disabled={$isLoading}
+                            >
+                                {hidden ? <EyeOffIcon /> : <EyeIcon />}
+                            </Button>
                         </div>
                     </SidebarGroupContent>
                 </div>
