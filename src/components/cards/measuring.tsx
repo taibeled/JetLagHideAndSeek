@@ -84,7 +84,9 @@ export const MeasuringQuestionComponent = ({
                                 9: "OSM Zone 9",
                                 10: "OSM Zone 10",
                             }}
-                            value={((data as any).cat?.adminLevel ?? 4).toString()}
+                            value={(
+                                (data as any).cat?.adminLevel ?? 4
+                            ).toString()}
                             onValueChange={(value) => {
                                 if (!(data as any).cat) {
                                     (data as any).cat = { adminLevel: 4 };
@@ -371,17 +373,11 @@ export const MeasuringQuestionComponent = ({
     );
 };
 
-const AdminZoneNameDisplay = ({
-    data,
-}: {
-    data: MeasuringQuestion;
-}) => {
+const AdminZoneNameDisplay = ({ data }: { data: MeasuringQuestion }) => {
     useStore(triggerLocalRefresh);
 
     const adminLevel = (data as any).cat?.adminLevel ?? 4;
-    const zoneInfo = use(
-        findAdminZoneInfo(data.lat, data.lng, adminLevel),
-    );
+    const zoneInfo = use(findAdminZoneInfo(data.lat, data.lng, adminLevel));
 
     // Update the zone name in the data
     if (
@@ -403,9 +399,7 @@ const AdminZoneNameDisplay = ({
 
     return (
         <div className="flex flex-col items-center w-full h-[3rem]">
-            <Label className="text-xs text-muted-foreground">
-                Zone
-            </Label>
+            <Label className="text-xs text-muted-foreground">Zone</Label>
             <span className="font-medium text-sm truncate max-w-full">
                 {zoneInfo.name}
             </span>

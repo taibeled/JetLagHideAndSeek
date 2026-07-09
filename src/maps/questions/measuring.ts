@@ -52,7 +52,9 @@ export const findAdminZoneInfo = _.memoize(
         }
 
         const name =
-            boundary.properties?.["name:en"] ?? boundary.properties?.name ?? "Unknown";
+            boundary.properties?.["name:en"] ??
+            boundary.properties?.name ??
+            "Unknown";
 
         return { name, boundary };
     },
