@@ -33,6 +33,8 @@ import {
     leafletMapContext,
     mapGeoJSON,
     mapGeoLocation,
+    overpassCustomHost,
+    overpassHost,
     pastebinApiKey,
     permanentOverlay,
     planningModeEnabled,
@@ -52,6 +54,7 @@ import {
     shareOrFallback,
     uploadToPastebin,
 } from "@/lib/utils";
+import { OVERPASS_HOSTS } from "@/maps/api/constants";
 import { questionsSchema } from "@/maps/schema";
 
 import { LatitudeLongitude } from "./LatLngPicker";
@@ -89,6 +92,8 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $alwaysUsePastebin = useStore(alwaysUsePastebin);
     const $followMe = useStore(followMe);
     const $customInitPref = useStore(customInitPreference);
+    const $overpassHost = useStore(overpassHost);
+    const $overpassCustomHost = useStore(overpassCustomHost);
     const lastDefaultUnit = useRef($defaultUnit);
     const hasSyncedInitialUnit = useRef(false);
     const [isOptionsOpen, setOptionsOpen] = useState(false);
@@ -500,6 +505,42 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     .
                                 </p>
                             </div>
+                            <Separator className="bg-slate-300 w-[280px]" />
+                            <Label>Overpass API Host</Label>
+                            <Select
+                                trigger="Overpass API host"
+                                options={{
+                                    ...Object.fromEntries(
+                                        Object.entries(OVERPASS_HOSTS).map(
+                                            ([label, url]) => [url, label],
+                                        ),
+                                    ),
+                                    custom: "Custom URL",
+                                }}
+                                value={$overpassHost}
+                                onValueChange={(v) =>
+                                    overpassHost.set(v as any)
+                                }
+                            />
+                            {$overpassHost === "custom" && (
+                                <div className="flex flex-col items-center gap-2 w-full">
+                                    <Input
+                                        type="text"
+                                        value={$overpassCustomHost}
+                                        onChange={(e) =>
+                                            overpassCustomHost.set(
+                                                e.target.value,
+                                            )
+                                        }
+                                        placeholder="https://your-overpass-instance/api/interpreter"
+                                    />
+                                </div>
+                            )}
+                            <p className="text-xs text-gray-500 text-center">
+                                {$overpassHost === "custom"
+                                    ? "The other hosts will be used as fallbacks if this one fails."
+                                    : "The remaining hosts will be tried as fallbacks if the selected one fails."}
+                            </p>
                             <Separator className="bg-slate-300 w-[280px]" />
                             <Label>Permanent Map Overlay</Label>
                             <div className="flex flex-row max-[330px]:flex-col gap-4">
