@@ -198,6 +198,7 @@ export const QuestionCard = ({
                                         variant="outline"
                                         size="sm"
                                         disabled={$isLoading}
+                                        data-testid="trash-button"
                                     >
                                         <VscTrash />
                                     </Button>
@@ -247,6 +248,7 @@ export const QuestionCard = ({
                                     size="sm"
                                     onClick={() => setLocked!(!locked)}
                                     disabled={$isLoading}
+                                    data-testid="lock-button"
                                 >
                                     {locked ? <LockIcon /> : <UnlockIcon />}
                                 </Button>
