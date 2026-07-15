@@ -31,6 +31,7 @@ import {
     hidingZone,
     includeDefaultStations,
     leafletMapContext,
+    localPlaceData,
     mapGeoJSON,
     mapGeoLocation,
     overpassCustomHost,
@@ -45,6 +46,7 @@ import {
     thunderforestApiKey,
     triggerLocalRefresh,
     useCustomStations,
+    useLocalPlaceData,
 } from "@/lib/context";
 import {
     cn,
@@ -54,6 +56,7 @@ import {
     shareOrFallback,
     uploadToPastebin,
 } from "@/lib/utils";
+import { parseLocalPlaceDataFromText } from "@/maps/api";
 import { OVERPASS_HOSTS } from "@/maps/api/constants";
 import { questionsSchema } from "@/maps/schema";
 
@@ -75,6 +78,28 @@ const HIDING_ZONE_URL_PARAM = "hz";
 const HIDING_ZONE_COMPRESSED_URL_PARAM = "hzc";
 const PASTEBIN_URL_PARAM = "pb";
 
+/**
+ * Enables or disables the bundled local place data. When enabled, the
+ * `singapore.json` dataset shipped in `public/` is fetched, parsed, and loaded
+ * into the `localPlaceData` store (used by matching/measuring questions before
+ * falling back to Overpass). When disabled, the store is cleared.
+ */
+const applyLocalPlaceData = async (enabled: boolean) => {
+    useLocalPlaceData.set(enabled);
+
+    if (!enabled) {
+        localPlaceData.set({ points: {}, boundaries: {} });
+        return;
+    }
+
+    const response = await fetch(import.meta.env.BASE_URL + "/singapore.json");
+    if (!response.ok) {
+        throw new Error(`Failed to fetch place data: ${response.status}`);
+    }
+    const text = await response.text();
+    localPlaceData.set(parseLocalPlaceDataFromText(text, "application/json"));
+};
+
 export const OptionDrawers = ({ className }: { className?: string }) => {
     useStore(triggerLocalRefresh);
     const $defaultCustomQuestions = useStore(defaultCustomQuestions);
@@ -94,6 +119,8 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $customInitPref = useStore(customInitPreference);
     const $overpassHost = useStore(overpassHost);
     const $overpassCustomHost = useStore(overpassCustomHost);
+    const $localPlaceData = useStore(localPlaceData);
+    const $useLocalPlaceData = useStore(useLocalPlaceData);
     const lastDefaultUnit = useRef($defaultUnit);
     const hasSyncedInitialUnit = useRef(false);
     const [isOptionsOpen, setOptionsOpen] = useState(false);
@@ -112,6 +139,16 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
 
         lastDefaultUnit.current = currentDefault;
     }, [$defaultUnit]);
+
+    useEffect(() => {
+        // The dataset lives in memory only, so re-load it on startup when the
+        // toggle was left enabled in a previous session.
+        if (useLocalPlaceData.get()) {
+            applyLocalPlaceData(true).catch((err) =>
+                console.error("Failed to load local place data:", err),
+            );
+        }
+    }, []);
 
     useEffect(() => {
         const params = new URL(window.location.toString()).searchParams;
@@ -261,6 +298,14 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                 geojson.customStations.constructor === Array
             ) {
                 customStations.set(geojson.customStations);
+            }
+
+            if (typeof geojson.useLocalPlaceData === "boolean") {
+                applyLocalPlaceData(geojson.useLocalPlaceData).catch((err) =>
+                    toast.error(
+                        `Failed to load place data: ${err.message || err}`,
+                    ),
+                );
             }
 
             if (typeof geojson.includeDefaultStations === "boolean") {
@@ -541,6 +586,68 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     ? "The other hosts will be used as fallbacks if this one fails."
                                     : "The remaining hosts will be tried as fallbacks if the selected one fails."}
                             </p>
+                            <Separator className="bg-slate-300 w-[280px]" />
+                            <Label>Local Place Data</Label>
+                            <div className="flex flex-col items-center gap-2 w-full">
+                                <div className="flex flex-row items-center gap-2">
+                                    <label className="font-semibold font-poppins">
+                                        Use bundled Singapore place data?
+                                    </label>
+                                    <Checkbox
+                                        checked={$useLocalPlaceData}
+                                        onCheckedChange={async (v) => {
+                                            try {
+                                                await applyLocalPlaceData(!!v);
+                                                toast.success(
+                                                    v
+                                                        ? "Singapore place data enabled"
+                                                        : "Singapore place data disabled",
+                                                    { autoClose: 2000 },
+                                                );
+                                            } catch (err: any) {
+                                                useLocalPlaceData.set(false);
+                                                toast.error(
+                                                    `Failed to load place data: ${err.message || err}`,
+                                                );
+                                            }
+                                        }}
+                                    />
+                                </div>
+                                <p className="text-xs text-gray-500 text-center">
+                                    Loads <code>public/singapore.json</code> and
+                                    uses it for matching/measuring questions.
+                                    Each question falls back to Overpass when
+                                    its category has no local data.
+                                </p>
+                                {$useLocalPlaceData &&
+                                    (() => {
+                                        const pointCount = Object.values(
+                                            $localPlaceData.points,
+                                        ).reduce(
+                                            (n, arr) => n + (arr?.length ?? 0),
+                                            0,
+                                        );
+                                        const boundaryCount = Object.values(
+                                            $localPlaceData.boundaries,
+                                        ).reduce(
+                                            (n, arr) => n + (arr?.length ?? 0),
+                                            0,
+                                        );
+                                        return (
+                                            <p className="text-sm text-gray-300">
+                                                {pointCount} point
+                                                {pointCount === 1
+                                                    ? ""
+                                                    : "s"}, {boundaryCount}{" "}
+                                                boundary
+                                                {boundaryCount === 1
+                                                    ? ""
+                                                    : "s"}{" "}
+                                                loaded
+                                            </p>
+                                        );
+                                    })()}
+                            </div>
                             <Separator className="bg-slate-300 w-[280px]" />
                             <Label>Permanent Map Overlay</Label>
                             <div className="flex flex-row max-[330px]:flex-col gap-4">

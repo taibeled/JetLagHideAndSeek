@@ -3,5 +3,6 @@ export * from "./constants";
 export * from "./geo";
 export * from "./geocode";
 export * from "./importers";
+export * from "./localData";
 export * from "./overpass";
 export * from "./types";

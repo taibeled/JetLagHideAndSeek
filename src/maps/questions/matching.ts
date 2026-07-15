@@ -12,10 +12,12 @@ import { toast } from "react-toastify";
 
 import {
     hiderMode,
+    localPlaceData,
     mapGeoJSON,
     mapGeoLocation,
     polyGeoJSON,
 } from "@/lib/context";
+import type { LocalAdminLevel } from "@/maps/api";
 import {
     findAdminBoundary,
     findPlacesInZone,
@@ -40,6 +42,11 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
                     await findPlacesInZone(
                         '["aeroway"="aerodrome"]["iata"]', // Only commercial airports have IATA codes,
                         "Finding airports...",
+                        "nwr",
+                        "center",
+                        [],
+                        0,
+                        "airport",
                     )
                 ).elements,
                 (feature: any) => feature.tags.iata,
@@ -55,6 +62,11 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
                 await findPlacesInZone(
                     '[place=city]["population"~"^[1-9]+[0-9]{6}$"]', // The regex is faster than (if:number(t["population"])>1000000)
                     "Finding cities...",
+                    "nwr",
+                    "center",
+                    [],
+                    0,
+                    "major-city",
                 )
             ).elements.map((x: any) =>
                 turf.point([
@@ -86,6 +98,7 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
                 "center",
                 [],
                 60,
+                location,
             );
 
             if (data.remark && data.remark.startsWith("runtime error")) {
@@ -183,24 +196,40 @@ export const determineMatchingBoundary = _.memoize(
 
                 const letter = englishName[0].toUpperCase();
 
-                boundary = turf.featureCollection(
-                    osmtogeojson(
-                        await findPlacesInZone(
-                            `[admin_level=${question.cat.adminLevel}]["name:en"~"^${letter}.+"]`, // Regex is faster than filtering afterward
-                            `Finding zones that start with the same letter (${letter})...`,
-                            "relation",
-                            "geom",
-                            [
-                                `[admin_level=${question.cat.adminLevel}]["name"~"^${letter}.+"]`,
-                            ], // Regex is faster than filtering afterward
-                        ),
-                    ).features.filter(
-                        (x): x is Feature<Polygon | MultiPolygon> =>
-                            x.geometry &&
-                            (x.geometry.type === "Polygon" ||
-                                x.geometry.type === "MultiPolygon"),
-                    ),
-                );
+                const localBoundaries =
+                    localPlaceData.get().boundaries[
+                        question.cat.adminLevel as LocalAdminLevel
+                    ];
+
+                const letterZoneFeatures =
+                    localBoundaries && localBoundaries.length > 0
+                        ? localBoundaries.filter((feature) => {
+                              const name =
+                                  feature.properties?.["name:en"] ??
+                                  feature.properties?.name;
+                              return (
+                                  typeof name === "string" &&
+                                  name[0]?.toUpperCase() === letter
+                              );
+                          })
+                        : osmtogeojson(
+                              await findPlacesInZone(
+                                  `[admin_level=${question.cat.adminLevel}]["name:en"~"^${letter}.+"]`, // Regex is faster than filtering afterward
+                                  `Finding zones that start with the same letter (${letter})...`,
+                                  "relation",
+                                  "geom",
+                                  [
+                                      `[admin_level=${question.cat.adminLevel}]["name"~"^${letter}.+"]`,
+                                  ], // Regex is faster than filtering afterward
+                              ),
+                          ).features.filter(
+                              (x): x is Feature<Polygon | MultiPolygon> =>
+                                  x.geometry &&
+                                  (x.geometry.type === "Polygon" ||
+                                      x.geometry.type === "MultiPolygon"),
+                          );
+
+                boundary = turf.featureCollection(letterZoneFeatures);
 
                 // It's either simplify or crash. Technically this could be bad if someone's hiding zone was inside multiple zones, but that's unlikely.
                 boundary = safeUnion(
@@ -328,6 +357,10 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
                 "[railway=station]",
                 "Finding train stations. This may take a while. Do not press any buttons while this is processing. Don't worry, it will be cached.",
                 "node",
+                "center",
+                [],
+                0,
+                "station",
             ),
         ) as FeatureCollection<Point>;
 

@@ -15,10 +15,16 @@ import { safeUnion } from "@/maps/geo-utils";
 
 import { cacheFetch, determineCache } from "./cache";
 import { LOCATION_FIRST_TAG, OVERPASS_HOSTS } from "./constants";
+import {
+    getLocalBoundary,
+    getLocalPoints,
+    localPointsToElements,
+} from "./localData";
 import type {
     EncompassingTentacleQuestionSchema,
     HomeGameMatchingQuestions,
     HomeGameMeasuringQuestions,
+    LocalPointCategory,
     QuestionSpecificLocation,
 } from "./types";
 import { CacheType } from "./types";
@@ -154,6 +160,9 @@ export const findAdminBoundary = async (
     longitude: number,
     adminLevel: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10,
 ) => {
+    const localBoundary = getLocalBoundary(latitude, longitude, adminLevel);
+    if (localBoundary) return localBoundary;
+
     const query = `
 [out:json];
 is_in(${latitude}, ${longitude})->.a;
@@ -241,7 +250,15 @@ export const findPlacesInZone = async (
     outType: "center" | "geom" = "center",
     alternatives: string[] = [],
     timeoutDuration: number = 0,
+    category?: LocalPointCategory,
 ) => {
+    if (category) {
+        const localPoints = getLocalPoints(category);
+        if (localPoints.length > 0) {
+            return localPointsToElements(localPoints, category);
+        }
+    }
+
     let query = "";
     const $polyGeoJSON = polyGeoJSON.get();
     if ($polyGeoJSON) {
@@ -349,14 +366,16 @@ out ${outType};
 export const findPlacesSpecificInZone = async (
     location: `${QuestionSpecificLocation}`,
 ) => {
+    const isMcDonalds = location === '["brand:wikidata"="Q38076"]';
     const locations = (
         await findPlacesInZone(
             location,
-            `Finding ${
-                location === '["brand:wikidata"="Q38076"]'
-                    ? "McDonald's"
-                    : "7-Elevens"
-            }...`,
+            `Finding ${isMcDonalds ? "McDonald's" : "7-Elevens"}...`,
+            "nwr",
+            "center",
+            [],
+            0,
+            isMcDonalds ? "mcdonalds" : "seven11",
         )
     ).elements;
     return turf.featureCollection(

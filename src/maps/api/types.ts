@@ -1,7 +1,7 @@
-import type { Feature, Point, Polygon } from "geojson";
+import type { Feature, MultiPolygon, Point, Polygon } from "geojson";
 import type { LatLngTuple } from "leaflet";
 
-import type { Question } from "@/maps/schema";
+import type { APILocations, Question } from "@/maps/schema";
 
 export interface OpenStreetMap {
     type: string;
@@ -60,6 +60,35 @@ export interface StationPlaceProperties {
 
 export type StationPlace = Feature<Point, StationPlaceProperties>;
 export type StationCircle = Feature<Polygon, StationPlace>;
+
+/**
+ * Categories of point-like places that can be sourced from a user-imported
+ * local list instead of the Overpass API. Each maps to an Overpass tag filter
+ * at the call sites; when the local list has no data for a category, the
+ * Overpass query is used as a fallback.
+ */
+export type LocalPointCategory =
+    | "airport"
+    | "major-city"
+    | "station"
+    | "mcdonalds"
+    | "seven11"
+    | APILocations;
+
+/** OSM administrative levels usable for local boundary matching. */
+export type LocalAdminLevel = 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+
+/**
+ * User-imported local place data. `points` holds point features per category
+ * (nearest-place questions); `boundaries` holds administrative boundary
+ * polygons per admin level (point-in-polygon zone questions).
+ */
+export interface LocalPlaceData {
+    points: Partial<Record<LocalPointCategory, Feature<Point>[]>>;
+    boundaries: Partial<
+        Record<LocalAdminLevel, Feature<Polygon | MultiPolygon>[]>
+    >;
+}
 
 export type {
     APILocations,

@@ -199,6 +199,11 @@ export const determineMeasuringBoundary = async (
                                 await findPlacesInZone(
                                     '["aeroway"="aerodrome"]["iata"]', // Only commercial airports have IATA codes,
                                     "Finding airports...",
+                                    "nwr",
+                                    "center",
+                                    [],
+                                    0,
+                                    "airport",
                                 )
                             ).elements,
                             (feature: any) => feature.tags.iata,
@@ -219,6 +224,11 @@ export const determineMeasuringBoundary = async (
                             await findPlacesInZone(
                                 '[place=city]["population"~"^[1-9]+[0-9]{6}$"]', // The regex is faster than (if:number(t["population"])>1000000)
                                 "Finding cities...",
+                                "nwr",
+                                "center",
+                                [],
+                                0,
+                                "major-city",
                             )
                         ).elements.map((x: any) =>
                             turf.point([
@@ -249,6 +259,7 @@ export const determineMeasuringBoundary = async (
                 "center",
                 [],
                 60,
+                location,
             );
 
             if (data.remark && data.remark.startsWith("runtime error")) {

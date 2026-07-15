@@ -6,6 +6,7 @@ import { atom, computed, onSet } from "nanostores";
 import type {
     AdditionalMapGeoLocations,
     CustomStation,
+    LocalPlaceData,
     OpenStreetMap,
     StationCircle,
 } from "@/maps/api";
@@ -145,6 +146,21 @@ export const customStations = persistentAtom<CustomStation[]>(
         decode: JSON.parse,
     },
 );
+// In-memory only: the bundled dataset can be multiple MB, which would blow the
+// localStorage quota. It is (re)loaded from the bundled file on demand whenever
+// `useLocalPlaceData` is enabled.
+export const localPlaceData = atom<LocalPlaceData>({
+    points: {},
+    boundaries: {},
+});
+export const useLocalPlaceData = persistentAtom<boolean>(
+    "useLocalPlaceData",
+    false,
+    {
+        encode: JSON.stringify,
+        decode: JSON.parse,
+    },
+);
 export const mergeDuplicates = persistentAtom<boolean>(
     "removeDuplicates",
     false,
@@ -267,6 +283,7 @@ export const hidingZone = computed(
         displayHidingZonesOptions,
         useCustomStations,
         customStations,
+        useLocalPlaceData,
         includeDefaultStations,
         customPresets,
         permanentOverlay,
@@ -282,6 +299,7 @@ export const hidingZone = computed(
         zoneOptions,
         useCustom,
         $customStations,
+        $useLocalPlaceData,
         includeDefault,
         presets,
         $permanentOverlay,
@@ -296,6 +314,7 @@ export const hidingZone = computed(
                 zoneOptions: zoneOptions,
                 useCustomStations: useCustom,
                 customStations: $customStations,
+                useLocalPlaceData: $useLocalPlaceData,
                 includeDefaultStations: includeDefault,
                 presets: structuredClone(presets),
                 permanentOverlay: $permanentOverlay,
@@ -313,6 +332,7 @@ export const hidingZone = computed(
                 zoneOptions: zoneOptions,
                 useCustomStations: useCustom,
                 customStations: $customStations,
+                useLocalPlaceData: $useLocalPlaceData,
                 includeDefaultStations: includeDefault,
                 presets: structuredClone(presets),
                 permanentOverlay: $permanentOverlay,

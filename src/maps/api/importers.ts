@@ -1,8 +1,19 @@
-import type { Feature, FeatureCollection, GeoJSON, Point } from "geojson";
+import type {
+    Feature,
+    FeatureCollection,
+    GeoJSON,
+    MultiPolygon,
+    Point,
+    Polygon,
+} from "geojson";
 import Papa from "papaparse";
 
+import { LOCAL_ADMIN_LEVELS, LOCAL_POINT_CATEGORIES } from "./localData";
 import type {
     CustomStation,
+    LocalAdminLevel,
+    LocalPlaceData,
+    LocalPointCategory,
     StationPlace,
     StationPlaceProperties,
 } from "./types";
@@ -145,6 +156,156 @@ export function parseCustomStationsFromText(
         return parseKML(text);
     }
     return parseCSV(text);
+}
+
+const asPointCategory = (value: unknown): LocalPointCategory | null => {
+    if (typeof value !== "string") return null;
+    const key = value.trim().toLowerCase();
+    return (LOCAL_POINT_CATEGORIES as string[]).includes(key)
+        ? (key as LocalPointCategory)
+        : null;
+};
+
+const asAdminLevel = (value: unknown): LocalAdminLevel | null => {
+    const level =
+        typeof value === "number" ? value : Number.parseInt(String(value), 10);
+    return (LOCAL_ADMIN_LEVELS as number[]).includes(level)
+        ? (level as LocalAdminLevel)
+        : null;
+};
+
+const emptyLocalPlaceData = (): LocalPlaceData => ({
+    points: {},
+    boundaries: {},
+});
+
+const addPoint = (
+    data: LocalPlaceData,
+    category: LocalPointCategory,
+    feature: Feature<Point>,
+) => {
+    (data.points[category] ??= []).push(feature);
+};
+
+const addBoundary = (
+    data: LocalPlaceData,
+    level: LocalAdminLevel,
+    feature: Feature<Polygon | MultiPolygon>,
+) => {
+    (data.boundaries[level] ??= []).push(feature);
+};
+
+function parseLocalPlaceDataCSV(text: string): LocalPlaceData {
+    const { data, errors } = Papa.parse<Record<string, string>>(text, {
+        header: true,
+        skipEmptyLines: true,
+        transformHeader: (h) => h.toLowerCase().trim(),
+    });
+
+    if (errors.length > 0) {
+        throw new Error(`CSV parse error: ${errors[0].message}`);
+    }
+
+    const headers = Object.keys(data[0] ?? {});
+    const latKey = headers.find((h) => ["lat", "latitude"].includes(h));
+    const lngKey = headers.find((h) =>
+        ["lng", "lon", "long", "longitude"].includes(h),
+    );
+    const nameKey = headers.find((h) => ["name", "title", "label"].includes(h));
+    const categoryKey = headers.find((h) => ["category", "type"].includes(h));
+
+    if (!latKey || !lngKey) {
+        throw new Error("CSV missing required latitude/longitude column");
+    }
+    if (!categoryKey) {
+        throw new Error("CSV missing required 'category' column");
+    }
+
+    const result = emptyLocalPlaceData();
+    for (const row of data) {
+        const lat = parseFloat(row[latKey]);
+        const lng = parseFloat(row[lngKey]);
+        if (!isFinite(lat) || !isFinite(lng)) continue;
+        const category = asPointCategory(row[categoryKey]);
+        if (!category) continue;
+
+        const properties: Record<string, string> = {};
+        for (const [key, value] of Object.entries(row)) {
+            if (key === latKey || key === lngKey || key === categoryKey)
+                continue;
+            if (value) properties[key] = value;
+        }
+        if (nameKey && row[nameKey]) properties.name = row[nameKey];
+
+        addPoint(result, category, {
+            type: "Feature",
+            geometry: { type: "Point", coordinates: [lng, lat] },
+            properties,
+        });
+    }
+    return result;
+}
+
+function parseLocalPlaceDataGeoJSON(obj: any): LocalPlaceData {
+    const result = emptyLocalPlaceData();
+    const features: Feature[] =
+        obj.type === "FeatureCollection"
+            ? obj.features
+            : obj.type === "Feature"
+              ? [obj]
+              : [];
+
+    for (const feature of features) {
+        const geometry = feature.geometry;
+        if (!geometry) continue;
+        const props: any = feature.properties ?? {};
+
+        if (geometry.type === "Point") {
+            const category = asPointCategory(props.category ?? props.type);
+            if (!category) continue;
+            addPoint(result, category, feature as Feature<Point>);
+        } else if (
+            geometry.type === "Polygon" ||
+            geometry.type === "MultiPolygon"
+        ) {
+            const level = asAdminLevel(props.admin_level);
+            if (level === null) continue;
+            addBoundary(
+                result,
+                level,
+                feature as Feature<Polygon | MultiPolygon>,
+            );
+        }
+    }
+    return result;
+}
+
+/**
+ * Parses a user-supplied file (CSV or GeoJSON) into `LocalPlaceData`.
+ *
+ * - **CSV** requires `lat`/`lng` and a `category` column; each row becomes a
+ *   point under that category. Extra columns are kept as feature properties
+ *   (so tags like `iata` / `name:en` flow through).
+ * - **GeoJSON** routes `Point` features to `points[properties.category]` and
+ *   `Polygon`/`MultiPolygon` features to `boundaries[properties.admin_level]`.
+ */
+export function parseLocalPlaceDataFromText(
+    text: string,
+    contentTypeHint?: string,
+): LocalPlaceData {
+    const hint = (contentTypeHint || "").toLowerCase();
+    if (hint.includes("json")) {
+        return parseLocalPlaceDataGeoJSON(JSON.parse(text));
+    }
+    if (hint.includes("csv")) {
+        return parseLocalPlaceDataCSV(text);
+    }
+
+    try {
+        return parseLocalPlaceDataGeoJSON(JSON.parse(text));
+    } catch {
+        return parseLocalPlaceDataCSV(text);
+    }
 }
 
 export function normalizeToStationFeatures(
