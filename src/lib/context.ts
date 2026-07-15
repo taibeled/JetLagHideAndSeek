@@ -24,20 +24,20 @@ export const mapGeoLocation = persistentAtom<OpenStreetMap>(
     "mapGeoLocation",
     {
         geometry: {
-            coordinates: [36.5748441, 139.2394179],
+            coordinates: [1.2899175, 103.8519072],
             type: "Point",
         },
         type: "Feature",
         properties: {
             osm_type: "R",
-            osm_id: 382313,
-            extent: [45.7112046, 122.7141754, 20.2145811, 154.205541],
-            country: "Japan",
+            osm_id: 17140517,
+            extent: [1.4787511, 103.5655797, 1.1303611, 104.1290145],
+            country: "Singapore",
             osm_key: "place",
-            countrycode: "JP",
-            osm_value: "country",
-            name: "Japan",
-            type: "country",
+            countrycode: "SG",
+            osm_value: "city",
+            name: "Singapore",
+            type: "city",
         },
     },
     {
