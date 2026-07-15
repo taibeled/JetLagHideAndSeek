@@ -80,24 +80,31 @@ const PASTEBIN_URL_PARAM = "pb";
 
 /**
  * Enables or disables the bundled local place data. When enabled, the
- * `singapore.json` dataset shipped in `public/` is fetched, parsed, and loaded
- * into the `localPlaceData` store (used by matching/measuring questions before
- * falling back to Overpass). When disabled, the store is cleared.
+ * `singapore.min.json` dataset shipped in `public/` is fetched, parsed, and
+ * loaded into the `localPlaceData` store (used by matching/measuring questions
+ * before falling back to Overpass). When disabled, the store is cleared.
  */
 const applyLocalPlaceData = async (enabled: boolean) => {
     useLocalPlaceData.set(enabled);
 
     if (!enabled) {
         localPlaceData.set({ points: {}, boundaries: {} });
+        // Recompute the map so boundaries derived from local data revert.
+        questions.set([...questions.get()]);
         return;
     }
 
-    const response = await fetch(import.meta.env.BASE_URL + "/singapore.json");
+    const response = await fetch(
+        import.meta.env.BASE_URL + "/singapore.min.json",
+    );
     if (!response.ok) {
         throw new Error(`Failed to fetch place data: ${response.status}`);
     }
     const text = await response.text();
     localPlaceData.set(parseLocalPlaceDataFromText(text, "application/json"));
+    // Force the map/questions to recompute now that local data is available
+    // (the boundary determiners key off the loaded-data signature).
+    questions.set([...questions.get()]);
 };
 
 export const OptionDrawers = ({ className }: { className?: string }) => {
@@ -614,10 +621,10 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                     />
                                 </div>
                                 <p className="text-xs text-gray-500 text-center">
-                                    Loads <code>public/singapore.json</code> and
-                                    uses it for matching/measuring questions.
-                                    Each question falls back to Overpass when
-                                    its category has no local data.
+                                    Loads <code>public/singapore.min.json</code>{" "}
+                                    and uses it for matching/measuring questions.
+                                    Each question falls back to Overpass when its
+                                    category has no local data.
                                 </p>
                                 {$useLocalPlaceData &&
                                     (() => {

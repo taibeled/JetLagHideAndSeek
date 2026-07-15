@@ -74,26 +74,20 @@ export const MeasuringQuestionComponent = ({
                         <Select
                             trigger="OSM Zone"
                             options={{
-                                2: "OSM Zone 2 (Country)",
-                                3: "OSM Zone 3 (region in Japan)",
-                                4: "OSM Zone 4 (prefecture in Japan)",
-                                5: "OSM Zone 5",
-                                6: "OSM Zone 6",
-                                7: "OSM Zone 7",
-                                8: "OSM Zone 8",
-                                9: "OSM Zone 9",
-                                10: "OSM Zone 10",
+                                1: "Zone 1 (Region)",
+                                2: "Zone 2 (Plan Area)",
+                                3: "Zone 3 (Subzone)",
                             }}
                             value={(
-                                (data as any).cat?.adminLevel ?? 4
+                                (data as any).cat?.adminLevel ?? 2
                             ).toString()}
                             onValueChange={(value) => {
                                 if (!(data as any).cat) {
-                                    (data as any).cat = { adminLevel: 4 };
+                                    (data as any).cat = { adminLevel: 2 };
                                 }
                                 (data as any).cat.adminLevel = parseInt(
                                     value,
-                                ) as 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+                                ) as 1 | 2 | 3;
                                 (data as any).cat.zoneName = undefined;
                                 questionModified();
                             }}
@@ -317,7 +311,7 @@ export const MeasuringQuestionComponent = ({
                             return;
                         }
                         if (value === "admin-measure" && !(data as any).cat) {
-                            (data as any).cat = { adminLevel: 4 };
+                            (data as any).cat = { adminLevel: 2 };
                         }
                         data.type = value;
                         questionModified();
@@ -376,7 +370,7 @@ export const MeasuringQuestionComponent = ({
 const AdminZoneNameDisplay = ({ data }: { data: MeasuringQuestion }) => {
     useStore(triggerLocalRefresh);
 
-    const adminLevel = (data as any).cat?.adminLevel ?? 4;
+    const adminLevel = (data as any).cat?.adminLevel ?? 2;
     const zoneInfo = use(findAdminZoneInfo(data.lat, data.lng, adminLevel));
 
     // Update the zone name in the data

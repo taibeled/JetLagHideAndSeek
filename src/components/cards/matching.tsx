@@ -78,29 +78,17 @@ export const MatchingQuestionComponent = ({
                         <Select
                             trigger="OSM Zone"
                             options={{
-                                2: "OSM Zone 2 (Country)",
-                                3: "OSM Zone 3 (region in Japan)",
-                                4: "OSM Zone 4 (prefecture in Japan)",
-                                5: "OSM Zone 5",
-                                6: "OSM Zone 6",
-                                7: "OSM Zone 7",
-                                8: "OSM Zone 8",
-                                9: "OSM Zone 9",
-                                10: "OSM Zone 10",
+                                1: "Zone 1 (Region)",
+                                2: "Zone 2 (Plan Area)",
+                                3: "Zone 3 (Subzone)",
                             }}
                             value={data.cat.adminLevel.toString()}
                             onValueChange={(value) =>
                                 questionModified(
                                     (data.cat.adminLevel = parseInt(value) as
+                                        | 1
                                         | 2
-                                        | 3
-                                        | 4
-                                        | 5
-                                        | 6
-                                        | 7
-                                        | 8
-                                        | 9
-                                        | 10),
+                                        | 3),
                                 )
                             }
                             disabled={!data.drag || $isLoading}

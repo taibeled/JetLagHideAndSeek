@@ -26,9 +26,7 @@ export const LOCAL_POINT_CATEGORIES: LocalPointCategory[] = [
 ];
 
 /** Every administrative level usable for local boundary matching. */
-export const LOCAL_ADMIN_LEVELS: LocalAdminLevel[] = [
-    2, 3, 4, 5, 6, 7, 8, 9, 10,
-];
+export const LOCAL_ADMIN_LEVELS: LocalAdminLevel[] = [1, 2, 3];
 
 /**
  * Overpass-style element, as produced by `getOverpassData`. Local lookups
@@ -63,6 +61,22 @@ const isInsideZone = (
     point: Feature<Point>,
     zone: Feature<Polygon | MultiPolygon>[],
 ): boolean => zone.some((poly) => turf.booleanPointInPolygon(point, poly));
+
+/**
+ * A cheap signature of the currently loaded local data. Included in the memo
+ * keys of the boundary/place determiners so that loading or clearing the local
+ * dataset invalidates any results that were computed via Overpass beforehand.
+ */
+export const localDataSignature = (): string => {
+    const data = localPlaceData.get();
+    const points = Object.entries(data.points)
+        .map(([k, v]) => `${k}:${v?.length ?? 0}`)
+        .join(",");
+    const boundaries = Object.entries(data.boundaries)
+        .map(([k, v]) => `${k}:${v?.length ?? 0}`)
+        .join(",");
+    return `${points}|${boundaries}`;
+};
 
 /**
  * Returns the imported local points for a category, clipped to the current

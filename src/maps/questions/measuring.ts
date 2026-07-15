@@ -16,6 +16,7 @@ import {
     findAdminBoundary,
     findPlacesInZone,
     findPlacesSpecificInZone,
+    localDataSignature,
     LOCATION_FIRST_TAG,
     nearestToQuestion,
     prettifyLocation,
@@ -43,7 +44,7 @@ export const findAdminZoneInfo = _.memoize(
     async (
         lat: number,
         lng: number,
-        adminLevel: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10,
+        adminLevel: 1 | 2 | 3,
     ): Promise<AdminZoneInfo | null> => {
         const boundary = await findAdminBoundary(lat, lng, adminLevel);
 
@@ -59,7 +60,7 @@ export const findAdminZoneInfo = _.memoize(
         return { name, boundary };
     },
     (lat, lng, adminLevel) =>
-        `${lat.toFixed(6)},${lng.toFixed(6)},${adminLevel}`,
+        `${lat.toFixed(6)},${lng.toFixed(6)},${adminLevel},${localDataSignature()}`,
 );
 
 const highSpeedBase = _.memoize(
@@ -130,7 +131,7 @@ export const determineMeasuringBoundary = async (
             return [highSpeedBase(features)];
         }
         case "admin-measure": {
-            const adminLevel = (question as any).cat?.adminLevel ?? 4;
+            const adminLevel = (question as any).cat?.adminLevel ?? 2;
             const zoneInfo = await findAdminZoneInfo(
                 question.lat,
                 question.lng,
@@ -339,6 +340,7 @@ const bufferedDeterminer = _.memoize(
                 : mapGeoLocation.get(),
             geo: (question as any).geo,
             cat: (question as any).cat,
+            localData: localDataSignature(),
         }),
 );
 

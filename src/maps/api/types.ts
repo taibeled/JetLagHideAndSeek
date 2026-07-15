@@ -75,8 +75,8 @@ export type LocalPointCategory =
     | "seven11"
     | APILocations;
 
-/** OSM administrative levels usable for local boundary matching. */
-export type LocalAdminLevel = 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+/** Administrative levels usable for local boundary matching. */
+export type LocalAdminLevel = 1 | 2 | 3;
 
 /**
  * User-imported local place data. `points` holds point features per category

@@ -8,6 +8,7 @@
         "preview": "astro preview",
         "astro": "astro",
         "lint": "eslint --fix src && prettier . --write",
+        "data:minify": "node scripts/minify-place-data.mjs",
         "test": "vitest"
     },
     "dependencies": {

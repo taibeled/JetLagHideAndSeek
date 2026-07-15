@@ -18,6 +18,7 @@ import {
     polyGeoJSON,
 } from "@/lib/context";
 import type { LocalAdminLevel } from "@/maps/api";
+import { localDataSignature } from "@/maps/api";
 import {
     findAdminBoundary,
     findPlacesInZone,
@@ -283,6 +284,7 @@ export const determineMatchingBoundary = _.memoize(
             entirety: polyGeoJSON.get()
                 ? polyGeoJSON.get()
                 : mapGeoLocation.get(),
+            localData: localDataSignature(),
         }),
 );
 
