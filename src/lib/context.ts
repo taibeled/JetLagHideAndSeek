@@ -394,3 +394,12 @@ export const allowGooglePlusCodes = persistentAtom<boolean>(
         decode: JSON.parse,
     },
 );
+
+export const overpassHost = persistentAtom<string>(
+    "overpassHost",
+    "https://overpass-api.de/api/interpreter",
+);
+export const overpassCustomHost = persistentAtom<string>(
+    "overpassCustomHost",
+    "",
+);

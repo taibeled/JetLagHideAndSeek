@@ -151,6 +151,7 @@ A great deal of appreciation goes out to these individuals who have helped to cr
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://rso.pt"><img src="https://avatars.githubusercontent.com/u/56204853?v=4?s=100" width="100px;" alt="Rafael Oliveira"/><br /><sub><b>Rafael Oliveira</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=RafDevX" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/matejdro"><img src="https://avatars.githubusercontent.com/u/507922?v=4?s=100" width="100px;" alt="Matej Drobnič"/><br /><sub><b>Matej Drobnič</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=matejdro" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.youtube.com/@LeagueOfPoro"><img src="https://avatars.githubusercontent.com/u/95635582?v=4?s=100" width="100px;" alt="League of Poro"/><br /><sub><b>League of Poro</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=LeagueOfPoro" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

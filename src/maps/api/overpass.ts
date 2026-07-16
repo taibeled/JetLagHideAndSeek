@@ -7,16 +7,14 @@ import { toast } from "react-toastify";
 import {
     additionalMapGeoLocations,
     mapGeoLocation,
+    overpassCustomHost,
+    overpassHost,
     polyGeoJSON,
 } from "@/lib/context";
 import { safeUnion } from "@/maps/geo-utils";
 
 import { cacheFetch, determineCache } from "./cache";
-import {
-    LOCATION_FIRST_TAG,
-    OVERPASS_API,
-    OVERPASS_API_FALLBACK,
-} from "./constants";
+import { LOCATION_FIRST_TAG, OVERPASS_HOSTS } from "./constants";
 import type {
     EncompassingTentacleQuestionSchema,
     HomeGameMatchingQuestions,
@@ -31,28 +29,40 @@ export const getOverpassData = async (
     cacheType: CacheType = CacheType.CACHE,
 ) => {
     const encodedQuery = encodeURIComponent(query);
-    const primaryUrl = `${OVERPASS_API}?data=${encodedQuery}`;
+    const allHostUrls = Object.values(OVERPASS_HOSTS);
+    const selectedHost = overpassHost.get();
+    const customUrl = overpassCustomHost.get();
+
+    const primaryBaseUrl =
+        selectedHost === "custom"
+            ? customUrl || allHostUrls[0]
+            : selectedHost || allHostUrls[0];
+    const fallbackBaseUrls = allHostUrls.filter((h) => h !== primaryBaseUrl);
+
+    const primaryUrl = `${primaryBaseUrl}?data=${encodedQuery}`;
     let response = await cacheFetch(primaryUrl, loadingText, cacheType);
 
     if (!response.ok) {
-        // Try the fallback, but store the result under the primary URL key so future requests are served from cache without needing to fail-over again.
-        try {
-            const fallbackResponse = await cacheFetch(
-                `${OVERPASS_API_FALLBACK}?data=${encodedQuery}`,
-                loadingText,
-                cacheType,
-            );
-            if (fallbackResponse.ok) {
-                const cache = await determineCache(cacheType);
-                await cache.put(primaryUrl, fallbackResponse.clone());
+        for (const fallbackBase of fallbackBaseUrls) {
+            try {
+                const fallbackResponse = await cacheFetch(
+                    `${fallbackBase}?data=${encodedQuery}`,
+                    loadingText,
+                    cacheType,
+                );
+                if (fallbackResponse.ok) {
+                    const cache = await determineCache(cacheType);
+                    await cache.put(primaryUrl, fallbackResponse.clone());
+                    response = fallbackResponse;
+                    break;
+                }
+            } catch {
+                toast.error(
+                    `Could not load data from Overpass: ${response.status} ${response.statusText}`,
+                    { toastId: "overpass-error" },
+                );
+                return { elements: [] };
             }
-            response = fallbackResponse;
-        } catch {
-            toast.error(
-                `Could not load data from Overpass: ${response.status} ${response.statusText}`,
-                { toastId: "overpass-error" },
-            );
-            return { elements: [] };
         }
     }
 
