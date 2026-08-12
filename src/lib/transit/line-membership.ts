@@ -35,6 +35,15 @@ const lineRefMatchesTransitRoute = (
     lineRefMatchesTokenString(normalizedRef, route.longName) ||
     lineRefMatchesTokenString(normalizedRef, route.gtfsRouteId);
 
+/** Feeds that look like a subway system (NYCT and friends). */
+const isSubwayFeed = (s: { id: string; name: string }) => {
+    const id = s.id.toLowerCase();
+    const name = s.name.toLowerCase();
+    return (
+        id.includes("subway") || name.includes("subway") || id.includes("nyct")
+    );
+};
+
 export async function getGtfsStationNamesForLineRef(
     lineRefRaw: string,
 ): Promise<Set<string>> {
@@ -46,17 +55,7 @@ export async function getGtfsStationNamesForLineRef(
 
     const pending = (async () => {
         const systems = await listSystems();
-        let systemIds = systems
-            .filter((s) => {
-                const id = s.id.toLowerCase();
-                const name = s.name.toLowerCase();
-                return (
-                    id.includes("subway") ||
-                    name.includes("subway") ||
-                    id.includes("nyct")
-                );
-            })
-            .map((s) => s.id);
+        let systemIds = systems.filter(isSubwayFeed).map((s) => s.id);
         if (systemIds.length === 0) {
             systemIds = systems.map((s) => s.id);
         }
@@ -115,14 +114,6 @@ export async function getGtfsStationNamesForLineRef(
     lineMembershipCache.set(normalizedRef, pending);
     return pending;
 }
-
-const isSubwayFeed = (s: { id: string; name: string }) => {
-    const id = s.id.toLowerCase();
-    const name = s.name.toLowerCase();
-    return (
-        id.includes("subway") || name.includes("subway") || id.includes("nyct")
-    );
-};
 
 /**
  * When Overpass returns no route refs (timeouts, sparse tagging), still offer

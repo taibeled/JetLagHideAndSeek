@@ -168,6 +168,22 @@ export const PlacePicker = ({
     });
     const _placeSeen: Record<string, number> = {};
 
+    // Toggling a territory in or out invalidates the drawn map and every
+    // answer derived from it.
+    const setPlaceInPlay = (
+        location: { added: boolean },
+        added: boolean,
+    ) => {
+        if ($isLoading) return;
+
+        location.added = added;
+
+        additionalMapGeoLocations.set([...$additionalMapGeoLocations]);
+        mapGeoJSON.set(null);
+        polyGeoJSON.set(null);
+        questions.set([...questions.get()]);
+    };
+
     return (
         <Popover open={useTutorialStep(open, [3])} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
@@ -243,20 +259,9 @@ export const PlacePicker = ({
                                                 $isLoading &&
                                                     "text-muted-foreground cursor-not-allowed",
                                             )}
-                                            onClick={() => {
-                                                if ($isLoading) return;
-
-                                                location.added = false;
-
-                                                additionalMapGeoLocations.set([
-                                                    ...$additionalMapGeoLocations,
-                                                ]);
-                                                mapGeoJSON.set(null);
-                                                polyGeoJSON.set(null);
-                                                questions.set([
-                                                    ...questions.get(),
-                                                ]);
-                                            }}
+                                            onClick={() =>
+                                                setPlaceInPlay(location, false)
+                                            }
                                         />
                                     ) : (
                                         <LucideMinusSquare
@@ -265,20 +270,9 @@ export const PlacePicker = ({
                                                 $isLoading &&
                                                     "text-muted-foreground cursor-not-allowed",
                                             )}
-                                            onClick={() => {
-                                                if ($isLoading) return;
-
-                                                location.added = true;
-
-                                                additionalMapGeoLocations.set([
-                                                    ...$additionalMapGeoLocations,
-                                                ]);
-                                                mapGeoJSON.set(null);
-                                                polyGeoJSON.set(null);
-                                                questions.set([
-                                                    ...questions.get(),
-                                                ]);
-                                            }}
+                                            onClick={() =>
+                                                setPlaceInPlay(location, true)
+                                            }
                                         />
                                     ))}
                                 <LucideX

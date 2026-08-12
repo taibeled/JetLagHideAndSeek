@@ -456,9 +456,7 @@ export const Map = ({ className }: { className?: string }) => {
                         Polygon | MultiPolygon
                     >;
                     const masked = turf.mask(unioned as any) as
-                        | Feature<Polygon | MultiPolygon>
-                        | null
-                        | undefined;
+                        Feature<Polygon | MultiPolygon> | null | undefined;
                     if (masked?.geometry) maskedTerritory = masked;
                 } catch {
                     /* fall through */
@@ -793,7 +791,8 @@ export const Map = ({ className }: { className?: string }) => {
 
     useEffect(() => {
         if (!map) return;
-        if (!$followMe) {
+
+        const stopFollowingMe = () => {
             if (followMeMarkerRef.current) {
                 map.removeLayer(followMeMarkerRef.current);
                 followMeMarkerRef.current = null;
@@ -802,6 +801,10 @@ export const Map = ({ className }: { className?: string }) => {
                 navigator.geolocation.clearWatch(geoWatchIdRef.current);
                 geoWatchIdRef.current = null;
             }
+        };
+
+        if (!$followMe) {
+            stopFollowingMe();
             return;
         }
 
@@ -829,16 +832,7 @@ export const Map = ({ className }: { className?: string }) => {
             },
             { enableHighAccuracy: true, maximumAge: 10000, timeout: 20000 },
         );
-        return () => {
-            if (followMeMarkerRef.current) {
-                map.removeLayer(followMeMarkerRef.current);
-                followMeMarkerRef.current = null;
-            }
-            if (geoWatchIdRef.current !== null) {
-                navigator.geolocation.clearWatch(geoWatchIdRef.current);
-                geoWatchIdRef.current = null;
-            }
-        };
+        return stopFollowingMe;
         // `followMeMarkerRef` and `geoWatchIdRef` are refs, not values;
         // including them in deps would be a hook-rules false positive.
     }, [$followMe, map]);

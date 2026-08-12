@@ -39,6 +39,31 @@ import type {
     Question,
 } from "@/maps/schema";
 
+/** The drawn layers, or null when the feature group is not mounted yet. */
+const drawnLayers = (featureGroup: any): any[] | null =>
+    featureGroup?._layers ? Object.values(featureGroup._layers) : null;
+
+/** Drops the layers that are re-rendered from question data instead. */
+const removeLayersExcept = (
+    featureGroup: any,
+    keep: (options: any) => boolean,
+) => {
+    if (!featureGroup) return;
+
+    Object.values(featureGroup._layers).forEach((layer: any) => {
+        if (!keep(layer.options)) {
+            featureGroup.removeLayer(layer);
+        }
+    });
+};
+
+/** Leaflet sometimes hands back the same point twice. */
+const uniqueByCoordinates = (features: any[]) =>
+    uniqBy(
+        features as CustomTentacleQuestion["places"],
+        (x) => x.geometry.coordinates.join(","),
+    );
+
 const swapCoordinates = (geojson: any) => {
     return JSON.parse(JSON.stringify(geojson), (_key, value) => {
         if (
@@ -53,10 +78,32 @@ const swapCoordinates = (geojson: any) => {
     });
 };
 
-const TentacleMarker = ({
+/**
+ * Red outline for the shapes mirroring a question's saved geometry. `isSpecial`
+ * is forwarded into the Leaflet layer options so onChange can tell these
+ * re-rendered layers apart from freshly drawn ones.
+ */
+const outlinedShape = (feature: any) => ({
+    positions: swapCoordinates(feature.geometry.coordinates),
+    isSpecial: true,
+    stroke: true,
+    pathOptions: { color: "red" },
+    fill: false,
+});
+
+/**
+ * Marker whose dialog edits the point's coordinates in place. Tentacle points
+ * also carry an editable name; matching and measuring points do not.
+ */
+const EditablePointMarker = ({
     point,
+    editableName = false,
 }: {
-    point: CustomTentacleQuestion["places"][number];
+    point:
+        | CustomTentacleQuestion["places"][number]
+        | CustomMatchingQuestion["geo"][number]
+        | CustomMeasuringQuestion["geo"]["features"][number];
+    editableName?: boolean;
 }) => {
     const $autoSave = useStore(autoSave);
     const [open, setOpen] = useState(false);
@@ -64,12 +111,13 @@ const TentacleMarker = ({
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <Marker
-                // @ts-expect-error This is passed to options, so it is not typed
-                properties={point.properties}
                 position={[
                     point.geometry.coordinates[1],
                     point.geometry.coordinates[0],
                 ]}
+                // @ts-expect-error These are passed to options, so they are not typed
+                properties={editableName ? point.properties : undefined}
+                isDialog={editableName ? undefined : true}
                 eventHandlers={{
                     click: () => {
                         setOpen(true);
@@ -78,130 +126,16 @@ const TentacleMarker = ({
             />
             <DialogContent>
                 <div className="flex flex-col gap-2">
-                    <Input
-                        className="text-center text-2xl! font-bold font-poppins mt-3"
-                        value={point.properties?.name}
-                        onChange={(e) => {
-                            point.properties.name = e.target.value;
-                            questionModified();
-                        }}
-                    />
-                    <SidebarMenu>
-                        <LatitudeLongitude
-                            latitude={point.geometry.coordinates[1]}
-                            longitude={point.geometry.coordinates[0]}
-                            inlineEdit
-                            onChange={(lat, lng) => {
-                                if (lat) {
-                                    point.geometry.coordinates[1] = lat;
-                                }
-                                if (lng) {
-                                    point.geometry.coordinates[0] = lng;
-                                }
-
+                    {editableName && (
+                        <Input
+                            className="text-center text-2xl! font-bold font-poppins mt-3"
+                            value={point.properties?.name}
+                            onChange={(e) => {
+                                point.properties.name = e.target.value;
                                 questionModified();
                             }}
                         />
-                        {!$autoSave && (
-                            <SidebarMenuItem>
-                                <SidebarMenuButton
-                                    className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-shadow duration-500 mt-2"
-                                    onClick={save}
-                                >
-                                    Save
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        )}
-                    </SidebarMenu>
-                </div>
-            </DialogContent>
-        </Dialog>
-    );
-};
-
-const MatchingPointMarker = ({
-    point,
-}: {
-    point: CustomMatchingQuestion["geo"][number];
-}) => {
-    const $autoSave = useStore(autoSave);
-    const [open, setOpen] = useState(false);
-
-    return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <Marker
-                position={[
-                    point.geometry.coordinates[1],
-                    point.geometry.coordinates[0],
-                ]}
-                // @ts-expect-error This is passed to options, so it is not typed
-                isDialog={true}
-                eventHandlers={{
-                    click: () => {
-                        setOpen(true);
-                    },
-                }}
-            />
-            <DialogContent>
-                <div className="flex flex-col gap-2">
-                    <SidebarMenu>
-                        <LatitudeLongitude
-                            latitude={point.geometry.coordinates[1]}
-                            longitude={point.geometry.coordinates[0]}
-                            inlineEdit
-                            onChange={(lat, lng) => {
-                                if (lat) {
-                                    point.geometry.coordinates[1] = lat;
-                                }
-                                if (lng) {
-                                    point.geometry.coordinates[0] = lng;
-                                }
-
-                                questionModified();
-                            }}
-                        />
-                        {!$autoSave && (
-                            <SidebarMenuItem>
-                                <SidebarMenuButton
-                                    className="bg-blue-600 p-2 rounded-md font-semibold font-poppins transition-shadow duration-500 mt-2"
-                                    onClick={save}
-                                >
-                                    Save
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        )}
-                    </SidebarMenu>
-                </div>
-            </DialogContent>
-        </Dialog>
-    );
-};
-
-const MeasuringPointMarker = ({
-    point,
-}: {
-    point: CustomMeasuringQuestion["geo"]["features"][number];
-}) => {
-    const $autoSave = useStore(autoSave);
-    const [open, setOpen] = useState(false);
-
-    return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <Marker
-                position={[
-                    point.geometry.coordinates[1],
-                    point.geometry.coordinates[0],
-                ]}
-                // @ts-expect-error This is passed to options, so it is not typed
-                isDialog={true}
-                eventHandlers={{
-                    click: () => {
-                        setOpen(true);
-                    },
-                }}
-            />
-            <DialogContent>
-                <div className="flex flex-col gap-2">
+                    )}
                     <SidebarMenu>
                         <LatitudeLongitude
                             latitude={point.geometry.coordinates[1]}
@@ -262,15 +196,14 @@ export const PolygonDraw = () => {
     }
 
     const onChange = () => {
-        if (drawingQuestionKey.get() === -1) {
-            if (!featureRef.current?._layers) return;
+        const layers = drawnLayers(featureRef.current);
+        if (!layers) return;
 
-            const layers = featureRef.current._layers;
-            const geoJSONs = Object.values(layers).map((layer: any) =>
-                layer.toGeoJSON(),
-            );
+        const drawnFeatures = () => layers.map((layer: any) => layer.toGeoJSON());
+
+        if (drawingQuestionKey.get() === -1) {
             const geoJSON = turf.featureCollection(
-                geoJSONs,
+                drawnFeatures(),
             ) as FeatureCollection<GeoJSONPolygon | MultiPolygon>;
 
             mapGeoJSON.set(geoJSON);
@@ -281,10 +214,7 @@ export const PolygonDraw = () => {
             question?.id === "tentacles" &&
             question.data.locationType === "custom"
         ) {
-            if (!featureRef.current?._layers) return;
-
-            const layers = featureRef.current._layers;
-            const geoJSONs = Object.values(layers).map((layer: any) => {
+            const geoJSONs = layers.map((layer: any) => {
                 const geoJSON = layer.toGeoJSON();
                 geoJSON.properties = layer.options.properties;
 
@@ -296,91 +226,37 @@ export const PolygonDraw = () => {
 
                 return geoJSON;
             });
-            const geoJSON = turf.featureCollection(geoJSONs);
 
-            question.data.places = uniqBy(
-                geoJSON.features as CustomTentacleQuestion["places"],
-                (x) => x.geometry.coordinates.join(","),
-            ); // Sometimes keys are duplicated
-            if (featureRef.current) {
-                Object.values(featureRef.current._layers).map((layer: any) => {
-                    if (!layer.options.properties) {
-                        featureRef.current.removeLayer(layer);
-                    }
-                });
-            }
+            question.data.places = uniqueByCoordinates(geoJSONs);
+            removeLayersExcept(featureRef.current, (o) => !!o.properties);
             questionModified();
         } else if (
             question?.id === "matching" &&
             question.data.type === "custom-zone"
         ) {
-            if (!featureRef.current?._layers) return;
-
-            const layers = featureRef.current._layers;
-            const geoJSONs = Object.values(layers).map((layer: any) =>
-                layer.toGeoJSON(),
-            );
-            const geoJSON = turf.combine(turf.featureCollection(geoJSONs))
-                .features[0];
-
-            question.data.geo = geoJSON;
-            if (featureRef.current) {
-                Object.values(featureRef.current._layers).map((layer: any) => {
-                    if (!layer.options.isSpecial) {
-                        featureRef.current.removeLayer(layer);
-                    }
-                });
-            }
+            question.data.geo = turf.combine(
+                turf.featureCollection(drawnFeatures()),
+            ).features[0];
+            removeLayersExcept(featureRef.current, (o) => !!o.isSpecial);
             questionModified();
         } else if (
             question?.id === "matching" &&
             question.data.type === "custom-points"
         ) {
-            if (!featureRef.current?._layers) return;
-
-            const layers = featureRef.current._layers;
-            const geoJSONs = Object.values(layers).map((layer: any) =>
-                layer.toGeoJSON(),
-            );
-            const geoJSON = turf.featureCollection(geoJSONs);
-
-            question.data.geo = uniqBy(
-                geoJSON.features as CustomTentacleQuestion["places"],
-                (x) => x.geometry.coordinates.join(","),
-            ); // Sometimes keys are duplicated
-            if (featureRef.current) {
-                Object.values(featureRef.current._layers).map((layer: any) => {
-                    if (!layer.options.isDialog) {
-                        featureRef.current.removeLayer(layer);
-                    }
-                });
-            }
+            question.data.geo = uniqueByCoordinates(drawnFeatures());
+            removeLayersExcept(featureRef.current, (o) => !!o.isDialog);
             questionModified();
         } else if (
             question?.id === "measuring" &&
             question.data.type === "custom-measure"
         ) {
-            if (!featureRef.current?._layers) return;
-
-            const layers = featureRef.current._layers;
-            const geoJSONs = Object.values(layers).map((layer: any) =>
-                layer.toGeoJSON(),
-            );
-            const geoJSON = turf.featureCollection(geoJSONs);
-
             question.data.geo = turf.featureCollection(
-                uniqBy(
-                    geoJSON.features as CustomTentacleQuestion["places"],
-                    (x) => x.geometry.coordinates.join(","),
-                ),
-            ); // Sometimes keys are duplicated
-            if (featureRef.current) {
-                Object.values(featureRef.current._layers).map((layer: any) => {
-                    if (!layer.options.isSpecial && !layer.options.isDialog) {
-                        featureRef.current.removeLayer(layer);
-                    }
-                });
-            }
+                uniqueByCoordinates(drawnFeatures()),
+            );
+            removeLayersExcept(
+                featureRef.current,
+                (o) => !!o.isSpecial || !!o.isDialog,
+            );
             questionModified();
         }
     };
@@ -397,16 +273,17 @@ export const PolygonDraw = () => {
                 question.id === "tentacles" &&
                 question.data.locationType === "custom" &&
                 question.data.places.map((x) => (
-                    <TentacleMarker
+                    <EditablePointMarker
                         key={x.geometry.coordinates.join(",")}
                         point={x}
+                        editableName
                     />
                 ))}
             {question &&
                 question.id === "matching" &&
                 question.data.type === "custom-points" &&
                 question.data.geo.map((x: any) => (
-                    <MatchingPointMarker
+                    <EditablePointMarker
                         key={x.geometry.coordinates.join(",")}
                         point={x}
                     />
@@ -414,51 +291,24 @@ export const PolygonDraw = () => {
             {question &&
                 question.id === "measuring" &&
                 question.data.type === "custom-measure" &&
-                turf
-                    .flatten(question.data.geo)
-                    .features.filter((x: any) => turf.getType(x) === "Point")
-                    .map((x: any) => (
-                        <MeasuringPointMarker
-                            key={x.geometry.coordinates.join(",")}
-                            point={x}
-                        />
-                    ))}
-            {question &&
-                question.id === "measuring" &&
-                question.data.type === "custom-measure" &&
-                turf
-                    .flatten(question.data.geo)
-                    .features.filter((x: any) => turf.getType(x) === "Polygon")
-                    .map((x: any) => (
-                        <Polygon
-                            key={x.geometry.coordinates.join(",")}
-                            positions={swapCoordinates(x.geometry.coordinates)}
-                            // @ts-expect-error This is passed to options, so it is not typed
-                            isSpecial={true}
-                            stroke
-                            pathOptions={{ color: "red" }}
-                            fill={false}
-                        />
-                    ))}
-            {question &&
-                question.id === "measuring" &&
-                question.data.type === "custom-measure" &&
-                turf
-                    .flatten(question.data.geo)
-                    .features.filter(
-                        (x: any) => turf.getType(x) === "LineString",
-                    )
-                    .map((x: any) => (
-                        <Polyline
-                            key={x.geometry.coordinates.join(",")}
-                            positions={swapCoordinates(x.geometry.coordinates)}
-                            // @ts-expect-error This is passed to options, so it is not typed
-                            isSpecial={true}
-                            stroke
-                            pathOptions={{ color: "red" }}
-                            fill={false}
-                        />
-                    ))}
+                turf.flatten(question.data.geo).features.map((x: any) => {
+                    const key = x.geometry.coordinates.join(",");
+
+                    switch (turf.getType(x)) {
+                        case "Point":
+                            return <EditablePointMarker key={key} point={x} />;
+                        case "Polygon":
+                            return (
+                                <Polygon key={key} {...outlinedShape(x)} />
+                            );
+                        case "LineString":
+                            return (
+                                <Polyline key={key} {...outlinedShape(x)} />
+                            );
+                        default:
+                            return null;
+                    }
+                })}
             {question &&
                 question.id === "matching" &&
                 question.data.type === "custom-zone" &&
@@ -467,15 +317,7 @@ export const PolygonDraw = () => {
                     ? turf.flatten(question.data.geo)
                     : turf.flatten(turf.featureCollection([question.data.geo]))
                 ).features.map((x: any) => (
-                    <Polygon
-                        key={JSON.stringify(x)}
-                        positions={swapCoordinates(x.geometry.coordinates)}
-                        // @ts-expect-error This is passed to options, so it is not typed
-                        isSpecial={true}
-                        stroke
-                        pathOptions={{ color: "red" }}
-                        fill={false}
-                    />
+                    <Polygon key={JSON.stringify(x)} {...outlinedShape(x)} />
                 ))}
             <EditControl
                 position="bottomleft"

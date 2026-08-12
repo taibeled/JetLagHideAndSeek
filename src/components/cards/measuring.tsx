@@ -1,13 +1,21 @@
 import { useStore } from "@nanostores/react";
-import { Label } from "@radix-ui/react-label";
 import * as React from "react";
 
 import { QuestionCard } from "@/components/cards/base";
-import CustomInitDialog from "@/components/CustomInitDialog";
+import {
+    applyLatLng,
+    CustomInitChoiceDialog,
+    DrawingEnableNotice,
+    groupedTypeOptions,
+    HidingZoneClickNotice,
+    type QuestionCardComponentProps,
+    questionCardControls,
+    ResultRow,
+    ungroupedTypeOptions,
+    useQuestionLabel,
+} from "@/components/cards/shared";
 import { FacilityOsmPlayToggles } from "@/components/FacilityOsmPlayToggles";
 import { LatitudeLongitude } from "@/components/LatLngPicker";
-import PresetsDialog from "@/components/PresetsDialog";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Select } from "@/components/ui/select";
 import {
     MENU_ITEM_CLASSNAME,
@@ -17,20 +25,14 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
     customInitPreference,
     displayHidingZones,
-    drawingQuestionKey,
     hiderMode,
     isLoading,
     questionModified,
-    questions,
-    triggerLocalRefresh,
-} from "@/lib/context";
-import { cn } from "@/lib/utils";
+    triggerLocalRefresh,} from "@/lib/context";
 import { determineMeasuringBoundary } from "@/maps/questions/measuring";
 import {
-    determineUnionizedStrings,
     type MeasuringQuestion,
     measuringQuestionSchema,
-    NO_GROUP,
 } from "@/maps/schema";
 
 export const MeasuringQuestionComponent = ({
@@ -38,29 +40,38 @@ export const MeasuringQuestionComponent = ({
     questionKey,
     sub,
     className,
-}: {
-    data: MeasuringQuestion;
-    questionKey: number;
-    sub?: string;
-    className?: string;
-}) => {
+}: QuestionCardComponentProps<MeasuringQuestion>) => {
     useStore(triggerLocalRefresh);
     const $hiderMode = useStore(hiderMode);
-    const $questions = useStore(questions);
     const $displayHidingZones = useStore(displayHidingZones);
-    const $drawingQuestionKey = useStore(drawingQuestionKey);
     const $isLoading = useStore(isLoading);
     const $customInitPref = useStore(customInitPreference);
     const [customDialogOpen, setCustomDialogOpen] = React.useState(false);
-    const label = `Measuring
-    ${
-        $questions
-            .filter((q) => q.id === "measuring")
-            .map((q) => q.key)
-            .indexOf(questionKey) + 1
-    }`;
+    const label = useQuestionLabel("measuring", questionKey);
 
     let questionSpecific = <></>;
+
+    const blankCustomGeo = () => {
+        if (!(data as any).geo) {
+            (data as any).geo = {
+                type: "FeatureCollection",
+                features: [],
+            };
+        } else {
+            (data as any).geo.features = [];
+        }
+    };
+
+    const prefillCustomGeo = async () => {
+        const boundary = await determineMeasuringBoundary(data);
+        if (!(data as any).geo) {
+            (data as any).geo = {
+                type: "FeatureCollection",
+                features: [],
+            };
+        }
+        (data as any).geo.features = boundary ? boundary : [];
+    };
 
     switch (data.type) {
         case "pick-type":
@@ -109,40 +120,18 @@ export const MeasuringQuestionComponent = ({
         case "golf_course":
         case "consulate":
         case "park":
-            questionSpecific = (
-                <span className="px-2 text-center text-orange-500">
-                    This question will only influence the map when you click on
-                    a hiding zone in the hiding zone sidebar.
-                </span>
-            );
+            questionSpecific = <HidingZoneClickNotice />;
             break;
         case "custom-measure":
             if (data.drag) {
                 questionSpecific = (
-                    <>
-                        <p className="px-2 mb-1 text-center text-orange-500">
-                            To modify the measuring question, enable it:
-                            <Checkbox
-                                className="mx-1 my-1"
-                                checked={$drawingQuestionKey === questionKey}
-                                onCheckedChange={(checked) => {
-                                    if (checked) {
-                                        drawingQuestionKey.set(questionKey);
-                                    } else {
-                                        drawingQuestionKey.set(-1);
-                                    }
-                                }}
-                                disabled={!data.drag || $isLoading}
-                            />
-                            and use the buttons at the bottom left of the map.
-                        </p>
-                        <div className="flex justify-center mb-2">
-                            <PresetsDialog
-                                data={data}
-                                presetTypeHint={data.type}
-                            />
-                        </div>
-                    </>
+                    <DrawingEnableNotice
+                        subject="the measuring question"
+                        questionKey={questionKey}
+                        data={data}
+                        presetTypeHint={data.type}
+                        disabled={!data.drag || $isLoading}
+                    />
                 );
             }
             break;
@@ -154,40 +143,17 @@ export const MeasuringQuestionComponent = ({
             label={label}
             sub={sub}
             className={className}
-            collapsed={data.collapsed}
-            setCollapsed={(collapsed) => {
-                data.collapsed = collapsed; // Doesn't trigger a re-render so no need for questionModified
-            }}
-            locked={!data.drag}
-            setLocked={(locked) => questionModified((data.drag = !locked))}
-            hidden={data.hidden}
-            setHidden={(hidden) => questionModified((data.hidden = hidden))}
+            {...questionCardControls(data)}
         >
-            <CustomInitDialog
+            <CustomInitChoiceDialog
                 open={customDialogOpen}
                 onOpenChange={setCustomDialogOpen}
-                onBlank={async () => {
-                    if (!(data as any).geo) {
-                        (data as any).geo = {
-                            type: "FeatureCollection",
-                            features: [],
-                        };
+                onChoice={async (choice) => {
+                    if (choice === "blank") {
+                        blankCustomGeo();
                     } else {
-                        (data as any).geo.features = [];
+                        await prefillCustomGeo();
                     }
-                    data.type = "custom-measure";
-                    questionModified();
-                    setCustomDialogOpen(false);
-                }}
-                onPrefill={async () => {
-                    const boundary = await determineMeasuringBoundary(data);
-                    if (!(data as any).geo) {
-                        (data as any).geo = {
-                            type: "FeatureCollection",
-                            features: [],
-                        };
-                    }
-                    (data as any).geo.features = boundary ? boundary : [];
                     data.type = "custom-measure";
                     questionModified();
                     setCustomDialogOpen(false);
@@ -196,50 +162,15 @@ export const MeasuringQuestionComponent = ({
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
                     trigger="Measuring Type"
-                    options={Object.fromEntries(
-                        measuringQuestionSchema.options
-                            .filter((x) => x.description === NO_GROUP)
-                            .flatMap((x) =>
-                                determineUnionizedStrings(x.shape.type),
-                            )
-                            .map((x) => [x.value, x.description]),
+                    options={ungroupedTypeOptions(
+                        measuringQuestionSchema.options,
+                        "type",
                     )}
-                    groups={measuringQuestionSchema.options
-                        .filter((x) => x.description !== NO_GROUP)
-                        .map((x) => [
-                            x.description,
-                            Object.fromEntries(
-                                determineUnionizedStrings(x.shape.type).map(
-                                    (x) => [x.value, x.description],
-                                ),
-                            ),
-                        ])
-                        .reduce(
-                            (acc, [key, value]) => {
-                                const values = {
-                                    disabled: !$displayHidingZones,
-                                    options: value,
-                                };
-
-                                if (acc[key]) {
-                                    acc[key].options = {
-                                        ...acc[key].options,
-                                        ...value,
-                                    };
-                                } else {
-                                    acc[key] = values;
-                                }
-
-                                return acc;
-                            },
-                            {} as Record<
-                                string,
-                                {
-                                    disabled: boolean;
-                                    options: Record<string, string>;
-                                }
-                            >,
-                        )}
+                    groups={groupedTypeOptions(
+                        measuringQuestionSchema.options,
+                        "type",
+                        { disabled: !$displayHidingZones },
+                    )}
                     value={data.type}
                     onValueChange={async (value) => {
                         if (value === "custom-measure") {
@@ -248,30 +179,10 @@ export const MeasuringQuestionComponent = ({
                                 return;
                             }
                             if ($customInitPref === "blank") {
-                                if (!(data as any).geo) {
-                                    (data as any).geo = {
-                                        type: "FeatureCollection",
-                                        features: [],
-                                    };
-                                } else {
-                                    (data as any).geo.features = [];
-                                }
+                                blankCustomGeo();
                             } else if ($customInitPref === "prefill") {
-                                const boundary =
-                                    await determineMeasuringBoundary(data);
-                                if (!(data as any).geo) {
-                                    (data as any).geo = {
-                                        type: "FeatureCollection",
-                                        features: [],
-                                    };
-                                }
-                                (data as any).geo.features = boundary
-                                    ? boundary
-                                    : [];
+                                await prefillCustomGeo();
                             }
-                            data.type = value;
-                            questionModified();
-                            return;
                         }
                         data.type = value;
                         questionModified();
@@ -284,27 +195,11 @@ export const MeasuringQuestionComponent = ({
                 latitude={data.lat}
                 longitude={data.lng}
                 colorName={data.color}
-                onChange={(lat, lng) => {
-                    if (lat !== null) {
-                        data.lat = lat;
-                    }
-                    if (lng !== null) {
-                        data.lng = lng;
-                    }
-                    questionModified();
-                }}
+                onChange={applyLatLng(data)}
                 disabled={!data.drag || $isLoading}
             />
             {data.type !== "pick-type" && (
-                <div className="flex gap-2 items-center p-2">
-                    <Label
-                        className={cn(
-                            "font-semibold text-lg",
-                            $isLoading && "text-muted-foreground",
-                        )}
-                    >
-                        Result
-                    </Label>
+                <ResultRow>
                     <ToggleGroup
                         className="grow"
                         type="single"
@@ -323,7 +218,7 @@ export const MeasuringQuestionComponent = ({
                             Hider Closer
                         </ToggleGroupItem>
                     </ToggleGroup>
-                </div>
+                </ResultRow>
             )}
         </QuestionCard>
     );

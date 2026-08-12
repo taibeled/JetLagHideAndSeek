@@ -5,13 +5,7 @@ import { Fragment } from "react/jsx-runtime";
 import { Marker } from "react-leaflet";
 
 import { LatitudeLongitude } from "@/components/LatLngPicker";
-import {
-    MatchingQuestionComponent,
-    MeasuringQuestionComponent,
-    RadiusQuestionComponent,
-    TentacleQuestionComponent,
-    ThermometerQuestionComponent,
-} from "@/components/QuestionCards";
+import { QuestionCardFor } from "@/components/QuestionCards";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { SidebarMenu } from "@/components/ui/sidebar-l";
@@ -79,6 +73,23 @@ const ColoredMarker = ({
     const $autoSave = useStore(autoSave);
     const [open, setOpen] = useState(false);
 
+    // The starting-location and hider markers edit a store instead of a
+    // question, and are otherwise identical.
+    const storeMarker =
+        questionKey === -2 && $startingLocation !== false
+            ? {
+                  label: "Starting Location",
+                  location: $startingLocation,
+                  set: startingLocation.set.bind(startingLocation),
+              }
+            : questionKey === -1 && $hiderMode !== false
+              ? {
+                    label: "Hider Location",
+                    location: $hiderMode,
+                    set: hiderMode.set.bind(hiderMode),
+                }
+              : null;
+
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <Marker
@@ -103,122 +114,44 @@ const ColoredMarker = ({
                 }}
             />
             <DialogContent className="bg-[hsl(var(--sidebar-background))]! text-white!">
-                {questionKey === -2 && $startingLocation !== false && (
+                {storeMarker && (
                     <>
                         <h2 className="text-center text-2xl font-bold font-poppins">
                             {sub}
                         </h2>
                         <SidebarMenu>
                             <LatitudeLongitude
-                                latitude={$startingLocation.latitude}
-                                longitude={$startingLocation.longitude}
+                                latitude={storeMarker.location.latitude}
+                                longitude={storeMarker.location.longitude}
                                 inlineEdit
                                 onChange={(latitude, longitude) => {
-                                    startingLocation.set({
+                                    storeMarker.set({
                                         latitude:
                                             latitude ??
-                                            $startingLocation.latitude,
+                                            storeMarker.location.latitude,
                                         longitude:
                                             longitude ??
-                                            $startingLocation.longitude,
+                                            storeMarker.location.longitude,
                                     });
                                 }}
-                                label="Starting Location"
-                            />
-                        </SidebarMenu>
-                    </>
-                )}
-                {questionKey === -1 && $hiderMode !== false && (
-                    <>
-                        <h2 className="text-center text-2xl font-bold font-poppins">
-                            {sub}
-                        </h2>
-                        <SidebarMenu>
-                            <LatitudeLongitude
-                                latitude={$hiderMode.latitude}
-                                longitude={$hiderMode.longitude}
-                                inlineEdit
-                                onChange={(latitude, longitude) => {
-                                    hiderMode.set({
-                                        latitude:
-                                            latitude ?? $hiderMode.latitude,
-                                        longitude:
-                                            longitude ?? $hiderMode.longitude,
-                                    });
-                                }}
-                                label="Hider Location"
+                                label={storeMarker.label}
                             />
                         </SidebarMenu>
                     </>
                 )}
                 {$questions
                     .filter((q) => q.key === questionKey)
-                    .map((q) => {
-                        switch (q.id) {
-                            case "radius":
-                                return (
-                                    <RadiusQuestionComponent
-                                        key={q.key}
-                                        data={q.data}
-                                        questionKey={q.key}
-                                        sub={sub}
-                                    />
-                                );
-                            case "tentacles":
-                                return (
-                                    <TentacleQuestionComponent
-                                        key={q.key}
-                                        data={q.data}
-                                        questionKey={q.key}
-                                        sub={sub}
-                                    />
-                                );
-                            case "thermometer":
-                                return (
-                                    <ThermometerQuestionComponent
-                                        key={q.key}
-                                        data={q.data}
-                                        questionKey={q.key}
-                                        sub={sub}
-                                    />
-                                );
-                            case "matching":
-                                return (
-                                    <MatchingQuestionComponent
-                                        key={q.key}
-                                        data={q.data}
-                                        questionKey={q.key}
-                                        sub={sub}
-                                    />
-                                );
-                            case "measuring":
-                                return (
-                                    <MeasuringQuestionComponent
-                                        key={q.key}
-                                        data={q.data}
-                                        questionKey={q.key}
-                                        sub={sub}
-                                    />
-                                );
-                            default:
-                                return null;
-                        }
-                    })}
-                {questionKey === -2 && (
-                    <Button
+                    .map((q) => (
+                        <QuestionCardFor key={q.key} question={q} sub={sub} />
+                    ))}
+                {(questionKey === -1 || questionKey === -2) && (
+                    <Button // The starting-location or hider-mode marker
                         onClick={() => {
-                            startingLocation.set(false);
-                        }}
-                        variant="destructive"
-                        className="font-semibold font-poppins"
-                    >
-                        Disable
-                    </Button>
-                )}
-                {questionKey === -1 && (
-                    <Button // If it's the hider mode marker
-                        onClick={() => {
-                            hiderMode.set(false);
+                            if (questionKey === -2) {
+                                startingLocation.set(false);
+                            } else {
+                                hiderMode.set(false);
+                            }
                         }}
                         variant="destructive"
                         className="font-semibold font-poppins"

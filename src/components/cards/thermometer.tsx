@@ -2,6 +2,12 @@ import { useStore } from "@nanostores/react";
 import { distance, point } from "@turf/turf";
 
 import { QuestionCard } from "@/components/cards/base";
+import {
+    type QuestionCardComponentProps,
+    questionCardControls,
+    ResultRow,
+    useQuestionLabel,
+} from "@/components/cards/shared";
 import { LatitudeLongitude } from "@/components/LatLngPicker";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
@@ -10,12 +16,11 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar-l";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { defaultUnit } from "@/lib/context";
 import {
+    defaultUnit,
     hiderMode,
     isLoading,
     questionModified,
-    questions,
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
@@ -32,27 +37,15 @@ export const ThermometerQuestionComponent = ({
     questionKey,
     sub,
     className,
-}: {
-    data: ThermometerQuestion;
-    questionKey: number;
-    sub?: string;
-    className?: string;
-}) => {
+}: QuestionCardComponentProps<ThermometerQuestion>) => {
     useStore(triggerLocalRefresh);
     const $hiderMode = useStore(hiderMode);
-    const $questions = useStore(questions);
     const $isLoading = useStore(isLoading);
 
     const $defaultUnit = useStore(defaultUnit);
     const DISTANCE_UNIT = $defaultUnit ?? "miles";
 
-    const label = `Thermometer
-    ${
-        $questions
-            .filter((q) => q.id === "thermometer")
-            .map((q) => q.key)
-            .indexOf(questionKey) + 1
-    }`;
+    const label = useQuestionLabel("thermometer", questionKey);
 
     const hasCoords =
         data.latA !== null &&
@@ -81,14 +74,7 @@ export const ThermometerQuestionComponent = ({
             label={label}
             sub={sub}
             className={className}
-            collapsed={data.collapsed}
-            setCollapsed={(collapsed) => {
-                data.collapsed = collapsed;
-            }}
-            locked={!data.drag}
-            setLocked={(locked) => questionModified((data.drag = !locked))}
-            hidden={data.hidden}
-            setHidden={(hidden) => questionModified((data.hidden = hidden))}
+            {...questionCardControls(data)}
         >
             <LatitudeLongitude
                 latitude={data.latA}
@@ -176,15 +162,7 @@ export const ThermometerQuestionComponent = ({
                 </div>
             )}
 
-            <div className="flex gap-2 items-center p-2">
-                <Label
-                    className={cn(
-                        "font-semibold text-lg",
-                        $isLoading && "text-muted-foreground",
-                    )}
-                >
-                    Result
-                </Label>
+            <ResultRow>
                 <ToggleGroup
                     className="grow"
                     type="single"
@@ -199,7 +177,7 @@ export const ThermometerQuestionComponent = ({
                     </ToggleGroupItem>
                     <ToggleGroupItem value="warmer">Warmer</ToggleGroupItem>
                 </ToggleGroup>
-            </div>
+            </ResultRow>
         </QuestionCard>
     );
 };

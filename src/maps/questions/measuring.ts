@@ -16,7 +16,6 @@ import {
     hiderMode,
     mapGeoJSON,
     mapGeoLocation,
-    playableTerritoryUnion,
     polyGeoJSON,
     trainStations,
 } from "@/lib/context";
@@ -24,10 +23,8 @@ import {
     fetchCoastlinesForMeasuring,
     findPlacesInZone,
     findPlacesSpecificInZone,
-    nearestToQuestion,
     OVERPASS_MAJOR_CITY_FILTER,
     overpassAirportIataFilter,
-    prettifyLocation,
     QuestionSpecificLocation,
 } from "@/maps/api";
 import osmtogeojson from "@/maps/api/osm-to-geojson";
@@ -35,22 +32,37 @@ import {
     arcBufferToPoint,
     connectToSeparateLines,
     groupObjects,
-    holedMask,
     modifyMapData,
 } from "@/maps/geo-utils";
 import {
-    fetchFullFacilityElements,
+    normalizedOsmRefs,
+    playableTerritoryDigest,
+} from "@/maps/questions/cache-key";
+import {
     filterFacilityPointsByDisabledOsmRefs,
+    fullFacilityPoints,
     nycHospitalPoints,
     osmElementsToFacilityPoints,
-    validateFullFacilityFetch,
 } from "@/maps/questions/facility-full";
+import {
+    hiderInsideEliminatedArea,
+    nearestForSeekerAndHider,
+} from "@/maps/questions/hider-flip";
 import type {
-    APILocations,
     HomeGameMeasuringQuestions,
     MeasuringQuestion,
     MeasuringQuestionWithFacilityOsmRefs,
 } from "@/maps/schema";
+import { HOME_GAME_FACILITY_TYPES } from "@/maps/schema";
+
+/**
+ * Facility questions measure against every point at once, so the points are
+ * merged into one multi-point feature (or an empty one when nothing is left).
+ */
+const combinedPointsOrEmpty = (points: Feature<Point>[] | null) =>
+    !points || points.length === 0
+        ? [turf.multiPolygon([])]
+        : [turf.combine(turf.featureCollection(points)).features[0]];
 
 const highSpeedBase = memoize(
     (features: Feature[]) => {
@@ -460,16 +472,13 @@ export const determineMeasuringBoundary = async (
                 OVERPASS_MAJOR_CITY_FILTER,
                 "Finding cities...",
             );
-            const pts = osmElementsToFacilityPoints(cityData.elements ?? []);
-            const filtered = filterFacilityPointsByDisabledOsmRefs(
-                pts,
-                (question as MeasuringQuestionWithFacilityOsmRefs)
-                    .disabledFacilityOsmRefs,
+            return combinedPointsOrEmpty(
+                filterFacilityPointsByDisabledOsmRefs(
+                    osmElementsToFacilityPoints(cityData.elements ?? []),
+                    (question as MeasuringQuestionWithFacilityOsmRefs)
+                        .disabledFacilityOsmRefs,
+                ),
             );
-            if (filtered.length === 0) {
-                return [turf.multiPolygon([])];
-            }
-            return [turf.combine(turf.featureCollection(filtered)).features[0]];
         }
         case "aquarium-full":
         case "zoo-full":
@@ -482,38 +491,24 @@ export const determineMeasuringBoundary = async (
         case "golf_course-full":
         case "consulate-full":
         case "park-full": {
-            const location = question.type.split("-full")[0] as APILocations;
-
-            const { elements, remark } = await fetchFullFacilityElements(
-                location,
-                `Finding ${prettifyLocation(location, true).toLowerCase()}...`,
+            return combinedPointsOrEmpty(
+                await fullFacilityPoints(
+                    question.type,
+                    (question as MeasuringQuestionWithFacilityOsmRefs)
+                        .disabledFacilityOsmRefs,
+                ),
             );
-            if (!validateFullFacilityFetch(elements, remark, location)) {
-                return [turf.multiPolygon([])];
-            }
-            const pts = osmElementsToFacilityPoints(elements);
-            const filtered = filterFacilityPointsByDisabledOsmRefs(
-                pts,
-                (question as MeasuringQuestionWithFacilityOsmRefs)
-                    .disabledFacilityOsmRefs,
-            );
-            if (filtered.length === 0) {
-                return [turf.multiPolygon([])];
-            }
-            return [turf.combine(turf.featureCollection(filtered)).features[0]];
         }
         case "hospital-nyc-full": {
             // Curated NYC hospital list (not an Overpass *-full query, so it
             // can't share the block above). Matches the matching-side path,
             // which also resolves this type via nycHospitalPoints.
-            const pts = nycHospitalPoints(
-                (question as MeasuringQuestionWithFacilityOsmRefs)
-                    .disabledFacilityOsmRefs,
+            return combinedPointsOrEmpty(
+                nycHospitalPoints(
+                    (question as MeasuringQuestionWithFacilityOsmRefs)
+                        .disabledFacilityOsmRefs,
+                ),
             );
-            if (pts.length === 0) {
-                return [turf.multiPolygon([])];
-            }
-            return [turf.combine(turf.featureCollection(pts)).features[0]];
         }
         case "custom-measure":
             return turf.combine(
@@ -551,25 +546,16 @@ const bufferedDeterminer = memoize(
         );
     },
     (question) => {
-        const ptu = playableTerritoryUnion.get();
-        const playableDigest =
-            ptu?.geometry != null
-                ? turf
-                      .bbox(ptu as Feature<Polygon | MultiPolygon>)
-                      .map((x: number) => x.toFixed(4))
-                      .join(",")
-                : undefined;
-        const mRefs = (question as MeasuringQuestionWithFacilityOsmRefs)
-            .disabledFacilityOsmRefs;
+        const playableDigest = playableTerritoryDigest();
         const facilityOsmExtras =
             question.type === "city" ||
             (typeof question.type === "string" &&
                 question.type.endsWith("-full"))
                 ? {
-                      disabledFacilityOsmRefs: [...(mRefs ?? [])]
-                          .map((s) => s.trim().toLowerCase())
-                          .filter(Boolean)
-                          .sort(),
+                      disabledFacilityOsmRefs: normalizedOsmRefs(
+                          (question as MeasuringQuestionWithFacilityOsmRefs)
+                              .disabledFacilityOsmRefs,
+                      ),
                   }
                 : {};
         return JSON.stringify({
@@ -609,36 +595,15 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
         return question;
     }
 
-    if (
-        [
-            "aquarium",
-            "zoo",
-            "theme_park",
-            "peak",
-            "museum",
-            "hospital",
-            "cinema",
-            "library",
-            "golf_course",
-            "consulate",
-            "park",
-        ].includes(question.type)
-    ) {
-        const questionNearest = await nearestToQuestion(
+    if (HOME_GAME_FACILITY_TYPES.includes(question.type)) {
+        const { seekerNearest, hiderNearest } = await nearestForSeekerAndHider(
             question as HomeGameMeasuringQuestions,
+            $hiderMode,
+            { hiderCloser: true },
         );
-        const hiderNearest = await nearestToQuestion({
-            lat: $hiderMode.latitude,
-            lng: $hiderMode.longitude,
-            hiderCloser: true,
-            type: (question as HomeGameMeasuringQuestions).type,
-            drag: false,
-            color: "black",
-            collapsed: false,
-        });
 
         question.hiderCloser =
-            questionNearest.properties.distanceToPoint >
+            seekerNearest.properties.distanceToPoint >
             hiderNearest.properties.distanceToPoint;
 
         return question;
@@ -700,29 +665,11 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
     const $mapGeoJSON = mapGeoJSON.get();
     if ($mapGeoJSON === null) return question;
 
-    // eslint-disable-next-line no-useless-assignment
-    let feature = null;
-
-    try {
-        feature = holedMask((await adjustPerMeasuring(question, $mapGeoJSON))!);
-    } catch {
-        try {
-            const maskedMap = holedMask($mapGeoJSON);
-            if (!maskedMap) return question;
-            feature = await adjustPerMeasuring(question, {
-                type: "FeatureCollection",
-                features: [maskedMap],
-            });
-        } catch {
-            return question;
-        }
-    }
-
-    if (feature === null || feature === undefined) return question;
-
-    const hiderPoint = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
-
-    if (turf.booleanPointInPolygon(hiderPoint, feature)) {
+    if (
+        await hiderInsideEliminatedArea($mapGeoJSON, $hiderMode, (mapData) =>
+            adjustPerMeasuring(question, mapData),
+        )
+    ) {
         question.hiderCloser = !question.hiderCloser;
     }
 

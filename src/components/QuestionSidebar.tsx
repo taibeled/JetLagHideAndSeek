@@ -2,13 +2,7 @@ import { useStore } from "@nanostores/react";
 import { SidebarCloseIcon } from "lucide-react";
 
 import { AddQuestionDialog } from "@/components/AddQuestionDialog";
-import {
-    MatchingQuestionComponent,
-    MeasuringQuestionComponent,
-    RadiusQuestionComponent,
-    TentacleQuestionComponent,
-    ThermometerQuestionComponent,
-} from "@/components/QuestionCards";
+import { QuestionCardFor } from "@/components/QuestionCards";
 import { SubwayStartDialog } from "@/components/SubwayStartDialog";
 import {
     Sidebar,
@@ -49,52 +43,9 @@ export const QuestionSidebar = () => {
                 />
             </div>
             <SidebarContent>
-                {$questions.map((question) => {
-                    switch (question.id) {
-                        case "radius":
-                            return (
-                                <RadiusQuestionComponent
-                                    data={question.data}
-                                    key={question.key}
-                                    questionKey={question.key}
-                                />
-                            );
-                        case "thermometer":
-                            return (
-                                <ThermometerQuestionComponent
-                                    data={question.data}
-                                    key={question.key}
-                                    questionKey={question.key}
-                                />
-                            );
-                        case "tentacles":
-                            return (
-                                <TentacleQuestionComponent
-                                    data={question.data}
-                                    key={question.key}
-                                    questionKey={question.key}
-                                />
-                            );
-                        case "matching":
-                            return (
-                                <MatchingQuestionComponent
-                                    data={question.data}
-                                    key={question.key}
-                                    questionKey={question.key}
-                                />
-                            );
-                        case "measuring":
-                            return (
-                                <MeasuringQuestionComponent
-                                    data={question.data}
-                                    key={question.key}
-                                    questionKey={question.key}
-                                />
-                            );
-                        default:
-                            return null;
-                    }
-                })}
+                {$questions.map((question) => (
+                    <QuestionCardFor key={question.key} question={question} />
+                ))}
             </SidebarContent>
             <SidebarGroup>
                 <SidebarGroupContent>

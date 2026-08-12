@@ -79,7 +79,7 @@ export function filterFacilityPointsByDisabledOsmRefs(
     });
 }
 
-export async function fetchFullFacilityElements(
+async function fetchFullFacilityElements(
     location: APILocations,
     loadingText: string,
 ): Promise<{ elements: any[]; remark?: string }> {
@@ -97,7 +97,7 @@ export async function fetchFullFacilityElements(
     return { elements: data.elements ?? [], remark: data.remark };
 }
 
-export function validateFullFacilityFetch(
+function validateFullFacilityFetch(
     elements: any[],
     remark: string | undefined,
     location: APILocations,
@@ -122,6 +122,48 @@ export function supportsOrdinaryFacilityOsmPicks(type: string): boolean {
     return type === "major-city" || type === "city" || type.endsWith("-full");
 }
 
+/**
+ * Whether a question type has point data that can seed a custom-points
+ * question (airports plus every facility list).
+ */
+export function supportsPointPrefill(type: string): boolean {
+    return type === "airport" || supportsOrdinaryFacilityOsmPicks(type);
+}
+
+/**
+ * Points for a `*-full` question type: fetch from Overpass, validate the
+ * response, convert to points and drop the refs the host took out of play.
+ * Returns null when the fetch was rejected, so callers can decide what an
+ * unusable answer means for their question type.
+ */
+async function fullFacilityPointsUnfiltered(
+    type: string,
+): Promise<Feature<Point>[] | null> {
+    const location = type.split("-full")[0] as APILocations;
+
+    const { elements, remark } = await fetchFullFacilityElements(
+        location,
+        `Finding ${prettifyLocation(location, true).toLowerCase()}...`,
+    );
+    if (!validateFullFacilityFetch(elements, remark, location)) {
+        return null;
+    }
+
+    return osmElementsToFacilityPoints(elements);
+}
+
+export async function fullFacilityPoints(
+    type: string,
+    disabledFacilityOsmRefs?: string[],
+): Promise<Feature<Point>[] | null> {
+    const points = await fullFacilityPointsUnfiltered(type);
+
+    return (
+        points &&
+        filterFacilityPointsByDisabledOsmRefs(points, disabledFacilityOsmRefs)
+    );
+}
+
 /** Unfiltered OSM facility points for UI lists (major-city / city and *-full). */
 export async function listOrdinaryFacilityVoronoiCandidates(q: {
     type: string;
@@ -143,13 +185,7 @@ export async function listOrdinaryFacilityVoronoiCandidates(q: {
         return osmElementsToFacilityPoints(data.elements ?? []);
     }
     if (q.type.endsWith("-full")) {
-        const location = q.type.split("-full")[0] as APILocations;
-        const { elements, remark } = await fetchFullFacilityElements(
-            location,
-            `Finding ${prettifyLocation(location, true).toLowerCase()}...`,
-        );
-        if (!validateFullFacilityFetch(elements, remark, location)) return [];
-        return osmElementsToFacilityPoints(elements);
+        return (await fullFacilityPointsUnfiltered(q.type)) ?? [];
     }
     return [];
 }

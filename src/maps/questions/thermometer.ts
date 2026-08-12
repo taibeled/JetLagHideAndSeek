@@ -5,16 +5,25 @@ import { safeUnion } from "@/maps/geo-utils";
 import { geoSpatialVoronoi } from "@/maps/geo-utils/voronoi";
 import type { ThermometerQuestion } from "@/maps/schema";
 
+/**
+ * Two-cell Voronoi split between the thermometer's start and end points:
+ * cell 0 is the "colder" half, cell 1 the "warmer" half.
+ */
+const thermometerVoronoi = (question: ThermometerQuestion) =>
+    geoSpatialVoronoi(
+        turf.featureCollection([
+            turf.point([question.lngA, question.latA]),
+            turf.point([question.lngB, question.latB]),
+        ]),
+    );
+
 export const adjustPerThermometer = (
     question: ThermometerQuestion,
     mapData: any,
 ) => {
     if (mapData === null) return;
 
-    const pointA = turf.point([question.lngA, question.latA]);
-    const pointB = turf.point([question.lngB, question.latB]);
-
-    const voronoi = geoSpatialVoronoi(turf.featureCollection([pointA, pointB]));
+    const voronoi = thermometerVoronoi(question);
 
     if (question.warmer) {
         return turf.intersect(
@@ -33,10 +42,7 @@ export const hiderifyThermometer = (question: ThermometerQuestion) => {
         return question;
     }
 
-    const pointA = turf.point([question.lngA, question.latA]);
-    const pointB = turf.point([question.lngB, question.latB]);
-
-    const voronoi = geoSpatialVoronoi(turf.featureCollection([pointA, pointB]));
+    const voronoi = thermometerVoronoi(question);
 
     const hiderPoint = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
     const hiderRegion = turf.booleanPointInPolygon(
@@ -56,10 +62,7 @@ export const hiderifyThermometer = (question: ThermometerQuestion) => {
 };
 
 export const thermometerPlanningPolygon = (question: ThermometerQuestion) => {
-    const pointA = turf.point([question.lngA, question.latA]);
-    const pointB = turf.point([question.lngB, question.latB]);
-
-    const voronoi = geoSpatialVoronoi(turf.featureCollection([pointA, pointB]));
+    const voronoi = thermometerVoronoi(question);
 
     return turf.featureCollection(
         voronoi.features

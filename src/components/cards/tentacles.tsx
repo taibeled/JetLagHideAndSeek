@@ -3,29 +3,30 @@ import * as turf from "@turf/turf";
 import { Suspense, use } from "react";
 
 import { QuestionCard } from "@/components/cards/base";
+import {
+    applyLatLng,
+    DrawingEnableNotice,
+    groupedTypeOptions,
+    type QuestionCardComponentProps,
+    questionCardControls,
+    RadiusUnitRow,
+    ungroupedTypeOptions,
+    useQuestionLabel,
+} from "@/components/cards/shared";
 import { LatitudeLongitude } from "@/components/LatLngPicker";
-import PresetsDialog from "@/components/PresetsDialog";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import {
     MENU_ITEM_CLASSNAME,
     SidebarMenuItem,
 } from "@/components/ui/sidebar-l";
-import { UnitSelect } from "@/components/UnitSelect";
 import {
-    drawingQuestionKey,
     hiderMode,
     isLoading,
     questionModified,
-    questions,
-    triggerLocalRefresh,
-} from "@/lib/context";
-import { cn, mapToObj } from "@/lib/utils";
+    triggerLocalRefresh,} from "@/lib/context";
+import { mapToObj } from "@/lib/utils";
 import { findTentacleLocations } from "@/maps/api";
 import {
-    determineUnionizedStrings,
-    NO_GROUP,
     type TentacleQuestion,
     tentacleQuestionSchema,
     type TraditionalTentacleQuestion,
@@ -36,22 +37,9 @@ export const TentacleQuestionComponent = ({
     questionKey,
     sub,
     className,
-}: {
-    data: TentacleQuestion;
-    questionKey: number;
-    sub?: string;
-    className?: string;
-}) => {
-    const $questions = useStore(questions);
-    const $drawingQuestionKey = useStore(drawingQuestionKey);
+}: QuestionCardComponentProps<TentacleQuestion>) => {
     const $isLoading = useStore(isLoading);
-    const label = `Tentacles
-    ${
-        $questions
-            .filter((q) => q.id === "tentacles")
-            .map((q) => q.key)
-            .indexOf(questionKey) + 1
-    }`;
+    const label = useQuestionLabel("tentacles", questionKey);
 
     return (
         <QuestionCard
@@ -59,59 +47,19 @@ export const TentacleQuestionComponent = ({
             label={label}
             sub={sub}
             className={className}
-            collapsed={data.collapsed}
-            setCollapsed={(collapsed) => {
-                data.collapsed = collapsed; // Doesn't trigger a re-render so no need for questionModified
-            }}
-            locked={!data.drag}
-            setLocked={(locked) => questionModified((data.drag = !locked))}
-            hidden={data.hidden}
-            setHidden={(hidden) => questionModified((data.hidden = hidden))}
+            {...questionCardControls(data)}
         >
-            <SidebarMenuItem>
-                <div className={cn(MENU_ITEM_CLASSNAME, "gap-2 flex flex-row")}>
-                    <Input
-                        type="number"
-                        className="rounded-md p-2 w-16"
-                        value={data.radius}
-                        onChange={(e) =>
-                            questionModified(
-                                (data.radius = parseFloat(e.target.value)),
-                            )
-                        }
-                        disabled={!data.drag || $isLoading}
-                    />
-                    <UnitSelect
-                        unit={data.unit}
-                        onChange={(unit) =>
-                            questionModified((data.unit = unit))
-                        }
-                        disabled={!data.drag || $isLoading}
-                    />
-                </div>
-            </SidebarMenuItem>
+            <RadiusUnitRow data={data} disabled={!data.drag || $isLoading} />
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>
                 <Select
                     trigger="Location Type"
-                    options={Object.fromEntries(
-                        tentacleQuestionSchema.options
-                            .filter((x) => x.description === NO_GROUP)
-                            .flatMap((x) =>
-                                determineUnionizedStrings(x.shape.locationType),
-                            )
-                            .map((x) => [x.value, x.description]),
+                    options={ungroupedTypeOptions(
+                        tentacleQuestionSchema.options,
+                        "locationType",
                     )}
-                    groups={Object.fromEntries(
-                        tentacleQuestionSchema.options
-                            .filter((x) => x.description !== NO_GROUP)
-                            .map((x) => [
-                                x.description,
-                                Object.fromEntries(
-                                    determineUnionizedStrings(
-                                        x.shape.locationType,
-                                    ).map((x) => [x.value, x.description]),
-                                ),
-                            ]),
+                    groups={groupedTypeOptions(
+                        tentacleQuestionSchema.options,
+                        "locationType",
                     )}
                     value={data.locationType}
                     onValueChange={async (value) => {
@@ -141,44 +89,19 @@ export const TentacleQuestionComponent = ({
                 />
             </SidebarMenuItem>
             {data.locationType === "custom" && data.drag && (
-                <>
-                    <p className="px-2 mb-1 text-center text-orange-500">
-                        To modify tentacle locations, enable it:
-                        <Checkbox
-                            className="mx-1 my-1"
-                            checked={$drawingQuestionKey === questionKey}
-                            onCheckedChange={(checked) => {
-                                if (checked) {
-                                    drawingQuestionKey.set(questionKey);
-                                } else {
-                                    drawingQuestionKey.set(-1);
-                                }
-                            }}
-                            disabled={!data.drag || $isLoading}
-                        />
-                        and use the buttons at the bottom left of the map.
-                    </p>
-                    <div className="flex justify-center mb-2">
-                        <PresetsDialog
-                            data={data}
-                            presetTypeHint="custom-tentacles"
-                        />
-                    </div>
-                </>
+                <DrawingEnableNotice
+                    subject="tentacle locations"
+                    questionKey={questionKey}
+                    data={data}
+                    presetTypeHint="custom-tentacles"
+                    disabled={!data.drag || $isLoading}
+                />
             )}
             <LatitudeLongitude
                 latitude={data.lat}
                 longitude={data.lng}
                 colorName={data.color}
-                onChange={(lat, lng) => {
-                    if (lat !== null) {
-                        data.lat = lat;
-                    }
-                    if (lng !== null) {
-                        data.lng = lng;
-                    }
-                    questionModified();
-                }}
+                onChange={applyLatLng(data)}
                 disabled={!data.drag || $isLoading}
             />
             <SidebarMenuItem className={MENU_ITEM_CLASSNAME}>

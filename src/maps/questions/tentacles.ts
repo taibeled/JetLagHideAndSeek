@@ -40,6 +40,27 @@ const filterPointsWithinRadius = (
     );
 };
 
+/**
+ * Candidate tentacle locations for a question. Custom lists are clipped to the
+ * question's radius; API-backed lists already come back scoped.
+ */
+const tentaclePointsInRadius = async (question: TentacleQuestion) => {
+    const rawPoints =
+        question.locationType === "custom"
+            ? turf.featureCollection(question.places)
+            : await findTentacleLocations(question);
+
+    return question.locationType === "custom"
+        ? filterPointsWithinRadius(
+              rawPoints,
+              question.lng,
+              question.lat,
+              question.radius,
+              question.unit,
+          )
+        : rawPoints;
+};
+
 export const adjustPerTentacle = async (
     question: TentacleQuestion,
     mapData: any,
@@ -49,21 +70,7 @@ export const adjustPerTentacle = async (
         throw new Error("Must have a location");
     }
 
-    const rawPoints =
-        question.locationType === "custom"
-            ? turf.featureCollection(question.places)
-            : await findTentacleLocations(question);
-
-    const points =
-        question.locationType === "custom"
-            ? filterPointsWithinRadius(
-                  rawPoints,
-                  question.lng,
-                  question.lat,
-                  question.radius,
-                  question.unit,
-              )
-            : rawPoints;
+    const points = await tentaclePointsInRadius(question);
 
     const voronoi = geoSpatialVoronoi(points);
 
@@ -95,21 +102,7 @@ export const hiderifyTentacles = async (question: TentacleQuestion) => {
         return question;
     }
 
-    const rawPoints =
-        question.locationType === "custom"
-            ? turf.featureCollection(question.places)
-            : await findTentacleLocations(question);
-
-    const points =
-        question.locationType === "custom"
-            ? filterPointsWithinRadius(
-                  rawPoints,
-                  question.lng,
-                  question.lat,
-                  question.radius,
-                  question.unit,
-              )
-            : rawPoints;
+    const points = await tentaclePointsInRadius(question);
 
     const voronoi = geoSpatialVoronoi(points);
 
@@ -147,21 +140,7 @@ export const hiderifyTentacles = async (question: TentacleQuestion) => {
 };
 
 export const tentaclesPlanningPolygon = async (question: TentacleQuestion) => {
-    const rawPoints =
-        question.locationType === "custom"
-            ? turf.featureCollection(question.places)
-            : await findTentacleLocations(question);
-
-    const points =
-        question.locationType === "custom"
-            ? filterPointsWithinRadius(
-                  rawPoints,
-                  question.lng,
-                  question.lat,
-                  question.radius,
-                  question.unit,
-              )
-            : rawPoints;
+    const points = await tentaclePointsInRadius(question);
 
     const voronoi = geoSpatialVoronoi(points);
     const circle = await arcBuffer(

@@ -1,23 +1,21 @@
 import { useStore } from "@nanostores/react";
 
 import { QuestionCard } from "@/components/cards/base";
-import { LatitudeLongitude } from "@/components/LatLngPicker";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
-    MENU_ITEM_CLASSNAME,
-    SidebarMenuItem,
-} from "@/components/ui/sidebar-l";
+    applyLatLng,
+    type QuestionCardComponentProps,
+    questionCardControls,
+    RadiusUnitRow,
+    ResultRow,
+    useQuestionLabel,
+} from "@/components/cards/shared";
+import { LatitudeLongitude } from "@/components/LatLngPicker";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { UnitSelect } from "@/components/UnitSelect";
 import {
     hiderMode,
     isLoading,
     questionModified,
-    questions,
-    triggerLocalRefresh,
-} from "@/lib/context";
-import { cn } from "@/lib/utils";
+    triggerLocalRefresh,} from "@/lib/context";
 import type { RadiusQuestion } from "@/maps/schema";
 
 export const RadiusQuestionComponent = ({
@@ -25,23 +23,11 @@ export const RadiusQuestionComponent = ({
     questionKey,
     sub,
     className,
-}: {
-    data: RadiusQuestion;
-    questionKey: number;
-    sub?: string;
-    className?: string;
-}) => {
+}: QuestionCardComponentProps<RadiusQuestion>) => {
     useStore(triggerLocalRefresh);
     const $hiderMode = useStore(hiderMode);
-    const $questions = useStore(questions);
     const $isLoading = useStore(isLoading);
-    const label = `Radius
-    ${
-        $questions
-            .filter((q) => q.id === "radius")
-            .map((q) => q.key)
-            .indexOf(questionKey) + 1
-    }`;
+    const label = useQuestionLabel("radius", questionKey);
 
     return (
         <QuestionCard
@@ -49,61 +35,17 @@ export const RadiusQuestionComponent = ({
             label={label}
             sub={sub}
             className={className}
-            collapsed={data.collapsed}
-            setCollapsed={(collapsed) => {
-                data.collapsed = collapsed; // Doesn't trigger a re-render so no need for questionModified
-            }}
-            locked={!data.drag}
-            setLocked={(locked) => questionModified((data.drag = !locked))}
-            hidden={data.hidden}
-            setHidden={(hidden) => questionModified((data.hidden = hidden))}
+            {...questionCardControls(data)}
         >
-            <SidebarMenuItem>
-                <div className={cn(MENU_ITEM_CLASSNAME, "gap-2 flex flex-row")}>
-                    <Input
-                        type="number"
-                        className="rounded-md p-2 w-16"
-                        value={data.radius}
-                        disabled={!data.drag || $isLoading}
-                        onChange={(e) =>
-                            questionModified(
-                                (data.radius = parseFloat(e.target.value)),
-                            )
-                        }
-                    />
-                    <UnitSelect
-                        unit={data.unit}
-                        disabled={!data.drag || $isLoading}
-                        onChange={(unit) =>
-                            questionModified((data.unit = unit))
-                        }
-                    />
-                </div>
-            </SidebarMenuItem>
+            <RadiusUnitRow data={data} disabled={!data.drag || $isLoading} />
             <LatitudeLongitude
                 latitude={data.lat}
                 longitude={data.lng}
                 colorName={data.color}
-                onChange={(lat, lng) => {
-                    if (lat !== null) {
-                        data.lat = lat;
-                    }
-                    if (lng !== null) {
-                        data.lng = lng;
-                    }
-                    questionModified();
-                }}
+                onChange={applyLatLng(data)}
                 disabled={!data.drag || $isLoading}
             />
-            <div className="flex gap-2 items-center p-2">
-                <Label
-                    className={cn(
-                        "font-semibold text-lg",
-                        $isLoading && "text-muted-foreground",
-                    )}
-                >
-                    Result
-                </Label>
+            <ResultRow>
                 <ToggleGroup
                     className="grow"
                     type="single"
@@ -116,7 +58,7 @@ export const RadiusQuestionComponent = ({
                     <ToggleGroupItem value="outside">Outside</ToggleGroupItem>
                     <ToggleGroupItem value="inside">Inside</ToggleGroupItem>
                 </ToggleGroup>
-            </div>
+            </ResultRow>
         </QuestionCard>
     );
 };

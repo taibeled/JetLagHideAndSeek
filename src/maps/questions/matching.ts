@@ -14,7 +14,6 @@ import {
     hiderMode,
     mapGeoJSON,
     mapGeoLocation,
-    playableTerritoryUnion,
     polyGeoJSON,
 } from "@/lib/context";
 import { getGtfsStationNamesForLineRef } from "@/lib/transit/line-membership";
@@ -26,28 +25,33 @@ import {
     findPlacesInZone,
     findPoliticalDistrictBoundaryAtPoint,
     findZipBoundaryAtPoint,
-    nearestToQuestion,
     OVERPASS_MAJOR_CITY_FILTER,
     overpassAirportIataFilter,
-    prettifyLocation,
     trainLineNodeFinder,
 } from "@/maps/api";
 import osmtogeojson from "@/maps/api/osm-to-geojson";
-import { holedMask, modifyMapData, safeUnion } from "@/maps/geo-utils";
+import { modifyMapData, safeUnion } from "@/maps/geo-utils";
 import { geoSpatialVoronoi } from "@/maps/geo-utils";
 import {
-    fetchFullFacilityElements,
+    normalizedOsmRefs,
+    playableTerritoryDigest,
+} from "@/maps/questions/cache-key";
+import {
     filterFacilityPointsByDisabledOsmRefs,
+    fullFacilityPoints,
     nycHospitalPoints,
     osmElementsToFacilityPoints,
-    validateFullFacilityFetch,
 } from "@/maps/questions/facility-full";
+import {
+    hiderInsideEliminatedArea,
+    nearestForSeekerAndHider,
+} from "@/maps/questions/hider-flip";
 import type {
-    APILocations,
     HomeGameMatchingQuestions,
     MatchingQuestion,
     MatchingQuestionWithFacilityOsmRefs,
 } from "@/maps/schema";
+import { HOME_GAME_FACILITY_TYPES } from "@/maps/schema";
 
 export function normalizeMatchingAirportIata(s: string): string {
     return s.trim().toUpperCase();
@@ -158,20 +162,12 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
         case "golf_course-full":
         case "consulate-full":
         case "park-full": {
-            const location = question.type.split("-full")[0] as APILocations;
-
-            const { elements, remark } = await fetchFullFacilityElements(
-                location,
-                `Finding ${prettifyLocation(location, true).toLowerCase()}...`,
-            );
-            if (!validateFullFacilityFetch(elements, remark, location)) {
-                return [];
-            }
-            const pts = osmElementsToFacilityPoints(elements);
-            return filterFacilityPointsByDisabledOsmRefs(
-                pts,
-                (question as MatchingQuestionWithFacilityOsmRefs)
-                    .disabledFacilityOsmRefs,
+            return (
+                (await fullFacilityPoints(
+                    question.type,
+                    (question as MatchingQuestionWithFacilityOsmRefs)
+                        .disabledFacilityOsmRefs,
+                )) ?? []
             );
         }
     }
@@ -420,28 +416,19 @@ export const determineMatchingBoundary = memoize(
                           .sort(),
                   }
                 : {};
-        const qRefs = (question as MatchingQuestionWithFacilityOsmRefs)
-            .disabledFacilityOsmRefs;
         const facilityOsmExtras =
             question.type === "major-city" ||
             question.type === "hospital-nyc-full" ||
             (typeof question.type === "string" &&
                 question.type.endsWith("-full"))
                 ? {
-                      disabledFacilityOsmRefs: [...(qRefs ?? [])]
-                          .map((s) => s.trim().toLowerCase())
-                          .filter(Boolean)
-                          .sort(),
+                      disabledFacilityOsmRefs: normalizedOsmRefs(
+                          (question as MatchingQuestionWithFacilityOsmRefs)
+                              .disabledFacilityOsmRefs,
+                      ),
                   }
                 : {};
-        const ptu = playableTerritoryUnion.get();
-        const playableDigest =
-            ptu?.geometry != null
-                ? turf
-                      .bbox(ptu as Feature<Polygon | MultiPolygon>)
-                      .map((x: number) => x.toFixed(4))
-                      .join(",")
-                : undefined;
+        const playableDigest = playableTerritoryDigest();
         return JSON.stringify({
             type: question.type,
             lat: question.lat,
@@ -493,36 +480,15 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
         return question;
     }
 
-    if (
-        [
-            "aquarium",
-            "zoo",
-            "theme_park",
-            "peak",
-            "museum",
-            "hospital",
-            "cinema",
-            "library",
-            "golf_course",
-            "consulate",
-            "park",
-        ].includes(question.type)
-    ) {
-        const questionNearest = await nearestToQuestion(
+    if (HOME_GAME_FACILITY_TYPES.includes(question.type)) {
+        const { seekerNearest, hiderNearest } = await nearestForSeekerAndHider(
             question as HomeGameMatchingQuestions,
+            $hiderMode,
+            { same: true },
         );
-        const hiderNearest = await nearestToQuestion({
-            lat: $hiderMode.latitude,
-            lng: $hiderMode.longitude,
-            same: true,
-            type: (question as HomeGameMatchingQuestions).type,
-            drag: false,
-            color: "black",
-            collapsed: false,
-        });
 
         question.same =
-            questionNearest.properties.name === hiderNearest.properties.name;
+            seekerNearest.properties.name === hiderNearest.properties.name;
 
         return question;
     }
@@ -684,29 +650,11 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
     const $mapGeoJSON = mapGeoJSON.get();
     if ($mapGeoJSON === null) return question;
 
-    // eslint-disable-next-line no-useless-assignment
-    let feature = null;
-
-    try {
-        feature = holedMask((await adjustPerMatching(question, $mapGeoJSON))!);
-    } catch {
-        try {
-            const maskedMap = holedMask($mapGeoJSON);
-            if (!maskedMap) return question;
-            feature = await adjustPerMatching(question, {
-                type: "FeatureCollection",
-                features: [maskedMap],
-            });
-        } catch {
-            return question;
-        }
-    }
-
-    if (feature === null || feature === undefined) return question;
-
-    const hiderPoint = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
-
-    if (turf.booleanPointInPolygon(hiderPoint, feature)) {
+    if (
+        await hiderInsideEliminatedArea($mapGeoJSON, $hiderMode, (mapData) =>
+            adjustPerMatching(question, mapData),
+        )
+    ) {
         question.same = !question.same;
     }
 
