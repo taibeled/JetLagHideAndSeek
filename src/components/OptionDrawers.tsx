@@ -74,6 +74,7 @@ import { UnitSelect } from "./UnitSelect";
 const HIDING_ZONE_URL_PARAM = "hz";
 const HIDING_ZONE_COMPRESSED_URL_PARAM = "hzc";
 const PASTEBIN_URL_PARAM = "pb";
+const FETCH_URL_PARAM = "url";
 
 export const OptionDrawers = ({ className }: { className?: string }) => {
     useStore(triggerLocalRefresh);
@@ -120,6 +121,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
             HIDING_ZONE_COMPRESSED_URL_PARAM,
         );
         const pastebinId = params.get(PASTEBIN_URL_PARAM);
+        const fetchUrl = params.get(FETCH_URL_PARAM);
 
         if (hidingZoneOld !== null) {
             // Legacy base64 encoding
@@ -167,6 +169,35 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                     console.error("Failed to fetch from Pastebin:", error);
                     toast.error(
                         `Failed to load from Pastebin: ${error.message}`,
+                    );
+                });
+        } else if (fetchUrl !== null) {
+            fetch(fetchUrl)
+                .then((response) => {
+                    if (!response.ok)
+                        throw `${response.status} ${response.statusText}`;
+                    return response.text();
+                })
+                .then((data) => {
+                    try {
+                        loadHidingZone(data);
+                        // Remove url parameter after initial load
+                        window.history.replaceState(
+                            {},
+                            "",
+                            window.location.pathname,
+                        );
+                        toast.success(
+                            `Successfully loaded data from ${fetchUrl}`,
+                        );
+                    } catch (e) {
+                        toast.error(`Invalid data from ${fetchUrl}: ${e}`);
+                    }
+                })
+                .catch((error) => {
+                    console.error(`Failed to fetch from ${fetchUrl}:`, error);
+                    toast.error(
+                        `Failed to load from ${fetchUrl}: ${error.message}`,
                     );
                 });
         }
