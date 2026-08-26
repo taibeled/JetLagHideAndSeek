@@ -1,11 +1,13 @@
 import { useStore } from "@nanostores/react";
 import {
     ChevronsUpDown,
+    LucideCircleDashed,
     LucideMinusSquare,
     LucidePlusSquare,
     LucideX,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { BsCircleFill } from "react-icons/bs";
 import { toast } from "react-toastify";
 
 import {
@@ -42,6 +44,12 @@ import {
 
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "./ui/tooltip";
 
 export const PlacePicker = ({
     className = "",
@@ -143,12 +151,34 @@ export const PlacePicker = ({
                             )}
                             key={determineName(location.location)}
                         >
-                            <span className="w-[78%] text-ellipsis">
-                                {determineName(location.location)}
-                            </span>
+                            <div className="flex min-w-0 items-center gap-3">
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <span className="relative h-6 w-9 shrink-0 text-slate-700">
+                                                <BsCircleFill className="absolute size-6" />
+                                                {location.added ? (
+                                                    <BsCircleFill className="absolute left-3 size-6" />
+                                                ) : (
+                                                    <LucideCircleDashed className="absolute left-3 size-6 rounded-full bg-white" />
+                                                )}
+                                            </span>
+                                        </TooltipTrigger>
+
+                                        <TooltipContent>
+                                            {location.added
+                                                ? "Included location"
+                                                : "Excluded location"}
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+                                <span className="truncate">
+                                    {determineName(location.location)}
+                                </span>
+                            </div>
                             <div
                                 className={cn(
-                                    "flex flex-row gap-2 *:stroke-[1.5]",
+                                    "flex shrink-0 flex-row gap-2 *:stroke-[1.5]",
                                     $polyGeoJSON && "hidden",
                                 )}
                             >
