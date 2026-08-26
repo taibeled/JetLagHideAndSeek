@@ -1,6 +1,7 @@
 import * as turf from "@turf/turf";
 
 import type { StationPlace } from "@/maps/api";
+import { arcDistance } from "@/maps/geo-utils/operators";
 
 /**
  * Function to merge duplicates stations into one station, by averaging their longitude and latitude
@@ -9,7 +10,7 @@ import type { StationPlace } from "@/maps/api";
  * @param units     turf.Units unit of the radius ("miles", "kilometers" etc.)
  * @returns         Array of all merged stations
  */
-export function mergeDuplicateStation(
+export async function mergeDuplicateStation(
     places: StationPlace[],
     radius: number,
     units: turf.Units,
@@ -38,7 +39,7 @@ export function mergeDuplicateStation(
                         const station2: Location = {
                             coordinates: groupPlace.geometry.coordinates,
                         };
-                        shareZones = checkIfStationsShareZones(
+                        shareZones = await checkIfStationsShareZones(
                             station1,
                             station2,
                             radius,
@@ -121,7 +122,7 @@ export type Location = {
  * @param units    The unit for the radius ("miles","kilometers", "meters").
  * @returns        True if both stations share a zone, otherwise false.
  */
-export function checkIfStationsShareZones(
+export async function checkIfStationsShareZones(
     station1: Location,
     station2: Location,
     radius: number,
@@ -138,7 +139,7 @@ export function checkIfStationsShareZones(
     ]);
 
     // Distance of the 2 center points
-    const d = turf.distance(point1, point2, { units });
+    const d = await arcDistance(point1, point2, units);
 
     // If the distance of the 2 center points is smaller or equal of the radius, the 2 zones overlap.
     return d <= radius;

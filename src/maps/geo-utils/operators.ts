@@ -9,6 +9,7 @@ import * as turf from "@turf/turf";
 import type {
     Feature,
     FeatureCollection,
+    Geometry,
     MultiPolygon,
     Polygon,
 } from "geojson";
@@ -61,6 +62,25 @@ export const modifyMapData = (
 };
 
 const DEFAULT_BUFFER_UNIT = "miles";
+const DEFAULT_DISTANCE_UNIT = "kilometers";
+
+const toArcGISGeometry = (geometry: Feature | Geometry) =>
+    geometryJsonUtils.fromJSON(
+        geojsonToArcGIS("geometry" in geometry ? geometry.geometry : geometry),
+    ) as unionTypes.GeometryUnion;
+
+export const arcDistance = (
+    first: Feature | Geometry,
+    second: Feature | Geometry,
+    unit: units.LengthUnit & turf.Units = DEFAULT_DISTANCE_UNIT,
+) =>
+    geodeticDistanceOperator.load().then(() =>
+        geodeticDistanceOperator.execute(
+            toArcGISGeometry(first),
+            toArcGISGeometry(second),
+            { unit },
+        ),
+    );
 
 export const arcBuffer = (
     geometry: FeatureCollection,

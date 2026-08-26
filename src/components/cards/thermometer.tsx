@@ -1,5 +1,6 @@
 import { useStore } from "@nanostores/react";
-import { distance, point } from "@turf/turf";
+import { point } from "@turf/turf";
+import { useEffect, useState } from "react";
 
 import { LatitudeLongitude } from "@/components/LatLngPicker";
 import { Label } from "@/components/ui/label";
@@ -13,6 +14,7 @@ import {
     triggerLocalRefresh,
 } from "@/lib/context";
 import { cn } from "@/lib/utils";
+import { arcDistance } from "@/maps/geo-utils";
 import type { ThermometerQuestion } from "@/maps/schema";
 
 import { QuestionCard } from "./base";
@@ -49,14 +51,34 @@ export const ThermometerQuestionComponent = ({
         data.lngA !== null &&
         data.latB !== null &&
         data.lngB !== null;
+    const [distanceValue, setDistanceValue] = useState<number | null>(null);
 
-    const distanceValue = hasCoords
-        ? distance(
-              point([data.lngA!, data.latA!]),
-              point([data.lngB!, data.latB!]),
-              { units: DISTANCE_UNIT },
-          )
-        : null;
+    useEffect(() => {
+        if (!hasCoords) {
+            setDistanceValue(null);
+            return;
+        }
+
+        let cancelled = false;
+        arcDistance(
+            point([data.lngA!, data.latA!]),
+            point([data.lngB!, data.latB!]),
+            DISTANCE_UNIT,
+        ).then((distance) => {
+            if (!cancelled) setDistanceValue(distance);
+        });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [
+        data.latA,
+        data.lngA,
+        data.latB,
+        data.lngB,
+        DISTANCE_UNIT,
+        hasCoords,
+    ]);
 
     const unitLabel =
         DISTANCE_UNIT === "meters"

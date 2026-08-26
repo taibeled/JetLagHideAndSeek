@@ -23,6 +23,7 @@ import {
 } from "@/maps/api";
 import {
     arcBufferToPoint,
+    arcDistance,
     connectToSeparateLines,
     groupObjects,
     holedMask,
@@ -399,7 +400,7 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
             turf.featureCollection(stations.map((x) => x.properties)),
         );
 
-        const distance = turf.distance(location, nearestTrainStation);
+        const distance = await arcDistance(location, nearestTrainStation);
 
         const hider = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
 
@@ -408,7 +409,7 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
             turf.featureCollection(stations.map((x) => x.properties)),
         );
 
-        const hiderDistance = turf.distance(hider, hiderNearest);
+        const hiderDistance = await arcDistance(hider, hiderNearest);
 
         question.hiderCloser = hiderDistance < distance;
     }
@@ -423,16 +424,12 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
         const seeker = turf.point([question.lng, question.lat]);
         const nearest = turf.nearestPoint(seeker, points as any);
 
-        const distance = turf.distance(seeker, nearest, {
-            units: "miles",
-        });
+        const distance = await arcDistance(seeker, nearest, "miles");
 
         const hider = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
         const hiderNearest = turf.nearestPoint(hider, points as any);
 
-        const hiderDistance = turf.distance(hider, hiderNearest, {
-            units: "miles",
-        });
+        const hiderDistance = await arcDistance(hider, hiderNearest, "miles");
 
         question.hiderCloser = hiderDistance < distance;
         return question;

@@ -2,11 +2,15 @@ import * as turf from "@turf/turf";
 
 import { hiderMode } from "@/lib/context";
 import { findTentacleLocations } from "@/maps/api";
-import { arcBuffer, safeUnion } from "@/maps/geo-utils";
-import { geoSpatialVoronoi } from "@/maps/geo-utils";
+import {
+    arcBuffer,
+    arcDistance,
+    geoSpatialVoronoi,
+    safeUnion,
+} from "@/maps/geo-utils";
 import type { TentacleQuestion, Units } from "@/maps/schema";
 
-const filterPointsWithinRadius = (
+const filterPointsWithinRadius = async (
     points: any,
     centerLng: number,
     centerLat: number,
@@ -23,8 +27,8 @@ const filterPointsWithinRadius = (
     }
     const center = turf.point([centerLng, centerLat]);
 
-    return turf.featureCollection(
-        points.features.filter((feature: any) => {
+    const included = await Promise.all(
+        points.features.map(async (feature: any) => {
             const coords =
                 feature?.geometry?.coordinates ??
                 (feature?.properties?.lon && feature?.properties?.lat
@@ -33,10 +37,12 @@ const filterPointsWithinRadius = (
 
             if (!coords) return false;
 
-            const pt = turf.point(coords);
-            const dist = turf.distance(center, pt, { units: unit });
-            return dist <= radius;
+            return (await arcDistance(center, turf.point(coords), unit)) <= radius;
         }),
+    );
+
+    return turf.featureCollection(
+        points.features.filter((_: any, index: number) => included[index]),
     );
 };
 
@@ -56,7 +62,7 @@ export const adjustPerTentacle = async (
 
     const points =
         question.locationType === "custom"
-            ? filterPointsWithinRadius(
+            ? await filterPointsWithinRadius(
                   rawPoints,
                   question.lng,
                   question.lat,
@@ -102,7 +108,7 @@ export const hiderifyTentacles = async (question: TentacleQuestion) => {
 
     const points =
         question.locationType === "custom"
-            ? filterPointsWithinRadius(
+            ? await filterPointsWithinRadius(
                   rawPoints,
                   question.lng,
                   question.lat,
@@ -117,7 +123,7 @@ export const hiderifyTentacles = async (question: TentacleQuestion) => {
     const location = turf.point([question.lng, question.lat]);
 
     if (
-        turf.distance(hider, location, { units: question.unit }) >
+        (await arcDistance(hider, location, question.unit)) >
         question.radius
     ) {
         question.location = false;
@@ -154,7 +160,7 @@ export const tentaclesPlanningPolygon = async (question: TentacleQuestion) => {
 
     const points =
         question.locationType === "custom"
-            ? filterPointsWithinRadius(
+            ? await filterPointsWithinRadius(
                   rawPoints,
                   question.lng,
                   question.lat,

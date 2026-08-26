@@ -33,7 +33,7 @@ export const hiderifyQuestion = async (question: Question) => {
     if (question.data.drag) {
         switch (question.id) {
             case "radius":
-                question.data = hiderifyRadius(question.data);
+                question.data = await hiderifyRadius(question.data);
                 break;
             case "thermometer":
                 question.data = await hiderifyThermometer(question.data);

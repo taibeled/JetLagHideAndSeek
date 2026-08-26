@@ -1,6 +1,6 @@
 import { useStore } from "@nanostores/react";
 import * as turf from "@turf/turf";
-import { Suspense, use } from "react";
+import { Suspense, use, useEffect, useState } from "react";
 
 import { LatitudeLongitude } from "@/components/LatLngPicker";
 import PresetsDialog from "@/components/PresetsDialog";
@@ -22,6 +22,7 @@ import {
 } from "@/lib/context";
 import { cn, mapToObj } from "@/lib/utils";
 import { findTentacleLocations } from "@/maps/api";
+import { arcDistance } from "@/maps/geo-utils";
 import {
     determineUnionizedStrings,
     NO_GROUP,
@@ -235,35 +236,54 @@ const TentacleLocationSelector = ({
     useStore(triggerLocalRefresh);
     const $hiderMode = useStore(hiderMode);
     const locations = use(promise);
+    const [filteredFeatures, setFilteredFeatures] = useState<any[]>([]);
 
     // Filter locations to only those within the radius of the primary location
-    const filteredFeatures = (() => {
-        if (
-            data.lat === null ||
-            data.lng === null ||
-            data.radius === undefined ||
-            data.radius === null
-        ) {
-            return locations.features;
-        }
+    useEffect(() => {
+        let cancelled = false;
 
-        const center = turf.point([data.lng, data.lat]);
+        const filterLocations = async () => {
+            if (
+                data.lat === null ||
+                data.lng === null ||
+                data.radius === undefined ||
+                data.radius === null
+            ) {
+                if (!cancelled) setFilteredFeatures(locations.features);
+                return;
+            }
 
-        return locations.features.filter((feature: any) => {
-            const coords =
-                feature?.geometry?.coordinates ??
-                (feature?.properties?.lon && feature?.properties?.lat
-                    ? [feature.properties.lon, feature.properties.lat]
-                    : null);
+            const center = turf.point([data.lng, data.lat]);
+            const included = await Promise.all(
+                locations.features.map(async (feature: any) => {
+                    const coords =
+                        feature?.geometry?.coordinates ??
+                        (feature?.properties?.lon && feature?.properties?.lat
+                            ? [feature.properties.lon, feature.properties.lat]
+                            : null);
 
-            if (!coords) return false;
+                    if (!coords) return false;
 
-            const pt = turf.point(coords);
-            const dist = turf.distance(center, pt, { units: data.unit });
+                    return (
+                        (await arcDistance(center, turf.point(coords), data.unit)) <=
+                        data.radius
+                    );
+                }),
+            );
+            if (!cancelled) {
+                setFilteredFeatures(
+                    locations.features.filter(
+                        (_: any, index: number) => included[index],
+                    ),
+                );
+            }
+        };
 
-            return dist <= data.radius;
-        });
-    })();
+        filterLocations();
+        return () => {
+            cancelled = true;
+        };
+    }, [locations, data.lat, data.lng, data.radius, data.unit]);
 
     // If the currently selected location is no longer within radius, clear it.
     const _selectedLocationName = data.location

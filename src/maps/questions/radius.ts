@@ -1,7 +1,7 @@
 import * as turf from "@turf/turf";
 
 import { hiderMode } from "@/lib/context";
-import { arcBuffer, modifyMapData } from "@/maps/geo-utils";
+import { arcBuffer, arcDistance, modifyMapData } from "@/maps/geo-utils";
 import type { RadiusQuestion } from "@/maps/schema";
 
 export const adjustPerRadius = async (
@@ -20,16 +20,16 @@ export const adjustPerRadius = async (
     return modifyMapData(mapData, circle, question.within);
 };
 
-export const hiderifyRadius = (question: RadiusQuestion) => {
+export const hiderifyRadius = async (question: RadiusQuestion) => {
     const $hiderMode = hiderMode.get();
     if ($hiderMode === false) {
         return question;
     }
 
-    const distance = turf.distance(
+    const distance = await arcDistance(
         turf.point([question.lng, question.lat]),
         turf.point([$hiderMode.longitude, $hiderMode.latitude]),
-        { units: question.unit },
+        question.unit,
     );
 
     if (distance <= question.radius) {

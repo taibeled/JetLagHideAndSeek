@@ -54,6 +54,7 @@ import {
 import {
     extractStationLabel,
     extractStationName,
+    arcDistance,
     geoSpatialVoronoi,
     holedMask,
     lngLatToText,
@@ -254,7 +255,7 @@ export const ZoneSidebar = () => {
 
             // merge duplicate stations if selected
             if (mergeDuplicates) {
-                places = mergeDuplicateStation(
+                places = await mergeDuplicateStation(
                     places,
                     $hidingRadius,
                     $hidingRadiusUnits,
@@ -399,31 +400,35 @@ export const ZoneSidebar = () => {
                         points as any,
                     );
 
-                    const distance = turf.distance(
+                    const distance = await arcDistance(
                         turf.point([question.data.lng, question.data.lat]),
                         nearestPoint as any,
-                        {
-                            units: "miles",
-                        },
+                        "miles",
                     );
 
-                    circles = circles.filter((circle) => {
-                        const point = turf.point(
-                            turf.getCoord(circle.properties),
-                        );
+                    const eligibleCircles = await Promise.all(
+                        circles.map(async (circle) => {
+                            const point = turf.point(
+                                turf.getCoord(circle.properties),
+                            );
+                            const nearest = turf.nearestPoint(
+                                point,
+                                points as any,
+                            );
+                            const stationDistance = await arcDistance(
+                                point,
+                                nearest as any,
+                                "miles",
+                            );
 
-                        const nearest = turf.nearestPoint(point, points as any);
-
-                        return question.data.hiderCloser
-                            ? turf.distance(point, nearest as any, {
-                                  units: "miles",
-                              }) <
-                                  distance + $hidingRadius
-                            : turf.distance(point, nearest as any, {
-                                  units: "miles",
-                              }) >
-                                  distance - $hidingRadius;
-                    });
+                            return question.data.hiderCloser
+                                ? stationDistance < distance + $hidingRadius
+                                : stationDistance > distance - $hidingRadius;
+                        }),
+                    );
+                    circles = circles.filter(
+                        (_, index) => eligibleCircles[index],
+                    );
                 }
             }
 
@@ -1186,22 +1191,21 @@ async function selectionProcess(
                         drag: false,
                         color: "black",
                         collapsed: false,
+                        hidden: false,
                     },
                     "Finding matching locations to hiding zone...",
                 );
 
-                const distances: any[] = instances.features.map((x: any) => {
-                    return {
-                        distance: turf.distance(
+                const distances: any[] = await Promise.all(
+                    instances.features.map(async (x: any) => ({
+                        distance: await arcDistance(
                             turf.point(turf.getCoord(x)),
                             station.properties,
-                            {
-                                units: "miles",
-                            },
+                            "miles",
                         ),
                         point: x,
-                    };
-                });
+                    })),
+                );
 
                 if (distances.length === 0) {
                     radius += 30;
@@ -1300,17 +1304,19 @@ async function selectionProcess(
                 ),
             );
 
-            const distance = turf.distance(location, nearestTrainStation);
+            const distance = await arcDistance(location, nearestTrainStation);
 
+            const nearbyStations = await Promise.all(
+                stations.map(async (x) =>
+                    (await arcDistance(
+                        station.properties.geometry,
+                        x.properties.geometry,
+                    )) <
+                    distance + 1.61 * $hidingRadius,
+                ),
+            );
             const circles = stations
-                .filter(
-                    (x) =>
-                        turf.distance(
-                            station.properties.geometry,
-                            x.properties.geometry,
-                        ) <
-                        distance + 1.61 * $hidingRadius,
-                )
+                .filter((_, index) => nearbyStations[index])
                 .map((x) => turf.circle(x.properties.geometry, distance));
 
             if (question.data.hiderCloser) {
@@ -1340,16 +1346,20 @@ async function selectionProcess(
             const seeker = turf.point([question.data.lng, question.data.lat]);
             const nearest = turf.nearestPoint(seeker, points as any);
 
-            const distance = turf.distance(seeker, nearest, {
-                units: "miles",
-            });
+            const distance = await arcDistance(seeker, nearest, "miles");
 
-            const filtered = points.features.filter(
-                (x) =>
-                    turf.distance(x as any, station.properties.geometry, {
-                        units: "miles",
-                    }) <
+            const nearStation = await Promise.all(
+                points.features.map(async (x) =>
+                    (await arcDistance(
+                        x as any,
+                        station.properties.geometry,
+                        "miles",
+                    )) <
                     distance + $hidingRadius,
+                ),
+            );
+            const filtered = points.features.filter(
+                (_, index) => nearStation[index],
             );
 
             const circles = filtered.map((x) =>
