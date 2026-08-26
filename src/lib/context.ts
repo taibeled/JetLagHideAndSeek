@@ -22,21 +22,22 @@ import {
 export const mapGeoLocation = persistentAtom<OpenStreetMap>(
     "mapGeoLocation",
     {
-        geometry: {
-            coordinates: [36.5748441, 139.2394179],
-            type: "Point",
-        },
         type: "Feature",
         properties: {
             osm_type: "R",
-            osm_id: 382313,
-            extent: [45.7112046, 122.7141754, 20.2145811, 154.205541],
-            country: "Japan",
+            osm_id: 175905,
             osm_key: "place",
-            countrycode: "JP",
-            osm_value: "country",
-            name: "Japan",
-            type: "country",
+            osm_value: "city",
+            type: "city",
+            name: "New York",
+            state: "New York",
+            country: "United States",
+            countrycode: "US",
+            extent: [40.91763, -74.258843, 40.476578, -73.700233],
+        },
+        geometry: {
+            type: "Point",
+            coordinates: [40.7127281, -74.0060152],
         },
     },
     {
@@ -397,7 +398,7 @@ export const allowGooglePlusCodes = persistentAtom<boolean>(
 
 export const overpassHost = persistentAtom<string>(
     "overpassHost",
-    "https://overpass-api.de/api/interpreter",
+    "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
 );
 export const overpassCustomHost = persistentAtom<string>(
     "overpassCustomHost",
