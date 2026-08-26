@@ -153,6 +153,7 @@ A great deal of appreciation goes out to these individuals who have helped to cr
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/matejdro"><img src="https://avatars.githubusercontent.com/u/507922?v=4?s=100" width="100px;" alt="Matej Drobnič"/><br /><sub><b>Matej Drobnič</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=matejdro" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://www.youtube.com/@LeagueOfPoro"><img src="https://avatars.githubusercontent.com/u/95635582?v=4?s=100" width="100px;" alt="League of Poro"/><br /><sub><b>League of Poro</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=LeagueOfPoro" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Whitebrim"><img src="https://avatars.githubusercontent.com/u/23287829?v=4?s=100" width="100px;" alt="Whitebrim"/><br /><sub><b>Whitebrim</b></sub></a><br /><a href="https://github.com/taibeled/JetLagHideAndSeek/commits?author=Whitebrim" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/IchordeDionysos"><img src="https://avatars.githubusercontent.com/u/10195482?v=4?s=100" width="100px;" alt="Dennis Kugelmann"/><br /><sub><b>Dennis Kugelmann</b></sub></a><br /><a href="#ideas-IchordeDionysos" title="Ideas, Planning, & Feedback">🤔</a> <a href="#design-IchordeDionysos" title="Design">🎨</a></td>
     </tr>
   </tbody>
 </table>
