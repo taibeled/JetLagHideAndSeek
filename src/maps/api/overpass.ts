@@ -23,6 +23,11 @@ import type {
 } from "./types";
 import { CacheType } from "./types";
 
+type TentacleLocationQuery = Pick<
+    EncompassingTentacleQuestionSchema,
+    "lat" | "lng" | "radius" | "unit" | "locationType"
+>;
+
 export const getOverpassData = async (
     query: string,
     loadingText?: string,
@@ -104,7 +109,7 @@ export const determineGeoJSON = async (
 };
 
 export const findTentacleLocations = async (
-    question: EncompassingTentacleQuestionSchema,
+    question: TentacleLocationQuery,
     text: string = "Determining tentacle locations...",
 ) => {
     const query = `
@@ -381,11 +386,7 @@ export const nearestToQuestion = async (
                 lng: question.lng,
                 radius: radius,
                 unit: "miles",
-                location: false,
                 locationType: question.type,
-                drag: false,
-                color: "black",
-                collapsed: false,
             },
             "Finding matching locations...",
         );

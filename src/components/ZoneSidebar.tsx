@@ -1186,12 +1186,7 @@ async function selectionProcess(
                         lng: station.properties.geometry.coordinates[0],
                         radius: radius,
                         unit: "miles",
-                        location: false,
                         locationType: question.data.type,
-                        drag: false,
-                        color: "black",
-                        collapsed: false,
-                        hidden: false,
                     },
                     "Finding matching locations to hiding zone...",
                 );
