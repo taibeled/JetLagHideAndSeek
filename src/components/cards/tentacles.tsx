@@ -265,8 +265,11 @@ const TentacleLocationSelector = ({
                     if (!coords) return false;
 
                     return (
-                        (await arcDistance(center, turf.point(coords), data.unit)) <=
-                        data.radius
+                        (await arcDistance(
+                            center,
+                            turf.point(coords),
+                            data.unit,
+                        )) <= data.radius
                     );
                 }),
             );

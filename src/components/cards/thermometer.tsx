@@ -71,14 +71,7 @@ export const ThermometerQuestionComponent = ({
         return () => {
             cancelled = true;
         };
-    }, [
-        data.latA,
-        data.lngA,
-        data.latB,
-        data.lngB,
-        DISTANCE_UNIT,
-        hasCoords,
-    ]);
+    }, [data.latA, data.lngA, data.latB, data.lngB, DISTANCE_UNIT, hasCoords]);
 
     const unitLabel =
         DISTANCE_UNIT === "meters"

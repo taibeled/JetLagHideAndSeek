@@ -52,9 +52,9 @@ import {
     trainLineNodeFinder,
 } from "@/maps/api";
 import {
+    arcDistance,
     extractStationLabel,
     extractStationName,
-    arcDistance,
     geoSpatialVoronoi,
     holedMask,
     lngLatToText,
@@ -1307,12 +1307,13 @@ async function selectionProcess(
             const distance = await arcDistance(location, nearestTrainStation);
 
             const nearbyStations = await Promise.all(
-                stations.map(async (x) =>
-                    (await arcDistance(
-                        station.properties.geometry,
-                        x.properties.geometry,
-                    )) <
-                    distance + 1.61 * $hidingRadius,
+                stations.map(
+                    async (x) =>
+                        (await arcDistance(
+                            station.properties.geometry,
+                            x.properties.geometry,
+                        )) <
+                        distance + 1.61 * $hidingRadius,
                 ),
             );
             const circles = stations
@@ -1349,13 +1350,14 @@ async function selectionProcess(
             const distance = await arcDistance(seeker, nearest, "miles");
 
             const nearStation = await Promise.all(
-                points.features.map(async (x) =>
-                    (await arcDistance(
-                        x as any,
-                        station.properties.geometry,
-                        "miles",
-                    )) <
-                    distance + $hidingRadius,
+                points.features.map(
+                    async (x) =>
+                        (await arcDistance(
+                            x as any,
+                            station.properties.geometry,
+                            "miles",
+                        )) <
+                        distance + $hidingRadius,
                 ),
             );
             const filtered = points.features.filter(

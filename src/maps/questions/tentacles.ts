@@ -37,7 +37,9 @@ const filterPointsWithinRadius = async (
 
             if (!coords) return false;
 
-            return (await arcDistance(center, turf.point(coords), unit)) <= radius;
+            return (
+                (await arcDistance(center, turf.point(coords), unit)) <= radius
+            );
         }),
     );
 
@@ -122,10 +124,7 @@ export const hiderifyTentacles = async (question: TentacleQuestion) => {
     const hider = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
     const location = turf.point([question.lng, question.lat]);
 
-    if (
-        (await arcDistance(hider, location, question.unit)) >
-        question.radius
-    ) {
+    if ((await arcDistance(hider, location, question.unit)) > question.radius) {
         question.location = false;
         return question;
     }

@@ -74,13 +74,15 @@ export const arcDistance = (
     second: Feature | Geometry,
     unit: units.LengthUnit & turf.Units = DEFAULT_DISTANCE_UNIT,
 ) =>
-    geodeticDistanceOperator.load().then(() =>
-        geodeticDistanceOperator.execute(
-            toArcGISGeometry(first),
-            toArcGISGeometry(second),
-            { unit },
-        ),
-    );
+    geodeticDistanceOperator
+        .load()
+        .then(() =>
+            geodeticDistanceOperator.execute(
+                toArcGISGeometry(first),
+                toArcGISGeometry(second),
+                { unit },
+            ),
+        );
 
 export const arcBuffer = (
     geometry: FeatureCollection,
