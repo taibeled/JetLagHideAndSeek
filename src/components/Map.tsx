@@ -45,7 +45,7 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
             return (
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; Powered by Esri and Turf.js'
-                    url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+                    url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=cb1_2hdi_1_0b36dd202687c7d7c2b90861"
                     subdomains="abcd"
                     maxZoom={20} // This technically should be 6, but once the ratelimiting starts this can take over
                     minZoom={2}
@@ -57,7 +57,7 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
             return (
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; Powered by Esri and Turf.js'
-                    url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                    url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=cb1_2hdi_1_0b36dd202687c7d7c2b90861"
                     subdomains="abcd"
                     maxZoom={20} // This technically should be 6, but once the ratelimiting starts this can take over
                     minZoom={2}
@@ -106,7 +106,7 @@ const getTileLayer = (tileLayer: string, thunderforestApiKey: string) => {
     return (
         <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; &copy; <a href="https://carto.com/attributions">CARTO</a>; Powered by Esri and Turf.js'
-            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=cb1_2hdi_1_0b36dd202687c7d7c2b90861"
             subdomains="abcd"
             maxZoom={20} // This technically should be 6, but once the ratelimiting starts this can take over
             minZoom={2}

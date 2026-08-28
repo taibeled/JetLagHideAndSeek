@@ -340,7 +340,7 @@ export const isLoading = atom<boolean>(false);
 
 export const baseTileLayer = persistentAtom<
     "voyager" | "light" | "dark" | "transport" | "neighbourhood" | "osmcarto"
->("baseTileLayer", "osmcarto");
+>("baseTileLayer", "voyager");
 export const thunderforestApiKey = persistentAtom<string>(
     "thunderforestApiKey",
     "",
