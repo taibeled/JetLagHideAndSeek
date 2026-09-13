@@ -14,7 +14,7 @@ import type {
     Polygon,
 } from "geojson";
 
-import { BLANK_GEOJSON } from "@/maps/api";
+import { BLANK_GEOJSON } from "@/maps/api/constants";
 
 export { geoSpatialVoronoi } from "@/maps/geo-utils/voronoi";
 
@@ -30,6 +30,9 @@ export const holedMask = (
         | Feature<Polygon | MultiPolygon>
         | FeatureCollection<Polygon | MultiPolygon>,
 ) => {
+    if ("features" in input && input.features.length === 0)
+        return BLANK_GEOJSON.features[0] as Feature<Polygon>;
+
     return turf.difference(
         turf.featureCollection([
             BLANK_GEOJSON.features[0] as Feature<Polygon>,

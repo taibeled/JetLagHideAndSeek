@@ -7,6 +7,10 @@ import { defineConfig } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
+    vite: {
+        worker: { format: "es" },
+        resolve: { alias: { "@": new URL("./src", import.meta.url).pathname } },
+    },
     integrations: [
         react(),
         tailwind({

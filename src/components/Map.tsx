@@ -29,10 +29,12 @@ import {
     thunderforestApiKey,
     triggerLocalRefresh,
 } from "@/lib/context";
+import { withMapProgress } from "@/lib/mapProgress";
 import { cn } from "@/lib/utils";
 import { applyQuestionsToMapGeoData, holedMask } from "@/maps";
 import { hiderifyQuestion } from "@/maps";
 import { clearCache, determineMapBoundaries } from "@/maps/api";
+import { maskMap } from "@/maps/geo-utils/geometryWorker";
 
 import { DraggableMarkers } from "./DraggableMarkers";
 import { LeafletFullScreenButton } from "./LeafletFullScreenButton";
@@ -122,7 +124,6 @@ export const Map = ({ className }: { className?: string }) => {
     const $baseTileLayer = useStore(baseTileLayer);
     const $thunderforestApiKey = useStore(thunderforestApiKey);
     const $hiderMode = useStore(hiderMode);
-    const $isLoading = useStore(isLoading);
     const $followMe = useStore(followMe);
     const $permanentOverlay = useStore(permanentOverlay);
     const map = useStore(leafletMapContext);
@@ -136,10 +137,8 @@ export const Map = ({ className }: { className?: string }) => {
         [],
     );
 
-    const refreshQuestions = async (focus: boolean = false) => {
+    const calculateQuestions = async (focus: boolean = false) => {
         if (!map) return;
-
-        if ($isLoading) return;
 
         isLoading.set(true);
 
@@ -170,8 +169,22 @@ export const Map = ({ className }: { className?: string }) => {
         }
 
         if ($hiderMode !== false) {
-            for (const question of $questions) {
-                await hiderifyQuestion(question);
+            try {
+                for (const question of $questions) {
+                    if (
+                        question.id === "measuring" &&
+                        question.data.type === "motorway"
+                    )
+                        continue;
+                    await hiderifyQuestion(question);
+                }
+            } catch (error) {
+                toast.error(
+                    error instanceof Error
+                        ? error.message
+                        : "Could not determine the hider's answer.",
+                );
+                return;
             }
 
             triggerLocalRefresh.set(Math.random()); // Refresh the question sidebar with new information but not this map
@@ -184,11 +197,13 @@ export const Map = ({ className }: { className?: string }) => {
         });
 
         try {
+            const planningBounds: number[][] = [];
             mapGeoData = await applyQuestionsToMapGeoData(
                 $questions,
                 mapGeoData,
                 planningModeEnabled.get(),
                 (geoJSONObj, question) => {
+                    planningBounds.push(turf.bbox(geoJSONObj));
                     const geoJSONPlane = L.geoJSON(geoJSONObj);
                     // @ts-expect-error This is a check such that only this type of layer is removed
                     geoJSONPlane.questionKey = question.key;
@@ -196,9 +211,22 @@ export const Map = ({ className }: { className?: string }) => {
                 },
             );
 
+            const remainingBounds = planningBounds.length
+                ? [
+                      Math.min(...planningBounds.map((box) => box[0])),
+                      Math.min(...planningBounds.map((box) => box[1])),
+                      Math.max(...planningBounds.map((box) => box[2])),
+                      Math.max(...planningBounds.map((box) => box[3])),
+                  ]
+                : turf.bbox(mapGeoData!);
+            const mask =
+                typeof Worker !== "undefined" &&
+                turf.coordAll(mapGeoData!).length > 10000
+                    ? await maskMap(mapGeoData!)
+                    : holedMask(mapGeoData!);
             mapGeoData = {
                 type: "FeatureCollection",
-                features: [holedMask(mapGeoData!)!],
+                features: [mask!],
             };
 
             map.eachLayer((layer: any) => {
@@ -215,8 +243,12 @@ export const Map = ({ className }: { className?: string }) => {
 
             questionFinishedMapData.set(mapGeoData);
 
-            if (autoZoom.get() && focus) {
-                const bbox = turf.bbox(holedMask(mapGeoData) as any);
+            if (
+                autoZoom.get() &&
+                focus &&
+                remainingBounds.every(Number.isFinite)
+            ) {
+                const bbox = remainingBounds;
                 const bounds = [
                     [bbox[1], bbox[0]],
                     [bbox[3], bbox[2]],
@@ -231,13 +263,24 @@ export const Map = ({ className }: { className?: string }) => {
         } catch (error) {
             console.log(error);
 
-            isLoading.set(false);
-            if (document.querySelectorAll(".Toastify__toast").length === 0) {
-                return toast.error("No solutions found / error occurred");
+            if (
+                document.querySelectorAll(".Toastify__toast--error").length ===
+                0
+            ) {
+                return toast.error(
+                    error instanceof Error
+                        ? error.message
+                        : "Could not calculate the map.",
+                );
             }
-        } finally {
-            isLoading.set(false);
         }
+    };
+
+    const refreshQuestions = (focus = false) => {
+        if (!map || isLoading.get()) return;
+        return withMapProgress(() => calculateQuestions(focus)).finally(() =>
+            isLoading.set(false),
+        );
     };
 
     const displayMap = useMemo(

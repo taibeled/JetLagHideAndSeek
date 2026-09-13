@@ -10,6 +10,9 @@ export const OVERPASS_HOSTS = {
 } as const;
 
 export const GEOCODER_API = "https://photon.komoot.io/api/";
+// Override this URL to use another geodata server.
+export const JETLAG_GEODATA_API =
+    import.meta.env.PUBLIC_JETLAG_GEODATA_API ?? "https://jetlag-api.drori.dev";
 export const PASTEBIN_API_POST_URL =
     "https://cors-anywhere.com/https://pastebin.com/api/api_post.php";
 export const PASTEBIN_API_RAW_URL = "https://pastebin.com/raw/";

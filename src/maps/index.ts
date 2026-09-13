@@ -9,6 +9,7 @@ import {
     adjustPerMeasuring,
     hiderifyMeasuring,
     measuringPlanningPolygon,
+    prepareMotorwayQuestion,
 } from "./questions/measuring";
 import {
     adjustPerRadius,
@@ -81,29 +82,25 @@ export async function adjustMapGeoDataForQuestion(
         return mapGeoData;
     }
 
-    try {
-        switch (question?.id) {
-            case "radius":
-                return await adjustPerRadius(question.data, mapGeoData);
-            case "thermometer":
-                return await adjustPerThermometer(question.data, mapGeoData);
-            case "tentacles":
-                if (question.data.location === false) {
-                    return adjustPerRadius(
-                        { ...question.data, within: false },
-                        mapGeoData,
-                    );
-                }
-                return await adjustPerTentacle(question.data, mapGeoData);
-            case "matching":
-                return await adjustPerMatching(question.data, mapGeoData);
-            case "measuring":
-                return await adjustPerMeasuring(question.data, mapGeoData);
-            default:
-                return mapGeoData;
-        }
-    } catch {
-        return mapGeoData;
+    switch (question?.id) {
+        case "radius":
+            return await adjustPerRadius(question.data, mapGeoData);
+        case "thermometer":
+            return await adjustPerThermometer(question.data, mapGeoData);
+        case "tentacles":
+            if (question.data.location === false) {
+                return adjustPerRadius(
+                    { ...question.data, within: false },
+                    mapGeoData,
+                );
+            }
+            return await adjustPerTentacle(question.data, mapGeoData);
+        case "matching":
+            return await adjustPerMatching(question.data, mapGeoData);
+        case "measuring":
+            return await adjustPerMeasuring(question.data, mapGeoData);
+        default:
+            return mapGeoData;
     }
 }
 
@@ -117,6 +114,18 @@ export async function applyQuestionsToMapGeoData(
     ) => void,
 ): Promise<any> {
     for (const question of questions) {
+        if (
+            question.id === "measuring" &&
+            question.data.type === "motorway" &&
+            !question.data.hidden
+        ) {
+            question.data = await prepareMotorwayQuestion(
+                question.data,
+                mapGeoData,
+                question.key,
+            );
+            await hiderifyMeasuring(question.data);
+        }
         if (planningModeCallback) {
             const planningPolygon = await determinePlanningPolygon(
                 question,
@@ -131,6 +140,8 @@ export async function applyQuestionsToMapGeoData(
         }
 
         mapGeoData = await adjustMapGeoDataForQuestion(question, mapGeoData);
+
+        if (!mapGeoData) return { type: "FeatureCollection", features: [] };
 
         if (mapGeoData.type !== "FeatureCollection") {
             mapGeoData = {

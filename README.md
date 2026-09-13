@@ -162,3 +162,23 @@ A great deal of appreciation goes out to these individuals who have helped to cr
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+
+### Geodata API
+
+The API provides POI and high-speed rail data. It also adds five new questions:
+elevation, nearest body of water, landmass, motorways, and nearest street or path.
+The browser still calculates the answers. Airports continue to use Overpass
+because the API defines airports differently.
+
+New players use the API by default. Returning players keep Overpass and get a
+one-time prompt to switch.
+
+Existing POI and high-speed rail lookups fall back to Overpass if the API is
+unavailable. You can also select “Use original Overpass data?” in Options.
+
+To use another API with the same endpoints and response format, change
+`PUBLIC_JETLAG_GEODATA_API` and allow the app's origin on that server.
+
+For large areas, results are automatically limited to major motorways and
+prominent parks for those questions. Some geometry is approximate, and results
+can differ from Overpass.

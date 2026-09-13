@@ -256,6 +256,23 @@ export const deleteCustomPreset = (id: string) => {
     customPresets.set(customPresets.get().filter((p) => p.id !== id));
 };
 
+export const showTutorial = persistentAtom<boolean>("showTutorials", true, {
+    encode: JSON.stringify,
+    decode: JSON.parse,
+});
+export const dataSourcePromptDismissed = persistentAtom<boolean>(
+    "dataSourcePromptDismissed",
+    false,
+    { encode: JSON.stringify, decode: JSON.parse },
+);
+if (showTutorial.get()) dataSourcePromptDismissed.set(true);
+
+export const useLegacyDataSources = persistentAtom<boolean>(
+    "useLegacyDataSources",
+    !showTutorial.get(),
+    { encode: JSON.stringify, decode: JSON.parse },
+);
+
 export const hidingZone = computed(
     [
         questions,
@@ -271,6 +288,7 @@ export const hidingZone = computed(
         includeDefaultStations,
         customPresets,
         permanentOverlay,
+        useLegacyDataSources,
     ],
     (
         q,
@@ -286,6 +304,7 @@ export const hidingZone = computed(
         includeDefault,
         presets,
         $permanentOverlay,
+        $useLegacyDataSources,
     ) => {
         if (geo !== null) {
             return {
@@ -300,6 +319,7 @@ export const hidingZone = computed(
                 includeDefaultStations: includeDefault,
                 presets: structuredClone(presets),
                 permanentOverlay: $permanentOverlay,
+                useLegacyDataSources: $useLegacyDataSources,
             };
         } else {
             const $loc = structuredClone(loc);
@@ -317,6 +337,7 @@ export const hidingZone = computed(
                 includeDefaultStations: includeDefault,
                 presets: structuredClone(presets),
                 permanentOverlay: $permanentOverlay,
+                useLegacyDataSources: $useLegacyDataSources,
             };
         }
     },
@@ -372,10 +393,6 @@ export const alwaysUsePastebin = persistentAtom<boolean>(
     },
 );
 
-export const showTutorial = persistentAtom<boolean>("showTutorials", true, {
-    encode: JSON.stringify,
-    decode: JSON.parse,
-});
 export const tutorialStep = atom<number>(0);
 
 export const customInitPreference = persistentAtom<"ask" | "blank" | "prefill">(

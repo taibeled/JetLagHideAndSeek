@@ -1,5 +1,5 @@
 import * as turf from "@turf/turf";
-import type { Feature, MultiPolygon } from "geojson";
+import type { Feature, FeatureCollection, MultiPolygon, Point } from "geojson";
 import _ from "lodash";
 import osmtogeojson from "osmtogeojson";
 import { toast } from "react-toastify";
@@ -9,10 +9,17 @@ import {
     mapGeoJSON,
     mapGeoLocation,
     polyGeoJSON,
+    questionModified,
+    questions,
     trainStations,
+    useLegacyDataSources,
 } from "@/lib/context";
+import { memoizeAsync } from "@/lib/memoizeAsync";
 import {
     fetchCoastline,
+    fetchElevationRegions,
+    fetchGeodataFeatures,
+    fetchMotorways,
     findAdminBoundary,
     findPlacesInZone,
     findPlacesSpecificInZone,
@@ -20,6 +27,7 @@ import {
     nearestToQuestion,
     prettifyLocation,
     QuestionSpecificLocation,
+    tryFetchGeodataFeatures,
 } from "@/maps/api";
 import {
     arcBufferToPoint,
@@ -29,11 +37,45 @@ import {
     holedMask,
     modifyMapData,
 } from "@/maps/geo-utils";
+import {
+    bufferPois,
+    clipMap,
+    filterPois,
+} from "@/maps/geo-utils/geometryWorker";
 import type {
     APILocations,
     HomeGameMeasuringQuestions,
     MeasuringQuestion,
 } from "@/maps/schema";
+import { motorwaySnapshotSchema } from "@/maps/schema";
+
+export const prepareMotorwayQuestion = async (
+    question: MeasuringQuestion,
+    remainingArea: FeatureCollection,
+    questionKey?: number,
+) => {
+    if (question.type !== "motorway" || question.motorway) return question;
+    const bbox = turf.bbox(remainingArea);
+    const data = await fetchMotorways(bbox);
+    if (data.complete !== true || !data.features?.length)
+        throw new Error("No motorway selection is available for this area.");
+    const current =
+        questionKey === undefined
+            ? undefined
+            : questions
+                  .get()
+                  .find(
+                      (entry) =>
+                          entry.key === questionKey && entry.id === "measuring",
+                  );
+    const currentData = current?.id === "measuring" ? current.data : question;
+    question.motorway =
+        currentData.motorway ?? motorwaySnapshotSchema.parse({ ...data, bbox });
+    currentData.motorway = question.motorway;
+    // Save the roads themselves so dataset updates cannot change an answer.
+    questionModified();
+    return currentData;
+};
 
 export interface AdminZoneInfo {
     name: string;
@@ -119,6 +161,16 @@ export const determineMeasuringBoundary = async (
 
     switch (question.type) {
         case "highspeed-measure-shinkansen": {
+            if (!useLegacyDataSources.get()) {
+                const rail = await tryFetchGeodataFeatures(
+                    question.type,
+                    bBox,
+                    question.lat,
+                    question.lng,
+                );
+                if (rail?.features.length) return rail.features;
+            }
+
             const features = osmtogeojson(
                 await findPlacesInZone(
                     "[highspeed=yes]",
@@ -152,6 +204,21 @@ export const determineMeasuringBoundary = async (
             // Convert the polygon to its outline (the border)
             const outline = turf.polygonToLine(zoneInfo.boundary);
             return [outline];
+        }
+        case "motorway": {
+            await prepareMotorwayQuestion(question, mapGeoJSON.get()!);
+            return question.motorway!.features;
+        }
+        case "body-of-water": {
+            const data = await fetchGeodataFeatures(
+                question.type,
+                bBox,
+                question.lat,
+                question.lng,
+            );
+            if (!data.features.length)
+                throw new Error("No matching features found in this area.");
+            return data.features;
         }
         case "coastline": {
             const coastline = turf.lineToPolygon(
@@ -243,6 +310,27 @@ export const determineMeasuringBoundary = async (
         case "park-full": {
             const location = question.type.split("-full")[0] as APILocations;
 
+            if (!useLegacyDataSources.get()) {
+                const prepared = await tryFetchGeodataFeatures(
+                    location,
+                    bBox,
+                    question.lat,
+                    question.lng,
+                    mapGeoJSON.get()!,
+                );
+                if (prepared) {
+                    const points = await filterPois(
+                        prepared as FeatureCollection<Point>,
+                        mapGeoJSON.get()!,
+                    );
+                    if (!points.features.length)
+                        throw new Error(
+                            `No ${prettifyLocation(location, true).toLowerCase()} found in this area.`,
+                        );
+                    return turf.combine(points).features;
+                }
+            }
+
             const data = await findPlacesInZone(
                 `[${LOCATION_FIRST_TAG[location]}=${location}]`,
                 `Finding ${prettifyLocation(location, true).toLowerCase()}...`,
@@ -307,12 +395,49 @@ export const determineMeasuringBoundary = async (
     }
 };
 
-const bufferedDeterminer = _.memoize(
+const bufferedDeterminer = memoizeAsync(
     async (question: MeasuringQuestion) => {
         const placeData = await determineMeasuringBoundary(question);
 
         if (placeData === false || placeData === undefined) return false;
 
+        if (question.type === "motorway" && question.motorway) {
+            const point = turf.point([question.lng, question.lat]);
+            const lines = question.motorway.features.flatMap(
+                (feature) => feature.geometry.coordinates,
+            );
+            const distance = Math.min(
+                ...lines.map((line) =>
+                    turf.pointToLineDistance(point, turf.lineString(line), {
+                        units: "kilometers",
+                    }),
+                ),
+            );
+            // Buffer the joined roads without the slow ArcGIS calculation.
+            if (distance === 0) return turf.multiPolygon([]);
+            const region = turf.buffer(turf.multiLineString(lines), distance, {
+                units: "kilometers",
+            });
+            if (!region)
+                throw new Error("Could not calculate the motorway boundary.");
+            return region;
+        }
+
+        if (
+            typeof Worker !== "undefined" &&
+            placeData.some(
+                (feature) =>
+                    "geometry" in feature &&
+                    feature.geometry.type === "MultiPoint" &&
+                    feature.geometry.coordinates.length > 1000,
+            )
+        ) {
+            return bufferPois(
+                turf.featureCollection(placeData as any),
+                question.lat,
+                question.lng,
+            );
+        }
         return arcBufferToPoint(
             turf.featureCollection(placeData as any),
             question.lat,
@@ -329,7 +454,24 @@ const bufferedDeterminer = _.memoize(
                 : mapGeoLocation.get(),
             geo: (question as any).geo,
             cat: (question as any).cat,
+            legacy: useLegacyDataSources.get(),
+            motorway: question.motorway,
         }),
+);
+
+const elevationRegion = memoizeAsync(
+    (question: MeasuringQuestion) =>
+        fetchElevationRegions(
+            turf.bbox(mapGeoJSON.get()!),
+            question.lat,
+            question.lng,
+        ),
+    (question) =>
+        JSON.stringify([
+            question.lat,
+            question.lng,
+            turf.bbox(mapGeoJSON.get()!),
+        ]),
 );
 
 export const adjustPerMeasuring = async (
@@ -338,16 +480,51 @@ export const adjustPerMeasuring = async (
 ) => {
     if (mapData === null) return;
 
+    if (question.type === "elevation") {
+        const regions = await elevationRegion(question);
+        const region = question.hiderCloser ? regions.higher : regions.lower;
+        return region ? modifyMapData(mapData, region, true) : null;
+    }
+
     const buffer = await bufferedDeterminer(question);
 
     if (buffer === false) return mapData;
 
+    if (typeof Worker !== "undefined" && turf.coordAll(buffer).length > 10000) {
+        return clipMap(mapData, buffer, question.hiderCloser);
+    }
     return modifyMapData(mapData, buffer, question.hiderCloser);
 };
 
 export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
     const $hiderMode = hiderMode.get();
     if ($hiderMode === false) {
+        return question;
+    }
+
+    if (question.type === "motorway") {
+        const region = await bufferedDeterminer(question);
+        if (!region)
+            throw new Error("Could not calculate the motorway answer.");
+        const hiderCloser = turf.booleanPointInPolygon(
+            turf.point([$hiderMode.longitude, $hiderMode.latitude]),
+            region,
+        );
+        if (question.hiderCloser !== hiderCloser) {
+            question.hiderCloser = hiderCloser;
+            questionModified();
+        }
+        return question;
+    }
+
+    if (question.type === "elevation") {
+        const { higher, lower } = await elevationRegion(question);
+        const hider = turf.point([$hiderMode.longitude, $hiderMode.latitude]);
+        const isHigher = !!higher && turf.booleanPointInPolygon(hider, higher);
+        if (!isHigher && !(lower && turf.booleanPointInPolygon(hider, lower))) {
+            throw new Error("No elevation data at the hiding location.");
+        }
+        question.hiderCloser = isHigher;
         return question;
     }
 
@@ -465,13 +642,12 @@ export const hiderifyMeasuring = async (question: MeasuringQuestion) => {
 };
 
 export const measuringPlanningPolygon = async (question: MeasuringQuestion) => {
-    try {
-        const buffered = await bufferedDeterminer(question);
+    const buffered =
+        question.type === "elevation"
+            ? (await elevationRegion(question)).higher
+            : await bufferedDeterminer(question);
 
-        if (buffered === false) return false;
+    if (!buffered) return false;
 
-        return turf.polygonToLine(buffered);
-    } catch {
-        return false;
-    }
+    return turf.polygonToLine(buffered);
 };

@@ -1,5 +1,6 @@
 import _ from "lodash";
-import { toast } from "react-toastify";
+
+import { showMapProgress } from "@/lib/mapProgress";
 
 import { CacheType } from "./types";
 
@@ -26,6 +27,7 @@ export const cacheFetch = async (
     url: string,
     loadingText?: string,
     cacheType: CacheType = CacheType.CACHE,
+    signal?: AbortSignal,
 ) => {
     try {
         const cache = await determineCache(cacheType);
@@ -47,7 +49,7 @@ export const cacheFetch = async (
         }
 
         const fetchAndMaybeCache = async () => {
-            const response = await fetch(url);
+            const response = await fetch(url, { signal });
             if (response.ok) {
                 await cache.put(url, response.clone());
             } else {
@@ -61,9 +63,7 @@ export const cacheFetch = async (
 
         try {
             const response = await (loadingText
-                ? toast.promise(fetchPromise, {
-                      pending: loadingText,
-                  })
+                ? showMapProgress(fetchPromise, loadingText)
                 : fetchPromise);
 
             return response.clone();
@@ -71,9 +71,10 @@ export const cacheFetch = async (
             inFlightFetches.delete(inflightKey);
         }
     } catch (e) {
+        if (signal?.aborted) throw e;
         console.log(e); // Probably a caches not supported error
 
-        return fetch(url);
+        return fetch(url, { signal });
     }
 };
 

@@ -1,5 +1,5 @@
 import * as turf from "@turf/turf";
-import type { FeatureCollection, MultiPolygon } from "geojson";
+import type { FeatureCollection, MultiPolygon, Point } from "geojson";
 import _ from "lodash";
 import osmtogeojson from "osmtogeojson";
 import { toast } from "react-toastify";
@@ -10,11 +10,13 @@ import {
     overpassCustomHost,
     overpassHost,
     polyGeoJSON,
+    useLegacyDataSources,
 } from "@/lib/context";
 import { safeUnion } from "@/maps/geo-utils";
 
 import { cacheFetch, determineCache } from "./cache";
 import { LOCATION_FIRST_TAG, OVERPASS_HOSTS } from "./constants";
+import { tryFetchGeodataFeatures } from "./jetlagGeodata";
 import type {
     EncompassingTentacleQuestionSchema,
     HomeGameMatchingQuestions,
@@ -112,6 +114,34 @@ export const findTentacleLocations = async (
     question: TentacleLocationQuery,
     text: string = "Determining tentacle locations...",
 ) => {
+    if (!useLegacyDataSources.get()) {
+        const center = turf.point([question.lng, question.lat]);
+        // Over-fetch the bounding box, then apply the exact radius below.
+        const box = turf.bbox(
+            turf.circle(center, question.radius * 1.01, {
+                units: question.unit,
+            }),
+        );
+        const data = await tryFetchGeodataFeatures(
+            question.locationType,
+            box,
+            question.lat,
+            question.lng,
+        );
+        if (data)
+            return turf.featureCollection(
+                _.uniqBy(
+                    (data as FeatureCollection<Point>).features.filter(
+                        (point) =>
+                            turf.distance(center, point, {
+                                units: question.unit,
+                            }) <= question.radius,
+                    ),
+                    (point) => point.properties?.name,
+                ),
+            );
+    }
+
     const query = `
 [out:json][timeout:25];
 nwr["${LOCATION_FIRST_TAG[question.locationType]}"="${question.locationType}"](around:${turf.convertLength(

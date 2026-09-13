@@ -39,12 +39,14 @@ import {
     permanentOverlay,
     planningModeEnabled,
     polyGeoJSON,
+    questionModified,
     questions,
     save,
     showTutorial,
     thunderforestApiKey,
     triggerLocalRefresh,
     useCustomStations,
+    useLegacyDataSources,
 } from "@/lib/context";
 import {
     cn,
@@ -91,6 +93,7 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
     const $thunderforestApiKey = useStore(thunderforestApiKey);
     const $pastebinApiKey = useStore(pastebinApiKey);
     const $alwaysUsePastebin = useStore(alwaysUsePastebin);
+    const $useLegacyDataSources = useStore(useLegacyDataSources);
     const $followMe = useStore(followMe);
     const $customInitPref = useStore(customInitPreference);
     const $overpassHost = useStore(overpassHost);
@@ -287,6 +290,8 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
             if (typeof geojson.useCustomStations === "boolean") {
                 useCustomStations.set(geojson.useCustomStations);
             }
+
+            useLegacyDataSources.set(geojson.useLegacyDataSources !== false);
 
             if (
                 geojson.customStations &&
@@ -685,6 +690,20 @@ export const OptionDrawers = ({ className }: { className?: string }) => {
                                         animateMapMovements.set(
                                             !$animateMapMovements,
                                         );
+                                    }}
+                                />
+                            </div>
+                            <div className="flex flex-row items-center gap-2">
+                                <label className="text-2xl font-semibold font-poppins">
+                                    Use original Overpass data?
+                                </label>
+                                <Checkbox
+                                    checked={$useLegacyDataSources}
+                                    onCheckedChange={() => {
+                                        useLegacyDataSources.set(
+                                            !$useLegacyDataSources,
+                                        );
+                                        questionModified();
                                     }}
                                 />
                             </div>

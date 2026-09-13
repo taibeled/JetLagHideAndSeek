@@ -13,6 +13,7 @@ import {
 import { QuestionSidebar } from "@/components/QuestionSidebar";
 import { ZoneSidebar } from "@/components/ZoneSidebar";
 import { OptionDrawers } from "@/components/OptionDrawers";
+import { DataSourceDialog } from "@/components/DataSourceDialog";
 import { TutorialDialog } from "@/components/TutorialDialog";
 ---
 
@@ -59,6 +60,7 @@ import { TutorialDialog } from "@/components/TutorialDialog";
             </main>
             <ZoneSidebar client:only />
             <TutorialDialog client:only />
+            <DataSourceDialog client:only />
         </SidebarProviderR>
     </SidebarProviderL>
 </Layout>

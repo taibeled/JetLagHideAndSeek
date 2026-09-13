@@ -67,6 +67,18 @@ export const MeasuringQuestionComponent = ({
     let questionSpecific = <></>;
 
     switch (data.type) {
+        case "motorway":
+            if (data.motorway?.selection.mode === "major") {
+                questionSpecific = (
+                    <p className="px-2 text-sm">
+                        Using major motorways:{" "}
+                        {data.motorway.selection.names.join(", ")}. This
+                        selection is saved with the question. The map is
+                        approximate.
+                    </p>
+                );
+            }
+            break;
         case "admin-measure":
             questionSpecific = (
                 <>
@@ -362,10 +374,14 @@ export const MeasuringQuestionComponent = ({
                     disabled={!!$hiderMode || !data.drag || $isLoading}
                 >
                     <ToggleGroupItem value="further">
-                        Hider Further
+                        {data.type === "elevation"
+                            ? "Hider Lower"
+                            : "Hider Further"}
                     </ToggleGroupItem>
                     <ToggleGroupItem value="closer">
-                        Hider Closer
+                        {data.type === "elevation"
+                            ? "Hider Higher"
+                            : "Hider Closer"}
                     </ToggleGroupItem>
                 </ToggleGroup>
             </div>

@@ -15,17 +15,28 @@ import {
     mapGeoJSON,
     mapGeoLocation,
     polyGeoJSON,
+    questionModified,
+    useLegacyDataSources,
 } from "@/lib/context";
+import { memoizeAsync } from "@/lib/memoizeAsync";
 import {
+    fetchLandmass,
+    fetchStreetRegion,
     findAdminBoundary,
     findPlacesInZone,
     LOCATION_FIRST_TAG,
     nearestToQuestion,
     prettifyLocation,
     trainLineNodeFinder,
+    tryFetchGeodataFeatures,
 } from "@/maps/api";
 import { holedMask, modifyMapData, safeUnion } from "@/maps/geo-utils";
 import { geoSpatialVoronoi } from "@/maps/geo-utils";
+import {
+    clipMap,
+    filterPois,
+    matchingRegion,
+} from "@/maps/geo-utils/geometryWorker";
 import type {
     APILocations,
     HomeGameMatchingQuestions,
@@ -79,6 +90,28 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
         case "park-full": {
             const location = question.type.split("-full")[0] as APILocations;
 
+            const area = mapGeoJSON.get();
+            if (!useLegacyDataSources.get() && area) {
+                const prepared = await tryFetchGeodataFeatures(
+                    location,
+                    turf.bbox(area),
+                    question.lat,
+                    question.lng,
+                    area,
+                );
+                if (prepared) {
+                    const points = await filterPois(
+                        prepared as FeatureCollection<Point>,
+                        area,
+                    );
+                    if (!points.features.length)
+                        throw new Error(
+                            `No ${prettifyLocation(location, true).toLowerCase()} found in this area.`,
+                        );
+                    return points.features;
+                }
+            }
+
             const data = await findPlacesInZone(
                 `[${LOCATION_FIRST_TAG[location]}=${location}]`,
                 `Finding ${prettifyLocation(location, true).toLowerCase()}...`,
@@ -118,7 +151,7 @@ export const findMatchingPlaces = async (question: MatchingQuestion) => {
     }
 };
 
-export const determineMatchingBoundary = _.memoize(
+const matchingBoundary = memoizeAsync(
     async (question: MatchingQuestion) => {
         let boundary;
 
@@ -141,6 +174,10 @@ export const determineMatchingBoundary = _.memoize(
             }
             case "custom-zone": {
                 boundary = question.geo;
+                break;
+            }
+            case "landmass": {
+                boundary = await fetchLandmass(question.lat, question.lng);
                 break;
             }
             case "zone": {
@@ -229,6 +266,15 @@ export const determineMatchingBoundary = _.memoize(
             case "custom-points": {
                 const data = await findMatchingPlaces(question);
 
+                if (!data?.length)
+                    throw new Error("No places found in this area.");
+                if (typeof Worker !== "undefined" && data.length > 1000)
+                    return matchingRegion(
+                        turf.featureCollection(data),
+                        question.lat,
+                        question.lng,
+                    );
+
                 const voronoi = geoSpatialVoronoi(data);
                 const point = turf.point([question.lng, question.lat]);
 
@@ -251,11 +297,32 @@ export const determineMatchingBoundary = _.memoize(
             lng: question.lng,
             cat: question.cat,
             geo: question.geo,
+            legacy: useLegacyDataSources.get(),
             entirety: polyGeoJSON.get()
                 ? polyGeoJSON.get()
                 : mapGeoLocation.get(),
         }),
 );
+
+export const determineMatchingBoundary = async (question: MatchingQuestion) => {
+    if (question.type !== "street-or-path") return matchingBoundary(question);
+    const street = await fetchStreetRegion(
+        question.lat,
+        question.lng,
+        turf.bbox(mapGeoJSON.get()!),
+    );
+    if (
+        question.street?.name !== street.streetName ||
+        question.street?.highway !== street.highway
+    ) {
+        question.street = {
+            name: street.streetName,
+            highway: street.highway,
+        };
+        questionModified();
+    }
+    return street.region;
+};
 
 export const adjustPerMatching = async (
     question: MatchingQuestion,
@@ -268,6 +335,9 @@ export const adjustPerMatching = async (
     if (boundary === false) {
         return mapData;
     }
+
+    if (typeof Worker !== "undefined" && turf.coordAll(mapData).length > 10000)
+        return clipMap(mapData, boundary, question.same);
 
     return modifyMapData(mapData, boundary, question.same);
 };
@@ -416,15 +486,11 @@ export const hiderifyMatching = async (question: MatchingQuestion) => {
 };
 
 export const matchingPlanningPolygon = async (question: MatchingQuestion) => {
-    try {
-        const boundary = await determineMatchingBoundary(question);
+    const boundary = await determineMatchingBoundary(question);
 
-        if (boundary === false) {
-            return false;
-        }
-
-        return turf.polygonToLine(boundary);
-    } catch {
+    if (boundary === false) {
         return false;
     }
+
+    return turf.polygonToLine(boundary);
 };

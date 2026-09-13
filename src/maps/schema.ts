@@ -206,11 +206,21 @@ const baseMatchingQuestionSchema = ordinaryBaseQuestionSchema.extend({
 });
 
 const ordinaryMatchingQuestionSchema = baseMatchingQuestionSchema.extend({
+    street: z
+        .object({
+            name: z.string(),
+            highway: z.string().nullable(),
+        })
+        .optional(),
     type: z
         .union([
             z
                 .literal("airport")
                 .describe("Commercial Airport In Zone Question"),
+            z.literal("landmass").describe("Same Landmass Question"),
+            z
+                .literal("street-or-path")
+                .describe("Same Nearest Street or Path Question"),
             z
                 .literal("major-city")
                 .describe("Major City (1,000,000+ people) In Zone Question"),
@@ -319,14 +329,44 @@ export const matchingQuestionSchema = z.union([
     homeGameMatchingQuestionsSchema.describe("Hiding Zone Mode"),
 ]);
 
+export const motorwaySnapshotSchema = z.object({
+    bbox: z.tuple([z.number(), z.number(), z.number(), z.number()]),
+    selection: z.object({
+        mode: z.enum(["all", "major"]),
+        names: z.array(z.string()),
+    }),
+    features: z
+        .array(
+            z.object({
+                type: z.literal("Feature"),
+                properties: z.record(z.unknown()).nullable(),
+                geometry: z.object({
+                    type: z.literal("MultiLineString"),
+                    coordinates: z
+                        .array(
+                            z.array(z.tuple([z.number(), z.number()])).min(2),
+                        )
+                        .min(1),
+                }),
+            }),
+        )
+        .min(1),
+});
+
 const baseMeasuringQuestionSchema = ordinaryBaseQuestionSchema.extend({
     hiderCloser: z.boolean().default(true),
+    motorway: motorwaySnapshotSchema.optional(),
 });
 
 const ordinaryMeasuringQuestionSchema = baseMeasuringQuestionSchema.extend({
     type: z
         .union([
             z.literal("coastline").describe("Coastline Question"),
+            z.literal("body-of-water").describe("Body of Water Question"),
+            z.literal("motorway").describe("Motorway Question"),
+            z
+                .literal("elevation")
+                .describe("Elevation (Higher/Lower) Question"),
             z
                 .literal("airport")
                 .describe("Commercial Airport In Zone Question"),
