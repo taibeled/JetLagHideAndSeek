@@ -68,7 +68,7 @@ export const TentacleQuestionComponent = ({
             locked={!data.drag}
             setLocked={(locked) => questionModified((data.drag = !locked))}
             hidden={data.hidden}
-            setHidden={(hidden) => questionModified((data.hidden = !hidden))}
+            setHidden={(hidden) => questionModified((data.hidden = hidden))}
         >
             <SidebarMenuItem>
                 <div className={cn(MENU_ITEM_CLASSNAME, "gap-2 flex flex-row")}>
